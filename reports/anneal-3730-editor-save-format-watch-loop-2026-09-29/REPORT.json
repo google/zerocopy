@@ -1,0 +1,31 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "name": "Pinned Lean 4.30.0-rc2 and local rustfmt",
+      "identity": {
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "rustfmt_sha256": "ee717a093f2b2e2c124cde782b4b955fb26ec0c7cf241e6403fed99d624f0c76",
+        "lean_fixture_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+        "rust_fixture_sha256": "8530bb262bfe063e2835ce478866e1cc8a808a17d56aa4eb64ca437d68825c4a"
+      }
+    },
+    {
+      "name": "Direct LSP and private hash-polling build harness",
+      "identity": {
+        "probe_sha256": "fe824066f391a01c191390c3a1068f8c5934ed7b7cf02af674624aabd4ebc6e2",
+        "verifier_sha256": "8e1d38eefdac821152d00c2ec124027303cb040961f3537e5cd8c8d483614787",
+        "results_sha256": "4ac07b740dba2caf6e78e363b7e25d360eccc96e964621c85a7f802d19875ce6",
+        "initial_olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "final_olean_sha256": "18fb83a0a6b635740cbd0d0abd06207e8be4d9f56945e69391264a210ea4116c"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/editor-save-watch-loop",
+    "lean/lsp-diagnostics",
+    "lean/artifact-consumption",
+    "rustfmt/format-event",
+    "anneal/cancellation-model"
+  ]
+}

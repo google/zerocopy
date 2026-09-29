@@ -1,0 +1,53 @@
+{
+  "snapshot_utc": "2026-09-29T10:23:59Z",
+  "issue_3730_state": "closed",
+  "issue_3731_state": "open",
+  "issue_sha256": {
+    "3730_body": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+    "3730_comment": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+    "3731_body": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+    "3731_comment": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+  },
+  "investigation_rows": 159,
+  "investigation_statuses": {
+    "partial": 146,
+    "not-run": 8,
+    "complete": 2,
+    "conditional": 3
+  },
+  "crosswalk_rows": 174,
+  "crosswalk_statuses": {
+    "partial": 143,
+    "complete": 4,
+    "not-run": 23,
+    "conditional": 4
+  },
+  "complete_investigations": [
+    "I046",
+    "I049"
+  ],
+  "complete_suggestions": [
+    "C03",
+    "C04",
+    "C13",
+    "N11"
+  ],
+  "all_report_packages": 61,
+  "prior_accounted_packages": 55,
+  "new_package_count": 6,
+  "new_packages": [
+    "anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29",
+    "anneal-3730-charon-build-closure-control-2026-09-29",
+    "anneal-3730-cross-layer-comparator-mutants-2026-09-29",
+    "anneal-3730-lake-same-key-artifact-writers-2026-09-29",
+    "anneal-3730-lean-lsp-projection-code-actions-2026-09-29",
+    "anneal-3730-lean-server-soak-context-rpc-2026-09-29"
+  ],
+  "new_inspected_file_count": 278,
+  "new_inspected_bytes": 3006272,
+  "source_v3_investigation_sha256": "ee8a9c197ee6756b92c2056f7dc6cfe3ef26eae91175bb0211b8e23c3e9643ba",
+  "source_v3_crosswalk_sha256": "bee2a888fa1b53f671903bb768560cbd9327b941d1e4ae2302bb1898ae889eb0",
+  "r08_r13_completed": 6,
+  "remaining_locally_executable_suites": 4,
+  "gate_groups": 7
+}

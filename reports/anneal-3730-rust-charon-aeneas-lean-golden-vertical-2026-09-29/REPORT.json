@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "anneal/cross-tool-golden-vertical",
+    "charon/cargo-extraction",
+    "aeneas/lean-generation",
+    "anneal/batch-acceptance",
+    "anneal/negative-controls"
+  ],
+  "subjects": [
+    {
+      "name": "pinned local Charon and Aeneas executables",
+      "identity": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      }
+    },
+    {
+      "name": "pinned local Rust/Cargo nightly and Lean batch checker",
+      "identity": {
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+      }
+    },
+    {
+      "name": "self-contained Rust-to-Lean replay",
+      "identity": {
+        "file": "support/probe.py",
+        "sha256": "a09a11988be827b35fc300a55d960a9e9419353366a3a37da871f81e28486430"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

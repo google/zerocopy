@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/reproducibility",
+    "lean/batch-checking",
+    "lean/language-server"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 compiler and language server",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "original vertical acceptance report and third transcript",
+      "identity": {
+        "report_file": "reports/anneal-3730-vertical-acceptance-v4-30-0-rc2/REPORT.md",
+        "report_sha256": "8ec34505ae7c3bad9f9840788a6d17ddf60293e2b5060f54e033336833acf409",
+        "transcript_sha256": "55e0dfc1083ee7d1a5ee5f71f9517a0018f2d4db81148a2843da4d97fd03bf80"
+      }
+    },
+    {
+      "name": "independent procedural reproduction driver",
+      "identity": {
+        "file": "support/reproduce.py",
+        "sha256": "80ba94089321454a35443a8d469870d4820ebb952f4a019f3a1d0609c99a29fa"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

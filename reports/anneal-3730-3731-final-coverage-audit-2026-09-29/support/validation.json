@@ -1,0 +1,42 @@
+{
+  "snapshot_utc": "2026-09-29 08:18 UTC",
+  "post_interim_package_count": 15,
+  "post_interim_packages": [
+    "anneal-3730-acceptance-oracle-matrix-2026-09-29",
+    "anneal-3730-aeneas-identity-manifest-2026-09-29",
+    "anneal-3730-architecture-contracts-2026-09-29",
+    "anneal-3730-charon-scaling-subject-closure-2026-09-29",
+    "anneal-3730-generation-recovery-2026-09-29",
+    "anneal-3730-independent-vertical-reproduction-2026-09-29",
+    "anneal-3730-lake-prepared-contract-2026-09-29",
+    "anneal-3730-lean-artifact-layouts-v4-30-0-rc2",
+    "anneal-3730-lean-rpc-lifetimes-v4-30-0-rc2",
+    "anneal-3730-multiclient-editor-contract-2026-09-29",
+    "anneal-3730-partial-elaboration-queries-v4-30-0-rc2",
+    "anneal-3730-platform-filesystem-boundary-2026-09-29",
+    "anneal-3730-projection-provenance-2026-09-29",
+    "anneal-3730-resource-economics-2026-09-29",
+    "anneal-3730-server-topology-v4-30-0-rc2"
+  ],
+  "inspected_file_count": 470,
+  "inspected_bytes": 19969913,
+  "investigation_rows": 159,
+  "investigation_statuses": {
+    "partial": 145,
+    "not-run": 10,
+    "complete": 1,
+    "conditional": 3
+  },
+  "crosswalk_rows": 174,
+  "crosswalk_statuses": {
+    "partial": 135,
+    "not-run": 33,
+    "complete": 2,
+    "conditional": 4
+  },
+  "complete_ids": [
+    "I046"
+  ],
+  "source_interim_matrix_sha256": "9c27d5bed29ae5790863431969c301a9bbbcadad0f37c3dad112e03326a5c11f",
+  "source_interim_crosswalk_sha256": "e7dd26e33320af3e8c3c491795ae95e6a00380650f5a0037c050172ae51db20d"
+}

@@ -1,0 +1,50 @@
+{
+  "events": [
+    {
+      "epoch": 1,
+      "event": "old_started_and_gated",
+      "pid": 46892,
+      "request_sha256": "f39a60745c7aff19faf6c59bb22c7e331fd170ae00edebc637927d0e561ba83d"
+    },
+    {
+      "epoch": 2,
+      "event": "new_started_and_gated",
+      "pid": 46893,
+      "request_sha256": "5ac6320d2ab20d7c9e187c0d9e1cadadac96f9bc0f5ab2a5f6af11dd4c27591e"
+    },
+    {
+      "adapter_status": "ok",
+      "backend": {
+        "exit_code": 0,
+        "label": "new",
+        "raw_result": "{\"request\": {\"epoch\": 2, \"semantic\": {\"imports\": \"a4adc40987ab2357321c0f0df3ab739993d3f832f9113ff188045ba8bea0f5d9\", \"model\": \"cd1873edd84854a3f9a6db3093cf0c68fa81c558f937feff8f8ca47266e7ea7f\", \"proof\": \"1fbbfbfbb7980009080e5873c2e07bf3492f87277083787c2bd47377324917e3\", \"source\": \"d084329ca6c008eb1e7a6e9f1960034d5832ec489a31c3176a8723ec846c99fb\", \"subject\": \"fixture-cargo-subject\"}}, \"semantic_digest\": \"4c33e774170816648c1f9ed4952709c5562b37c1aa3721047ee3cb6d73c6ba1e\", \"status\": \"ok\"}",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      "disposition": "published",
+      "event": "new_completed_first",
+      "selected_epoch": 2
+    },
+    {
+      "adapter_status": "ok",
+      "backend": {
+        "exit_code": 0,
+        "label": "old",
+        "raw_result": "{\"request\": {\"epoch\": 1, \"semantic\": {\"imports\": \"a4adc40987ab2357321c0f0df3ab739993d3f832f9113ff188045ba8bea0f5d9\", \"model\": \"71be3c58d50da18c7c8c23e7f009329fb59e73c416f8db15aba951bdc6234d53\", \"proof\": \"1fbbfbfbb7980009080e5873c2e07bf3492f87277083787c2bd47377324917e3\", \"source\": \"f3ec8da3b93e74527a7fb55c77bb487111ef9cb69026872d468d9005aacc06aa\", \"subject\": \"fixture-cargo-subject\"}}, \"semantic_digest\": \"bf07c8b2caecbb6de3f1bc584a6e3641a977fb7f4dbcf11ca76ae3f932c79dd8\", \"status\": \"ok\"}",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      "disposition": "stale-generation",
+      "event": "old_completed_late",
+      "selected_epoch": 2
+    }
+  ],
+  "harness_sha256": "fb1a7cbdff9cdb7b66a0f36234756af52c4862508dc5010735d4263d5a1995da",
+  "late_old_rejected": true,
+  "naive_last_completion_digest": "bf07c8b2caecbb6de3f1bc584a6e3641a977fb7f4dbcf11ca76ae3f932c79dd8",
+  "new_digest": "4c33e774170816648c1f9ed4952709c5562b37c1aa3721047ee3cb6d73c6ba1e",
+  "old_digest": "bf07c8b2caecbb6de3f1bc584a6e3641a977fb7f4dbcf11ca76ae3f932c79dd8",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "replay_script_sha256": "d97040b0f59fc94a9c6d756b26fe4584ecea5b06b72a2ed9e421543d3fe3d81d",
+  "selected_digest": "4c33e774170816648c1f9ed4952709c5562b37c1aa3721047ee3cb6d73c6ba1e"
+}

@@ -1,0 +1,124 @@
+{
+  "capture": {
+    "aba_false_accept": true,
+    "aba_revalidation": [
+      "left-0",
+      "right-1"
+    ],
+    "generations": {
+      "A": [
+        "left-0",
+        "right-0"
+      ],
+      "B": [
+        "left-1",
+        "right-1"
+      ]
+    },
+    "mixed_read": [
+      "left-0",
+      "right-1"
+    ],
+    "no_aba_validation_detected_change": true,
+    "pinned_generation": "A",
+    "pinned_read_after_pointer_swap": [
+      "left-0",
+      "right-0"
+    ]
+  },
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "script_sha256": "fb1a7cbdff9cdb7b66a0f36234756af52c4862508dc5010735d4263d5a1995da"
+  },
+  "jobs": {
+    "events": [
+      {
+        "adapter_status": "ok",
+        "disposition": "published",
+        "exit_code": 0,
+        "label": "shared",
+        "raw_result": "{\"request\": {\"epoch\": 1, \"semantic\": {\"imports\": \"6106092cec0f9458866564dc57012633fd4d2a4fbe354c4d4b2bdc13f0c9d17b\", \"model\": \"941ab3595128ed69ef974d38117ac51332d6638123c71f33db030bb0096bb98f\", \"proof\": \"1f66f63cfdbcd2444e0f4e89907aec65e5445cb49f773bf2c2befba0b4b40f14\", \"source\": \"bbf731a0863907e64318f0e8345634971ed079fa4341056a7c34093205063d92\", \"subject\": \"cargo-target-X\"}}, \"semantic_digest\": \"8a72f357c669a5a17a33b8dbae3d20699aa797c7ee6cfb1989f27710135f4b4a\", \"status\": \"ok\"}",
+        "remaining_consumers": [
+          "agent"
+        ],
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      {
+        "adapter_status": "ok",
+        "disposition": "no-consumers",
+        "exit_code": 0,
+        "label": "all-cancelled",
+        "raw_result": "{\"request\": {\"epoch\": 2, \"semantic\": {\"imports\": \"6106092cec0f9458866564dc57012633fd4d2a4fbe354c4d4b2bdc13f0c9d17b\", \"model\": \"941ab3595128ed69ef974d38117ac51332d6638123c71f33db030bb0096bb98f\", \"proof\": \"1f66f63cfdbcd2444e0f4e89907aec65e5445cb49f773bf2c2befba0b4b40f14\", \"source\": \"bbf731a0863907e64318f0e8345634971ed079fa4341056a7c34093205063d92\", \"subject\": \"cargo-target-X\"}}, \"semantic_digest\": \"8a72f357c669a5a17a33b8dbae3d20699aa797c7ee6cfb1989f27710135f4b4a\", \"status\": \"ok\"}",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      {
+        "adapter_status": "ok",
+        "disposition": "published",
+        "exit_code": 0,
+        "label": "new-first",
+        "raw_result": "{\"request\": {\"epoch\": 4, \"semantic\": {\"imports\": \"6106092cec0f9458866564dc57012633fd4d2a4fbe354c4d4b2bdc13f0c9d17b\", \"model\": \"55dfa81ae384a9aefaeccde4d85d88c975638ae08e50ce6ae737be4caa480b6a\", \"proof\": \"1f66f63cfdbcd2444e0f4e89907aec65e5445cb49f773bf2c2befba0b4b40f14\", \"source\": \"bbf731a0863907e64318f0e8345634971ed079fa4341056a7c34093205063d92\", \"subject\": \"cargo-target-X\"}}, \"semantic_digest\": \"9d7b7af559643a32c0268e7bd8823856652c68c020fa2a64a5eb83a2d1547263\", \"status\": \"ok\"}",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      {
+        "adapter_status": "ok",
+        "disposition": "stale-generation",
+        "exit_code": 0,
+        "label": "old-late",
+        "raw_result": "{\"request\": {\"epoch\": 3, \"semantic\": {\"imports\": \"6106092cec0f9458866564dc57012633fd4d2a4fbe354c4d4b2bdc13f0c9d17b\", \"model\": \"941ab3595128ed69ef974d38117ac51332d6638123c71f33db030bb0096bb98f\", \"proof\": \"1f66f63cfdbcd2444e0f4e89907aec65e5445cb49f773bf2c2befba0b4b40f14\", \"source\": \"bbf731a0863907e64318f0e8345634971ed079fa4341056a7c34093205063d92\", \"subject\": \"cargo-target-X\"}}, \"semantic_digest\": \"8a72f357c669a5a17a33b8dbae3d20699aa797c7ee6cfb1989f27710135f4b4a\", \"status\": \"ok\"}",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      {
+        "adapter_status": "process-failed",
+        "disposition": "stage-error",
+        "exit_code": 23,
+        "label": "failed-stage",
+        "raw_result": "{\"partial\":true",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      {
+        "adapter_status": "invalid-result",
+        "disposition": "stage-error",
+        "exit_code": 0,
+        "label": "malformed-stage",
+        "raw_result": "{\"partial\":true",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      {
+        "adapter_status": "ok",
+        "disposition": "published",
+        "exit_code": 0,
+        "label": "batch",
+        "raw_result": "{\"request\": {\"epoch\": 1, \"semantic\": {\"imports\": \"6106092cec0f9458866564dc57012633fd4d2a4fbe354c4d4b2bdc13f0c9d17b\", \"model\": \"941ab3595128ed69ef974d38117ac51332d6638123c71f33db030bb0096bb98f\", \"proof\": \"1f66f63cfdbcd2444e0f4e89907aec65e5445cb49f773bf2c2befba0b4b40f14\", \"source\": \"bbf731a0863907e64318f0e8345634971ed079fa4341056a7c34093205063d92\", \"subject\": \"cargo-target-X\"}}, \"semantic_digest\": \"8a72f357c669a5a17a33b8dbae3d20699aa797c7ee6cfb1989f27710135f4b4a\", \"status\": \"ok\"}",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      },
+      {
+        "adapter_status": "ok",
+        "disposition": "published",
+        "exit_code": 0,
+        "label": "live",
+        "raw_result": "{\"request\": {\"epoch\": 1, \"semantic\": {\"imports\": \"6106092cec0f9458866564dc57012633fd4d2a4fbe354c4d4b2bdc13f0c9d17b\", \"model\": \"941ab3595128ed69ef974d38117ac51332d6638123c71f33db030bb0096bb98f\", \"proof\": \"1f66f63cfdbcd2444e0f4e89907aec65e5445cb49f773bf2c2befba0b4b40f14\", \"source\": \"bbf731a0863907e64318f0e8345634971ed079fa4341056a7c34093205063d92\", \"subject\": \"cargo-target-X\"}}, \"semantic_digest\": \"8a72f357c669a5a17a33b8dbae3d20699aa797c7ee6cfb1989f27710135f4b4a\", \"status\": \"ok\"}",
+        "stderr": "progress-looking stderr: 100%\n",
+        "stdout": "diagnostic-looking stdout: ERROR old-generation\n"
+      }
+    ],
+    "out_of_order": {
+      "fenced_published_digest": "9d7b7af559643a32c0268e7bd8823856652c68c020fa2a64a5eb83a2d1547263",
+      "naive_last_digest": "8a72f357c669a5a17a33b8dbae3d20699aa797c7ee6cfb1989f27710135f4b4a",
+      "naive_wrong": true,
+      "new_epoch": 4,
+      "old_epoch": 3
+    },
+    "paired_batch_live_semantic_digests": [
+      "8a72f357c669a5a17a33b8dbae3d20699aa797c7ee6cfb1989f27710135f4b4a",
+      "8a72f357c669a5a17a33b8dbae3d20699aa797c7ee6cfb1989f27710135f4b4a"
+    ]
+  }
+}

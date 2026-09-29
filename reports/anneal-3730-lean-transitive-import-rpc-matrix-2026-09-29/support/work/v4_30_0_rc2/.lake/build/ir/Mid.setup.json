@@ -1,0 +1,9 @@
+{"plugins": [],
+ "package": "rpc_matrix",
+ "options": {},
+ "name": "Mid",
+ "isModule": false,
+ "importArts":
+ {"Base":
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/v4_30_0_rc2/.lake/build/lib/lean/Base.olean"]},
+ "dynlibs": []}

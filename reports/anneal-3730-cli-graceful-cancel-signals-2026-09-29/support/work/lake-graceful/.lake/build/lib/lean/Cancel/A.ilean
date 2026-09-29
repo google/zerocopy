@@ -1,0 +1,1 @@
+{"decls":{"seed":[0,0,0,19,0,4,0,8]},"directImports":[],"module":"Cancel.A","references":{"{\"c\":{\"m\":\"Cancel.A\",\"n\":\"seed\"}}":{"definition":[0,4,0,8],"usages":[]},"{\"c\":{\"m\":\"Init.Prelude\",\"n\":\"Nat\"}}":{"definition":null,"usages":[[0,11,0,14,"seed"]]}},"version":5}

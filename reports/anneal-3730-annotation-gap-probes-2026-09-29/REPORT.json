@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/annotations",
+    "anneal/projection",
+    "lean/declaration-order",
+    "lsp/code-actions"
+  ],
+  "subjects": [
+    {
+      "name": "Controlled Rust-hosted annotation and edit-action fixture",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "c80616ee85dcb6437eff17c18e1cf1a03b6f3037c61238ea7f47d1e5c5ee8b7b"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "Rust compiler",
+      "identity": {
+        "version": "1.98.1",
+        "commit": "48a229cea",
+        "sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

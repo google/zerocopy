@@ -1,0 +1,3513 @@
+{
+  "cache_negative_control": {
+    "actual_concrete_external_model_sha256": "053595263adf1b1792182934ac3838211084437305e0146dea8d4fce8d917cdf",
+    "candidate_external_model_sha256": "129ecaa985b8c0844d16be569ed23897099e892c4f0cde5be58f042960d6c529",
+    "generated_only_acceptance_invalid": true,
+    "generated_only_key": "1f20530310ae76ebeb2ec620cebb7242d41d32a71697ac4d38307ab041dd9efc",
+    "loaded_external_olean_sha256": "a448ed7101a05f61223b2f9724adbfe338aa4999b92e1714dcbd21cd27726367",
+    "stale_reuse_check_rc": 0,
+    "stale_reuse_stderr": "",
+    "stale_reuse_stdout": "'external_probe.external_call' does not depend on any axioms\n",
+    "wrong_fresh_check_rc": 1
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/source.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "external_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work",
+      "label": "charon",
+      "ms": 382.55,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work",
+      "label": "aeneas:first",
+      "ms": 238.92,
+      "rc": 0,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated/FunsExternal_Template.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.120601 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/concrete",
+      "label": "concrete:compile:Source/Types",
+      "ms": 6344.74,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/FunsExternal.olean",
+        "Source/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/concrete",
+      "label": "concrete:compile:Source/FunsExternal",
+      "ms": 1586.35,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/concrete",
+      "label": "concrete:compile:Source/Funs",
+      "ms": 1594.12,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/concrete",
+      "label": "concrete:compile:Source",
+      "ms": 1566.73,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/concrete",
+      "label": "concrete:check",
+      "ms": 1582.08,
+      "rc": 0,
+      "stderr": "",
+      "stdout": "'external_probe.external_call' does not depend on any axioms\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/wrong",
+      "label": "wrong:compile:Source/Types",
+      "ms": 1567.77,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/FunsExternal.olean",
+        "Source/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/wrong",
+      "label": "wrong:compile:Source/FunsExternal",
+      "ms": 1571.22,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/wrong",
+      "label": "wrong:compile:Source/Funs",
+      "ms": 1624.31,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/wrong",
+      "label": "wrong:compile:Source",
+      "ms": 1557.04,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/wrong",
+      "label": "wrong:check",
+      "ms": 1564.47,
+      "rc": 1,
+      "stderr": "",
+      "stdout": "'external_probe.external_call' depends on axioms: [propext, Classical.choice, Quot.sound]\nCheck.lean:3:63: error: Tactic `rfl` failed: The left-hand side\n  external_probe.external_call 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 external_probe.external_call 1#u32 = Aeneas.Std.Result.ok 2#u32\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/axiom",
+      "label": "axiom:compile:Source/Types",
+      "ms": 1563.23,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/FunsExternal.olean",
+        "Source/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/axiom",
+      "label": "axiom:compile:Source/FunsExternal",
+      "ms": 1563.15,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/axiom",
+      "label": "axiom:compile:Source/Funs",
+      "ms": 1562.23,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/axiom",
+      "label": "axiom:compile:Source",
+      "ms": 1769.28,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/axiom",
+      "label": "axiom:check",
+      "ms": 1930.96,
+      "rc": 1,
+      "stderr": "",
+      "stdout": "'external_probe.external_call' depends on axioms: [external_double]\nCheck.lean:3:63: error: Tactic `rfl` failed: The left-hand side\n  external_probe.external_call 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 external_probe.external_call 1#u32 = Aeneas.Std.Result.ok 2#u32\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/missing",
+      "label": "missing:compile:Source/Types",
+      "ms": 1973.41,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/FunsExternal.olean",
+        "Source/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/missing",
+      "label": "missing:compile:Source/FunsExternal",
+      "ms": 7029.37,
+      "rc": 1,
+      "stderr": "",
+      "stdout": "Source/FunsExternal.lean:22:0: error: unexpected end of input; expected 'lemma'\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/variants/stale-cache",
+      "label": "stale-cache:check",
+      "ms": 5119.93,
+      "rc": 0,
+      "stderr": "",
+      "stdout": "'external_probe.external_call' does not depend on any axioms\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated-again",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work",
+      "label": "aeneas:again",
+      "ms": 246.62,
+      "rc": 0,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated-again/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated-again/FunsExternal_Template.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated-again/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/generated-again/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.123033 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/FunsExternal.olean",
+        "Source/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live",
+      "label": "live:recompile:Source/FunsExternal",
+      "ms": 2015.63,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live",
+      "label": "live:recompile:Source/Funs",
+      "ms": 1672.2,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live",
+      "label": "live:recompile:Source",
+      "ms": 1666.55,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "external_kind": "separate Lean source file FunsExternal.lean, not an Aeneas compiled registry",
+  "generated": {
+    "Funs.lean": {
+      "bytes": 1064,
+      "sha256": "a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97"
+    },
+    "FunsExternal_Template.lean": {
+      "bytes": 942,
+      "sha256": "774531ef77832505794da6abadc4484d2b2723d56fa4cf77e93b03e77003ff16"
+    },
+    "Source.lean": {
+      "bytes": 19,
+      "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+    },
+    "Types.lean": {
+      "bytes": 533,
+      "sha256": "33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca"
+    }
+  },
+  "live_workers": {
+    "after_olean": {
+      "Source/Funs.olean": "81d5f2b39661e776f27b27f149ce7cd18cd7606a58003b57f51fa59c6d2cf56c",
+      "Source/FunsExternal.olean": "2347190708211f8c201ee52955861ab7f28533f51768d19d0e2951467d7e1920"
+    },
+    "before_olean": {
+      "Source/Funs.olean": "92b07d6de5234dc0866878743dee2c05f4038d4ca2bb6f3c5452e704bc43415f",
+      "Source/FunsExternal.olean": "a448ed7101a05f61223b2f9724adbfe338aa4999b92e1714dcbd21cd27726367"
+    },
+    "check_sha256": "5c4a55b456305329578f0945bc08ae617d82f3d7e5d21d4bcd0fd29ce2215b43",
+    "external_model_sha256": "129ecaa985b8c0844d16be569ed23897099e892c4f0cde5be58f042960d6c529",
+    "new_after_restart": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "new_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "'external_probe.external_call' depends on axioms: [propext, Classical.choice, Quot.sound]",
+          "range": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 66,
+              "line": 2
+            },
+            "start": {
+              "character": 63,
+              "line": 2
+            }
+          },
+          "message": "Tactic `rfl` failed: The left-hand side\n  external_probe.external_call 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 external_probe.external_call 1#u32 = Aeneas.Std.Result.ok 2#u32",
+          "range": {
+            "end": {
+              "character": 66,
+              "line": 2
+            },
+            "start": {
+              "character": 63,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+      "version": 1
+    },
+    "new_pid": 80315,
+    "new_tree": [
+      {
+        "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "pgid": 80315,
+        "pid": 80315,
+        "ppid": 80037,
+        "stat": "Rs"
+      },
+      {
+        "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "pgid": 80316,
+        "pid": 80316,
+        "ppid": 80315,
+        "stat": "Us"
+      }
+    ],
+    "old_after_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "'external_probe.external_call' does not depend on any axioms",
+          "range": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+      "version": 2
+    },
+    "old_after_rebuild": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "old_initial": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "old_initial_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "'external_probe.external_call' does not depend on any axioms",
+          "range": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+      "version": 1
+    },
+    "old_pid": 80307,
+    "old_tree_after_rebuild": [
+      {
+        "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "pgid": 80307,
+        "pid": 80307,
+        "ppid": 80037,
+        "stat": "Rs"
+      },
+      {
+        "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "pgid": 80308,
+        "pid": 80308,
+        "ppid": 80307,
+        "stat": "Ss"
+      }
+    ],
+    "old_tree_initial": [
+      {
+        "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "pgid": 80307,
+        "pid": 80307,
+        "ppid": 80037,
+        "stat": "Rs"
+      },
+      {
+        "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "pgid": 80308,
+        "pid": 80308,
+        "ppid": 80307,
+        "stat": "Rs"
+      }
+    ]
+  },
+  "llbc_sha256": "6baf2255c0091c11290457d0ac6928df17240f6e05948f3fc060ef75f688df94",
+  "observed_at_utc": "2026-09-29T11:51:52Z",
+  "protocol": [
+    {
+      "kind": "start",
+      "ms": 43990.06,
+      "pid": 80307,
+      "seq": 0,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "initialize",
+        "params": {
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          },
+          "processId": 80037,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live"
+        }
+      },
+      "ms": 43990.17,
+      "seq": 1,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      },
+      "ms": 44015.33,
+      "seq": 2,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      },
+      "ms": 44015.36,
+      "seq": 3,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "languageId": "lean",
+            "text": "import Source\n#print axioms external_probe.external_call\nexample : external_probe.external_call 1#u32 = .ok 2#u32 := by rfl\n",
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 44015.41,
+      "seq": 4,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 44015.42,
+      "seq": 5,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "ms": 44015.53,
+      "seq": 6,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 44015.54,
+      "seq": 7,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 44015.75,
+      "seq": 8,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 44073.29,
+      "seq": 9,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 44253.71,
+      "seq": 10,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 44253.73,
+      "seq": 11,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 44573.69,
+      "seq": 12,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 44573.72,
+      "seq": 13,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 45103.81,
+      "seq": 14,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 45103.84,
+      "seq": 15,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 45633.95,
+      "seq": 16,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 45633.98,
+      "seq": 17,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 42,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45735.34,
+      "seq": 18,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45735.43,
+      "seq": 19,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "'external_probe.external_call' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 45735.51,
+      "seq": 20,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45735.53,
+      "seq": 21,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45735.69,
+      "seq": 22,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45735.74,
+      "seq": 23,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45744.06,
+      "seq": 24,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 63,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45745.08,
+      "seq": 25,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 63,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45745.15,
+      "seq": 26,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45746.02,
+      "seq": 27,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45746.22,
+      "seq": 28,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45746.24,
+      "seq": 29,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45746.25,
+      "seq": 30,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45746.63,
+      "seq": 31,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45747.02,
+      "seq": 32,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "'external_probe.external_call' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 45747.04,
+      "seq": 33,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45747.13,
+      "seq": 34,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45748.1,
+      "seq": 35,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45749.26,
+      "seq": 36,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 45749.27,
+      "seq": 37,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "ms": 45749.65,
+      "seq": 38,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "contentChanges": [
+            {
+              "text": "import Source\n#print axioms external_probe.external_call\nexample : external_probe.external_call 1#u32 = .ok 2#u32 := by rfl\n-- proof document version 2 after external model replacement\n"
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 2
+          }
+        }
+      },
+      "ms": 51133.18,
+      "seq": 39,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 2
+        }
+      },
+      "ms": 51133.2,
+      "seq": 40,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      },
+      "ms": 51133.3,
+      "seq": 41,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.3,
+      "seq": 42,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 51133.31,
+      "seq": 43,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.31,
+      "seq": 44,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 51133.32,
+      "seq": 45,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.33,
+      "seq": 46,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 51133.33,
+      "seq": 47,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.33,
+      "seq": 48,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 51133.34,
+      "seq": 49,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.34,
+      "seq": 50,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 8,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      },
+      "ms": 51133.35,
+      "seq": 51,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 8,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.36,
+      "seq": 52,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 9,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 51133.37,
+      "seq": 53,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 9,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.37,
+      "seq": 54,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 51133.38,
+      "seq": 55,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.38,
+      "seq": 56,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 51133.38,
+      "seq": 57,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.39,
+      "seq": 58,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      },
+      "ms": 51133.4,
+      "seq": 59,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51133.4,
+      "seq": 60,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 2
+          }
+        }
+      },
+      "ms": 51345.69,
+      "seq": 61,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 2
+          }
+        }
+      },
+      "ms": 51345.71,
+      "seq": 62,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "'external_probe.external_call' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 2
+        }
+      },
+      "ms": 51345.76,
+      "seq": 63,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "ms": 51346.36,
+      "seq": 64,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 999,
+        "jsonrpc": "2.0",
+        "method": "shutdown",
+        "params": null
+      },
+      "ms": 51366.77,
+      "seq": 65,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 2
+        }
+      },
+      "ms": 51367.89,
+      "seq": 66,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 999,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51404.31,
+      "seq": 67,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      },
+      "ms": 51404.34,
+      "seq": 68,
+      "server": "old-incarnation"
+    },
+    {
+      "kind": "stop",
+      "ms": 51408.92,
+      "pid": 80307,
+      "rc": 0,
+      "seq": 69,
+      "server": "old-incarnation",
+      "stderr": ""
+    },
+    {
+      "kind": "start",
+      "ms": 51410.33,
+      "pid": 80315,
+      "seq": 70,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "initialize",
+        "params": {
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          },
+          "processId": 80037,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live"
+        }
+      },
+      "ms": 51410.46,
+      "seq": 71,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      },
+      "ms": 51436.34,
+      "seq": 72,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      },
+      "ms": 51436.36,
+      "seq": 73,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "languageId": "lean",
+            "text": "import Source\n#print axioms external_probe.external_call\nexample : external_probe.external_call 1#u32 = .ok 2#u32 := by rfl\n-- proof document version 2 after external model replacement\n",
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 51436.51,
+      "seq": 74,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 51436.52,
+      "seq": 75,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "ms": 51436.79,
+      "seq": 76,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51436.81,
+      "seq": 77,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 51437.04,
+      "seq": 78,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 51499.83,
+      "seq": 79,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 51674.87,
+      "seq": 80,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 51674.89,
+      "seq": 81,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 51994.84,
+      "seq": 82,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 51994.86,
+      "seq": 83,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 52525.05,
+      "seq": 84,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 52525.08,
+      "seq": 85,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 53055.12,
+      "seq": 86,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 53055.15,
+      "seq": 87,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 42,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53177.17,
+      "seq": 88,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53177.26,
+      "seq": 89,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "'external_probe.external_call' depends on axioms: [propext, Classical.choice, Quot.sound]",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 53177.74,
+      "seq": 90,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53177.83,
+      "seq": 91,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 63,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53182.41,
+      "seq": 92,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 63,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53182.51,
+      "seq": 93,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 63,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53183.39,
+      "seq": 94,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53184.12,
+      "seq": 95,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53184.14,
+      "seq": 96,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "'external_probe.external_call' depends on axioms: [propext, Classical.choice, Quot.sound]",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 63,
+                  "line": 2
+                }
+              },
+              "message": "Tactic `rfl` failed: The left-hand side\n  external_probe.external_call 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 external_probe.external_call 1#u32 = Aeneas.Std.Result.ok 2#u32",
+              "range": {
+                "end": {
+                  "character": 66,
+                  "line": 2
+                },
+                "start": {
+                  "character": 63,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 53188.73,
+      "seq": 97,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53189.15,
+      "seq": 98,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53189.17,
+      "seq": 99,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 53189.27,
+      "seq": 100,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "ms": 53189.36,
+      "seq": 101,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 999,
+        "jsonrpc": "2.0",
+        "method": "shutdown",
+        "params": null
+      },
+      "ms": 53209.87,
+      "seq": 102,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-external-model-without-codegen-change-2026-09-29/support/work/live/Check.lean",
+          "version": 1
+        }
+      },
+      "ms": 53209.98,
+      "seq": 103,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 999,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 53240.94,
+      "seq": 104,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      },
+      "ms": 53240.97,
+      "seq": 105,
+      "server": "new-incarnation"
+    },
+    {
+      "kind": "stop",
+      "ms": 53242.51,
+      "pid": 80315,
+      "rc": 0,
+      "seq": 106,
+      "server": "new-incarnation",
+      "stderr": ""
+    }
+  ],
+  "regenerated": {
+    "Funs.lean": {
+      "bytes": 1064,
+      "sha256": "a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97"
+    },
+    "FunsExternal_Template.lean": {
+      "bytes": 942,
+      "sha256": "774531ef77832505794da6abadc4484d2b2723d56fa4cf77e93b03e77003ff16"
+    },
+    "Source.lean": {
+      "bytes": 19,
+      "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+    },
+    "Types.lean": {
+      "bytes": 533,
+      "sha256": "33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca"
+    }
+  },
+  "schema": 1,
+  "source_sha256": "73bfb351b6b57bbfcf3e82e0995eec3148b992da2a84d580165c4654e8f202a1",
+  "tools": {
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "variants": {
+    "axiom": {
+      "check_rc": 1,
+      "check_stderr": "",
+      "check_stdout": "'external_probe.external_call' depends on axioms: [external_double]\nCheck.lean:3:63: error: Tactic `rfl` failed: The left-hand side\n  external_probe.external_call 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 external_probe.external_call 1#u32 = Aeneas.Std.Result.ok 2#u32\n",
+      "compile_diagnostics": [
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "compile_rcs": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "generated_sha256": {
+        "Source.lean": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0",
+        "Source/Funs.lean": "a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97",
+        "Source/Types.lean": "33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca"
+      },
+      "model_sha256": "774531ef77832505794da6abadc4484d2b2723d56fa4cf77e93b03e77003ff16",
+      "olean": {
+        "Source.olean": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974",
+        "Source/Funs.olean": "814b7c901cf8cb15b13fb5b04975d8fdb34ccecafb33770b65d555192e0d722a",
+        "Source/FunsExternal.olean": "616884660c0c121a3dced8f982c403a9c1a27223de7efc2048efb0ba6b6b3ea6",
+        "Source/Types.olean": "61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa"
+      }
+    },
+    "concrete": {
+      "check_rc": 0,
+      "check_stderr": "",
+      "check_stdout": "'external_probe.external_call' does not depend on any axioms\n",
+      "compile_diagnostics": [
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "compile_rcs": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "generated_sha256": {
+        "Source.lean": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0",
+        "Source/Funs.lean": "a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97",
+        "Source/Types.lean": "33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca"
+      },
+      "model_sha256": "053595263adf1b1792182934ac3838211084437305e0146dea8d4fce8d917cdf",
+      "olean": {
+        "Source.olean": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974",
+        "Source/Funs.olean": "92b07d6de5234dc0866878743dee2c05f4038d4ca2bb6f3c5452e704bc43415f",
+        "Source/FunsExternal.olean": "a448ed7101a05f61223b2f9724adbfe338aa4999b92e1714dcbd21cd27726367",
+        "Source/Types.olean": "61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa"
+      }
+    },
+    "missing": {
+      "check_rc": null,
+      "check_stderr": null,
+      "check_stdout": null,
+      "compile_diagnostics": [
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": "Source/FunsExternal.lean:22:0: error: unexpected end of input; expected 'lemma'\n"
+        }
+      ],
+      "compile_rcs": [
+        0,
+        1
+      ],
+      "generated_sha256": {
+        "Source.lean": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0",
+        "Source/Funs.lean": "a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97",
+        "Source/Types.lean": "33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca"
+      },
+      "model_sha256": "119d269f3bc6faabaf6d6b5b3fe1768c32d24ba16096bc3dea41b00473d384d5",
+      "olean": {
+        "Source/Types.olean": "61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa"
+      }
+    },
+    "wrong": {
+      "check_rc": 1,
+      "check_stderr": "",
+      "check_stdout": "'external_probe.external_call' depends on axioms: [propext, Classical.choice, Quot.sound]\nCheck.lean:3:63: error: Tactic `rfl` failed: The left-hand side\n  external_probe.external_call 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 external_probe.external_call 1#u32 = Aeneas.Std.Result.ok 2#u32\n",
+      "compile_diagnostics": [
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "compile_rcs": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "generated_sha256": {
+        "Source.lean": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0",
+        "Source/Funs.lean": "a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97",
+        "Source/Types.lean": "33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca"
+      },
+      "model_sha256": "129ecaa985b8c0844d16be569ed23897099e892c4f0cde5be58f042960d6c529",
+      "olean": {
+        "Source.olean": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974",
+        "Source/Funs.olean": "81d5f2b39661e776f27b27f149ce7cd18cd7606a58003b57f51fa59c6d2cf56c",
+        "Source/FunsExternal.olean": "2347190708211f8c201ee52955861ab7f28533f51768d19d0e2951467d7e1920",
+        "Source/Types.olean": "61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa"
+      }
+    }
+  }
+}

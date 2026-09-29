@@ -1,0 +1,2556 @@
+{
+  "toolchain": "leanprover/lean4:v4.30.0-rc2",
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "runs": [
+    {
+      "label": "cache-local-false-build",
+      "cwd": "cache-local-false/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 1.297,
+      "stdout": "\u2714 [3/5] Built Dep (174ms)\n\u2139 [4/5] Built Generated (173ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-local-false-env",
+      "cwd": "cache-local-false/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "printenv",
+        "LAKE_CACHE_DIR"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.32,
+      "stdout": "$WORK/cache-local-false/consumer/.lake/cache\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-local-true-build",
+      "cwd": "cache-local-true/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "true",
+      "exit": 0,
+      "seconds": 0.795,
+      "stdout": "\u2714 [3/5] Built Dep (170ms)\n\u2139 [4/5] Built Generated (179ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-local-true-env",
+      "cwd": "cache-local-true/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "printenv",
+        "LAKE_CACHE_DIR"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "true",
+      "exit": 0,
+      "seconds": 0.306,
+      "stdout": "$WORK/cache-local-true/consumer/.lake/cache\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-explicit-false-build",
+      "cwd": "cache-explicit-false/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache_dir": "$WORK/cache-explicit-false/explicit-cache",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.801,
+      "stdout": "\u2714 [3/5] Built Dep (172ms)\n\u2139 [4/5] Built Generated (175ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-explicit-false-env",
+      "cwd": "cache-explicit-false/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "printenv",
+        "LAKE_CACHE_DIR"
+      ],
+      "cache_dir": "$WORK/cache-explicit-false/explicit-cache",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.306,
+      "stdout": "$WORK/cache-explicit-false/explicit-cache\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-explicit-true-build",
+      "cwd": "cache-explicit-true/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache_dir": "$WORK/cache-explicit-true/explicit-cache",
+      "artifact_cache": "true",
+      "exit": 0,
+      "seconds": 0.784,
+      "stdout": "\u2714 [3/5] Built Dep (170ms)\n\u2139 [4/5] Built Generated (182ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-explicit-true-env",
+      "cwd": "cache-explicit-true/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "printenv",
+        "LAKE_CACHE_DIR"
+      ],
+      "cache_dir": "$WORK/cache-explicit-true/explicit-cache",
+      "artifact_cache": "true",
+      "exit": 0,
+      "seconds": 0.32,
+      "stdout": "$WORK/cache-explicit-true/explicit-cache\n",
+      "stderr": ""
+    },
+    {
+      "label": "source-change-no-build",
+      "cwd": "cache-explicit-true/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "$WORK/cache-explicit-true/explicit-cache",
+      "artifact_cache": "true",
+      "exit": 3,
+      "seconds": 0.42,
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stderr": ""
+    },
+    {
+      "label": "source-change-rebuild-dep",
+      "cwd": "cache-explicit-true/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "$WORK/cache-explicit-true/explicit-cache",
+      "artifact_cache": "true",
+      "exit": 0,
+      "seconds": 0.527,
+      "stdout": "\u2714 [2/3] Built Dep (213ms)\nBuild completed successfully (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "identity-initial-build",
+      "cwd": "identity/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.818,
+      "stdout": "\u2714 [3/5] Built Dep (199ms)\n\u2139 [4/5] Built Generated (200ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "identity-initial-setup",
+      "cwd": "identity/consumer",
+      "args": [
+        "--keep-toolchain",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.421,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/identity/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "identity-changed-no-build",
+      "cwd": "identity/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.489,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "identity-changed-setup",
+      "cwd": "identity/consumer",
+      "args": [
+        "--keep-toolchain",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.453,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/identity/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer_alt\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "family-intact-build",
+      "cwd": "family-intact/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.833,
+      "stdout": "\u2714 [3/5] Built Dep (188ms)\n\u2139 [4/5] Built Generated (183ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "family-intact-no-build",
+      "cwd": "family-intact/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.437,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "family-intact-setup",
+      "cwd": "family-intact/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.446,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/family-intact/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "family-intact-json",
+      "cwd": "family-intact/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.513,
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-olean-no-build",
+      "cwd": "missing-olean-no-build/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 3,
+      "seconds": 0.453,
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-olean-setup",
+      "cwd": "missing-olean-setup/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 3,
+      "seconds": 0.433,
+      "stdout": "",
+      "stderr": "\u2716 [3/4] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "label": "missing-olean-json",
+      "cwd": "missing-olean-json/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 1,
+      "seconds": 0.416,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/missing-olean-json/producer/.lake/build/lib/lean\\n$WORK/missing-olean-json/consumer/.lake/build/lib/lean\\n$LEAN_LIB/lean\\n$LEAN_LIB/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-ilean-no-build",
+      "cwd": "missing-ilean-no-build/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 3,
+      "seconds": 0.429,
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-ilean-setup",
+      "cwd": "missing-ilean-setup/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 3,
+      "seconds": 0.436,
+      "stdout": "",
+      "stderr": "\u2716 [3/4] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "label": "missing-ilean-json",
+      "cwd": "missing-ilean-json/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.501,
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-trace-no-build",
+      "cwd": "missing-trace-no-build/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 3,
+      "seconds": 0.42,
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-trace-setup",
+      "cwd": "missing-trace-setup/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 3,
+      "seconds": 0.451,
+      "stdout": "",
+      "stderr": "\u2716 [3/4] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "label": "missing-trace-json",
+      "cwd": "missing-trace-json/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.526,
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-c-no-build",
+      "cwd": "missing-c-no-build/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 3,
+      "seconds": 0.423,
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-c-setup",
+      "cwd": "missing-c-setup/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 3,
+      "seconds": 0.426,
+      "stdout": "",
+      "stderr": "\u2716 [3/4] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "label": "missing-c-json",
+      "cwd": "missing-c-json/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.514,
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-setup-json-no-build",
+      "cwd": "missing-setup-json-no-build/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.423,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-setup-json-setup",
+      "cwd": "missing-setup-json-setup/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.425,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/missing-setup-json-setup/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-setup-json-json",
+      "cwd": "missing-setup-json-json/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.556,
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "alias-prime",
+      "cwd": "alias/consumer-direct",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.837,
+      "stdout": "\u2714 [3/5] Built Dep (190ms)\n\u2139 [4/5] Built Generated (191ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "alias-direct-setup",
+      "cwd": "alias/consumer-direct",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.466,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/alias/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "alias-link-setup",
+      "cwd": "alias/consumer-alias",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache_dir": "",
+      "artifact_cache": "false",
+      "exit": 0,
+      "seconds": 0.478,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/alias/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    }
+  ],
+  "observations": {
+    "cache-local-false": {
+      "resolved_cache": "cache-local-false/consumer/.lake/cache",
+      "cache_inventory": {},
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664057465474833
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664057471855256
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664057298965143
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664057464534410
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664057471665213
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664057464249324
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664057471552878
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "1c0a4e9adc44dffe64f3df19a63dbf29f53aa03b7ab54aecebf07065076f3f84",
+          "bytes": 2345,
+          "mtime_ns": 1790664057472353093
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664057294317025
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664057267287116
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664056459917182
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664056459830056
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664056459993557
+        }
+      },
+      "consumer_inventory": {
+        ".lake/build/ir/Generated.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664057639325537
+        },
+        ".lake/build/ir/Generated.c.hash": {
+          "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+          "bytes": 16,
+          "mtime_ns": 1790664057644800203
+        },
+        ".lake/build/ir/Generated.setup.json": {
+          "sha256": "23548f456eca7f6eeee00b50074d563c4a006bce33bcbd090b9836bbb31f584a",
+          "bytes": 312,
+          "mtime_ns": 1790664057472940639
+        },
+        ".lake/build/lib/lean/Generated.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664057639232911
+        },
+        ".lake/build/lib/lean/Generated.ilean.hash": {
+          "sha256": "41cb4c0f034876ad08dfe89a2c99034ef717b2d7492ba35e639fc40f32a72e24",
+          "bytes": 16,
+          "mtime_ns": 1790664057644698994
+        },
+        ".lake/build/lib/lean/Generated.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664057638922159
+        },
+        ".lake/build/lib/lean/Generated.olean.hash": {
+          "sha256": "3e3d9c0764a1c2e5f77d852ade6c06193add07c840e850ce06d30c71d1bee824",
+          "bytes": 16,
+          "mtime_ns": 1790664057644585951
+        },
+        ".lake/build/lib/lean/Generated.trace": {
+          "sha256": "8820aa0ae37b2f94b76c482b3027229526c28b78f3c8319d18cbfd064f44bc5b",
+          "bytes": 2575,
+          "mtime_ns": 1790664057645013204
+        },
+        ".lake/config/[anonymous]/lakefile.olean": {
+          "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+          "bytes": 108432,
+          "mtime_ns": 1790664057264346803
+        },
+        ".lake/config/[anonymous]/lakefile.olean.trace": {
+          "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+          "bytes": 184,
+          "mtime_ns": 1790664056489890987
+        },
+        "Generated.lean": {
+          "sha256": "8228af6c6d221d1db64490274af0b709db781e40728a8d37977098b514ac2528",
+          "bytes": 70,
+          "mtime_ns": 1790664056460215517
+        },
+        "lake-manifest.json": {
+          "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+          "bytes": 372,
+          "mtime_ns": 1790664056460418352
+        },
+        "lakefile.lean": {
+          "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+          "bytes": 123,
+          "mtime_ns": 1790664056460126058
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664056460323351
+        }
+      }
+    },
+    "cache-local-true": {
+      "resolved_cache": "cache-local-true/consumer/.lake/cache",
+      "cache_inventory": {
+        "artifacts/2d1894c85e554f9e.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664058766640465
+        },
+        "artifacts/3df289e2daffc40d.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664058586573132
+        },
+        "artifacts/4ab07c203eb6f06e.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664058586118129
+        },
+        "artifacts/7cbe5b9f9b2f9384.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664058767109052
+        },
+        "artifacts/b3b09ffafdee5adf.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664058767009885
+        },
+        "artifacts/d2264521cb1531dd.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664058586438965
+        },
+        "outputs/probe_consumer/4a0eb28c6d570dc3.json": {
+          "sha256": "aaae623c871b037eb80f9fd285d3ed9c673e068d73358162c3a3021e4b538dc5",
+          "bytes": 170,
+          "mtime_ns": 1790664058775016111
+        },
+        "outputs/probe_dep/bc2ee9095550ff31.json": {
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bytes": 170,
+          "mtime_ns": 1790664058594646317
+        }
+      },
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664058586573132
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664058594322690
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664058423103131
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664058586438965
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664058593903812
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664058586118129
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664058593497934
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "acab8a5d0d75761838b8efbf17eabcd608f8584f5d1c5d077c41ad6960ba110c",
+          "bytes": 2337,
+          "mtime_ns": 1790664058592757053
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664058421232617
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664058394357459
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664058081099516
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664058080990515
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664058081175433
+        }
+      },
+      "consumer_inventory": {
+        ".lake/build/ir/Generated.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664058767109052
+        },
+        ".lake/build/ir/Generated.c.hash": {
+          "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+          "bytes": 16,
+          "mtime_ns": 1790664058774871776
+        },
+        ".lake/build/ir/Generated.setup.json": {
+          "sha256": "0f7788b111ecd83e8660e0d1c0d861b07419ed999cc9d9e31345b9e5292c683b",
+          "bytes": 325,
+          "mtime_ns": 1790664058595154321
+        },
+        ".lake/build/lib/lean/Generated.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664058767009885
+        },
+        ".lake/build/lib/lean/Generated.ilean.hash": {
+          "sha256": "41cb4c0f034876ad08dfe89a2c99034ef717b2d7492ba35e639fc40f32a72e24",
+          "bytes": 16,
+          "mtime_ns": 1790664058774480523
+        },
+        ".lake/build/lib/lean/Generated.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664058766640465
+        },
+        ".lake/build/lib/lean/Generated.olean.hash": {
+          "sha256": "3e3d9c0764a1c2e5f77d852ade6c06193add07c840e850ce06d30c71d1bee824",
+          "bytes": 16,
+          "mtime_ns": 1790664058774098520
+        },
+        ".lake/build/lib/lean/Generated.trace": {
+          "sha256": "7d96afe45837a9fef3d97848e4586678f8a0fe78cf886265d51d245d3376c5ea",
+          "bytes": 2567,
+          "mtime_ns": 1790664058773624142
+        },
+        ".lake/cache/artifacts/2d1894c85e554f9e.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664058766640465
+        },
+        ".lake/cache/artifacts/3df289e2daffc40d.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664058586573132
+        },
+        ".lake/cache/artifacts/4ab07c203eb6f06e.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664058586118129
+        },
+        ".lake/cache/artifacts/7cbe5b9f9b2f9384.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664058767109052
+        },
+        ".lake/cache/artifacts/b3b09ffafdee5adf.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664058767009885
+        },
+        ".lake/cache/artifacts/d2264521cb1531dd.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664058586438965
+        },
+        ".lake/cache/outputs/probe_consumer/4a0eb28c6d570dc3.json": {
+          "sha256": "aaae623c871b037eb80f9fd285d3ed9c673e068d73358162c3a3021e4b538dc5",
+          "bytes": 170,
+          "mtime_ns": 1790664058775016111
+        },
+        ".lake/cache/outputs/probe_dep/bc2ee9095550ff31.json": {
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bytes": 170,
+          "mtime_ns": 1790664058594646317
+        },
+        ".lake/config/[anonymous]/lakefile.olean": {
+          "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+          "bytes": 108432,
+          "mtime_ns": 1790664058392752156
+        },
+        ".lake/config/[anonymous]/lakefile.olean.trace": {
+          "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+          "bytes": 184,
+          "mtime_ns": 1790664058110090564
+        },
+        "Generated.lean": {
+          "sha256": "8228af6c6d221d1db64490274af0b709db781e40728a8d37977098b514ac2528",
+          "bytes": 70,
+          "mtime_ns": 1790664058081362643
+        },
+        "lake-manifest.json": {
+          "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+          "bytes": 372,
+          "mtime_ns": 1790664058081553977
+        },
+        "lakefile.lean": {
+          "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+          "bytes": 123,
+          "mtime_ns": 1790664058081292142
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664058081434476
+        }
+      }
+    },
+    "cache-explicit-false": {
+      "resolved_cache": "cache-explicit-false/explicit-cache",
+      "cache_inventory": {},
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664059694749919
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664059700872339
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664059529500612
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664059694633793
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664059700759880
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664059694360874
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664059700644087
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "f85f4eb269f443b7f0bfb48faf974e5d7bdf2f151b1995be8a36aee2f162de36",
+          "bytes": 2369,
+          "mtime_ns": 1790664059701099841
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664059527993059
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664059501181236
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664059188149002
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664059188043334
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664059188224461
+        }
+      },
+      "consumer_inventory": {
+        ".lake/build/ir/Generated.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664059870215968
+        },
+        ".lake/build/ir/Generated.c.hash": {
+          "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+          "bytes": 16,
+          "mtime_ns": 1790664059876224054
+        },
+        ".lake/build/ir/Generated.setup.json": {
+          "sha256": "30acda50d9f9489ec16de703f7e161d29dda5b66cd1786e7f010aae65e4a4a33",
+          "bytes": 315,
+          "mtime_ns": 1790664059701568344
+        },
+        ".lake/build/lib/lean/Generated.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664059870119425
+        },
+        ".lake/build/lib/lean/Generated.ilean.hash": {
+          "sha256": "41cb4c0f034876ad08dfe89a2c99034ef717b2d7492ba35e639fc40f32a72e24",
+          "bytes": 16,
+          "mtime_ns": 1790664059876122636
+        },
+        ".lake/build/lib/lean/Generated.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664059869811340
+        },
+        ".lake/build/lib/lean/Generated.olean.hash": {
+          "sha256": "3e3d9c0764a1c2e5f77d852ade6c06193add07c840e850ce06d30c71d1bee824",
+          "bytes": 16,
+          "mtime_ns": 1790664059875994177
+        },
+        ".lake/build/lib/lean/Generated.trace": {
+          "sha256": "37f5dca5179b0929f575bb21de44d720dc1004112921740663afa7076855dbea",
+          "bytes": 2599,
+          "mtime_ns": 1790664059876436889
+        },
+        ".lake/config/[anonymous]/lakefile.olean": {
+          "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+          "bytes": 108432,
+          "mtime_ns": 1790664059499542307
+        },
+        ".lake/config/[anonymous]/lakefile.olean.trace": {
+          "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+          "bytes": 184,
+          "mtime_ns": 1790664059216944674
+        },
+        "Generated.lean": {
+          "sha256": "8228af6c6d221d1db64490274af0b709db781e40728a8d37977098b514ac2528",
+          "bytes": 70,
+          "mtime_ns": 1790664059188420462
+        },
+        "lake-manifest.json": {
+          "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+          "bytes": 372,
+          "mtime_ns": 1790664059188599922
+        },
+        "lakefile.lean": {
+          "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+          "bytes": 123,
+          "mtime_ns": 1790664059188344253
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664059188489088
+        }
+      }
+    },
+    "cache-explicit-true": {
+      "resolved_cache": "cache-explicit-true/explicit-cache",
+      "cache_inventory": {
+        "artifacts/2d1894c85e554f9e.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664060986050644
+        },
+        "artifacts/3df289e2daffc40d.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664060802734954
+        },
+        "artifacts/4ab07c203eb6f06e.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664060802319159
+        },
+        "artifacts/7cbe5b9f9b2f9384.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664060986528689
+        },
+        "artifacts/b3b09ffafdee5adf.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664060986424480
+        },
+        "artifacts/d2264521cb1531dd.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664060802605620
+        },
+        "outputs/probe_consumer/4a0eb28c6d570dc3.json": {
+          "sha256": "aaae623c871b037eb80f9fd285d3ed9c673e068d73358162c3a3021e4b538dc5",
+          "bytes": 170,
+          "mtime_ns": 1790664060994484998
+        },
+        "outputs/probe_dep/bc2ee9095550ff31.json": {
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bytes": 170,
+          "mtime_ns": 1790664060810855014
+        }
+      },
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664060802734954
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664060810639054
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664060639286869
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664060802605620
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664060809971007
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664060802319159
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664060809374836
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "9f2292a93a1a3d10b581b7c4caf4ece7840af4b11f3148452e6f0364f1c14bea",
+          "bytes": 2361,
+          "mtime_ns": 1790664060808864666
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664060637828108
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664060611107744
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664060299140559
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664060299027475
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664060299214727
+        }
+      },
+      "consumer_inventory": {
+        ".lake/build/ir/Generated.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664060986528689
+        },
+        ".lake/build/ir/Generated.c.hash": {
+          "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+          "bytes": 16,
+          "mtime_ns": 1790664060994284539
+        },
+        ".lake/build/ir/Generated.setup.json": {
+          "sha256": "48dd12ce6551cb43dd237057338086b002acd776792f9be440d2d081fc2a799d",
+          "bytes": 322,
+          "mtime_ns": 1790664060811206308
+        },
+        ".lake/build/lib/lean/Generated.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664060986424480
+        },
+        ".lake/build/lib/lean/Generated.ilean.hash": {
+          "sha256": "41cb4c0f034876ad08dfe89a2c99034ef717b2d7492ba35e639fc40f32a72e24",
+          "bytes": 16,
+          "mtime_ns": 1790664060993859202
+        },
+        ".lake/build/lib/lean/Generated.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664060986050644
+        },
+        ".lake/build/lib/lean/Generated.olean.hash": {
+          "sha256": "3e3d9c0764a1c2e5f77d852ade6c06193add07c840e850ce06d30c71d1bee824",
+          "bytes": 16,
+          "mtime_ns": 1790664060993455407
+        },
+        ".lake/build/lib/lean/Generated.trace": {
+          "sha256": "a0ea5c9358176da710c8792013ee1ffdb174cfd62c8e0aca24799bbf934c7705",
+          "bytes": 2591,
+          "mtime_ns": 1790664060992999571
+        },
+        ".lake/config/[anonymous]/lakefile.olean": {
+          "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+          "bytes": 108432,
+          "mtime_ns": 1790664060609513982
+        },
+        ".lake/config/[anonymous]/lakefile.olean.trace": {
+          "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+          "bytes": 184,
+          "mtime_ns": 1790664060327804647
+        },
+        "Generated.lean": {
+          "sha256": "8228af6c6d221d1db64490274af0b709db781e40728a8d37977098b514ac2528",
+          "bytes": 70,
+          "mtime_ns": 1790664060299417478
+        },
+        "lake-manifest.json": {
+          "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+          "bytes": 372,
+          "mtime_ns": 1790664060299607021
+        },
+        "lakefile.lean": {
+          "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+          "bytes": 123,
+          "mtime_ns": 1790664060299334061
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664060299493020
+        }
+      }
+    },
+    "source_change": {
+      "before_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "after_sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+      "same_mtime_ns": true,
+      "cache_before": {
+        "artifacts/2d1894c85e554f9e.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664060986050644
+        },
+        "artifacts/3df289e2daffc40d.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664060802734954
+        },
+        "artifacts/4ab07c203eb6f06e.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664060802319159
+        },
+        "artifacts/7cbe5b9f9b2f9384.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664060986528689
+        },
+        "artifacts/b3b09ffafdee5adf.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664060986424480
+        },
+        "artifacts/d2264521cb1531dd.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664060802605620
+        },
+        "outputs/probe_consumer/4a0eb28c6d570dc3.json": {
+          "sha256": "aaae623c871b037eb80f9fd285d3ed9c673e068d73358162c3a3021e4b538dc5",
+          "bytes": 170,
+          "mtime_ns": 1790664060994484998
+        },
+        "outputs/probe_dep/bc2ee9095550ff31.json": {
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bytes": 170,
+          "mtime_ns": 1790664060810855014
+        }
+      },
+      "cache_after": {
+        "artifacts/2d1894c85e554f9e.olean": {
+          "sha256": "1a2c757bbfbd67d5d4eb4b9e7cac6242fa770195369ba71851ef5c271944cdcb",
+          "bytes": 5256,
+          "mtime_ns": 1790664060986050644
+        },
+        "artifacts/3df289e2daffc40d.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664060802734954
+        },
+        "artifacts/4ab07c203eb6f06e.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664060802319159
+        },
+        "artifacts/7cbe5b9f9b2f9384.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "bytes": 1265,
+          "mtime_ns": 1790664060986528689
+        },
+        "artifacts/adb99f314e5eb438.c": {
+          "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+          "bytes": 1366,
+          "mtime_ns": 1790664062329868800
+        },
+        "artifacts/b3b09ffafdee5adf.ilean": {
+          "sha256": "ac3f0480a0168c98c09c46246871ad8c5bdb687346f382f4ee1539f03eacd298",
+          "bytes": 359,
+          "mtime_ns": 1790664060986424480
+        },
+        "artifacts/cb5016b11d418b60.olean": {
+          "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+          "bytes": 4520,
+          "mtime_ns": 1790664062329372921
+        },
+        "artifacts/d2264521cb1531dd.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664060802605620
+        },
+        "outputs/probe_consumer/4a0eb28c6d570dc3.json": {
+          "sha256": "aaae623c871b037eb80f9fd285d3ed9c673e068d73358162c3a3021e4b538dc5",
+          "bytes": 170,
+          "mtime_ns": 1790664060994484998
+        },
+        "outputs/probe_dep/9f80558e806f84cd.json": {
+          "sha256": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "bytes": 170,
+          "mtime_ns": 1790664062338773408
+        },
+        "outputs/probe_dep/bc2ee9095550ff31.json": {
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bytes": 170,
+          "mtime_ns": 1790664060810855014
+        }
+      }
+    },
+    "identity": {
+      "same_consumer_path": "identity/consumer",
+      "old_lakefile_sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+      "new_lakefile_sha256": "06673a1a6b85bb1ace2cdb812cb1bfc0e0a2f3508b7c4b9c25ec427c947b8009",
+      "old_config_inventory": {
+        "[anonymous]/lakefile.olean": {
+          "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+          "bytes": 108432,
+          "mtime_ns": 1790664062692927988
+        },
+        "[anonymous]/lakefile.olean.trace": {
+          "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+          "bytes": 184,
+          "mtime_ns": 1790664062388425192
+        }
+      },
+      "new_config_inventory": {
+        "[anonymous]/lakefile.olean": {
+          "sha256": "6647e5c18fa405cc29091f736e3e2d9361391453eedb450d7c70265e0e526b5b",
+          "bytes": 108440,
+          "mtime_ns": 1790664063968174927
+        },
+        "[anonymous]/lakefile.olean.lock": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mtime_ns": 1790664063628342329
+        },
+        "[anonymous]/lakefile.olean.trace": {
+          "sha256": "e191429fd6ae3ba82d7e7881f00e4ede843a6505d1fb031655d1cfa887a909f1",
+          "bytes": 184,
+          "mtime_ns": 1790664063628561164
+        }
+      },
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664062919077662
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664062926495550
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664062727434660
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664062918924910
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664062926387007
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664062918524741
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664062926278756
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "9bddfaf1e3916cd4a60c5a15849d2dc52cbcaec8c190a94d09e34c8ddf595516",
+          "bytes": 2273,
+          "mtime_ns": 1790664062926716218
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664062725910107
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664062695725925
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664062357437712
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664062357349629
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664062357523046
+        }
+      }
+    },
+    "missing-olean-no-build": {
+      "removed": ".lake/build/lib/lean/Dep.olean",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/build/lib/lean/Dep.trace.nobuild": {
+          "sha256": "6468b2b31da6df094e592257d8c73f36544b32c3e0694f5e1afd91d17b5b3598",
+          "bytes": 981,
+          "mtime_ns": 1790664067113501794
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-olean-setup": {
+      "removed": ".lake/build/lib/lean/Dep.olean",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/build/lib/lean/Dep.trace.nobuild": {
+          "sha256": "ac1337107adb7f209ac0c4d5612a5422221a1d6cc2c2e2e089382f57f3f2c3ba",
+          "bytes": 978,
+          "mtime_ns": 1790664067555691650
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-olean-json": {
+      "removed": ".lake/build/lib/lean/Dep.olean",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-ilean-no-build": {
+      "removed": ".lake/build/lib/lean/Dep.ilean",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/build/lib/lean/Dep.trace.nobuild": {
+          "sha256": "06425f9211e556af79294aecd45ed82b58aae570cccfe9923e18899dfe69c171",
+          "bytes": 981,
+          "mtime_ns": 1790664068420520719
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-ilean-setup": {
+      "removed": ".lake/build/lib/lean/Dep.ilean",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/build/lib/lean/Dep.trace.nobuild": {
+          "sha256": "271da41fa2280cb30815838677006a9fb48db9becf0b1fb4c8016ff07bd1dbe7",
+          "bytes": 978,
+          "mtime_ns": 1790664068865646264
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-ilean-json": {
+      "removed": ".lake/build/lib/lean/Dep.ilean",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-trace-no-build": {
+      "removed": ".lake/build/lib/lean/Dep.trace",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-trace-setup": {
+      "removed": ".lake/build/lib/lean/Dep.trace",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-trace-json": {
+      "removed": ".lake/build/lib/lean/Dep.trace",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-c-no-build": {
+      "removed": ".lake/build/ir/Dep.c",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/build/lib/lean/Dep.trace.nobuild": {
+          "sha256": "bcec76eb93d6c7282f9cd5c0b59acea1edca29a68f7543fe8f338b493b9468a4",
+          "bytes": 977,
+          "mtime_ns": 1790664071230915522
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-c-setup": {
+      "removed": ".lake/build/ir/Dep.c",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/build/lib/lean/Dep.trace.nobuild": {
+          "sha256": "9661a9e5fbe248afbb70909b1f4afe0d72c310def41c1cbb1fc1349d0859b63b",
+          "bytes": 974,
+          "mtime_ns": 1790664071664941652
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-c-json": {
+      "removed": ".lake/build/ir/Dep.c",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664064923785251
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-setup-json-no-build": {
+      "removed": ".lake/build/ir/Dep.setup.json",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-setup-json-setup": {
+      "removed": ".lake/build/ir/Dep.setup.json",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "missing-setup-json-json": {
+      "removed": ".lake/build/ir/Dep.setup.json",
+      "producer_inventory_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664065104833591
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664065111300348
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664065104712382
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664065111091221
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664065104399380
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664065110961470
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "78ad534cc0936d31dbc3a79feef8fbb36b110134bdbb0eca0bb830e1c8d4f9e4",
+          "bytes": 2313,
+          "mtime_ns": 1790664065111534058
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664064922204656
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664064892145934
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664064542396678
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664064542276094
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664064542478929
+        }
+      }
+    },
+    "alias": {
+      "alias_target": "$WORK/alias/producer",
+      "same_inode": true,
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "bytes": 1366,
+          "mtime_ns": 1790664074306755250
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "bytes": 16,
+          "mtime_ns": 1790664074313370590
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "mtime_ns": 1790664074124415400
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "bytes": 289,
+          "mtime_ns": 1790664074306612873
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "bytes": 16,
+          "mtime_ns": 1790664074313252631
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "bytes": 4616,
+          "mtime_ns": 1790664074306298204
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "bytes": 16,
+          "mtime_ns": 1790664074313062838
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "93d0211dc901af5936e7d176b5b85d6ab5e352f918f37675b2961e343e8ac59e",
+          "bytes": 2256,
+          "mtime_ns": 1790664074313621467
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "mtime_ns": 1790664074122801179
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "mtime_ns": 1790664074092786457
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "bytes": 24,
+          "mtime_ns": 1790664073740834935
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "mtime_ns": 1790664073740732893
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "mtime_ns": 1790664073740918436
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,757 @@
+{
+  "decisions": [
+    {
+      "authority": "Rust function semantics; generates Model.lean",
+      "surface": "RustSource.rs"
+    },
+    {
+      "authority": "Lean proof text; Rust-hosted view edits CAS into it",
+      "surface": "Proof.lean"
+    },
+    {
+      "authority": "generated projection, never independently authoritative",
+      "surface": "HostView.rs"
+    },
+    {
+      "authority": "generated derivative, regenerated from RustSource.rs",
+      "surface": "Model.lean"
+    }
+  ],
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "preflight": {
+    "df": {
+      "argv": [
+        "/bin/df",
+        "-P",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r41-explore/run4"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "Filesystem   512-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1  478724992 304922224 106462552    75%    /System/Volumes/Data\n"
+    },
+    "df_block_bytes": 512,
+    "free_percent": 55,
+    "memory_pressure": {
+      "argv": [
+        "/usr/bin/memory_pressure",
+        "-Q"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 55%\n"
+    }
+  },
+  "rustc_version": {
+    "argv": [
+      "/opt/homebrew/bin/rustc",
+      "--version"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "stdout": "rustc 1.98.1 (48a229cea 2026-09-01) (Homebrew)\n"
+  },
+  "steps": {
+    "derivative_regeneration": {
+      "batch": {
+        "compile_model": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "-o",
+            "Model.olean",
+            "Model.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "diagnostics": [],
+        "model_olean_sha256": "0e1b64ef7ecdf8e8dc74fbf13b56c26bb826848a1ae554acdfe5390af9069f04",
+        "model_source_sha256": "7d81f6be60378b57864632171f56fa74942d26a388b2955b708e74d9ce039be7",
+        "proof": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "proof_source_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0"
+      },
+      "map": {
+        "mappings": [
+          {
+            "proof_line_0": 0,
+            "proof_line_sha256": "5859c75dcf63de863550ac346404737e41d305a6c94e2c5ecc94a40847e48483",
+            "view_line_0": 4,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 1,
+            "proof_line_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+            "view_line_0": 5,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 2,
+            "proof_line_sha256": "8ec1b8b2b348f61e6fe588de674c38a2b2b9d5208a1e8ac36edbbccceb4405e6",
+            "view_line_0": 6,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 3,
+            "proof_line_sha256": "be00eb1706e1bf980eb613fe3c5cc3736ffb4d04ded9f7db5e57ded9c83dac6c",
+            "view_line_0": 7,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 4,
+            "proof_line_sha256": "81a71daf686901b60999c0110e421b05bf0757002b643edece3115d6f1e1bad2",
+            "view_line_0": 8,
+            "view_prefix_utf16": 4
+          }
+        ],
+        "proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+        "rust_sha256": "8ffbe3de6079b622c7e411c1cd6a1d82f3206a7c1d4ab5f462fa3324c68456ee",
+        "view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921"
+      },
+      "proof_unchanged_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+      "restored_model_sha256": "7d81f6be60378b57864632171f56fa74942d26a388b2955b708e74d9ce039be7",
+      "roundtrip_exact": true,
+      "tampered_model_sha256": "f3a5cff036485c7488b3f82f9b6edf9f6b885481c051180f871ddd8e5456ce04",
+      "view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921"
+    },
+    "direct_canonical_and_rejected_edits": {
+      "direct_proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+      "map": {
+        "mappings": [
+          {
+            "proof_line_0": 0,
+            "proof_line_sha256": "5859c75dcf63de863550ac346404737e41d305a6c94e2c5ecc94a40847e48483",
+            "view_line_0": 4,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 1,
+            "proof_line_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+            "view_line_0": 5,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 2,
+            "proof_line_sha256": "8ec1b8b2b348f61e6fe588de674c38a2b2b9d5208a1e8ac36edbbccceb4405e6",
+            "view_line_0": 6,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 3,
+            "proof_line_sha256": "be00eb1706e1bf980eb613fe3c5cc3736ffb4d04ded9f7db5e57ded9c83dac6c",
+            "view_line_0": 7,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 4,
+            "proof_line_sha256": "81a71daf686901b60999c0110e421b05bf0757002b643edece3115d6f1e1bad2",
+            "view_line_0": 8,
+            "view_prefix_utf16": 4
+          }
+        ],
+        "proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+        "rust_sha256": "8ffbe3de6079b622c7e411c1cd6a1d82f3206a7c1d4ab5f462fa3324c68456ee",
+        "view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921"
+      },
+      "rendered_view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921",
+      "roundtrip_exact": true,
+      "scaffold_result": {
+        "accepted": false,
+        "current_proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+        "reason": "generated or Rust scaffolding is read-only"
+      },
+      "stale_result": {
+        "accepted": false,
+        "current_proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+        "reason": "stale canonical proof hash"
+      }
+    },
+    "initial": {
+      "batch": {
+        "compile_model": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "-o",
+            "Model.olean",
+            "Model.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "diagnostics": [],
+        "model_olean_sha256": "0e1b64ef7ecdf8e8dc74fbf13b56c26bb826848a1ae554acdfe5390af9069f04",
+        "model_source_sha256": "7d81f6be60378b57864632171f56fa74942d26a388b2955b708e74d9ce039be7",
+        "proof": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "proof_source_sha256": "38a52f636d362805fe080a8417f8c8fe09eec78c9c8b4b6588a476939dfef86a"
+      },
+      "map": {
+        "mappings": [
+          {
+            "proof_line_0": 0,
+            "proof_line_sha256": "5859c75dcf63de863550ac346404737e41d305a6c94e2c5ecc94a40847e48483",
+            "view_line_0": 4,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 1,
+            "proof_line_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+            "view_line_0": 5,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 2,
+            "proof_line_sha256": "38d02dffc8be8f77629aa83b13bf36af875ed56a32b7d5671b10d474a3db201d",
+            "view_line_0": 6,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 3,
+            "proof_line_sha256": "be00eb1706e1bf980eb613fe3c5cc3736ffb4d04ded9f7db5e57ded9c83dac6c",
+            "view_line_0": 7,
+            "view_prefix_utf16": 4
+          },
+          {
+            "proof_line_0": 4,
+            "proof_line_sha256": "81a71daf686901b60999c0110e421b05bf0757002b643edece3115d6f1e1bad2",
+            "view_line_0": 8,
+            "view_prefix_utf16": 4
+          }
+        ],
+        "proof_sha256": "38a52f636d362805fe080a8417f8c8fe09eec78c9c8b4b6588a476939dfef86a",
+        "rust_sha256": "8ffbe3de6079b622c7e411c1cd6a1d82f3206a7c1d4ab5f462fa3324c68456ee",
+        "view_sha256": "4ffd3fce1d72ee3fdce246e3b8958817c2708c54a082f0b15f2b8ea7f0c937dc"
+      },
+      "proof_sha256": "38a52f636d362805fe080a8417f8c8fe09eec78c9c8b4b6588a476939dfef86a",
+      "roundtrip_exact": true,
+      "rust_compile": {
+        "argv": [
+          "/opt/homebrew/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--edition=2021",
+          "-o",
+          "hostview.rlib",
+          "HostView.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "view_sha256": "4ffd3fce1d72ee3fdce246e3b8958817c2708c54a082f0b15f2b8ea7f0c937dc"
+    },
+    "repair": {
+      "batch": {
+        "compile_model": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "-o",
+            "Model.olean",
+            "Model.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "diagnostics": [],
+        "model_olean_sha256": "0e1b64ef7ecdf8e8dc74fbf13b56c26bb826848a1ae554acdfe5390af9069f04",
+        "model_source_sha256": "7d81f6be60378b57864632171f56fa74942d26a388b2955b708e74d9ce039be7",
+        "proof": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "proof_source_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0"
+      },
+      "edit": {
+        "accepted": true,
+        "after_map": {
+          "mappings": [
+            {
+              "proof_line_0": 0,
+              "proof_line_sha256": "5859c75dcf63de863550ac346404737e41d305a6c94e2c5ecc94a40847e48483",
+              "view_line_0": 4,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 1,
+              "proof_line_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+              "view_line_0": 5,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 2,
+              "proof_line_sha256": "8ec1b8b2b348f61e6fe588de674c38a2b2b9d5208a1e8ac36edbbccceb4405e6",
+              "view_line_0": 6,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 3,
+              "proof_line_sha256": "be00eb1706e1bf980eb613fe3c5cc3736ffb4d04ded9f7db5e57ded9c83dac6c",
+              "view_line_0": 7,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 4,
+              "proof_line_sha256": "81a71daf686901b60999c0110e421b05bf0757002b643edece3115d6f1e1bad2",
+              "view_line_0": 8,
+              "view_prefix_utf16": 4
+            }
+          ],
+          "proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+          "rust_sha256": "8ffbe3de6079b622c7e411c1cd6a1d82f3206a7c1d4ab5f462fa3324c68456ee",
+          "view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921"
+        },
+        "after_proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+        "after_view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921",
+        "before_proof_sha256": "0f9dcdadf2941cdfea8efbc2dfb07fe054528a01a006a217b86a4b2b336af78b",
+        "old_text": "3",
+        "proof_byte_range": [
+          67,
+          68
+        ],
+        "proof_line_0": 3,
+        "proof_range_utf16": [
+          29,
+          30
+        ],
+        "replacement": "2",
+        "view_line_0": 7,
+        "view_range_utf16": [
+          33,
+          34
+        ]
+      },
+      "view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921"
+    },
+    "rust_model_changed": {
+      "attributed_diagnostics": [
+        {
+          "message": "Tactic `rfl` failed: The left-hand side\n  modelAdd 1\nis not definitionally equal to the right-hand side\n  2\n\n⊢ modelAdd 1 = 2",
+          "proof_line_0": 4,
+          "proof_position_raw": {
+            "column": 2,
+            "line": 5
+          },
+          "view_column_if_ascii": 6,
+          "view_line_0": 8
+        }
+      ],
+      "batch": {
+        "compile_model": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "-o",
+            "Model.olean",
+            "Model.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "Tactic `rfl` failed: The left-hand side\n  modelAdd 1\nis not definitionally equal to the right-hand side\n  2\n\n⊢ modelAdd 1 = 2",
+            "endPos": {
+              "column": 5,
+              "line": 5
+            },
+            "fileName": "Proof.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 2,
+              "line": 5
+            },
+            "severity": "error"
+          }
+        ],
+        "model_olean_sha256": "dc815811a2eb9e7083b8df76c0f0df0df1f7d4cfef4ce00da8724f37a1883b65",
+        "model_source_sha256": "fbaf2918d21c0542df0778ebe5704c1c0d8d951eb70d6fc4334436b6ec97495a",
+        "proof": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "exit": 1,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  modelAdd 1\\nis not definitionally equal to the right-hand side\\n  2\\n\\n⊢ modelAdd 1 = 2\",\"endPos\":{\"column\":5,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":5},\"severity\":\"error\"}\n"
+        },
+        "proof_source_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0"
+      },
+      "proof_unchanged_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+      "rust_compile": {
+        "argv": [
+          "/opt/homebrew/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--edition=2021",
+          "-o",
+          "hostview.rlib",
+          "HostView.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "rust_source_sha256": "a1a549603ca1db390ec991c829324250035b083a74c8f7ae39f668e7c908763c",
+      "view_sha256": "a0c8b86cb358e35bfc9d2dbb75d1b52e2fff8960d091de85189483cbb89ecb24"
+    },
+    "tactic_view_edit": {
+      "batch": {
+        "compile_model": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "-o",
+            "Model.olean",
+            "Model.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "diagnostics": [],
+        "model_olean_sha256": "0e1b64ef7ecdf8e8dc74fbf13b56c26bb826848a1ae554acdfe5390af9069f04",
+        "model_source_sha256": "7d81f6be60378b57864632171f56fa74942d26a388b2955b708e74d9ce039be7",
+        "proof": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "proof_source_sha256": "28297317adf47e3a1fda9210816c63762d3caed3f3d20f746f568576f14f5305"
+      },
+      "edit": {
+        "accepted": true,
+        "after_map": {
+          "mappings": [
+            {
+              "proof_line_0": 0,
+              "proof_line_sha256": "5859c75dcf63de863550ac346404737e41d305a6c94e2c5ecc94a40847e48483",
+              "view_line_0": 4,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 1,
+              "proof_line_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+              "view_line_0": 5,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 2,
+              "proof_line_sha256": "8ec1b8b2b348f61e6fe588de674c38a2b2b9d5208a1e8ac36edbbccceb4405e6",
+              "view_line_0": 6,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 3,
+              "proof_line_sha256": "be00eb1706e1bf980eb613fe3c5cc3736ffb4d04ded9f7db5e57ded9c83dac6c",
+              "view_line_0": 7,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 4,
+              "proof_line_sha256": "56737eada4662205bdb2cc6f5b5a6f89ee194d3733e5b3380841449f8c425819",
+              "view_line_0": 8,
+              "view_prefix_utf16": 4
+            }
+          ],
+          "proof_sha256": "28297317adf47e3a1fda9210816c63762d3caed3f3d20f746f568576f14f5305",
+          "rust_sha256": "8ffbe3de6079b622c7e411c1cd6a1d82f3206a7c1d4ab5f462fa3324c68456ee",
+          "view_sha256": "a9c968be4aac213ebc76b4290caf29bfc9dc53c23836780a286c0079eda124c3"
+        },
+        "after_proof_sha256": "28297317adf47e3a1fda9210816c63762d3caed3f3d20f746f568576f14f5305",
+        "after_view_sha256": "a9c968be4aac213ebc76b4290caf29bfc9dc53c23836780a286c0079eda124c3",
+        "before_proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+        "old_text": "rfl",
+        "proof_byte_range": [
+          77,
+          80
+        ],
+        "proof_line_0": 4,
+        "proof_range_utf16": [
+          2,
+          5
+        ],
+        "replacement": "decide",
+        "view_line_0": 8,
+        "view_range_utf16": [
+          6,
+          9
+        ]
+      },
+      "rust_compile": {
+        "argv": [
+          "/opt/homebrew/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--edition=2021",
+          "-o",
+          "hostview.rlib",
+          "HostView.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    "unicode_view_edit": {
+      "batch": {
+        "compile_model": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "-o",
+            "Model.olean",
+            "Model.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "diagnostics": [],
+        "model_olean_sha256": "0e1b64ef7ecdf8e8dc74fbf13b56c26bb826848a1ae554acdfe5390af9069f04",
+        "model_source_sha256": "7d81f6be60378b57864632171f56fa74942d26a388b2955b708e74d9ce039be7",
+        "proof": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "proof_source_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0"
+      },
+      "edit": {
+        "accepted": true,
+        "after_map": {
+          "mappings": [
+            {
+              "proof_line_0": 0,
+              "proof_line_sha256": "5859c75dcf63de863550ac346404737e41d305a6c94e2c5ecc94a40847e48483",
+              "view_line_0": 4,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 1,
+              "proof_line_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+              "view_line_0": 5,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 2,
+              "proof_line_sha256": "8ec1b8b2b348f61e6fe588de674c38a2b2b9d5208a1e8ac36edbbccceb4405e6",
+              "view_line_0": 6,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 3,
+              "proof_line_sha256": "be00eb1706e1bf980eb613fe3c5cc3736ffb4d04ded9f7db5e57ded9c83dac6c",
+              "view_line_0": 7,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 4,
+              "proof_line_sha256": "81a71daf686901b60999c0110e421b05bf0757002b643edece3115d6f1e1bad2",
+              "view_line_0": 8,
+              "view_prefix_utf16": 4
+            }
+          ],
+          "proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+          "rust_sha256": "8ffbe3de6079b622c7e411c1cd6a1d82f3206a7c1d4ab5f462fa3324c68456ee",
+          "view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921"
+        },
+        "after_proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+        "after_view_sha256": "0040b6c8e43e714451e76b7e8fa0c0530c91eadd67f99f0b7df3f24e217d8921",
+        "before_proof_sha256": "38a52f636d362805fe080a8417f8c8fe09eec78c9c8b4b6588a476939dfef86a",
+        "old_text": "β",
+        "proof_byte_range": [
+          35,
+          37
+        ],
+        "proof_line_0": 2,
+        "proof_range_utf16": [
+          19,
+          20
+        ],
+        "replacement": "λ",
+        "view_line_0": 6,
+        "view_range_utf16": [
+          23,
+          24
+        ]
+      },
+      "roundtrip_exact": true,
+      "rust_compile": {
+        "argv": [
+          "/opt/homebrew/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--edition=2021",
+          "-o",
+          "hostview.rlib",
+          "HostView.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    "wrong_proof": {
+      "attributed_diagnostics": [
+        {
+          "message": "Tactic `rfl` failed: The left-hand side\n  modelAdd 1\nis not definitionally equal to the right-hand side\n  3\n\n⊢ modelAdd 1 = 3",
+          "proof_line_0": 4,
+          "proof_position_raw": {
+            "column": 2,
+            "line": 5
+          },
+          "view_column_if_ascii": 6,
+          "view_line_0": 8
+        }
+      ],
+      "batch": {
+        "compile_model": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "-o",
+            "Model.olean",
+            "Model.lean"
+          ],
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "Tactic `rfl` failed: The left-hand side\n  modelAdd 1\nis not definitionally equal to the right-hand side\n  3\n\n⊢ modelAdd 1 = 3",
+            "endPos": {
+              "column": 5,
+              "line": 5
+            },
+            "fileName": "Proof.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 2,
+              "line": 5
+            },
+            "severity": "error"
+          }
+        ],
+        "model_olean_sha256": "0e1b64ef7ecdf8e8dc74fbf13b56c26bb826848a1ae554acdfe5390af9069f04",
+        "model_source_sha256": "7d81f6be60378b57864632171f56fa74942d26a388b2955b708e74d9ce039be7",
+        "proof": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "exit": 1,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  modelAdd 1\\nis not definitionally equal to the right-hand side\\n  3\\n\\n⊢ modelAdd 1 = 3\",\"endPos\":{\"column\":5,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":5},\"severity\":\"error\"}\n"
+        },
+        "proof_source_sha256": "0f9dcdadf2941cdfea8efbc2dfb07fe054528a01a006a217b86a4b2b336af78b"
+      },
+      "edit": {
+        "accepted": true,
+        "after_map": {
+          "mappings": [
+            {
+              "proof_line_0": 0,
+              "proof_line_sha256": "5859c75dcf63de863550ac346404737e41d305a6c94e2c5ecc94a40847e48483",
+              "view_line_0": 4,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 1,
+              "proof_line_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+              "view_line_0": 5,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 2,
+              "proof_line_sha256": "8ec1b8b2b348f61e6fe588de674c38a2b2b9d5208a1e8ac36edbbccceb4405e6",
+              "view_line_0": 6,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 3,
+              "proof_line_sha256": "d1a5ee606cf5f49452c57683dda06b574bf94a7e08f8116ccb5be451f2e14af0",
+              "view_line_0": 7,
+              "view_prefix_utf16": 4
+            },
+            {
+              "proof_line_0": 4,
+              "proof_line_sha256": "81a71daf686901b60999c0110e421b05bf0757002b643edece3115d6f1e1bad2",
+              "view_line_0": 8,
+              "view_prefix_utf16": 4
+            }
+          ],
+          "proof_sha256": "0f9dcdadf2941cdfea8efbc2dfb07fe054528a01a006a217b86a4b2b336af78b",
+          "rust_sha256": "8ffbe3de6079b622c7e411c1cd6a1d82f3206a7c1d4ab5f462fa3324c68456ee",
+          "view_sha256": "b4ec02293edb711038e0395bd37674003f827efbf4c88df03c80760f3c0029ab"
+        },
+        "after_proof_sha256": "0f9dcdadf2941cdfea8efbc2dfb07fe054528a01a006a217b86a4b2b336af78b",
+        "after_view_sha256": "b4ec02293edb711038e0395bd37674003f827efbf4c88df03c80760f3c0029ab",
+        "before_proof_sha256": "ee3449eff1a1c5f2eb1fcdee44e5e762954c832a19bba7a89aec6380474873a0",
+        "old_text": "2",
+        "proof_byte_range": [
+          67,
+          68
+        ],
+        "proof_line_0": 3,
+        "proof_range_utf16": [
+          29,
+          30
+        ],
+        "replacement": "3",
+        "view_line_0": 7,
+        "view_range_utf16": [
+          33,
+          34
+        ]
+      },
+      "view_sha256": "b4ec02293edb711038e0395bd37674003f827efbf4c88df03c80760f3c0029ab"
+    }
+  }
+}

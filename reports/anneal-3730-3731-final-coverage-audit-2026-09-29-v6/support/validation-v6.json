@@ -1,0 +1,50 @@
+{
+  "snapshot_utc": "2026-09-29T10:57:07Z",
+  "issue_3730_state": "closed",
+  "issue_3731_state": "open",
+  "issue_sha256": {
+    "3730_body": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+    "3730_comment": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+    "3731_body": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+    "3731_comment": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+  },
+  "investigation_rows": 159,
+  "investigation_statuses": {
+    "partial": 147,
+    "not-run": 7,
+    "complete": 2,
+    "conditional": 3
+  },
+  "crosswalk_rows": 174,
+  "crosswalk_statuses": {
+    "partial": 143,
+    "complete": 4,
+    "not-run": 23,
+    "conditional": 4
+  },
+  "complete_investigations": [
+    "I046",
+    "I049"
+  ],
+  "complete_suggestions": [
+    "C03",
+    "C04",
+    "C13",
+    "N11"
+  ],
+  "all_report_packages": 68,
+  "prior_accounted_packages": 65,
+  "new_package_count": 3,
+  "new_packages": [
+    "anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29",
+    "anneal-3730-lake-dynamic-config-identity-2026-09-29",
+    "anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29"
+  ],
+  "new_inspected_file_count": 126,
+  "new_inspected_bytes": 591294,
+  "source_v5_investigation_sha256": "b60623c59c141df9b45e6452064ca8d24c7c863894886bcb937f65e2fd0ca0f6",
+  "source_v5_crosswalk_sha256": "e9e90b8162bb990bd1246e77d8476cb275a687ec629fe37f51cf0e6ee874af07",
+  "r18_r20_completed": 3,
+  "remaining_locally_executable_suites": 2,
+  "gate_groups": 7
+}

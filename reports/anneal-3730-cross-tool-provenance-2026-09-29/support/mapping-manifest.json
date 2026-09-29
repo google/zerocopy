@@ -1,0 +1,488 @@
+{
+  "A_to_deleted": {
+    "deleted_generated_inventory": {
+      "Funs.lean": {
+        "bytes": 930,
+        "sha256": "fcff9343d255c5e4bf6b9b1c5e775345cbcd905c8b2ed33a93b52d06a163b930"
+      },
+      "Snapshot.lean": {
+        "bytes": 21,
+        "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+      },
+      "Types.lean": {
+        "bytes": 533,
+        "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+      }
+    },
+    "new_llbc": {
+      "files": [
+        {
+          "contents_sha256": "7b960853ae7c38165e73d617ee038d6ba68d69f1ad04e534a9acd6c256681ef2",
+          "id": 0,
+          "name": {
+            "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-deleted.rs"
+          }
+        },
+        {
+          "contents_sha256": null,
+          "id": 1,
+          "name": {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          }
+        },
+        {
+          "contents_sha256": null,
+          "id": 2,
+          "name": {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          }
+        },
+        {
+          "contents_sha256": null,
+          "id": 3,
+          "name": {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "snapshot_probe::step",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          },
+          "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}"
+        }
+      ],
+      "has_errors": false,
+      "sha256": "295426232650a648f5bacac1014dded1aef11bed64b9e9470ba83459a76c62a7"
+    },
+    "old_llbc": {
+      "files": [
+        {
+          "contents_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc",
+          "id": 0,
+          "name": {
+            "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-A.rs"
+          }
+        },
+        {
+          "contents_sha256": null,
+          "id": 1,
+          "name": {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          }
+        },
+        {
+          "contents_sha256": null,
+          "id": 2,
+          "name": {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          }
+        },
+        {
+          "contents_sha256": null,
+          "id": 3,
+          "name": {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "snapshot_probe::step",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          },
+          "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}"
+        },
+        {
+          "id": 1,
+          "name": "snapshot_probe::select",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 8
+            },
+            "end": {
+              "col": 1,
+              "line": 10
+            },
+            "file_id": 0
+          },
+          "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}"
+        }
+      ],
+      "has_errors": false,
+      "sha256": "c0f36fd68ad9c6fa2796e1633089d8cef57db9214898bec28f3ddff765bfad00"
+    },
+    "removed_llbc_names": [
+      "snapshot_probe::select"
+    ]
+  },
+  "aeneas_unsupported": {
+    "aeneas_exit": 1,
+    "charon_llbc": {
+      "files": [
+        {
+          "contents_sha256": "0539e02f5f6f6a7adb1d1af5b21d47be8f78556a89a87f5819ccd5623cda66f8",
+          "id": 0,
+          "name": {
+            "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-unsupported.rs"
+          }
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "snapshot_probe::read_raw",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 3
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          },
+          "source_text": "pub unsafe fn read_raw(ptr: *const u32) -> u32 {\n    // This is deliberately unsupported by the selected Aeneas path.\n    *ptr\n}"
+        }
+      ],
+      "has_errors": false,
+      "sha256": "e538e0854d6ca469bead4b79fd1b9e53817325ae4384a6c8bef665647b9af5db"
+    },
+    "contains_sorry": true,
+    "generated_funs_sha256": "b8c579b5721ec5fa31f5d2159a1fe2adc7e9b311624798ba85c8cb2c88a6b2c3"
+  },
+  "candidate_edges": [
+    {
+      "candidate_lean_def_lines": [
+        21
+      ],
+      "candidate_origin_comment_lines": [
+        18
+      ],
+      "case": "A",
+      "edge_kind": "lexical printed-name/source-comment match; not compiler authenticated",
+      "lean_path": "A/lean/Funs.lean",
+      "llbc_def_id": 0,
+      "llbc_source_span": {
+        "beg": {
+          "col": 0,
+          "line": 4
+        },
+        "end": {
+          "col": 1,
+          "line": 6
+        },
+        "file_id": 0
+      },
+      "rust_item": "snapshot_probe::step"
+    },
+    {
+      "candidate_lean_def_lines": [
+        27
+      ],
+      "candidate_origin_comment_lines": [
+        24
+      ],
+      "case": "A",
+      "edge_kind": "lexical printed-name/source-comment match; not compiler authenticated",
+      "lean_path": "A/lean/Funs.lean",
+      "llbc_def_id": 1,
+      "llbc_source_span": {
+        "beg": {
+          "col": 0,
+          "line": 8
+        },
+        "end": {
+          "col": 1,
+          "line": 10
+        },
+        "file_id": 0
+      },
+      "rust_item": "snapshot_probe::select"
+    },
+    {
+      "candidate_lean_def_lines": [
+        21
+      ],
+      "candidate_origin_comment_lines": [
+        18
+      ],
+      "case": "deleted",
+      "edge_kind": "lexical printed-name/source-comment match; not compiler authenticated",
+      "lean_path": "deleted/lean/Funs.lean",
+      "llbc_def_id": 0,
+      "llbc_source_span": {
+        "beg": {
+          "col": 0,
+          "line": 4
+        },
+        "end": {
+          "col": 1,
+          "line": 6
+        },
+        "file_id": 0
+      },
+      "rust_item": "snapshot_probe::step"
+    },
+    {
+      "candidate_lean_def_lines": [
+        21
+      ],
+      "candidate_origin_comment_lines": [
+        18
+      ],
+      "case": "unsupported",
+      "edge_kind": "lexical printed-name/source-comment match; not compiler authenticated",
+      "lean_path": "unsupported/lean/Funs.lean",
+      "llbc_def_id": 0,
+      "llbc_source_span": {
+        "beg": {
+          "col": 0,
+          "line": 3
+        },
+        "end": {
+          "col": 1,
+          "line": 6
+        },
+        "file_id": 0
+      },
+      "rust_item": "snapshot_probe::read_raw"
+    }
+  ],
+  "charon_coroutine": {
+    "charon_exit": 101,
+    "charon_stderr": "warning: Coroutine types are not supported yet\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/charon-coroutine.rs:3:1\n  |\n3 | / pub async fn value() -> u32 {\n4 | |     7\n5 | | }\n  | |_^\n\n\nthread 'rustc' (27077118) panicked at src/errors.rs:261:13:\nCoroutine types are not supported yet\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nwarning: Thread panicked when extracting item `snapshot_probe::value`.\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/charon-coroutine.rs:3:1\n  |\n3 | pub async fn value() -> u32 {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (27077118) panicked at src/errors.rs:261:13:\nThread panicked when extracting item `snapshot_probe::value`.\nERROR Compilation panicked\n",
+    "rustc_exit": 0
+  },
+  "coordinate_observations": {
+    "lean_batch": {
+      "column_basis_observed": "zero-based Unicode scalar offset in this fixture",
+      "line_basis": "one-based",
+      "raw_position": {
+        "column": 10,
+        "line": 4
+      }
+    },
+    "lean_lsp": {
+      "character_basis_observed": "UTF-16 code units in this fixture",
+      "line_basis": "zero-based",
+      "raw_start": {
+        "character": 11,
+        "line": 3
+      }
+    },
+    "proof_rfl_prefix": {
+      "unicode_scalars": 10,
+      "utf16_code_units": 11,
+      "utf8_bytes": 13
+    },
+    "rustc_json": {
+      "absolute_byte_offset": 67,
+      "column_basis_observed": "one-based Unicode scalar in this fixture",
+      "column_start": 44,
+      "line_basis": "one-based",
+      "marker_scalar_index_zero_based": 43
+    }
+  },
+  "edge_authentication": "Only LLBC internal item/file/span references are serialized Charon data. Rust-to-Lean declaration candidates below are lexical matches, not compiler-authenticated mappings.",
+  "first_failure_stage": {
+    "A": null,
+    "charon-coroutine": "charon",
+    "deleted": null,
+    "proof-error-from-A": "lean",
+    "rustc-error": "rustc",
+    "unsupported": "aeneas"
+  },
+  "lean_error": {
+    "batch_json": [
+      {
+        "caption": "",
+        "data": "Tactic `rfl` failed: The left-hand side\n  1\nis not definitionally equal to the right-hand side\n  2\n\n⊢ 1 = 2",
+        "endPos": {
+          "column": 13,
+          "line": 4
+        },
+        "fileName": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+        "isSilent": false,
+        "keepFullRange": false,
+        "kind": "[anonymous]",
+        "pos": {
+          "column": 10,
+          "line": 4
+        },
+        "severity": "error"
+      }
+    ],
+    "lsp_publish_diagnostics": [
+      {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+          "version": 1
+        }
+      },
+      {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+          "version": 1
+        }
+      },
+      {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 14,
+                  "line": 3
+                },
+                "start": {
+                  "character": 11,
+                  "line": 3
+                }
+              },
+              "message": "Tactic `rfl` failed: The left-hand side\n  1\nis not definitionally equal to the right-hand side\n  2\n\n⊢ 1 = 2",
+              "range": {
+                "end": {
+                  "character": 14,
+                  "line": 3
+                },
+                "start": {
+                  "character": 11,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+          "version": 1
+        }
+      },
+      {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+          "version": 1
+        }
+      }
+    ],
+    "lsp_settled": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "proof_sha256": "bfdad78c368e8aba840a08b5ad69a49ece8683e644a1b4ebab6b4f07f6fddb64"
+  },
+  "rustc_error": {
+    "source_sha256": "4e8272f25524a7800585bceaae51e1d49224c344d11a10c091d243c78bc2d440",
+    "structured_diagnostics": [
+      {
+        "$message_type": "diagnostic",
+        "children": [],
+        "code": {
+          "code": "E0308",
+          "explanation": "Expected type did not match the received type.\n\nErroneous code examples:\n\n```compile_fail,E0308\nfn plus_one(x: i32) -> i32 {\n    x + 1\n}\n\nplus_one(\"Not a number\");\n//       ^^^^^^^^^^^^^^ expected `i32`, found `&str`\n\nif \"Not a bool\" {\n// ^^^^^^^^^^^^ expected `bool`, found `&str`\n}\n\nlet x: f32 = \"Not a float\";\n//     ---   ^^^^^^^^^^^^^ expected `f32`, found `&str`\n//     |\n//     expected due to this\n```\n\nThis error occurs when an expression was used in a place where the compiler\nexpected an expression of a different type. It can occur in several cases, the\nmost common being when calling a function and passing an argument which has a\ndifferent type than the matching type in the function declaration.\n"
+        },
+        "level": "error",
+        "message": "mismatched types",
+        "rendered": "error[E0308]: mismatched types\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs:2:44\n  |\n2 | pub fn broken() -> u32 { let marker = \"🧪\"; marker }\n  |                    ---                      ^^^^^^ expected `u32`, found `&str`\n  |                    |\n  |                    expected `u32` because of return type\n\n",
+        "spans": [
+          {
+            "byte_end": 73,
+            "byte_start": 67,
+            "column_end": 50,
+            "column_start": 44,
+            "expansion": null,
+            "file_name": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs",
+            "is_primary": true,
+            "label": "expected `u32`, found `&str`",
+            "line_end": 2,
+            "line_start": 2,
+            "suggested_replacement": null,
+            "suggestion_applicability": null,
+            "text": [
+              {
+                "highlight_end": 50,
+                "highlight_start": 44,
+                "text": "pub fn broken() -> u32 { let marker = \"🧪\"; marker }"
+              }
+            ]
+          },
+          {
+            "byte_end": 43,
+            "byte_start": 40,
+            "column_end": 23,
+            "column_start": 20,
+            "expansion": null,
+            "file_name": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs",
+            "is_primary": false,
+            "label": "expected `u32` because of return type",
+            "line_end": 2,
+            "line_start": 2,
+            "suggested_replacement": null,
+            "suggestion_applicability": null,
+            "text": [
+              {
+                "highlight_end": 23,
+                "highlight_start": 20,
+                "text": "pub fn broken() -> u32 { let marker = \"🧪\"; marker }"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "$message_type": "diagnostic",
+        "children": [],
+        "code": null,
+        "level": "error",
+        "message": "aborting due to 1 previous error",
+        "rendered": "error: aborting due to 1 previous error\n\n",
+        "spans": []
+      },
+      {
+        "$message_type": "diagnostic",
+        "children": [],
+        "code": null,
+        "level": "failure-note",
+        "message": "For more information about this error, try `rustc --explain E0308`.",
+        "rendered": "For more information about this error, try `rustc --explain E0308`.\n",
+        "spans": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+name = "probe_app"
+leanOptions = [{name = "pp.universes", value = true}]
+plugins = ["@plugin_probe/+Plugin:dynlib"]
+[[require]]
+name = "plugin_probe"
+path = "../producer"

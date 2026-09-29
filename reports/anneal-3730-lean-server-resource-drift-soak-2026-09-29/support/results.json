@@ -1,0 +1,4401 @@
+{
+  "dep_olean_sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+  "dependency_build": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "-o",
+      "Dep.olean",
+      "Dep.lean"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "disk_preflight": {
+    "argv": [
+      "/bin/df",
+      "-P",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r39-explore/run1"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "stdout": "Filesystem   512-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1  478724992 304800328 106584448    75%    /System/Volumes/Data\n"
+  },
+  "final_disk": {
+    "blocks_bytes": 16384,
+    "distinct_inodes": 4,
+    "entries": 4,
+    "files": 3,
+    "payload_bytes": 4659,
+    "rows": [
+      {
+        "blocks_bytes": 0,
+        "device": 16777229,
+        "inode": 24462824,
+        "kind": "directory",
+        "logical_bytes": 160,
+        "path": ".",
+        "sha256": null
+      },
+      {
+        "blocks_bytes": 4096,
+        "device": 16777229,
+        "inode": 24462825,
+        "kind": "file",
+        "logical_bytes": 24,
+        "path": "Dep.lean",
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+      },
+      {
+        "blocks_bytes": 8192,
+        "device": 16777229,
+        "inode": 24462827,
+        "kind": "file",
+        "logical_bytes": 4552,
+        "path": "Dep.olean",
+        "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+      },
+      {
+        "blocks_bytes": 4096,
+        "device": 16777229,
+        "inode": 24462826,
+        "kind": "file",
+        "logical_bytes": 83,
+        "path": "Proof.lean",
+        "sha256": "1878672468d852dd4f2131770856ad031aadfcffe5347015de7e46921ef1c324"
+      }
+    ]
+  },
+  "guards": {
+    "max_disk_bytes": 20971520,
+    "max_rss_or_footprint_bytes": 4831838208,
+    "max_seconds": 390,
+    "max_tree_processes": 4,
+    "min_free_percent": 25,
+    "round_gap_seconds": 5,
+    "segment_seconds": 110
+  },
+  "host_ram_bytes": 8589934592,
+  "initial_disk": {
+    "blocks_bytes": 16384,
+    "distinct_inodes": 4,
+    "entries": 4,
+    "files": 3,
+    "payload_bytes": 4634,
+    "rows": [
+      {
+        "blocks_bytes": 0,
+        "device": 16777229,
+        "inode": 24462824,
+        "kind": "directory",
+        "logical_bytes": 160,
+        "path": ".",
+        "sha256": null
+      },
+      {
+        "blocks_bytes": 4096,
+        "device": 16777229,
+        "inode": 24462825,
+        "kind": "file",
+        "logical_bytes": 24,
+        "path": "Dep.lean",
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+      },
+      {
+        "blocks_bytes": 8192,
+        "device": 16777229,
+        "inode": 24462827,
+        "kind": "file",
+        "logical_bytes": 4552,
+        "path": "Dep.olean",
+        "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+      },
+      {
+        "blocks_bytes": 4096,
+        "device": 16777229,
+        "inode": 24462826,
+        "kind": "file",
+        "logical_bytes": 58,
+        "path": "Proof.lean",
+        "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+      }
+    ]
+  },
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "preflight_free_percent": 49,
+  "segments": [
+    {
+      "disk_after_shutdown": {
+        "blocks_bytes": 16384,
+        "distinct_inodes": 4,
+        "entries": 4,
+        "files": 3,
+        "payload_bytes": 4659,
+        "rows": [
+          {
+            "blocks_bytes": 0,
+            "device": 16777229,
+            "inode": 24462824,
+            "kind": "directory",
+            "logical_bytes": 160,
+            "path": ".",
+            "sha256": null
+          },
+          {
+            "blocks_bytes": 4096,
+            "device": 16777229,
+            "inode": 24462825,
+            "kind": "file",
+            "logical_bytes": 24,
+            "path": "Dep.lean",
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          {
+            "blocks_bytes": 8192,
+            "device": 16777229,
+            "inode": 24462827,
+            "kind": "file",
+            "logical_bytes": 4552,
+            "path": "Dep.olean",
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "blocks_bytes": 4096,
+            "device": 16777229,
+            "inode": 24462826,
+            "kind": "file",
+            "logical_bytes": 83,
+            "path": "Proof.lean",
+            "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+          }
+        ]
+      },
+      "elapsed_seconds": 111.548,
+      "final_buffer_sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d",
+      "id": 1,
+      "initial": {
+        "disk_source_sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60",
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ depValue = 7"
+            ],
+            "rendered": "```lean\n⊢ depValue = 7\n```"
+          }
+        },
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      "rounds": [
+        {
+          "goal": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "93a30cd77df9be01c6843dec1c34851533c4921c10273fb9771a4f220f61b85b",
+          "version": 2,
+          "wait": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 7,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c0edec6a8a73936f800f3e7de8707b91ebbe72f07b092e1c5e222dc608ceafc4",
+          "version": 3,
+          "wait": {
+            "id": 6,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 9,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "a7236b479853f0268dd3b7f60bb37f72c79fe791b5483a1a8d8768a2572cff9c",
+          "version": 4,
+          "wait": {
+            "id": 8,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 11,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "d15acdf25c874800780c904f6f0b766dd8d07d5cae682358ea1a9b7e8f4f56e6",
+          "version": 5,
+          "wait": {
+            "id": 10,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 13,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "41321f9ec0060018e67fb8a88f73c19da6cb7c00d013814264a099c76f7dd662",
+          "version": 6,
+          "wait": {
+            "id": 12,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 15,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "9f06ad7d0f7fcd850c893b7cb7cac274e680c02e6c91e01356b1aaca90bdbb81",
+          "version": 7,
+          "wait": {
+            "id": 14,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 17,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "b1b06ce7719f9f9d7f04304de6816fcd1a4e08dbd97b64124d4ce9bad77b6f0c",
+          "version": 8,
+          "wait": {
+            "id": 16,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 19,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "262960067a4b70b550e3cb0fd583e6e2af756316a92972ce457615a6ed0f7eaf",
+          "version": 9,
+          "wait": {
+            "id": 18,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 21,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "daed7a6b5e5931be267e9d5281d828f35f8533bd12da2153cbbc7b17eb0118fd",
+          "version": 10,
+          "wait": {
+            "id": 20,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 23,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "6f4b1680f1a5257bb667bb50750df6961d5b15ea7e0dcec589cffccd52b5aeed",
+          "version": 11,
+          "wait": {
+            "id": 22,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 25,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "df23b684402ab32233c2aefa216e6b48eaf4fddb99fbd9e3feb64d2b93cd33f3",
+          "version": 12,
+          "wait": {
+            "id": 24,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 27,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "0232e07f18ed12fd67c5094c2c5c591664e171c54ee837bc85a8b74eaab6c656",
+          "version": 13,
+          "wait": {
+            "id": 26,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 29,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c9db72ddcba9fd3acba23086defb5ec0720cc7f299f30289ede4d33b16b1a934",
+          "version": 14,
+          "wait": {
+            "id": 28,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 31,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "7102f223b9f4a0a241e2c13042b880066c004076b1f3bd06f4f55909396be6f1",
+          "version": 15,
+          "wait": {
+            "id": 30,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 33,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "555f901cbd33d3a5e4ef57c19756f61cb2159ebd21f65d8cac04b894914e0e45",
+          "version": 16,
+          "wait": {
+            "id": 32,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 35,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "2ac3d501f69850d38a7dd8199fa0c4535385c7cbb29d87121a03249b53680f79",
+          "version": 17,
+          "wait": {
+            "id": 34,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 37,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "f9bbf882edc3effc83adede9bae70aebf3dbd01eabc667c697bdf8a22c833f65",
+          "version": 18,
+          "wait": {
+            "id": 36,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 39,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "5ff0f9a8d5d6e5df33623b255b0c4f21fd3a285d1936592b19fe0e3081ebb6dc",
+          "version": 19,
+          "wait": {
+            "id": 38,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 41,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "302256d5bdd90146a2c6df66519ed53736da1da7a0154693c277681ffe87a21c",
+          "version": 20,
+          "wait": {
+            "id": 40,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 43,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "cf0f16fc72598eb5d82f4ac132f06072bca56cde0d1d090df1a4167a6bd5d31d",
+          "version": 21,
+          "wait": {
+            "id": 42,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 45,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d",
+          "version": 22,
+          "wait": {
+            "id": 44,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        }
+      ],
+      "samples": [
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 0.553,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              79796160,
+              40962240
+            ],
+            "raw": "======================================================================\nlean [81631]: 64-bit    Footprint: 79779776 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 79796160 B\n    phys_footprint_peak: 79894656 B\n\n======================================================================\nlean [81630]: 64-bit    Footprint: 42338496 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 40962240 B\n    phys_footprint_peak: 40962240 B\n\n======================================================================\nSummary Footprint: 122085504 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 122085504
+          },
+          "free_percent": 49,
+          "label": "segment-start",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 76546048
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 383467520
+              }
+            ],
+            "rss_sum_bytes": 460013568
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 11.401,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266423040,
+              81598720
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266406656 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266423040 B\n    phys_footprint_peak: 266472256 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 81582336 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81598720 B\n    phys_footprint_peak: 81729984 B\n\n======================================================================\nSummary Footprint: 347956224 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 347956224
+          },
+          "free_percent": 51,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 303431680
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 385286144
+              }
+            ],
+            "rss_sum_bytes": 688717824
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 21.996,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266439424,
+              81893632
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266423040 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266439424 B\n    phys_footprint_peak: 266488640 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 81877248 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81893632 B\n    phys_footprint_peak: 82008512 B\n\n======================================================================\nSummary Footprint: 348267520 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348267520
+          },
+          "free_percent": 51,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 303448064
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 385581056
+              }
+            ],
+            "rss_sum_bytes": 689029120
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 32.57,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266439424,
+              81942784
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266423040 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266439424 B\n    phys_footprint_peak: 266488640 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 81926400 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81942784 B\n    phys_footprint_peak: 82057664 B\n\n======================================================================\nSummary Footprint: 348316672 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348316672
+          },
+          "free_percent": 41,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 84590592
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 352862208
+              }
+            ],
+            "rss_sum_bytes": 437452800
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 43.203,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266439424,
+              82041152
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266423040 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266439424 B\n    phys_footprint_peak: 266488640 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 82024768 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82041152 B\n    phys_footprint_peak: 82139584 B\n\n======================================================================\nSummary Footprint: 348415040 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348415040
+          },
+          "free_percent": 42,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 84639744
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 353058816
+              }
+            ],
+            "rss_sum_bytes": 437698560
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 53.83,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266439424,
+              82041152
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266423040 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266439424 B\n    phys_footprint_peak: 266488640 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 82024768 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82041152 B\n    phys_footprint_peak: 82156032 B\n\n======================================================================\nSummary Footprint: 348415040 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348415040
+          },
+          "free_percent": 43,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 84656128
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 353107968
+              }
+            ],
+            "rss_sum_bytes": 437764096
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 64.459,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266439424,
+              82057536
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266423040 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266439424 B\n    phys_footprint_peak: 266488640 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 82041152 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82057536 B\n    phys_footprint_peak: 82156032 B\n\n======================================================================\nSummary Footprint: 348431424 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348431424
+          },
+          "free_percent": 43,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 84656128
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 353255424
+              }
+            ],
+            "rss_sum_bytes": 437911552
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 75.076,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266488576,
+              82073920
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266472192 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266488576 B\n    phys_footprint_peak: 266537792 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 82057536 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82073920 B\n    phys_footprint_peak: 82172352 B\n\n======================================================================\nSummary Footprint: 348496960 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348496960
+          },
+          "free_percent": 48,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 84738048
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 353288192
+              }
+            ],
+            "rss_sum_bytes": 438026240
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 85.698,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266488576,
+              82368896
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266472192 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266488576 B\n    phys_footprint_peak: 266537792 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 82352512 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82368896 B\n    phys_footprint_peak: 82500160 B\n\n======================================================================\nSummary Footprint: 348791936 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348791936
+          },
+          "free_percent": 45,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 84738048
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 353812480
+              }
+            ],
+            "rss_sum_bytes": 438550528
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 96.335,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266488576,
+              82368896
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266472192 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266488576 B\n    phys_footprint_peak: 266537792 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 82352512 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82368896 B\n    phys_footprint_peak: 82500160 B\n\n======================================================================\nSummary Footprint: 348791936 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348791936
+          },
+          "free_percent": 41,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 40714240
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 344408064
+              }
+            ],
+            "rss_sum_bytes": 385122304
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 106.955,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266488576,
+              82368896
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266472192 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266488576 B\n    phys_footprint_peak: 266537792 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 82352512 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82368896 B\n    phys_footprint_peak: 82500160 B\n\n======================================================================\nSummary Footprint: 348791936 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348791936
+          },
+          "free_percent": 42,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 40779776
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 344604672
+              }
+            ],
+            "rss_sum_bytes": 385384448
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4634,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 58,
+                "path": "Proof.lean",
+                "sha256": "1fb7a3c2e7459ca6b01f176d6bda07469dc2283624ed922bb250b05a0e348f60"
+              }
+            ]
+          },
+          "elapsed_seconds": 112.1,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266488576,
+              82368896
+            ],
+            "raw": "======================================================================\nlean [81630]: 64-bit    Footprint: 266472192 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266488576 B\n    phys_footprint_peak: 266537792 B\n\n======================================================================\nlean [81631]: 64-bit    Footprint: 82352512 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82368896 B\n    phys_footprint_peak: 82500160 B\n\n======================================================================\nSummary Footprint: 348791936 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348791936
+          },
+          "free_percent": 42,
+          "label": "segment-end",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81630,
+                "ppid": 81625,
+                "rss_bytes": 40779776
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 81631,
+                "ppid": 81630,
+                "rss_bytes": 344604672
+              }
+            ],
+            "rss_sum_bytes": 385384448
+          }
+        }
+      ],
+      "saved_disk_sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d",
+      "server_pid": 81630,
+      "shutdown": {
+        "exit": 0,
+        "forced": false,
+        "reply": {
+          "id": 46,
+          "jsonrpc": "2.0",
+          "result": null
+        },
+        "stderr": ""
+      },
+      "tree_after_shutdown": {
+        "processes": 0,
+        "rows": [],
+        "rss_sum_bytes": 0
+      }
+    },
+    {
+      "disk_after_shutdown": {
+        "blocks_bytes": 16384,
+        "distinct_inodes": 4,
+        "entries": 4,
+        "files": 3,
+        "payload_bytes": 4659,
+        "rows": [
+          {
+            "blocks_bytes": 0,
+            "device": 16777229,
+            "inode": 24462824,
+            "kind": "directory",
+            "logical_bytes": 160,
+            "path": ".",
+            "sha256": null
+          },
+          {
+            "blocks_bytes": 4096,
+            "device": 16777229,
+            "inode": 24462825,
+            "kind": "file",
+            "logical_bytes": 24,
+            "path": "Dep.lean",
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          {
+            "blocks_bytes": 8192,
+            "device": 16777229,
+            "inode": 24462827,
+            "kind": "file",
+            "logical_bytes": 4552,
+            "path": "Dep.olean",
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "blocks_bytes": 4096,
+            "device": 16777229,
+            "inode": 24462826,
+            "kind": "file",
+            "logical_bytes": 83,
+            "path": "Proof.lean",
+            "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+          }
+        ]
+      },
+      "elapsed_seconds": 111.636,
+      "final_buffer_sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6",
+      "id": 2,
+      "initial": {
+        "disk_source_sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d",
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ depValue = 7"
+            ],
+            "rendered": "```lean\n⊢ depValue = 7\n```"
+          }
+        },
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      "rounds": [
+        {
+          "goal": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c7060d5ce3a6a70fb5d3f46f8c585b25ebb567a4f3fd99202d31e18edae396e5",
+          "version": 2,
+          "wait": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 7,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "da5591fb2bbf232d3b7f0e1d74554fcd56137ce4d1374a431feb0a4319d8c559",
+          "version": 3,
+          "wait": {
+            "id": 6,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 9,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "2cc2e3ffbc54ad6004d68bc553fc2aac22063cf078b06b2a0a25737def6bcbb4",
+          "version": 4,
+          "wait": {
+            "id": 8,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 11,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "6fe99cd8b7d342bede164fce72a08438eb07bea796a00d2a6b3f09b5b31aa94f",
+          "version": 5,
+          "wait": {
+            "id": 10,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 13,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "b14f49afa84be1f3a643ca93e53f3dd7f2eb7e69df8630781584e9af9b555dbc",
+          "version": 6,
+          "wait": {
+            "id": 12,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 15,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "f4e98eac4df9903e2b70d1e3f8f5942015ca34e450035d360cf0ba27a809a8e0",
+          "version": 7,
+          "wait": {
+            "id": 14,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 17,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "5dc2c298fc384ffffefe0ec79474a5910466e6adc250f1d0786812ba1f506029",
+          "version": 8,
+          "wait": {
+            "id": 16,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 19,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "dd1778b026ac0aad57f4fb16e562a8123542bda37bb0a87f939b4521cfb54167",
+          "version": 9,
+          "wait": {
+            "id": 18,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 21,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "15fcb4b60ab608ad297df0a5a79adf628f2c869701b57b8fec94cb5a5f2566c1",
+          "version": 10,
+          "wait": {
+            "id": 20,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 23,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "d1a39a9e9242354165cd2850224a86970a9a998ba231023f12c21a14eb07c6de",
+          "version": 11,
+          "wait": {
+            "id": 22,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 25,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "f0dba5311d4680b0c745ad6c9f263bc7283d0ebe041aa6c921e299a22e6bb781",
+          "version": 12,
+          "wait": {
+            "id": 24,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 27,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "3a6e84b606db5b17a044b9ee014066f25c3d2ef3ff997fe8b8d5c849fe2b30fd",
+          "version": 13,
+          "wait": {
+            "id": 26,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 29,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "7a564a6a7afcabebf26c03c7334f1ae15bb89815dbb60997dc16e6a5700278dd",
+          "version": 14,
+          "wait": {
+            "id": 28,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 31,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "8c233a378e69581d35bf14f1cad38bf1db8ac61422073066db5cfad44a0135c8",
+          "version": 15,
+          "wait": {
+            "id": 30,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 33,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "9adf2aeaa9439b4462b3b4c5c45aedcbb82b8ec8df31d15bf1c0fc6133045dea",
+          "version": 16,
+          "wait": {
+            "id": 32,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 35,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c9375b627e75483b0f7a105ee0f71615dfdef9d559462526701b52d65cd7cc0a",
+          "version": 17,
+          "wait": {
+            "id": 34,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 37,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "78479a77aee286cd920aca3182be6808fd62d5b98916e06719d7133416f7d47a",
+          "version": 18,
+          "wait": {
+            "id": 36,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 39,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c41da0a0f07bb113968cfc6bd194143ecbc94bcd31caf26ec0b3025f35927ff1",
+          "version": 19,
+          "wait": {
+            "id": 38,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 41,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "0932f7d1c095042039fde4c4751bfc4079641a489b762b3cc1ee135aa323acac",
+          "version": 20,
+          "wait": {
+            "id": 40,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 43,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "1be804a349bfecac749fdccfb771988b749d7193e5e6edd382d43f5ea505bd43",
+          "version": 21,
+          "wait": {
+            "id": 42,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 45,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6",
+          "version": 22,
+          "wait": {
+            "id": 44,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        }
+      ],
+      "samples": [
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 112.638,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              79730688,
+              40880192
+            ],
+            "raw": "======================================================================\nlean [82067]: 64-bit    Footprint: 79714304 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 79730688 B\n    phys_footprint_peak: 79861952 B\n\n======================================================================\nlean [82066]: 64-bit    Footprint: 42256448 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 40880192 B\n    phys_footprint_peak: 40880192 B\n\n======================================================================\nSummary Footprint: 121937984 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 121937984
+          },
+          "free_percent": 44,
+          "label": "segment-start",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 76513280
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 383401984
+              }
+            ],
+            "rss_sum_bytes": 459915264
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 123.502,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266390080,
+              81746304
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266373696 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266390080 B\n    phys_footprint_peak: 266439296 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 81729920 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81746304 B\n    phys_footprint_peak: 81844800 B\n\n======================================================================\nSummary Footprint: 348070848 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348070848
+          },
+          "free_percent": 45,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 303448064
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 385417216
+              }
+            ],
+            "rss_sum_bytes": 688865280
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 134.133,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266390080,
+              81811840
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266373696 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266390080 B\n    phys_footprint_peak: 266439296 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 81795456 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81811840 B\n    phys_footprint_peak: 81926720 B\n\n======================================================================\nSummary Footprint: 348136384 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348136384
+          },
+          "free_percent": 45,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 303448064
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 385482752
+              }
+            ],
+            "rss_sum_bytes": 688930816
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 144.761,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266390080,
+              81844608
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266373696 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266390080 B\n    phys_footprint_peak: 266439296 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 81828224 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81844608 B\n    phys_footprint_peak: 82008704 B\n\n======================================================================\nSummary Footprint: 348169152 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348169152
+          },
+          "free_percent": 50,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 303448064
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 385515520
+              }
+            ],
+            "rss_sum_bytes": 688963584
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 155.395,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266390080,
+              81844608
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266373696 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266390080 B\n    phys_footprint_peak: 266439296 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 81828224 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81844608 B\n    phys_footprint_peak: 82008704 B\n\n======================================================================\nSummary Footprint: 348169152 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348169152
+          },
+          "free_percent": 50,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 303448064
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 385515520
+              }
+            ],
+            "rss_sum_bytes": 688963584
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 166.032,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266570432,
+              81910144
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266554048 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266570432 B\n    phys_footprint_peak: 266570432 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 81893760 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81910144 B\n    phys_footprint_peak: 82025024 B\n\n======================================================================\nSummary Footprint: 348415040 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348415040
+          },
+          "free_percent": 50,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 303595520
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 385581056
+              }
+            ],
+            "rss_sum_bytes": 689176576
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 176.631,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266570432,
+              82024832
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266554048 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266570432 B\n    phys_footprint_peak: 266619648 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 82008448 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82024832 B\n    phys_footprint_peak: 82139776 B\n\n======================================================================\nSummary Footprint: 348529728 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348529728
+          },
+          "free_percent": 50,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 303595520
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 385695744
+              }
+            ],
+            "rss_sum_bytes": 689291264
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 187.229,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266570432,
+              82024832
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266554048 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266570432 B\n    phys_footprint_peak: 266619648 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 82008448 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82024832 B\n    phys_footprint_peak: 82188928 B\n\n======================================================================\nSummary Footprint: 348529728 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348529728
+          },
+          "free_percent": 49,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 303595520
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 385695744
+              }
+            ],
+            "rss_sum_bytes": 689291264
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 197.855,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266570432,
+              82041216
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266554048 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266570432 B\n    phys_footprint_peak: 266619648 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 82024832 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82041216 B\n    phys_footprint_peak: 82188928 B\n\n======================================================================\nSummary Footprint: 348546112 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348546112
+          },
+          "free_percent": 46,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 134316032
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 384237568
+              }
+            ],
+            "rss_sum_bytes": 518553600
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 208.481,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266570432,
+              82073984
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266554048 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266570432 B\n    phys_footprint_peak: 266619648 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 82057600 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82073984 B\n    phys_footprint_peak: 82188928 B\n\n======================================================================\nSummary Footprint: 348578880 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348578880
+          },
+          "free_percent": 46,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 134316032
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 384401408
+              }
+            ],
+            "rss_sum_bytes": 518717440
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 219.12,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266570432,
+              82221504
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266554048 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266570432 B\n    phys_footprint_peak: 266619648 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 82205120 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82221504 B\n    phys_footprint_peak: 82320000 B\n\n======================================================================\nSummary Footprint: 348726400 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348726400
+          },
+          "free_percent": 46,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 134381568
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 384565248
+              }
+            ],
+            "rss_sum_bytes": 518946816
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "e19363a7e3e742989c0b30b9edb4b2b19cf57cbd5d0f28075917cb7dc3000b0d"
+              }
+            ]
+          },
+          "elapsed_seconds": 224.273,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266570432,
+              82221504
+            ],
+            "raw": "======================================================================\nlean [82066]: 64-bit    Footprint: 266554048 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266570432 B\n    phys_footprint_peak: 266619648 B\n\n======================================================================\nlean [82067]: 64-bit    Footprint: 82205120 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82221504 B\n    phys_footprint_peak: 82320000 B\n\n======================================================================\nSummary Footprint: 348726400 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348726400
+          },
+          "free_percent": 47,
+          "label": "segment-end",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82066,
+                "ppid": 81625,
+                "rss_bytes": 134381568
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 82067,
+                "ppid": 82066,
+                "rss_bytes": 384565248
+              }
+            ],
+            "rss_sum_bytes": 518946816
+          }
+        }
+      ],
+      "saved_disk_sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6",
+      "server_pid": 82066,
+      "shutdown": {
+        "exit": 0,
+        "forced": false,
+        "reply": {
+          "id": 46,
+          "jsonrpc": "2.0",
+          "result": null
+        },
+        "stderr": ""
+      },
+      "tree_after_shutdown": {
+        "processes": 0,
+        "rows": [],
+        "rss_sum_bytes": 0
+      }
+    },
+    {
+      "disk_after_shutdown": {
+        "blocks_bytes": 16384,
+        "distinct_inodes": 4,
+        "entries": 4,
+        "files": 3,
+        "payload_bytes": 4659,
+        "rows": [
+          {
+            "blocks_bytes": 0,
+            "device": 16777229,
+            "inode": 24462824,
+            "kind": "directory",
+            "logical_bytes": 160,
+            "path": ".",
+            "sha256": null
+          },
+          {
+            "blocks_bytes": 4096,
+            "device": 16777229,
+            "inode": 24462825,
+            "kind": "file",
+            "logical_bytes": 24,
+            "path": "Dep.lean",
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          {
+            "blocks_bytes": 8192,
+            "device": 16777229,
+            "inode": 24462827,
+            "kind": "file",
+            "logical_bytes": 4552,
+            "path": "Dep.olean",
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "blocks_bytes": 4096,
+            "device": 16777229,
+            "inode": 24462826,
+            "kind": "file",
+            "logical_bytes": 83,
+            "path": "Proof.lean",
+            "sha256": "1878672468d852dd4f2131770856ad031aadfcffe5347015de7e46921ef1c324"
+          }
+        ]
+      },
+      "elapsed_seconds": 111.623,
+      "final_buffer_sha256": "1878672468d852dd4f2131770856ad031aadfcffe5347015de7e46921ef1c324",
+      "id": 3,
+      "initial": {
+        "disk_source_sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6",
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ depValue = 7"
+            ],
+            "rendered": "```lean\n⊢ depValue = 7\n```"
+          }
+        },
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      "rounds": [
+        {
+          "goal": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "2b1e75a08bf662af4b9304234b1130ddf3e48e770d65e84d90b2f39368f5fae3",
+          "version": 2,
+          "wait": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 7,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c0bee51d5a4d9a22ba238541005bee80957246f40eff69a3914f70e3a14a3396",
+          "version": 3,
+          "wait": {
+            "id": 6,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 9,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "861e170ce1e273a02142bf8e77898cba6423e9cad73a7df38f30a43565bad00c",
+          "version": 4,
+          "wait": {
+            "id": 8,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 11,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "75e572e990dfa6af2eb7e8328ec3ce4f0cfb710216e7a63146316a952deb81a6",
+          "version": 5,
+          "wait": {
+            "id": 10,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 13,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "cfc3709ceca26513aa68a5b802373f407e8eadd4c5d882de91e1ab6d71dd6cd3",
+          "version": 6,
+          "wait": {
+            "id": 12,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 15,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c58c69878c6fd2e4b177a2e2d08947e9ebf91acfd8ab6a31e4a325b23d176328",
+          "version": 7,
+          "wait": {
+            "id": 14,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 17,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "288bd00fea304c2750793a10a3ff2c3e194ec8ec5c1edcac3f3bf79fef39210d",
+          "version": 8,
+          "wait": {
+            "id": 16,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 19,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "9531ec5bb36c107a74a73a5e210254dab0d184de1bf54ae1bcc68d408a9e1944",
+          "version": 9,
+          "wait": {
+            "id": 18,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 21,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "887f59db5eed52b3029f0d4bbd0044cc0cae96862e3b1c07c3e1651c40168098",
+          "version": 10,
+          "wait": {
+            "id": 20,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 23,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "a6118f2b852564216cc731d241170686f652bf894cbf71bc5217d6f205f2156b",
+          "version": 11,
+          "wait": {
+            "id": 22,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 25,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "8caf66f53de1125d739bdcef1938038adc1c980a872a6e0069ead3a0e3a09f43",
+          "version": 12,
+          "wait": {
+            "id": 24,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 27,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "1676f8465e8e77946f3d1e3f96953525461b2d0755336c7be6acba3240f191f1",
+          "version": 13,
+          "wait": {
+            "id": 26,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 29,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "6d64b3e2fffe74d09e8f2fbf44a40b4dc225dabdd12787ab1881f62d5b50069c",
+          "version": 14,
+          "wait": {
+            "id": 28,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 31,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c593b11fb68723321ad75ba96abb7432decd625e5a06547e97e31ee3748d1d83",
+          "version": 15,
+          "wait": {
+            "id": 30,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 33,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "4d13cce9d4203c5e7c19591a501c0a3f6487fa6adb4290998576186f568f3778",
+          "version": 16,
+          "wait": {
+            "id": 32,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 35,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "8ccedbf8e08a510ed6737656d50f6a630109029a026a124d7fa933e8070ac922",
+          "version": 17,
+          "wait": {
+            "id": 34,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 37,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c9c12c850b3f53541fe583da0953d1a0b013e33096cea9d8169fecedf1abc720",
+          "version": 18,
+          "wait": {
+            "id": 36,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 39,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "277b7981cc784e4a5836af7877cae8f38137d99dd48fabfd1d8840a921f31fdd",
+          "version": 19,
+          "wait": {
+            "id": 38,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 41,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "a68775c0dfecf176e4bcc6023281c858367ea9ae0796cdb646b7c06f0640b348",
+          "version": 20,
+          "wait": {
+            "id": 40,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 43,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "c7b29b41b2857776df6f81a118c930682dacf5afea8512c8b8cfd35b3191ec7f",
+          "version": 21,
+          "wait": {
+            "id": 42,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "goal": {
+            "id": 45,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ depValue = 7"
+              ],
+              "rendered": "```lean\n⊢ depValue = 7\n```"
+            }
+          },
+          "source_sha256": "1878672468d852dd4f2131770856ad031aadfcffe5347015de7e46921ef1c324",
+          "version": 22,
+          "wait": {
+            "id": 44,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        }
+      ],
+      "samples": [
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 224.813,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              80025728,
+              40864000
+            ],
+            "raw": "======================================================================\nlean [83178]: 64-bit    Footprint: 80009344 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 80025728 B\n    phys_footprint_peak: 80140608 B\n\n======================================================================\nlean [83177]: 64-bit    Footprint: 42223872 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 40864000 B\n    phys_footprint_peak: 40864000 B\n\n======================================================================\nSummary Footprint: 122200448 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 122200448
+          },
+          "free_percent": 48,
+          "label": "segment-start",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 76447744
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 383467520
+              }
+            ],
+            "rss_sum_bytes": 459915264
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 235.683,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266406720,
+              81566016
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266390336 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266406720 B\n    phys_footprint_peak: 266455936 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 81549632 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81566016 B\n    phys_footprint_peak: 81648064 B\n\n======================================================================\nSummary Footprint: 347907200 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 347907200
+          },
+          "free_percent": 48,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303398912
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385056768
+              }
+            ],
+            "rss_sum_bytes": 688455680
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 246.292,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266423104,
+              81860928
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266406720 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266423104 B\n    phys_footprint_peak: 266472320 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 81844544 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81860928 B\n    phys_footprint_peak: 82025024 B\n\n======================================================================\nSummary Footprint: 348218496 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348218496
+          },
+          "free_percent": 48,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303415296
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385351680
+              }
+            ],
+            "rss_sum_bytes": 688766976
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 256.907,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266472320,
+              81975616
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266455936 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266472320 B\n    phys_footprint_peak: 266521536 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 81959232 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81975616 B\n    phys_footprint_peak: 82057664 B\n\n======================================================================\nSummary Footprint: 348382400 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348382400
+          },
+          "free_percent": 52,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303448064
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385466368
+              }
+            ],
+            "rss_sum_bytes": 688914432
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 267.536,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266472320,
+              82073920
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266455936 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266472320 B\n    phys_footprint_peak: 266521536 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 82057536 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82073920 B\n    phys_footprint_peak: 82172352 B\n\n======================================================================\nSummary Footprint: 348480704 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348480704
+          },
+          "free_percent": 52,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303448064
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385564672
+              }
+            ],
+            "rss_sum_bytes": 689012736
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 278.165,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266472320,
+              82073920
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266455936 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266472320 B\n    phys_footprint_peak: 266521536 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 82057536 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82073920 B\n    phys_footprint_peak: 82188800 B\n\n======================================================================\nSummary Footprint: 348480704 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348480704
+          },
+          "free_percent": 52,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303448064
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385564672
+              }
+            ],
+            "rss_sum_bytes": 689012736
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 288.783,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266521536,
+              82090304
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266505152 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266521536 B\n    phys_footprint_peak: 266570752 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 82073920 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82090304 B\n    phys_footprint_peak: 82188800 B\n\n======================================================================\nSummary Footprint: 348546304 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348546304
+          },
+          "free_percent": 52,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303480832
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385581056
+              }
+            ],
+            "rss_sum_bytes": 689061888
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 299.405,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266521536,
+              82106688
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266505152 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266521536 B\n    phys_footprint_peak: 266570752 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 82090304 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82106688 B\n    phys_footprint_peak: 82188800 B\n\n======================================================================\nSummary Footprint: 348562688 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348562688
+          },
+          "free_percent": 52,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303480832
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385597440
+              }
+            ],
+            "rss_sum_bytes": 689078272
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 310.032,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266537920,
+              82106688
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266521536 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266537920 B\n    phys_footprint_peak: 266587136 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 82090304 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82106688 B\n    phys_footprint_peak: 82205184 B\n\n======================================================================\nSummary Footprint: 348579072 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348579072
+          },
+          "free_percent": 53,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303497216
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385597440
+              }
+            ],
+            "rss_sum_bytes": 689094656
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 320.664,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266537920,
+              82123072
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266521536 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266537920 B\n    phys_footprint_peak: 266587136 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 82106688 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82123072 B\n    phys_footprint_peak: 82221504 B\n\n======================================================================\nSummary Footprint: 348595456 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348595456
+          },
+          "free_percent": 53,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303497216
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385613824
+              }
+            ],
+            "rss_sum_bytes": 689111040
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 331.291,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266537920,
+              82123072
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266521536 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266537920 B\n    phys_footprint_peak: 266587136 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 82106688 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82123072 B\n    phys_footprint_peak: 82254336 B\n\n======================================================================\nSummary Footprint: 348595456 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348595456
+          },
+          "free_percent": 53,
+          "label": "periodic",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303497216
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385613824
+              }
+            ],
+            "rss_sum_bytes": 689111040
+          }
+        },
+        {
+          "disk": {
+            "blocks_bytes": 16384,
+            "distinct_inodes": 4,
+            "entries": 4,
+            "files": 3,
+            "payload_bytes": 4659,
+            "rows": [
+              {
+                "blocks_bytes": 0,
+                "device": 16777229,
+                "inode": 24462824,
+                "kind": "directory",
+                "logical_bytes": 160,
+                "path": ".",
+                "sha256": null
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462825,
+                "kind": "file",
+                "logical_bytes": 24,
+                "path": "Dep.lean",
+                "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+              },
+              {
+                "blocks_bytes": 8192,
+                "device": 16777229,
+                "inode": 24462827,
+                "kind": "file",
+                "logical_bytes": 4552,
+                "path": "Dep.olean",
+                "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+              },
+              {
+                "blocks_bytes": 4096,
+                "device": 16777229,
+                "inode": 24462826,
+                "kind": "file",
+                "logical_bytes": 83,
+                "path": "Proof.lean",
+                "sha256": "939ceafeefde36afe56e12aa3d4ea9e5ed7ce448e9eb98d4ba924fb1df0b4be6"
+              }
+            ]
+          },
+          "elapsed_seconds": 336.435,
+          "footprint": {
+            "exit": 0,
+            "per_pid_phys_footprint_bytes": [
+              266537920,
+              82123072
+            ],
+            "raw": "======================================================================\nlean [83177]: 64-bit    Footprint: 266521536 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266537920 B\n    phys_footprint_peak: 266587136 B\n\n======================================================================\nlean [83178]: 64-bit    Footprint: 82106688 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82123072 B\n    phys_footprint_peak: 82254336 B\n\n======================================================================\nSummary Footprint: 348595456 B\n======================================================================\n\n",
+            "stderr": "",
+            "summary_bytes": 348595456
+          },
+          "free_percent": 53,
+          "label": "segment-end",
+          "tree": {
+            "processes": 2,
+            "rows": [
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83177,
+                "ppid": 81625,
+                "rss_bytes": 303497216
+              },
+              {
+                "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "pid": 83178,
+                "ppid": 83177,
+                "rss_bytes": 385613824
+              }
+            ],
+            "rss_sum_bytes": 689111040
+          }
+        }
+      ],
+      "saved_disk_sha256": "1878672468d852dd4f2131770856ad031aadfcffe5347015de7e46921ef1c324",
+      "server_pid": 83177,
+      "shutdown": {
+        "exit": 0,
+        "forced": false,
+        "reply": {
+          "id": 46,
+          "jsonrpc": "2.0",
+          "result": null
+        },
+        "stderr": ""
+      },
+      "tree_after_shutdown": {
+        "processes": 0,
+        "rows": [],
+        "rss_sum_bytes": 0
+      }
+    }
+  ],
+  "total_seconds": 336.55
+}

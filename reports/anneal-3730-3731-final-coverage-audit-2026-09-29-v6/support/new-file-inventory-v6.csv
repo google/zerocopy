@@ -1,0 +1,127 @@
+package,relative_file,bytes,sha256,inspection,detail
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,REPORT.json,690,dea74d3d3776a8813b815b48a2f698b0ccd4dcd0c824db91d69be98914e3f15a,json,parsed
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,REPORT.md,4209,442215a7968fd110b6cc9ab35489224d2a2a984755d2cb76e89351e565bdfb0b,utf8,17 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/check.py,2152,d60e97f1ac16bb9a4a3d919c7eb8efa0bb6ba5f9ffa2a3c0247143164437557a,utf8,34 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/gated_stage.py,1083,312d5184f95e6394189bec81d71d7768236cca51d367ee91046582b3d58c33fe,utf8,19 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/probe.py,11802,0fb7856debb64c7a90d01cdf26fd49e49ddb796d7663dd92654c046862e45220,utf8,167 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/results.json,38933,93f51402a9a39df70de60f5c87bcce6585f633778672910ef8eb8b316be4e314,json,parsed
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/aeneas-cancel/Types.lean,527,c1b1725c4f645f1e141103582d35007c7ef24ef66b5b3004298f55f5e2c08c5c,utf8,17 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/authority.json,40,67705d37d7053bcd5b0f17fe7d2b02aa83e380c73d3a5c27da39d35cc12a662e,json,parsed
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/base-generated/Base.lean,17,2c1fe3e727c71000a1fd76146006b7be7785e5f1c14dae30b1e94868831aa7b2,utf8,1 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/base-generated/Funs.lean,929,112c92fa0d32f06bf0345d3241099a3e43135c07248c9bc84b460c119fd019b8,utf8,24 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/base-generated/Types.lean,527,c1b1725c4f645f1e141103582d35007c7ef24ef66b5b3004298f55f5e2c08c5c,utf8,17 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/charon/base.llbc,6871,1f37c5c32372e9557c65a5978ba90ec885b949be8308629008c1d201961e3f55,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/charon/base.llbc.postcard,1404,b8529655252921928240cb0192cb5e094a84d4af57d3059fd66659134fef2c78,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/charon/base.rs,69,77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995,utf8,2 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/current-generated/Current.lean,20,c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e,utf8,1 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/current-generated/Funs.lean,932,7f634a336ed891eff149a4b7ae3ddeadb19ff88773ec88b492097cf833e05359,utf8,24 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/current-generated/Types.lean,527,c1b1725c4f645f1e141103582d35007c7ef24ef66b5b3004298f55f5e2c08c5c,utf8,17 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/ir/Cancel/A.c,1374,4d150421665885ec8d6375a9af399943f66012db5517f8b410c02d8fc560dd87,utf8,44 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/ir/Cancel/A.c.hash,16,fac60633aa0b4823e5df72ab7c41c3aa3c3d2baea5bcd692f20a16603221ad3d,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/ir/Cancel/A.setup.json,135,5be42e97688ea009bc62877e4a564f451c2bf80a72779446657796a223bbe811,json,parsed
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/ir/Cancel/B.c,1750,74bb0645947762cefa132f22dfdaea466967034a3230426c7f2bc2ad7779155b,utf8,52 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/ir/Cancel/B.c.hash,16,096c69661abd2eb63385cfa633c2e493edfc41a1fa44955074d390912974512c,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/ir/Cancel/B.setup.json,391,6b74885a692ba9c7a4e7698f2a2a34195372c94551ca5d689a17ddf97bf4eb19,json,parsed
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/A.ilean,285,9a8d8f40109a727450c41bbea97403d15e16ba6442094469a10eb914f53f6aee,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/A.ilean.hash,16,e007ed7261947821703aec9947d249e40f4bd9a530081784802ac2a581b11b0d,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/A.olean,4608,0035dcfd8ef52a7e5423722eb0cf2cb0b0a845f04ffde139c9f38b85c2c12228,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/A.olean.hash,16,82bb4f98f29acd26bd09be2b38f004157a6240fa76b221a97ca69a9f9cecb7a9,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/A.trace,2757,d1ad60531c4e780d67f841ec39bce84a0c0385252f7d024d61f6687b98130fa0,utf8,31 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/B.ilean,1227,0586b9e0f335257c2eb10bbe3d403df9e015d39238f42a98f2becd76a26eb964,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/B.ilean.hash,16,2cdfa369c60c3b0d0edd3308559eb756323ed876046860ce9f9948f213a69dcb,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/B.olean,6968,074e08ea4fac29e1349d63783ac0868f7ea72ab36d3ddece1638e645f76834cc,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/B.olean.hash,16,1cb4a8e459dbc4e518dace6032a7ea451921be2663872a237ce1f43586ed9bab,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/build/lib/lean/Cancel/B.trace,2864,e4e9422714e90062d842cd5d3349b19e9a5a34668746a0b6991ac808d0f93ff7,utf8,33 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/config/[anonymous]/lakefile.olean,96552,c2e7a8223fe967f9e3daef83750f1e6eebd533db560b576f38f97a1eda0252d7,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/.lake/config/[anonymous]/lakefile.olean.trace,184,2fa0a09f4100c27cdff5a43e8ac1b67e4b5e032e7deaad914ca17162a3001878,utf8,6 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/Cancel/A.lean,20,5a840fb8f9b7c93174ecf71605a2f89ee03807def59d95f9ef780de4a1064bdd,utf8,1 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/Cancel/B.lean,239,95bae3bd5b9c4d1911465431317f1cd9d2d8c4edd1a6c2c5e40eae07cace87e4,utf8,9 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/Check.lean,47,c6278d0e92d16ff3e33aea6820e5f03b54e74d3cf717126dfbfb8514df4c7083,utf8,2 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/gate.entered,1,6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/gate.release,1,6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/lake-manifest.json,144,26855470527f6bff6e1b711e43ddea25d95f7e201e69635b1d0913aedbbb9467,json,parsed
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/lakefile.lean,63,b3df495e6a0f8f595eeb37b92fc0d1a353cca2dc52a5bf17383688c17f518ff1,utf8,4 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lake/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,utf8,1 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-base/Base/Funs.lean,929,112c92fa0d32f06bf0345d3241099a3e43135c07248c9bc84b460c119fd019b8,utf8,24 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-base/Base/Funs.olean,12856,70b15ecaca32f838fe39324f06b98f988d0430ee5a3f040cbd41553b98633f5e,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-base/Base/Types.lean,527,c1b1725c4f645f1e141103582d35007c7ef24ef66b5b3004298f55f5e2c08c5c,utf8,17 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-base/Base/Types.olean,1608,0c8f3a8f5ba22262b17a73451fb18807f5202bee46b9882d8a926f904e7a234e,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-base/Base.lean,17,2c1fe3e727c71000a1fd76146006b7be7785e5f1c14dae30b1e94868831aa7b2,utf8,1 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-base/Base.olean,1312,3a59c3dc6fab4b920dfc98982fc9ac5c4a20cd623de49b7e0bae703f4ee15c48,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-base/Check.lean,98,99fd5dd8c55bf268c0f9355065ea2f599ed98e63efe53308758921969330e44f,utf8,3 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-current/Check.lean,101,e1bffd1d83532682c0ff08ccae2c9eb917bfd28aaee1bd71f34536dcfc61f259,utf8,3 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-current/Current/Funs.lean,932,7f634a336ed891eff149a4b7ae3ddeadb19ff88773ec88b492097cf833e05359,utf8,24 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-current/Current/Funs.olean,12856,07036986a4108e4718bb22997f3e414c6a4921459cc1fd11615291259441f02e,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-current/Current/Types.lean,527,c1b1725c4f645f1e141103582d35007c7ef24ef66b5b3004298f55f5e2c08c5c,utf8,17 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-current/Current/Types.olean,1608,d77e7c5841422931127092927125c6b91a93897c51a474aacf606f0a413f9e0d,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-current/Current.lean,20,c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e,utf8,1 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/lean-current/Current.olean,1312,34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149,binary,opaque
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/new/current.llbc,6875,a644978d0f1b1ac23395331d04b40135db65edc4d28c9074cae8c3a82946c530,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/new/current.rs,69,d1ade923ff3f3787a6e039126ab34f48ae5ab7861fa7230d923c5222e1fd27af,utf8,2 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/old-job/decision.json,92,fd9598d481a6436468754e01a47a055df97ed8d93c57d2e3f2644541ead90bcb,json,parsed
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/old-job/entered,1828,a5f81ba5ceccf1c8048df4a6eed435006d837dccf18d88c723bf9230ae0bb58a,utf8,16 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/old-job/generated/Base.lean,17,2c1fe3e727c71000a1fd76146006b7be7785e5f1c14dae30b1e94868831aa7b2,utf8,1 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/old-job/generated/Funs.lean,929,112c92fa0d32f06bf0345d3241099a3e43135c07248c9bc84b460c119fd019b8,utf8,24 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/old-job/generated/Types.lean,527,c1b1725c4f645f1e141103582d35007c7ef24ef66b5b3004298f55f5e2c08c5c,utf8,17 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/old-job/release,1,6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/pre/entered,1,6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b,utf8,0 lines
+anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29,support/work/pre/gate.py,121,2da1a500a75eeef219f118c0d228dda3b80859ae56e7411ada9cb1e9d7346b45,utf8,4 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,REPORT.json,849,7fbe3cd6a85cd2adf9db8e4acbd55ed20e7b809731b31dc959e4978bfa22852c,json,parsed
+anneal-3730-lake-dynamic-config-identity-2026-09-29,REPORT.md,10559,8337fa8ef278c6b5d1515d7e3e3061aeb542b5889285d5697f349239c43f23bf,utf8,63 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-a/config_lean,317,a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7,utf8,10 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-a/consumer,82,fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb,utf8,3 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-a/olean,4616,cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b,binary,opaque
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-a/setup,127,729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059,utf8,6 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-a/source,24,15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2,utf8,1 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-a/trace,2073,9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927,utf8,30 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-b/config_lean,317,a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7,utf8,10 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-b/consumer,82,fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb,utf8,3 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-b/olean,4520,fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745,binary,opaque
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-b/setup,127,729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059,utf8,6 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-b/source,24,f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0,utf8,1 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/dynamic-b/trace,2073,635ada827999e876ad128228a328a166a3ea0e169e4e35baaf787981eda7b370,utf8,30 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/golden-c,1366,36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e,utf8,44 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/golden-config,317,a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7,utf8,10 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/golden-ilean,289,ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5,utf8,0 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/golden-olean,4616,cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b,binary,opaque
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/golden-setup,127,729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059,utf8,6 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/golden-source,24,15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2,utf8,1 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/golden-trace,2073,9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927,utf8,30 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/lean-option/config_lean,129,14b82e3967699ad71ac4bff665bd79ce3a4bbe6d0fac83b53efe1fef781c00ae,utf8,6 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/lean-option/consumer,82,fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb,utf8,3 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/lean-option/olean,4616,cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b,binary,opaque
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/lean-option/setup,149,3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f,utf8,6 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/lean-option/source,24,15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2,utf8,1 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/lean-option/trace,2118,c1e98e79ff9a24e4699c851a6d0b407dc01ed4f6eefa600a729a59b3fa694f1c,utf8,30 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-nine/config_toml,70,7467cb062c409bbf46b66d418e823f77b428b7b4641b78378c43c4a65ad43bbb,utf8,4 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-nine/consumer,82,fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb,utf8,3 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-nine/olean,4520,fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745,binary,opaque
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-nine/setup,127,729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059,utf8,6 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-nine/source,24,f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0,utf8,1 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-nine/trace,2073,c89883ba4763ec77931c4711b5f362d20b5d4588d02c05eb44843ce519a8d744,utf8,30 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-seven/config_toml,70,7467cb062c409bbf46b66d418e823f77b428b7b4641b78378c43c4a65ad43bbb,utf8,4 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-seven/consumer,82,fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb,utf8,3 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-seven/olean,4616,cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b,binary,opaque
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-seven/setup,127,729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059,utf8,6 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-seven/source,24,15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2,utf8,1 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/artifacts/toml-seven/trace,2081,c70ca45ebba8b9f0c3af4c417f27a9596af35e87b54911dd4d76f301be77ec27,utf8,30 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/check.py,4086,6944bbd8bfebbf78d8cb47618e81b0dfe35e75e0128184a78aeef32f266b3459,utf8,55 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/probe.py,15169,38b625cd2674a414db2824b55470b4b89f576cdee2d1479e991dd47c1d166b69,utf8,195 lines
+anneal-3730-lake-dynamic-config-identity-2026-09-29,support/results.json,80282,4c9adfcaae077c8a875165d6a87223818737ce089f712f9e66c2a8a9a332d8b0,json,parsed
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,REPORT.json,1043,76728a0a5b3698da52a86227fdce2e34663906e31dfbd016edb6cb6d078106b3,json,parsed
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,REPORT.md,5389,0d93efc83cf2193a028773ff149a0fb7e67a3376050fe6d95fd3223ced7cc330,utf8,44 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/__pycache__/probe.cpython-314.pyc,18520,d09665a68277b1ac9e6e049bc72fbd5e2cf42b17bcdbeebad16326874838794e,binary,opaque
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/applied/action-Action.lean,30,bea1f098cd1f05e147a9291ffaca8116e503e8ca73a549565a72eabb1a2441b3,utf8,2 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/applied/completion-Completion.lean,30,bea1f098cd1f05e147a9291ffaca8116e503e8ca73a549565a72eabb1a2441b3,utf8,2 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/applied/inlay-Main.lean,247,5cd12b48571224589a54505a03ae210f99e33b135d1fc4807cd3079a821fac36,utf8,8 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/applied/rename-Helper.lean,38,1a4b3760770f6a65b632394220d4d11ce21cdaedc9cac618cb6e90a91ff6e261,utf8,1 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/applied/rename-Main.lean,242,8fbadf9b1ad2f9a443913787e1f97aad69dda35a068d1e094823019f967e94df,utf8,8 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/applied-results.json,5235,39fc4ca61c432fbf2446837eea91d867553422c321ae6ac35bbf8b7a83e39d28,json,parsed
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/apply_returns.py,4585,03355eb477d452130f067d1d5f5343dd52fa4c8477120022bcdb18f1e8084397,utf8,68 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/fixture/Action.lean,16,df633b7a484b10efc6f775833710c454f34e41a1620b0b42c301d3c2e5e37f0d,utf8,1 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/fixture/Completion.lean,27,e8ba34e9c37e2b48116e15f8b7f768010b603123e5306b117b708ca87739fa9a,utf8,2 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/fixture/Helper.lean,38,88ab46a2f5640781815e68a189348d12cb8aa854bb1ae6a4351be02cd07a0ef3,utf8,1 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/fixture/Main.lean,242,d75c7766dd33e725c28217605eaa0a724320b3aa0e4d72987d09d04b783e188e,utf8,8 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/probe.py,9155,6a6fc925d070b620aa51fc35d10a7dae28a045cc7e28ea0cda9acb7442ae969b,utf8,124 lines
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/transcript.json,152998,0b790f3b965b55f59fb95b2ff416f0e080db8fd017c91336c35a2575c799f426,json,parsed
+anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29,support/verify.py,2676,8f38b63594ff088e36d6c82416542e87e80fcc6ba50afd666dd91ac0e42dae04,utf8,38 lines

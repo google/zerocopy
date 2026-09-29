@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "anneal/acceptance-contract",
+    "anneal/evaluation",
+    "lean/batch-server-equivalence",
+    "lean/trust-and-obligations"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 compiler and language server",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "synthetic acceptance/comparator fixture",
+      "identity": {
+        "file": "support/probe.py",
+        "sha256": "74b6ef237386a50b811733ddaae1168509767f36196ff88b8180d281ee47684d"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

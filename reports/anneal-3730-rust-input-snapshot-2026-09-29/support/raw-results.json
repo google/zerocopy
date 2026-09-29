@@ -1,0 +1,369 @@
+{
+  "cargo": {
+    "assertions": {
+      "cli_feature_changes_output": true,
+      "doc_comment_changed_proc_macro_output": true,
+      "included_file_changed_output_with_same_main": true,
+      "locked_rejects_stale_lock": true,
+      "manifest_default_changes_output": true,
+      "manifest_revert_output": true,
+      "source_A_B_A_hash_and_output": true
+    },
+    "observations": [
+      {
+        "binary_sha256": "69c9c782fdce8d2b9bc00171ef0ffa65136467b97bb9aaa53a3df6ea83d106a5",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "run",
+          "--offline",
+          "--locked",
+          "--quiet",
+          "-p",
+          "snapshot_app"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "inputs_sha256": {
+          "Cargo.lock": "d783f70115ac2da19895864fefc4242b1a8b3ba0f4a40739b5e3870d4e5843b2",
+          "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+          "app/Cargo.toml": "ca464328f0b21aff9a503dbe7d93271b1b38e4cfb5646ae30057dabcdcb406b8",
+          "app/src/main.rs": "50d20d8cfa67b5d8991e2fcea7531df7798afc44921e2ed15b5b724c9ef2b72c",
+          "app/src/proof_note.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+          "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+          "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+        },
+        "label": "baseline",
+        "stderr": "",
+        "stdout": "macro=1 included=alpha feature=0\n"
+      },
+      {
+        "binary_sha256": "4c09964330e2c5612f51adf9f0aeadef23b521fd0a670ba83a1890fe58bb053c",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "run",
+          "--offline",
+          "--locked",
+          "--quiet",
+          "-p",
+          "snapshot_app"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "inputs_sha256": {
+          "Cargo.lock": "d783f70115ac2da19895864fefc4242b1a8b3ba0f4a40739b5e3870d4e5843b2",
+          "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+          "app/Cargo.toml": "ca464328f0b21aff9a503dbe7d93271b1b38e4cfb5646ae30057dabcdcb406b8",
+          "app/src/main.rs": "50d20d8cfa67b5d8991e2fcea7531df7798afc44921e2ed15b5b724c9ef2b72c",
+          "app/src/proof_note.txt": "f2c82decdd7181cf98945929a62598db7e6b477e11f6e0eb0ae97020eff151ad",
+          "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+          "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+        },
+        "label": "included-file-beta",
+        "stderr": "",
+        "stdout": "macro=1 included=beta feature=0\n"
+      },
+      {
+        "binary_sha256": "30b53e9232e1e20d7d1b54dbe1ef9b7026fba93a117a64d44d5770cd86dcd930",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "run",
+          "--offline",
+          "--locked",
+          "--quiet",
+          "-p",
+          "snapshot_app"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "inputs_sha256": {
+          "Cargo.lock": "d783f70115ac2da19895864fefc4242b1a8b3ba0f4a40739b5e3870d4e5843b2",
+          "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+          "app/Cargo.toml": "ca464328f0b21aff9a503dbe7d93271b1b38e4cfb5646ae30057dabcdcb406b8",
+          "app/src/main.rs": "16cf0946420975f614494080030afe2d2be52cf5ca7055a8b94d14a39aa08e52",
+          "app/src/proof_note.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+          "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+          "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+        },
+        "label": "doc-comment-beta",
+        "stderr": "",
+        "stdout": "macro=2 included=alpha feature=0\n"
+      },
+      {
+        "binary_sha256": "b7f7c3a3d254e31e54fe7481bd859b0b320f6dc4ef28f6893bfa9bc2e295f72f",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "run",
+          "--offline",
+          "--locked",
+          "--quiet",
+          "-p",
+          "snapshot_app"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "inputs_sha256": {
+          "Cargo.lock": "d783f70115ac2da19895864fefc4242b1a8b3ba0f4a40739b5e3870d4e5843b2",
+          "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+          "app/Cargo.toml": "ca464328f0b21aff9a503dbe7d93271b1b38e4cfb5646ae30057dabcdcb406b8",
+          "app/src/main.rs": "50d20d8cfa67b5d8991e2fcea7531df7798afc44921e2ed15b5b724c9ef2b72c",
+          "app/src/proof_note.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+          "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+          "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+        },
+        "label": "doc-comment-revert-A",
+        "stderr": "",
+        "stdout": "macro=1 included=alpha feature=0\n"
+      },
+      {
+        "binary_sha256": "be7e71efa6ce9e6a11d6a437b66461b7f61813868c209ce119bbd3ebd88bce14",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "run",
+          "--offline",
+          "--locked",
+          "--quiet",
+          "-p",
+          "snapshot_app",
+          "--features",
+          "selected"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "inputs_sha256": {
+          "Cargo.lock": "d783f70115ac2da19895864fefc4242b1a8b3ba0f4a40739b5e3870d4e5843b2",
+          "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+          "app/Cargo.toml": "ca464328f0b21aff9a503dbe7d93271b1b38e4cfb5646ae30057dabcdcb406b8",
+          "app/src/main.rs": "50d20d8cfa67b5d8991e2fcea7531df7798afc44921e2ed15b5b724c9ef2b72c",
+          "app/src/proof_note.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+          "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+          "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+        },
+        "label": "cli-feature-selected",
+        "stderr": "",
+        "stdout": "macro=1 included=alpha feature=10\n"
+      },
+      {
+        "binary_sha256": "be7e71efa6ce9e6a11d6a437b66461b7f61813868c209ce119bbd3ebd88bce14",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "run",
+          "--offline",
+          "--locked",
+          "--quiet",
+          "-p",
+          "snapshot_app"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "inputs_sha256": {
+          "Cargo.lock": "d783f70115ac2da19895864fefc4242b1a8b3ba0f4a40739b5e3870d4e5843b2",
+          "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+          "app/Cargo.toml": "7426ae9685c0f355d25ad6bb3c523d844a7fb3c8da200c6e506c4d3371ef7997",
+          "app/src/main.rs": "50d20d8cfa67b5d8991e2fcea7531df7798afc44921e2ed15b5b724c9ef2b72c",
+          "app/src/proof_note.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+          "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+          "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+        },
+        "label": "manifest-default-selected",
+        "stderr": "",
+        "stdout": "macro=1 included=alpha feature=10\n"
+      },
+      {
+        "binary_sha256": "b7f7c3a3d254e31e54fe7481bd859b0b320f6dc4ef28f6893bfa9bc2e295f72f",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "run",
+          "--offline",
+          "--locked",
+          "--quiet",
+          "-p",
+          "snapshot_app"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "inputs_sha256": {
+          "Cargo.lock": "d783f70115ac2da19895864fefc4242b1a8b3ba0f4a40739b5e3870d4e5843b2",
+          "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+          "app/Cargo.toml": "ca464328f0b21aff9a503dbe7d93271b1b38e4cfb5646ae30057dabcdcb406b8",
+          "app/src/main.rs": "50d20d8cfa67b5d8991e2fcea7531df7798afc44921e2ed15b5b724c9ef2b72c",
+          "app/src/proof_note.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+          "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+          "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+        },
+        "label": "manifest-revert",
+        "stderr": "",
+        "stdout": "macro=1 included=alpha feature=0\n"
+      },
+      {
+        "binary_sha256": "b7f7c3a3d254e31e54fe7481bd859b0b320f6dc4ef28f6893bfa9bc2e295f72f",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "run",
+          "--offline",
+          "--locked",
+          "--quiet",
+          "-p",
+          "snapshot_app"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 101,
+        "inputs_sha256": {
+          "Cargo.lock": "f6ef469895bf39b9c77fac47a51e0587c5135de27c7f818effc78af1328c6129",
+          "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+          "app/Cargo.toml": "ca464328f0b21aff9a503dbe7d93271b1b38e4cfb5646ae30057dabcdcb406b8",
+          "app/src/main.rs": "50d20d8cfa67b5d8991e2fcea7531df7798afc44921e2ed15b5b724c9ef2b72c",
+          "app/src/proof_note.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+          "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+          "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+        },
+        "label": "stale-lockfile",
+        "stderr": "error: cannot update the lock file /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-input-snapshot-2026-09-29/support/anneal-rust-input-probe-zb4y3t4p/workspace/Cargo.lock because --locked was passed to prevent this\nhelp: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.\n",
+        "stdout": ""
+      }
+    ],
+    "toolchain": {
+      "cargo": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+          "--version"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "cargo 1.98.0-nightly (fbb61be30 2026-05-26)\n"
+      },
+      "rustc": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+          "--version",
+          "--verbose"
+        ],
+        "cwd_role": "workspace",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n"
+      }
+    }
+  },
+  "environment": {
+    "fixture_sha256": {
+      "Cargo.lock": "d783f70115ac2da19895864fefc4242b1a8b3ba0f4a40739b5e3870d4e5843b2",
+      "Cargo.toml": "21d55ff62eaed5a4f8dacc1f1f0161cf9ec967b8a0c49b8469ff949319055b1f",
+      "app/Cargo.toml": "ca464328f0b21aff9a503dbe7d93271b1b38e4cfb5646ae30057dabcdcb406b8",
+      "app/src/main.rs": "50d20d8cfa67b5d8991e2fcea7531df7798afc44921e2ed15b5b724c9ef2b72c",
+      "app/src/proof_note.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+      "doc_macro/Cargo.toml": "c5b8d7e561cf2032d5c4435c1389286c3473691031cd595949ffc5395ef16f04",
+      "doc_macro/src/lib.rs": "1be1a82db870ae42216084f6208bc49989e095b49f58b97b15ba0f613a24e6a8"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "script_sha256": "4101c4def098de100aaa87b2cb8002d7f22ff7872717f50950a8fa6cee37b079"
+  },
+  "overlay": {
+    "buffer_compile": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "overlay_buffer",
+        "--edition=2021",
+        "-",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-input-snapshot-2026-09-29/support/anneal-rust-input-probe-zb4y3t4p/overlay/buffer-bin"
+      ],
+      "cwd_role": "overlay",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "buffer_run": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-input-snapshot-2026-09-29/support/anneal-rust-input-probe-zb4y3t4p/overlay/buffer-bin"
+      ],
+      "cwd_role": "overlay",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "buffer-B\n"
+    },
+    "disk_compile": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "overlay_disk",
+        "--edition=2021",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-input-snapshot-2026-09-29/support/anneal-rust-input-probe-zb4y3t4p/overlay/host.rs",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-input-snapshot-2026-09-29/support/anneal-rust-input-probe-zb4y3t4p/overlay/disk-bin"
+      ],
+      "cwd_role": "overlay",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "disk_run": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-input-snapshot-2026-09-29/support/anneal-rust-input-probe-zb4y3t4p/overlay/disk-bin"
+      ],
+      "cwd_role": "overlay",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "disk-A\n"
+    },
+    "disk_source_sha256": "84684e8680b7c446e50a83775e68a9be4524adb1ac0734d59d7eaa7261abe3d4",
+    "disk_unchanged_after_buffer_compile": true,
+    "unsaved_buffer_sha256": "48953b1e8a73d9ea0ed5fca8aaa042bd2e9e107a3cf72641a18e2c63b145b719"
+  },
+  "ownership": {
+    "final_state": {
+      "content": "A",
+      "revision": 3
+    },
+    "old_A_hash_matches_after_ABA": true,
+    "operations": [
+      {
+        "accepted": true,
+        "expected_hash": "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "expected_revision": 1,
+        "owner": "editor",
+        "replacement": "B",
+        "state_after": {
+          "content": "B",
+          "revision": 2
+        }
+      },
+      {
+        "accepted": false,
+        "expected_hash": "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "expected_revision": 1,
+        "owner": "agent-stale",
+        "replacement": "C",
+        "state_after": {
+          "content": "B",
+          "revision": 2
+        }
+      },
+      {
+        "accepted": true,
+        "expected_hash": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+        "expected_revision": 2,
+        "owner": "editor-revert",
+        "replacement": "A",
+        "state_after": {
+          "content": "A",
+          "revision": 3
+        }
+      },
+      {
+        "accepted": false,
+        "expected_hash": "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "expected_revision": 1,
+        "owner": "agent-ABA-stale",
+        "replacement": "C",
+        "state_after": {
+          "content": "A",
+          "revision": 3
+        }
+      }
+    ],
+    "revision_guard_rejects_old_A": true
+  }
+}

@@ -1,0 +1,156 @@
+package,relative_file,bytes,sha256,inspection,detail
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,REPORT.json,573,57f80a105bd026b613687a6b456d8cda0ad6b53f5f114da74040f71204a07d5f,json,parsed
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,REPORT.md,4007,b8f7dd5b714ea288d65544e108e9a243bc863d3e546fe9151ec9d94d2f6de06d,utf8,13 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/check.py,3077,e0689764e1138a68b6682960549e4c797d67726cb9178726139745d7c7189923,utf8,45 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/probe.py,14318,64d941d2e79913c59d2936e3a6222c6caa262b11b2973e7af4e9ae5ee20de57f,utf8,211 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/results.json,53057,ec479ff092fe06a96a3f39c425d7f9336bc8618968f08a7eb5e64e6edca7f153,json,parsed
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/buffer-stage/source.llbc,6851,0645cd7f4b3930d7da543d8af19a838c3c2b26fdda9c5a5e6f34ec8e653d97e6,utf8,0 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/cancel-buffer/Funs.lean,921,36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77,utf8,24 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/cancel-buffer/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/cancel-buffer/Types.lean,530,620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2,utf8,17 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/cancel-file/Funs.lean,921,36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77,utf8,24 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/cancel-file/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/cancel-file/Types.lean,530,620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2,utf8,17 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/corrupt-llbc/source.llbc,6851,6a32baa0df14c34ad7c62df4c207e5e245aa5e80524ad6e373fb5fe78d2f06cb,utf8,0 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/generated-buffer/Funs.lean,921,36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77,utf8,24 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/generated-buffer/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/generated-buffer/Types.lean,530,620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2,utf8,17 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/generated-file/Funs.lean,921,36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77,utf8,24 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/generated-file/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/generated-file/Types.lean,530,620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2,utf8,17 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-buffer/Check.lean,70,453adad09c4c611171335abb67bf0e061cdce0c7e56fd239656b4e98b44b9b1c,utf8,2 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-buffer/Source/Funs.lean,921,36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77,utf8,24 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-buffer/Source/Funs.olean,12848,587de4720d822b98abf81f3de4304d21bbbf298d1e7b815a90a07c37b4616db6,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-buffer/Source/Types.lean,530,620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2,utf8,17 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-buffer/Source/Types.olean,1608,46c1aeb635137390d26a097620c65d7d7b1d79dae833a7b14f916d16c2c7ea84,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-buffer/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-buffer/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-file/Check.lean,70,453adad09c4c611171335abb67bf0e061cdce0c7e56fd239656b4e98b44b9b1c,utf8,2 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-file/CheckWrong.lean,70,ca7b13940c86a531a2dc10e184c360f755f925454b23d29d78ad4c87319fb719,utf8,2 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-file/Source/Funs.lean,921,36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77,utf8,24 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-file/Source/Funs.olean,12848,587de4720d822b98abf81f3de4304d21bbbf298d1e7b815a90a07c37b4616db6,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-file/Source/Types.lean,530,620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2,utf8,17 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-file/Source/Types.olean,1608,46c1aeb635137390d26a097620c65d7d7b1d79dae833a7b14f916d16c2c7ea84,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-file/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-file/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-semantic_mutation/Check.lean,70,453adad09c4c611171335abb67bf0e061cdce0c7e56fd239656b4e98b44b9b1c,utf8,2 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-semantic_mutation/Source/Funs.lean,921,3ba20fef12f91d2a94449c4de2e07f96f118b3e0944d5ebb00bddcdc2ebe431d,utf8,24 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-semantic_mutation/Source/Funs.olean,12848,d6c3d1a84b5089261a23f936f17886e6e194e94ea0c811bf376bf25ac8cdfeb6,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-semantic_mutation/Source/Types.lean,530,620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2,utf8,17 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-semantic_mutation/Source/Types.olean,1608,46c1aeb635137390d26a097620c65d7d7b1d79dae833a7b14f916d16c2c7ea84,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-semantic_mutation/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-semantic_mutation/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-stdin/Check.lean,70,453adad09c4c611171335abb67bf0e061cdce0c7e56fd239656b4e98b44b9b1c,utf8,2 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-stdin/Source/Funs.olean,12848,66fc71245ba4197c152e9399e5685f523e6773ad17f01476c172e1f169e5b952,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-stdin/Source/Types.olean,1608,b02a6f9e022609d7eef62dc48b2f025faff30314fb1e3949f62ce221c369c681,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-stdin/Source.olean,1312,dc310e5bfe58cd664fb000fc6c855af236719a11b7968fb934ccf651cf6beabe,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-truncated/Check.lean,70,453adad09c4c611171335abb67bf0e061cdce0c7e56fd239656b4e98b44b9b1c,utf8,2 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-truncated/Source/Funs.lean,460,a6e0c41d1eaddd2549fbedd81de30afcbcc360ed5689671fdce16f797ae27210,utf8,12 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-truncated/Source/Types.lean,530,620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2,utf8,17 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-truncated/Source/Types.olean,1608,46c1aeb635137390d26a097620c65d7d7b1d79dae833a7b14f916d16c2c7ea84,binary,opaque
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/lean-truncated/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/source.llbc,6851,0645cd7f4b3930d7da543d8af19a838c3c2b26fdda9c5a5e6f34ec8e653d97e6,utf8,0 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/source.rs,69,77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995,utf8,2 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/transfer-repeat.llbc,6851,0645cd7f4b3930d7da543d8af19a838c3c2b26fdda9c5a5e6f34ec8e653d97e6,utf8,0 lines
+anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29,support/work/truncated-llbc/source.llbc,3425,6cf1eb0f622a1a49437228fa9481321f052f7f4266c90a40fcd3e9fe12f383ab,utf8,0 lines
+anneal-3730-editor-save-format-watch-loop-2026-09-29,REPORT.json,1298,5b0efaaf6a43bcedd2d2072b073958643a6c6b906847a04a1273c4bd822c63ea,json,parsed
+anneal-3730-editor-save-format-watch-loop-2026-09-29,REPORT.md,5335,6bd83aa858ad0c20e3c0391a6e061476f4c3d3ab28c16357c90664307fdee9e2,utf8,40 lines
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/artifacts/final-Generated.lean,68,2eb380566844513b5bbba8818331e8ad059e40dd64637761f11533c2d20d2cb1,utf8,2 lines
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/artifacts/final-Generated.olean,5312,18fb83a0a6b635740cbd0d0abd06207e8be4d9f56945e69391264a210ea4116c,binary,opaque
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/artifacts/formatted-Source.rs,62,c8c94ccd0dd90bfe3625a5c22c29025b3f65412648b3900b700d981247b0a203,utf8,4 lines
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/artifacts/v1-Generated.lean,48,f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42,utf8,2 lines
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/artifacts/v1-Generated.olean,5312,8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b,binary,opaque
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/fixture/Generated.lean,48,f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42,utf8,2 lines
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/fixture/Source.rs,53,8530bb262bfe063e2835ce478866e1cc8a808a17d56aa4eb64ca437d68825c4a,utf8,2 lines
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/probe.py,12595,fe824066f391a01c191390c3a1068f8c5934ed7b7cf02af674624aabd4ebc6e2,utf8,167 lines
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/results.json,38914,4ac07b740dba2caf6e78e363b7e25d360eccc96e964621c85a7f802d19875ce6,json,parsed
+anneal-3730-editor-save-format-watch-loop-2026-09-29,support/verify.py,3653,8e1d38eefdac821152d00c2ec124027303cb040961f3537e5cd8c8d483614787,utf8,62 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,REPORT.json,577,8e9699f39092f3e68cd20b99db83355c7291b0dd7c3aa230b550b518fe4d61a4,json,parsed
+anneal-3730-last-good-model-signature-recovery-2026-09-29,REPORT.md,3094,bf0b4e9718f2f47091b6dda1250d9416e0ae62b593f4b4fbe05fcecb563da484,utf8,15 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/check.py,2749,852f74a41a7506e3a96096d14d7e056bd34b7ed0080b1a57f14551137e8def4d,utf8,41 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/probe.py,8968,8b5b7e2ac41e2297bea6b69436d3fa6eedb02e9512a061c679252ed3737692c4,utf8,131 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/results.json,22564,0db16e4a09277c4dcb159a718b68b677a6020421d3c98c2ce0eb4a344178b9e2,json,parsed
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/current.llbc,6864,f598fb22509761d98b877e8e6523bdc3fb6d4e0efb6874ad66dfd471c4819896,utf8,0 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/generated-A/Current.lean,20,c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e,utf8,1 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/generated-A/Funs.lean,930,06d7faa6d32cb168ac056376b1665cb6d706a0a17640165867b717307ef16992,utf8,24 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/generated-A/Types.lean,533,abead919837ca9551ee366be932586dd4384b0abcd095c491490d0a7009c5b18,utf8,17 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/generated-B/Funs.lean,931,650a5d3e38ee4299f13c7f24fd0eec8cb57629bcd46832c97477ac386e4b58f4,utf8,24 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/generated-B/Recovery.lean,21,398d3907d0346654e1b1570e2c6a0ad548b8c66f7ff20805228d53fb564eaf32,utf8,1 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/generated-B/Types.lean,533,abead919837ca9551ee366be932586dd4384b0abcd095c491490d0a7009c5b18,utf8,17 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Current/Current/Funs.lean,930,06d7faa6d32cb168ac056376b1665cb6d706a0a17640165867b717307ef16992,utf8,24 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Current/Current/Funs.olean,12848,6f53468d78718a0ab0e25ab4eefe7abeb2aeeb4237aa61395c566c31867f4037,binary,opaque
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Current/Current/Types.lean,533,abead919837ca9551ee366be932586dd4384b0abcd095c491490d0a7009c5b18,utf8,17 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Current/Current/Types.olean,1608,e2431359ce413fd26b89d898c0077b35d5bd9ffca60cf817feda9481e85be204,binary,opaque
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Current/Current.lean,20,c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e,utf8,1 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Current/Current.olean,1312,34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149,binary,opaque
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Current/Proof.lean,136,27fd4b959e4904255dc0b6cbb86e03bbf84e9957c3d100d591021764d2f6cff6,utf8,4 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Recovery/Proof.lean,73,c90175390e6678abf0c74be0088f20f6b2a92fa087db533c94cdd006109231f4,utf8,2 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Recovery/Recovery/Funs.lean,931,650a5d3e38ee4299f13c7f24fd0eec8cb57629bcd46832c97477ac386e4b58f4,utf8,24 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Recovery/Recovery/Funs.olean,12856,92db01de0492f9155ea70de048d6151ffc70521b6c25c435379fc9492f23ab14,binary,opaque
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Recovery/Recovery/Types.lean,533,abead919837ca9551ee366be932586dd4384b0abcd095c491490d0a7009c5b18,utf8,17 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Recovery/Recovery/Types.olean,1608,c6c4a61667e7463e08eedb34dcd931c01fd39a303e411804654541028e53a568,binary,opaque
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Recovery/Recovery.lean,21,398d3907d0346654e1b1570e2c6a0ad548b8c66f7ff20805228d53fb564eaf32,utf8,1 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/model-Recovery/Recovery.olean,1320,3f0b7c809ae7057a712a66c425a2060a5221fcd55b9b39cc228770e5cfdc7627,binary,opaque
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/proof-snapshots/A-initial.lean,72,f2051ac0472a68d70bafd387e745f0f0a524a19a0410e8803e9a4960f1716fda,utf8,2 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/proof-snapshots/A-provisional.lean,136,27fd4b959e4904255dc0b6cbb86e03bbf84e9957c3d100d591021764d2f6cff6,utf8,4 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/proof-snapshots/B-adapted.lean,73,c90175390e6678abf0c74be0088f20f6b2a92fa087db533c94cdd006109231f4,utf8,2 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/proof-snapshots/B-old-assumptions.lean,73,c224ff31ca03c49407081e1cf027d64e30cf34db4a0b58762139485c73342596,utf8,2 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/recovery.llbc,6865,098fab5d0730ef4bd0cbbe8aa29a543d21eece93b6703253cb0cbda48fb0b14f,utf8,0 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/source-snapshots/A.rs,69,77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995,utf8,2 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/source-snapshots/B.rs,69,7dfcff8f1ca6bb726ca6d07821cb6fff7c762ee48130ebac0569783df954cbd3,utf8,2 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/source-snapshots/failed.rs,84,22945f4807b96e92db783c49f7a816ea5c4308a7c8c0c6fa2c835b0d2601b8c3,utf8,3 lines
+anneal-3730-last-good-model-signature-recovery-2026-09-29,support/work/source.rs,69,7dfcff8f1ca6bb726ca6d07821cb6fff7c762ee48130ebac0569783df954cbd3,utf8,2 lines
+anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29,REPORT.json,910,320971ddce908c69d666b965d566d6b66dc98ae05173a82b686c988413335f7b,json,parsed
+anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29,REPORT.md,5129,5b818d2e389ca8be1a1858ac61759880c6b7b161f035762da351a4d160374969,utf8,25 lines
+anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29,support/artifacts/Proof-v1.lean,63,7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3,utf8,3 lines
+anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29,support/artifacts/Proof-v2.lean,79,b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee,utf8,3 lines
+anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29,support/bridge.py,8037,985d994dbda88ba99a1c22132b8b2f7c5fd27ef0b53670ec2bdd71e609d8796e,utf8,129 lines
+anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29,support/check.py,3886,9cb33f5c3221cc78b962dcfbed57c0fe6e3fa6aff255bb1d7f73be3085e9ba3f,utf8,58 lines
+anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29,support/probe.py,6829,2bd66ac89cea50ae59b93850d20ce7e68157459622415e5778fcc2a9e09b54ed,utf8,107 lines
+anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29,support/results.json,24973,3fc15e388d50767bdae8d187ef649b9dfb2018a671c994a4e80731b557af05f8,json,parsed
+anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29,REPORT.json,523,515fdc3f741bd8e80f5824947b6f30ff99b3c6b98ca0a74c7d649a7e0b83e499,json,parsed
+anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29,REPORT.md,3451,c7fa5607f6e0bdb14dac93b72c05b174fe6342790586de51e80899c319d1e631,utf8,13 lines
+anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29,support/check.py,2615,a8c3d23b35197b2ad1b5b1761f31bfcd171baefaf197f1c168435fdd3bef4378,utf8,42 lines
+anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29,support/probe.py,12758,81c07c83fd25c5652f9a6edeafd4b21a6cb17fca5d96fcc7355ae0a7a209e7c6,utf8,216 lines
+anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29,support/results.json,130819,7ed6fc04c4cda0edf3c521d263b9d66eed461042b90eceb9b0d0846c123dd488,json,parsed
+anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29,support/work/Projected.lean,135,00306010fe7f388a54753e5402b0380aeec108baaba84dc82695e2cdbeaa0255,utf8,5 lines
+anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29,support/work/host.rmeta,2645,f6fdcee36c7b120fb416ae1fb41c8b33b518ec39d3afe5ff084d8e74f27bd823,binary,opaque
+anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29,support/work/host.rs,193,fef64f8c8c6e1609f9e8b065350b3c17ba4c25daf4db5e211761e357bbfb0eff,utf8,6 lines
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,REPORT.json,1032,9a77566f295b77ffc4286f62844389cebad39ccddb2abc26e8709afa74a5b530,json,parsed
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,REPORT.md,5250,480cd37f8e2e2863c3c6110b7f9d3d4017f38f6ac6f49c6a2a622c63b0454995,utf8,46 lines
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/artifacts/final-MANIFEST.json,454,cd2e9d957d85f2ec336de855e196d175ff21064096952616509e994482865918,json,parsed
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/artifacts/final-ProbeEnv.lean,32,715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1,utf8,1 lines
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/artifacts/final-Proof.lean,64,3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4,utf8,3 lines
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/artifacts/initial-Proof.lean,80,85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1,utf8,3 lines
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/artifacts/orphan-MANIFEST.json,460,f5cd3f3147adfa3b1865efad7345874c1409469936faba5ecf3f1d51fcccd021,json,parsed
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/fixture/ProbeEnv.lean,32,715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1,utf8,1 lines
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/fixture/Proof.lean,80,85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1,utf8,3 lines
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/probe.py,12843,0655ef02a442130f2ec8165d43913660244afbbe2b8bfdea3e834121944c6acf,utf8,178 lines
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/results.json,6293,067e50deedc29cab80367c590640f1f38dd7af9b65b8fce3097fa21af2068d61,json,parsed
+anneal-3730-scratch-tactic-concurrency-crash-2026-09-29,support/verify.py,2438,fa47109a20cdd4817da6a2fddf259b3879efc044d62de2928e3ec4f90c17bd2a,utf8,34 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,REPORT.json,711,8b1ff153174c07eb6b624648acbd0cff0a6368480c5d929c093e3471bb5e45b7,json,parsed
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,REPORT.md,5481,476f60b4d2ec835386f5331fe2846fe5d01cba055dde6c05a708c842967ac840,utf8,28 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/__pycache__/probe.cpython-314.pyc,25143,d6ebd7567f046e74728230fec6ebe07644820d6979cc5d9d7bdd5387461c6ad6,binary,opaque
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/import-edit/annotation,46,35d8a10341551d4c726fb231da680ba79d301f7bb53b301763085b66394f90e4,utf8,2 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/import-edit/file.lean,148,f8088463eb04e121684b6e178c4db4a531c2fece73026f4a0189d43d4b31f73b,utf8,7 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/import-edit/import.lean,24,f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0,utf8,1 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/import-edit/map.json,10588,e26a6c3a469b67de85d1797c166fa38062a8dad04b15d954b5f3da31701b81ee,json,parsed
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/import-edit/stream.lean,148,f8088463eb04e121684b6e178c4db4a531c2fece73026f4a0189d43d4b31f73b,utf8,7 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/incomplete/annotation,44,b572e784bca01a8eb5275188ac8c61880f295e9165fb5fe63437f2d463633ec1,utf8,2 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/incomplete/file.lean,147,0ff077cc11fa4da10f3cd5be6965e6a75604711c126cb4d737160817114fca3e,utf8,7 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/incomplete/import.lean,24,15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2,utf8,1 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/incomplete/map.json,10152,2c1d5c30ed0d15f29e1b6a29d0250f4add029b2c8878012975867daddf7b4020,json,parsed
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/incomplete/stream.lean,147,0ff077cc11fa4da10f3cd5be6965e6a75604711c126cb4d737160817114fca3e,utf8,7 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/unicode-crlf/annotation,66,9767dcb003c990f6927f867c407bb50599363a95ed41be0f5008ac7cbf0fe426,utf8,3 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/unicode-crlf/file.lean,169,562a988a9b4d68353699a998ca05e703f4088f5a046fbcdfae32a11147918e5a,utf8,8 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/unicode-crlf/import.lean,24,15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2,utf8,1 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/unicode-crlf/map.json,14088,e63d2afbe80e87f9f8c24f3dc7970a4ba73da7ee696d8d95dddd48f6cfeb54da,json,parsed
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/unicode-crlf/stream.lean,169,562a988a9b4d68353699a998ca05e703f4088f5a046fbcdfae32a11147918e5a,utf8,8 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/valid/annotation,46,35d8a10341551d4c726fb231da680ba79d301f7bb53b301763085b66394f90e4,utf8,2 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/valid/file.lean,149,85a39246572e2afdf59db30674f3272516b82b10fe4a3532ce66a244909aecaa,utf8,7 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/valid/import.lean,24,15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2,utf8,1 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/valid/map.json,10588,a816c61e44f5bd858b12a22d81d12f01d1570f8aa11276f53b7185dff246fc89,json,parsed
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/artifacts/valid/stream.lean,149,85a39246572e2afdf59db30674f3272516b82b10fe4a3532ce66a244909aecaa,utf8,7 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/check.py,4067,96ede1d21681f2e54ddf621e929a1c5e28bdca642511816142415610e4330916,utf8,54 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/probe.py,10202,b22ec9536b70f0a49e840f3d3e7cd37535708206bae6c059a377216af74eed5f,utf8,165 lines
+anneal-3730-shared-generator-batch-live-sinks-2026-09-29,support/results.json,87151,381315225e16680f56dce0dfc7539d8731a31b2c9c9ae2f80e77ac96797eb640,json,parsed

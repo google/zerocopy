@@ -1,0 +1,33 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["596a917bee7ab7fe.olean"],
+  "m": false,
+  "i": "c8f7d9aee6ae0e30.ilean",
+  "c": "3f34f973b02b9cb5.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-resource-economics-2026-09-29/support/work/parallel-b/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-resource-economics-2026-09-29/support/work/parallel-b/Generated.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-resource-economics-2026-09-29/support/work/parallel-b/.lake/build/lib/lean/Generated.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-resource-economics-2026-09-29/support/work/parallel-b/.lake/build/lib/lean/Generated.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-resource-economics-2026-09-29/support/work/parallel-b/.lake/build/ir/Generated.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-resource-economics-2026-09-29/support/work/parallel-b/.lake/build/ir/Generated.setup.json --json",
+   "level": "trace"},
+  {"message": "Generated.lean:3:0: 9", "level": "info"}],
+ "inputs":
+ [["Generated:deps",
+   [["deps",
+     [["resource_probe/Generated:extraDep",
+       [["@resource_probe:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-resource-economics-2026-09-29/support/work/parallel-b/Generated.lean",
+   "350742ff992117cf"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Generated", "af97050f9dbc92bf"],
+  ["Package.id?: (some resource_probe)", "01c82bfc5a782937"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "d98df80be4b93149"}

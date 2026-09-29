@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/snapshots",
+    "rust/cargo-inputs",
+    "rust/procedural-macros",
+    "workspace/ownership"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Cargo 1.98.0-nightly",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+      }
+    },
+    {
+      "name": "Offline Cargo input and ownership probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "4101c4def098de100aaa87b2cb8002d7f22ff7872717f50950a8fa6cee37b079"
+      }
+    },
+    {
+      "name": "Two-crate no-registry fixture",
+      "identity": {
+        "artifact": "support/fixture",
+        "canonical_file_hash_manifest_sha256": "2e78b1712c66a02a2167b2102e16c4dfe0b60ecb75e1b89d1bae320640b2561f"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

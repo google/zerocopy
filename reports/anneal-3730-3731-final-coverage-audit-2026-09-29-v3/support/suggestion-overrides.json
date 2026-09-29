@@ -1,0 +1,16 @@
+{
+  "C02": "Direct Lean added a real InfoWithCtx dereference, release and stale-session rejection, alongside plainGoal. It remains a tiny component run without Rust-hosted InfoView or all rich RPC cases.",
+  "C09": "A causal duplicate-request-ID reply schedule now exists in direct Lean, but no Anneal version envelope or client fence was implemented.",
+  "D05": "Pinned Charon private concurrent lib/feature runs and repeated test-unit destination collisions add direct process evidence; general semantic determinism and unit arbitration remain open.",
+  "D06": "The prior FIFO stop is supplemented by a real regular-file 4 KiB partial LLBC under file-size failure, independent last-good copy and retry; all kill stages and product fencing remain open.",
+  "D07": "A lib/bin/test/feature/host matrix found a successful --test request whose destination alternated between test and binary LLBC; a complete unit-key/invalidation policy remains unimplemented.",
+  "F11": "Pinned Lake was interrupted during the actual output-map write, leaving invalid JSON rejected by no-build and repaired by build; concurrent map writers, artifact rename and power loss remain untested.",
+  "F12": "A bounded same-package writable overlap completed in one schedule; this does not show shared-package crash consistency or conflicting-definition safety.",
+  "J13": "Two private consumers of one read-only cache and a bounded shared-writable overlap were run; duplicate same-key miss arbitration and conflicting writers remain open.",
+  "K01": "Exact copied Rust doc-comment payload bytes and Unicode coordinate conversions were retained, but the source-owned range sidecar is illustrative rather than Anneal-issued.",
+  "K02": "Pinned source/LLBC/generated Lean declarations and a three-function manual golden manifest exist; no authenticated producer-issued cross-layer ID/range map exists.",
+  "K03": "Real Charon macro-generated item spans and missing source text were observed; edit responsibility in the Rust-hosted Anneal projection remains undecided.",
+  "K04": "Real batch/LSP diagnostic specimens and an illustrative source blame map exist; the new human protocol has no participants or outcome data.",
+  "K06": "A live Lean version-1 diagnostic returned after its owner Rust doc-comment line was deleted on disk; a local source-version gate rejected the patch, without an Anneal editor transport.",
+  "N11": "The manual golden vertical adds a proof file missing one required claim and an admitted false claim: both had Lean exit zero and were rejected by separate coverage/axiom gates. No-goals alone is insufficient; Anneal integration remains under I129/I137/I159."
+}

@@ -1,0 +1,139 @@
+{
+  "argv": [
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+    "cargo",
+    "--preset",
+    "aeneas",
+    "--dest-file",
+    "$REPORT/artifacts/lib-feature.llbc",
+    "--",
+    "--manifest-path",
+    "$WORK/source-lib-feature/Cargo.toml",
+    "--package",
+    "subject_matrix",
+    "--lib",
+    "--features",
+    "selected",
+    "--offline",
+    "--locked",
+    "-v"
+  ],
+  "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+  "charon_driver_crate_invocations": [
+    "subject_matrix"
+  ],
+  "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+  "cwd": "$WORK/source-lib-feature",
+  "destination": "$REPORT/artifacts/lib-feature.llbc",
+  "destination_bytes": 14711,
+  "destination_exists": true,
+  "destination_sha256": "2161d909832e207179f97a8b55d4b78e48311875e1731cc8049c2395adfd67b9",
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_TARGET_DIR": "$WORK/target-lib-feature",
+    "FILE_SIZE_LIMIT": null,
+    "RAYON_NUM_THREADS": "1",
+    "RUSTFLAGS": null
+  },
+  "exit": 0,
+  "label": "lib-feature",
+  "projection": {
+    "crate_name": "subject_matrix",
+    "file_names": [
+      {
+        "Local": "src/lib.rs"
+      },
+      {
+        "Local": "/rustc/library/core/src/num/uint_macros.rs"
+      },
+      {
+        "Local": "/rustc/library/core/src/num/mod.rs"
+      },
+      {
+        "Local": "/rustc/library/core/src/lib.rs"
+      }
+    ],
+    "has_errors": false,
+    "local_functions": [
+      {
+        "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+        "markers": [
+          "source marker: alpha"
+        ],
+        "name": "subject_matrix::alpha",
+        "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 3
+            },
+            "end": {
+              "col": 49,
+              "line": 3
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+        "markers": [
+          "source marker: beta"
+        ],
+        "name": "subject_matrix::beta",
+        "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 48,
+              "line": 5
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "body_sha256": "0a96d8ad2f055adc1c7d5f38d9f40a3d81a5173ae337b69030e3b203de0cc51a",
+        "markers": [],
+        "name": "subject_matrix::feature_only",
+        "source_text": "pub fn feature_only(x: u32) -> u32 { x.wrapping_add(17) }",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 57,
+              "line": 7
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "raw_sha256": "2161d909832e207179f97a8b55d4b78e48311875e1731cc8049c2395adfd67b9"
+  },
+  "remaining_process_group_pids": [],
+  "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+  "seconds": 0.1603,
+  "source_tree": {
+    "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+    "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+    "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+    "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+    "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+  },
+  "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-feature)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --cfg 'feature=\"selected\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=4e4e1a4eb2af6286 -C extra-filename=-d2c0df1d978a8751 --out-dir $WORK/target-lib-feature/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-feature/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-feature/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s\n",
+  "stdout": "",
+  "target_dir": "$WORK/target-lib-feature"
+}

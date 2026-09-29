@@ -1,0 +1,15 @@
+# R25: last-good proof feedback ends on a fresh signature-changing model
+
+Observed 2026-09-29 with pinned Charon, one-shot Aeneas and Lean 4.30.0-rc2 CLIs. The source moved through **A → failed revision → supported B** at one saved Rust pathname. The scripts and raw command/status/diagnostic transcript are in `support/`; all source and proof revisions, LLBC and generated Lean outputs are retained under `support/work`.
+
+| State | Actual component result | Experiment-side freshness route |
+| --- | --- | --- |
+| A: `inc(u32) → u32`, adds 1 | Charon and Aeneas succeeded. Generated Lean signature was `Std.U32 → Result Std.U32`; the A proof passed. | A is the current prepared model. |
+| Failed revision: intended `inc(u64) → u64`, adds 2, followed by malformed Rust | Charon failed. The prior `current.llbc` path retained byte-identical A bytes. An edited A proof still passed against A. | Stop mode suppressed the query. Explicit last-good mode returned the A proof result with `stale`, `provisional`, both Rust revision hashes, A model identity and `current_verified = false`. |
+| B recovery: valid `inc(u64) → u64`, adds 2 | Fresh Charon and Aeneas succeeded. Generated Lean signature was `Std.U64 → Result Std.U64`. The old U32 proof **failed** against B with an application type mismatch naming U32 and U64. An adapted U64 proof passed against B. | Publication of B ends provisional A feedback; B is current. A late proof run against A still exits 0 but is explicitly rejected as a current B result because its model identity differs. |
+
+The event ordering and model/Rust/proof hashes are retained in `support/results.json`. The deliberate late-A control shows why an exit-0 result alone cannot determine freshness. The current-state labels, provisional cutoff and late-result rejection are **experiment-side policy decisions**. Charon, Aeneas and Lean do not emit this workflow metadata, and this run did not execute an Anneal scheduler or UI. The B proof passing establishes Lean acceptance against the generated B model; it does not by itself establish Rust-level semantic equivalence.
+
+**Issue scope.** This fills an I023 local component slice for changed function signature and recovery after an unavailable Rust model. It informs I145's proposed identity/freshness routing with an executable old-model negative control. For I134, the script preserves deterministic sequential causal order but **does not** place a real edit inside an in-flight Anneal request or establish race behavior. I023 still needs real UI/agent comprehension testing, live goal/context queries, unsaved overlays, annotation attachment, multiple subjects, and actual recovery orchestration. No human participants were simulated.
+
+**Replay.** In this directory run `python3 support/probe.py`, then `python3 support/check.py`. The standard-library probe uses cached pinned binaries, requires more than 5 GiB free disk, performs no installs, and replaces only this package's `support/work` and `support/results.json`. Copy the package first if the original observation must be kept before replay.

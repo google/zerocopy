@@ -1,0 +1,362 @@
+{
+  "tool_sha256": {
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "source_manifest_sha256": {
+    "dep_a/Cargo.toml": "73c18a3a515dac3cfe0f3afa82d1948c2f15b3b754e7a297454a3e942e543e8b",
+    "dep_a/src/lib.rs": "a30619c0f6bf2c873a373a43aa9de62d1d00ef87dfa2cae357d333303bab2a5b",
+    "dep_b/Cargo.toml": "80c059104d6c926f81bdfc88066b2db62a683152b6cc980f81638875f0e1f4d3",
+    "dep_b/src/lib.rs": "74861e8f00a88700b9db893dc4cbcaf3810561d77c243b11761d92490c7a7c19",
+    "root/Cargo.lock": "54fe2b108662968c0a0824acfaba9f0ea4c85b0a8c259ce3bca09177f08c4b64",
+    "root/Cargo.toml": "2a625b558476a12e9509b37c511b32ba1312c303bb3c92d8f4c20b306680eb0f",
+    "root/build.rs": "5533dcc22ce9c14dcf004a5c16ae135690d27022d51156fc27fa108e9a84c9b9",
+    "root/src/lib.rs": "c88207804ea323de9a6e8e9478cb2f5439934f0754823394e378853caee3c739"
+  },
+  "argv": [
+    "$TOOLS/bin/charon",
+    "cargo",
+    "--preset",
+    "aeneas",
+    "--dest-file",
+    "$WORK/u0/root/probe.llbc",
+    "--",
+    "--manifest-path",
+    "$WORK/u0/root/Cargo.toml",
+    "--lib",
+    "--offline",
+    "--locked",
+    "-j",
+    "1"
+  ],
+  "isolated_region": {
+    "start_byte": 2645,
+    "end_byte_exclusive": 2870,
+    "length_bytes": 225,
+    "common_prefix_sha256": "40cf2a0380c44e092f80a2c5005150e3dc974fbc7d6d7e1eef15daa76ce5863e",
+    "common_suffix_sha256": "0582b8d598796adca0111a4a38ebcebd5c698d4964b223bd13e191b578e34323",
+    "short_name_fun_id_order": [
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      [
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        0,
+        2,
+        1,
+        3
+      ],
+      [
+        0,
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        0,
+        1,
+        3
+      ]
+    ],
+    "canonical_sha256": "ec4dc523318d6e1ed34b0d82f3650fe68c69998d17bbd65a3552c19d0cbed1ba"
+  },
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "RAYON_NUM_THREADS": "1",
+    "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup",
+    "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+    "CHARON_TOOLCHAIN_IS_IN_PATH": "1"
+  },
+  "runs": [
+    {
+      "run": 1,
+      "exit": 0,
+      "elapsed_seconds": 0.7522,
+      "stdout": "",
+      "stderr": "   Compiling r37u0 v0.1.0 ($WORK/u0/root)\n   Compiling dep_b v0.1.0 ($WORK/u0/dep_b)\n   Compiling dep_a v0.1.0 ($WORK/u0/dep_a)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.72s\n",
+      "bytes": 10936,
+      "sha256": "ec4dc523318d6e1ed34b0d82f3650fe68c69998d17bbd65a3552c19d0cbed1ba",
+      "mtime_ns": 1790685101081091313,
+      "json_top_level_keys": [
+        "charon_version",
+        "has_errors",
+        "translated"
+      ],
+      "has_errors": false,
+      "crate_name": "r37u0"
+    },
+    {
+      "run": 2,
+      "exit": 0,
+      "elapsed_seconds": 0.0781,
+      "stdout": "",
+      "stderr": "   Compiling r37u0 v0.1.0 ($WORK/u0/root)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s\n",
+      "bytes": 10936,
+      "sha256": "e211fbe97e7193a1253cbd7debe0f60741c6f439494b5a0afab66df76dbed982",
+      "mtime_ns": 1790685101230019538,
+      "json_top_level_keys": [
+        "charon_version",
+        "has_errors",
+        "translated"
+      ],
+      "has_errors": false,
+      "crate_name": "r37u0"
+    },
+    {
+      "run": 3,
+      "exit": 0,
+      "elapsed_seconds": 0.0759,
+      "stdout": "",
+      "stderr": "   Compiling r37u0 v0.1.0 ($WORK/u0/root)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s\n",
+      "bytes": 10936,
+      "sha256": "bb30246bfd6f73598dd2b451125bc8c326eff61c2cb137fded8f4b0c7bffc2e5",
+      "mtime_ns": 1790685101376134620,
+      "json_top_level_keys": [
+        "charon_version",
+        "has_errors",
+        "translated"
+      ],
+      "has_errors": false,
+      "crate_name": "r37u0"
+    },
+    {
+      "run": 4,
+      "exit": 0,
+      "elapsed_seconds": 0.076,
+      "stdout": "",
+      "stderr": "   Compiling r37u0 v0.1.0 ($WORK/u0/root)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s\n",
+      "bytes": 10936,
+      "sha256": "5fcf6f2673878efe6d3c0aa3ab67541f6f8568ff9614a2951a41ee64cd53c436",
+      "mtime_ns": 1790685101522232077,
+      "json_top_level_keys": [
+        "charon_version",
+        "has_errors",
+        "translated"
+      ],
+      "has_errors": false,
+      "crate_name": "r37u0"
+    },
+    {
+      "run": 5,
+      "exit": 0,
+      "elapsed_seconds": 0.0763,
+      "stdout": "",
+      "stderr": "   Compiling r37u0 v0.1.0 ($WORK/u0/root)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s\n",
+      "bytes": 10936,
+      "sha256": "d9559b90f96ee1a7608014db74b67d46c1725fb1a6e9132b7f467355a6faa752",
+      "mtime_ns": 1790685101668748322,
+      "json_top_level_keys": [
+        "charon_version",
+        "has_errors",
+        "translated"
+      ],
+      "has_errors": false,
+      "crate_name": "r37u0"
+    }
+  ],
+  "comparisons": [
+    {
+      "from": 1,
+      "to": 2,
+      "same_bytes": false,
+      "same_parsed_json": false,
+      "first_different_byte_offset": 2674,
+      "changed_byte_count_by_position": 156,
+      "json_changed_leaf_count": 8,
+      "json_changed_leaves": [
+        {
+          "path": "$.translated.short_names[0].key.Fun",
+          "before": 0,
+          "after": 3
+        },
+        {
+          "path": "$.translated.short_names[0].value[0].Ident[0]",
+          "before": "combined",
+          "after": "wrapping_add"
+        },
+        {
+          "path": "$.translated.short_names[1].key.Fun",
+          "before": 1,
+          "after": 2
+        },
+        {
+          "path": "$.translated.short_names[1].value[0].Ident[0]",
+          "before": "dep_a",
+          "after": "dep_b"
+        },
+        {
+          "path": "$.translated.short_names[2].key.Fun",
+          "before": 2,
+          "after": 1
+        },
+        {
+          "path": "$.translated.short_names[2].value[0].Ident[0]",
+          "before": "dep_b",
+          "after": "dep_a"
+        },
+        {
+          "path": "$.translated.short_names[3].key.Fun",
+          "before": 3,
+          "after": 0
+        },
+        {
+          "path": "$.translated.short_names[3].value[0].Ident[0]",
+          "before": "wrapping_add",
+          "after": "combined"
+        }
+      ],
+      "diff_sha256": "44729401d33dcce98099b0596813d44389b2b44a50cd96fe5a6066bad0b8e6b7"
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "same_bytes": false,
+      "same_parsed_json": false,
+      "first_different_byte_offset": 2674,
+      "changed_byte_count_by_position": 156,
+      "json_changed_leaf_count": 4,
+      "json_changed_leaves": [
+        {
+          "path": "$.translated.short_names[0].key.Fun",
+          "before": 3,
+          "after": 0
+        },
+        {
+          "path": "$.translated.short_names[0].value[0].Ident[0]",
+          "before": "wrapping_add",
+          "after": "combined"
+        },
+        {
+          "path": "$.translated.short_names[3].key.Fun",
+          "before": 0,
+          "after": 3
+        },
+        {
+          "path": "$.translated.short_names[3].value[0].Ident[0]",
+          "before": "combined",
+          "after": "wrapping_add"
+        }
+      ],
+      "diff_sha256": "3c74fc49c222a2decc433fa9a6bb094a787b2e13abc479d55db106afecccbb8c"
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "same_bytes": false,
+      "same_parsed_json": false,
+      "first_different_byte_offset": 2727,
+      "changed_byte_count_by_position": 105,
+      "json_changed_leaf_count": 6,
+      "json_changed_leaves": [
+        {
+          "path": "$.translated.short_names[1].key.Fun",
+          "before": 2,
+          "after": 3
+        },
+        {
+          "path": "$.translated.short_names[1].value[0].Ident[0]",
+          "before": "dep_b",
+          "after": "wrapping_add"
+        },
+        {
+          "path": "$.translated.short_names[2].key.Fun",
+          "before": 1,
+          "after": 2
+        },
+        {
+          "path": "$.translated.short_names[2].value[0].Ident[0]",
+          "before": "dep_a",
+          "after": "dep_b"
+        },
+        {
+          "path": "$.translated.short_names[3].key.Fun",
+          "before": 3,
+          "after": 1
+        },
+        {
+          "path": "$.translated.short_names[3].value[0].Ident[0]",
+          "before": "wrapping_add",
+          "after": "dep_a"
+        }
+      ],
+      "diff_sha256": "1edb3c45e6b6ef1fb67ffdb80668034feb859b96cd33f3dc3469abdc84bb38b5"
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "same_bytes": false,
+      "same_parsed_json": false,
+      "first_different_byte_offset": 2674,
+      "changed_byte_count_by_position": 156,
+      "json_changed_leaf_count": 8,
+      "json_changed_leaves": [
+        {
+          "path": "$.translated.short_names[0].key.Fun",
+          "before": 0,
+          "after": 2
+        },
+        {
+          "path": "$.translated.short_names[0].value[0].Ident[0]",
+          "before": "combined",
+          "after": "dep_b"
+        },
+        {
+          "path": "$.translated.short_names[1].key.Fun",
+          "before": 3,
+          "after": 0
+        },
+        {
+          "path": "$.translated.short_names[1].value[0].Ident[0]",
+          "before": "wrapping_add",
+          "after": "combined"
+        },
+        {
+          "path": "$.translated.short_names[2].key.Fun",
+          "before": 2,
+          "after": 1
+        },
+        {
+          "path": "$.translated.short_names[2].value[0].Ident[0]",
+          "before": "dep_b",
+          "after": "dep_a"
+        },
+        {
+          "path": "$.translated.short_names[3].key.Fun",
+          "before": 1,
+          "after": 3
+        },
+        {
+          "path": "$.translated.short_names[3].value[0].Ident[0]",
+          "before": "dep_a",
+          "after": "wrapping_add"
+        }
+      ],
+      "diff_sha256": "0bf9242b54b3d3306891fcf7a113ae7097f5b17ba96f83db1aa8f2f3a7996003"
+    }
+  ],
+  "artifact_sha256": {
+    "canonical-sorted-short-names.llbc": "ec4dc523318d6e1ed34b0d82f3650fe68c69998d17bbd65a3552c19d0cbed1ba",
+    "run-1.llbc": "ec4dc523318d6e1ed34b0d82f3650fe68c69998d17bbd65a3552c19d0cbed1ba",
+    "run-2.llbc": "e211fbe97e7193a1253cbd7debe0f60741c6f439494b5a0afab66df76dbed982",
+    "run-3.llbc": "bb30246bfd6f73598dd2b451125bc8c326eff61c2cb137fded8f4b0c7bffc2e5",
+    "run-4.llbc": "5fcf6f2673878efe6d3c0aa3ab67541f6f8568ff9614a2951a41ee64cd53c436",
+    "run-5.llbc": "d9559b90f96ee1a7608014db74b67d46c1725fb1a6e9132b7f467355a6faa752"
+  },
+  "diff_sha256": {
+    "run-1-to-2.diff": "44729401d33dcce98099b0596813d44389b2b44a50cd96fe5a6066bad0b8e6b7",
+    "run-2-to-3.diff": "3c74fc49c222a2decc433fa9a6bb094a787b2e13abc479d55db106afecccbb8c",
+    "run-3-to-4.diff": "1edb3c45e6b6ef1fb67ffdb80668034feb859b96cd33f3dc3469abdc84bb38b5",
+    "run-4-to-5.diff": "0bf9242b54b3d3306891fcf7a113ae7097f5b17ba96f83db1aa8f2f3a7996003"
+  }
+}

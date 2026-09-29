@@ -1,0 +1,32 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["02136653dd4a1442.olean"],
+  "m": false,
+  "i": "d31671a8ce7324a2.ilean",
+  "c": "cc139e567905d29b.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/support/work/lake-env-olean/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/support/work/lake-env-olean/Dep.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/support/work/lake-env-olean/.lake/build/lib/lean/Dep.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/support/work/lake-env-olean/.lake/build/lib/lean/Dep.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/support/work/lake-env-olean/.lake/build/ir/Dep.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/support/work/lake-env-olean/.lake/build/ir/Dep.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Dep:deps",
+   [["deps",
+     [["refresh_probe/Dep:extraDep",
+       [["@refresh_probe:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/support/work/lake-env-olean/Dep.lean",
+   "62f5a3264571fd35"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Dep", "b5a238a443dfa755"],
+  ["Package.id?: (some refresh_probe)", "4c2f5ec6bbcbb083"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "49d3488d0d9f8fbb"}

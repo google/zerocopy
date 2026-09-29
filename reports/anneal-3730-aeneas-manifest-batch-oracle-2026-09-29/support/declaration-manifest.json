@@ -1,0 +1,471 @@
+{
+  "base": {
+    "charon_version": "0.1.210",
+    "crate_name": "oracle_probe",
+    "has_errors": false,
+    "charon_declarations": [
+      {
+        "kind": "fun_decls",
+        "def_id": 0,
+        "name_parts": [
+          {
+            "Ident": [
+              "oracle_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "inc",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 2,
+              "col": 0
+            },
+            "end": {
+              "line": 2,
+              "col": 47
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": true
+      },
+      {
+        "kind": "fun_decls",
+        "def_id": 1,
+        "name_parts": [
+          {
+            "Ident": [
+              "oracle_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "twice",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 3,
+              "col": 0
+            },
+            "end": {
+              "line": 3,
+              "col": 43
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": true
+      },
+      {
+        "kind": "fun_decls",
+        "def_id": 2,
+        "name_parts": [
+          {
+            "Ident": [
+              "oracle_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "choose",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 4,
+              "col": 0
+            },
+            "end": {
+              "line": 4,
+              "col": 71
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": true
+      },
+      {
+        "kind": "fun_decls",
+        "def_id": 3,
+        "name_parts": [
+          {
+            "Ident": [
+              "core",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "num",
+              0
+            ]
+          },
+          {
+            "Impl": {
+              "Ty": {
+                "params": {
+                  "regions": [],
+                  "types": [],
+                  "const_generics": [],
+                  "trait_clauses": [],
+                  "regions_outlive": [],
+                  "types_outlive": [],
+                  "trait_type_constraints": []
+                },
+                "skip_binder": {
+                  "Deduplicated": 236
+                },
+                "kind": "InherentImplBlock"
+              }
+            }
+          },
+          {
+            "Ident": [
+              "wrapping_add",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 1,
+            "beg": {
+              "line": 2583,
+              "col": 8
+            },
+            "end": {
+              "line": 2583,
+              "col": 58
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": false
+      }
+    ],
+    "lean_declarations": [
+      {
+        "file": "Funs.lean",
+        "line": 21,
+        "head": "def inc (x : Std.U32) : Result Std.U32 := do",
+        "name": "inc",
+        "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/source.rs', lines 2:0-2:47"
+      },
+      {
+        "file": "Funs.lean",
+        "line": 27,
+        "head": "def twice (x : Std.U32) : Result Std.U32 := do",
+        "name": "twice",
+        "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/source.rs', lines 3:0-3:43"
+      },
+      {
+        "file": "Funs.lean",
+        "line": 34,
+        "head": "def choose (x : Std.U32) : Result Std.U32 := do",
+        "name": "choose",
+        "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/source.rs', lines 4:0-4:71"
+      }
+    ],
+    "proven_def_id_to_lean_range": null,
+    "anneal_obligation_mapping": null
+  },
+  "mutated": {
+    "charon_version": "0.1.210",
+    "crate_name": "oracle_probe",
+    "has_errors": false,
+    "charon_declarations": [
+      {
+        "kind": "fun_decls",
+        "def_id": 0,
+        "name_parts": [
+          {
+            "Ident": [
+              "oracle_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "inc",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 2,
+              "col": 0
+            },
+            "end": {
+              "line": 2,
+              "col": 47
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": true
+      },
+      {
+        "kind": "fun_decls",
+        "def_id": 1,
+        "name_parts": [
+          {
+            "Ident": [
+              "oracle_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "twice",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 3,
+              "col": 0
+            },
+            "end": {
+              "line": 3,
+              "col": 43
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": true
+      },
+      {
+        "kind": "fun_decls",
+        "def_id": 2,
+        "name_parts": [
+          {
+            "Ident": [
+              "oracle_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "choose",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 4,
+              "col": 0
+            },
+            "end": {
+              "line": 4,
+              "col": 71
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": true
+      },
+      {
+        "kind": "fun_decls",
+        "def_id": 3,
+        "name_parts": [
+          {
+            "Ident": [
+              "core",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "num",
+              0
+            ]
+          },
+          {
+            "Impl": {
+              "Ty": {
+                "params": {
+                  "regions": [],
+                  "types": [],
+                  "const_generics": [],
+                  "trait_clauses": [],
+                  "regions_outlive": [],
+                  "types_outlive": [],
+                  "trait_type_constraints": []
+                },
+                "skip_binder": {
+                  "Deduplicated": 236
+                },
+                "kind": "InherentImplBlock"
+              }
+            }
+          },
+          {
+            "Ident": [
+              "wrapping_add",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 1,
+            "beg": {
+              "line": 2583,
+              "col": 8
+            },
+            "end": {
+              "line": 2583,
+              "col": 58
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": false
+      }
+    ],
+    "lean_declarations": [
+      {
+        "file": "Funs.lean",
+        "line": 21,
+        "head": "def inc (x : Std.U32) : Result Std.U32 := do",
+        "name": "inc",
+        "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/source.rs', lines 2:0-2:47"
+      },
+      {
+        "file": "Funs.lean",
+        "line": 27,
+        "head": "def twice (x : Std.U32) : Result Std.U32 := do",
+        "name": "twice",
+        "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/source.rs', lines 3:0-3:43"
+      },
+      {
+        "file": "Funs.lean",
+        "line": 34,
+        "head": "def choose (x : Std.U32) : Result Std.U32 := do",
+        "name": "choose",
+        "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/source.rs', lines 4:0-4:71"
+      }
+    ],
+    "proven_def_id_to_lean_range": null,
+    "anneal_obligation_mapping": null
+  },
+  "external": {
+    "charon_version": "0.1.210",
+    "crate_name": "oracle_probe",
+    "has_errors": false,
+    "charon_declarations": [
+      {
+        "kind": "fun_decls",
+        "def_id": 0,
+        "name_parts": [
+          {
+            "Ident": [
+              "oracle_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "call",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 3,
+              "col": 0
+            },
+            "end": {
+              "line": 3,
+              "col": 60
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": true
+      },
+      {
+        "kind": "fun_decls",
+        "def_id": 1,
+        "name_parts": [
+          {
+            "Ident": [
+              "oracle_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "external_double",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 2,
+              "col": 20
+            },
+            "end": {
+              "line": 2,
+              "col": 54
+            }
+          },
+          "generated_from_span": null
+        },
+        "is_local": true
+      }
+    ],
+    "lean_declarations": [
+      {
+        "file": "Funs.lean",
+        "line": 25,
+        "head": "def call (x : Std.U32) : Result Std.U32 := do",
+        "name": "call",
+        "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/source.rs', lines 3:0-3:60"
+      },
+      {
+        "file": "FunsExternal_Template.lean",
+        "line": 20,
+        "head": "axiom external_double : Std.U32 \u2192 Result Std.U32",
+        "name": "external_double",
+        "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/source.rs', lines 2:20-2:54 -/"
+      }
+    ],
+    "proven_def_id_to_lean_range": null,
+    "anneal_obligation_mapping": null
+  }
+}

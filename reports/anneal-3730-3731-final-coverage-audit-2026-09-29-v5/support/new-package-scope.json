@@ -1,0 +1,111 @@
+{
+  "anneal-3730-lean-lsp-navigation-edit-operations-2026-09-29": {
+    "suite": "R14",
+    "ids": [
+      30,
+      59,
+      60,
+      62,
+      63
+    ],
+    "method": "Pinned direct Lean LSP returned definition/references, same-file rename WorkspaceEdit, semantic tokens, completion resolve without textEdit, and empty quick fix; applied rename plus labelled client completion fallback batch-checked, then replayed in an illustrative projection model.",
+    "boundary": "No Rust-hosted Anneal map, cross-file rename, nonempty code action, server-authored completion edit, actual editor adapter or save/watch loop.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/transcript.json",
+      "support/Applied.lean",
+      "support/projection-replay.json",
+      "support/probe.py",
+      "support/projection_replay.py",
+      "support/verify.py"
+    ]
+  },
+  "anneal-3730-lake-key-artifact-family-matrix-2026-09-29": {
+    "suite": "R15",
+    "ids": [
+      89,
+      90,
+      91,
+      92,
+      93,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      108,
+      109,
+      151
+    ],
+    "method": "Six pinned Lake source/path/option/consumer-manifest variants and four valid local OLean/ILean/C/setup cross-generation replacements; no-build/setup, setup-import batch, direct local batch/server and two valid plugin initializer markers distinguished consumed bytes.",
+    "boundary": "One tiny pin/host; setup returned cache OLean rather than attesting replaced local file, direct watchdogs forced down after diagnostics, prior native plugin reused; no Anneal archive or power loss.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/artifacts/retained/base/Dep.olean",
+      "support/artifacts/retained/mixed-olean/Dep.olean",
+      "support/artifacts/v1/plugin__probe_Plugin.dylib",
+      "support/artifacts/v2/plugin__probe_Plugin.dylib",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-lean-multiminute-restart-resource-soak-2026-09-29": {
+    "suite": "R16",
+    "ids": [
+      41,
+      42,
+      43,
+      44,
+      45,
+      47,
+      116,
+      117,
+      118,
+      153,
+      154
+    ],
+    "method": "Direct Lean three-minute guarded one/two/four-file-worker plus conflicting-import workspace ramp: 69 edit/goal checks, reopen/restart/session/reference controls, bidirectional request-ID collision pilot, RSS/footprint and latency samples.",
+    "boundary": "One host and tiny imports, one watchdog at a time; no hours-long leak inference, unique tree memory, Anneal/MCP topology or full pipeline latency.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/transcript.json",
+      "support/pilot-id-collision.json",
+      "support/work/A/Proof0.lean",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-cross-tool-stage-cancellation-cleanup-2026-09-29": {
+    "suite": "R17",
+    "ids": [
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      105,
+      134
+    ],
+    "method": "Eight sequential private process-group stop/kill/retry trials across Cargo, Charon, Aeneas, Lake and Lean, including delayed Cargo/Charon/Lake child snapshots; a separate synthetic generation fence rejected eight late result digests.",
+    "boundary": "Independent CLI fixtures, launch-boundary stops for Aeneas/Lean, 80-ms delayed controls rather than phase barriers, no Anneal scheduler, escaped daemon or integrated pipeline.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/fence-results.json",
+      "support/artifacts/charon-app.llbc",
+      "support/artifacts/lake-Probe.olean",
+      "support/probe.py",
+      "support/fence_oracle.py",
+      "support/verify.py"
+    ]
+  }
+}

@@ -1,0 +1,203 @@
+{
+  "cells": [
+    {
+      "aggregate_import_ms": 165.1,
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "AnnOne.olean"
+      ],
+      "cold_ms": 3254.6,
+      "failure_rc": 1,
+      "incremental_ms": 2290.5,
+      "layout": "per-annotation",
+      "module_count": 5,
+      "olean_bytes": {
+        "Aggregate.olean": 1680,
+        "AnnOne.olean": 5472,
+        "AnnTwo.olean": 5472,
+        "Model.olean": 5704,
+        "Shared.olean": 6696
+      },
+      "olean_total_bytes": 25024,
+      "proof_batch_ms": [
+        179.0,
+        164.2
+      ],
+      "proof_batch_total_ms": 343.2,
+      "sibling_batch_rc_after_failure": 0,
+      "size": 1,
+      "summed_rss_bytes": 919666688,
+      "unchanged_modules": [
+        "AnnTwo.olean",
+        "Model.olean",
+        "Shared.olean"
+      ],
+      "warm_ms": 2091.3,
+      "worker_count": 2
+    },
+    {
+      "aggregate_import_ms": 165.8,
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "File.olean"
+      ],
+      "cold_ms": 1614.0,
+      "failure_rc": 1,
+      "incremental_ms": 1448.1,
+      "layout": "per-file",
+      "module_count": 3,
+      "olean_bytes": {
+        "Aggregate.olean": 1576,
+        "File.olean": 7912,
+        "Model.olean": 5704
+      },
+      "olean_total_bytes": 15192,
+      "proof_batch_ms": [
+        181.0
+      ],
+      "proof_batch_total_ms": 181.0,
+      "sibling_batch_rc_after_failure": null,
+      "size": 1,
+      "summed_rss_bytes": 495910912,
+      "unchanged_modules": [
+        "Model.olean"
+      ],
+      "warm_ms": 1247.8,
+      "worker_count": 1
+    },
+    {
+      "aggregate_import_ms": 164.9,
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "Artifact.olean"
+      ],
+      "cold_ms": 1091.3,
+      "failure_rc": 1,
+      "incremental_ms": 1022.8,
+      "layout": "per-artifact",
+      "module_count": 2,
+      "olean_bytes": {
+        "Aggregate.olean": 1584,
+        "Artifact.olean": 11232
+      },
+      "olean_total_bytes": 12816,
+      "proof_batch_ms": [
+        180.5
+      ],
+      "proof_batch_total_ms": 180.5,
+      "sibling_batch_rc_after_failure": null,
+      "size": 1,
+      "summed_rss_bytes": 498860032,
+      "unchanged_modules": [],
+      "warm_ms": 831.7,
+      "worker_count": 1
+    },
+    {
+      "aggregate_import_ms": 164.7,
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "AnnOne.olean"
+      ],
+      "cold_ms": 2671.5,
+      "failure_rc": 1,
+      "incremental_ms": 2282.1,
+      "layout": "per-annotation",
+      "module_count": 5,
+      "olean_bytes": {
+        "Aggregate.olean": 1680,
+        "AnnOne.olean": 5472,
+        "AnnTwo.olean": 5472,
+        "Model.olean": 132400,
+        "Shared.olean": 6696
+      },
+      "olean_total_bytes": 151720,
+      "proof_batch_ms": [
+        180.0,
+        164.4
+      ],
+      "proof_batch_total_ms": 344.4,
+      "sibling_batch_rc_after_failure": 0,
+      "size": 128,
+      "summed_rss_bytes": 930807808,
+      "unchanged_modules": [
+        "AnnTwo.olean",
+        "Model.olean",
+        "Shared.olean"
+      ],
+      "warm_ms": 2096.2,
+      "worker_count": 2
+    },
+    {
+      "aggregate_import_ms": 164.7,
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "File.olean"
+      ],
+      "cold_ms": 1611.8,
+      "failure_rc": 1,
+      "incremental_ms": 1446.9,
+      "layout": "per-file",
+      "module_count": 3,
+      "olean_bytes": {
+        "Aggregate.olean": 1576,
+        "File.olean": 7912,
+        "Model.olean": 132400
+      },
+      "olean_total_bytes": 141888,
+      "proof_batch_ms": [
+        180.9
+      ],
+      "proof_batch_total_ms": 180.9,
+      "sibling_batch_rc_after_failure": null,
+      "size": 128,
+      "summed_rss_bytes": 496123904,
+      "unchanged_modules": [
+        "Model.olean"
+      ],
+      "warm_ms": 1250.5,
+      "worker_count": 1
+    },
+    {
+      "aggregate_import_ms": 166.3,
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "Artifact.olean"
+      ],
+      "cold_ms": 1078.2,
+      "failure_rc": 1,
+      "incremental_ms": 1023.8,
+      "layout": "per-artifact",
+      "module_count": 2,
+      "olean_bytes": {
+        "Aggregate.olean": 1584,
+        "Artifact.olean": 137672
+      },
+      "olean_total_bytes": 139256,
+      "proof_batch_ms": [
+        213.9
+      ],
+      "proof_batch_total_ms": 213.9,
+      "sibling_batch_rc_after_failure": null,
+      "size": 128,
+      "summed_rss_bytes": 515571712,
+      "unchanged_modules": [],
+      "warm_ms": 831.2,
+      "worker_count": 1
+    }
+  ],
+  "scope": "sequential direct Lean/Lake fixture; sum of per-process RSS, not unique footprint",
+  "semantic": {
+    "same_file_rc": 0,
+    "with_import_rc": 0,
+    "without_import_rc": 1
+  },
+  "subject": {
+    "kind": "subject",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "ms": 42.4,
+    "rss_limit_bytes": 1610612736,
+    "seq": 0
+  }
+}

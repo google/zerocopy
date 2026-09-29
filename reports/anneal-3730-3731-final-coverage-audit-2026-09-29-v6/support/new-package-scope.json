@@ -1,0 +1,85 @@
+{
+  "anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29": {
+    "suite": "R18",
+    "ids": [
+      30,
+      59,
+      60,
+      62,
+      63
+    ],
+    "method": "Pinned Lean LSP with LEAN_SRC_PATH returned two-file rename, cross-file references, nonempty versioned import quick fix, signature help, inlay hint and completion label; returned rename/action/inlay edits were applied in isolated branches and fresh batch checked.",
+    "boundary": "No Anneal Rust projection or editor transaction; completion edit was client-selected, rename WorkspaceEdit lacked versions, and stale preimage/version guards were harness policy.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/transcript.json",
+      "support/applied-results.json",
+      "support/applied/rename-Helper.lean",
+      "support/applied/action-Action.lean",
+      "support/probe.py",
+      "support/apply_returns.py",
+      "support/verify.py"
+    ]
+  },
+  "anneal-3730-lake-dynamic-config-identity-2026-09-29": {
+    "suite": "R19",
+    "ids": [
+      89,
+      90,
+      91,
+      92,
+      93,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      108,
+      109
+    ],
+    "method": "Five clean pinned Lean/TOML configuration cells plus a deliberately adversarial environment-reading Lean run_cmd; no-build/setup/local batch/direct server under environment-only change, byte-preserving mtime shifts, valid wrong trace/setup and same-mtime source-byte edit with exact consumed OLean.",
+    "boundary": "Tiny one-pin Lake graph; config-time source writer is adversarial and not declared Lake input, direct servers force-stopped after diagnostics, no Anneal archive/general key proof/power loss.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/artifacts/golden-source",
+      "support/artifacts/dynamic-a/trace",
+      "support/artifacts/toml-seven/trace",
+      "support/artifacts/lean-option/setup",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29": {
+    "suite": "R20",
+    "ids": [
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      105,
+      134
+    ],
+    "method": "Active FIFO output barriers stopped Charon and Aeneas with parseable/incomplete output sets; Lean run_tac blocked a Lake child after module A; process-group SIGKILL and private retry/fresh Lean oracle passed. A real old Aeneas CLI completed before an experiment-side late wrapper rejected generation 1 after generation 2 advanced.",
+    "boundary": "Selected CLI phases/private roots and experiment-side authority, not Anneal scheduler; no general orphan proof, same-process API, every stage phase or transactional publication.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/work/charon/base.llbc",
+      "support/work/charon/base.llbc.postcard",
+      "support/work/aeneas-cancel/Types.lean",
+      "support/work/lake/.lake/build/lib/lean/Cancel/A.olean",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  }
+}

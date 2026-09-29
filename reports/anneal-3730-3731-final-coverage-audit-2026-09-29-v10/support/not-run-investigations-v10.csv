@@ -1,0 +1,2 @@
+id,title,remaining_delta,primary_gate
+I072,Existing Lean MCP adapters under Anneal conditions,"Scoped PATH/checkout search found no installed Lean MCP adapter. A toy two-client stdio bridge over real Lean LSP showed independent ID cancellation, stale-hash rejection and shared-proof refresh, but did not run an existing adapter under Anneal conditions. Select/install an approved adapter and test two real clients against an Anneal workspace; status remains not-run.",selected existing Lean MCP adapter and Anneal workspace integration

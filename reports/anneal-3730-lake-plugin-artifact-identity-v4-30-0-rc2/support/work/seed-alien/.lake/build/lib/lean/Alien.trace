@@ -1,0 +1,32 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["04c9d4fd57a76670.olean"],
+  "m": false,
+  "i": "12667f79ad1e79bb.ilean",
+  "c": "5b7bee35cbeda0a7.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien/Alien.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien/.lake/build/lib/lean/Alien.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien/.lake/build/lib/lean/Alien.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien/.lake/build/ir/Alien.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien/.lake/build/ir/Alien.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Alien:deps",
+   [["deps",
+     [["plugin_probe/Alien:extraDep",
+       [["@plugin_probe:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien/Alien.lean",
+   "98adbed0423c585a"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Alien", "facd156156d42ef9"],
+  ["Package.id?: (some plugin_probe)", "a88e2639b89edfb4"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "ce8abd78e392ced1"}

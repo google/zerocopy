@@ -1,0 +1,17 @@
+[package]
+name = "app_closure"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[dependencies]
+dep_path = { path = "../dep_path" }
+proc_local = { path = "../proc_local" }
+
+[[bin]]
+name = "app_closure_cli"
+path = "src/main.rs"
+
+[[test]]
+name = "check"
+path = "tests/check.rs"

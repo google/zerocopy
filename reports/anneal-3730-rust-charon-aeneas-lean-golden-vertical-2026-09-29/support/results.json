@@ -1,0 +1,936 @@
+{
+  "commands": [
+    {
+      "label": "cargo-lock",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "generate-lockfile",
+        "--offline"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-cold:charon-cargo",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/current.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate/Cargo.toml",
+        "--package",
+        "golden_vertical",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "   Compiling golden_vertical v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s\n"
+    },
+    {
+      "label": "base-cold:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.153806 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-cold:compile:Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-cold:compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-cold:compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-cold:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/consumer",
+      "exit": 0,
+      "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-cold:cargo-test",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--test",
+        "behavior"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate",
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest selected_values ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "stderr": "   Compiling golden_vertical v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.85s\n     Running tests/behavior.rs (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/target-prepared/debug/deps/behavior-97a5da147f5a05e3)\n"
+    },
+    {
+      "label": "base-prepared:charon-cargo",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/current.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate/Cargo.toml",
+        "--package",
+        "golden_vertical",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "   Compiling golden_vertical v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s\n"
+    },
+    {
+      "label": "base-prepared:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.135340 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-prepared:compile:Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-prepared:compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-prepared:compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-prepared:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-prepared/consumer",
+      "exit": 0,
+      "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-clean:charon-cargo",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/current.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate/Cargo.toml",
+        "--package",
+        "golden_vertical",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "   Compiling golden_vertical v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.32s\n"
+    },
+    {
+      "label": "base-clean:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.135671 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-clean:compile:Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-clean:compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-clean:compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-clean:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-clean/consumer",
+      "exit": 0,
+      "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "mutated-clean:charon-cargo",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/current.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate/Cargo.toml",
+        "--package",
+        "golden_vertical",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "   Compiling golden_vertical v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s\n"
+    },
+    {
+      "label": "mutated-clean:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.136659 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "mutated-clean:compile:Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "mutated-clean:compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "mutated-clean:compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "mutated-clean:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/consumer",
+      "exit": 0,
+      "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "mutated-clean:cargo-test",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--test",
+        "behavior"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate",
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest selected_values ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "stderr": "   Compiling golden_vertical v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/crate)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.54s\n     Running tests/behavior.rs (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/target-mutated/debug/deps/behavior-97a5da147f5a05e3)\n"
+    },
+    {
+      "label": "control:wrong-claim",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "WrongClaim.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/consumer",
+      "exit": 1,
+      "stdout": "WrongClaim.lean:2:64: error: Tactic `rfl` failed: The left-hand side\n  golden_vertical.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 1#u32\n\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n",
+      "stderr": ""
+    },
+    {
+      "label": "control:missing-obligation",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Missing.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "control:admitted-claim",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Admitted.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/mutated-clean/consumer",
+      "exit": 0,
+      "stdout": "Admitted.lean:2:8: warning: declaration uses `sorry`\n'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "control:stale-old-import",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/base-cold/consumer",
+      "exit": 0,
+      "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "control:tampered-import-compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/tampered-consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "control:tampered-import-compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/tampered-consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "control:tampered-import-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29/support/work/tampered-consumer",
+      "exit": 1,
+      "stdout": "Proof.lean:2:62: error: Tactic `rfl` failed: The left-hand side\n  golden_vertical.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 1#u32\n\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\nProof.lean:4:66: error: Tactic `rfl` failed: The left-hand side\n  golden_vertical.twice 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 golden_vertical.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\nProof.lean:6:68: error: Tactic `rfl` failed: The left-hand side\n  golden_vertical.choose 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 3#u32\n\n\u22a2 golden_vertical.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    }
+  ],
+  "cases": {
+    "base-cold": {
+      "inputs": {
+        "Cargo.lock": {
+          "sha256": "ca2f7154255ce99db3c915e64ca5f54b0cb240307d66b2ab4ed9dc59736132ef",
+          "bytes": 159
+        },
+        "Cargo.toml": {
+          "sha256": "76141af95d90673c30aa0236ef446c1d6f32b3e90ffcad3afeb63f77cb59d09d",
+          "bytes": 70
+        },
+        "behavior.rs": {
+          "sha256": "5fc06388fc278b8e58faa7b54d6b0744132396b3e7326e39f1fb90b02d4ecf90",
+          "bytes": 162
+        },
+        "lib.rs": {
+          "sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db",
+          "bytes": 310
+        }
+      },
+      "llbc": {
+        "sha256": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+        "bytes": 16383
+      },
+      "generated": {
+        "Current.lean": {
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "bytes": 20
+        },
+        "Funs.lean": {
+          "sha256": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+          "bytes": 1108
+        },
+        "Types.lean": {
+          "sha256": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "bytes": 536
+        }
+      },
+      "consumer": {
+        "Current/Funs.lean": {
+          "sha256": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+          "bytes": 1108
+        },
+        "Current/Funs.olean": {
+          "sha256": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+          "bytes": 23504
+        },
+        "Current/Types.lean": {
+          "sha256": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "bytes": 536
+        },
+        "Current/Types.olean": {
+          "sha256": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+          "bytes": 1608
+        },
+        "Current.lean": {
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "bytes": 20
+        },
+        "Current.olean": {
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+          "bytes": 1312
+        },
+        "Proof.lean": {
+          "sha256": "4b256b056fafeed0d8c3313c4e8c3335459b6e4edee0b4c1f485f5a587470e30",
+          "bytes": 294
+        }
+      },
+      "expected_values": [
+        1,
+        2,
+        3
+      ],
+      "proof_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "target_was_prepared": false
+    },
+    "base-prepared": {
+      "inputs": {
+        "Cargo.lock": {
+          "sha256": "ca2f7154255ce99db3c915e64ca5f54b0cb240307d66b2ab4ed9dc59736132ef",
+          "bytes": 159
+        },
+        "Cargo.toml": {
+          "sha256": "76141af95d90673c30aa0236ef446c1d6f32b3e90ffcad3afeb63f77cb59d09d",
+          "bytes": 70
+        },
+        "lib.rs": {
+          "sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db",
+          "bytes": 310
+        }
+      },
+      "llbc": {
+        "sha256": "b52420c828c1081042122f157b50d22dda55d14b50f7d8211930ee1654ed9c7c",
+        "bytes": 16387
+      },
+      "generated": {
+        "Current.lean": {
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "bytes": 20
+        },
+        "Funs.lean": {
+          "sha256": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+          "bytes": 1108
+        },
+        "Types.lean": {
+          "sha256": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "bytes": 536
+        }
+      },
+      "consumer": {
+        "Current/Funs.lean": {
+          "sha256": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+          "bytes": 1108
+        },
+        "Current/Funs.olean": {
+          "sha256": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+          "bytes": 23504
+        },
+        "Current/Types.lean": {
+          "sha256": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "bytes": 536
+        },
+        "Current/Types.olean": {
+          "sha256": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+          "bytes": 1608
+        },
+        "Current.lean": {
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "bytes": 20
+        },
+        "Current.olean": {
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+          "bytes": 1312
+        },
+        "Proof.lean": {
+          "sha256": "4b256b056fafeed0d8c3313c4e8c3335459b6e4edee0b4c1f485f5a587470e30",
+          "bytes": 294
+        }
+      },
+      "expected_values": [
+        1,
+        2,
+        3
+      ],
+      "proof_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "target_was_prepared": true
+    },
+    "base-clean": {
+      "inputs": {
+        "Cargo.lock": {
+          "sha256": "ca2f7154255ce99db3c915e64ca5f54b0cb240307d66b2ab4ed9dc59736132ef",
+          "bytes": 159
+        },
+        "Cargo.toml": {
+          "sha256": "76141af95d90673c30aa0236ef446c1d6f32b3e90ffcad3afeb63f77cb59d09d",
+          "bytes": 70
+        },
+        "lib.rs": {
+          "sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db",
+          "bytes": 310
+        }
+      },
+      "llbc": {
+        "sha256": "d046ca6d94e1c9805ef39ee953942036467b70917d34d6a6ffc6862d0b760933",
+        "bytes": 16384
+      },
+      "generated": {
+        "Current.lean": {
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "bytes": 20
+        },
+        "Funs.lean": {
+          "sha256": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+          "bytes": 1108
+        },
+        "Types.lean": {
+          "sha256": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "bytes": 536
+        }
+      },
+      "consumer": {
+        "Current/Funs.lean": {
+          "sha256": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+          "bytes": 1108
+        },
+        "Current/Funs.olean": {
+          "sha256": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+          "bytes": 23504
+        },
+        "Current/Types.lean": {
+          "sha256": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "bytes": 536
+        },
+        "Current/Types.olean": {
+          "sha256": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+          "bytes": 1608
+        },
+        "Current.lean": {
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "bytes": 20
+        },
+        "Current.olean": {
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+          "bytes": 1312
+        },
+        "Proof.lean": {
+          "sha256": "4b256b056fafeed0d8c3313c4e8c3335459b6e4edee0b4c1f485f5a587470e30",
+          "bytes": 294
+        }
+      },
+      "expected_values": [
+        1,
+        2,
+        3
+      ],
+      "proof_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "target_was_prepared": false
+    },
+    "mutated-clean": {
+      "inputs": {
+        "Cargo.lock": {
+          "sha256": "ca2f7154255ce99db3c915e64ca5f54b0cb240307d66b2ab4ed9dc59736132ef",
+          "bytes": 159
+        },
+        "Cargo.toml": {
+          "sha256": "76141af95d90673c30aa0236ef446c1d6f32b3e90ffcad3afeb63f77cb59d09d",
+          "bytes": 70
+        },
+        "behavior.rs": {
+          "sha256": "0399308232cd975a777607b0c54d897878f8b900a080b1b98a3e2490f4f1f7c0",
+          "bytes": 162
+        },
+        "lib.rs": {
+          "sha256": "e1d8e8151a057cdbcef186bb31c374a561170815311e8bdafbe181845cd8ef88",
+          "bytes": 310
+        }
+      },
+      "llbc": {
+        "sha256": "f26a590b0ad5f3359ab6d4c17173607ed872cfbdcbf935675dad61a2c420d569",
+        "bytes": 16387
+      },
+      "generated": {
+        "Current.lean": {
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "bytes": 20
+        },
+        "Funs.lean": {
+          "sha256": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+          "bytes": 1108
+        },
+        "Types.lean": {
+          "sha256": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "bytes": 536
+        }
+      },
+      "consumer": {
+        "Current/Funs.lean": {
+          "sha256": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+          "bytes": 1108
+        },
+        "Current/Funs.olean": {
+          "sha256": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+          "bytes": 24400
+        },
+        "Current/Types.lean": {
+          "sha256": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "bytes": 536
+        },
+        "Current/Types.olean": {
+          "sha256": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+          "bytes": 1608
+        },
+        "Current.lean": {
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "bytes": 20
+        },
+        "Current.olean": {
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+          "bytes": 1312
+        },
+        "Proof.lean": {
+          "sha256": "ae28f1388794ed350210572d210ef2282245ceeb4eac85c32898b2b86c5396e7",
+          "bytes": 294
+        }
+      },
+      "expected_values": [
+        2,
+        4,
+        5
+      ],
+      "proof_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "target_was_prepared": false
+    }
+  },
+  "controls": {
+    "wrong_claim": {
+      "exit": 1,
+      "detected": true,
+      "file_sha256": "bdb404ebf804f14420c6827412493563eee1c61be92fde0821d9bf9bfbd2f85a"
+    },
+    "missing_obligation": {
+      "batch_exit": 0,
+      "declared": [
+        "obl_inc",
+        "obl_twice"
+      ],
+      "required": [
+        "obl_inc",
+        "obl_twice",
+        "obl_choose"
+      ],
+      "accepted": false,
+      "file_sha256": "7d7e15da7d33148c7730b37b71743fdfee883036405f6242c997064d9b2c8679"
+    },
+    "admitted_claim": {
+      "batch_exit": 0,
+      "sorryAx_detected": true,
+      "file_sha256": "edd34489522ff3a9ab34476ee22830d30583e5f248e3232ed582014040857c7b"
+    },
+    "stale_import": {
+      "batch_exit": 0,
+      "current_source_sha256": "e1d8e8151a057cdbcef186bb31c374a561170815311e8bdafbe181845cd8ef88",
+      "imported_generation_source_sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db",
+      "identity_gate_rejects": true
+    },
+    "tampered_import": {
+      "proof_exit": 1,
+      "changed_funs_sha256": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+      "base_funs_sha256": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+      "detected": true
+    }
+  },
+  "subjects": {
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+  },
+  "limits": [
+    "Manual fixture obligations are not Anneal annotation syntax or generated service output.",
+    "Source-to-declaration association is a manually inspected lexical mapping, not an authenticated producer-issued map.",
+    "Cached Lean dependencies were reused; clean means private Cargo target and consumer generation, not rebuilding toolchains or dependencies.",
+    "The same local Mac, installed tool pins, and author performed both clean and prepared runs."
+  ],
+  "cold_prepared_clean_comparison": {
+    "llbc_bytes_equal": false,
+    "llbc_normalized_equal": true,
+    "llbc_normalization": [
+      "options.dest_file locator removed",
+      "short_names array sorted"
+    ],
+    "generated_bytes_equal": true
+  },
+  "cross_layer_manifest": {
+    "basis": "manually checked name, Charon span, generated comment and declaration line; no authenticated producer map",
+    "source_sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db",
+    "llbc_sha256": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+    "funs_sha256": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+    "rows": [
+      {
+        "rust_function": "inc",
+        "manual_obligation": "obl_inc",
+        "rust_line": 3,
+        "rust_text": "pub fn inc(x: u32) -> u32 { x.wrapping_add(1) }",
+        "charon_def_id": 0,
+        "charon_span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 3,
+              "col": 0
+            },
+            "end": {
+              "line": 3,
+              "col": 47
+            }
+          },
+          "generated_from_span": null
+        },
+        "aeneas_file": "Current/Funs.lean",
+        "aeneas_def_line": 21,
+        "aeneas_source_comment": "Source: 'src/lib.rs', lines 3:0-3:47"
+      },
+      {
+        "rust_function": "twice",
+        "manual_obligation": "obl_twice",
+        "rust_line": 5,
+        "rust_text": "pub fn twice(x: u32) -> u32 { inc(inc(x)) }",
+        "charon_def_id": 1,
+        "charon_span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 5,
+              "col": 0
+            },
+            "end": {
+              "line": 5,
+              "col": 43
+            }
+          },
+          "generated_from_span": null
+        },
+        "aeneas_file": "Current/Funs.lean",
+        "aeneas_def_line": 27,
+        "aeneas_source_comment": "Source: 'src/lib.rs', lines 5:0-5:43"
+      },
+      {
+        "rust_function": "choose",
+        "manual_obligation": "obl_choose",
+        "rust_line": 7,
+        "rust_text": "pub fn choose(x: u32) -> u32 { if x == 0 { twice(1) } else { inc(x) } }",
+        "charon_def_id": 2,
+        "charon_span": {
+          "data": {
+            "file_id": 0,
+            "beg": {
+              "line": 7,
+              "col": 0
+            },
+            "end": {
+              "line": 7,
+              "col": 71
+            }
+          },
+          "generated_from_span": null
+        },
+        "aeneas_file": "Current/Funs.lean",
+        "aeneas_def_line": 34,
+        "aeneas_source_comment": "Source: 'src/lib.rs', lines 7:0-7:71"
+      }
+    ],
+    "proven_def_id_to_lean_range": null,
+    "anneal_obligation_mapping": null
+  },
+  "target_bytes_before_cleanup": {
+    "target-prepared": 1106854,
+    "target-clean": 5834,
+    "target-mutated": 1104525
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "artifact_sha256": {
+    "action-Action.lean": "bea1f098cd1f05e147a9291ffaca8116e503e8ca73a549565a72eabb1a2441b3",
+    "completion-Completion.lean": "bea1f098cd1f05e147a9291ffaca8116e503e8ca73a549565a72eabb1a2441b3",
+    "inlay-Main.lean": "5cd12b48571224589a54505a03ae210f99e33b135d1fc4807cd3079a821fac36",
+    "rename-Helper.lean": "1a4b3760770f6a65b632394220d4d11ce21cdaedc9cac618cb6e90a91ff6e261",
+    "rename-Main.lean": "8fbadf9b1ad2f9a443913787e1f97aad69dda35a068d1e094823019f967e94df"
+  },
+  "branches": {
+    "action": {
+      "batch": {
+        "Action.lean": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"αhelper (n : Nat) : Nat\",\"endPos\":{\"column\":6,\"line\":2},\"fileName\":\"$WORK/Action.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n"
+        }
+      },
+      "source_sha256": {
+        "Action.lean": "bea1f098cd1f05e147a9291ffaca8116e503e8ca73a549565a72eabb1a2441b3"
+      },
+      "source_workspace_edit": {
+        "documentChanges": [
+          {
+            "edits": [
+              {
+                "newText": "import Helper\n",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 0
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              },
+              {
+                "newText": "αhelper",
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 0
+                  },
+                  "start": {
+                    "character": 7,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r18-run4/Action.lean",
+              "version": 1
+            }
+          }
+        ]
+      },
+      "version_guard": {
+        "accepted_version": 1,
+        "stale_rejected": true,
+        "stale_version": 2
+      }
+    },
+    "completion_client_fallback": {
+      "batch": {
+        "Completion.lean": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"αhelper (n : Nat) : Nat\",\"endPos\":{\"column\":6,\"line\":2},\"fileName\":\"$WORK/Completion.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n"
+        }
+      },
+      "client_edit": {
+        "newText": "αhelper",
+        "range": {
+          "end": {
+            "character": 11,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        }
+      },
+      "edit_origin": "client word-range fallback from Lean completion label",
+      "source_sha256": {
+        "Completion.lean": "bea1f098cd1f05e147a9291ffaca8116e503e8ca73a549565a72eabb1a2441b3"
+      }
+    },
+    "inlay": {
+      "batch": {
+        "Main.lean": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"αhelper (n : Nat) : Nat\",\"endPos\":{\"column\":6,\"line\":2},\"fileName\":\"$WORK/Main.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"add_three 1 2 : Nat\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"$WORK/Main.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n"
+        }
+      },
+      "source_sha256": {
+        "Main.lean": "5cd12b48571224589a54505a03ae210f99e33b135d1fc4807cd3079a821fac36"
+      }
+    },
+    "rename": {
+      "batch": {
+        "Main.lean": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"βhelper (n : Nat) : Nat\",\"endPos\":{\"column\":6,\"line\":2},\"fileName\":\"$WORK/Main.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"add_three 1 2 : Nat\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"$WORK/Main.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n"
+        }
+      },
+      "source_hash_guard": {
+        "expected": {
+          "Helper.lean": "88ab46a2f5640781815e68a189348d12cb8aa854bb1ae6a4351be02cd07a0ef3",
+          "Main.lean": "d75c7766dd33e725c28217605eaa0a724320b3aa0e4d72987d09d04b783e188e"
+        },
+        "stale_rejected_atomically": true
+      },
+      "source_sha256": {
+        "Helper.lean": "1a4b3760770f6a65b632394220d4d11ce21cdaedc9cac618cb6e90a91ff6e261",
+        "Main.lean": "8fbadf9b1ad2f9a443913787e1f97aad69dda35a068d1e094823019f967e94df"
+      }
+    }
+  },
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "transcript_sha256": "0b790f3b965b55f59fb95b2ff416f0e080db8fd017c91336c35a2575c799f426"
+}

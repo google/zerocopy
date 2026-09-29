@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/source-projection",
+    "anneal/upstream-api",
+    "lean/lsp",
+    "research/editor-precedents"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 server protocol at the selected Anneal pin",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "rust-analyzer IDE host and architecture guide",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+      }
+    },
+    {
+      "name": "Volar source map and language-service edit transforms",
+      "identity": {
+        "repository": "volarjs/volar.js",
+        "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e"
+      }
+    },
+    {
+      "name": "synthetic projection and edit mapping fixture",
+      "identity": {
+        "file": "support/projection_probe.py",
+        "sha256": "4f1974c8f49ddc2f630364b45a8e49c2cf9ebc5640921b3c16e5ae6547ffa99d"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

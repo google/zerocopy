@@ -1,0 +1,2452 @@
+{
+  "model": "symbolic response freshness and patch authority, not Anneal",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python_version": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "graph": {
+    "bound": 7,
+    "reachable_states": 2710,
+    "checked_edges": 11060,
+    "attempted_transitions": 11060,
+    "depth_histogram": {
+      "0": 1,
+      "1": 10,
+      "2": 49,
+      "3": 156,
+      "4": 357,
+      "5": 610,
+      "6": 783,
+      "7": 744
+    },
+    "policy_counts": {
+      "full_capture": {
+        "unsafe_states": 0,
+        "accepted_states": 1,
+        "correct_states": 2710
+      },
+      "uri_version_only": {
+        "unsafe_states": 451,
+        "accepted_states": 452,
+        "correct_states": 2259
+      },
+      "path_only": {
+        "unsafe_states": 1519,
+        "accepted_states": 1520,
+        "correct_states": 1191
+      },
+      "generation_only": {
+        "unsafe_states": 823,
+        "accepted_states": 824,
+        "correct_states": 1887
+      },
+      "cancellation_only": {
+        "unsafe_states": 1519,
+        "accepted_states": 1520,
+        "correct_states": 1191
+      }
+    },
+    "shortest_counterexamples": {
+      "uri_version_only": {
+        "depth": 1,
+        "schedule": [
+          {
+            "action": "external-replace-B-unnoticed",
+            "after": {
+              "source_revision": 0,
+              "source_digest": "B",
+              "artifact_revision": 0,
+              "artifact_digest": "X",
+              "subject": "lib",
+              "path": "/physical/src/lib.rs",
+              "uri": "file:///project/src/lib.rs",
+              "open_epoch": 0,
+              "version": 1,
+              "generation": 0,
+              "worker": 0,
+              "rpc": 0,
+              "cancelled": false
+            }
+          }
+        ],
+        "final": {
+          "source_revision": 0,
+          "source_digest": "B",
+          "artifact_revision": 0,
+          "artifact_digest": "X",
+          "subject": "lib",
+          "path": "/physical/src/lib.rs",
+          "uri": "file:///project/src/lib.rs",
+          "open_epoch": 0,
+          "version": 1,
+          "generation": 0,
+          "worker": 0,
+          "rpc": 0,
+          "cancelled": false
+        },
+        "captured": [
+          0,
+          "A",
+          0,
+          "X",
+          "lib",
+          "/physical/src/lib.rs",
+          "file:///project/src/lib.rs",
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "current": [
+          0,
+          "B",
+          0,
+          "X",
+          "lib",
+          "/physical/src/lib.rs",
+          "file:///project/src/lib.rs",
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "policy_accept": true,
+        "oracle_accept": false
+      },
+      "path_only": {
+        "depth": 1,
+        "schedule": [
+          {
+            "action": "same-path-subject-alias-test",
+            "after": {
+              "source_revision": 0,
+              "source_digest": "A",
+              "artifact_revision": 0,
+              "artifact_digest": "X",
+              "subject": "test",
+              "path": "/physical/src/lib.rs",
+              "uri": "file:///project/src/lib.rs",
+              "open_epoch": 0,
+              "version": 1,
+              "generation": 0,
+              "worker": 0,
+              "rpc": 0,
+              "cancelled": false
+            }
+          }
+        ],
+        "final": {
+          "source_revision": 0,
+          "source_digest": "A",
+          "artifact_revision": 0,
+          "artifact_digest": "X",
+          "subject": "test",
+          "path": "/physical/src/lib.rs",
+          "uri": "file:///project/src/lib.rs",
+          "open_epoch": 0,
+          "version": 1,
+          "generation": 0,
+          "worker": 0,
+          "rpc": 0,
+          "cancelled": false
+        },
+        "captured": [
+          0,
+          "A",
+          0,
+          "X",
+          "lib",
+          "/physical/src/lib.rs",
+          "file:///project/src/lib.rs",
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "current": [
+          0,
+          "A",
+          0,
+          "X",
+          "test",
+          "/physical/src/lib.rs",
+          "file:///project/src/lib.rs",
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "policy_accept": true,
+        "oracle_accept": false
+      },
+      "generation_only": {
+        "depth": 1,
+        "schedule": [
+          {
+            "action": "editor-write-B",
+            "after": {
+              "source_revision": 1,
+              "source_digest": "B",
+              "artifact_revision": 0,
+              "artifact_digest": "X",
+              "subject": "lib",
+              "path": "/physical/src/lib.rs",
+              "uri": "file:///project/src/lib.rs",
+              "open_epoch": 0,
+              "version": 2,
+              "generation": 0,
+              "worker": 0,
+              "rpc": 0,
+              "cancelled": false
+            }
+          }
+        ],
+        "final": {
+          "source_revision": 1,
+          "source_digest": "B",
+          "artifact_revision": 0,
+          "artifact_digest": "X",
+          "subject": "lib",
+          "path": "/physical/src/lib.rs",
+          "uri": "file:///project/src/lib.rs",
+          "open_epoch": 0,
+          "version": 2,
+          "generation": 0,
+          "worker": 0,
+          "rpc": 0,
+          "cancelled": false
+        },
+        "captured": [
+          0,
+          "A",
+          0,
+          "X",
+          "lib",
+          "/physical/src/lib.rs",
+          "file:///project/src/lib.rs",
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "current": [
+          1,
+          "B",
+          0,
+          "X",
+          "lib",
+          "/physical/src/lib.rs",
+          "file:///project/src/lib.rs",
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "policy_accept": true,
+        "oracle_accept": false
+      },
+      "cancellation_only": {
+        "depth": 1,
+        "schedule": [
+          {
+            "action": "artifact-replace-Y",
+            "after": {
+              "source_revision": 0,
+              "source_digest": "A",
+              "artifact_revision": 1,
+              "artifact_digest": "Y",
+              "subject": "lib",
+              "path": "/physical/src/lib.rs",
+              "uri": "file:///project/src/lib.rs",
+              "open_epoch": 0,
+              "version": 1,
+              "generation": 0,
+              "worker": 0,
+              "rpc": 0,
+              "cancelled": false
+            }
+          }
+        ],
+        "final": {
+          "source_revision": 0,
+          "source_digest": "A",
+          "artifact_revision": 1,
+          "artifact_digest": "Y",
+          "subject": "lib",
+          "path": "/physical/src/lib.rs",
+          "uri": "file:///project/src/lib.rs",
+          "open_epoch": 0,
+          "version": 1,
+          "generation": 0,
+          "worker": 0,
+          "rpc": 0,
+          "cancelled": false
+        },
+        "captured": [
+          0,
+          "A",
+          0,
+          "X",
+          "lib",
+          "/physical/src/lib.rs",
+          "file:///project/src/lib.rs",
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "current": [
+          0,
+          "A",
+          1,
+          "Y",
+          "lib",
+          "/physical/src/lib.rs",
+          "file:///project/src/lib.rs",
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "policy_accept": true,
+        "oracle_accept": false
+      }
+    }
+  },
+  "controls": {
+    "source_ABA": {
+      "schedule": [
+        "editor-write-B",
+        "agent-write-A"
+      ],
+      "steps": [
+        {
+          "action": "editor-write-B",
+          "state": {
+            "source_revision": 1,
+            "source_digest": "B",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 2,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": false,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        },
+        {
+          "action": "agent-write-A",
+          "state": {
+            "source_revision": 2,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 3,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": false,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 2,
+        "source_digest": "A",
+        "artifact_revision": 0,
+        "artifact_digest": "X",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 0,
+        "version": 3,
+        "generation": 0,
+        "worker": 0,
+        "rpc": 0,
+        "cancelled": false
+      }
+    },
+    "source_ABA_reopen_reset": {
+      "schedule": [
+        "editor-write-B",
+        "agent-write-A",
+        "close-reopen-version-1"
+      ],
+      "steps": [
+        {
+          "action": "editor-write-B",
+          "state": {
+            "source_revision": 1,
+            "source_digest": "B",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 2,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": false,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        },
+        {
+          "action": "agent-write-A",
+          "state": {
+            "source_revision": 2,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 3,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": false,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        },
+        {
+          "action": "close-reopen-version-1",
+          "state": {
+            "source_revision": 2,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 1,
+            "version": 1,
+            "generation": 0,
+            "worker": 1,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": true,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 2,
+        "source_digest": "A",
+        "artifact_revision": 0,
+        "artifact_digest": "X",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 1,
+        "version": 1,
+        "generation": 0,
+        "worker": 1,
+        "rpc": 0,
+        "cancelled": false
+      }
+    },
+    "unnoticed_source_change": {
+      "schedule": [
+        "external-replace-B-unnoticed"
+      ],
+      "steps": [
+        {
+          "action": "external-replace-B-unnoticed",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "B",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": true,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 0,
+        "source_digest": "B",
+        "artifact_revision": 0,
+        "artifact_digest": "X",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 0,
+        "version": 1,
+        "generation": 0,
+        "worker": 0,
+        "rpc": 0,
+        "cancelled": false
+      }
+    },
+    "artifact_XYX": {
+      "schedule": [
+        "artifact-replace-Y",
+        "artifact-restore-X"
+      ],
+      "steps": [
+        {
+          "action": "artifact-replace-Y",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "A",
+            "artifact_revision": 1,
+            "artifact_digest": "Y",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": true,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        },
+        {
+          "action": "artifact-restore-X",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "A",
+            "artifact_revision": 2,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": true,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 0,
+        "source_digest": "A",
+        "artifact_revision": 2,
+        "artifact_digest": "X",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 0,
+        "version": 1,
+        "generation": 0,
+        "worker": 0,
+        "rpc": 0,
+        "cancelled": false
+      }
+    },
+    "artifact_same_revision": {
+      "schedule": [
+        "artifact-replace-Y-same-revision"
+      ],
+      "steps": [
+        {
+          "action": "artifact-replace-Y-same-revision",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "Y",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": true,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 0,
+        "source_digest": "A",
+        "artifact_revision": 0,
+        "artifact_digest": "Y",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 0,
+        "version": 1,
+        "generation": 0,
+        "worker": 0,
+        "rpc": 0,
+        "cancelled": false
+      }
+    },
+    "subject_alias_same_path": {
+      "schedule": [
+        "same-path-subject-alias-test"
+      ],
+      "steps": [
+        {
+          "action": "same-path-subject-alias-test",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "test",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": true,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 0,
+        "source_digest": "A",
+        "artifact_revision": 0,
+        "artifact_digest": "X",
+        "subject": "test",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 0,
+        "version": 1,
+        "generation": 0,
+        "worker": 0,
+        "rpc": 0,
+        "cancelled": false
+      }
+    },
+    "uri_alias_same_physical_path": {
+      "schedule": [
+        "same-physical-file-uri-alias"
+      ],
+      "steps": [
+        {
+          "action": "same-physical-file-uri-alias",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///alias/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": false,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 0,
+        "source_digest": "A",
+        "artifact_revision": 0,
+        "artifact_digest": "X",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///alias/src/lib.rs",
+        "open_epoch": 0,
+        "version": 1,
+        "generation": 0,
+        "worker": 0,
+        "rpc": 0,
+        "cancelled": false
+      }
+    },
+    "worker_and_rpc": {
+      "schedule": [
+        "restart-worker",
+        "reconnect-rpc"
+      ],
+      "steps": [
+        {
+          "action": "restart-worker",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 1,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": true,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        },
+        {
+          "action": "reconnect-rpc",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 1,
+            "rpc": 1,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": true,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 0,
+        "source_digest": "A",
+        "artifact_revision": 0,
+        "artifact_digest": "X",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 0,
+        "version": 1,
+        "generation": 0,
+        "worker": 1,
+        "rpc": 1,
+        "cancelled": false
+      }
+    },
+    "cancellation": {
+      "schedule": [
+        "cancel-captured-request"
+      ],
+      "steps": [
+        {
+          "action": "cancel-captured-request",
+          "state": {
+            "source_revision": 0,
+            "source_digest": "A",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 1,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": true
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": false,
+            "path_only": false,
+            "generation_only": false,
+            "cancellation_only": false
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 0,
+        "source_digest": "A",
+        "artifact_revision": 0,
+        "artifact_digest": "X",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 0,
+        "version": 1,
+        "generation": 0,
+        "worker": 0,
+        "rpc": 0,
+        "cancelled": true
+      }
+    },
+    "cross_layer_source_artifact": {
+      "schedule": [
+        "editor-write-B",
+        "artifact-replace-Y"
+      ],
+      "steps": [
+        {
+          "action": "editor-write-B",
+          "state": {
+            "source_revision": 1,
+            "source_digest": "B",
+            "artifact_revision": 0,
+            "artifact_digest": "X",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 2,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": false,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        },
+        {
+          "action": "artifact-replace-Y",
+          "state": {
+            "source_revision": 1,
+            "source_digest": "B",
+            "artifact_revision": 1,
+            "artifact_digest": "Y",
+            "subject": "lib",
+            "path": "/physical/src/lib.rs",
+            "uri": "file:///project/src/lib.rs",
+            "open_epoch": 0,
+            "version": 2,
+            "generation": 0,
+            "worker": 0,
+            "rpc": 0,
+            "cancelled": false
+          },
+          "oracle_accept": false,
+          "policy_accept": {
+            "full_capture": false,
+            "uri_version_only": false,
+            "path_only": true,
+            "generation_only": true,
+            "cancellation_only": true
+          }
+        }
+      ],
+      "final": {
+        "source_revision": 1,
+        "source_digest": "B",
+        "artifact_revision": 1,
+        "artifact_digest": "Y",
+        "subject": "lib",
+        "path": "/physical/src/lib.rs",
+        "uri": "file:///project/src/lib.rs",
+        "open_epoch": 0,
+        "version": 2,
+        "generation": 0,
+        "worker": 0,
+        "rpc": 0,
+        "cancelled": false
+      }
+    }
+  },
+  "patch_orders": [
+    {
+      "full": {
+        "policy": "full",
+        "order": [
+          "begin0",
+          "begin1",
+          "apply0",
+          "apply1"
+        ],
+        "trace": [
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": false,
+            "valid_at_apply": false,
+            "after": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "B",
+          "revision": 1,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 0
+      },
+      "uri_version": {
+        "policy": "uri_version",
+        "order": [
+          "begin0",
+          "begin1",
+          "apply0",
+          "apply1"
+        ],
+        "trace": [
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": false,
+            "after": {
+              "source": "C",
+              "revision": 2,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "C",
+          "revision": 2,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 1
+      }
+    },
+    {
+      "full": {
+        "policy": "full",
+        "order": [
+          "begin0",
+          "begin1",
+          "apply1",
+          "apply0"
+        ],
+        "trace": [
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": false,
+            "valid_at_apply": false,
+            "after": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "C",
+          "revision": 1,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 0
+      },
+      "uri_version": {
+        "policy": "uri_version",
+        "order": [
+          "begin0",
+          "begin1",
+          "apply1",
+          "apply0"
+        ],
+        "trace": [
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": false,
+            "after": {
+              "source": "B",
+              "revision": 2,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "B",
+          "revision": 2,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 1
+      }
+    },
+    {
+      "full": {
+        "policy": "full",
+        "order": [
+          "begin0",
+          "apply0",
+          "begin1",
+          "apply1"
+        ],
+        "trace": [
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "C",
+              "revision": 2,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "C",
+          "revision": 2,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 0
+      },
+      "uri_version": {
+        "policy": "uri_version",
+        "order": [
+          "begin0",
+          "apply0",
+          "begin1",
+          "apply1"
+        ],
+        "trace": [
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "C",
+              "revision": 2,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "C",
+          "revision": 2,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 0
+      }
+    },
+    {
+      "full": {
+        "policy": "full",
+        "order": [
+          "begin1",
+          "begin0",
+          "apply0",
+          "apply1"
+        ],
+        "trace": [
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": false,
+            "valid_at_apply": false,
+            "after": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "B",
+          "revision": 1,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 0
+      },
+      "uri_version": {
+        "policy": "uri_version",
+        "order": [
+          "begin1",
+          "begin0",
+          "apply0",
+          "apply1"
+        ],
+        "trace": [
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "B",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": false,
+            "after": {
+              "source": "C",
+              "revision": 2,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "C",
+          "revision": 2,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 1
+      }
+    },
+    {
+      "full": {
+        "policy": "full",
+        "order": [
+          "begin1",
+          "begin0",
+          "apply1",
+          "apply0"
+        ],
+        "trace": [
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": false,
+            "valid_at_apply": false,
+            "after": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "C",
+          "revision": 1,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 0
+      },
+      "uri_version": {
+        "policy": "uri_version",
+        "order": [
+          "begin1",
+          "begin0",
+          "apply1",
+          "apply0"
+        ],
+        "trace": [
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": false,
+            "after": {
+              "source": "B",
+              "revision": 2,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "B",
+          "revision": 2,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 1
+      }
+    },
+    {
+      "full": {
+        "policy": "full",
+        "order": [
+          "begin1",
+          "apply1",
+          "begin0",
+          "apply0"
+        ],
+        "trace": [
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "B",
+              "revision": 2,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "B",
+          "revision": 2,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 0
+      },
+      "uri_version": {
+        "policy": "uri_version",
+        "order": [
+          "begin1",
+          "apply1",
+          "begin0",
+          "apply0"
+        ],
+        "trace": [
+          {
+            "action": "begin1",
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply1",
+            "before": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "A",
+              "revision": 0,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "begin0",
+            "captured": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          },
+          {
+            "action": "apply0",
+            "before": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "captured": {
+              "source": "C",
+              "revision": 1,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            },
+            "accepted": true,
+            "valid_at_apply": true,
+            "after": {
+              "source": "B",
+              "revision": 2,
+              "uri": "file:///project/src/lib.rs",
+              "version": 1,
+              "open_epoch": 0,
+              "generation": 0
+            }
+          }
+        ],
+        "final": {
+          "source": "B",
+          "revision": 2,
+          "uri": "file:///project/src/lib.rs",
+          "version": 1,
+          "open_epoch": 0,
+          "generation": 0
+        },
+        "invalid_accept_count": 0
+      }
+    }
+  ],
+  "forced_thread_races": [
+    {
+      "policy": "full",
+      "first": 0,
+      "events": [
+        {
+          "event": "capture",
+          "client": 0,
+          "stamp": {
+            "source": "A",
+            "revision": 0,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "capture",
+          "client": 1,
+          "stamp": {
+            "source": "A",
+            "revision": 0,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "apply",
+          "client": 0,
+          "accepted": true,
+          "valid_at_apply": true,
+          "state": {
+            "source": "B",
+            "revision": 1,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "apply",
+          "client": 1,
+          "accepted": false,
+          "valid_at_apply": false,
+          "state": {
+            "source": "B",
+            "revision": 1,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        }
+      ],
+      "final": {
+        "source": "B",
+        "revision": 1,
+        "uri": "file:///project/src/lib.rs",
+        "version": 1,
+        "open_epoch": 0,
+        "generation": 0
+      },
+      "invalid_accept_count": 0
+    },
+    {
+      "policy": "full",
+      "first": 1,
+      "events": [
+        {
+          "event": "capture",
+          "client": 0,
+          "stamp": {
+            "source": "A",
+            "revision": 0,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "capture",
+          "client": 1,
+          "stamp": {
+            "source": "A",
+            "revision": 0,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "apply",
+          "client": 1,
+          "accepted": true,
+          "valid_at_apply": true,
+          "state": {
+            "source": "C",
+            "revision": 1,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "apply",
+          "client": 0,
+          "accepted": false,
+          "valid_at_apply": false,
+          "state": {
+            "source": "C",
+            "revision": 1,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        }
+      ],
+      "final": {
+        "source": "C",
+        "revision": 1,
+        "uri": "file:///project/src/lib.rs",
+        "version": 1,
+        "open_epoch": 0,
+        "generation": 0
+      },
+      "invalid_accept_count": 0
+    },
+    {
+      "policy": "uri_version",
+      "first": 0,
+      "events": [
+        {
+          "event": "capture",
+          "client": 0,
+          "stamp": {
+            "source": "A",
+            "revision": 0,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "capture",
+          "client": 1,
+          "stamp": {
+            "source": "A",
+            "revision": 0,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "apply",
+          "client": 0,
+          "accepted": true,
+          "valid_at_apply": true,
+          "state": {
+            "source": "B",
+            "revision": 1,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "apply",
+          "client": 1,
+          "accepted": true,
+          "valid_at_apply": false,
+          "state": {
+            "source": "C",
+            "revision": 2,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        }
+      ],
+      "final": {
+        "source": "C",
+        "revision": 2,
+        "uri": "file:///project/src/lib.rs",
+        "version": 1,
+        "open_epoch": 0,
+        "generation": 0
+      },
+      "invalid_accept_count": 1
+    },
+    {
+      "policy": "uri_version",
+      "first": 1,
+      "events": [
+        {
+          "event": "capture",
+          "client": 0,
+          "stamp": {
+            "source": "A",
+            "revision": 0,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "capture",
+          "client": 1,
+          "stamp": {
+            "source": "A",
+            "revision": 0,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "apply",
+          "client": 1,
+          "accepted": true,
+          "valid_at_apply": true,
+          "state": {
+            "source": "C",
+            "revision": 1,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        },
+        {
+          "event": "apply",
+          "client": 0,
+          "accepted": true,
+          "valid_at_apply": false,
+          "state": {
+            "source": "B",
+            "revision": 2,
+            "uri": "file:///project/src/lib.rs",
+            "version": 1,
+            "open_epoch": 0,
+            "generation": 0
+          }
+        }
+      ],
+      "final": {
+        "source": "B",
+        "revision": 2,
+        "uri": "file:///project/src/lib.rs",
+        "version": 1,
+        "open_epoch": 0,
+        "generation": 0
+      },
+      "invalid_accept_count": 1
+    }
+  ],
+  "state_space_sha256": "1b663b5157d593e70475105e1810760ca6e0f4fe7c7885eb57e63700a30ca6e5",
+  "code_sha256": "ef8be2fe88cd027bcdc36cfcabc9b2ebb70fd8317a5525a2d1872afa8fd604ed"
+}

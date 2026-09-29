@@ -1,0 +1,3 @@
+[workspace]
+members = ["app", "dep_path", "proc_local"]
+resolver = "2"

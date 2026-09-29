@@ -1,0 +1,1140 @@
+{
+  "bounds": {
+    "depth": 7,
+    "digests": [
+      "A",
+      "B"
+    ],
+    "max_jobs": 2,
+    "revisions": [
+      0,
+      1
+    ],
+    "rpc_epochs": [
+      0,
+      1
+    ],
+    "stage_parts": [
+      "source",
+      "model",
+      "proof"
+    ],
+    "worker_epochs": [
+      0,
+      1
+    ]
+  },
+  "controls": {
+    "late_after_edit": {
+      "events": [
+        {
+          "action": "start",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "bump_revision",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_source",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_model",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_proof",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:deliver_valid",
+          "published_after": null,
+          "published_before": null
+        }
+      ],
+      "expected_publication": false,
+      "name": "late_after_edit",
+      "published": null,
+      "schedule": [
+        "start",
+        "bump_revision",
+        "j0:complete_source",
+        "j0:complete_model",
+        "j0:complete_proof",
+        "j0:deliver_valid"
+      ]
+    },
+    "lost_watcher": {
+      "events": [
+        {
+          "action": "start",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "external_edit",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_source",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_model",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_proof",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:deliver_valid",
+          "published_after": null,
+          "published_before": null
+        }
+      ],
+      "expected_publication": false,
+      "name": "lost_watcher",
+      "published": null,
+      "schedule": [
+        "start",
+        "external_edit",
+        "j0:complete_source",
+        "j0:complete_model",
+        "j0:complete_proof",
+        "j0:deliver_valid"
+      ]
+    },
+    "partial": {
+      "events": [
+        {
+          "action": "start",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:deliver_valid",
+          "published_after": null,
+          "published_before": null
+        }
+      ],
+      "expected_publication": false,
+      "name": "partial",
+      "published": null,
+      "schedule": [
+        "start",
+        "j0:deliver_valid"
+      ]
+    },
+    "shared_survivor": {
+      "events": [
+        {
+          "action": "start",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:join_agent",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:cancel_editor",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_source",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_model",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_proof",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:deliver_valid",
+          "published_after": 0,
+          "published_before": null
+        }
+      ],
+      "expected_publication": true,
+      "name": "shared_survivor",
+      "published": 0,
+      "schedule": [
+        "start",
+        "j0:join_agent",
+        "j0:cancel_editor",
+        "j0:complete_source",
+        "j0:complete_model",
+        "j0:complete_proof",
+        "j0:deliver_valid"
+      ]
+    },
+    "timed_out": {
+      "events": [
+        {
+          "action": "start",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_source",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_model",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_proof",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:timeout",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:deliver_valid",
+          "published_after": null,
+          "published_before": null
+        }
+      ],
+      "expected_publication": false,
+      "name": "timed_out",
+      "published": null,
+      "schedule": [
+        "start",
+        "j0:complete_source",
+        "j0:complete_model",
+        "j0:complete_proof",
+        "j0:timeout",
+        "j0:deliver_valid"
+      ]
+    },
+    "valid_complete": {
+      "events": [
+        {
+          "action": "start",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_source",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_model",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_proof",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:deliver_valid",
+          "published_after": 0,
+          "published_before": null
+        }
+      ],
+      "expected_publication": true,
+      "name": "valid_complete",
+      "published": 0,
+      "schedule": [
+        "start",
+        "j0:complete_source",
+        "j0:complete_model",
+        "j0:complete_proof",
+        "j0:deliver_valid"
+      ]
+    },
+    "wrong_echo": {
+      "events": [
+        {
+          "action": "start",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_source",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_model",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:complete_proof",
+          "published_after": null,
+          "published_before": null
+        },
+        {
+          "action": "j0:deliver_wrong_echo",
+          "published_after": null,
+          "published_before": null
+        }
+      ],
+      "expected_publication": false,
+      "name": "wrong_echo",
+      "published": null,
+      "schedule": [
+        "start",
+        "j0:complete_source",
+        "j0:complete_model",
+        "j0:complete_proof",
+        "j0:deliver_wrong_echo"
+      ]
+    }
+  },
+  "model_sha256": "aa91033fd3965c7da9e79dfd933c2d614bd4845c720e9007a07441135d9e37fa",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "searches": {
+    "cancel_any": {
+      "bound": 7,
+      "edges": 285605,
+      "max_reached_depth": 7,
+      "mutant": "cancel_any",
+      "shortest_counterexample": {
+        "detail": {
+          "remaining": [
+            "agent"
+          ],
+          "violation": "shared_owner_killed"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "agent"
+              ],
+              "parts": 0,
+              "revision": 0,
+              "rpc": 0,
+              "status": "cancelled",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "agent",
+                "editor"
+              ],
+              "parts": 0,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "j0:join_agent",
+          "j0:cancel_editor"
+        ]
+      },
+      "states": 72060
+    },
+    "no_completeness": {
+      "bound": 7,
+      "edges": 403466,
+      "max_reached_depth": 7,
+      "mutant": "no_completeness",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "completeness"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 0,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 0,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 107870
+    },
+    "no_digest": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_digest",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "digest"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "B",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "B",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "B",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "B",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "replace_digest_same_revision",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 76502
+    },
+    "no_echo": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_echo",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "echo"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:deliver_wrong_echo"
+        ]
+      },
+      "states": 76502
+    },
+    "no_generation": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_generation",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "generation"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 1,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 1,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "regenerate_same_source",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 76502
+    },
+    "no_owner": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_owner",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "owner"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "j0:cancel_editor",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 76502
+    },
+    "no_reconcile": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_reconcile",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "digest",
+            "reconcile",
+            "revision"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "B",
+          "actual_revision": 1,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "B",
+          "actual_revision": 1,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "external_edit",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 76502
+    },
+    "no_revision": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_revision",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "revision"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 1,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 1,
+          "published": 0,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 1,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 1,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "bump_revision",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 76502
+    },
+    "no_rpc": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_rpc",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "rpc"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 1,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 1,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "reconnect_rpc",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 76502
+    },
+    "no_status": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_status",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "status"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "fail",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 0,
+          "worker": 0
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "fail",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 0
+        },
+        "schedule": [
+          "start",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:fail",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 76502
+    },
+    "no_worker": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "no_worker",
+      "shortest_counterexample": {
+        "detail": {
+          "failed": [
+            "worker"
+          ],
+          "job": 0,
+          "published": 0,
+          "violation": "invalid_publication"
+        },
+        "poststate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": 0,
+          "rpc": 0,
+          "worker": 1
+        },
+        "prestate": {
+          "actual_digest": "A",
+          "actual_revision": 0,
+          "generation": 0,
+          "jobs": [
+            {
+              "digest": "A",
+              "generation": 0,
+              "number": 0,
+              "owners": [
+                "editor"
+              ],
+              "parts": 7,
+              "revision": 0,
+              "rpc": 0,
+              "status": "active",
+              "worker": 0
+            }
+          ],
+          "observed_digest": "A",
+          "observed_revision": 0,
+          "published": null,
+          "rpc": 0,
+          "worker": 1
+        },
+        "schedule": [
+          "start",
+          "restart_worker",
+          "j0:complete_source",
+          "j0:complete_model",
+          "j0:complete_proof",
+          "j0:deliver_valid"
+        ]
+      },
+      "states": 76502
+    },
+    "none": {
+      "bound": 7,
+      "edges": 305537,
+      "max_reached_depth": 7,
+      "mutant": "none",
+      "shortest_counterexample": null,
+      "states": 76502
+    }
+  }
+}

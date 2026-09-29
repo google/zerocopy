@@ -1,0 +1,124 @@
+{
+  "anneal-3730-last-good-model-signature-recovery-2026-09-29": {
+    "suite": "R25",
+    "ids": [
+      23,
+      134,
+      145
+    ],
+    "method": "Pinned Charon\u2192one-shot Aeneas\u2192Lean source A (U32 add 1), failed changed-signature Rust (U64 add 2 with syntax error), and valid recovery B (U64 add 2): old LLBC retained at stable path; A proof passes provisionally, old U32 proof fails against B, adapted U64 proof passes; a late A exit-0 result is rejected by experiment-side model identity.",
+    "boundary": "Sequential tiny saved-source components and experiment-side freshness policy; no Anneal scheduler/UI, unsaved overlay, live goal query, human comprehension, or in-flight race.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/work/current.llbc",
+      "support/work/recovery.llbc",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-scratch-tactic-concurrency-crash-2026-09-29": {
+    "suite": "R26",
+    "ids": [
+      14,
+      70,
+      105,
+      110,
+      121,
+      134
+    ],
+    "method": "Two separate pinned-Lean-backed local candidate processes crossed a barrier and raced a file-lock CAS: one immutable generation published, one stale loser. Four os._exit boundaries before/after candidate check, complete generation and CURRENT pointer replacement recovered via manifest/file hashes and fresh batch; mutation controls and reader-pinned old generation passed.",
+    "boundary": "Local Python prototype with one theorem/import; no Anneal service, full proposition/axiom oracle, distributed transaction, actual worker restart, power loss, GC leases or cross-tool race.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/artifacts/orphan-MANIFEST.json",
+      "support/artifacts/final-MANIFEST.json",
+      "support/artifacts/final-Proof.lean",
+      "support/probe.py",
+      "support/verify.py"
+    ]
+  },
+  "anneal-3730-shared-generator-batch-live-sinks-2026-09-29": {
+    "suite": "I028",
+    "ids": [
+      28
+    ],
+    "method": "Typed synthetic Lean generator with shared header/body/footer/map plan and separate incremental file and live LSP sinks. Four valid/incomplete/import-edit/Unicode-CRLF cases had byte-identical generated text, import OLean identity, equal independent batch JSON/exit, and matching final LSP diagnostic messages/severities and declaration/axiom notices.",
+    "boundary": "Synthetic generator, no Anneal/Aeneas generator or Rust annotation parser; full-text LSP changes and one pin; does not prove actual production batch/live source identity.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/artifacts/unicode-crlf/map.json",
+      "support/artifacts/import-edit/file.lean",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29": {
+    "suite": "I061",
+    "ids": [
+      61
+    ],
+    "method": "A tiny valid Rust host with Lean-comment markers was mapped by local Python byte/UTF-16 projection to direct Lean LSP plainGoal, RPC interactive goals, definition/references and hover; close/reopen and server-restart controls rejected old sessions and restored fresh structured goals.",
+    "boundary": "No actual InfoView UI, editor transport, widgets/hyperlinks or Anneal annotation ownership/projection; local harness opened source snippets itself.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/work/host.rs",
+      "support/work/Projected.lean",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-editor-save-format-watch-loop-2026-09-29": {
+    "suite": "I063",
+    "ids": [
+      63
+    ],
+    "method": "Direct Lean LSP versions 1\u20135 plus Python hash-polling watched builds exercised dirty buffer/disk split, invalid save, duplicate suppression, external overwrite, reopen, real rustfmt on tiny Rust marker source, Lean blank-line format, cancelled build and retry with private complete OLean/ILean pointer publication.",
+    "boundary": "No real editor or Anneal watcher/generator; marker parser illustrative, polling misses OS event semantics, no end-to-end user-visible diagnostics or power-loss claim.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/artifacts/final-Generated.lean",
+      "support/artifacts/final-Generated.olean",
+      "support/artifacts/formatted-Source.rs",
+      "support/probe.py",
+      "support/verify.py"
+    ]
+  },
+  "anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29": {
+    "suite": "I072",
+    "ids": [
+      72
+    ],
+    "method": "Scoped current checkout/PATH inventory found no installed Lean MCP adapter or vendored existing adapter source. A labeled toy MCP-shaped stdio bridge over two real Lean LSP processes showed independent same-ID cancellation, source-hash CAS edit, stale old-hash rejection and both clients refreshing shared proof to no goals.",
+    "boundary": "Toy bridge only, no existing adapter or Anneal workspace; no MCP conformance, real adapter cancellation/permission behavior, production concurrent writers or restart. Requested existing-adapter experiment remains not-run.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/artifacts/Proof-v1.lean",
+      "support/artifacts/Proof-v2.lean",
+      "support/bridge.py",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29": {
+    "suite": "I086",
+    "ids": [
+      86
+    ],
+    "method": "Pinned tiny Charon LLBC passed to one-shot Aeneas by direct file and Python byte-buffer copy materialized back to file; identical three Lean outputs and fresh proof checks, tiny warm transfer/RSS samples, Lean --stdin module controls, corruption/mutation oracles and active FIFO cancellation/retry.",
+    "boundary": "CLI still requires a file; no in-memory/structured OCaml Aeneas API, no large-workload speed claim, stdin OLean bytes/provenance differed, no Anneal handoff implementation.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/work/source.llbc",
+      "support/work/source.rs",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  }
+}

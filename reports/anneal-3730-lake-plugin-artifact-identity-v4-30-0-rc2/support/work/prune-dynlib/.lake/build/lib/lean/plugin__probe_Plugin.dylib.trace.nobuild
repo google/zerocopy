@@ -1,0 +1,14 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs": null,
+ "log": [],
+ "inputs":
+ [["linkObjs",
+   [["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib/.lake/build/ir/Plugin.c.o.export",
+     "0a02e30cd7930cad"]]],
+  ["linkLibs", "00000000000006bb"],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["traceArgs: #[]", "00000000000006bb"],
+  ["arm64-apple-darwin24.6.0", "77c16133d139df5a"]],
+ "depHash": "35d4cc904b2dd22e"}

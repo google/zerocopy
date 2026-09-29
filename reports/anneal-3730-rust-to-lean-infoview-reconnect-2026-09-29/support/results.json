@@ -1,0 +1,4567 @@
+{
+  "host_kind": "local Python position adapter over Rust comments; no Anneal UI or extension",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "mapping": {
+    "goal_position": {
+      "character": 8,
+      "line": 4
+    },
+    "goal_rust_byte_offset": 178,
+    "invalid_utf8_interior_rejected": true,
+    "marker_forward": null,
+    "ordinary_rust_forward": null,
+    "projected_helper_position": {
+      "character": 52,
+      "line": 3
+    },
+    "rust_byte_range": {
+      "end": 153,
+      "start": 147
+    },
+    "rust_line_to_lean_line": {
+      "2": 2,
+      "3": 3,
+      "4": 4
+    },
+    "scaffold_only_reverse": null,
+    "surrogate_half_reverse": null,
+    "unicode_bytes_before_helper": 55,
+    "unicode_utf16_before_helper": 52
+  },
+  "observed_at_utc": "2026-09-29T11:26:08Z",
+  "projected_lean_sha256": "00306010fe7f388a54753e5402b0380aeec108baaba84dc82695e2cdbeaa0255",
+  "rust_sha256": "fef64f8c8c6e1609f9e8b065350b3c17ba4c25daf4db5e211761e357bbfb0eff",
+  "rustc": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--crate-name",
+      "host_probe",
+      "--crate-type",
+      "lib",
+      "--emit",
+      "metadata",
+      "-o",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/host.rmeta",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/host.rs"
+    ],
+    "rc": 0,
+    "rmeta_sha256": "f6fdcee36c7b120fb416ae1fb41c8b33b518ec39d3afe5ff084d8e74f27bd823",
+    "stderr": "",
+    "stdout": ""
+  },
+  "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+  "schema": 1,
+  "states": {
+    "initial": {
+      "definition": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": [
+          {
+            "originSelectionRange": {
+              "end": {
+                "character": 58,
+                "line": 3
+              },
+              "start": {
+                "character": 52,
+                "line": 3
+              }
+            },
+            "targetRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 4,
+                "line": 2
+              }
+            },
+            "targetSelectionRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 4,
+                "line": 2
+              }
+            },
+            "targetUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        ]
+      },
+      "hover": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "contents": {
+            "kind": "markdown",
+            "value": "```lean\nhelper (n : Nat) : Nat\n```"
+          },
+          "range": {
+            "end": {
+              "character": 58,
+              "line": 3
+            },
+            "start": {
+              "character": 52,
+              "line": 3
+            }
+          }
+        }
+      },
+      "opened_hyperlinks": [
+        {
+          "lean_position": {
+            "character": 4,
+            "line": 2
+          },
+          "lean_uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "rust_file_opened": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/host.rs",
+          "rust_source": {
+            "opened_text": "helper (n : Nat) : Nat := n + 1\n",
+            "rust_byte_offset": 57,
+            "rust_line": 2
+          }
+        },
+        {
+          "lean_position": {
+            "character": 4,
+            "line": 2
+          },
+          "lean_uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "rust_file_opened": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/host.rs",
+          "rust_source": {
+            "opened_text": "helper (n : Nat) : Nat := n + 1\n",
+            "rust_byte_offset": 57,
+            "rust_line": 2
+          }
+        },
+        {
+          "lean_position": {
+            "character": 52,
+            "line": 3
+          },
+          "lean_uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "rust_file_opened": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/host.rs",
+          "rust_source": {
+            "opened_text": "helper n) = 8 := by\n//   exact ?",
+            "rust_byte_offset": 147,
+            "rust_line": 3
+          }
+        }
+      ],
+      "pid": 76064,
+      "plain_goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 7\n\u22a2 helper n = 8"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 helper n = 8\n```"
+        }
+      },
+      "references": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "result": [
+          {
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 4,
+                "line": 2
+              }
+            },
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          },
+          {
+            "range": {
+              "end": {
+                "character": 58,
+                "line": 3
+              },
+              "start": {
+                "character": 52,
+                "line": 3
+              }
+            },
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        ]
+      },
+      "rich_goal": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "8"
+              },
+              "goalPrefix": "\u22a2 ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.134.2"
+                  ],
+                  "names": [
+                    "n"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "Nat"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "fvarIds": [
+                    "_uniq.134.3"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "1"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "2"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "n"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "3"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.134.4",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "4"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "5"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "append": [
+                              {
+                                "text": "helper "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "6"
+                                    },
+                                    "subexprPos": "/0/1/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "7"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "8"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "session_id": "15194550004811189819",
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    "reopen": {
+      "local_old_handle_accepted_for_routing": false,
+      "old_session_after_close": {
+        "error": {
+          "code": -32801,
+          "message": "Cannot process request to closed file 'file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean'"
+        },
+        "id": 17,
+        "jsonrpc": "2.0"
+      },
+      "pid": 76064,
+      "plain_goal": {
+        "id": 19,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 7\n\u22a2 helper n = 8"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 helper n = 8\n```"
+        }
+      },
+      "rich_goal": {
+        "id": 21,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "8"
+              },
+              "goalPrefix": "\u22a2 ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.134.2"
+                  ],
+                  "names": [
+                    "n"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "Nat"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "fvarIds": [
+                    "_uniq.134.3"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "1"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "2"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "n"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "3"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.134.4",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "4"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "5"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "append": [
+                              {
+                                "text": "helper "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "6"
+                                    },
+                                    "subexprPos": "/0/1/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "7"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "8"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "session_id": "15143261004292202726",
+      "wait": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    "restart": {
+      "local_old_worker_handle_accepted_for_routing": false,
+      "old_worker_session_before_connect": {
+        "error": {
+          "code": -32900,
+          "message": "Outdated RPC session"
+        },
+        "id": 11,
+        "jsonrpc": "2.0"
+      },
+      "pid": 76069,
+      "plain_goal": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 7\n\u22a2 helper n = 8"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 helper n = 8\n```"
+        }
+      },
+      "rich_goal": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "8"
+              },
+              "goalPrefix": "\u22a2 ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.134.2"
+                  ],
+                  "names": [
+                    "n"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "Nat"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "fvarIds": [
+                    "_uniq.134.3"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "1"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "2"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "n"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "3"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.134.4",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "4"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "5"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "append": [
+                              {
+                                "text": "helper "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "6"
+                                    },
+                                    "subexprPos": "/0/1/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "7"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "8"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "session_id": "16676994303080907860"
+    }
+  },
+  "transcript": [
+    {
+      "kind": "start",
+      "ms": 256.4,
+      "pid": 76064,
+      "seq": 0,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "initialize",
+        "params": {
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          },
+          "processId": 76062,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work"
+        }
+      },
+      "ms": 256.5,
+      "seq": 1,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      },
+      "ms": 281.8,
+      "seq": 2,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      },
+      "ms": 281.9,
+      "seq": 3,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "languageId": "lean",
+            "text": "import Lean\n\ndef helper (n : Nat) : Nat := n + 1\ntheorem demo (n : Nat) (h : n = 7) : (/- caf\u00e9 \ud83e\udd80 -/ helper n) = 8 := by\n  exact ?_\n",
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 281.9,
+      "seq": 4,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 281.9,
+      "seq": 5,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "ms": 282.0,
+      "seq": 6,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 282.0,
+      "seq": 7,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 282.3,
+      "seq": 8,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 338.1,
+      "seq": 9,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 519.0,
+      "seq": 10,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 519.1,
+      "seq": 11,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 838.1,
+      "seq": 12,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 1359.2,
+      "seq": 13,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 35,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1436.5,
+      "seq": 14,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 35,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1436.5,
+      "seq": 15,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 35,
+                  "line": 2
+                },
+                "start": {
+                  "character": 30,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1436.7,
+      "seq": 16,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1437.6,
+      "seq": 17,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1438.0,
+      "seq": 18,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1438.4,
+      "seq": 19,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1439.0,
+      "seq": 20,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1439.2,
+      "seq": 21,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1439.3,
+      "seq": 22,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1439.5,
+      "seq": 23,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1439.5,
+      "seq": 24,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1439.6,
+      "seq": 25,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 helper n = 8",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 69,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 helper n = 8",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 69,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 1440.3,
+      "seq": 26,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1440.6,
+      "seq": 27,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1440.6,
+      "seq": 28,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "ms": 1440.9,
+      "seq": 29,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "method": "$/lean/plainGoal",
+        "params": {
+          "position": {
+            "character": 8,
+            "line": 4
+          },
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 1440.9,
+      "seq": 30,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 7\n\u22a2 helper n = 8"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 helper n = 8\n```"
+        }
+      },
+      "ms": 1441.5,
+      "seq": 31,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "method": "$/lean/rpc/connect",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+        }
+      },
+      "ms": 1441.5,
+      "seq": 32,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "sessionId": "15194550004811189819"
+        }
+      },
+      "ms": 1441.7,
+      "seq": 33,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "method": "$/lean/rpc/call",
+        "params": {
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "position": {
+              "character": 8,
+              "line": 4
+            },
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+            }
+          },
+          "position": {
+            "character": 8,
+            "line": 4
+          },
+          "sessionId": "15194550004811189819",
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 1441.7,
+      "seq": 34,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "8"
+              },
+              "goalPrefix": "\u22a2 ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.134.2"
+                  ],
+                  "names": [
+                    "n"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "Nat"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "fvarIds": [
+                    "_uniq.134.3"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "1"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "2"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "n"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "3"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.134.4",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "4"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "5"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "append": [
+                              {
+                                "text": "helper "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "6"
+                                    },
+                                    "subexprPos": "/0/1/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "7"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "8"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "ms": 1442.2,
+      "seq": 35,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "method": "textDocument/definition",
+        "params": {
+          "position": {
+            "character": 52,
+            "line": 3
+          },
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 1442.3,
+      "seq": 36,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": [
+          {
+            "originSelectionRange": {
+              "end": {
+                "character": 58,
+                "line": 3
+              },
+              "start": {
+                "character": 52,
+                "line": 3
+              }
+            },
+            "targetRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 4,
+                "line": 2
+              }
+            },
+            "targetSelectionRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 4,
+                "line": 2
+              }
+            },
+            "targetUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        ]
+      },
+      "ms": 1445.2,
+      "seq": 37,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "method": "textDocument/references",
+        "params": {
+          "context": {
+            "includeDeclaration": true
+          },
+          "position": {
+            "character": 52,
+            "line": 3
+          },
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 1445.2,
+      "seq": 38,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "result": [
+          {
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 4,
+                "line": 2
+              }
+            },
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          },
+          {
+            "range": {
+              "end": {
+                "character": 58,
+                "line": 3
+              },
+              "start": {
+                "character": 52,
+                "line": 3
+              }
+            },
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        ]
+      },
+      "ms": 1446.2,
+      "seq": 39,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "method": "textDocument/hover",
+        "params": {
+          "position": {
+            "character": 52,
+            "line": 3
+          },
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 1446.2,
+      "seq": 40,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "contents": {
+            "kind": "markdown",
+            "value": "```lean\nhelper (n : Nat) : Nat\n```"
+          },
+          "range": {
+            "end": {
+              "character": 58,
+              "line": 3
+            },
+            "start": {
+              "character": 52,
+              "line": 3
+            }
+          }
+        }
+      },
+      "ms": 1446.8,
+      "seq": 41,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didClose",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 1446.8,
+      "seq": 42,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 17,
+        "jsonrpc": "2.0",
+        "method": "$/lean/rpc/call",
+        "params": {
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "position": {
+              "character": 8,
+              "line": 4
+            },
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+            }
+          },
+          "position": {
+            "character": 8,
+            "line": 4
+          },
+          "sessionId": "15194550004811189819",
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 1446.9,
+      "seq": 43,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 1446.9,
+      "seq": 44,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "error": {
+          "code": -32801,
+          "message": "Cannot process request to closed file 'file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean'"
+        },
+        "id": 17,
+        "jsonrpc": "2.0"
+      },
+      "ms": 1447.0,
+      "seq": 45,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "languageId": "lean",
+            "text": "import Lean\n\ndef helper (n : Nat) : Nat := n + 1\ntheorem demo (n : Nat) (h : n = 7) : (/- caf\u00e9 \ud83e\udd80 -/ helper n) = 8 := by\n  exact ?_\n",
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1447.0,
+      "seq": 46,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 1447.0,
+      "seq": 47,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1447.3,
+      "seq": 48,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 1507.8,
+      "seq": 49,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 1688.6,
+      "seq": 50,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 1688.6,
+      "seq": 51,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 2008.6,
+      "seq": 52,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 35,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2091.2,
+      "seq": 53,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 35,
+                  "line": 2
+                },
+                "start": {
+                  "character": 30,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2091.2,
+      "seq": 54,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2092.0,
+      "seq": 55,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2092.4,
+      "seq": 56,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2093.4,
+      "seq": 57,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2093.5,
+      "seq": 58,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2094.0,
+      "seq": 59,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 helper n = 8",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 69,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 helper n = 8",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 69,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 2094.7,
+      "seq": 60,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2095.1,
+      "seq": 61,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2095.1,
+      "seq": 62,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2095.1,
+      "seq": 63,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "ms": 2095.3,
+      "seq": 64,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 19,
+        "jsonrpc": "2.0",
+        "method": "$/lean/plainGoal",
+        "params": {
+          "position": {
+            "character": 8,
+            "line": 4
+          },
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 2095.3,
+      "seq": 65,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 19,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 7\n\u22a2 helper n = 8"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 helper n = 8\n```"
+        }
+      },
+      "ms": 2095.8,
+      "seq": 66,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 20,
+        "jsonrpc": "2.0",
+        "method": "$/lean/rpc/connect",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+        }
+      },
+      "ms": 2095.8,
+      "seq": 67,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 20,
+        "jsonrpc": "2.0",
+        "result": {
+          "sessionId": "15143261004292202726"
+        }
+      },
+      "ms": 2096.0,
+      "seq": 68,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 21,
+        "jsonrpc": "2.0",
+        "method": "$/lean/rpc/call",
+        "params": {
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "position": {
+              "character": 8,
+              "line": 4
+            },
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+            }
+          },
+          "position": {
+            "character": 8,
+            "line": 4
+          },
+          "sessionId": "15143261004292202726",
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 2096.0,
+      "seq": 69,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 21,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "8"
+              },
+              "goalPrefix": "\u22a2 ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.134.2"
+                  ],
+                  "names": [
+                    "n"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "Nat"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "fvarIds": [
+                    "_uniq.134.3"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "1"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "2"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "n"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "3"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.134.4",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "4"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "5"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "append": [
+                              {
+                                "text": "helper "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "6"
+                                    },
+                                    "subexprPos": "/0/1/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "7"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "8"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "ms": 2096.6,
+      "seq": 70,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 999,
+        "jsonrpc": "2.0",
+        "method": "shutdown",
+        "params": null
+      },
+      "ms": 2096.6,
+      "seq": 71,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 2096.7,
+      "seq": 72,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 999,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 2115.1,
+      "seq": 73,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      },
+      "ms": 2115.1,
+      "seq": 74,
+      "server": "incarnation-1"
+    },
+    {
+      "kind": "stop",
+      "ms": 2120.0,
+      "pid": 76064,
+      "rc": 0,
+      "seq": 75,
+      "server": "incarnation-1",
+      "stderr": ""
+    },
+    {
+      "kind": "start",
+      "ms": 2121.4,
+      "pid": 76069,
+      "seq": 76,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "initialize",
+        "params": {
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          },
+          "processId": 76062,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work"
+        }
+      },
+      "ms": 2121.5,
+      "seq": 77,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      },
+      "ms": 2146.6,
+      "seq": 78,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      },
+      "ms": 2146.7,
+      "seq": 79,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "languageId": "lean",
+            "text": "import Lean\n\ndef helper (n : Nat) : Nat := n + 1\ntheorem demo (n : Nat) (h : n = 7) : (/- caf\u00e9 \ud83e\udd80 -/ helper n) = 8 := by\n  exact ?_\n",
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2146.7,
+      "seq": 80,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 2146.7,
+      "seq": 81,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "ms": 2146.9,
+      "seq": 82,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 2146.9,
+      "seq": 83,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2147.1,
+      "seq": 84,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 2203.2,
+      "seq": 85,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2384.3,
+      "seq": 86,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 2384.4,
+      "seq": 87,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ms": 2704.4,
+      "seq": 88,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 35,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2774.1,
+      "seq": 89,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 35,
+                  "line": 2
+                },
+                "start": {
+                  "character": 30,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2774.2,
+      "seq": 90,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2775.1,
+      "seq": 91,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2775.5,
+      "seq": 92,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2775.6,
+      "seq": 93,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2776.0,
+      "seq": 94,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2776.4,
+      "seq": 95,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2777.1,
+      "seq": 96,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2777.1,
+      "seq": 97,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 helper n = 8",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 69,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 helper n = 8",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 69,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 2777.8,
+      "seq": 98,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2778.0,
+      "seq": 99,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2778.1,
+      "seq": 100,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+            "version": 1
+          }
+        }
+      },
+      "ms": 2778.1,
+      "seq": 101,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "ms": 2778.3,
+      "seq": 102,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "method": "$/lean/rpc/call",
+        "params": {
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "position": {
+              "character": 8,
+              "line": 4
+            },
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+            }
+          },
+          "position": {
+            "character": 8,
+            "line": 4
+          },
+          "sessionId": "15143261004292202726",
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 2778.4,
+      "seq": 103,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "error": {
+          "code": -32900,
+          "message": "Outdated RPC session"
+        },
+        "id": 11,
+        "jsonrpc": "2.0"
+      },
+      "ms": 2778.6,
+      "seq": 104,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "method": "$/lean/plainGoal",
+        "params": {
+          "position": {
+            "character": 8,
+            "line": 4
+          },
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 2778.6,
+      "seq": 105,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 7\n\u22a2 helper n = 8"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 helper n = 8\n```"
+        }
+      },
+      "ms": 2779.1,
+      "seq": 106,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "method": "$/lean/rpc/connect",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+        }
+      },
+      "ms": 2779.1,
+      "seq": 107,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "sessionId": "16676994303080907860"
+        }
+      },
+      "ms": 2779.3,
+      "seq": 108,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "method": "$/lean/rpc/call",
+        "params": {
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "position": {
+              "character": 8,
+              "line": 4
+            },
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+            }
+          },
+          "position": {
+            "character": 8,
+            "line": 4
+          },
+          "sessionId": "16676994303080907860",
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean"
+          }
+        }
+      },
+      "ms": 2779.3,
+      "seq": 109,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "8"
+              },
+              "goalPrefix": "\u22a2 ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.134.2"
+                  ],
+                  "names": [
+                    "n"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "Nat"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "fvarIds": [
+                    "_uniq.134.3"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "1"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "2"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "n"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "3"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.134.4",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "4"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "5"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "append": [
+                              {
+                                "text": "helper "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "6"
+                                    },
+                                    "subexprPos": "/0/1/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "7"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "8"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "ms": 2779.9,
+      "seq": 110,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "id": 999,
+        "jsonrpc": "2.0",
+        "method": "shutdown",
+        "params": null
+      },
+      "ms": 2779.9,
+      "seq": 111,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29/support/work/Projected.lean",
+          "version": 1
+        }
+      },
+      "ms": 2780.0,
+      "seq": 112,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "server",
+      "message": {
+        "id": 999,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ms": 2798.6,
+      "seq": 113,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      },
+      "ms": 2798.6,
+      "seq": 114,
+      "server": "incarnation-2"
+    },
+    {
+      "kind": "stop",
+      "ms": 2803.3,
+      "pid": 76069,
+      "rc": 0,
+      "seq": 115,
+      "server": "incarnation-2",
+      "stderr": ""
+    }
+  ]
+}

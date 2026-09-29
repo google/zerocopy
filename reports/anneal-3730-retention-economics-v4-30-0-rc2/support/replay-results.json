@@ -1,0 +1,773 @@
+{
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "toolchain": "leanprover/lean4:v4.30.0-rc2",
+  "runs": [
+    {
+      "label": "generation-1-build",
+      "cwd": "baseline/1/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.848,
+      "stdout": "\u2714 [3/5] Built Dep (181ms)\n\u2139 [4/5] Built Generated (177ms)\ninfo: Generated.lean:3:0: 1\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-2-build",
+      "cwd": "baseline/2/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.798,
+      "stdout": "\u2714 [3/5] Built Dep (168ms)\n\u2139 [4/5] Built Generated (172ms)\ninfo: Generated.lean:3:0: 2\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-3-build",
+      "cwd": "baseline/3/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.804,
+      "stdout": "\u2714 [3/5] Built Dep (168ms)\n\u2139 [4/5] Built Generated (172ms)\ninfo: Generated.lean:3:0: 3\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-4-build",
+      "cwd": "baseline/4/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.802,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (172ms)\ninfo: Generated.lean:3:0: 4\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-5-build",
+      "cwd": "baseline/5/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.803,
+      "stdout": "\u2714 [3/5] Built Dep (181ms)\n\u2139 [4/5] Built Generated (171ms)\ninfo: Generated.lean:3:0: 5\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-6-build",
+      "cwd": "baseline/6/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.809,
+      "stdout": "\u2714 [3/5] Built Dep (170ms)\n\u2139 [4/5] Built Generated (173ms)\ninfo: Generated.lean:3:0: 6\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-7-build",
+      "cwd": "baseline/7/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.797,
+      "stdout": "\u2714 [3/5] Built Dep (174ms)\n\u2139 [4/5] Built Generated (178ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-8-build",
+      "cwd": "baseline/8/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.804,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (172ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-9-build",
+      "cwd": "baseline/9/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.81,
+      "stdout": "\u2714 [3/5] Built Dep (168ms)\n\u2139 [4/5] Built Generated (171ms)\ninfo: Generated.lean:3:0: 9\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-10-build",
+      "cwd": "baseline/10/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.81,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:3:0: 10\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-11-build",
+      "cwd": "baseline/11/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.812,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (172ms)\ninfo: Generated.lean:3:0: 11\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-12-build",
+      "cwd": "baseline/12/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.817,
+      "stdout": "\u2714 [3/5] Built Dep (176ms)\n\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:3:0: 12\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-13-build",
+      "cwd": "baseline/13/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.81,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (171ms)\ninfo: Generated.lean:3:0: 13\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-14-build",
+      "cwd": "baseline/14/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.803,
+      "stdout": "\u2714 [3/5] Built Dep (170ms)\n\u2139 [4/5] Built Generated (173ms)\ninfo: Generated.lean:3:0: 14\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-15-build",
+      "cwd": "baseline/15/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.81,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (172ms)\ninfo: Generated.lean:3:0: 15\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "generation-16-build",
+      "cwd": "baseline/16/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.808,
+      "stdout": "\u2714 [3/5] Built Dep (180ms)\n\u2139 [4/5] Built Generated (171ms)\ninfo: Generated.lean:3:0: 16\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-1-source-only-build",
+      "cwd": "reconstructed/source-only/1/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.816,
+      "stdout": "\u2714 [3/5] Built Dep (185ms)\n\u2139 [4/5] Built Generated (181ms)\ninfo: Generated.lean:3:0: 1\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-1-source-only-query",
+      "cwd": "reconstructed/source-only/1/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.537,
+      "stdout": "{\"caption\":\"\",\"data\":\"1\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-1-generated-build",
+      "cwd": "reconstructed/generated/1/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.8,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (173ms)\ninfo: Generated.lean:3:0: 1\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-1-generated-query",
+      "cwd": "reconstructed/generated/1/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.475,
+      "stdout": "{\"caption\":\"\",\"data\":\"1\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-1-compiled-no-build",
+      "cwd": "reconstructed/compiled/1/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "exit": 0,
+      "seconds": 0.407,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-1-compiled-query",
+      "cwd": "reconstructed/compiled/1/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.479,
+      "stdout": "{\"caption\":\"\",\"data\":\"1\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-16-source-only-build",
+      "cwd": "reconstructed/source-only/16/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.783,
+      "stdout": "\u2714 [3/5] Built Dep (170ms)\n\u2139 [4/5] Built Generated (172ms)\ninfo: Generated.lean:3:0: 16\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-16-source-only-query",
+      "cwd": "reconstructed/source-only/16/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.475,
+      "stdout": "{\"caption\":\"\",\"data\":\"16\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-16-generated-build",
+      "cwd": "reconstructed/generated/16/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.794,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (176ms)\ninfo: Generated.lean:3:0: 16\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-16-generated-query",
+      "cwd": "reconstructed/generated/16/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.466,
+      "stdout": "{\"caption\":\"\",\"data\":\"16\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-16-compiled-no-build",
+      "cwd": "reconstructed/compiled/16/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "exit": 0,
+      "seconds": 0.401,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "reconstruct-16-compiled-query",
+      "cwd": "reconstructed/compiled/16/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.477,
+      "stdout": "{\"caption\":\"\",\"data\":\"16\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "live-reader-after-retire",
+      "args": [
+        "--json",
+        "Historical.lean"
+      ],
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"1\",\"endPos\":{\"column\":5,\"line\":6},\"fileName\":\"$WORK/live/Historical.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "seconds": 2.723
+    },
+    {
+      "label": "fresh-reader-after-retire",
+      "args": [
+        "--json",
+        "Historical.lean"
+      ],
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/live/retiring-1/producer/.lake/build/lib/lean\\n$LEAN_LIB/lean\",\"endPos\":null,\"fileName\":\"$WORK/live/Historical.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": ""
+    }
+  ],
+  "observations": {
+    "generation-1": {
+      "source_sha256": "1dbb79b5f4e40ea57371b62be0976fd55b2be4c6cfe3a26f4824956293c8ea90",
+      "olean_sha256": "ecdb4514c5412e92ebd565183a67fd5a02ed5d690c54bb030f45d1ec1d8b0814",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224514,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-2": {
+      "source_sha256": "9cebe2a09988c173a7d812ad14730603ef5f88efdd676eadb5323ddcbec0da99",
+      "olean_sha256": "45c419961d80961c2166c07b205f954778ac8db966913c38bacee520db408986",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224530,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-3": {
+      "source_sha256": "1c7eacbe44eee906af29ffe34cf5005108836a839d9f7798d6989ca0dfa7ea4a",
+      "olean_sha256": "25cd92b52cb2104c72c996f8427748485ab33ed41210d06e02dd0d2b9b100558",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224530,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-4": {
+      "source_sha256": "38818f5ec5eaa8fbe37c8fc2244053923c57da58febd8b8e4e81d4c823d96744",
+      "olean_sha256": "d558e4427330d72d13ee87584bb2ba73ec9142f50dc32dbfc58938ddc2965810",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224530,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-5": {
+      "source_sha256": "07641c6083e783e4bdfe8adc0ed5451c3518afdf29603a557487036e442a1ca2",
+      "olean_sha256": "d33fb2b65b22970904a21a197799ca882a75217199951f2d864dcf0263a786a0",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224530,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-6": {
+      "source_sha256": "8c7444726b42b8cf4c9dcec771081a0b063c1c759d626f5adf72a65967d9e2ae",
+      "olean_sha256": "5a34e6d5e264a8695593c269ca72b72cbbb26e359518ed859939b69d70f34d4b",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224530,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-7": {
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "olean_sha256": "f1a8eada1946a273d082116f099f05e0263762d7e110c14168c97d77ead6679b",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224530,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-8": {
+      "source_sha256": "ad9b20a84e7342b940c4792cfb92687555648d9d5e47982f9e089db614785046",
+      "olean_sha256": "df8f615a4d9110e0b23742f5e7702dd689856e68db0c34800af35a1be66c602c",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224530,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-9": {
+      "source_sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+      "olean_sha256": "13b141686f4e9e23062ba7a29e04629b8e7fdf33dcc69fde9fcab94e172e6bcf",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224434,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-10": {
+      "source_sha256": "df309056b765d44dee5d7056b0783ffd42f31f713660bed348680d03a24d2dac",
+      "olean_sha256": "0b488fe0b94814ae4f94c5e6d0b931b80776a09865efa468c7d4701d81ede8dc",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224456,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-11": {
+      "source_sha256": "4033e4ac520bc3983bb859e76742a993b52c5df11498a569a319295ce0a47027",
+      "olean_sha256": "841a9e5615cd3179c24bfa08f14705c754f7e43ce6576694a2c2870dc6f6c7a5",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224456,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-12": {
+      "source_sha256": "d97efe85000833beaf4300113d95d47d5377c730909a263957f46bcf48ebbbb7",
+      "olean_sha256": "ee047b15c0842a403192cb18d45a760c75a73c7004ae23d024371f51196b80b6",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224456,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-13": {
+      "source_sha256": "d70a4c8d74430ac7228cce96bf93330e50dd13a450d013e152d24283d6df32ac",
+      "olean_sha256": "3582c4f0bd2a751d713a875639b58a2929096528531d7c997732f9500e628304",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224456,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-14": {
+      "source_sha256": "be2ee14a4067a086893a99596f07201e01d532ace09eb2d0370d454b3b7fa8e3",
+      "olean_sha256": "65f0b8abce605d6d7f48e33f51cb177a58b46afa96e6ab7ccb368fa54f20d7b1",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224456,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-15": {
+      "source_sha256": "0653b648519cd32204972558301e3bae933a42bcfd218fd94657064120ea4e84",
+      "olean_sha256": "02a0cfdf95d9014e2ff8017053f041bcd169758f93b4eecb2bc78e1dff0fa191",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224456,
+        "blocks_bytes": 323584
+      }
+    },
+    "generation-16": {
+      "source_sha256": "4e5f0d4737c14dae59de1227fe13fcb9eef4cc8242a5fca22dec2efeec3caa5a",
+      "olean_sha256": "be00ba303555926fd6e03cdf1c038cbcb059651a363f65708f4f140e26d15ebc",
+      "baseline_bill": {
+        "files": 28,
+        "logical_bytes": 224456,
+        "blocks_bytes": 323584
+      }
+    },
+    "retention_sweep": {
+      "source-only": {
+        "1": {
+          "files": 1,
+          "logical_bytes": 14,
+          "blocks_bytes": 4096
+        },
+        "2": {
+          "files": 2,
+          "logical_bytes": 28,
+          "blocks_bytes": 8192
+        },
+        "4": {
+          "files": 4,
+          "logical_bytes": 56,
+          "blocks_bytes": 16384
+        },
+        "8": {
+          "files": 8,
+          "logical_bytes": 111,
+          "blocks_bytes": 32768
+        },
+        "16": {
+          "files": 16,
+          "logical_bytes": 215,
+          "blocks_bytes": 65536
+        }
+      },
+      "generated": {
+        "1": {
+          "files": 8,
+          "logical_bytes": 758,
+          "blocks_bytes": 32768
+        },
+        "2": {
+          "files": 16,
+          "logical_bytes": 1516,
+          "blocks_bytes": 65536
+        },
+        "4": {
+          "files": 32,
+          "logical_bytes": 3032,
+          "blocks_bytes": 131072
+        },
+        "8": {
+          "files": 64,
+          "logical_bytes": 6061,
+          "blocks_bytes": 262144
+        },
+        "16": {
+          "files": 128,
+          "logical_bytes": 12101,
+          "blocks_bytes": 524288
+        }
+      },
+      "compiled": {
+        "1": {
+          "files": 28,
+          "logical_bytes": 224456,
+          "blocks_bytes": 323584
+        },
+        "2": {
+          "files": 56,
+          "logical_bytes": 448912,
+          "blocks_bytes": 647168
+        },
+        "4": {
+          "files": 112,
+          "logical_bytes": 897824,
+          "blocks_bytes": 1294336
+        },
+        "8": {
+          "files": 224,
+          "logical_bytes": 1795626,
+          "blocks_bytes": 2588672
+        },
+        "16": {
+          "files": 448,
+          "logical_bytes": 3591850,
+          "blocks_bytes": 5177344
+        }
+      }
+    },
+    "reconstruction": {
+      "1": {
+        "source-only": {
+          "materialize_seconds": 0.001,
+          "prepare_exit": 0,
+          "prepare_seconds": 0.816,
+          "query_exit": 0,
+          "query_seconds": 0.537,
+          "disk_after": {
+            "files": 28,
+            "logical_bytes": 224803,
+            "blocks_bytes": 323584
+          },
+          "import_olean_sha256": "ecdb4514c5412e92ebd565183a67fd5a02ed5d690c54bb030f45d1ec1d8b0814"
+        },
+        "generated": {
+          "materialize_seconds": 0.0017,
+          "prepare_exit": 0,
+          "prepare_seconds": 0.8,
+          "query_exit": 0,
+          "query_seconds": 0.475,
+          "disk_after": {
+            "files": 28,
+            "logical_bytes": 224769,
+            "blocks_bytes": 323584
+          },
+          "import_olean_sha256": "ecdb4514c5412e92ebd565183a67fd5a02ed5d690c54bb030f45d1ec1d8b0814"
+        },
+        "compiled": {
+          "materialize_seconds": 0.0069,
+          "prepare_exit": 0,
+          "prepare_seconds": 0.407,
+          "query_exit": 0,
+          "query_seconds": 0.479,
+          "disk_after": {
+            "files": 28,
+            "logical_bytes": 224514,
+            "blocks_bytes": 323584
+          },
+          "import_olean_sha256": "ecdb4514c5412e92ebd565183a67fd5a02ed5d690c54bb030f45d1ec1d8b0814"
+        }
+      },
+      "16": {
+        "source-only": {
+          "materialize_seconds": 0.0009,
+          "prepare_exit": 0,
+          "prepare_seconds": 0.783,
+          "query_exit": 0,
+          "query_seconds": 0.475,
+          "disk_after": {
+            "files": 28,
+            "logical_bytes": 224745,
+            "blocks_bytes": 323584
+          },
+          "import_olean_sha256": "be00ba303555926fd6e03cdf1c038cbcb059651a363f65708f4f140e26d15ebc"
+        },
+        "generated": {
+          "materialize_seconds": 0.0018,
+          "prepare_exit": 0,
+          "prepare_seconds": 0.794,
+          "query_exit": 0,
+          "query_seconds": 0.466,
+          "disk_after": {
+            "files": 28,
+            "logical_bytes": 224711,
+            "blocks_bytes": 323584
+          },
+          "import_olean_sha256": "be00ba303555926fd6e03cdf1c038cbcb059651a363f65708f4f140e26d15ebc"
+        },
+        "compiled": {
+          "materialize_seconds": 0.0074,
+          "prepare_exit": 0,
+          "prepare_seconds": 0.401,
+          "query_exit": 0,
+          "query_seconds": 0.477,
+          "disk_after": {
+            "files": 28,
+            "logical_bytes": 224456,
+            "blocks_bytes": 323584
+          },
+          "import_olean_sha256": "be00ba303555926fd6e03cdf1c038cbcb059651a363f65708f4f140e26d15ebc"
+        }
+      }
+    },
+    "live_reader": {
+      "marker_seen": true,
+      "sampled_rss_kib": 1180768,
+      "retired_generation_absent": true,
+      "active_sentinel_unchanged": true
+    },
+    "staging_cleanup": {
+      "removed": [
+        "incomplete",
+        "orphan"
+      ],
+      "preserved": [
+        "active"
+      ],
+      "active_sentinel_unchanged": true,
+      "stage_bill_after": {
+        "files": 2,
+        "logical_bytes": 26,
+        "blocks_bytes": 8192
+      }
+    },
+    "handle_policy_model": {
+      "1": "refused-expired",
+      "13": "served",
+      "16": "served"
+    }
+  }
+}

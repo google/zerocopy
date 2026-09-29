@@ -1,0 +1,3220 @@
+{
+  "tool_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+  "tool_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "snapshots": {
+    "initial": {
+      "host_sha256": "d9b137904b6696c08920488741159f05f2d99cf945757a768ced8346cc063633",
+      "model_sha256": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "proof_sha256": "4790d798541cccebfd0acb6bb27e0c22a5ff5c52b1c57e579d0ab7608cee7b8d"
+    },
+    "A": {
+      "host_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "model_sha256": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "proof_sha256": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956"
+    },
+    "F": {
+      "host_sha256": "ff90ed574c6f7b83ec17fd85360c1894ce2e55170ada4efbf6b58cdb2dcbede8",
+      "model_sha256": "753a03d7d085e12481c8eff55344bc16a3475d7b8f6e8ee5923083034a8ffdde",
+      "proof_sha256": "3cb749bb46aab6b35871b0a1f4e8fce1ed2ea8d7534f69f7499c8ae0757c8678"
+    },
+    "B": {
+      "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+      "model_sha256": "a9f118f7fb3e6919b955576af7ca556c6b653ae2ed16711b46cfca3160674e43",
+      "proof_sha256": "e02c9eb7095d499ccc5211fbfe6a9196bbac4c87f848cfa9527fe5cd6faa1dd7"
+    },
+    "A-late": {
+      "host_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "model_sha256": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "proof_sha256": "aaa2040bf670ff621f43cadc12ac767f3315c607997578dd861091925e3e7966"
+    }
+  },
+  "models": {
+    "A": {
+      "rc": 0,
+      "artifact_sha256": "9dd4d2a1c8cf7d909299d4bb92a45f8ff3f7c4593f8913b64eafa1eed800b4e5"
+    },
+    "F": {
+      "rc": 1,
+      "artifact_sha256": null
+    },
+    "B": {
+      "rc": 0,
+      "artifact_sha256": "9ed8713387b59eaf45c0f261cb92ed8ad4663c86301973e57e73ea73f1441a38"
+    }
+  },
+  "checks": {
+    "A": {
+      "proof_rc": 0,
+      "artifact_rc": 0,
+      "oracle_rc": 0,
+      "axiom_data": [
+        "'claim' does not depend on any axioms"
+      ],
+      "oracle_sha256": "5ef764b257029f64580c34c28a12fe82588340fa683243b248dd7374416cb4aa",
+      "proof_artifact_sha256": "24ff1eadf3b0456611ff00202c150f89980e801b5832d65fcf12f14bb39519e0"
+    },
+    "B": {
+      "proof_rc": 0,
+      "artifact_rc": 0,
+      "oracle_rc": 0,
+      "axiom_data": [
+        "'claim' does not depend on any axioms"
+      ],
+      "oracle_sha256": "bcf17e6fc2f7daedaf57fec166ad8d54fcf3581fb9de30abe358f0ce44b124ad",
+      "proof_artifact_sha256": "ba08ca066322195e2b2271b4c4eae8249a84eabdb18ea912ba210d98da8ff41b"
+    },
+    "stale-on-B": {
+      "proof_rc": 1,
+      "artifact_rc": null,
+      "oracle_rc": null,
+      "axiom_data": null
+    },
+    "weak-on-B": {
+      "proof_rc": 0,
+      "artifact_rc": 0,
+      "oracle_rc": 1,
+      "axiom_data": [
+        "'claim' does not depend on any axioms"
+      ],
+      "oracle_sha256": "bcf17e6fc2f7daedaf57fec166ad8d54fcf3581fb9de30abe358f0ce44b124ad",
+      "proof_artifact_sha256": "f7fed22ce54aeaaffde20043b581b769cabc32ecb6bd99aa86173c956d3fe5fa"
+    },
+    "admitted-on-B": {
+      "proof_rc": 0,
+      "artifact_rc": 0,
+      "oracle_rc": 0,
+      "axiom_data": [
+        "'claim' depends on axioms: [sorryAx]"
+      ],
+      "oracle_sha256": "bcf17e6fc2f7daedaf57fec166ad8d54fcf3581fb9de30abe358f0ce44b124ad",
+      "proof_artifact_sha256": "612cb3c7bd303995f63a8636a574868e779bd876c41f3b078574d55b60da5ebd"
+    }
+  },
+  "live": {
+    "A": {
+      "initial_wait": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "initial_goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ modelValue = 3"
+          ],
+          "rendered": "```lean\n⊢ modelValue = 3\n```"
+        }
+      },
+      "disk_proof_sha256": "4790d798541cccebfd0acb6bb27e0c22a5ff5c52b1c57e579d0ab7608cee7b8d",
+      "edited_wait": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "edited_goal": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "disk_proof_sha256_after_edit": "4790d798541cccebfd0acb6bb27e0c22a5ff5c52b1c57e579d0ab7608cee7b8d"
+    },
+    "B": {
+      "initial_wait": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "initial_goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "disk_proof_sha256": "e02c9eb7095d499ccc5211fbfe6a9196bbac4c87f848cfa9527fe5cd6faa1dd7"
+    },
+    "stale-on-B": {
+      "initial_wait": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "initial_goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ modelValue = 3"
+          ],
+          "rendered": "```lean\n⊢ modelValue = 3\n```"
+        }
+      },
+      "disk_proof_sha256": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956"
+    }
+  },
+  "late": {
+    "rc": 0,
+    "oracle_rc": 0,
+    "decision": "reject-stale"
+  },
+  "final_selected": {
+    "name": "B",
+    "revision": 3,
+    "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+    "model_artifact_sha256": "9ed8713387b59eaf45c0f261cb92ed8ad4663c86301973e57e73ea73f1441a38"
+  },
+  "events": [
+    {
+      "seq": 0,
+      "kind": "cas",
+      "expected_sha256": "d9b137904b6696c08920488741159f05f2d99cf945757a768ced8346cc063633",
+      "new_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "accepted": true,
+      "revision": 1
+    },
+    {
+      "seq": 1,
+      "kind": "snapshot",
+      "name": "A",
+      "host_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "model_sha256": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "proof_sha256": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956"
+    },
+    {
+      "seq": 2,
+      "kind": "snapshot",
+      "name": "A-initial",
+      "host_sha256": "d9b137904b6696c08920488741159f05f2d99cf945757a768ced8346cc063633",
+      "model_sha256": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "proof_sha256": "4790d798541cccebfd0acb6bb27e0c22a5ff5c52b1c57e579d0ab7608cee7b8d"
+    },
+    {
+      "seq": 3,
+      "kind": "command",
+      "name": "A-model",
+      "cwd": "$WORK/A",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "Generated.olean",
+        "Generated.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "seq": 4,
+      "kind": "server_start",
+      "cwd": "$WORK/A-initial",
+      "pid": 53965
+    },
+    {
+      "seq": 5,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 53963,
+          "rootUri": "file://$WORK/A-initial",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "kind": "receive",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 7,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 8,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Generated\ntheorem claim : modelValue = 3 := by\n  exact ?_\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/A-initial/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "kind": "receive",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 12,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/A-initial/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 14,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 15,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/A-initial/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "kind": "receive",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 17,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 18,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 21,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 22,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 23,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ modelValue = 3",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 34,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ modelValue = 3",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 34,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/A-initial/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 24,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 25,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 26,
+      "kind": "receive",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 27,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 10
+          }
+        }
+      }
+    },
+    {
+      "seq": 28,
+      "kind": "receive",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ modelValue = 3"
+          ],
+          "rendered": "```lean\n⊢ modelValue = 3\n```"
+        }
+      }
+    },
+    {
+      "seq": 29,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 2
+          },
+          "contentChanges": [
+            {
+              "text": "import Generated\ntheorem claim : modelValue = 3 := by\n  rfl\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 30,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/A-initial/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "seq": 31,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 32,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 33,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/A-initial/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "seq": 34,
+      "kind": "receive",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 35,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/A-initial/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 36,
+      "kind": "receive",
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 37,
+      "kind": "live",
+      "name": "A",
+      "initial_wait": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "initial_goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ modelValue = 3"
+          ],
+          "rendered": "```lean\n⊢ modelValue = 3\n```"
+        }
+      },
+      "disk_proof_sha256": "4790d798541cccebfd0acb6bb27e0c22a5ff5c52b1c57e579d0ab7608cee7b8d",
+      "edited_wait": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "edited_goal": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "disk_proof_sha256_after_edit": "4790d798541cccebfd0acb6bb27e0c22a5ff5c52b1c57e579d0ab7608cee7b8d"
+    },
+    {
+      "seq": 38,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 39,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/A-initial/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "seq": 40,
+      "kind": "receive",
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 41,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 42,
+      "kind": "server_stop",
+      "rc": 0
+    },
+    {
+      "seq": 43,
+      "kind": "command",
+      "name": "A-proof",
+      "cwd": "$WORK/A",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "seq": 44,
+      "kind": "command",
+      "name": "A-artifact",
+      "cwd": "$WORK/A",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "Proof.olean",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "seq": 45,
+      "kind": "command",
+      "name": "A-oracle",
+      "cwd": "$WORK/A",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Oracle.lean"
+      ],
+      "rc": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'claim' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Oracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 46,
+      "kind": "check",
+      "name": "A",
+      "proof_rc": 0,
+      "artifact_rc": 0,
+      "oracle_rc": 0,
+      "axiom_data": [
+        "'claim' does not depend on any axioms"
+      ],
+      "oracle_sha256": "5ef764b257029f64580c34c28a12fe82588340fa683243b248dd7374416cb4aa",
+      "proof_artifact_sha256": "24ff1eadf3b0456611ff00202c150f89980e801b5832d65fcf12f14bb39519e0"
+    },
+    {
+      "seq": 47,
+      "kind": "publish",
+      "selected": {
+        "name": "A",
+        "revision": 1,
+        "host_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+        "model_artifact_sha256": "9dd4d2a1c8cf7d909299d4bb92a45f8ff3f7c4593f8913b64eafa1eed800b4e5"
+      }
+    },
+    {
+      "seq": 48,
+      "kind": "snapshot",
+      "name": "A-late",
+      "host_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "model_sha256": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "proof_sha256": "aaa2040bf670ff621f43cadc12ac767f3315c607997578dd861091925e3e7966"
+    },
+    {
+      "seq": 49,
+      "kind": "late_started",
+      "pid": 53999,
+      "revision": 1
+    },
+    {
+      "seq": 50,
+      "kind": "late_gate_entered",
+      "revision": 1
+    },
+    {
+      "seq": 51,
+      "kind": "cas",
+      "expected_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "new_sha256": "ff90ed574c6f7b83ec17fd85360c1894ce2e55170ada4efbf6b58cdb2dcbede8",
+      "accepted": true,
+      "revision": 2
+    },
+    {
+      "seq": 52,
+      "kind": "snapshot",
+      "name": "F-invalid",
+      "host_sha256": "ff90ed574c6f7b83ec17fd85360c1894ce2e55170ada4efbf6b58cdb2dcbede8",
+      "model_sha256": "753a03d7d085e12481c8eff55344bc16a3475d7b8f6e8ee5923083034a8ffdde",
+      "proof_sha256": "3cb749bb46aab6b35871b0a1f4e8fce1ed2ea8d7534f69f7499c8ae0757c8678"
+    },
+    {
+      "seq": 53,
+      "kind": "command",
+      "name": "F-invalid-model",
+      "cwd": "$WORK/F-invalid",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "Generated.olean",
+        "Generated.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unexpected end of input\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":true,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 54,
+      "kind": "failed_generation",
+      "revision": 2,
+      "last_good": {
+        "name": "A",
+        "revision": 1,
+        "host_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+        "model_artifact_sha256": "9dd4d2a1c8cf7d909299d4bb92a45f8ff3f7c4593f8913b64eafa1eed800b4e5"
+      }
+    },
+    {
+      "seq": 55,
+      "kind": "cas",
+      "expected_sha256": "ff90ed574c6f7b83ec17fd85360c1894ce2e55170ada4efbf6b58cdb2dcbede8",
+      "new_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+      "accepted": true,
+      "revision": 3
+    },
+    {
+      "seq": 56,
+      "kind": "snapshot",
+      "name": "B",
+      "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+      "model_sha256": "a9f118f7fb3e6919b955576af7ca556c6b653ae2ed16711b46cfca3160674e43",
+      "proof_sha256": "e02c9eb7095d499ccc5211fbfe6a9196bbac4c87f848cfa9527fe5cd6faa1dd7"
+    },
+    {
+      "seq": 57,
+      "kind": "command",
+      "name": "B-model",
+      "cwd": "$WORK/B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "Generated.olean",
+        "Generated.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "seq": 58,
+      "kind": "server_start",
+      "cwd": "$WORK/B",
+      "pid": 54008
+    },
+    {
+      "seq": 59,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 53963,
+          "rootUri": "file://$WORK/B",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 60,
+      "kind": "receive",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 61,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 62,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Generated\ntheorem claim : modelValue = 4 := by\n  rfl\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 63,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 64,
+      "kind": "receive",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 65,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 66,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 67,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 68,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 69,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 70,
+      "kind": "receive",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 71,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 72,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 73,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 74,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 75,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 76,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 77,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 78,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 79,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 80,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 81,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 82,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 83,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 84,
+      "kind": "receive",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 85,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 86,
+      "kind": "receive",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 87,
+      "kind": "live",
+      "name": "B",
+      "initial_wait": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "initial_goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "disk_proof_sha256": "e02c9eb7095d499ccc5211fbfe6a9196bbac4c87f848cfa9527fe5cd6faa1dd7"
+    },
+    {
+      "seq": 88,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 89,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 90,
+      "kind": "receive",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 91,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 92,
+      "kind": "server_stop",
+      "rc": 0
+    },
+    {
+      "seq": 93,
+      "kind": "command",
+      "name": "B-proof",
+      "cwd": "$WORK/B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "seq": 94,
+      "kind": "command",
+      "name": "B-artifact",
+      "cwd": "$WORK/B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "Proof.olean",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "seq": 95,
+      "kind": "command",
+      "name": "B-oracle",
+      "cwd": "$WORK/B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Oracle.lean"
+      ],
+      "rc": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'claim' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Oracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 96,
+      "kind": "check",
+      "name": "B",
+      "proof_rc": 0,
+      "artifact_rc": 0,
+      "oracle_rc": 0,
+      "axiom_data": [
+        "'claim' does not depend on any axioms"
+      ],
+      "oracle_sha256": "bcf17e6fc2f7daedaf57fec166ad8d54fcf3581fb9de30abe358f0ce44b124ad",
+      "proof_artifact_sha256": "ba08ca066322195e2b2271b4c4eae8249a84eabdb18ea912ba210d98da8ff41b"
+    },
+    {
+      "seq": 97,
+      "kind": "publish",
+      "selected": {
+        "name": "B",
+        "revision": 3,
+        "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+        "model_artifact_sha256": "9ed8713387b59eaf45c0f261cb92ed8ad4663c86301973e57e73ea73f1441a38"
+      }
+    },
+    {
+      "seq": 98,
+      "kind": "cas",
+      "expected_sha256": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "new_sha256": "d9b137904b6696c08920488741159f05f2d99cf945757a768ced8346cc063633",
+      "accepted": false,
+      "revision": 3
+    },
+    {
+      "seq": 99,
+      "kind": "late_completed",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "selected": {
+        "name": "B",
+        "revision": 3,
+        "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+        "model_artifact_sha256": "9ed8713387b59eaf45c0f261cb92ed8ad4663c86301973e57e73ea73f1441a38"
+      }
+    },
+    {
+      "seq": 100,
+      "kind": "command",
+      "name": "A-late-oracle",
+      "cwd": "$WORK/A-late",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Oracle.lean"
+      ],
+      "rc": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'claim' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Oracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 101,
+      "kind": "late_disposition",
+      "decision": "reject-stale",
+      "selected": {
+        "name": "B",
+        "revision": 3,
+        "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+        "model_artifact_sha256": "9ed8713387b59eaf45c0f261cb92ed8ad4663c86301973e57e73ea73f1441a38"
+      }
+    },
+    {
+      "seq": 102,
+      "kind": "snapshot",
+      "name": "stale-on-B",
+      "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+      "model_sha256": "a9f118f7fb3e6919b955576af7ca556c6b653ae2ed16711b46cfca3160674e43",
+      "proof_sha256": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956"
+    },
+    {
+      "seq": 103,
+      "kind": "command",
+      "name": "stale-on-B-proof",
+      "cwd": "$WORK/stale-on-B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  modelValue\\nis not definitionally equal to the right-hand side\\n  3\\n\\n⊢ modelValue = 3\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 104,
+      "kind": "server_start",
+      "cwd": "$WORK/stale-on-B",
+      "pid": 54032
+    },
+    {
+      "seq": 105,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 53963,
+          "rootUri": "file://$WORK/stale-on-B",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 106,
+      "kind": "receive",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 107,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 108,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Generated\ntheorem claim : modelValue = 3 := by\n  rfl\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 109,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/stale-on-B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 110,
+      "kind": "receive",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 111,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 112,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 113,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/stale-on-B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 114,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 115,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/stale-on-B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 116,
+      "kind": "receive",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 117,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 118,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 119,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 120,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 121,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 122,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 123,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 124,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "message": "Tactic `rfl` failed: The left-hand side\n  modelValue\nis not definitionally equal to the right-hand side\n  3\n\n⊢ modelValue = 3",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/stale-on-B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 125,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 126,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 127,
+      "kind": "receive",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 128,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/stale-on-B/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 129,
+      "kind": "receive",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ modelValue = 3"
+          ],
+          "rendered": "```lean\n⊢ modelValue = 3\n```"
+        }
+      }
+    },
+    {
+      "seq": 130,
+      "kind": "live",
+      "name": "stale-on-B",
+      "initial_wait": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "initial_goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ modelValue = 3"
+          ],
+          "rendered": "```lean\n⊢ modelValue = 3\n```"
+        }
+      },
+      "disk_proof_sha256": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956"
+    },
+    {
+      "seq": 131,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 132,
+      "kind": "receive",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/stale-on-B/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 133,
+      "kind": "receive",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 134,
+      "kind": "send",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 135,
+      "kind": "server_stop",
+      "rc": 0
+    },
+    {
+      "seq": 136,
+      "kind": "snapshot",
+      "name": "weak-on-B",
+      "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+      "model_sha256": "a9f118f7fb3e6919b955576af7ca556c6b653ae2ed16711b46cfca3160674e43",
+      "proof_sha256": "f72a7e7c102904fda398218c3e95bbe0adb5568c673197091ad7fb3a76fbfd8d"
+    },
+    {
+      "seq": 137,
+      "kind": "command",
+      "name": "weak-on-B-proof",
+      "cwd": "$WORK/weak-on-B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "seq": 138,
+      "kind": "command",
+      "name": "weak-on-B-artifact",
+      "cwd": "$WORK/weak-on-B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "Proof.olean",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "seq": 139,
+      "kind": "command",
+      "name": "weak-on-B-oracle",
+      "cwd": "$WORK/weak-on-B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Oracle.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Type mismatch\\n  claim\\nhas type\\n  True\\nbut is expected to have type\\n  modelValue = 4\",\"endPos\":{\"column\":33,\"line\":2},\"fileName\":\"Oracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":28,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'claim' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Oracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 140,
+      "kind": "check",
+      "name": "weak-on-B",
+      "proof_rc": 0,
+      "artifact_rc": 0,
+      "oracle_rc": 1,
+      "axiom_data": [
+        "'claim' does not depend on any axioms"
+      ],
+      "oracle_sha256": "bcf17e6fc2f7daedaf57fec166ad8d54fcf3581fb9de30abe358f0ce44b124ad",
+      "proof_artifact_sha256": "f7fed22ce54aeaaffde20043b581b769cabc32ecb6bd99aa86173c956d3fe5fa"
+    },
+    {
+      "seq": 141,
+      "kind": "snapshot",
+      "name": "admitted-on-B",
+      "host_sha256": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+      "model_sha256": "a9f118f7fb3e6919b955576af7ca556c6b653ae2ed16711b46cfca3160674e43",
+      "proof_sha256": "56678542278ad8277544ba5669bcbb6c1c4e7b5ea78cbd7bcbd7a9fee19878b1"
+    },
+    {
+      "seq": 142,
+      "kind": "command",
+      "name": "admitted-on-B-proof",
+      "cwd": "$WORK/admitted-on-B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"declaration uses `sorry`\",\"endPos\":{\"column\":13,\"line\":2},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"hasSorry\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"warning\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 143,
+      "kind": "command",
+      "name": "admitted-on-B-artifact",
+      "cwd": "$WORK/admitted-on-B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "Proof.olean",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"declaration uses `sorry`\",\"endPos\":{\"column\":13,\"line\":2},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"hasSorry\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"warning\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 144,
+      "kind": "command",
+      "name": "admitted-on-B-oracle",
+      "cwd": "$WORK/admitted-on-B",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Oracle.lean"
+      ],
+      "rc": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'claim' depends on axioms: [sorryAx]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Oracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "seq": 145,
+      "kind": "check",
+      "name": "admitted-on-B",
+      "proof_rc": 0,
+      "artifact_rc": 0,
+      "oracle_rc": 0,
+      "axiom_data": [
+        "'claim' depends on axioms: [sorryAx]"
+      ],
+      "oracle_sha256": "bcf17e6fc2f7daedaf57fec166ad8d54fcf3581fb9de30abe358f0ce44b124ad",
+      "proof_artifact_sha256": "612cb3c7bd303995f63a8636a574868e779bd876c41f3b078574d55b60da5ebd"
+    }
+  ]
+}

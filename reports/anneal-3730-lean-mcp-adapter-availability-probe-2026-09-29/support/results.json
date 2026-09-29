@@ -1,0 +1,742 @@
+{
+  "schema": 1,
+  "availability": {
+    "path_scan": [
+      {
+        "directory": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path",
+        "matching_executables": []
+      },
+      {
+        "directory": "/opt/homebrew/bin",
+        "matching_executables": []
+      },
+      {
+        "directory": "/usr/local/bin",
+        "matching_executables": []
+      },
+      {
+        "directory": "/usr/bin",
+        "matching_executables": []
+      },
+      {
+        "directory": "/bin",
+        "matching_executables": []
+      },
+      {
+        "directory": "/usr/sbin",
+        "matching_executables": []
+      },
+      {
+        "directory": "/sbin",
+        "matching_executables": []
+      }
+    ],
+    "checkout_matching_paths": [
+      "./reports/anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2/REPORT.json",
+      "./reports/anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2/REPORT.md",
+      "./reports/anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2/support/contract-observations.json",
+      "./reports/anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2/support/contract_probe.py",
+      "./reports/anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2/support/lsp_probe.py",
+      "./reports/anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2/support/transcript-run1.json",
+      "./reports/anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2/support/transcript-run2.json",
+      "./reports/anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2/support/transcript-run3.json",
+      "./reports/anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29/support/bridge.py",
+      "./reports/anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29/support/probe.py",
+      "./reports/anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29/support/results.json",
+      "./reports/lean-mcp-implementations-2026-09-27/REPORT.json",
+      "./reports/lean-mcp-implementations-2026-09-27/REPORT.md",
+      "./reports/lean-mcp-implementations-2026-09-27/source-map.json",
+      "./reports/mcp-proof-assistant-architecture-2026-07-28/REPORT.json",
+      "./reports/mcp-proof-assistant-architecture-2026-07-28/REPORT.md",
+      "./reports/mcp-proof-assistant-architecture-2026-07-28/source-map.json"
+    ],
+    "searched_names": [
+      "lean-mcp",
+      "lean_mcp",
+      "leanmcp",
+      "mcp-lean",
+      "lean-server-mcp",
+      "lean-lsp-mcp"
+    ],
+    "named_resolutions": {
+      "lean-mcp": null,
+      "lean_mcp": null,
+      "leanmcp": null,
+      "mcp-lean": null,
+      "lean-server-mcp": null,
+      "lean-lsp-mcp": null
+    },
+    "boundary": "Only checkout file names and current PATH executable names were inventoried; report/source text is not an installed adapter."
+  },
+  "workspace": {
+    "initial_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+    "final_sha256": "b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee",
+    "expected_final_sha256": "b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee",
+    "initial_text": "import Lean\ntheorem checked (n : Nat) : n + 0 = n := by\n  skip\n",
+    "final_text": "import Lean\ntheorem checked (n : Nat) : n + 0 = n := by\n  exact Nat.add_zero n\n",
+    "retained_v1_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+    "retained_v2_sha256": "b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee"
+  },
+  "events": [
+    {
+      "client": "A",
+      "step": "initialize",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2024-11-05",
+          "capabilities": {
+            "tools": {}
+          },
+          "serverInfo": {
+            "name": "synthetic-lean-lsp-bridge",
+            "version": "0"
+          }
+        }
+      }
+    },
+    {
+      "client": "A",
+      "step": "tools/list",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "tools": [
+            {
+              "name": "get_goal",
+              "description": "synthetic fixture tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "expected_sha256": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            {
+              "name": "slow_goal",
+              "description": "synthetic fixture tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "expected_sha256": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            {
+              "name": "apply_edit",
+              "description": "synthetic fixture tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "expected_sha256": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client": "B",
+      "step": "initialize",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2024-11-05",
+          "capabilities": {
+            "tools": {}
+          },
+          "serverInfo": {
+            "name": "synthetic-lean-lsp-bridge",
+            "version": "0"
+          }
+        }
+      }
+    },
+    {
+      "client": "B",
+      "step": "tools/list",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "tools": [
+            {
+              "name": "get_goal",
+              "description": "synthetic fixture tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "expected_sha256": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            {
+              "name": "slow_goal",
+              "description": "synthetic fixture tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "expected_sha256": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            {
+              "name": "apply_edit",
+              "description": "synthetic fixture tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "expected_sha256": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client": "A",
+      "step": "cancelled-42",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 42,
+        "error": {
+          "code": -32800,
+          "message": "cancelled"
+        }
+      }
+    },
+    {
+      "client": "A",
+      "step": "parallel-43",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 43,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"diagnostics\": {\"diagnostics\": [{\"fullRange\": {\"end\": {\"character\": 6, \"line\": 2}, \"start\": {\"character\": 41, \"line\": 1}}, \"leanTags\": [1], \"message\": \"unsolved goals\\nn : Nat\\n\\u22a2 n + 0 = n\", \"range\": {\"end\": {\"character\": 0, \"line\": 2}, \"start\": {\"character\": 41, \"line\": 1}}, \"severity\": 1, \"source\": \"Lean 4\"}], \"uri\": \"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work/Proof.lean\", \"version\": 1}, \"goal\": {\"id\": 201, \"jsonrpc\": \"2.0\", \"result\": {\"goals\": [\"n : Nat\\n\\u22a2 n + 0 = n\"], \"rendered\": \"```lean\\nn : Nat\\n\\u22a2 n + 0 = n\\n```\"}}, \"lsp_document_version\": 1, \"lsp_pid\": 76467, \"source_sha256\": \"7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3\", \"status\": \"current\", \"wait\": {\"id\": 101, \"jsonrpc\": \"2.0\", \"result\": {}}}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "client": "B",
+      "step": "uncancelled-42",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 42,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"diagnostics\": {\"diagnostics\": [{\"fullRange\": {\"end\": {\"character\": 6, \"line\": 2}, \"start\": {\"character\": 41, \"line\": 1}}, \"leanTags\": [1], \"message\": \"unsolved goals\\nn : Nat\\n\\u22a2 n + 0 = n\", \"range\": {\"end\": {\"character\": 0, \"line\": 2}, \"start\": {\"character\": 41, \"line\": 1}}, \"severity\": 1, \"source\": \"Lean 4\"}], \"uri\": \"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work/Proof.lean\", \"version\": 1}, \"goal\": {\"id\": 201, \"jsonrpc\": \"2.0\", \"result\": {\"goals\": [\"n : Nat\\n\\u22a2 n + 0 = n\"], \"rendered\": \"```lean\\nn : Nat\\n\\u22a2 n + 0 = n\\n```\"}}, \"lsp_document_version\": 1, \"lsp_pid\": 76485, \"source_sha256\": \"7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3\", \"status\": \"current\", \"wait\": {\"id\": 101, \"jsonrpc\": \"2.0\", \"result\": {}}}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "client": "A",
+      "step": "apply-v2",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 44,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"new_sha256\": \"b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee\", \"old_sha256\": \"7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3\", \"status\": \"applied\"}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "client": "B",
+      "step": "stale-v1",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 44,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"current\": \"b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee\", \"expected\": \"7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3\", \"status\": \"stale\"}"
+            }
+          ],
+          "isError": true
+        }
+      }
+    },
+    {
+      "client": "B",
+      "step": "fresh-v2",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 45,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"diagnostics\": {\"diagnostics\": [], \"uri\": \"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work/Proof.lean\", \"version\": 2}, \"goal\": {\"id\": 202, \"jsonrpc\": \"2.0\", \"result\": {\"goals\": [], \"rendered\": \"no goals\"}}, \"lsp_document_version\": 2, \"lsp_pid\": 76485, \"source_sha256\": \"b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee\", \"status\": \"current\", \"wait\": {\"id\": 102, \"jsonrpc\": \"2.0\", \"result\": {}}}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "client": "A",
+      "step": "fresh-v2",
+      "reply": {
+        "jsonrpc": "2.0",
+        "id": 45,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"diagnostics\": {\"diagnostics\": [], \"uri\": \"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work/Proof.lean\", \"version\": 2}, \"goal\": {\"id\": 202, \"jsonrpc\": \"2.0\", \"result\": {\"goals\": [], \"rendered\": \"no goals\"}}, \"lsp_document_version\": 2, \"lsp_pid\": 76467, \"source_sha256\": \"b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee\", \"status\": \"current\", \"wait\": {\"id\": 102, \"jsonrpc\": \"2.0\", \"result\": {}}}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    }
+  ],
+  "client_transcripts": {
+    "A": [
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "A",
+              "version": "0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "result": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {
+              "tools": {}
+            },
+            "serverInfo": {
+              "name": "synthetic-lean-lsp-bridge",
+              "version": "0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {}
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "result": {
+            "tools": [
+              {
+                "name": "get_goal",
+                "description": "synthetic fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "expected_sha256": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "slow_goal",
+                "description": "synthetic fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "expected_sha256": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "apply_edit",
+                "description": "synthetic fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "expected_sha256": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 42,
+          "method": "tools/call",
+          "params": {
+            "name": "slow_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/cancelled",
+          "params": {
+            "requestId": 42,
+            "reason": "user cancelled A only"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 43,
+          "method": "tools/call",
+          "params": {
+            "name": "get_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 42,
+          "error": {
+            "code": -32800,
+            "message": "cancelled"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 43,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"diagnostics\": {\"diagnostics\": [{\"fullRange\": {\"end\": {\"character\": 6, \"line\": 2}, \"start\": {\"character\": 41, \"line\": 1}}, \"leanTags\": [1], \"message\": \"unsolved goals\\nn : Nat\\n\\u22a2 n + 0 = n\", \"range\": {\"end\": {\"character\": 0, \"line\": 2}, \"start\": {\"character\": 41, \"line\": 1}}, \"severity\": 1, \"source\": \"Lean 4\"}], \"uri\": \"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work/Proof.lean\", \"version\": 1}, \"goal\": {\"id\": 201, \"jsonrpc\": \"2.0\", \"result\": {\"goals\": [\"n : Nat\\n\\u22a2 n + 0 = n\"], \"rendered\": \"```lean\\nn : Nat\\n\\u22a2 n + 0 = n\\n```\"}}, \"lsp_document_version\": 1, \"lsp_pid\": 76467, \"source_sha256\": \"7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3\", \"status\": \"current\", \"wait\": {\"id\": 101, \"jsonrpc\": \"2.0\", \"result\": {}}}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 44,
+          "method": "tools/call",
+          "params": {
+            "name": "apply_edit",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+              "new_text": "import Lean\ntheorem checked (n : Nat) : n + 0 = n := by\n  exact Nat.add_zero n\n"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 44,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"new_sha256\": \"b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee\", \"old_sha256\": \"7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3\", \"status\": \"applied\"}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 45,
+          "method": "tools/call",
+          "params": {
+            "name": "get_goal",
+            "arguments": {
+              "expected_sha256": "b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 45,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"diagnostics\": {\"diagnostics\": [], \"uri\": \"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work/Proof.lean\", \"version\": 2}, \"goal\": {\"id\": 202, \"jsonrpc\": \"2.0\", \"result\": {\"goals\": [], \"rendered\": \"no goals\"}}, \"lsp_document_version\": 2, \"lsp_pid\": 76467, \"source_sha256\": \"b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee\", \"status\": \"current\", \"wait\": {\"id\": 102, \"jsonrpc\": \"2.0\", \"result\": {}}}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      }
+    ],
+    "B": [
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "B",
+              "version": "0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "result": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {
+              "tools": {}
+            },
+            "serverInfo": {
+              "name": "synthetic-lean-lsp-bridge",
+              "version": "0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/list",
+          "params": {}
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "result": {
+            "tools": [
+              {
+                "name": "get_goal",
+                "description": "synthetic fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "expected_sha256": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "slow_goal",
+                "description": "synthetic fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "expected_sha256": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "apply_edit",
+                "description": "synthetic fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "expected_sha256": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 42,
+          "method": "tools/call",
+          "params": {
+            "name": "slow_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 42,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"diagnostics\": {\"diagnostics\": [{\"fullRange\": {\"end\": {\"character\": 6, \"line\": 2}, \"start\": {\"character\": 41, \"line\": 1}}, \"leanTags\": [1], \"message\": \"unsolved goals\\nn : Nat\\n\\u22a2 n + 0 = n\", \"range\": {\"end\": {\"character\": 0, \"line\": 2}, \"start\": {\"character\": 41, \"line\": 1}}, \"severity\": 1, \"source\": \"Lean 4\"}], \"uri\": \"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work/Proof.lean\", \"version\": 1}, \"goal\": {\"id\": 201, \"jsonrpc\": \"2.0\", \"result\": {\"goals\": [\"n : Nat\\n\\u22a2 n + 0 = n\"], \"rendered\": \"```lean\\nn : Nat\\n\\u22a2 n + 0 = n\\n```\"}}, \"lsp_document_version\": 1, \"lsp_pid\": 76485, \"source_sha256\": \"7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3\", \"status\": \"current\", \"wait\": {\"id\": 101, \"jsonrpc\": \"2.0\", \"result\": {}}}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 44,
+          "method": "tools/call",
+          "params": {
+            "name": "get_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 44,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"current\": \"b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee\", \"expected\": \"7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3\", \"status\": \"stale\"}"
+              }
+            ],
+            "isError": true
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 45,
+          "method": "tools/call",
+          "params": {
+            "name": "get_goal",
+            "arguments": {
+              "expected_sha256": "b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 45,
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"diagnostics\": {\"diagnostics\": [], \"uri\": \"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work/Proof.lean\", \"version\": 2}, \"goal\": {\"id\": 202, \"jsonrpc\": \"2.0\", \"result\": {\"goals\": [], \"rendered\": \"no goals\"}}, \"lsp_document_version\": 2, \"lsp_pid\": 76485, \"source_sha256\": \"b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee\", \"status\": \"current\", \"wait\": {\"id\": 102, \"jsonrpc\": \"2.0\", \"result\": {}}}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      }
+    ]
+  },
+  "processes": {
+    "A": {
+      "bridge_rc": 0,
+      "stderr": "{\"lsp_rc\": 0, \"lsp_stderr\": \"\"}\n",
+      "pid": 76461
+    },
+    "B": {
+      "bridge_rc": 0,
+      "stderr": "{\"lsp_rc\": 0, \"lsp_stderr\": \"\"}\n",
+      "pid": 76462
+    }
+  },
+  "boundary": "Synthetic MCP-shaped stdio bridge over two real Lean LSP processes, not an existing Lean MCP adapter or Anneal workspace."
+}

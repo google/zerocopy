@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "name": "Pinned Lean 4.30.0-rc2 four-worker direct-server fixture",
+      "identity": {
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "worker_count": "4",
+        "physical_bytes": "8589934592",
+        "rss_cap_bytes": "2516582400"
+      }
+    },
+    {
+      "name": "Fault, crash, resource and synthetic fence transcript",
+      "identity": {
+        "probe_sha256": "4f9e9ea1231b0c6c6210cd4d298fa01ca1b98af395dac2677ceadd73be0b019e",
+        "verifier_sha256": "2fd8986ff497c5b83361e4067b273517a53c39e1fa8cad82ef36783e8777985b",
+        "transcript_sha256": "4cd6c5becb743aa96c796b6ee0d0b9a7b6d8deffd31b3b918487b74e8fd03fe7",
+        "eight_admitted": "false"
+      }
+    }
+  ],
+  "topics": [
+    "lean/direct-server-failure-isolation",
+    "lean/process-group-crash-restart",
+    "anneal/stale-result-fence-model",
+    "anneal/resource-admission",
+    "lean/malformed-proof"
+  ]
+}

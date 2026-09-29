@@ -1,0 +1,2296 @@
+{
+  "subjects": {
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "translations": {
+    "base": {
+      "charon_rc": 0,
+      "aeneas_rc": 0
+    },
+    "reorder": {
+      "charon_rc": 0,
+      "aeneas_rc": 0
+    },
+    "shrink": {
+      "charon_rc": 0,
+      "aeneas_rc": 0
+    },
+    "error": {
+      "charon_rc": 0,
+      "aeneas_rc": 1
+    }
+  },
+  "inventories": {
+    "base": {
+      "source_sha256": "ec429548f6180811c25863eedaf64ed03bbbc9b425e9c33df4025bfadc85eedc",
+      "llbc_sha256": "6d9ce35815f0016e4fb0da297cbcef755e8fe6adf2474dddb12afea3d4b2c57d",
+      "files": {
+        "Funs.lean": {
+          "bytes": 2673,
+          "sha256": "9e5e18b2557581fbfcc61fa60a1d73c3d7af4d91c8e5818bc8701ea08f5b18c7"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 938,
+          "sha256": "41a960b27b1329efd2f1525d77901e4f03341af4e388c82ba4c99dce82e59931"
+        },
+        "TraitProbe.lean": {
+          "bytes": 23,
+          "sha256": "6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5"
+        },
+        "Types.lean": {
+          "bytes": 898,
+          "sha256": "5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22"
+        }
+      }
+    },
+    "reorder": {
+      "source_sha256": "6cc8a6cc69406d67a83f2a85e8ab427eaa81543040bb6ced7435b609f06a9d54",
+      "llbc_sha256": "06fdea9039a90b0dea05e9cee79e8d75bf69848c2133313a308caac109bbf875",
+      "files": {
+        "Funs.lean": {
+          "bytes": 2673,
+          "sha256": "cdd795ebc443446393e55d7e1e0756e793ffe025f95860e515934727c219d6f9"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 938,
+          "sha256": "e8a8c96d61d143cffc211f84afbbbf4aca140f83b30a724eddab4bfd0813fb86"
+        },
+        "TraitProbe.lean": {
+          "bytes": 23,
+          "sha256": "6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5"
+        },
+        "Types.lean": {
+          "bytes": 898,
+          "sha256": "ec517fa537144393a149143fed543126d4fbd268f697c7ae72f1748157bbf741"
+        }
+      }
+    },
+    "shrink": {
+      "source_sha256": "ae68e23a2faafebe0ec7a497e0f279f3644b642c9d03358a7a2b90eff457494f",
+      "llbc_sha256": "a4b65e0019dfca089431457e6f79d1176938ed9db3428d22eb14c81975644293",
+      "files": {
+        "Funs.lean": {
+          "bytes": 1791,
+          "sha256": "2b4d4899cc140eff246acedb606c6fd6f8a5e9b2cfd206ef784b2c47b17f1fdb"
+        },
+        "TraitProbe.lean": {
+          "bytes": 23,
+          "sha256": "6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5"
+        },
+        "Types.lean": {
+          "bytes": 898,
+          "sha256": "5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22"
+        }
+      }
+    },
+    "error": {
+      "source_sha256": "1546e3f211a5e6aaa7ba101f76e644063487c49f93a47834338bff5ddbd754c2",
+      "llbc_sha256": "8548b85fafeb40d63f93263d69f86b521622f1b04114f178f74593f0977ce21d",
+      "files": {
+        "Funs.lean": {
+          "bytes": 2141,
+          "sha256": "79c6eafcdf1b329c06ef3935a68a18350a5d6b664587e388e5fb4e129fea59ce"
+        },
+        "TraitProbe.lean": {
+          "bytes": 23,
+          "sha256": "6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5"
+        },
+        "Types.lean": {
+          "bytes": 898,
+          "sha256": "5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22"
+        }
+      }
+    }
+  },
+  "manifests": {
+    "base": {
+      "charon_version": "0.1.210",
+      "crate": "trait_probe",
+      "has_errors": false,
+      "charon_declarations": [
+        {
+          "kind": "trait_decls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "Step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 40
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "trait_impls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Trait": 0
+              }
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 67
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "use_step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 1,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "old",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 5,
+                "col": 0
+              },
+              "end": {
+                "line": 5,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 2,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "external_call",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 7,
+                "col": 0
+              },
+              "end": {
+                "line": 7,
+                "col": 69
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 3,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "Step",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 17
+              },
+              "end": {
+                "line": 2,
+                "col": 38
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 4,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Trait": 0
+              }
+            },
+            {
+              "Ident": [
+                "step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 20
+              },
+              "end": {
+                "line": 3,
+                "col": 65
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 5,
+          "name": [
+            {
+              "Ident": [
+                "core",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "num",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Ty": {
+                  "params": {
+                    "regions": [],
+                    "types": [],
+                    "const_generics": [],
+                    "trait_clauses": [],
+                    "regions_outlive": [],
+                    "types_outlive": [],
+                    "trait_type_constraints": []
+                  },
+                  "skip_binder": {
+                    "Deduplicated": 261
+                  },
+                  "kind": "InherentImplBlock"
+                }
+              }
+            },
+            {
+              "Ident": [
+                "wrapping_add",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 1,
+              "beg": {
+                "line": 2583,
+                "col": 8
+              },
+              "end": {
+                "line": 2583,
+                "col": 58
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": false
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 6,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "external_double",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 6,
+                "col": 20
+              },
+              "end": {
+                "line": 6,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        }
+      ],
+      "lean_declarations": [
+        {
+          "file": "Funs.lean",
+          "line": 25,
+          "byte_range": [
+            995,
+            1070
+          ],
+          "name": "U32.Insts.Trait_probeStep.step",
+          "head": "def U32.Insts.Trait_probeStep.step (self : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 3:20-3:65",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 31,
+          "byte_range": [
+            1441,
+            1491
+          ],
+          "name": "U32.Insts.Trait_probeStep",
+          "head": "def U32.Insts.Trait_probeStep : Step Std.U32 := {",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 3:0-3:67 -/",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 38,
+          "byte_range": [
+            1826,
+            1876
+          ],
+          "name": "use_step",
+          "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 4:0-4:43",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 44,
+          "byte_range": [
+            2198,
+            2243
+          ],
+          "name": "old",
+          "head": "def old (x : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 5:0-5:47",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 50,
+          "byte_range": [
+            2581,
+            2636
+          ],
+          "name": "external_call",
+          "head": "def external_call (x : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 7:0-7:69",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "FunsExternal_Template.lean",
+          "line": 20,
+          "byte_range": [
+            886,
+            937
+          ],
+          "name": "external_double",
+          "head": "axiom external_double : Std.U32 \u2192 Result Std.U32",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 6:20-6:54 -/",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Types.lean",
+          "line": 20,
+          "byte_range": [
+            813,
+            848
+          ],
+          "name": "Step",
+          "head": "structure Step (Self : Type) where",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 2:0-2:40",
+          "authenticated_charon_link": null
+        }
+      ],
+      "proven_rust_to_lean_mapping": null,
+      "editable_proof_ranges": null
+    },
+    "reorder": {
+      "charon_version": "0.1.210",
+      "crate": "trait_probe",
+      "has_errors": false,
+      "charon_declarations": [
+        {
+          "kind": "trait_decls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "Step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 40
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "trait_impls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Trait": 0
+              }
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 67
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "old",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 1,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "external_call",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 6,
+                "col": 0
+              },
+              "end": {
+                "line": 6,
+                "col": 69
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 2,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "use_step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 7,
+                "col": 0
+              },
+              "end": {
+                "line": 7,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 3,
+          "name": [
+            {
+              "Ident": [
+                "core",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "num",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Ty": {
+                  "params": {
+                    "regions": [],
+                    "types": [],
+                    "const_generics": [],
+                    "trait_clauses": [],
+                    "regions_outlive": [],
+                    "types_outlive": [],
+                    "trait_type_constraints": []
+                  },
+                  "skip_binder": {
+                    "Deduplicated": 253
+                  },
+                  "kind": "InherentImplBlock"
+                }
+              }
+            },
+            {
+              "Ident": [
+                "wrapping_add",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 1,
+              "beg": {
+                "line": 2583,
+                "col": 8
+              },
+              "end": {
+                "line": 2583,
+                "col": 58
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": false
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 4,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "Step",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 17
+              },
+              "end": {
+                "line": 3,
+                "col": 38
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 5,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Trait": 0
+              }
+            },
+            {
+              "Ident": [
+                "step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 20
+              },
+              "end": {
+                "line": 4,
+                "col": 65
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 6,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "external_double",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 5,
+                "col": 20
+              },
+              "end": {
+                "line": 5,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        }
+      ],
+      "lean_declarations": [
+        {
+          "file": "Funs.lean",
+          "line": 25,
+          "byte_range": [
+            959,
+            1004
+          ],
+          "name": "old",
+          "head": "def old (x : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 2:0-2:47",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 31,
+          "byte_range": [
+            1368,
+            1443
+          ],
+          "name": "U32.Insts.Trait_probeStep.step",
+          "head": "def U32.Insts.Trait_probeStep.step (self : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 4:20-4:65",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 37,
+          "byte_range": [
+            1814,
+            1864
+          ],
+          "name": "U32.Insts.Trait_probeStep",
+          "head": "def U32.Insts.Trait_probeStep : Step Std.U32 := {",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 4:0-4:67 -/",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 44,
+          "byte_range": [
+            2204,
+            2259
+          ],
+          "name": "external_call",
+          "head": "def external_call (x : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 6:0-6:69",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 50,
+          "byte_range": [
+            2571,
+            2621
+          ],
+          "name": "use_step",
+          "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 7:0-7:43",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "FunsExternal_Template.lean",
+          "line": 20,
+          "byte_range": [
+            886,
+            937
+          ],
+          "name": "external_double",
+          "head": "axiom external_double : Std.U32 \u2192 Result Std.U32",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 5:20-5:54 -/",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Types.lean",
+          "line": 20,
+          "byte_range": [
+            813,
+            848
+          ],
+          "name": "Step",
+          "head": "structure Step (Self : Type) where",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 3:0-3:40",
+          "authenticated_charon_link": null
+        }
+      ],
+      "proven_rust_to_lean_mapping": null,
+      "editable_proof_ranges": null
+    },
+    "shrink": {
+      "charon_version": "0.1.210",
+      "crate": "trait_probe",
+      "has_errors": false,
+      "charon_declarations": [
+        {
+          "kind": "trait_decls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "Step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 40
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "trait_impls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Trait": 0
+              }
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 67
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "use_step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 1,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "Step",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 17
+              },
+              "end": {
+                "line": 2,
+                "col": 38
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 2,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Trait": 0
+              }
+            },
+            {
+              "Ident": [
+                "step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 20
+              },
+              "end": {
+                "line": 3,
+                "col": 65
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 3,
+          "name": [
+            {
+              "Ident": [
+                "core",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "num",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Ty": {
+                  "params": {
+                    "regions": [],
+                    "types": [],
+                    "const_generics": [],
+                    "trait_clauses": [],
+                    "regions_outlive": [],
+                    "types_outlive": [],
+                    "trait_type_constraints": []
+                  },
+                  "skip_binder": {
+                    "Deduplicated": 256
+                  },
+                  "kind": "InherentImplBlock"
+                }
+              }
+            },
+            {
+              "Ident": [
+                "wrapping_add",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 1,
+              "beg": {
+                "line": 2583,
+                "col": 8
+              },
+              "end": {
+                "line": 2583,
+                "col": 58
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": false
+        }
+      ],
+      "lean_declarations": [
+        {
+          "file": "Funs.lean",
+          "line": 21,
+          "byte_range": [
+            858,
+            933
+          ],
+          "name": "U32.Insts.Trait_probeStep.step",
+          "head": "def U32.Insts.Trait_probeStep.step (self : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 3:20-3:65",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 27,
+          "byte_range": [
+            1304,
+            1354
+          ],
+          "name": "U32.Insts.Trait_probeStep",
+          "head": "def U32.Insts.Trait_probeStep : Step Std.U32 := {",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 3:0-3:67 -/",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 34,
+          "byte_range": [
+            1689,
+            1739
+          ],
+          "name": "use_step",
+          "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 4:0-4:43",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Types.lean",
+          "line": 20,
+          "byte_range": [
+            813,
+            848
+          ],
+          "name": "Step",
+          "head": "structure Step (Self : Type) where",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 2:0-2:40",
+          "authenticated_charon_link": null
+        }
+      ],
+      "proven_rust_to_lean_mapping": null,
+      "editable_proof_ranges": null
+    },
+    "error": {
+      "charon_version": "0.1.210",
+      "crate": "trait_probe",
+      "has_errors": false,
+      "charon_declarations": [
+        {
+          "kind": "trait_decls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "Step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 40
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "trait_impls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Trait": 0
+              }
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 67
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 0,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "use_step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 1,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "bad",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 5,
+                "col": 0
+              },
+              "end": {
+                "line": 5,
+                "col": 48
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 2,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "Step",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 17
+              },
+              "end": {
+                "line": 2,
+                "col": 38
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 3,
+          "name": [
+            {
+              "Ident": [
+                "trait_probe",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Trait": 0
+              }
+            },
+            {
+              "Ident": [
+                "step",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 20
+              },
+              "end": {
+                "line": 3,
+                "col": 65
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": true
+        },
+        {
+          "kind": "fun_decls",
+          "def_id": 4,
+          "name": [
+            {
+              "Ident": [
+                "core",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "num",
+                0
+              ]
+            },
+            {
+              "Impl": {
+                "Ty": {
+                  "params": {
+                    "regions": [],
+                    "types": [],
+                    "const_generics": [],
+                    "trait_clauses": [],
+                    "regions_outlive": [],
+                    "types_outlive": [],
+                    "trait_type_constraints": []
+                  },
+                  "skip_binder": {
+                    "Deduplicated": 259
+                  },
+                  "kind": "InherentImplBlock"
+                }
+              }
+            },
+            {
+              "Ident": [
+                "wrapping_add",
+                0
+              ]
+            }
+          ],
+          "source_span": {
+            "data": {
+              "file_id": 1,
+              "beg": {
+                "line": 2583,
+                "col": 8
+              },
+              "end": {
+                "line": 2583,
+                "col": 58
+              }
+            },
+            "generated_from_span": null
+          },
+          "is_local": false
+        }
+      ],
+      "lean_declarations": [
+        {
+          "file": "Funs.lean",
+          "line": 21,
+          "byte_range": [
+            858,
+            933
+          ],
+          "name": "U32.Insts.Trait_probeStep.step",
+          "head": "def U32.Insts.Trait_probeStep.step (self : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 3:20-3:65",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 27,
+          "byte_range": [
+            1304,
+            1354
+          ],
+          "name": "U32.Insts.Trait_probeStep",
+          "head": "def U32.Insts.Trait_probeStep : Step Std.U32 := {",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 3:0-3:67 -/",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 34,
+          "byte_range": [
+            1689,
+            1739
+          ],
+          "name": "use_step",
+          "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 4:0-4:43",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Funs.lean",
+          "line": 40,
+          "byte_range": [
+            2061,
+            2116
+          ],
+          "name": "bad",
+          "head": "def bad (p : MutRawPtr Std.U32) : Result Std.U32 := do",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 5:0-5:48",
+          "authenticated_charon_link": null
+        },
+        {
+          "file": "Types.lean",
+          "line": 20,
+          "byte_range": [
+            813,
+            848
+          ],
+          "name": "Step",
+          "head": "structure Step (Self : Type) where",
+          "nearest_source_comment": "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 2:0-2:40",
+          "authenticated_charon_link": null
+        }
+      ],
+      "proven_rust_to_lean_mapping": null,
+      "editable_proof_ranges": null
+    }
+  },
+  "consumers": {
+    "base": {
+      "compile": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "check_rc": 0,
+      "check_stdout": "trait_probe.use_step (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\ntrait_probe.old (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\ntrait_probe.external_call (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n"
+    },
+    "reorder": {
+      "compile": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "check_rc": 0,
+      "check_stdout": "trait_probe.use_step (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\ntrait_probe.old (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\ntrait_probe.external_call (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n"
+    },
+    "shrink": {
+      "compile": [
+        0,
+        0,
+        0
+      ],
+      "check_rc": 0,
+      "check_stdout": "trait_probe.use_step (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n"
+    },
+    "shrink-removed": {
+      "rc": 1,
+      "stdout": "Consumer.lean:2:7: error(lean.unknownIdentifier): Unknown identifier `trait_probe.old`\nConsumer.lean:3:7: error(lean.unknownIdentifier): Unknown identifier `trait_probe.external_call`\n"
+    },
+    "base-concrete": {
+      "rc": 0,
+      "stdout": "'trait_probe.external_call' does not depend on any axioms\n"
+    },
+    "error": {
+      "compile": [
+        0,
+        0,
+        0
+      ],
+      "rc": 0,
+      "stdout": "trait_probe.bad (p : Aeneas.Std.MutRawPtr Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n'trait_probe.bad' depends on axioms: [sorryAx]\n"
+    }
+  },
+  "reused_after_shrink": {
+    "Funs.lean": {
+      "bytes": 1791,
+      "sha256": "2b4d4899cc140eff246acedb606c6fd6f8a5e9b2cfd206ef784b2c47b17f1fdb"
+    },
+    "FunsExternal_Template.lean": {
+      "bytes": 938,
+      "sha256": "41a960b27b1329efd2f1525d77901e4f03341af4e388c82ba4c99dce82e59931"
+    },
+    "TraitProbe.lean": {
+      "bytes": 23,
+      "sha256": "6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5"
+    },
+    "Types.lean": {
+      "bytes": 898,
+      "sha256": "5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22"
+    }
+  },
+  "elapsed_ms": 51647.2,
+  "events": [
+    {
+      "seq": 0,
+      "t_ms": 82.0,
+      "kind": "command",
+      "label": "lean-version",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--version"
+      ],
+      "rc": 0,
+      "stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+      "stderr": "",
+      "elapsed_ms": 33.2
+    },
+    {
+      "seq": 1,
+      "t_ms": 192.2,
+      "kind": "command",
+      "label": "aeneas-version",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-version"
+      ],
+      "rc": 0,
+      "stdout": "aeneas unknown\n",
+      "stderr": "",
+      "elapsed_ms": 110.1
+    },
+    {
+      "seq": 2,
+      "t_ms": 192.2,
+      "kind": "subjects",
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+      "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+      "aeneas_runtime_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+      "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+      "aeneas_version": "aeneas unknown\n"
+    },
+    {
+      "seq": 3,
+      "t_ms": 255.6,
+      "kind": "command",
+      "label": "base:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "trait_probe",
+        "--edition",
+        "2021"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 63.0
+    },
+    {
+      "seq": 4,
+      "t_ms": 483.6,
+      "kind": "command",
+      "label": "base:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc"
+      ],
+      "rc": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc\n[\u001b[92mInfo\u001b[39m ] \n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/FunsExternal_Template.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/TraitProbe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.133961 seconds\n",
+      "stderr": "",
+      "elapsed_ms": 227.9
+    },
+    {
+      "seq": 5,
+      "t_ms": 538.8,
+      "kind": "command",
+      "label": "reorder:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "trait_probe",
+        "--edition",
+        "2021"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 51.8
+    },
+    {
+      "seq": 6,
+      "t_ms": 765.4,
+      "kind": "command",
+      "label": "reorder:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc"
+      ],
+      "rc": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc\n[\u001b[92mInfo\u001b[39m ] \n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/FunsExternal_Template.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/TraitProbe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.136416 seconds\n",
+      "stderr": "",
+      "elapsed_ms": 226.5
+    },
+    {
+      "seq": 7,
+      "t_ms": 826.6,
+      "kind": "command",
+      "label": "shrink:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "trait_probe",
+        "--edition",
+        "2021"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 58.3
+    },
+    {
+      "seq": 8,
+      "t_ms": 1061.8,
+      "kind": "command",
+      "label": "shrink:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc"
+      ],
+      "rc": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc\n[\u001b[92mInfo\u001b[39m ] \n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/TraitProbe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.131479 seconds\n",
+      "stderr": "",
+      "elapsed_ms": 235.1
+    },
+    {
+      "seq": 9,
+      "t_ms": 1127.8,
+      "kind": "command",
+      "label": "error:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "trait_probe",
+        "--edition",
+        "2021"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 63.5
+    },
+    {
+      "seq": 10,
+      "t_ms": 1356.1,
+      "kind": "command",
+      "label": "error:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc"
+      ],
+      "rc": 1,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc\n[\u001b[92mInfo\u001b[39m ] \n[\u001b[91mError\u001b[39m] Aeneas does not yet support dereferencing raw pointers.\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 5:42-5:44\n[\u001b[93mWarn\u001b[39m ] Could not translate the body of function 'trait_probe::bad because of previous error\nName pattern: 'trait_probe::bad'\nDefinition span: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 5:0-5:48\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.rs', lines 5:42-5:44\nCompiler source: interp/Interp.ml, line 550\n\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/generated/TraitProbe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.130275 seconds\n",
+      "stderr": "",
+      "elapsed_ms": 228.1
+    },
+    {
+      "seq": 11,
+      "t_ms": 8926.5,
+      "kind": "command",
+      "label": "base:compile:TraitProbe/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Types.olean",
+        "TraitProbe/Types.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 7567.2
+    },
+    {
+      "seq": 12,
+      "t_ms": 12455.5,
+      "kind": "command",
+      "label": "base:compile:TraitProbe/FunsExternal",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/FunsExternal.olean",
+        "TraitProbe/FunsExternal.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 3528.8
+    },
+    {
+      "seq": 13,
+      "t_ms": 14186.7,
+      "kind": "command",
+      "label": "base:compile:TraitProbe/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Funs.olean",
+        "TraitProbe/Funs.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1731.1
+    },
+    {
+      "seq": 14,
+      "t_ms": 16015.4,
+      "kind": "command",
+      "label": "base:compile:TraitProbe",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe.olean",
+        "TraitProbe.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1828.7
+    },
+    {
+      "seq": 15,
+      "t_ms": 18311.2,
+      "kind": "command",
+      "label": "base:consumer",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Consumer.lean"
+      ],
+      "rc": 0,
+      "stdout": "trait_probe.use_step (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\ntrait_probe.old (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\ntrait_probe.external_call (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n",
+      "stderr": "",
+      "elapsed_ms": 2295.1
+    },
+    {
+      "seq": 16,
+      "t_ms": 20206.1,
+      "kind": "command",
+      "label": "reorder:compile:TraitProbe/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Types.olean",
+        "TraitProbe/Types.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1892.4
+    },
+    {
+      "seq": 17,
+      "t_ms": 22045.2,
+      "kind": "command",
+      "label": "reorder:compile:TraitProbe/FunsExternal",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/FunsExternal.olean",
+        "TraitProbe/FunsExternal.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1839.1
+    },
+    {
+      "seq": 18,
+      "t_ms": 23851.4,
+      "kind": "command",
+      "label": "reorder:compile:TraitProbe/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Funs.olean",
+        "TraitProbe/Funs.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1806.0
+    },
+    {
+      "seq": 19,
+      "t_ms": 25698.5,
+      "kind": "command",
+      "label": "reorder:compile:TraitProbe",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe.olean",
+        "TraitProbe.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1847.1
+    },
+    {
+      "seq": 20,
+      "t_ms": 27629.6,
+      "kind": "command",
+      "label": "reorder:consumer",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Consumer.lean"
+      ],
+      "rc": 0,
+      "stdout": "trait_probe.use_step (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\ntrait_probe.old (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\ntrait_probe.external_call (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n",
+      "stderr": "",
+      "elapsed_ms": 1930.4
+    },
+    {
+      "seq": 21,
+      "t_ms": 29476.8,
+      "kind": "command",
+      "label": "shrink:compile:TraitProbe/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Types.olean",
+        "TraitProbe/Types.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1845.2
+    },
+    {
+      "seq": 22,
+      "t_ms": 31099.0,
+      "kind": "command",
+      "label": "shrink:compile:TraitProbe/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Funs.olean",
+        "TraitProbe/Funs.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1622.2
+    },
+    {
+      "seq": 23,
+      "t_ms": 32870.8,
+      "kind": "command",
+      "label": "shrink:compile:TraitProbe",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe.olean",
+        "TraitProbe.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1771.6
+    },
+    {
+      "seq": 24,
+      "t_ms": 34518.8,
+      "kind": "command",
+      "label": "shrink:consumer",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Consumer.lean"
+      ],
+      "rc": 0,
+      "stdout": "trait_probe.use_step (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n",
+      "stderr": "",
+      "elapsed_ms": 1647.3
+    },
+    {
+      "seq": 25,
+      "t_ms": 36094.9,
+      "kind": "command",
+      "label": "shrink-removed:consumer",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Consumer.lean"
+      ],
+      "rc": 1,
+      "stdout": "Consumer.lean:2:7: error(lean.unknownIdentifier): Unknown identifier `trait_probe.old`\nConsumer.lean:3:7: error(lean.unknownIdentifier): Unknown identifier `trait_probe.external_call`\n",
+      "stderr": "",
+      "elapsed_ms": 1575.6
+    },
+    {
+      "seq": 26,
+      "t_ms": 37690.0,
+      "kind": "command",
+      "label": "base-concrete:compile:TraitProbe/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Types.olean",
+        "TraitProbe/Types.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1592.8
+    },
+    {
+      "seq": 27,
+      "t_ms": 39257.1,
+      "kind": "command",
+      "label": "base-concrete:compile:TraitProbe/FunsExternal",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/FunsExternal.olean",
+        "TraitProbe/FunsExternal.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1567.1
+    },
+    {
+      "seq": 28,
+      "t_ms": 40843.9,
+      "kind": "command",
+      "label": "base-concrete:compile:TraitProbe/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Funs.olean",
+        "TraitProbe/Funs.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1586.8
+    },
+    {
+      "seq": 29,
+      "t_ms": 42429.2,
+      "kind": "command",
+      "label": "base-concrete:compile:TraitProbe",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe.olean",
+        "TraitProbe.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1585.3
+    },
+    {
+      "seq": 30,
+      "t_ms": 44183.6,
+      "kind": "command",
+      "label": "base-concrete:consumer",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Consumer.lean"
+      ],
+      "rc": 0,
+      "stdout": "'trait_probe.external_call' does not depend on any axioms\n",
+      "stderr": "",
+      "elapsed_ms": 1753.7
+    },
+    {
+      "seq": 31,
+      "t_ms": 45799.1,
+      "kind": "command",
+      "label": "error:compile:TraitProbe/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Types.olean",
+        "TraitProbe/Types.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1613.8
+    },
+    {
+      "seq": 32,
+      "t_ms": 47525.2,
+      "kind": "command",
+      "label": "error:compile:TraitProbe/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe/Funs.olean",
+        "TraitProbe/Funs.lean"
+      ],
+      "rc": 0,
+      "stdout": "TraitProbe/Funs.lean:40:4: warning: declaration uses `sorry`\n",
+      "stderr": "",
+      "elapsed_ms": 1726.0
+    },
+    {
+      "seq": 33,
+      "t_ms": 49193.0,
+      "kind": "command",
+      "label": "error:compile:TraitProbe",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "TraitProbe.olean",
+        "TraitProbe.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_ms": 1667.8
+    },
+    {
+      "seq": 34,
+      "t_ms": 51361.0,
+      "kind": "command",
+      "label": "error:consumer",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Consumer.lean"
+      ],
+      "rc": 0,
+      "stdout": "trait_probe.bad (p : Aeneas.Std.MutRawPtr Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n'trait_probe.bad' depends on axioms: [sorryAx]\n",
+      "stderr": "",
+      "elapsed_ms": 2167.4
+    },
+    {
+      "seq": 35,
+      "t_ms": 51621.2,
+      "kind": "command",
+      "label": "shrink:reused-destination",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/reused",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc"
+      ],
+      "rc": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/trait_probe.llbc\n[\u001b[92mInfo\u001b[39m ] \n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/reused/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/reused/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29/support/work/reused/TraitProbe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.125829 seconds\n",
+      "stderr": "",
+      "elapsed_ms": 257.8
+    }
+  ],
+  "limits": [
+    "one-shot CLI only",
+    "lexical Lean source-comment linkage, no authenticated item mapping",
+    "no same-process OCaml API"
+  ]
+}

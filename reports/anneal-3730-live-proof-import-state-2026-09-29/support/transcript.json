@@ -1,0 +1,2862 @@
+{
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+  "sources": {
+    "A0": "theorem helper (n : Nat) : n + 0 = n := by\n  simp\n",
+    "A1": "theorem helper (n : Nat) : n + 1 = n + 1 := by\n  rfl\n",
+    "A_unsaved": "theorem helper (n : Nat) : n + 1 = n + 1 := by\n  rfl\ntheorem unsavedOnly : True := by\n  trivial\n",
+    "B": "import A\ntheorem consumer (n : Nat) : n + 0 = n := by\n  exact helper n\n",
+    "B_unsaved": "import A\ntheorem consumer : True := by\n  exact unsavedOnly\n"
+  },
+  "artifact_sha256": {
+    "A0.olean": "a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef",
+    "A1.lean": "3267955b15d7578459c148ea403618af826044e7b589f9d011fb426e5b9a7f48",
+    "A1.olean": "a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f",
+    "A0.lean": "639fb8886e82c890666f471b23b5576942cd642e4f6009ee53eeeb2299ff761e"
+  },
+  "events": [
+    {
+      "step": "saved_initial",
+      "a_source_sha256": "639fb8886e82c890666f471b23b5576942cd642e4f6009ee53eeeb2299ff761e",
+      "a_olean_sha256": "a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef",
+      "b_batch": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "…",
+          "B.lean"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": "",
+        "lean_path": "$WORK"
+      }
+    },
+    {
+      "step": "open_both",
+      "a": {
+        "uri": "file://$WORK/A.lean",
+        "version": 1,
+        "barrier": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": []
+      },
+      "b": {
+        "uri": "file://$WORK/B.lean",
+        "version": 1,
+        "barrier": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": []
+      },
+      "b_goal": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      },
+      "b_hover": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "contents": {
+            "kind": "markdown",
+            "value": "```lean\nhelper (n : Nat) : n + 0 = n\n```\n***\n*import A*"
+          },
+          "range": {
+            "end": {
+              "character": 14,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          }
+        }
+      },
+      "a_disk_sha256": "639fb8886e82c890666f471b23b5576942cd642e4f6009ee53eeeb2299ff761e",
+      "a_olean_sha256": "a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef"
+    },
+    {
+      "step": "dirty_unsaved_a",
+      "a": {
+        "uri": "file://$WORK/A.lean",
+        "version": 2,
+        "barrier": {
+          "id": 6,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": []
+      },
+      "a_disk_sha256": "639fb8886e82c890666f471b23b5576942cd642e4f6009ee53eeeb2299ff761e",
+      "a_olean_sha256": "a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef",
+      "b_goal": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "step": "b_imports_unsaved_only",
+      "b": {
+        "uri": "file://$WORK/BUnsaved.lean",
+        "version": 1,
+        "barrier": {
+          "id": 8,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 19,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "Unknown identifier `unsavedOnly`",
+            "range": {
+              "end": {
+                "character": 19,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "b_batch": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "…",
+          "BUnsaved.lean"
+        ],
+        "exit": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Unknown identifier `unsavedOnly`\",\"endPos\":{\"column\":19,\"line\":3},\"fileName\":\"BUnsaved.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"lean.unknownIdentifier._namedError\",\"pos\":{\"column\":8,\"line\":3},\"severity\":\"error\"}\n",
+        "stderr": "",
+        "lean_path": "$WORK"
+      },
+      "a_disk_sha256": "639fb8886e82c890666f471b23b5576942cd642e4f6009ee53eeeb2299ff761e",
+      "a_olean_sha256": "a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef"
+    },
+    {
+      "step": "saved_a_without_rebuild",
+      "a_disk_sha256": "3267955b15d7578459c148ea403618af826044e7b589f9d011fb426e5b9a7f48",
+      "a_olean_sha256": "a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef",
+      "b_batch": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "…",
+          "B.lean"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": "",
+        "lean_path": "$WORK"
+      },
+      "b_goal": {
+        "id": 9,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "step": "rebuilt_a",
+      "a_disk_sha256": "3267955b15d7578459c148ea403618af826044e7b589f9d011fb426e5b9a7f48",
+      "a_olean_sha256": "a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f",
+      "rebuild": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "…",
+          "A.lean"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": "",
+        "lean_path": "$WORK"
+      },
+      "b_batch": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "…",
+          "B.lean"
+        ],
+        "exit": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Type mismatch\\n  helper n\\nhas type\\n  n + 1 = n + 1\\nbut is expected to have type\\n  n + 0 = n\",\"endPos\":{\"column\":16,\"line\":3},\"fileName\":\"B.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+        "stderr": "",
+        "lean_path": "$WORK"
+      },
+      "old_b_goal": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      },
+      "old_b_hover": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "contents": {
+            "kind": "markdown",
+            "value": "```lean\nhelper (n : Nat) : n + 0 = n\n```\n***\n*import A*"
+          },
+          "range": {
+            "end": {
+              "character": 14,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "step": "new_b_same_server",
+      "b": {
+        "uri": "file://$WORK/BNew.lean",
+        "version": 1,
+        "barrier": {
+          "id": 12,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 16,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "message": "Type mismatch\n  helper n\nhas type\n  n + 1 = n + 1\nbut is expected to have type\n  n + 0 = n",
+            "range": {
+              "end": {
+                "character": 16,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "b_goal": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      },
+      "b_hover": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "contents": {
+            "kind": "markdown",
+            "value": "```lean\nhelper (n : Nat) : n + 1 = n + 1\n```\n***\n*import A*"
+          },
+          "range": {
+            "end": {
+              "character": 14,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          }
+        }
+      },
+      "a_olean_sha256": "a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f"
+    },
+    {
+      "step": "reopened_b_same_server",
+      "b": {
+        "uri": "file://$WORK/B.lean",
+        "version": 2,
+        "barrier": {
+          "id": 15,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 16,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "message": "Type mismatch\n  helper n\nhas type\n  n + 1 = n + 1\nbut is expected to have type\n  n + 0 = n",
+            "range": {
+              "end": {
+                "character": 16,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "b_goal": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      },
+      "a_olean_sha256": "a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f"
+    },
+    {
+      "step": "fresh_server",
+      "b": {
+        "uri": "file://$WORK/B.lean",
+        "version": 1,
+        "barrier": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 16,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "message": "Type mismatch\n  helper n\nhas type\n  n + 1 = n + 1\nbut is expected to have type\n  n + 0 = n",
+            "range": {
+              "end": {
+                "character": 16,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "b_goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      },
+      "a_olean_sha256": "a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f"
+    },
+    {
+      "step": "wrong_import_context",
+      "b_batch": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "…",
+          "B.lean"
+        ],
+        "exit": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'A'\\n\\nNo directory 'A' or file 'A.olean' in the search path entries:\\n$WORK/missing-import-dir\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"B.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+        "stderr": "",
+        "lean_path": "$WORK/missing-import-dir"
+      },
+      "correct_a_olean_sha256": "a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f"
+    },
+    {
+      "step": "unbuilt_import_cycle",
+      "a": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "…",
+          "CycleA.lean"
+        ],
+        "exit": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'CycleB'\\n\\nNo directory 'CycleB' or file 'CycleB.olean' in the search path entries:\\n$WORK\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"CycleA.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+        "stderr": "",
+        "lean_path": "$WORK"
+      },
+      "b": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "…",
+          "CycleB.lean"
+        ],
+        "exit": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'CycleA'\\n\\nNo directory 'CycleA' or file 'CycleA.olean' in the search path entries:\\n$WORK\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"CycleB.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+        "stderr": "",
+        "lean_path": "$WORK"
+      }
+    },
+    {
+      "step": "live_unbuilt_import_cycle",
+      "a": {
+        "uri": "file://$WORK/cycle/CycleA.lean",
+        "version": 1,
+        "barrier": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "unknown module prefix 'CycleB'\n\nNo directory 'CycleB' or file 'CycleB.olean' in the search path entries:\n$WORK/cycle\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "b": {
+        "uri": "file://$WORK/cycle/CycleB.lean",
+        "version": 1,
+        "barrier": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "unknown module prefix 'CycleA'\n\nNo directory 'CycleA' or file 'CycleA.olean' in the search path entries:\n$WORK/cycle\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "server_exit": {
+        "exit": 0,
+        "stderr": ""
+      }
+    }
+  ],
+  "first_server": [
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 79007,
+          "rootUri": "file://$WORK",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/A.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "theorem helper (n : Nat) : n + 0 = n := by\n  simp\n"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/A.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/A.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/A.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/A.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/A.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/A.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import A\ntheorem consumer (n : Nat) : n + 0 = n := by\n  exact helper n\n"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/B.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "textDocument/hover",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 10
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "contents": {
+            "kind": "markdown",
+            "value": "```lean\nhelper (n : Nat) : n + 0 = n\n```\n***\n*import A*"
+          },
+          "range": {
+            "end": {
+              "character": 14,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/A.lean",
+            "version": 2
+          },
+          "contentChanges": [
+            {
+              "text": "theorem helper (n : Nat) : n + 1 = n + 1 := by\n  rfl\ntheorem unsavedOnly : True := by\n  trivial\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/A.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/A.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/A.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/A.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/BUnsaved.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import A\ntheorem consumer : True := by\n  exact unsavedOnly\n"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/BUnsaved.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/BUnsaved.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/BUnsaved.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/BUnsaved.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/BUnsaved.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "code": "lean.unknownIdentifier",
+              "fullRange": {
+                "end": {
+                  "character": 19,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "Unknown identifier `unsavedOnly`",
+              "range": {
+                "end": {
+                  "character": 19,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/BUnsaved.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 8,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 9,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "textDocument/hover",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 10
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "contents": {
+            "kind": "markdown",
+            "value": "```lean\nhelper (n : Nat) : n + 0 = n\n```\n***\n*import A*"
+          },
+          "range": {
+            "end": {
+              "character": 14,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/BNew.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import A\ntheorem consumer (n : Nat) : n + 0 = n := by\n  exact helper n\n"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/BNew.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/BNew.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/BNew.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/BNew.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/BNew.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 16,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "message": "Type mismatch\n  helper n\nhas type\n  n + 1 = n + 1\nbut is expected to have type\n  n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 16,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/BNew.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/BNew.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "method": "textDocument/hover",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/BNew.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 10
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "contents": {
+            "kind": "markdown",
+            "value": "```lean\nhelper (n : Nat) : n + 1 = n + 1\n```\n***\n*import A*"
+          },
+          "range": {
+            "end": {
+              "character": 14,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didClose",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "languageId": "lean",
+            "version": 2,
+            "text": "import A\ntheorem consumer (n : Nat) : n + 0 = n := by\n  exact helper n\n"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/B.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 8,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 9,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 16,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "message": "Type mismatch\n  helper n\nhas type\n  n + 1 = n + 1\nbut is expected to have type\n  n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 16,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/B.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 2
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/A.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/BNew.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/BUnsaved.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 17,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit",
+        "params": null
+      }
+    }
+  ],
+  "first_server_exit": {
+    "exit": 0,
+    "stderr": ""
+  },
+  "fresh_server": [
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 79007,
+          "rootUri": "file://$WORK",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import A\ntheorem consumer (n : Nat) : n + 0 = n := by\n  exact helper n\n"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/B.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 16,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "message": "Type mismatch\n  helper n\nhas type\n  n + 1 = n + 1\nbut is expected to have type\n  n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 16,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/B.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/B.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "n : Nat\n⊢ n + 0 = n"
+          ],
+          "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/B.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit",
+        "params": null
+      }
+    }
+  ],
+  "fresh_server_exit": {
+    "exit": 0,
+    "stderr": ""
+  },
+  "cycle_server": [
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 79007,
+          "rootUri": "file://$WORK/cycle",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/cycle/CycleA.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import CycleB\ntheorem ca : True := by trivial\n"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/cycle/CycleA.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/cycle/CycleA.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/cycle/CycleA.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/cycle/CycleA.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 2,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/cycle/CycleA.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              },
+              "message": "unknown module prefix 'CycleB'\n\nNo directory 'CycleB' or file 'CycleB.olean' in the search path entries:\n$WORK/cycle\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/cycle/CycleA.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/cycle/CycleB.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import CycleA\ntheorem cb : True := by trivial\n"
+          }
+        }
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/cycle/CycleB.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/cycle/CycleB.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/cycle/CycleB.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/cycle/CycleB.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 2,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/cycle/CycleB.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              },
+              "message": "unknown module prefix 'CycleA'\n\nNo directory 'CycleA' or file 'CycleA.olean' in the search path entries:\n$WORK/cycle\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/cycle/CycleB.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/cycle/CycleA.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/cycle/CycleB.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "side": "server",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit",
+        "params": null
+      }
+    }
+  ]
+}

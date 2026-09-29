@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/generation-publication",
+    "aeneas/lean-generation",
+    "aeneas/process-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "Pinned Charon extraction executable",
+      "identity": {
+        "artifact": "local macOS arm64 charon executable",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Pinned Aeneas translation executable and runtime library",
+      "identity": {
+        "artifact": "local macOS arm64 aeneas nightly-2026.06.03",
+        "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+        "libgmp_sha256": "1b0ae61990da7a4661f2c8c601f55f6c9950279bbfef12453dd5bb0c01e4b0df"
+      }
+    },
+    {
+      "name": "Aeneas CLI identity and output-manifest probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "e561d0eaba807dcc9c23d2df1f084e7b8f6cb97aec88f09ffe0d13deea18426e"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

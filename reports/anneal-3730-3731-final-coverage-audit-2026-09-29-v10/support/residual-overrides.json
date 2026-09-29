@@ -1,0 +1,22 @@
+{
+  "I009": "R36 captured one five/six-unit Cargo graph, source/env/tool subject key and perturbations; still needs a complete production verification input closure across cfg, target/triple, features/profile, dependencies, build outputs, models and tool options.",
+  "I015": "R36 rejected changed private-workspace inputs under a stale saved subject key; still needs measured dependency-scoped versus global invalidation and clean-oracle acceptance after unrelated/newly discovered inputs in Anneal.",
+  "I038": "R32 showed that direct Lean B imports compiled A, not unsaved A, and distinguished save from OLean rebuild; a supported two-open-proof unsaved-import or staged materialization contract in Anneal remains unimplemented/unverified.",
+  "I039": "R32 observed two source-only mutual imports fail without compiled artifacts; legal cross-annotation grouping, declaration order and explicit cycle detection/rejection in a real generated proof graph remain untested.",
+  "I040": "R32's empty-LEAN_PATH control fails, but a real scratch fork still needs matched module identity, imports, options, surrounding commands and candidate replay against the authoritative generation.",
+  "I050": "R33 showed an external Lean model OLean change and old/new worker divergence with fixed Aeneas text; broader typeclass/notation/plugin/option and generated-import invalidation in an Anneal server remains untested.",
+  "I073": "R36 compared saved and private materialized Cargo/Charon workspaces with matching source/unit keys; an actual unsaved Rust editor/rustc overlay extraction on identical bytes remains unavailable.",
+  "I074": "R36 covered a bounded build.rs/proc-macro/include/env/path dependency closure in private copies; arbitrary build side effects, features/targets/nonlocal dependencies and a faithful production shadow-workspace policy remain unverified.",
+  "I075": "R36 retained selected library/binary unit graphs and private targets; warm Cargo skip or alternate lib/bin/test/host invocation must still prove the requested Charon-producing unit was actually extracted.",
+  "I076": "R36 rejected a successful wrong binary unit, but a complete package/target/triple/profile/features/host-role identity key and collision-proof per-unit output selection remain unimplemented in Anneal.",
+  "I077": "R36 used isolated Charon processes; same-process reset after error/cancel and a fresh-process equivalence oracle remain untested.",
+  "I078": "R36 wrote request-private LLBC, complementing earlier interruption controls; schema-validated transactional publication of a complete Charon output set with last-good preservation remains a product implementation gap.",
+  "I079": "R36 observed equal projected declaration bodies with path-sensitive whole-LLBC hashes and recorded source/unit keys; semantic normalization across revisions, flags, annotations and source metadata remains unresolved.",
+  "I080": "R36 kept targets/LLBC destinations private per request; parallel process-tree peaks, shared-target safety, sustained descendant cleanup and same-process resource reuse remain untested.",
+  "I082": "R33 changed a separately supplied external Lean model while Aeneas text stayed fixed; compiled Aeneas registry/translator normalization/options and a second compatible binary remain unvaried.",
+  "I113": "R34 classified every path and copied byte in a tiny direct Lean one/two-worker fixture; the full Rust, LLBC, generated Lean, Lake cache, archive and outside-workspace write/peak bill for an Anneal integration test remains unmeasured.",
+  "I114": "R34 distinguished copy/symlink/hardlink/APFS-clone accounting, and R35 admitted 1/2/4/8 tiny direct Lean workers; realistic import, CPU/throughput/latency, peak physical memory and safe shared mutation across server/Lake topologies remain unmeasured.",
+  "I116": "R35 exercised 1/2/4/8 tiny imported workers with open/edit/query and clean reclamation; hours-long realistic-import retention, cancellation/restart lifecycle and leak classification remain unmeasured.",
+  "I147": "R33 fixed Aeneas-generated text while model source/OLean and old/new worker results changed; source/artifact clock and identity perturbations across compatible versions and actual producer generations remain untested.",
+  "I153": "R35 sampled direct Lean 1/2/4/8 scratch pools and physical-footprint charges; one-watchdog/N-server/MCP/product topology comparison with realistic project imports and hard peak/capacity measurements remains unrun."
+}

@@ -1,0 +1,11 @@
+[package]
+name = "snapshot_app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+doc_macro = { path = "../doc_macro" }
+
+[features]
+default = []
+selected = []

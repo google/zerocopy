@@ -1,0 +1,59 @@
+{
+  "source_commit": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+  "files": {
+    "compute_short_names": {
+      "relative_path": "charon/src/transform/add_missing_info/compute_short_names.rs",
+      "sha256": "30f5ae74458a977f27447ac096dc04b5df0126d500eb1d7c901be92a0301dc85",
+      "excerpts": [
+        {
+          "start_line": 47,
+          "end_line": 48,
+          "text": "47:         let mut short_names: HashMap<String, FoundName> = Default::default();\n48:         for (&id, name) in &ctx.translated.item_names {"
+        },
+        {
+          "start_line": 86,
+          "end_line": 98,
+          "text": "86:         for (short, found) in short_names {\n87:             if let FoundName::Unique { ids, .. } = found {\n88:                 for id in ids {\n89:                     let mut short_name = Name {\n90:                         name: vec![PathElem::Ident(short.clone(), Disambiguator::ZERO)],\n91:                     };\n92:                     if let [.., mono @ PathElem::Instantiated(..)] =\n93:                         ctx.translated.item_names[&id].name.as_slice()\n94:                     {\n95:                         short_name.name.push(mono.clone());\n96:                     }\n97:                     ctx.translated.short_names.insert(id, short_name);\n98:                 }"
+        }
+      ]
+    },
+    "translated_crate": {
+      "relative_path": "charon/src/ast/krate.rs",
+      "sha256": "52f699b7d88ef48b971d78e002040fb8e7b04932adcdbade25115f94d7a4904f",
+      "excerpts": [
+        {
+          "start_line": 250,
+          "end_line": 252,
+          "text": "250:     /// Short names, for items whose last PathElem is unique.\n251:     #[serde(with = \"SeqHashMapToArray::<ItemId, Name>\")]\n252:     pub short_names: SeqHashMap<ItemId, Name>,"
+        }
+      ]
+    },
+    "sequence_serializer": {
+      "relative_path": "charon/src/common.rs",
+      "sha256": "44426b91231516d286c5f69fb8424468e8fbbeee8977ed584e1e4a72b90dea32",
+      "excerpts": [
+        {
+          "start_line": 210,
+          "end_line": 210,
+          "text": "210:     use indexmap::IndexMap as SeqHashMap;"
+        },
+        {
+          "start_line": 224,
+          "end_line": 235,
+          "text": "224:     /// A converter between an `SeqHashMap` and a sequence of named key-value pairs.\n225:     pub struct SeqHashMapToArray<K, V, U = RandomState>(PhantomData<(K, V, U)>);\n226: \n227:     impl<K, V, U> SeqHashMapToArray<K, V, U> {\n228:         /// Serializes the given `map` to an array of named key-values.\n229:         pub fn serialize<S>(map: &SeqHashMap<K, V, U>, serializer: S) -> Result<S::Ok, S::Error>\n230:         where\n231:             K: Serialize,\n232:             V: Serialize,\n233:             S: Serializer,\n234:         {\n235:             serializer.collect_seq(map.into_iter().map(|(key, value)| KeyValue { key, value }))"
+        }
+      ]
+    },
+    "seqhashmap_alias": {
+      "relative_path": "charon/src/ast/mod.rs",
+      "sha256": "39a95255923d7ac08cfbdd6a7197a0ac48f2bf2dcdd01926b81c21a3289ac496",
+      "excerpts": [
+        {
+          "start_line": 30,
+          "end_line": 30,
+          "text": "30: pub use indexmap::{IndexMap as SeqHashMap, IndexSet as SeqHashSet};"
+        }
+      ]
+    }
+  }
+}

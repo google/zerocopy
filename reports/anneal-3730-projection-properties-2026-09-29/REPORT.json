@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/source-mapping",
+    "anneal/projection",
+    "lsp/coordinates",
+    "property-testing"
+  ],
+  "subjects": [
+    {
+      "name": "Illustrative piecewise projection property harness",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "78e4b04b5f1278a3c24f6b4d38360bf3ec8eb3cd69fa6dc37ac41d87bbee6e83"
+      }
+    },
+    {
+      "name": "CPython",
+      "identity": {
+        "version": "3.14.7"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

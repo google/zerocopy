@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "lean/language-server",
+    "lean/rpc",
+    "lean/tactic-state",
+    "anneal/interactive-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "direct Lean RPC lifecycle probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "b17723466f7ff64e8566cd1df1b861fa81b3c3b8893d365cd99a31703f6b859b"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

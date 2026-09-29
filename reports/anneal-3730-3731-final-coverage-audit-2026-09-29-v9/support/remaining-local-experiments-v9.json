@@ -1,0 +1,40 @@
+{
+  "identified_unexecuted_suites": [
+    {
+      "suite": "R32",
+      "suggestions": "C11",
+      "investigations": "I038;I039",
+      "bounded_experiment": "A direct pinned Lean upstream/downstream proof-module fixture: edit upstream proof only in an unsaved LSP buffer, query downstream import before and after save/OLean rebuild/restart, and retain exact loaded artifact and diagnostics.",
+      "limit": "Component Lean/LSP semantics only; no Anneal user-authored proof-module architecture."
+    },
+    {
+      "suite": "R33",
+      "suggestions": "E10",
+      "investigations": "I050;I082;I147",
+      "bounded_experiment": "Keep one pinned Aeneas-generated Lean tree byte-identical while changing an external user Lean model imported by the proof environment; compare clean batch and long-lived/fresh server with exact model OLean hashes.",
+      "limit": "Tiny local external model; no Anneal generator dependency graph or complete semantic identity proof."
+    },
+    {
+      "suite": "R34",
+      "suggestions": "J02",
+      "investigations": "I113",
+      "bounded_experiment": "Inventory one representative small generated integration-test workspace by content hash, physical blocks, inode/link identity and ownership category; compare one versus two private workers without multi-GiB cloning.",
+      "limit": "One tiny fixture, not representative full-suite byte economics or all CI filesystems."
+    },
+    {
+      "suite": "R35",
+      "suggestions": "J05",
+      "investigations": "I116;I153",
+      "bounded_experiment": "Measure direct pinned Lean scratch-document pool sizes 1/2/4/8 with matched proof/import/options, bounded RSS/fd/latency sampling, cancellation and cleanup.",
+      "limit": "Direct Lean workers, not an Anneal MCP scratch service; strict host memory guard required."
+    },
+    {
+      "suite": "R36",
+      "suggestions": "D01",
+      "investigations": "I073;I074",
+      "bounded_experiment": "Compare saved versus private overlay materialization for a tiny pinned Cargo/Charon crate with build script, proc macro, include!, and path dependency; record subject and diagnostics.",
+      "limit": "Overlay is private filesystem materialization, not a virtual rustc/Charon API or Anneal editor buffer."
+    }
+  ],
+  "assessment": "Five bounded component suites remain locally executable with installed pins. Their requested product-level counterparts remain gated by Anneal integration, adapters or platform/dependency choices."
+}

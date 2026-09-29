@@ -1,0 +1,249 @@
+{
+  "inventory": {
+    "host_platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "host_uname": {
+      "name": "host_uname",
+      "argv": [
+        "uname",
+        "-srm"
+      ],
+      "rc": 0,
+      "stdout": "Darwin 25.6.0 arm64\n",
+      "stderr": ""
+    },
+    "sw_vers": {
+      "name": "sw_vers",
+      "argv": [
+        "sw_vers"
+      ],
+      "rc": 0,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    "runtime_paths": {
+      "docker": "/usr/local/bin/docker",
+      "podman": null,
+      "colima": null,
+      "limactl": null,
+      "lima": null,
+      "nerdctl": null,
+      "container": null,
+      "qemu-system-aarch64": null,
+      "qemu-system-x86_64": null,
+      "multipass": null,
+      "orbctl": "/opt/homebrew/bin/orbctl",
+      "perl": "/usr/bin/perl"
+    },
+    "scratch_df": {
+      "name": "scratch_df",
+      "argv": [
+        "df",
+        "-h",
+        "$SCRATCH"
+      ],
+      "rc": 0,
+      "stdout": "Filesystem      Size    Used   Avail Capacity iused ifree %iused  Mounted on\n/dev/disk3s1   228Gi   145Gi    52Gi    74%    1.4M  541M    0%   /System/Volumes/Data\n",
+      "stderr": ""
+    },
+    "data_volume": {
+      "name": "data_volume",
+      "argv": [
+        "diskutil",
+        "info",
+        "/System/Volumes/Data"
+      ],
+      "rc": 0,
+      "stdout": "   Device Identifier:         disk3s1\n   Volume Name:               Macintosh HD - Data\n   Mount Point:               /System/Volumes/Data\n   File System Personality:   APFS\n   Type (Bundle):             apfs\n   Protocol:                  Apple Fabric\n   APFS Container:            disk3\n",
+      "stderr": "",
+      "raw_stdout_sha256": "b765cf3eacafe3048f9d70f4675fc289c492d6003f5428c0603cec22495cb6c4"
+    },
+    "docker_info": {
+      "name": "docker_info",
+      "argv": [
+        "docker",
+        "info",
+        "--format",
+        "OSType={{.OSType}} Architecture={{.Architecture}} Driver={{.Driver}} Kernel={{.KernelVersion}} DockerRootDir={{.DockerRootDir}}"
+      ],
+      "rc": 0,
+      "stdout": "OSType=linux Architecture=aarch64 Driver=overlayfs Kernel=7.0.14-orbstack-00380-ga7e0a2dc9535 DockerRootDir=/var/lib/docker\n",
+      "stderr": ""
+    },
+    "orbctl_list": {
+      "name": "orbctl_list",
+      "argv": [
+        "orbctl",
+        "list"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "cached_images": {
+      "name": "cached_images",
+      "argv": [
+        "docker",
+        "image",
+        "ls",
+        "--format",
+        "{{.ID}} {{.Repository}}:{{.Tag}} {{.Size}}"
+      ],
+      "rc": 0,
+      "stdout": "9477207aa76d rust-cmark-gate-b:ubuntu24-amd64 1.53GB\n224a1869083a ubuntu:24.04 117MB\n",
+      "stderr": ""
+    },
+    "ubuntu_image": {
+      "name": "ubuntu_image",
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "--platform",
+        "linux/amd64",
+        "ubuntu:24.04",
+        "--format",
+        "Id={{.Id}} Os={{.Os}} Arch={{.Architecture}} Size={{.Size}} RepoDigests={{json .RepoDigests}}"
+      ],
+      "rc": 0,
+      "stdout": "Id=sha256:a61567bd31828687156d735ea8eb01ba4e37636e225dd6a48ba94136a70d9d61 Os=linux Arch=amd64 Size=29772417 RepoDigests=[\"ubuntu@sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254\"]\n",
+      "stderr": ""
+    },
+    "linux_runtime": {
+      "name": "linux_runtime",
+      "argv": [
+        "docker",
+        "run",
+        "--pull=never",
+        "--platform=linux/amd64",
+        "--network=none",
+        "--rm",
+        "-i",
+        "ubuntu:24.04",
+        "sh",
+        "-c",
+        "uname -srm; cat /etc/os-release | head -4; stat -f -c \"filesystem=%T\" /tmp"
+      ],
+      "rc": 0,
+      "stdout": "Linux 7.0.14-orbstack-00380-ga7e0a2dc9535 x86_64\nPRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nfilesystem=overlayfs\n",
+      "stderr": ""
+    }
+  },
+  "probes": [
+    {
+      "host": {
+        "name": "host_apfs_run1",
+        "argv": [
+          "perl",
+          "$PROBE"
+        ],
+        "rc": 0,
+        "stdout": "replace_old_fd\tOLD_GENERATION\nreplace_new_path\tNEW_GENERATION\nunlink_open_fd\tNEW_GENERATION\nunlink_path_missing\t1\nflock_child_while_held\t0\nflock_child_after_release\t1\nsampled_old_reads\t1519\nsampled_new_reads\t881\nsampled_invalid_reads\t0\nsampled_missing_reads\t0\ncleanup_complete\t1\n",
+        "stderr": ""
+      },
+      "host_values": {
+        "replace_old_fd": "OLD_GENERATION",
+        "replace_new_path": "NEW_GENERATION",
+        "unlink_open_fd": "NEW_GENERATION",
+        "unlink_path_missing": "1",
+        "flock_child_while_held": "0",
+        "flock_child_after_release": "1",
+        "sampled_old_reads": "1519",
+        "sampled_new_reads": "881",
+        "sampled_invalid_reads": "0",
+        "sampled_missing_reads": "0",
+        "cleanup_complete": "1"
+      },
+      "container": {
+        "name": "linux_overlayfs_run1",
+        "argv": [
+          "docker",
+          "run",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--rm",
+          "-i",
+          "-e",
+          "PROBE_ROOT=/tmp",
+          "ubuntu:24.04",
+          "perl",
+          "-"
+        ],
+        "rc": 0,
+        "stdout": "replace_old_fd\tOLD_GENERATION\nreplace_new_path\tNEW_GENERATION\nunlink_open_fd\tNEW_GENERATION\nunlink_path_missing\t1\nflock_child_while_held\t0\nflock_child_after_release\t1\nsampled_old_reads\t1981\nsampled_new_reads\t419\nsampled_invalid_reads\t0\nsampled_missing_reads\t0\ncleanup_complete\t1\n",
+        "stderr": ""
+      },
+      "container_values": {
+        "replace_old_fd": "OLD_GENERATION",
+        "replace_new_path": "NEW_GENERATION",
+        "unlink_open_fd": "NEW_GENERATION",
+        "unlink_path_missing": "1",
+        "flock_child_while_held": "0",
+        "flock_child_after_release": "1",
+        "sampled_old_reads": "1981",
+        "sampled_new_reads": "419",
+        "sampled_invalid_reads": "0",
+        "sampled_missing_reads": "0",
+        "cleanup_complete": "1"
+      }
+    },
+    {
+      "host": {
+        "name": "host_apfs_run2",
+        "argv": [
+          "perl",
+          "$PROBE"
+        ],
+        "rc": 0,
+        "stdout": "replace_old_fd\tOLD_GENERATION\nreplace_new_path\tNEW_GENERATION\nunlink_open_fd\tNEW_GENERATION\nunlink_path_missing\t1\nflock_child_while_held\t0\nflock_child_after_release\t1\nsampled_old_reads\t1528\nsampled_new_reads\t872\nsampled_invalid_reads\t0\nsampled_missing_reads\t0\ncleanup_complete\t1\n",
+        "stderr": ""
+      },
+      "host_values": {
+        "replace_old_fd": "OLD_GENERATION",
+        "replace_new_path": "NEW_GENERATION",
+        "unlink_open_fd": "NEW_GENERATION",
+        "unlink_path_missing": "1",
+        "flock_child_while_held": "0",
+        "flock_child_after_release": "1",
+        "sampled_old_reads": "1528",
+        "sampled_new_reads": "872",
+        "sampled_invalid_reads": "0",
+        "sampled_missing_reads": "0",
+        "cleanup_complete": "1"
+      },
+      "container": {
+        "name": "linux_overlayfs_run2",
+        "argv": [
+          "docker",
+          "run",
+          "--pull=never",
+          "--platform=linux/amd64",
+          "--network=none",
+          "--rm",
+          "-i",
+          "-e",
+          "PROBE_ROOT=/tmp",
+          "ubuntu:24.04",
+          "perl",
+          "-"
+        ],
+        "rc": 0,
+        "stdout": "replace_old_fd\tOLD_GENERATION\nreplace_new_path\tNEW_GENERATION\nunlink_open_fd\tNEW_GENERATION\nunlink_path_missing\t1\nflock_child_while_held\t0\nflock_child_after_release\t1\nsampled_old_reads\t2011\nsampled_new_reads\t389\nsampled_invalid_reads\t0\nsampled_missing_reads\t0\ncleanup_complete\t1\n",
+        "stderr": ""
+      },
+      "container_values": {
+        "replace_old_fd": "OLD_GENERATION",
+        "replace_new_path": "NEW_GENERATION",
+        "unlink_open_fd": "NEW_GENERATION",
+        "unlink_path_missing": "1",
+        "flock_child_while_held": "0",
+        "flock_child_after_release": "1",
+        "sampled_old_reads": "2011",
+        "sampled_new_reads": "389",
+        "sampled_invalid_reads": "0",
+        "sampled_missing_reads": "0",
+        "cleanup_complete": "1"
+      }
+    }
+  ]
+}

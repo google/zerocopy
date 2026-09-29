@@ -1,0 +1,7 @@
+Python 3.14.7
+ProductName:		macOS
+ProductVersion:		26.6.2
+BuildVersion:		25G83
+Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64
+78e4b04b5f1278a3c24f6b4d38360bf3ec8eb3cd69fa6dc37ac41d87bbee6e83  support/probe.py
+37a0ecd080d333f93bfe900d9c7dab193608e478

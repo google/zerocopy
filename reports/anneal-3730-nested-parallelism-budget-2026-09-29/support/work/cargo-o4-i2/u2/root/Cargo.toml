@@ -1,0 +1,7 @@
+[package]
+name="r37u2"
+version="0.1.0"
+edition="2021"
+[dependencies]
+dep_a={path="../dep_a"}
+dep_b={path="../dep_b"}

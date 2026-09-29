@@ -1,0 +1,40 @@
+{
+  "identified_bounded_local_suites": [
+    {
+      "suite": "R37",
+      "suggestions": "J06",
+      "investigations": "I115",
+      "bounded_experiment": "Measure nested Cargo/Charon and direct Lean server worker/thread budgets at 1/2/4 tiny local units with OS process-tree, CPU, footprint and admission controls.",
+      "limit": "Small components only; no Anneal scheduler or Mathlib capacity claim."
+    },
+    {
+      "suite": "R38",
+      "suggestions": "J09",
+      "investigations": "I105;I110;I139",
+      "bounded_experiment": "Inject one malformed proof and one server cancellation/crash into an admitted 4/8-worker direct Lean pool; verify unaffected peers, stale-result fencing model, clean restart and resource cleanup.",
+      "limit": "Direct Lean plus policy model; no actual Anneal high-concurrency failure path."
+    },
+    {
+      "suite": "R39",
+      "suggestions": "J10",
+      "investigations": "I116;I122",
+      "bounded_experiment": "Extend the existing tiny direct Lean server edit/query/restart soak with periodic physical-footprint, process-child and disk ledgers under a fixed time/resource cap.",
+      "limit": "Still not a long-lived Anneal daemon or realistic large import; no hours-long guarantee."
+    },
+    {
+      "suite": "R40",
+      "suggestions": "J14",
+      "investigations": "I119;I124",
+      "bounded_experiment": "Repeat a small process/file/inode resource fixture on host APFS and the already cached Ubuntu Docker overlayfs image with no pull or host backup mount, recording filesystem-specific cleanup/rename charges.",
+      "limit": "Emulated linux/amd64 container and synthetic workload; no native ext4/XFS/Windows or Linux Lean toolchain."
+    },
+    {
+      "suite": "R41",
+      "suggestions": "N08",
+      "investigations": "I159",
+      "bounded_experiment": "Construct a tiny generated-Lean-as-canonical-source prototype and a source-span/obligation/axiom comparator against a Rust-hosted view, then exercise edit, regeneration, fresh batch and server refresh.",
+      "limit": "Synthetic design experiment; cannot decide Anneal product topology or its actual generator semantics."
+    }
+  ],
+  "assessment": "Five additional bounded component/design suites remain executable with currently available local tools. Each leaves its product-level suggestion partial unless the relevant Anneal implementation or platform/dependency gate is supplied."
+}

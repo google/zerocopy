@@ -1,0 +1,1893 @@
+{
+  "commands": [
+    {
+      "label": "base:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/Source.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "comparator_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/Source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/Source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/generated/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.139087 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "reorder:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/Source.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "comparator_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "reorder:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/Source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/Source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/generated/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.136032 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/Source.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "comparator_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/Source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/Source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/generated/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.143125 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "clean-rerun:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/Source.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "comparator_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "clean-rerun:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/Source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/Source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/generated/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.146982 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "external:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/Source.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "comparator_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/Source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/Source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/generated/FunsExternal_Template.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/external/generated/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.124706 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "base:rustc-oracle-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--edition=2021",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/RustOracle.rs",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:rust-oracle-run",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "reorder:rustc-oracle-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--edition=2021",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/RustOracle.rs",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "reorder:rust-oracle-run",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed:rustc-oracle-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--edition=2021",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/RustOracle.rs",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed:rust-oracle-run",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "clean-rerun:rustc-oracle-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--edition=2021",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/RustOracle.rs",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "clean-rerun:rust-oracle-run",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/clean-rerun",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:compile:Source/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:compile:Source/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:compile:Source",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "reorder:compile:Source/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-reorder",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "reorder:compile:Source/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-reorder",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "reorder:compile:Source",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-reorder",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed:compile:Source/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed:compile:Source/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed:compile:Source",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "clean-rerun:compile:Source/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-clean-rerun",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "clean-rerun:compile:Source/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-clean-rerun",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "clean-rerun:compile:Source",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-clean-rerun",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-base",
+      "exit": 0,
+      "stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "reorder:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-reorder",
+      "exit": 0,
+      "stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-changed",
+      "exit": 0,
+      "stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 4#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 5#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "clean-rerun:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-clean-rerun",
+      "exit": 0,
+      "stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "weak-proposition",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Weak.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-base",
+      "exit": 0,
+      "stdout": "obl_inc : True\n'obl_inc' does not depend on any axioms\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-obligation",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Missing.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-base",
+      "exit": 0,
+      "stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "admitted-claim",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Sorry.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-base",
+      "exit": 0,
+      "stdout": "Sorry.lean:2:8: warning: declaration uses `sorry`\n'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "stale-source-old-import",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-base",
+      "exit": 0,
+      "stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "swap-compile:Source/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-swapped",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "swap-compile:Source",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-swapped",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "swapped-import-old-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-swapped",
+      "exit": 1,
+      "stdout": "Proof.lean:2:63: error: Tactic `rfl` failed: The left-hand side\n  comparator_probe.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 1#u32\n\n\u22a2 comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\nobl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\nProof.lean:5:67: error: Tactic `rfl` failed: The left-hand side\n  comparator_probe.twice 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\nProof.lean:8:69: error: Tactic `rfl` failed: The left-hand side\n  comparator_probe.choose 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 3#u32\n\n\u22a2 comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "swapped-import-weak-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "WeakOnly.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-swapped",
+      "exit": 0,
+      "stdout": "obl_inc : True\n",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:compile:Source/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-axiom",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:compile:Source/FunsExternal",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/FunsExternal.olean",
+        "Source/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-axiom",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:compile:Source/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-axiom",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:compile:Source",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-axiom",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:compile:Source/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-concrete",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:compile:Source/FunsExternal",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/FunsExternal.olean",
+        "Source/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-concrete",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:compile:Source/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-concrete",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:compile:Source",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-concrete",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom-inventory",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "AxiomCheck.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-axiom",
+      "exit": 0,
+      "stdout": "'comparator_probe.call' depends on axioms: [external_double]\n",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete-oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "ConcreteCheck.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/consumer-external-concrete",
+      "exit": 0,
+      "stdout": "'comparator_probe.call' does not depend on any axioms\n",
+      "stderr": ""
+    }
+  ],
+  "cases": {
+    "base": {
+      "source_sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+      "llbc_sha256": "ee36614785a52956a4e47fad06ff7be2dd5fe984cb67c358e08e566a3a4fb087",
+      "llbc_bytes": 16276,
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1689,
+          "sha256": "bc15e6198147e1059c25089e94eb1399538f674a96907e3a689fe019df4a4db5"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "charon_version": "0.1.210",
+      "local_declarations": [
+        {
+          "def_id": 0,
+          "name": "inc",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 1,
+          "name": "twice",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 2,
+          "name": "choose",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "rust_oracle": {
+        "source_sha256": "6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391",
+        "binary_sha256": "aa595a76023ea1701b43b0acd90cceef5c533cacb48159f74401397e57c42c7b",
+        "binary_bytes": 463480,
+        "exit": 0
+      },
+      "consumer": {
+        "Proof.lean": {
+          "bytes": 346,
+          "sha256": "82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3"
+        },
+        "Source/Funs.lean": {
+          "bytes": 1689,
+          "sha256": "bc15e6198147e1059c25089e94eb1399538f674a96907e3a689fe019df4a4db5"
+        },
+        "Source/Funs.olean": {
+          "bytes": 24088,
+          "sha256": "741d164fc7a832cb302c89ec274af39358b92658428d56083f48be515e76744e"
+        },
+        "Source/Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        },
+        "Source/Types.olean": {
+          "bytes": 1616,
+          "sha256": "0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Source.olean": {
+          "bytes": 1312,
+          "sha256": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974"
+        }
+      },
+      "proof_stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+    },
+    "reorder": {
+      "source_sha256": "5c47f32fcd6df5061e5e1d50ffad9eb93689ee60671aed3f873b394eca9d207f",
+      "llbc_sha256": "734568088d01882d6d09326a3b181941e9e580b451ce62a3c42279c81dcab8ec",
+      "llbc_bytes": 16283,
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1698,
+          "sha256": "61de570b374752a4384520d2e6a47ecbcd5004c976add6af3b7b1f9d606fbedb"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "charon_version": "0.1.210",
+      "local_declarations": [
+        {
+          "def_id": 0,
+          "name": "choose",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 1,
+          "name": "twice",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 2,
+          "name": "inc",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "rust_oracle": {
+        "source_sha256": "6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391",
+        "binary_sha256": "14e06918d031a52ece874c61101c271127f130729b01e6dd2f362acfc00364ad",
+        "binary_bytes": 463480,
+        "exit": 0
+      },
+      "consumer": {
+        "Proof.lean": {
+          "bytes": 346,
+          "sha256": "82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3"
+        },
+        "Source/Funs.lean": {
+          "bytes": 1698,
+          "sha256": "61de570b374752a4384520d2e6a47ecbcd5004c976add6af3b7b1f9d606fbedb"
+        },
+        "Source/Funs.olean": {
+          "bytes": 24088,
+          "sha256": "96645d3c18c93b4816b05fe2dea3478b4eff41984b171fb4c8fc4b7c60174822"
+        },
+        "Source/Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        },
+        "Source/Types.olean": {
+          "bytes": 1616,
+          "sha256": "0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Source.olean": {
+          "bytes": 1312,
+          "sha256": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974"
+        }
+      },
+      "proof_stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+    },
+    "changed": {
+      "source_sha256": "fc47ac0e8cb34679fdfb0ef7bc73fd50adebb3f14c83568638fa8136145c13a4",
+      "llbc_sha256": "ec7d0f808f778c2963795bee1faae7c72094660c94662b18b9bb3d6c0ef9c547",
+      "llbc_bytes": 16282,
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1698,
+          "sha256": "287273a09e0f2cc0cbaeb9584ea45817645d70390df45cd1b40baa7d0ef89497"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "charon_version": "0.1.210",
+      "local_declarations": [
+        {
+          "def_id": 0,
+          "name": "inc",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 1,
+          "name": "twice",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 2,
+          "name": "choose",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "rust_oracle": {
+        "source_sha256": "7f1fd6407dd50e74dad5f02452caa853daddb071589123e00a737173ec0c3fb2",
+        "binary_sha256": "15539d2e5c85e97119d34128f20d89c127e447a68f628ce83e93931cc456b764",
+        "binary_bytes": 463480,
+        "exit": 0
+      },
+      "consumer": {
+        "Proof.lean": {
+          "bytes": 346,
+          "sha256": "49602fee85bc1adcd2092312d8d875321084d3e3f174467bafd5ef3b6d98c2f6"
+        },
+        "Source/Funs.lean": {
+          "bytes": 1698,
+          "sha256": "287273a09e0f2cc0cbaeb9584ea45817645d70390df45cd1b40baa7d0ef89497"
+        },
+        "Source/Funs.olean": {
+          "bytes": 24984,
+          "sha256": "92ca23323f42b72d66c5577611ecabc6c69f1396af95ceb6c4e19ce4fe0572cf"
+        },
+        "Source/Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        },
+        "Source/Types.olean": {
+          "bytes": 1616,
+          "sha256": "0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Source.olean": {
+          "bytes": 1312,
+          "sha256": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974"
+        }
+      },
+      "proof_stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 4#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 5#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+    },
+    "clean-rerun": {
+      "source_sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+      "llbc_sha256": "aafae3a3fd8885c8e2fc629f8ec26460fc624ac17a5033991ab96760db3c72fb",
+      "llbc_bytes": 16290,
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1710,
+          "sha256": "e2c59d8fd0ede7abac3d96e232fb15aff190b633d891946ed7b76ceb8f5285ac"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "charon_version": "0.1.210",
+      "local_declarations": [
+        {
+          "def_id": 0,
+          "name": "inc",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 1,
+          "name": "twice",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 2,
+          "name": "choose",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "rust_oracle": {
+        "source_sha256": "6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391",
+        "binary_sha256": "78dea157273a38dee7e84d7d23749aaa6e279f0b4895df265a1b39e479f60098",
+        "binary_bytes": 463480,
+        "exit": 0
+      },
+      "consumer": {
+        "Proof.lean": {
+          "bytes": 346,
+          "sha256": "82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3"
+        },
+        "Source/Funs.lean": {
+          "bytes": 1710,
+          "sha256": "e2c59d8fd0ede7abac3d96e232fb15aff190b633d891946ed7b76ceb8f5285ac"
+        },
+        "Source/Funs.olean": {
+          "bytes": 24112,
+          "sha256": "20097a83eda4600f9f9279fd37fc18f569c5faf4bc31d3612864c6eefe301712"
+        },
+        "Source/Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        },
+        "Source/Types.olean": {
+          "bytes": 1616,
+          "sha256": "0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Source.olean": {
+          "bytes": 1312,
+          "sha256": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974"
+        }
+      },
+      "proof_stdout": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+    },
+    "external": {
+      "source_sha256": "d606a2569d6ce1e1d5ccefab70be2e65d16334239e5e90cf7ddd31657fe9f3a4",
+      "llbc_sha256": "5feecaffca57315268cc13c7df6c611a94e0d1fa187300a765dfee1de6e2f384",
+      "llbc_bytes": 5777,
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1056,
+          "sha256": "ca97a094e3c6af0df9ff871d1772ce3f3de604290e522632c4d79a607de26917"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 950,
+          "sha256": "8f0f994ceb39be482bb2c6de859435d8859d6523726de07bec9e6ce9752d0fd8"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "charon_version": "0.1.210",
+      "local_declarations": [
+        {
+          "def_id": 0,
+          "name": "call",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 60
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 1,
+          "name": "external_double",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 20
+              },
+              "end": {
+                "line": 2,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    }
+  },
+  "controls": {
+    "strong": {
+      "lean_exit": 0,
+      "manifest": {
+        "accepted": true,
+        "reasons": [],
+        "actual_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ],
+        "expected_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ]
+      }
+    },
+    "weaker_proposition": {
+      "lean_exit": 0,
+      "stdout": "obl_inc : True\n'obl_inc' does not depend on any axioms\n",
+      "manifest": {
+        "accepted": false,
+        "reasons": [
+          "obligation/proposition mismatch"
+        ],
+        "actual_propositions": [
+          [
+            "obl_inc",
+            "True"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ],
+        "expected_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ]
+      },
+      "file_sha256": "b9f165e07af372b0a4827491efaf2edeccae4bdedca9ec6ba578a91407e31ff1"
+    },
+    "missing_obligation": {
+      "lean_exit": 0,
+      "manifest": {
+        "accepted": false,
+        "reasons": [
+          "obligation/proposition mismatch"
+        ],
+        "actual_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ]
+        ],
+        "expected_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ]
+      },
+      "file_sha256": "ed18ae077665c2274fa61f1b50a173053b5ddbf56dc0f4a59b8db290504aa3dc"
+    },
+    "admitted_claim": {
+      "lean_exit": 0,
+      "stdout": "Sorry.lean:2:8: warning: declaration uses `sorry`\n'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n",
+      "manifest": {
+        "accepted": false,
+        "reasons": [
+          "obligation/proposition mismatch",
+          "admission axiom"
+        ],
+        "actual_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 99#u32"
+          ]
+        ],
+        "expected_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ]
+      },
+      "file_sha256": "8152fb830a380babe7278ae631cb4df1189f425fa7b56477a9cab3aca0494a3e"
+    },
+    "stale_source": {
+      "lean_exit": 0,
+      "manifest": {
+        "accepted": false,
+        "reasons": [
+          "source generation mismatch"
+        ],
+        "actual_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ],
+        "expected_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ]
+      }
+    },
+    "swapped_import": {
+      "old_proof_exit": 1,
+      "weak_proof_exit": 0,
+      "manifest": {
+        "accepted": false,
+        "reasons": [
+          "obligation/proposition mismatch",
+          "imported model mismatch"
+        ],
+        "actual_propositions": [
+          [
+            "obl_inc",
+            "True"
+          ]
+        ],
+        "expected_propositions": [
+          [
+            "obl_inc",
+            "comparator_probe.inc 0#u32 = .ok 1#u32"
+          ],
+          [
+            "obl_twice",
+            "comparator_probe.twice 0#u32 = .ok 2#u32"
+          ],
+          [
+            "obl_choose",
+            "comparator_probe.choose 0#u32 = .ok 3#u32"
+          ]
+        ]
+      },
+      "base_import_sha256": "741d164fc7a832cb302c89ec274af39358b92658428d56083f48be515e76744e",
+      "swapped_import_sha256": "92ca23323f42b72d66c5577611ecabc6c69f1396af95ceb6c4e19ce4fe0572cf"
+    },
+    "external_model": {
+      "generated_equal": true,
+      "axiom_model_source_sha256": "8f0f994ceb39be482bb2c6de859435d8859d6523726de07bec9e6ce9752d0fd8",
+      "concrete_model_source_sha256": "837dbb23aea8f9805125d057bb868c0ce443ca64217d1d2455bf3c59608bea58",
+      "axiom_import_sha256": "df8fde3a3fa71205212ba8b30eacdb6fce2f269887e008594171b8a2f077fc0f",
+      "concrete_import_sha256": "55eed7373b82ef02a84c2b9db22561c3a87340584ce444a09c6bff99800565b6",
+      "axiom_stdout": "'comparator_probe.call' depends on axioms: [external_double]\n",
+      "concrete_stdout": "'comparator_probe.call' does not depend on any axioms\n",
+      "axiom_exit": 0,
+      "concrete_exit": 0
+    }
+  },
+  "subjects": {
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+  },
+  "comparison": {
+    "base_vs_reorder_source_bytes_equal": false,
+    "base_vs_reorder_llbc_bytes_equal": false,
+    "base_vs_reorder_funs_bytes_equal": false,
+    "base_vs_reorder_selected_proof_stdout_equal": true,
+    "base_vs_clean_source_bytes_equal": true,
+    "base_vs_clean_selected_proof_stdout_equal": true,
+    "base_vs_changed_source_bytes_equal": false,
+    "base_vs_changed_import_bytes_equal": false
+  },
+  "boundaries": [
+    "Manually chosen obligations and comparator, not Anneal-generated service.",
+    "Selected rfl/cargo-independent values do not prove Rust-to-Lean soundness.",
+    "External concrete model is a user assumption, not verified foreign implementation.",
+    "Cross-layer name/span/comment links are lexical; no authenticated producer map.",
+    "Fresh rerun shares host, toolchain pins and prebuilt Lean dependencies."
+  ],
+  "model_manifest": {
+    "base": {
+      "input_source_sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+      "llbc_sha256": "ee36614785a52956a4e47fad06ff7be2dd5fe984cb67c358e08e566a3a4fb087",
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1689,
+          "sha256": "bc15e6198147e1059c25089e94eb1399538f674a96907e3a689fe019df4a4db5"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "rows": [
+        {
+          "name": "inc",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 21
+        },
+        {
+          "name": "twice",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 27
+        },
+        {
+          "name": "choose",
+          "charon_def_id": 2,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 34
+        }
+      ],
+      "proven_cross_layer_map": null,
+      "manual_obligations": [
+        "obl_inc",
+        "obl_twice",
+        "obl_choose"
+      ]
+    },
+    "reorder": {
+      "input_source_sha256": "5c47f32fcd6df5061e5e1d50ffad9eb93689ee60671aed3f873b394eca9d207f",
+      "llbc_sha256": "734568088d01882d6d09326a3b181941e9e580b451ce62a3c42279c81dcab8ec",
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1698,
+          "sha256": "61de570b374752a4384520d2e6a47ecbcd5004c976add6af3b7b1f9d606fbedb"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "rows": [
+        {
+          "name": "choose",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 34
+        },
+        {
+          "name": "twice",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 27
+        },
+        {
+          "name": "inc",
+          "charon_def_id": 2,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 21
+        }
+      ],
+      "proven_cross_layer_map": null,
+      "manual_obligations": [
+        "obl_inc",
+        "obl_twice",
+        "obl_choose"
+      ]
+    },
+    "changed": {
+      "input_source_sha256": "fc47ac0e8cb34679fdfb0ef7bc73fd50adebb3f14c83568638fa8136145c13a4",
+      "llbc_sha256": "ec7d0f808f778c2963795bee1faae7c72094660c94662b18b9bb3d6c0ef9c547",
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1698,
+          "sha256": "287273a09e0f2cc0cbaeb9584ea45817645d70390df45cd1b40baa7d0ef89497"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "rows": [
+        {
+          "name": "inc",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 21
+        },
+        {
+          "name": "twice",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 27
+        },
+        {
+          "name": "choose",
+          "charon_def_id": 2,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 34
+        }
+      ],
+      "proven_cross_layer_map": null,
+      "manual_obligations": [
+        "obl_inc",
+        "obl_twice",
+        "obl_choose"
+      ]
+    },
+    "clean-rerun": {
+      "input_source_sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+      "llbc_sha256": "aafae3a3fd8885c8e2fc629f8ec26460fc624ac17a5033991ab96760db3c72fb",
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1710,
+          "sha256": "e2c59d8fd0ede7abac3d96e232fb15aff190b633d891946ed7b76ceb8f5285ac"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "rows": [
+        {
+          "name": "inc",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 21
+        },
+        {
+          "name": "twice",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 27
+        },
+        {
+          "name": "choose",
+          "charon_def_id": 2,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 34
+        }
+      ],
+      "proven_cross_layer_map": null,
+      "manual_obligations": [
+        "obl_inc",
+        "obl_twice",
+        "obl_choose"
+      ]
+    },
+    "external": {
+      "input_source_sha256": "d606a2569d6ce1e1d5ccefab70be2e65d16334239e5e90cf7ddd31657fe9f3a4",
+      "llbc_sha256": "5feecaffca57315268cc13c7df6c611a94e0d1fa187300a765dfee1de6e2f384",
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1056,
+          "sha256": "ca97a094e3c6af0df9ff871d1772ce3f3de604290e522632c4d79a607de26917"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 950,
+          "sha256": "8f0f994ceb39be482bb2c6de859435d8859d6523726de07bec9e6ce9752d0fd8"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "rows": [
+        {
+          "name": "call",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 60
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 25
+        },
+        {
+          "name": "external_double",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 20
+              },
+              "end": {
+                "line": 2,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": null
+        }
+      ],
+      "proven_cross_layer_map": null,
+      "manual_obligations": [
+        "obl_inc",
+        "obl_twice",
+        "obl_choose"
+      ]
+    }
+  }
+}

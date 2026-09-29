@@ -1,0 +1,33 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["eaf560c73067cfae.olean"],
+  "i": "601cc498969b8150.ilean",
+  "c": "625bc2e33d7df762.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/Mid.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/lib/lean/Mid.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/lib/lean/Mid.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/ir/Mid.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/ir/Mid.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Mid:deps",
+   [["deps",
+     [["rpc_matrix/Mid:extraDep",
+       [["@rpc_matrix:extraDep", "00000000000006bb"]]],
+      ["imports",
+       [["Base transitive imports (legacy)", "00000000000006bb"],
+        ["Base:importAllArts", "2b864b139fff4c19"]]]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.29.0, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740",
+   "60bb08ef22408c8a"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/Mid.lean",
+   "71c37b824732222b"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Mid", "fb06429b393b1044"],
+  ["Package.id?: (some rpc_matrix)", "fc13183a5b114a79"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "a0cabb12ee91f6b6"}

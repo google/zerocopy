@@ -1,0 +1,967 @@
+{
+  "environment": {
+    "cache_source_sha256": {
+      "Cache.lean": "f5d1430622af25dd672c256ac50941735f9a3cc129abc3f5efe066a26fd4e3f7",
+      "Common.lean": "4ce4b9ce5ad8b55335719928c56ec5a057e2d1b749e54022bca0c95c553d8ea3"
+    },
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "max_concurrent_consumers": 2,
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "rss_guard_kib": 5500000,
+    "toolchain": "leanprover/lean4:v4.30.0-rc2"
+  },
+  "fixture": {
+    "consumer/Generated.lean": {
+      "bytes": 82,
+      "sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb"
+    },
+    "consumer/lake-manifest.json": {
+      "bytes": 372,
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+    },
+    "consumer/lakefile.lean": {
+      "bytes": 123,
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+    },
+    "consumer/lean-toolchain": {
+      "bytes": 29,
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+    },
+    "producer/Dep.lean": {
+      "bytes": 174,
+      "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+    },
+    "producer/lakefile.lean": {
+      "bytes": 75,
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+    },
+    "producer/lean-toolchain": {
+      "bytes": 29,
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+    }
+  },
+  "observations": {
+    "artifact_failure": {
+      "cache": {},
+      "exit": 1,
+      "producer": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2097,
+          "sha256": "319dc819031a6b3ce7e2b300f1e87fc64cb3a6cf5ff57ee6d47aa978633ca57a"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      },
+      "stderr": "error: build failed\n"
+    },
+    "artifact_repaired": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "producer": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2097,
+          "sha256": "319dc819031a6b3ce7e2b300f1e87fc64cb3a6cf5ff57ee6d47aa978633ca57a"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      }
+    },
+    "bad_object": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 100,
+          "sha256": "44a98c92e903ee59f4cdea10d0a485ad7d91d141f6ad14ab69d64159a8aa820d"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "corrupt_bytes": 100,
+      "corrupt_sha256": "44a98c92e903ee59f4cdea10d0a485ad7d91d141f6ad14ab69d64159a8aa820d",
+      "lake_build_exit": 0,
+      "lake_setup_exit": 0,
+      "lean_exit": -11,
+      "map_sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7",
+      "original_bytes": 4896,
+      "original_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+    },
+    "map_failure": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 64,
+          "sha256": "02c91130c41608834ae358a017864d13285f30b71440dc877047a9d2ff4459bb"
+        }
+      },
+      "exit": -25,
+      "partial_map_sha256": "02c91130c41608834ae358a017864d13285f30b71440dc877047a9d2ff4459bb",
+      "producer": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2057,
+          "sha256": "1e81f8a3550067ce36483bca95fe6df6d7cdae210f4147b632361f2e68d32f5e"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      }
+    },
+    "map_repaired": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "fresh_producer": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2105,
+          "sha256": "22e61ec2c5ea6c643852c4548be0335578730b9482e17fdefdb02cc2435797e9"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      }
+    },
+    "object_repaired_after_delete": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "producer": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2145,
+          "sha256": "7973ec7a0c8a808ebaa668a2ac746d2df23d81cfd6e0e1b10ae7c18f59670c35"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      },
+      "repaired_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+    },
+    "private_immutable": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_unchanged": true,
+      "exits": [
+        0,
+        0
+      ],
+      "peak_sampled": {
+        "processes": 2,
+        "rss_kib_sum": 1327632
+      },
+      "producer_a": {
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 234,
+          "sha256": "c686196a90bd2919146ec3556b17675039d3cbb84f3a120f88e2ff88b3377a93"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      },
+      "producer_b": {
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 234,
+          "sha256": "c686196a90bd2919146ec3556b17675039d3cbb84f3a120f88e2ff88b3377a93"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      }
+    },
+    "shared_writable_package": {
+      "cache": {},
+      "exits": [
+        0,
+        0
+      ],
+      "markers": [
+        true,
+        true
+      ],
+      "peak_sampled": {
+        "processes": 4,
+        "rss_kib_sum": 3581712
+      },
+      "producer": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2145,
+          "sha256": "1ccd2c55f0e8a34148d28f01f2f72a481ff5248f67208cc6616de3530ef26a9c"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      },
+      "setup_exit": 0
+    }
+  },
+  "records": [
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-map",
+      "cwd": "$WORK/map/consumer",
+      "enabled": false,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "map-prebuild",
+      "seconds": 1.1557,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (660ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-map",
+      "cwd": "$WORK/map/consumer",
+      "enabled": true,
+      "exit": -25,
+      "file_size_limit": 64,
+      "label": "map-write-limited",
+      "seconds": 0.3089,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-map",
+      "cwd": "$WORK/map-fresh/consumer",
+      "enabled": true,
+      "exit": 3,
+      "file_size_limit": null,
+      "label": "map-partial-no-build",
+      "seconds": 0.4703,
+      "stderr": "\u2716 [3/4] Building Dep\nwarning: $WORK/cache-map/outputs/probe_dep/566c416840dafb01.json: invalid JSON: offset 64: unexpected end of input\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-map",
+      "cwd": "$WORK/map-fresh/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "map-retry-build",
+      "seconds": 0.9696,
+      "stderr": "",
+      "stdout": "\u26a0 [2/3] Built Dep (622ms)\nwarning: $WORK/cache-map/outputs/probe_dep/566c416840dafb01.json: invalid JSON: offset 64: unexpected end of input\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-map",
+      "cwd": "$WORK/map-fresh/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "map-repaired-no-build",
+      "seconds": 0.4182,
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-map/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/direct-map-repaired-direct-lean/Check.lean"
+      ],
+      "cwd": "$WORK/direct-map-repaired-direct-lean",
+      "exit": 0,
+      "label": "map-repaired-direct-lean",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "seconds": 0.6081,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"$WORK/direct-map-repaired-direct-lean/Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-artifact",
+      "cwd": "$WORK/artifact/consumer",
+      "enabled": false,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "artifact-prebuild",
+      "seconds": 1.0159,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (617ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-artifact",
+      "cwd": "$WORK/artifact/consumer",
+      "enabled": true,
+      "exit": 1,
+      "file_size_limit": null,
+      "label": "artifact-write-denied",
+      "seconds": 0.4159,
+      "stderr": "error: build failed\n",
+      "stdout": "\u2716 [2/3] Replaying Dep\ntrace: .> LEAN_PATH=$WORK/artifact/producer/.lake/build/lib/lean:$WORK/artifact/consumer/.lake/build/lib/lean $TOOLCHAIN/bin/lean $WORK/artifact/producer/Dep.lean -o $WORK/artifact/producer/.lake/build/lib/lean/Dep.olean -i $WORK/artifact/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/artifact/producer/.lake/build/ir/Dep.c --setup $WORK/artifact/producer/.lake/build/ir/Dep.setup.json --json\nerror: failed to cache artifact: permission denied (error code: 13)\n  file: $WORK/cache-artifact/artifacts/7b7a31f2adb2306a.olean\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-artifact",
+      "cwd": "$WORK/artifact/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "artifact-retry-build",
+      "seconds": 0.4252,
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-bad-object",
+      "cwd": "$WORK/bad-object/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "bad-object-no-build-setup",
+      "seconds": 0.5182,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-bad-object/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-bad-object",
+      "cwd": "$WORK/bad-object/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "bad-object-ordinary-build",
+      "seconds": 0.4173,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/direct-bad-object-direct-lean/Check.lean"
+      ],
+      "cwd": "$WORK/direct-bad-object-direct-lean",
+      "exit": -11,
+      "label": "bad-object-direct-lean",
+      "object_bytes": 100,
+      "object_sha256": "44a98c92e903ee59f4cdea10d0a485ad7d91d141f6ad14ab69d64159a8aa820d",
+      "seconds": 0.1118,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-bad-object",
+      "cwd": "$WORK/missing-object/consumer",
+      "enabled": true,
+      "exit": 3,
+      "file_size_limit": null,
+      "label": "missing-object-no-build",
+      "seconds": 0.4837,
+      "stderr": "\u2716 [3/4] Building Dep\nwarning: input '566c416' found in package artifact cache, but some output(s) have issues:\n- artifact not found in cache:\n  $WORK/cache-bad-object/artifacts/7b7a31f2adb2306a.olean\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-bad-object",
+      "cwd": "$WORK/missing-object/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "missing-object-rebuild",
+      "seconds": 0.9551,
+      "stderr": "",
+      "stdout": "\u26a0 [2/3] Built Dep (626ms)\nwarning: input '566c416' found in package artifact cache, but some output(s) have issues:\n- artifact not found in cache:\n  $WORK/cache-bad-object/artifacts/7b7a31f2adb2306a.olean\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-bad-object",
+      "cwd": "$WORK/missing-object/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "fixed-object-no-build",
+      "seconds": 0.4173,
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-bad-object/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/direct-fixed-object-direct-lean/Check.lean"
+      ],
+      "cwd": "$WORK/direct-fixed-object-direct-lean",
+      "exit": 0,
+      "label": "fixed-object-direct-lean",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "seconds": 0.623,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"$WORK/direct-fixed-object-direct-lean/Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "cache": "$WORK/cache-immutable",
+      "cwd": "$WORK/private-a/consumer",
+      "enabled": true,
+      "exit": 0,
+      "label": "private-immutable-cache-0",
+      "seconds": 0.566,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "cache": "$WORK/cache-immutable",
+      "cwd": "$WORK/private-b/consumer",
+      "enabled": true,
+      "exit": 0,
+      "label": "private-immutable-cache-1",
+      "seconds": 0.5661,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-immutable",
+      "cwd": "$WORK/private-a/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "private-a-setup",
+      "seconds": 0.4147,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-immutable/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-immutable",
+      "cwd": "$WORK/private-b/consumer",
+      "enabled": true,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "private-b-setup",
+      "seconds": 0.4228,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-immutable/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "cache": "$WORK/cache-shared-package",
+      "cwd": "$WORK/shared-package/consumer",
+      "enabled": false,
+      "exit": 0,
+      "label": "shared-writable-package-0",
+      "seconds": 2.98,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.2s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "cache": "$WORK/cache-shared-package",
+      "cwd": "$WORK/shared-package/consumer",
+      "enabled": false,
+      "exit": 0,
+      "label": "shared-writable-package-1",
+      "seconds": 2.98,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.3s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-shared-package",
+      "cwd": "$WORK/shared-package/consumer",
+      "enabled": false,
+      "exit": 0,
+      "file_size_limit": null,
+      "label": "shared-package-post-setup",
+      "seconds": 0.4224,
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/shared-package/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    }
+  ]
+}

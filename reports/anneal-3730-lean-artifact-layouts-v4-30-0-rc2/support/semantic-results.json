@@ -1,0 +1,81 @@
+{
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "source_hashes": {
+    "Shared.lean": "403c0b236524b1e927de9b3b5d8abfd7a032bd5d65612a491cbc8f5cfd2c8da1",
+    "AnnOne.lean": "9a4bb5dfc936432493845928163f191bd519572b04ea18a93db5c1f1645c2dcb",
+    "AnnTwoWithoutImport.lean": "0262647a570f581c38f36ab40d74549adc0f4f7c8010296496c12acb8f5ec58b",
+    "AnnTwoWithImport.lean": "ecd50ab38edb462379db57e6e0ced93ba7fa1b938e9594adb241d06b5d190b6f",
+    "Combined.lean": "87f141f18642582063443e350987e518b9d96357040eb790ac76e295b068b44b"
+  },
+  "olean_hashes": {
+    "Shared.olean": "92d0549e9b1d8a1b8341f784a78f52f873073cb0a2d650318d9ab1bfd55a288d",
+    "AnnOne.olean": "6b2954e63b50cba3c2be8d021ad90fff3e368ba156cd3709ca6bcaaa127695ca"
+  },
+  "events": [
+    {
+      "label": "compile-Shared",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "Shared.olean",
+        "Shared.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_ms": 189.1
+    },
+    {
+      "label": "compile-AnnOne",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "-o",
+        "AnnOne.olean",
+        "AnnOne.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_ms": 168.6
+    },
+    {
+      "label": "without-import",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "AnnTwoWithoutImport.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Unknown identifier `claimOne`\",\"endPos\":{\"column\":16,\"line\":3},\"fileName\":\"AnnTwoWithoutImport.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"lean.unknownIdentifier._namedError\",\"pos\":{\"column\":8,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "wall_ms": 164.5
+    },
+    {
+      "label": "with-import",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "AnnTwoWithImport.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_ms": 163.9
+    },
+    {
+      "label": "combined",
+      "argv": [
+        "$LEAN_BIN",
+        "--json",
+        "Combined.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_ms": 164.6
+    }
+  ],
+  "interpretation": "A split sibling cannot use claimOne without importing AnnOne; the declared import or same-file order makes it visible."
+}

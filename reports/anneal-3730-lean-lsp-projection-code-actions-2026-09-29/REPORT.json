@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "identity": {
+        "fixture_sha256": "b752ced4edc1b9be5437cf10b1f84d76c0544359c12501581361895aed79a237",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "transcript_sha256": "b1c2f5fc494ab1339e6be0c06373d819ae591e735ab95064939b64cff3fc522f"
+      },
+      "name": "Lean 4.30.0-rc2 macOS arm64 LSP"
+    },
+    {
+      "identity": {
+        "script_sha256": "2bd5b2ea161f894e7d32ab48563cdb4e8f8ee16dce05352853725aae631e7e81",
+        "seed": "373013",
+        "stream_sha256": "de9315ec39e54732d9d0820a7eb70f64c1ca86b5bcfdb735d30c0036eeac47e1"
+      },
+      "name": "Illustrative 64-line 500-edit projection model"
+    }
+  ],
+  "topics": [
+    "lean/lsp-position-encoding",
+    "lean/lsp-completion",
+    "lean/lsp-code-actions",
+    "anneal/source-projection-model"
+  ]
+}

@@ -1,0 +1,2001 @@
+[
+  {
+    "seq": 0,
+    "ms": 113.0,
+    "kind": "command",
+    "label": "version-rustc",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--version"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 92.9,
+    "stdout": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\n",
+    "stderr": ""
+  },
+  {
+    "seq": 1,
+    "ms": 147.6,
+    "kind": "command",
+    "label": "version-cargo",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "--version"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 12.6,
+    "stdout": "cargo 1.98.0-nightly (fbb61be30 2026-05-26)\n",
+    "stderr": ""
+  },
+  {
+    "seq": 2,
+    "ms": 158.2,
+    "kind": "command",
+    "label": "version-charon",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "--version"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 2,
+    "elapsed_ms": 4.3,
+    "stdout": "",
+    "stderr": "error: unexpected argument '--version' found\n\nUsage: charon <COMMAND>\n\nFor more information, try '--help'.\n"
+  },
+  {
+    "seq": 3,
+    "ms": 385.2,
+    "kind": "command",
+    "label": "version-lean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--version"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 226.5,
+    "stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+    "stderr": ""
+  },
+  {
+    "seq": 4,
+    "ms": 385.5,
+    "kind": "subject",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "tools": {
+      "rustc": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+        "version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)"
+      },
+      "cargo": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "version": "cargo 1.98.0-nightly (fbb61be30 2026-05-26)"
+      },
+      "charon": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "version": ""
+      },
+      "lean": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)"
+      }
+    },
+    "fixture_hashes": {
+      "baseline": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb",
+      "moved": "e7ba11a2710c8ed56fd8324fe6cbfdf44697a54e7ccfe1764478979fd1907a95",
+      "duplicated": "b82e0671b6877cb2ae306f4fd5901cb1c459a78bf08a1be12075bdf3c885daa0",
+      "malformed": "27fd9091baadd964c8b90e7c170c769760f5d64f78b8d2166138dcbb064fd90d",
+      "unfinished": "9d05a375fc7482dadd222c117fcf4a0769668d8fdd6ca14ecb4b899d9617195b",
+      "proof-edit": "8bc4966accac12447b24e4e5ae9ed5e19054e791882bf241f63e21a05029d9bc"
+    }
+  },
+  {
+    "seq": 5,
+    "ms": 386.0,
+    "kind": "locator",
+    "variant": "baseline",
+    "source_sha256": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb",
+    "blocks": [
+      {
+        "id": "shared",
+        "scope": "module",
+        "start_line": 6,
+        "end_line": 8,
+        "status": "complete",
+        "payload": [
+          "def helper : Nat := 7"
+        ],
+        "tentative_next_fn": null
+      },
+      {
+        "id": "claim-a",
+        "scope": "next",
+        "start_line": 11,
+        "end_line": 15,
+        "status": "complete",
+        "payload": [
+          "namespace Left",
+          "theorem checked : helper = 7 := by rfl",
+          "end Left"
+        ],
+        "tentative_next_fn": "alpha"
+      },
+      {
+        "id": "claim-b",
+        "scope": "next",
+        "start_line": 21,
+        "end_line": 25,
+        "status": "complete",
+        "payload": [
+          "namespace Right",
+          "theorem checked : helper = 7 := by rfl",
+          "end Right"
+        ],
+        "tentative_next_fn": "beta"
+      },
+      {
+        "id": "selected",
+        "scope": "next",
+        "start_line": 30,
+        "end_line": 34,
+        "status": "complete",
+        "payload": [
+          "namespace Selected",
+          "theorem checked : helper = 7 := by rfl",
+          "end Selected"
+        ],
+        "tentative_next_fn": "selected_only"
+      },
+      {
+        "id": "test-only",
+        "scope": "next",
+        "start_line": 41,
+        "end_line": 45,
+        "status": "complete",
+        "payload": [
+          "namespace Test",
+          "theorem checked : helper = 7 := by rfl",
+          "end Test"
+        ],
+        "tentative_next_fn": "test_only"
+      }
+    ],
+    "projection_sha256": "011f71a365c1ff7aa1ebfdde91ce522d731113d4646eac869f68961757fe02e0"
+  },
+  {
+    "seq": 6,
+    "ms": 1844.1,
+    "kind": "command",
+    "label": "lean-baseline",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/baseline.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 1458.1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 7,
+    "ms": 2029.8,
+    "kind": "command",
+    "label": "rustc-baseline",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--crate-type",
+      "lib",
+      "--edition=2021",
+      "--emit=metadata",
+      "-o",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/baseline.rmeta",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/src/lib.rs"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 185.4,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 8,
+    "ms": 2030.2,
+    "kind": "locator",
+    "variant": "moved",
+    "source_sha256": "e7ba11a2710c8ed56fd8324fe6cbfdf44697a54e7ccfe1764478979fd1907a95",
+    "blocks": [
+      {
+        "id": "shared",
+        "scope": "module",
+        "start_line": 6,
+        "end_line": 8,
+        "status": "complete",
+        "payload": [
+          "def helper : Nat := 7"
+        ],
+        "tentative_next_fn": null
+      },
+      {
+        "id": "claim-b",
+        "scope": "next",
+        "start_line": 11,
+        "end_line": 15,
+        "status": "complete",
+        "payload": [
+          "namespace Right",
+          "theorem checked : helper = 7 := by rfl",
+          "end Right"
+        ],
+        "tentative_next_fn": "beta"
+      },
+      {
+        "id": "selected",
+        "scope": "next",
+        "start_line": 20,
+        "end_line": 24,
+        "status": "complete",
+        "payload": [
+          "namespace Selected",
+          "theorem checked : helper = 7 := by rfl",
+          "end Selected"
+        ],
+        "tentative_next_fn": "selected_only"
+      },
+      {
+        "id": "test-only",
+        "scope": "next",
+        "start_line": 31,
+        "end_line": 35,
+        "status": "complete",
+        "payload": [
+          "namespace Test",
+          "theorem checked : helper = 7 := by rfl",
+          "end Test"
+        ],
+        "tentative_next_fn": "test_only"
+      },
+      {
+        "id": "claim-a",
+        "scope": "next",
+        "start_line": 43,
+        "end_line": 47,
+        "status": "complete",
+        "payload": [
+          "namespace Relocated",
+          "theorem checked : helper = 7 := by rfl",
+          "end Relocated"
+        ],
+        "tentative_next_fn": "alpha"
+      }
+    ],
+    "projection_sha256": "79951883502b2e0d577b7da9e18d71c58c6ed55e61343b4e11850f3ba4b720d0"
+  },
+  {
+    "seq": 9,
+    "ms": 2219.0,
+    "kind": "command",
+    "label": "lean-moved",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/moved.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 188.7,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 10,
+    "ms": 2237.5,
+    "kind": "command",
+    "label": "rustc-moved",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--crate-type",
+      "lib",
+      "--edition=2021",
+      "--emit=metadata",
+      "-o",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/moved.rmeta",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/src/lib.rs"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 18.2,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 11,
+    "ms": 2237.9,
+    "kind": "locator",
+    "variant": "duplicated",
+    "source_sha256": "b82e0671b6877cb2ae306f4fd5901cb1c459a78bf08a1be12075bdf3c885daa0",
+    "blocks": [
+      {
+        "id": "shared",
+        "scope": "module",
+        "start_line": 6,
+        "end_line": 8,
+        "status": "complete",
+        "payload": [
+          "def helper : Nat := 7"
+        ],
+        "tentative_next_fn": null
+      },
+      {
+        "id": "claim-a",
+        "scope": "next",
+        "start_line": 11,
+        "end_line": 15,
+        "status": "complete",
+        "payload": [
+          "namespace Left",
+          "theorem checked : helper = 7 := by rfl",
+          "end Left"
+        ],
+        "tentative_next_fn": "alpha"
+      },
+      {
+        "id": "claim-a",
+        "scope": "next",
+        "start_line": 21,
+        "end_line": 25,
+        "status": "complete",
+        "payload": [
+          "namespace Copied",
+          "theorem checked : helper = 7 := by rfl",
+          "end Copied"
+        ],
+        "tentative_next_fn": "alpha_copy"
+      },
+      {
+        "id": "claim-b",
+        "scope": "next",
+        "start_line": 31,
+        "end_line": 35,
+        "status": "complete",
+        "payload": [
+          "namespace Right",
+          "theorem checked : helper = 7 := by rfl",
+          "end Right"
+        ],
+        "tentative_next_fn": "beta"
+      },
+      {
+        "id": "selected",
+        "scope": "next",
+        "start_line": 40,
+        "end_line": 44,
+        "status": "complete",
+        "payload": [
+          "namespace Selected",
+          "theorem checked : helper = 7 := by rfl",
+          "end Selected"
+        ],
+        "tentative_next_fn": "selected_only"
+      },
+      {
+        "id": "test-only",
+        "scope": "next",
+        "start_line": 51,
+        "end_line": 55,
+        "status": "complete",
+        "payload": [
+          "namespace Test",
+          "theorem checked : helper = 7 := by rfl",
+          "end Test"
+        ],
+        "tentative_next_fn": "test_only"
+      }
+    ],
+    "projection_sha256": "58f3ee2a0c2a3e357a22e3cbd66997d879251a28a555311b5ff5957e5d48ccca"
+  },
+  {
+    "seq": 12,
+    "ms": 2415.6,
+    "kind": "command",
+    "label": "lean-duplicated",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/duplicated.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 177.7,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 13,
+    "ms": 2433.7,
+    "kind": "command",
+    "label": "rustc-duplicated",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--crate-type",
+      "lib",
+      "--edition=2021",
+      "--emit=metadata",
+      "-o",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/duplicated.rmeta",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/src/lib.rs"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 17.8,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 14,
+    "ms": 2434.0,
+    "kind": "locator",
+    "variant": "malformed",
+    "source_sha256": "27fd9091baadd964c8b90e7c170c769760f5d64f78b8d2166138dcbb064fd90d",
+    "blocks": [
+      {
+        "id": "shared",
+        "scope": "module",
+        "start_line": 6,
+        "end_line": 8,
+        "status": "complete",
+        "payload": [
+          "def helper : Nat := 7"
+        ],
+        "tentative_next_fn": null
+      },
+      {
+        "id": "claim-a",
+        "scope": "next",
+        "start_line": 11,
+        "end_line": 15,
+        "status": "complete",
+        "payload": [
+          "namespace Left",
+          "theorem checked : helper = 7 := by rfl",
+          "end Left"
+        ],
+        "tentative_next_fn": "alpha"
+      },
+      {
+        "id": "claim-b",
+        "scope": "next",
+        "start_line": 21,
+        "end_line": 25,
+        "status": "complete",
+        "payload": [
+          "namespace Right",
+          "theorem checked : helper = 7 := by rfl",
+          "end Right"
+        ],
+        "tentative_next_fn": "beta"
+      },
+      {
+        "id": "selected",
+        "scope": "next",
+        "start_line": 30,
+        "end_line": 34,
+        "status": "complete",
+        "payload": [
+          "namespace Selected",
+          "theorem checked : helper = 7 := by rfl",
+          "end Selected"
+        ],
+        "tentative_next_fn": "selected_only"
+      },
+      {
+        "id": "test-only",
+        "scope": "next",
+        "start_line": 41,
+        "end_line": 45,
+        "status": "complete",
+        "payload": [
+          "namespace Test",
+          "theorem checked : helper = 7 := by rfl",
+          "end Test"
+        ],
+        "tentative_next_fn": "test_only"
+      }
+    ],
+    "projection_sha256": "011f71a365c1ff7aa1ebfdde91ce522d731113d4646eac869f68961757fe02e0"
+  },
+  {
+    "seq": 15,
+    "ms": 2449.8,
+    "kind": "command",
+    "label": "rustc-malformed",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--crate-type",
+      "lib",
+      "--edition=2021",
+      "--emit=metadata",
+      "-o",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/malformed.rmeta",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/src/lib.rs"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 1,
+    "elapsed_ms": 15.6,
+    "stdout": "",
+    "stderr": "error: mismatched closing delimiter: `}`\n  --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/src/lib.rs:17:17\n   |\n10 | pub mod left {\n   |              - closing delimiter possibly meant for this\n...\n17 |     pub fn alpha( -> u32 { 7 }\n   |                 ^ unclosed delimiter\n18 | }\n   | ^ mismatched closing delimiter\n\nerror: aborting due to 1 previous error\n\n"
+  },
+  {
+    "seq": 16,
+    "ms": 2450.2,
+    "kind": "locator",
+    "variant": "unfinished",
+    "source_sha256": "9d05a375fc7482dadd222c117fcf4a0769668d8fdd6ca14ecb4b899d9617195b",
+    "blocks": [
+      {
+        "id": "shared",
+        "scope": "module",
+        "start_line": 6,
+        "end_line": 8,
+        "status": "complete",
+        "payload": [
+          "def helper : Nat := 7"
+        ],
+        "tentative_next_fn": null
+      },
+      {
+        "id": "claim-a",
+        "scope": "next",
+        "start_line": 11,
+        "end_line": 15,
+        "status": "complete",
+        "payload": [
+          "namespace Left",
+          "theorem checked : helper = 7 := by rfl",
+          "end Left"
+        ],
+        "tentative_next_fn": "alpha"
+      },
+      {
+        "id": "claim-b",
+        "scope": "next",
+        "start_line": 21,
+        "end_line": 25,
+        "status": "complete",
+        "payload": [
+          "namespace Right",
+          "theorem checked : helper = 7 := by rfl",
+          "end Right"
+        ],
+        "tentative_next_fn": "beta"
+      },
+      {
+        "id": "selected",
+        "scope": "next",
+        "start_line": 30,
+        "end_line": 34,
+        "status": "complete",
+        "payload": [
+          "namespace Selected",
+          "theorem checked : helper = 7 := by rfl",
+          "end Selected"
+        ],
+        "tentative_next_fn": "selected_only"
+      },
+      {
+        "id": "test-only",
+        "scope": "next",
+        "start_line": 41,
+        "end_line": 45,
+        "status": "complete",
+        "payload": [
+          "namespace Test",
+          "theorem checked : helper = 7 := by rfl",
+          "end Test"
+        ],
+        "tentative_next_fn": "test_only"
+      },
+      {
+        "id": "orphan",
+        "scope": "next",
+        "start_line": 51,
+        "end_line": 52,
+        "status": "incomplete",
+        "payload": [
+          "theorem unfinished : True := by"
+        ],
+        "tentative_next_fn": null
+      }
+    ],
+    "projection_sha256": "011f71a365c1ff7aa1ebfdde91ce522d731113d4646eac869f68961757fe02e0"
+  },
+  {
+    "seq": 17,
+    "ms": 2467.6,
+    "kind": "command",
+    "label": "rustc-unfinished",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--crate-type",
+      "lib",
+      "--edition=2021",
+      "--emit=metadata",
+      "-o",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/unfinished.rmeta",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/src/lib.rs"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 17.4,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 18,
+    "ms": 2468.0,
+    "kind": "locator",
+    "variant": "proof-edit",
+    "source_sha256": "8bc4966accac12447b24e4e5ae9ed5e19054e791882bf241f63e21a05029d9bc",
+    "blocks": [
+      {
+        "id": "shared",
+        "scope": "module",
+        "start_line": 6,
+        "end_line": 8,
+        "status": "complete",
+        "payload": [
+          "def helper : Nat := 7"
+        ],
+        "tentative_next_fn": null
+      },
+      {
+        "id": "claim-a",
+        "scope": "next",
+        "start_line": 11,
+        "end_line": 15,
+        "status": "complete",
+        "payload": [
+          "namespace Left",
+          "theorem checked : helper = 7 := by exact rfl",
+          "end Left"
+        ],
+        "tentative_next_fn": "alpha"
+      },
+      {
+        "id": "claim-b",
+        "scope": "next",
+        "start_line": 21,
+        "end_line": 25,
+        "status": "complete",
+        "payload": [
+          "namespace Right",
+          "theorem checked : helper = 7 := by rfl",
+          "end Right"
+        ],
+        "tentative_next_fn": "beta"
+      },
+      {
+        "id": "selected",
+        "scope": "next",
+        "start_line": 30,
+        "end_line": 34,
+        "status": "complete",
+        "payload": [
+          "namespace Selected",
+          "theorem checked : helper = 7 := by rfl",
+          "end Selected"
+        ],
+        "tentative_next_fn": "selected_only"
+      },
+      {
+        "id": "test-only",
+        "scope": "next",
+        "start_line": 41,
+        "end_line": 45,
+        "status": "complete",
+        "payload": [
+          "namespace Test",
+          "theorem checked : helper = 7 := by rfl",
+          "end Test"
+        ],
+        "tentative_next_fn": "test_only"
+      }
+    ],
+    "projection_sha256": "501ae72dd408d3ff8b7ec44de38a6d657b15f78650d02bdc9d2f933cd17ed0af"
+  },
+  {
+    "seq": 19,
+    "ms": 2645.5,
+    "kind": "command",
+    "label": "lean-proof-edit",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/proof-edit.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 177.5,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 20,
+    "ms": 2664.1,
+    "kind": "command",
+    "label": "rustc-proof-edit",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--crate-type",
+      "lib",
+      "--edition=2021",
+      "--emit=metadata",
+      "-o",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/proof-edit.rmeta",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/src/lib.rs"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 18.3,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 21,
+    "ms": 3550.7,
+    "kind": "command",
+    "label": "cargo-observe-baseline",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "run",
+      "--offline",
+      "--locked",
+      "--quiet",
+      "--example",
+      "observe"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 886.3,
+    "stdout": "len=1141 stamp=43240\n",
+    "stderr": ""
+  },
+  {
+    "seq": 22,
+    "ms": 4036.9,
+    "kind": "command",
+    "label": "cargo-observe-proof-edit",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "run",
+      "--offline",
+      "--locked",
+      "--quiet",
+      "--example",
+      "observe"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 485.6,
+    "stdout": "len=1147 stamp=43805\n",
+    "stderr": ""
+  },
+  {
+    "seq": 23,
+    "ms": 4890.8,
+    "kind": "command",
+    "label": "charon-baseline-lib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "cargo",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/baseline-lib.llbc",
+      "--",
+      "--manifest-path",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/Cargo.toml",
+      "--lib",
+      "--offline",
+      "--locked"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 853.6,
+    "stdout": "",
+    "stderr": "   Compiling annotation_boundary_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture)\nwarning: annotation_boundary_probe@0.1.0: proof-stamp:43240\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.72s\n"
+  },
+  {
+    "seq": 24,
+    "ms": 4891.4,
+    "kind": "charon_result",
+    "label": "baseline-lib",
+    "variant": "baseline",
+    "source_sha256": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb",
+    "rc": 0,
+    "projection": {
+      "sha256": "44d26e288b3b942bbd57b2386c0c48bfca90dcef15b4cfe9a35396d7fa7029c8",
+      "has_errors": false,
+      "crate_name": "annotation_boundary_probe",
+      "files": [
+        {
+          "id": 0,
+          "name": {
+            "Local": "src/lib.rs"
+          },
+          "sha256": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb"
+        },
+        {
+          "id": 1,
+          "name": {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 2,
+          "name": {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          "sha256": null
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "annotation_boundary_probe::source_len",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 45
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "name": "annotation_boundary_probe::SOURCE",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 48
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "name": "annotation_boundary_probe::BUILD_PROOF",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 50
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "name": "annotation_boundary_probe::left::alpha",
+          "markers": [
+            "proof-id: claim-a"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "name": "annotation_boundary_probe::right::beta",
+          "markers": [
+            "proof-id: claim-b"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 27,
+                "col": 4
+              },
+              "end": {
+                "line": 27,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 5441.4,
+    "kind": "command",
+    "label": "charon-baseline-selected",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "cargo",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/baseline-selected.llbc",
+      "--",
+      "--manifest-path",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/Cargo.toml",
+      "--lib",
+      "--features",
+      "selected",
+      "--offline",
+      "--locked"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 541.0,
+    "stdout": "",
+    "stderr": "   Compiling annotation_boundary_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture)\nwarning: annotation_boundary_probe@0.1.0: proof-stamp:43240\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.50s\n"
+  },
+  {
+    "seq": 26,
+    "ms": 5442.1,
+    "kind": "charon_result",
+    "label": "baseline-selected",
+    "variant": "baseline",
+    "source_sha256": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb",
+    "rc": 0,
+    "projection": {
+      "sha256": "316693e8f44f5dda1c8d281d69da56fdb0bfc4ceb247912f2001f4aaa86068f4",
+      "has_errors": false,
+      "crate_name": "annotation_boundary_probe",
+      "files": [
+        {
+          "id": 0,
+          "name": {
+            "Local": "src/lib.rs"
+          },
+          "sha256": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb"
+        },
+        {
+          "id": 1,
+          "name": {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 2,
+          "name": {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          "sha256": null
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "annotation_boundary_probe::source_len",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 45
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "name": "annotation_boundary_probe::selected_only",
+          "markers": [
+            "proof-id: selected"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 37,
+                "col": 0
+              },
+              "end": {
+                "line": 37,
+                "col": 35
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "name": "annotation_boundary_probe::SOURCE",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 48
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "name": "annotation_boundary_probe::BUILD_PROOF",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 50
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "name": "annotation_boundary_probe::left::alpha",
+          "markers": [
+            "proof-id: claim-a"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 6,
+          "name": "annotation_boundary_probe::right::beta",
+          "markers": [
+            "proof-id: claim-b"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 27,
+                "col": 4
+              },
+              "end": {
+                "line": 27,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 6020.9,
+    "kind": "command",
+    "label": "charon-baseline-tests",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "cargo",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/baseline-tests.llbc",
+      "--",
+      "--manifest-path",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/Cargo.toml",
+      "--tests",
+      "--offline",
+      "--locked"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 568.7,
+    "stdout": "",
+    "stderr": "   Compiling annotation_boundary_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture)\nwarning: annotation_boundary_probe@0.1.0: proof-stamp:43240\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s\n"
+  },
+  {
+    "seq": 28,
+    "ms": 6024.7,
+    "kind": "charon_result",
+    "label": "baseline-tests",
+    "variant": "baseline",
+    "source_sha256": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb",
+    "rc": 0,
+    "projection": {
+      "sha256": "a9502b964d899ad8908eb850806a9b8440453cb77bf54899b7c960f11af6875e",
+      "has_errors": false,
+      "crate_name": "annotation_boundary_probe",
+      "files": [
+        {
+          "id": 0,
+          "name": {
+            "Local": "src/lib.rs"
+          },
+          "sha256": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb"
+        },
+        {
+          "id": 1,
+          "name": {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 2,
+          "name": {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 3,
+          "name": {
+            "Local": "/rustc/library/test/src/types.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 4,
+          "name": {
+            "Local": "/rustc/library/test/src/lib.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 5,
+          "name": {
+            "Local": "/rustc/library/core/src/macros/mod.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 6,
+          "name": {
+            "Local": "/rustc/library/core/src/panicking.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 7,
+          "name": {
+            "Local": "/rustc/library/core/src/option.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 8,
+          "name": {
+            "Local": "/rustc/library/core/src/fmt/mod.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 9,
+          "name": {
+            "Local": "/rustc/library/test/src/options.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 10,
+          "name": {
+            "Local": "/rustc/library/core/src/result.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 11,
+          "name": {
+            "Local": "/rustc/library/alloc/src/string.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 12,
+          "name": {
+            "Local": "/rustc/library/alloc/src/lib.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 13,
+          "name": {
+            "Local": "/rustc/library/core/src/marker.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 14,
+          "name": {
+            "Local": "/rustc/library/test/src/bench.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 15,
+          "name": {
+            "Local": "/rustc/library/alloc/src/boxed.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 16,
+          "name": {
+            "Local": "/rustc/library/core/src/ops/function.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 17,
+          "name": {
+            "Local": "/rustc/library/core/src/ops/mod.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 18,
+          "name": {
+            "Local": "/rustc/library/alloc/src/alloc.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 19,
+          "name": {
+            "Local": "/rustc/library/alloc/src/borrow.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 20,
+          "name": {
+            "Local": "/rustc/library/alloc/src/str.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 21,
+          "name": {
+            "Local": "/rustc/library/core/src/borrow.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 22,
+          "name": {
+            "Local": "/rustc/library/std/src/process.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 23,
+          "name": {
+            "Local": "/rustc/library/std/src/lib.rs"
+          },
+          "sha256": null
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "annotation_boundary_probe::source_len",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 45
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "name": "annotation_boundary_probe::main",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 1,
+                "col": 0
+              },
+              "end": {
+                "line": 1,
+                "col": 0
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "name": "annotation_boundary_probe::SOURCE",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 48
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "name": "annotation_boundary_probe::BUILD_PROOF",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 50
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "name": "annotation_boundary_probe::left::alpha",
+          "markers": [
+            "proof-id: claim-a"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 6,
+          "name": "annotation_boundary_probe::right::beta",
+          "markers": [
+            "proof-id: claim-b"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 27,
+                "col": 4
+              },
+              "end": {
+                "line": 27,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 7,
+          "name": "annotation_boundary_probe::tests::test_only",
+          "markers": [
+            "proof-id: test-only"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 47,
+                "col": 4
+              },
+              "end": {
+                "line": 47,
+                "col": 35
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 8,
+          "name": "annotation_boundary_probe::tests::smoke",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 48,
+                "col": 12
+              },
+              "end": {
+                "line": 48,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 10,
+          "name": "annotation_boundary_probe::tests::smoke",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 48,
+                "col": 12
+              },
+              "end": {
+                "line": 48,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 13,
+          "name": "annotation_boundary_probe::tests::smoke::closure::as_fn",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 48,
+                "col": 12
+              },
+              "end": {
+                "line": 48,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 15,
+          "name": "annotation_boundary_probe::tests::smoke::<Impl>::call_once",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 48,
+                "col": 12
+              },
+              "end": {
+                "line": 48,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 16,
+          "name": "annotation_boundary_probe::tests::smoke::<Impl>::call_mut",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 48,
+                "col": 12
+              },
+              "end": {
+                "line": 48,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 17,
+          "name": "annotation_boundary_probe::tests::smoke::<Impl>::call",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 48,
+                "col": 12
+              },
+              "end": {
+                "line": 48,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 31,
+          "name": "annotation_boundary_probe::tests::smoke::closure::<Impl>::drop_in_place",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 48,
+                "col": 12
+              },
+              "end": {
+                "line": 48,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 6553.8,
+    "kind": "command",
+    "label": "charon-moved-lib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "cargo",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/moved-lib.llbc",
+      "--",
+      "--manifest-path",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/Cargo.toml",
+      "--lib",
+      "--offline",
+      "--locked"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 520.9,
+    "stdout": "",
+    "stderr": "   Compiling annotation_boundary_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture)\nwarning: annotation_boundary_probe@0.1.0: proof-stamp:44280\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s\n"
+  },
+  {
+    "seq": 30,
+    "ms": 6554.5,
+    "kind": "charon_result",
+    "label": "moved-lib",
+    "variant": "moved",
+    "source_sha256": "e7ba11a2710c8ed56fd8324fe6cbfdf44697a54e7ccfe1764478979fd1907a95",
+    "rc": 0,
+    "projection": {
+      "sha256": "70863b4231549fa13236418b66d37fd29b2b92bfa6b24f15f4a78d71f69f32fc",
+      "has_errors": false,
+      "crate_name": "annotation_boundary_probe",
+      "files": [
+        {
+          "id": 0,
+          "name": {
+            "Local": "src/lib.rs"
+          },
+          "sha256": "e7ba11a2710c8ed56fd8324fe6cbfdf44697a54e7ccfe1764478979fd1907a95"
+        },
+        {
+          "id": 1,
+          "name": {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 2,
+          "name": {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          "sha256": null
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "annotation_boundary_probe::source_len",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 45
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "name": "annotation_boundary_probe::SOURCE",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 48
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "name": "annotation_boundary_probe::BUILD_PROOF",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 50
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "name": "annotation_boundary_probe::right::beta",
+          "markers": [
+            "proof-id: claim-b"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "name": "annotation_boundary_probe::relocated::alpha",
+          "markers": [
+            "proof-id: claim-a"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 49,
+                "col": 4
+              },
+              "end": {
+                "line": 49,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 7094.3,
+    "kind": "command",
+    "label": "charon-duplicated-lib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "cargo",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/duplicated-lib.llbc",
+      "--",
+      "--manifest-path",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/Cargo.toml",
+      "--lib",
+      "--offline",
+      "--locked"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 0,
+    "elapsed_ms": 529.6,
+    "stdout": "",
+    "stderr": "   Compiling annotation_boundary_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture)\nwarning: annotation_boundary_probe@0.1.0: proof-stamp:53000\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.49s\n"
+  },
+  {
+    "seq": 32,
+    "ms": 7095.0,
+    "kind": "charon_result",
+    "label": "duplicated-lib",
+    "variant": "duplicated",
+    "source_sha256": "b82e0671b6877cb2ae306f4fd5901cb1c459a78bf08a1be12075bdf3c885daa0",
+    "rc": 0,
+    "projection": {
+      "sha256": "10b92cbdd0b5e655d33653c6d9054dafe51b9d1dd0d827acb37556112d57dcfd",
+      "has_errors": false,
+      "crate_name": "annotation_boundary_probe",
+      "files": [
+        {
+          "id": 0,
+          "name": {
+            "Local": "src/lib.rs"
+          },
+          "sha256": "b82e0671b6877cb2ae306f4fd5901cb1c459a78bf08a1be12075bdf3c885daa0"
+        },
+        {
+          "id": 1,
+          "name": {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          },
+          "sha256": null
+        },
+        {
+          "id": 2,
+          "name": {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          "sha256": null
+        }
+      ],
+      "functions": [
+        {
+          "id": 0,
+          "name": "annotation_boundary_probe::source_len",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 45
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "name": "annotation_boundary_probe::SOURCE",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 48
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "name": "annotation_boundary_probe::BUILD_PROOF",
+          "markers": [],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 50
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "name": "annotation_boundary_probe::left::alpha",
+          "markers": [
+            "proof-id: claim-a"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "name": "annotation_boundary_probe::copied::alpha_copy",
+          "markers": [
+            "proof-id: claim-a"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 27,
+                "col": 4
+              },
+              "end": {
+                "line": 27,
+                "col": 36
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 6,
+          "name": "annotation_boundary_probe::right::beta",
+          "markers": [
+            "proof-id: claim-b"
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 37,
+                "col": 4
+              },
+              "end": {
+                "line": 37,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 7616.5,
+    "kind": "command",
+    "label": "charon-malformed-lib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "cargo",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/artifacts/malformed-lib.llbc",
+      "--",
+      "--manifest-path",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture/Cargo.toml",
+      "--lib",
+      "--offline",
+      "--locked"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture",
+    "rc": 101,
+    "elapsed_ms": 511.3,
+    "stdout": "",
+    "stderr": "   Compiling annotation_boundary_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-subject-boundary-matrix-2026-09-29/support/work/fixture)\nwarning: annotation_boundary_probe@0.1.0: proof-stamp:43240\nerror: mismatched closing delimiter: `}`\n  --> src/lib.rs:17:17\n   |\n10 | pub mod left {\n   |              - closing delimiter possibly meant for this\n...\n17 |     pub fn alpha( -> u32 { 7 }\n   |                 ^ unclosed delimiter\n18 | }\n   | ^ mismatched closing delimiter\n\nERROR Code failed to compile\nwarning: annotation_boundary_probe@0.1.0: proof-stamp:43240\nerror: could not compile `annotation_boundary_probe` (lib) due to 1 previous error\n"
+  },
+  {
+    "seq": 34,
+    "ms": 7616.7,
+    "kind": "charon_result",
+    "label": "malformed-lib",
+    "variant": "malformed",
+    "source_sha256": "27fd9091baadd964c8b90e7c170c769760f5d64f78b8d2166138dcbb064fd90d",
+    "rc": 101,
+    "projection": null
+  }
+]

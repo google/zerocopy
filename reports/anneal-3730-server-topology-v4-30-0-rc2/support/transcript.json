@@ -1,0 +1,5469 @@
+[
+  {
+    "seq": 0,
+    "ms": 28.6,
+    "kind": "subject",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "rss_limit_bytes": 1610612736
+  },
+  {
+    "seq": 1,
+    "ms": 240.2,
+    "kind": "command",
+    "label": "build-A",
+    "argv": [
+      "$LEAN_BIN",
+      "-o",
+      "Dep.olean",
+      "Dep.lean"
+    ],
+    "cwd": "$WORK/A",
+    "rc": 0,
+    "stdout": "",
+    "stderr": "",
+    "wall_ms": 211.2
+  },
+  {
+    "seq": 2,
+    "ms": 240.4,
+    "kind": "fixture",
+    "name": "A",
+    "dep_sha256": "b4313e13071af7cbf4771ea492d3ac497be251b1f99b655824ad367790ee0471",
+    "proof_sha256": "ae36eb7bbe72863e8e2966925e689ec5e4fe3308fffe2dc9bd9bbd54e0c0bf29",
+    "olean_sha256": "b829d5b0080dde9fe22b17c8455d7581eee66547fff7bfc6202eac86a27ad099"
+  },
+  {
+    "seq": 3,
+    "ms": 400.7,
+    "kind": "command",
+    "label": "build-B",
+    "argv": [
+      "$LEAN_BIN",
+      "-o",
+      "Dep.olean",
+      "Dep.lean"
+    ],
+    "cwd": "$WORK/B",
+    "rc": 0,
+    "stdout": "",
+    "stderr": "",
+    "wall_ms": 160.0
+  },
+  {
+    "seq": 4,
+    "ms": 400.8,
+    "kind": "fixture",
+    "name": "B",
+    "dep_sha256": "d2142b6aab604f810f9544c3c25c50b02f3291e3b65d16654afbbaa775b3b057",
+    "proof_sha256": "9febd99163827968c6feaebc1f2254cb0e9c4451ee8a304b8954db6a9c7af64a",
+    "olean_sha256": "d28d66bfd0de6d147728317192e991fd208925fdcddb5e0f293b57a33bbc230b"
+  },
+  {
+    "seq": 5,
+    "ms": 401.0,
+    "kind": "scratch_fixture",
+    "text_sha256": "0b4a7866472eea846d07948e3b8dcfbc2dfac7b87dad94251607e0dba5df9bdb"
+  },
+  {
+    "seq": 6,
+    "ms": 402.2,
+    "kind": "server_start",
+    "label": "shared-A",
+    "epoch": 1,
+    "pid": 47637,
+    "cwd": "$WORK/A",
+    "lean_path": "$WORK/A"
+  },
+  {
+    "seq": 7,
+    "ms": 430.9,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 47633,
+        "rootUri": "$WORK_URI/A",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "ms": 431.0,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "ms": 431.0,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 431.1,
+    "kind": "server_initialized",
+    "label": "shared-A",
+    "epoch": 1,
+    "wall_ms": 30.0
+  },
+  {
+    "seq": 11,
+    "ms": 431.2,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem claim : selected = 11 := by\n  rfl\ntheorem scratch : selected = 11 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "ms": 431.2,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "ms": 431.3,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 431.3,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 15,
+    "ms": 431.5,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 499.0,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 669.4,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 669.4,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 669.6,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 35,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 35,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 669.7,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 669.7,
+    "kind": "request_latency",
+    "label": "shared-A",
+    "epoch": 1,
+    "method": "textDocument/waitForDiagnostics",
+    "request_id": 2,
+    "wall_ms": 238.6
+  },
+  {
+    "seq": 22,
+    "ms": 669.7,
+    "kind": "document_ready",
+    "label": "shared-A",
+    "epoch": 1,
+    "uri": "$WORK_URI/A/Proof.lean",
+    "version": 1,
+    "text_sha256": "ae36eb7bbe72863e8e2966925e689ec5e4fe3308fffe2dc9bd9bbd54e0c0bf29",
+    "wall_ms": 238.6,
+    "last_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Proof.lean",
+      "version": 1
+    },
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 23,
+    "ms": 669.8,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 671.2,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 671.2,
+    "kind": "request_latency",
+    "label": "shared-A",
+    "epoch": 1,
+    "method": "$/lean/plainGoal",
+    "request_id": 3,
+    "wall_ms": 1.4
+  },
+  {
+    "seq": 26,
+    "ms": 671.2,
+    "kind": "document_sample",
+    "label": "shared-A",
+    "epoch": 1,
+    "uri": "$WORK_URI/A/Proof.lean",
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Proof.lean",
+      "version": 1
+    },
+    "text_sha256": "ae36eb7bbe72863e8e2966925e689ec5e4fe3308fffe2dc9bd9bbd54e0c0bf29"
+  },
+  {
+    "seq": 27,
+    "ms": 671.3,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem claim : selected = 22 := by\n  rfl\ntheorem scratch : selected = 22 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "ms": 671.3,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/B/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 671.5,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "ms": 729.4,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/B/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 910.0,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "ms": 910.1,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 910.2,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            },
+            "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  22\n\n\u22a2 selected = 22",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 22",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 35,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 22",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 35,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/B/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 910.3,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 910.3,
+    "kind": "request_latency",
+    "label": "shared-A",
+    "epoch": 1,
+    "method": "textDocument/waitForDiagnostics",
+    "request_id": 4,
+    "wall_ms": 239.0
+  },
+  {
+    "seq": 36,
+    "ms": 910.3,
+    "kind": "document_ready",
+    "label": "shared-A",
+    "epoch": 1,
+    "uri": "$WORK_URI/B/Proof.lean",
+    "version": 1,
+    "text_sha256": "9febd99163827968c6feaebc1f2254cb0e9c4451ee8a304b8954db6a9c7af64a",
+    "wall_ms": 239.0,
+    "last_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 2,
+              "line": 3
+            }
+          },
+          "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  22\n\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 2,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/B/Proof.lean",
+      "version": 1
+    },
+    "wait": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 910.3,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 910.7,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 22"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 22\n```"
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 910.7,
+    "kind": "request_latency",
+    "label": "shared-A",
+    "epoch": 1,
+    "method": "$/lean/plainGoal",
+    "request_id": 5,
+    "wall_ms": 0.4
+  },
+  {
+    "seq": 40,
+    "ms": 910.7,
+    "kind": "document_sample",
+    "label": "shared-A",
+    "epoch": 1,
+    "uri": "$WORK_URI/B/Proof.lean",
+    "goal": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 22"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 22\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 2,
+              "line": 3
+            }
+          },
+          "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  22\n\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 2,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/B/Proof.lean",
+      "version": 1
+    },
+    "text_sha256": "9febd99163827968c6feaebc1f2254cb0e9c4451ee8a304b8954db6a9c7af64a"
+  },
+  {
+    "seq": 41,
+    "ms": 931.4,
+    "kind": "process_snapshot",
+    "label": "shared-two-files",
+    "root_pids": [
+      47637
+    ],
+    "processes": [
+      {
+        "pid": 47637,
+        "ppid": 47633,
+        "rss_bytes": 91553792,
+        "command": "$LEAN_BIN"
+      },
+      {
+        "pid": 47638,
+        "ppid": 47637,
+        "rss_bytes": 388022272,
+        "command": "$LEAN_BIN"
+      },
+      {
+        "pid": 47640,
+        "ppid": 47637,
+        "rss_bytes": 387497984,
+        "command": "$LEAN_BIN"
+      }
+    ],
+    "count": 3,
+    "summed_rss_bytes": 867074048
+  },
+  {
+    "seq": 42,
+    "ms": 931.5,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 43,
+    "ms": 932.2,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "ms": 932.3,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/B/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 45,
+    "ms": 938.5,
+    "kind": "lsp_server",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 46,
+    "ms": 938.5,
+    "kind": "request_latency",
+    "label": "shared-A",
+    "epoch": 1,
+    "method": "shutdown",
+    "request_id": 6,
+    "wall_ms": 7.1
+  },
+  {
+    "seq": 47,
+    "ms": 938.5,
+    "kind": "lsp_client",
+    "label": "shared-A",
+    "epoch": 1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 48,
+    "ms": 940.1,
+    "kind": "server_exit",
+    "label": "shared-A",
+    "epoch": 1,
+    "pid": 47637,
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 49,
+    "ms": 959.0,
+    "kind": "process_snapshot",
+    "label": "shared-after-stop",
+    "root_pids": [
+      47637
+    ],
+    "processes": [],
+    "count": 0,
+    "summed_rss_bytes": 0
+  },
+  {
+    "seq": 50,
+    "ms": 960.3,
+    "kind": "server_start",
+    "label": "separate-A",
+    "epoch": 2,
+    "pid": 47644,
+    "cwd": "$WORK/A",
+    "lean_path": "$WORK/A"
+  },
+  {
+    "seq": 51,
+    "ms": 960.4,
+    "kind": "lsp_client",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 47633,
+        "rootUri": "$WORK_URI/A",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 52,
+    "ms": 985.4,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 53,
+    "ms": 985.5,
+    "kind": "lsp_client",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 54,
+    "ms": 985.5,
+    "kind": "server_initialized",
+    "label": "separate-A",
+    "epoch": 2,
+    "wall_ms": 26.4
+  },
+  {
+    "seq": 55,
+    "ms": 986.8,
+    "kind": "server_start",
+    "label": "separate-B",
+    "epoch": 3,
+    "pid": 47645,
+    "cwd": "$WORK/B",
+    "lean_path": "$WORK/B"
+  },
+  {
+    "seq": 56,
+    "ms": 986.9,
+    "kind": "lsp_client",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 47633,
+        "rootUri": "$WORK_URI/B",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 57,
+    "ms": 1011.9,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 58,
+    "ms": 1011.9,
+    "kind": "lsp_client",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 59,
+    "ms": 1011.9,
+    "kind": "server_initialized",
+    "label": "separate-B",
+    "epoch": 3,
+    "wall_ms": 26.4
+  },
+  {
+    "seq": 60,
+    "ms": 1012.1,
+    "kind": "lsp_client",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem claim : selected = 11 := by\n  rfl\ntheorem scratch : selected = 11 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 1012.1,
+    "kind": "lsp_client",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 62,
+    "ms": 1012.2,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 63,
+    "ms": 1012.2,
+    "kind": "lsp_client",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 64,
+    "ms": 1012.4,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 65,
+    "ms": 1070.4,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 66,
+    "ms": 1251.0,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "ms": 1251.1,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 68,
+    "ms": 1251.1,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 35,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 35,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 69,
+    "ms": 1251.2,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 70,
+    "ms": 1251.2,
+    "kind": "request_latency",
+    "label": "separate-A",
+    "epoch": 2,
+    "method": "textDocument/waitForDiagnostics",
+    "request_id": 2,
+    "wall_ms": 239.1
+  },
+  {
+    "seq": 71,
+    "ms": 1251.3,
+    "kind": "document_ready",
+    "label": "separate-A",
+    "epoch": 2,
+    "uri": "$WORK_URI/A/Proof.lean",
+    "version": 1,
+    "text_sha256": "ae36eb7bbe72863e8e2966925e689ec5e4fe3308fffe2dc9bd9bbd54e0c0bf29",
+    "wall_ms": 239.2,
+    "last_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Proof.lean",
+      "version": 1
+    },
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 72,
+    "ms": 1251.3,
+    "kind": "lsp_client",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "ms": 1251.8,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "ms": 1251.8,
+    "kind": "request_latency",
+    "label": "separate-A",
+    "epoch": 2,
+    "method": "$/lean/plainGoal",
+    "request_id": 3,
+    "wall_ms": 0.5
+  },
+  {
+    "seq": 75,
+    "ms": 1251.8,
+    "kind": "document_sample",
+    "label": "separate-A",
+    "epoch": 2,
+    "uri": "$WORK_URI/A/Proof.lean",
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Proof.lean",
+      "version": 1
+    },
+    "text_sha256": "ae36eb7bbe72863e8e2966925e689ec5e4fe3308fffe2dc9bd9bbd54e0c0bf29"
+  },
+  {
+    "seq": 76,
+    "ms": 1252.0,
+    "kind": "lsp_client",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem claim : selected = 22 := by\n  rfl\ntheorem scratch : selected = 22 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 77,
+    "ms": 1252.0,
+    "kind": "lsp_client",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/B/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 78,
+    "ms": 1252.0,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 79,
+    "ms": 1252.0,
+    "kind": "lsp_client",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 80,
+    "ms": 1252.3,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 81,
+    "ms": 1311.9,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/B/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 82,
+    "ms": 1487.2,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 83,
+    "ms": 1487.2,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 84,
+    "ms": 1487.3,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "22",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 22",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 35,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 22",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 35,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/B/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 85,
+    "ms": 1487.4,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 86,
+    "ms": 1487.5,
+    "kind": "request_latency",
+    "label": "separate-B",
+    "epoch": 3,
+    "method": "textDocument/waitForDiagnostics",
+    "request_id": 2,
+    "wall_ms": 235.5
+  },
+  {
+    "seq": 87,
+    "ms": 1487.5,
+    "kind": "document_ready",
+    "label": "separate-B",
+    "epoch": 3,
+    "uri": "$WORK_URI/B/Proof.lean",
+    "version": 1,
+    "text_sha256": "9febd99163827968c6feaebc1f2254cb0e9c4451ee8a304b8954db6a9c7af64a",
+    "wall_ms": 235.5,
+    "last_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "22",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/B/Proof.lean",
+      "version": 1
+    },
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 88,
+    "ms": 1487.5,
+    "kind": "lsp_client",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/B/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "ms": 1488.0,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 22"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 22\n```"
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "ms": 1488.0,
+    "kind": "request_latency",
+    "label": "separate-B",
+    "epoch": 3,
+    "method": "$/lean/plainGoal",
+    "request_id": 3,
+    "wall_ms": 0.5
+  },
+  {
+    "seq": 91,
+    "ms": 1488.0,
+    "kind": "document_sample",
+    "label": "separate-B",
+    "epoch": 3,
+    "uri": "$WORK_URI/B/Proof.lean",
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 22"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 22\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "22",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 22",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 35,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/B/Proof.lean",
+      "version": 1
+    },
+    "text_sha256": "9febd99163827968c6feaebc1f2254cb0e9c4451ee8a304b8954db6a9c7af64a"
+  },
+  {
+    "seq": 92,
+    "ms": 1510.0,
+    "kind": "process_snapshot",
+    "label": "separate-two-servers",
+    "root_pids": [
+      47644,
+      47645
+    ],
+    "processes": [
+      {
+        "pid": 47644,
+        "ppid": 47633,
+        "rss_bytes": 97517568,
+        "command": "$LEAN_BIN"
+      },
+      {
+        "pid": 47645,
+        "ppid": 47633,
+        "rss_bytes": 95289344,
+        "command": "$LEAN_BIN"
+      },
+      {
+        "pid": 47646,
+        "ppid": 47644,
+        "rss_bytes": 387563520,
+        "command": "$LEAN_BIN"
+      },
+      {
+        "pid": 47648,
+        "ppid": 47645,
+        "rss_bytes": 387317760,
+        "command": "$LEAN_BIN"
+      }
+    ],
+    "count": 4,
+    "summed_rss_bytes": 967688192
+  },
+  {
+    "seq": 93,
+    "ms": 1510.1,
+    "kind": "lsp_client",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 94,
+    "ms": 1510.5,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 95,
+    "ms": 1516.1,
+    "kind": "lsp_server",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 96,
+    "ms": 1516.1,
+    "kind": "request_latency",
+    "label": "separate-A",
+    "epoch": 2,
+    "method": "shutdown",
+    "request_id": 4,
+    "wall_ms": 6.0
+  },
+  {
+    "seq": 97,
+    "ms": 1516.1,
+    "kind": "lsp_client",
+    "label": "separate-A",
+    "epoch": 2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 98,
+    "ms": 1517.6,
+    "kind": "server_exit",
+    "label": "separate-A",
+    "epoch": 2,
+    "pid": 47644,
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 99,
+    "ms": 1517.6,
+    "kind": "lsp_client",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 100,
+    "ms": 1517.9,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/B/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 101,
+    "ms": 1523.7,
+    "kind": "lsp_server",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 102,
+    "ms": 1523.7,
+    "kind": "request_latency",
+    "label": "separate-B",
+    "epoch": 3,
+    "method": "shutdown",
+    "request_id": 4,
+    "wall_ms": 6.1
+  },
+  {
+    "seq": 103,
+    "ms": 1523.7,
+    "kind": "lsp_client",
+    "label": "separate-B",
+    "epoch": 3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 104,
+    "ms": 1525.3,
+    "kind": "server_exit",
+    "label": "separate-B",
+    "epoch": 3,
+    "pid": 47645,
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 105,
+    "ms": 1544.1,
+    "kind": "process_snapshot",
+    "label": "separate-after-stop",
+    "root_pids": [
+      47644,
+      47645
+    ],
+    "processes": [],
+    "count": 0,
+    "summed_rss_bytes": 0
+  },
+  {
+    "seq": 106,
+    "ms": 1545.4,
+    "kind": "server_start",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "pid": 47652,
+    "cwd": "$WORK/A",
+    "lean_path": "$WORK/A"
+  },
+  {
+    "seq": 107,
+    "ms": 1545.5,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 47633,
+        "rootUri": "$WORK_URI/A",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 108,
+    "ms": 1570.4,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 109,
+    "ms": 1570.5,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 110,
+    "ms": 1570.5,
+    "kind": "server_initialized",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "wall_ms": 26.3
+  },
+  {
+    "seq": 111,
+    "ms": 1570.6,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem scratchClaim : selected = 11 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 112,
+    "ms": 1570.7,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 113,
+    "ms": 1570.7,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "ms": 1570.7,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 115,
+    "ms": 1570.9,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 116,
+    "ms": 1626.5,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "ms": 1808.0,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "ms": 1808.1,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 119,
+    "ms": 1808.1,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 40,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 40,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 120,
+    "ms": 1808.1,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 121,
+    "ms": 1808.1,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "textDocument/waitForDiagnostics",
+    "request_id": 2,
+    "wall_ms": 237.5
+  },
+  {
+    "seq": 122,
+    "ms": 1808.2,
+    "kind": "document_ready",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "uri": "$WORK_URI/A/Scratch.lean",
+    "version": 1,
+    "text_sha256": "0b4a7866472eea846d07948e3b8dcfbc2dfac7b87dad94251607e0dba5df9bdb",
+    "wall_ms": 237.5,
+    "last_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 40,
+              "line": 1
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 2
+            },
+            "start": {
+              "character": 40,
+              "line": 1
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Scratch.lean",
+      "version": 1
+    },
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 123,
+    "ms": 1808.2,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 124,
+    "ms": 1808.6,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 125,
+    "ms": 1808.6,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "$/lean/plainGoal",
+    "request_id": 3,
+    "wall_ms": 0.4
+  },
+  {
+    "seq": 126,
+    "ms": 1808.6,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/A/Scratch.lean"
+      }
+    }
+  },
+  {
+    "seq": 127,
+    "ms": 1809.8,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "11110799329295683680"
+      }
+    }
+  },
+  {
+    "seq": 128,
+    "ms": 1809.8,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "$/lean/rpc/connect",
+    "request_id": 4,
+    "wall_ms": 1.2
+  },
+  {
+    "seq": 129,
+    "ms": 1809.8,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 10
+        },
+        "sessionId": "11110799329295683680",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/A/Scratch.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 10
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 130,
+    "ms": 1810.2,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "3"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [],
+            "mvarId": "_uniq.30.2",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "0"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "1"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "text": "selected"
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "2"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "11"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "ms": 1810.2,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "$/lean/rpc/call",
+    "request_id": 5,
+    "wall_ms": 0.5
+  },
+  {
+    "seq": 132,
+    "ms": 1830.2,
+    "kind": "process_snapshot",
+    "label": "scratch-first-worker",
+    "root_pids": [
+      47652
+    ],
+    "processes": [
+      {
+        "pid": 47652,
+        "ppid": 47633,
+        "rss_bytes": 76709888,
+        "command": "$LEAN_BIN"
+      },
+      {
+        "pid": 47653,
+        "ppid": 47652,
+        "rss_bytes": 383614976,
+        "command": "$LEAN_BIN"
+      }
+    ],
+    "count": 2,
+    "summed_rss_bytes": 460324864
+  },
+  {
+    "seq": 133,
+    "ms": 1830.3,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\ntheorem scratchClaim : selected = 11 := by\n  rfl\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 134,
+    "ms": 1830.3,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "ms": 2041.6,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 136,
+    "ms": 2041.6,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 137,
+    "ms": 2041.6,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "ms": 2041.6,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 139,
+    "ms": 2041.6,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "textDocument/waitForDiagnostics",
+    "request_id": 6,
+    "wall_ms": 211.3
+  },
+  {
+    "seq": 140,
+    "ms": 2041.7,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 141,
+    "ms": 2041.9,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 142,
+    "ms": 2041.9,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "$/lean/plainGoal",
+    "request_id": 7,
+    "wall_ms": 0.3
+  },
+  {
+    "seq": 143,
+    "ms": 2042.0,
+    "kind": "scratch_reused_worker",
+    "initial_goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    },
+    "solved_goal": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "initial_sha256": "0b4a7866472eea846d07948e3b8dcfbc2dfac7b87dad94251607e0dba5df9bdb",
+    "solved_sha256": "6b2dc2f3fb259ec246314158471b08f488a23da946123870ec12eb3bf88df5e4",
+    "rpc_connect": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "11110799329295683680"
+      }
+    },
+    "rpc_goal": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "3"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [],
+            "mvarId": "_uniq.30.2",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "0"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "1"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "text": "selected"
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "2"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "11"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 144,
+    "ms": 2042.0,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 145,
+    "ms": 2063.0,
+    "kind": "process_snapshot",
+    "label": "scratch-after-close",
+    "root_pids": [
+      47652
+    ],
+    "processes": [
+      {
+        "pid": 47652,
+        "ppid": 47633,
+        "rss_bytes": 99057664,
+        "command": "$LEAN_BIN"
+      },
+      {
+        "pid": 47653,
+        "ppid": 47652,
+        "rss_bytes": 0,
+        "command": "(lean)"
+      }
+    ],
+    "count": 2,
+    "summed_rss_bytes": 99057664
+  },
+  {
+    "seq": 146,
+    "ms": 2063.1,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem scratchClaim : selected = 11 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 147,
+    "ms": 2063.1,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 148,
+    "ms": 2063.2,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 149,
+    "ms": 2063.4,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 150,
+    "ms": 2123.0,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 151,
+    "ms": 2302.9,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 152,
+    "ms": 2303.0,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 153,
+    "ms": 2303.0,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 40,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 40,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 154,
+    "ms": 2303.1,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 155,
+    "ms": 2303.1,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "textDocument/waitForDiagnostics",
+    "request_id": 8,
+    "wall_ms": 239.9
+  },
+  {
+    "seq": 156,
+    "ms": 2303.1,
+    "kind": "document_ready",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "uri": "$WORK_URI/A/Scratch.lean",
+    "version": 1,
+    "text_sha256": "0b4a7866472eea846d07948e3b8dcfbc2dfac7b87dad94251607e0dba5df9bdb",
+    "wall_ms": 240.0,
+    "last_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 40,
+              "line": 1
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 2
+            },
+            "start": {
+              "character": 40,
+              "line": 1
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Scratch.lean",
+      "version": 1
+    },
+    "wait": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 157,
+    "ms": 2303.1,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 10
+        },
+        "sessionId": "11110799329295683680",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/A/Scratch.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 10
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 158,
+    "ms": 2303.4,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 9,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 159,
+    "ms": 2303.4,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "$/lean/rpc/call",
+    "request_id": 9,
+    "wall_ms": 0.3
+  },
+  {
+    "seq": 160,
+    "ms": 2303.4,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/A/Scratch.lean"
+      }
+    }
+  },
+  {
+    "seq": 161,
+    "ms": 2303.5,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "10841209215245337246"
+      }
+    }
+  },
+  {
+    "seq": 162,
+    "ms": 2303.5,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "$/lean/rpc/connect",
+    "request_id": 10,
+    "wall_ms": 0.1
+  },
+  {
+    "seq": 163,
+    "ms": 2303.5,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 10
+        },
+        "sessionId": "10841209215245337246",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/A/Scratch.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 10
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 164,
+    "ms": 2303.9,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "3"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [],
+            "mvarId": "_uniq.30.2",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "0"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "1"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "text": "selected"
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "2"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "11"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 165,
+    "ms": 2303.9,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "$/lean/rpc/call",
+    "request_id": 11,
+    "wall_ms": 0.4
+  },
+  {
+    "seq": 166,
+    "ms": 2303.9,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 167,
+    "ms": 2304.1,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 168,
+    "ms": 2304.2,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "$/lean/plainGoal",
+    "request_id": 12,
+    "wall_ms": 0.3
+  },
+  {
+    "seq": 169,
+    "ms": 2324.6,
+    "kind": "process_snapshot",
+    "label": "scratch-reopened-worker",
+    "root_pids": [
+      47652
+    ],
+    "processes": [
+      {
+        "pid": 47652,
+        "ppid": 47633,
+        "rss_bytes": 121700352,
+        "command": "$LEAN_BIN"
+      },
+      {
+        "pid": 47657,
+        "ppid": 47652,
+        "rss_bytes": 383909888,
+        "command": "$LEAN_BIN"
+      }
+    ],
+    "count": 2,
+    "summed_rss_bytes": 505610240
+  },
+  {
+    "seq": 170,
+    "ms": 2324.6,
+    "kind": "scratch_new_worker",
+    "old_rpc": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 9,
+      "jsonrpc": "2.0"
+    },
+    "fresh_connect": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "10841209215245337246"
+      }
+    },
+    "fresh_rpc": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "3"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [],
+            "mvarId": "_uniq.30.2",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "0"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "1"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "text": "selected"
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "2"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "11"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "reopened_goal": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    },
+    "reused_document_version": 1,
+    "old_session_id": "11110799329295683680",
+    "new_session_id": "10841209215245337246"
+  },
+  {
+    "seq": 171,
+    "ms": 2324.7,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 172,
+    "ms": 2325.0,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 173,
+    "ms": 2330.8,
+    "kind": "lsp_server",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 174,
+    "ms": 2330.8,
+    "kind": "request_latency",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "method": "shutdown",
+    "request_id": 13,
+    "wall_ms": 6.1
+  },
+  {
+    "seq": 175,
+    "ms": 2330.8,
+    "kind": "lsp_client",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 176,
+    "ms": 2332.3,
+    "kind": "server_exit",
+    "label": "scratch-reuse",
+    "epoch": 4,
+    "pid": 47652,
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 177,
+    "ms": 2351.3,
+    "kind": "process_snapshot",
+    "label": "scratch-after-stop",
+    "root_pids": [
+      47652
+    ],
+    "processes": [],
+    "count": 0,
+    "summed_rss_bytes": 0
+  },
+  {
+    "seq": 178,
+    "ms": 2352.6,
+    "kind": "server_start",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "pid": 47661,
+    "cwd": "$WORK/A",
+    "lean_path": "$WORK/A"
+  },
+  {
+    "seq": 179,
+    "ms": 2352.7,
+    "kind": "lsp_client",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 47633,
+        "rootUri": "$WORK_URI/A",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 180,
+    "ms": 2377.8,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 181,
+    "ms": 2377.9,
+    "kind": "lsp_client",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 182,
+    "ms": 2377.9,
+    "kind": "server_initialized",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "wall_ms": 26.5
+  },
+  {
+    "seq": 183,
+    "ms": 2378.0,
+    "kind": "lsp_client",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem scratchClaim : selected = 11 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 184,
+    "ms": 2378.0,
+    "kind": "lsp_client",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 185,
+    "ms": 2378.0,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 186,
+    "ms": 2378.1,
+    "kind": "lsp_client",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 187,
+    "ms": 2378.3,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 188,
+    "ms": 2433.9,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 189,
+    "ms": 2615.3,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 190,
+    "ms": 2615.4,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 191,
+    "ms": 2615.4,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 40,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 40,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 192,
+    "ms": 2616.2,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 193,
+    "ms": 2616.2,
+    "kind": "request_latency",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "method": "textDocument/waitForDiagnostics",
+    "request_id": 2,
+    "wall_ms": 238.2
+  },
+  {
+    "seq": 194,
+    "ms": 2616.2,
+    "kind": "document_ready",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "uri": "$WORK_URI/A/Scratch.lean",
+    "version": 1,
+    "text_sha256": "0b4a7866472eea846d07948e3b8dcfbc2dfac7b87dad94251607e0dba5df9bdb",
+    "wall_ms": 238.3,
+    "last_diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 40,
+              "line": 1
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 2
+            },
+            "start": {
+              "character": 40,
+              "line": 1
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Scratch.lean",
+      "version": 1
+    },
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 195,
+    "ms": 2616.2,
+    "kind": "lsp_client",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Scratch.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 196,
+    "ms": 2616.6,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 197,
+    "ms": 2616.6,
+    "kind": "request_latency",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "method": "$/lean/plainGoal",
+    "request_id": 3,
+    "wall_ms": 0.4
+  },
+  {
+    "seq": 198,
+    "ms": 2616.6,
+    "kind": "scratch_fresh_server",
+    "epoch": 5,
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 11"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 11\n```"
+      }
+    },
+    "text_sha256": "0b4a7866472eea846d07948e3b8dcfbc2dfac7b87dad94251607e0dba5df9bdb",
+    "reused_document_version": 1
+  },
+  {
+    "seq": 199,
+    "ms": 2616.7,
+    "kind": "lsp_client",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 200,
+    "ms": 2617.2,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 201,
+    "ms": 2623.2,
+    "kind": "lsp_server",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 202,
+    "ms": 2623.2,
+    "kind": "request_latency",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "method": "shutdown",
+    "request_id": 4,
+    "wall_ms": 6.6
+  },
+  {
+    "seq": 203,
+    "ms": 2623.2,
+    "kind": "lsp_client",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 204,
+    "ms": 2624.8,
+    "kind": "server_exit",
+    "label": "scratch-fresh-server",
+    "epoch": 5,
+    "pid": 47661,
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 205,
+    "ms": 2643.7,
+    "kind": "process_snapshot",
+    "label": "fresh-after-stop",
+    "root_pids": [
+      47661
+    ],
+    "processes": [],
+    "count": 0,
+    "summed_rss_bytes": 0
+  },
+  {
+    "seq": 206,
+    "ms": 2643.7,
+    "kind": "completed"
+  }
+]

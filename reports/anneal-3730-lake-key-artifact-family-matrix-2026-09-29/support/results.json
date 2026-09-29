@@ -1,0 +1,2184 @@
+{
+  "cases": {
+    "base": {
+      "artifacts": {
+        "c": {
+          "bytes": 1366,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+        },
+        "ilean": {
+          "bytes": 289,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+        },
+        "olean": {
+          "bytes": 4616,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+        },
+        "setup": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        }
+      },
+      "batch": 0,
+      "cache_maps": {
+        "bc2ee9095550ff31.json": {
+          "data": {
+            "c": "3df289e2daffc40d.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "4ab07c203eb6f06e.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        }
+      },
+      "consumer_manifest_sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "producer_config_sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "setup_exit": 0,
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "manifest": {
+      "artifacts": {
+        "c": null,
+        "ilean": {
+          "bytes": 289,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+        },
+        "olean": null,
+        "setup": null
+      },
+      "batch": 1,
+      "cache_maps": {
+        "56754994d46eab8e.json": {
+          "data": {
+            "c": "171ca241cf777e56.c",
+            "i": "0ba72aeb7d13c8fa.ilean",
+            "m": false,
+            "o": [
+              "bcc684b0ab90f029.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "9f80558e806f84cd.json": {
+          "data": {
+            "c": "adb99f314e5eb438.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "cb5016b11d418b60.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "ae8ebb304e3ca915.json": {
+          "data": {
+            "c": "3df289e2daffc40d.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "4ab07c203eb6f06e.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "bc2ee9095550ff31.json": {
+          "data": {
+            "c": "3df289e2daffc40d.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "4ab07c203eb6f06e.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        }
+      },
+      "consumer_manifest_sha256": "63dc3ba27d85ce9d50db30055b4c9e7c95666774bac96c0796caa757d7b525a8",
+      "producer_config_sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "setup_exit": 0,
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "mixed-c": {
+      "after_artifact_sha256": {
+        "c": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+        "ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "setup": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+      },
+      "batch_exit": 0,
+      "before_artifact_sha256": {
+        "c": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+        "ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "setup": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+      },
+      "no_build_exit": 0,
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-c/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-c/Generated.lean",
+            "version": 1
+          }
+        ],
+        "exit": -9,
+        "initialize": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        },
+        "label": "mixed-c-server",
+        "message_count": 10,
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      "setup_exit": 0,
+      "setup_import_batch_exit": 0,
+      "setup_import_olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "mixed-ilean": {
+      "after_artifact_sha256": {
+        "c": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "ilean": "4eb0dd9d287461c083a32eac49b05efc55cb19cff50457d4fc01638d0ca7c615",
+        "olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "setup": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+      },
+      "batch_exit": 0,
+      "before_artifact_sha256": {
+        "c": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "ilean": "4eb0dd9d287461c083a32eac49b05efc55cb19cff50457d4fc01638d0ca7c615",
+        "olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "setup": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+      },
+      "no_build_exit": 0,
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-ilean/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-ilean/Generated.lean",
+            "version": 1
+          }
+        ],
+        "exit": -9,
+        "initialize": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        },
+        "label": "mixed-ilean-server",
+        "message_count": 10,
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      "setup_exit": 0,
+      "setup_import_batch_exit": 0,
+      "setup_import_olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "mixed-olean": {
+      "after_artifact_sha256": {
+        "c": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "olean": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+        "setup": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+      },
+      "batch_exit": 1,
+      "before_artifact_sha256": {
+        "c": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "olean": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+        "setup": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+      },
+      "no_build_exit": 0,
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-olean/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 51,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 45,
+                    "line": 1
+                  }
+                },
+                "message": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "range": {
+                  "end": {
+                    "character": 51,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 45,
+                    "line": 1
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "10",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-olean/Generated.lean",
+            "version": 1
+          }
+        ],
+        "exit": -9,
+        "initialize": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        },
+        "label": "mixed-olean-server",
+        "message_count": 10,
+        "olean_sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      "setup_exit": 0,
+      "setup_import_batch_exit": 0,
+      "setup_import_olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "mixed-setup": {
+      "after_artifact_sha256": {
+        "c": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "setup": "3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f"
+      },
+      "batch_exit": 0,
+      "before_artifact_sha256": {
+        "c": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "setup": "3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f"
+      },
+      "no_build_exit": 0,
+      "server": null,
+      "setup_exit": 0,
+      "setup_import_batch_exit": 0,
+      "setup_import_olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "option": {
+      "artifacts": {
+        "c": {
+          "bytes": 1366,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+        },
+        "ilean": {
+          "bytes": 289,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+        },
+        "olean": {
+          "bytes": 4616,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+        },
+        "setup": {
+          "bytes": 149,
+          "sha256": "3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f"
+        }
+      },
+      "batch": 0,
+      "cache_maps": {
+        "56754994d46eab8e.json": {
+          "data": {
+            "c": "171ca241cf777e56.c",
+            "i": "0ba72aeb7d13c8fa.ilean",
+            "m": false,
+            "o": [
+              "bcc684b0ab90f029.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "9f80558e806f84cd.json": {
+          "data": {
+            "c": "adb99f314e5eb438.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "cb5016b11d418b60.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "ae8ebb304e3ca915.json": {
+          "data": {
+            "c": "3df289e2daffc40d.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "4ab07c203eb6f06e.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "bc2ee9095550ff31.json": {
+          "data": {
+            "c": "3df289e2daffc40d.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "4ab07c203eb6f06e.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        }
+      },
+      "consumer_manifest_sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "producer_config_sha256": "14b82e3967699ad71ac4bff665bd79ce3a4bbe6d0fac83b53efe1fef781c00ae",
+      "setup_exit": 0,
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "path-copy": {
+      "artifacts": {
+        "c": null,
+        "ilean": {
+          "bytes": 289,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+        },
+        "olean": null,
+        "setup": null
+      },
+      "batch": 1,
+      "cache_maps": {
+        "bc2ee9095550ff31.json": {
+          "data": {
+            "c": "3df289e2daffc40d.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "4ab07c203eb6f06e.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        }
+      },
+      "consumer_manifest_sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "producer_config_sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "setup_exit": 0,
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "plugin": {
+      "dep_olean_sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2",
+      "fresh_batch": {
+        "v1": {
+          "dylib_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+          "exit": 0,
+          "marker": "plugin-v1",
+          "marker_sha256": "d3fee1b1103ae4a2e7fd52a5939b5a049c8fa2b1e821c848679b6c33594f0400",
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+        },
+        "v2": {
+          "dylib_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+          "exit": 0,
+          "marker": "plugin-v2",
+          "marker_sha256": "276fce0a7f8824d8f1d423c8c49ccf581feaa8f26c92dcefa04c03b186877690",
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+        }
+      },
+      "prebuilt_artifacts": {
+        "v1": {
+          "bytes": 51120,
+          "sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+          "source_report_relative": "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-v1/.lake/build/lib/lean/plugin__probe_Plugin.dylib"
+        },
+        "v2": {
+          "bytes": 51120,
+          "sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+          "source_report_relative": "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-v2/.lake/build/lib/lean/plugin__probe_Plugin.dylib"
+        }
+      },
+      "proof_sha256": "b10e4c6b9c7ea3ce6253d4555055dfce6167eba042a952686c32cce486fe1470"
+    },
+    "source-extra": {
+      "artifacts": {
+        "c": {
+          "bytes": 1677,
+          "sha256": "e82e5de5e0bae73c03ee38ddece94b4bd46fd053891b5461fca9aa9ef6eff260"
+        },
+        "ilean": {
+          "bytes": 432,
+          "sha256": "4eb0dd9d287461c083a32eac49b05efc55cb19cff50457d4fc01638d0ca7c615"
+        },
+        "olean": {
+          "bytes": 5624,
+          "sha256": "e480656fcb3433a7512470d6732af4085f57004e358b5410007e60416f92bb79"
+        },
+        "setup": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        }
+      },
+      "batch": 0,
+      "cache_maps": {
+        "56754994d46eab8e.json": {
+          "data": {
+            "c": "171ca241cf777e56.c",
+            "i": "0ba72aeb7d13c8fa.ilean",
+            "m": false,
+            "o": [
+              "bcc684b0ab90f029.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "9f80558e806f84cd.json": {
+          "data": {
+            "c": "adb99f314e5eb438.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "cb5016b11d418b60.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "bc2ee9095550ff31.json": {
+          "data": {
+            "c": "3df289e2daffc40d.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "4ab07c203eb6f06e.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        }
+      },
+      "consumer_manifest_sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "producer_config_sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "setup_exit": 0,
+      "source_sha256": "249eebc8c2aebc0f6a007183c2a1ed5c56c3d3919537a96f93909dc9f088d7ed"
+    },
+    "source-nine": {
+      "artifacts": {
+        "c": {
+          "bytes": 1366,
+          "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695"
+        },
+        "ilean": {
+          "bytes": 289,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+        },
+        "olean": {
+          "bytes": 4520,
+          "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+        },
+        "setup": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        }
+      },
+      "batch": 1,
+      "cache_maps": {
+        "9f80558e806f84cd.json": {
+          "data": {
+            "c": "adb99f314e5eb438.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "cb5016b11d418b60.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        },
+        "bc2ee9095550ff31.json": {
+          "data": {
+            "c": "3df289e2daffc40d.c",
+            "i": "d2264521cb1531dd.ilean",
+            "m": false,
+            "o": [
+              "4ab07c203eb6f06e.olean"
+            ]
+          },
+          "schemaVersion": "2026-02-25",
+          "service": null
+        }
+      },
+      "consumer_manifest_sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "producer_config_sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "setup_exit": 0,
+      "source_sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0"
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/base/consumer",
+      "exit": 0,
+      "label": "base-build",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (171ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/base/consumer",
+      "exit": 0,
+      "label": "base-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/base/consumer",
+      "exit": 0,
+      "label": "base-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/path-copy/consumer",
+      "exit": 0,
+      "label": "path-copy-build",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/path-copy/consumer",
+      "exit": 0,
+      "label": "path-copy-setup",
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/path-copy/consumer",
+      "exit": 1,
+      "label": "path-copy-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/path-copy/producer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/source-nine/consumer",
+      "exit": 0,
+      "label": "source-nine-build",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (175ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/source-nine/consumer",
+      "exit": 0,
+      "label": "source-nine-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/cb5016b11d418b60.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/source-nine/consumer",
+      "exit": 1,
+      "label": "source-nine-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue + 1 = 8\\nis false\",\"endPos\":{\"column\":51,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":45,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"10\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/source-extra/consumer",
+      "exit": 0,
+      "label": "source-extra-build",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (169ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/source-extra/consumer",
+      "exit": 0,
+      "label": "source-extra-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/bcc684b0ab90f029.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/source-extra/consumer",
+      "exit": 0,
+      "label": "source-extra-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/option/consumer",
+      "exit": 0,
+      "label": "option-build",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (168ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/option/consumer",
+      "exit": 0,
+      "label": "option-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/option/consumer",
+      "exit": 0,
+      "label": "option-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/manifest/consumer",
+      "exit": 0,
+      "label": "manifest-build",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/manifest/consumer",
+      "exit": 0,
+      "label": "manifest-setup",
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer_alt\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/manifest/consumer",
+      "exit": 1,
+      "label": "manifest-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/manifest/producer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/mixed-olean/consumer",
+      "exit": 0,
+      "label": "mixed-olean-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/mixed-olean/consumer",
+      "exit": 0,
+      "label": "mixed-olean-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/setup-import-olean",
+      "exit": 0,
+      "label": "mixed-olean-setup-import-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/mixed-olean/consumer",
+      "exit": 1,
+      "label": "mixed-olean-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue + 1 = 8\\nis false\",\"endPos\":{\"column\":51,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":45,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"10\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "label": "mixed-olean-server",
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-olean/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 51,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 45,
+                    "line": 1
+                  }
+                },
+                "message": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "range": {
+                  "end": {
+                    "character": 51,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 45,
+                    "line": 1
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "10",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-olean/Generated.lean",
+            "version": 1
+          }
+        ],
+        "exit": -9,
+        "initialize": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        },
+        "label": "mixed-olean-server",
+        "message_count": 10,
+        "olean_sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      }
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/mixed-ilean/consumer",
+      "exit": 0,
+      "label": "mixed-ilean-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/mixed-ilean/consumer",
+      "exit": 0,
+      "label": "mixed-ilean-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/setup-import-ilean",
+      "exit": 0,
+      "label": "mixed-ilean-setup-import-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/mixed-ilean/consumer",
+      "exit": 0,
+      "label": "mixed-ilean-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "label": "mixed-ilean-server",
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-ilean/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-ilean/Generated.lean",
+            "version": 1
+          }
+        ],
+        "exit": -9,
+        "initialize": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        },
+        "label": "mixed-ilean-server",
+        "message_count": 10,
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      }
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/mixed-c/consumer",
+      "exit": 0,
+      "label": "mixed-c-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/mixed-c/consumer",
+      "exit": 0,
+      "label": "mixed-c-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/setup-import-c",
+      "exit": 0,
+      "label": "mixed-c-setup-import-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/mixed-c/consumer",
+      "exit": 0,
+      "label": "mixed-c-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "label": "mixed-c-server",
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-c/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r15-lake-key-family/isolated-c/Generated.lean",
+            "version": 1
+          }
+        ],
+        "exit": -9,
+        "initialize": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        },
+        "label": "mixed-c-server",
+        "message_count": 10,
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      }
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/mixed-setup/consumer",
+      "exit": 0,
+      "label": "mixed-setup-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/mixed-setup/consumer",
+      "exit": 0,
+      "label": "mixed-setup-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/setup-import-setup",
+      "exit": 0,
+      "label": "mixed-setup-setup-import-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/mixed-setup/consumer",
+      "exit": 0,
+      "label": "mixed-setup-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-key-artifact-family-matrix-2026-09-29/support/artifacts/v1/plugin__probe_Plugin.dylib",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "$WORK/plugin",
+      "exit": 0,
+      "label": "plugin-v1-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-key-artifact-family-matrix-2026-09-29/support/artifacts/v2/plugin__probe_Plugin.dylib",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "$WORK/plugin",
+      "exit": 0,
+      "label": "plugin-v2-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    }
+  ],
+  "environment": {
+    "cache_root": "$WORK/cache",
+    "command_timeout_seconds": 30,
+    "free_percent_preflight": 47,
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "max_concurrent_commands": 1,
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "toolchain": "leanprover/lean4:v4.30.0-rc2"
+  },
+  "limits": [
+    "No power loss, native Linux/Windows filesystem, Mathlib, Anneal archive or generation manager.",
+    "One pinned Lake/Lean revision; separate valid artifact generations are deliberately mixed under unchanged source.",
+    "Server checks operate directly on Lean with LEAN_PATH; they do not attest an Anneal worker environment.",
+    "Plugin dylibs are reused from the earlier pinned native-plugin report rather than rebuilt here."
+  ],
+  "retained_inventory": {
+    "Dep.olean": {
+      "bytes": 46504,
+      "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+    },
+    "Proof.lean": {
+      "bytes": 75,
+      "sha256": "b10e4c6b9c7ea3ce6253d4555055dfce6167eba042a952686c32cce486fe1470"
+    },
+    "retained/base/Dep.c": {
+      "bytes": 1366,
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+    },
+    "retained/base/Dep.ilean": {
+      "bytes": 289,
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+    },
+    "retained/base/Dep.olean": {
+      "bytes": 4616,
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "retained/base/Dep.setup": {
+      "bytes": 127,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    },
+    "retained/base/consumer-lake-manifest.json": {
+      "bytes": 372,
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+    },
+    "retained/base/consumer-lakefile.lean": {
+      "bytes": 123,
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+    },
+    "retained/base/producer-Dep.lean": {
+      "bytes": 24,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "retained/base/producer-lakefile.lean": {
+      "bytes": 75,
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+    },
+    "retained/manifest/Dep.ilean": {
+      "bytes": 289,
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+    },
+    "retained/manifest/consumer-lake-manifest.json": {
+      "bytes": 376,
+      "sha256": "63dc3ba27d85ce9d50db30055b4c9e7c95666774bac96c0796caa757d7b525a8"
+    },
+    "retained/manifest/consumer-lakefile.lean": {
+      "bytes": 127,
+      "sha256": "06673a1a6b85bb1ace2cdb812cb1bfc0e0a2f3508b7c4b9c25ec427c947b8009"
+    },
+    "retained/manifest/producer-Dep.lean": {
+      "bytes": 24,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "retained/manifest/producer-lakefile.lean": {
+      "bytes": 75,
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+    },
+    "retained/mixed-c/Dep.c": {
+      "bytes": 1366,
+      "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695"
+    },
+    "retained/mixed-ilean/Dep.ilean": {
+      "bytes": 432,
+      "sha256": "4eb0dd9d287461c083a32eac49b05efc55cb19cff50457d4fc01638d0ca7c615"
+    },
+    "retained/mixed-olean/Dep.olean": {
+      "bytes": 4520,
+      "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+    },
+    "retained/mixed-setup/Dep.setup": {
+      "bytes": 149,
+      "sha256": "3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f"
+    },
+    "retained/option/Dep.c": {
+      "bytes": 1366,
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+    },
+    "retained/option/Dep.ilean": {
+      "bytes": 289,
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+    },
+    "retained/option/Dep.olean": {
+      "bytes": 4616,
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "retained/option/Dep.setup": {
+      "bytes": 149,
+      "sha256": "3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f"
+    },
+    "retained/option/consumer-lake-manifest.json": {
+      "bytes": 372,
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+    },
+    "retained/option/consumer-lakefile.lean": {
+      "bytes": 123,
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+    },
+    "retained/option/producer-Dep.lean": {
+      "bytes": 24,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "retained/option/producer-lakefile.lean": {
+      "bytes": 129,
+      "sha256": "14b82e3967699ad71ac4bff665bd79ce3a4bbe6d0fac83b53efe1fef781c00ae"
+    },
+    "retained/path-copy/Dep.ilean": {
+      "bytes": 289,
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+    },
+    "retained/path-copy/consumer-lake-manifest.json": {
+      "bytes": 372,
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+    },
+    "retained/path-copy/consumer-lakefile.lean": {
+      "bytes": 123,
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+    },
+    "retained/path-copy/producer-Dep.lean": {
+      "bytes": 24,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "retained/path-copy/producer-lakefile.lean": {
+      "bytes": 75,
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+    },
+    "retained/source-extra/Dep.c": {
+      "bytes": 1677,
+      "sha256": "e82e5de5e0bae73c03ee38ddece94b4bd46fd053891b5461fca9aa9ef6eff260"
+    },
+    "retained/source-extra/Dep.ilean": {
+      "bytes": 432,
+      "sha256": "4eb0dd9d287461c083a32eac49b05efc55cb19cff50457d4fc01638d0ca7c615"
+    },
+    "retained/source-extra/Dep.olean": {
+      "bytes": 5624,
+      "sha256": "e480656fcb3433a7512470d6732af4085f57004e358b5410007e60416f92bb79"
+    },
+    "retained/source-extra/Dep.setup": {
+      "bytes": 127,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    },
+    "retained/source-extra/consumer-lake-manifest.json": {
+      "bytes": 372,
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+    },
+    "retained/source-extra/consumer-lakefile.lean": {
+      "bytes": 123,
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+    },
+    "retained/source-extra/producer-Dep.lean": {
+      "bytes": 51,
+      "sha256": "249eebc8c2aebc0f6a007183c2a1ed5c56c3d3919537a96f93909dc9f088d7ed"
+    },
+    "retained/source-extra/producer-lakefile.lean": {
+      "bytes": 75,
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+    },
+    "retained/source-nine/Dep.c": {
+      "bytes": 1366,
+      "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695"
+    },
+    "retained/source-nine/Dep.ilean": {
+      "bytes": 289,
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+    },
+    "retained/source-nine/Dep.olean": {
+      "bytes": 4520,
+      "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+    },
+    "retained/source-nine/Dep.setup": {
+      "bytes": 127,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    },
+    "retained/source-nine/consumer-lake-manifest.json": {
+      "bytes": 372,
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+    },
+    "retained/source-nine/consumer-lakefile.lean": {
+      "bytes": 123,
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+    },
+    "retained/source-nine/producer-Dep.lean": {
+      "bytes": 24,
+      "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0"
+    },
+    "retained/source-nine/producer-lakefile.lean": {
+      "bytes": 75,
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+    },
+    "v1/Plugin.lean": {
+      "bytes": 128,
+      "sha256": "85d9f06b45372ec0dfed61803b996474a5ef628c77588dddd3ae0cc2136925ab"
+    },
+    "v1/plugin__probe_Plugin.dylib": {
+      "bytes": 51120,
+      "sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4"
+    },
+    "v2/Plugin.lean": {
+      "bytes": 128,
+      "sha256": "e3beb05e92c08f0db79590d29b895e030808bb5aed28d42b89524e1592ecf1c4"
+    },
+    "v2/plugin__probe_Plugin.dylib": {
+      "bytes": 51120,
+      "sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9"
+    }
+  }
+}

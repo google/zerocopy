@@ -1,0 +1,22 @@
+{
+  "topics": ["anneal/3730-3731-coverage", "anneal/research-audit"],
+  "subjects": [
+    {
+      "name": "Issue #3730 and #3731 public scope at 2026-09-29T11:35:20Z",
+      "identity": {
+        "3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "3730_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "3731_comment_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "159 investigations, 174 crosswalk suggestions, 79 completed substantive report packages",
+      "identity": {
+        "source_v8_investigation_sha256": "fee613745ca963a5784bacbab758be55a2faff8b9afb41fb08f3a6a5024e81b5",
+        "source_v8_crosswalk_sha256": "364796a09d67981e6f03ddd630453e1e60745fd71b6a8ce4eeb105d20ad75256"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

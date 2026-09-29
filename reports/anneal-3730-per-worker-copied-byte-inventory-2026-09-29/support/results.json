@@ -1,0 +1,621 @@
+{
+  "cases": {
+    "clone-1": {
+      "dependency_build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "-o",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/shared/build/Dep.olean",
+          "-i",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/shared/build/Dep.ilean",
+          "-c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/shared/build/Dep.c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/shared/Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "dependency_hashes": {
+        "Dep.c": "66ca17fed155dd6da075784672ab8250100c6aae14a5929e0d71d98933a607ed",
+        "Dep.ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "Dep.lean": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "Dep.olean": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "lean-toolchain": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      },
+      "mode": "clone",
+      "summary": {
+        "directories": 5,
+        "distinct_inodes": 22,
+        "entries": 22,
+        "regular_allocated_charge_bytes": 77824,
+        "regular_files": 17,
+        "regular_payload_bytes": 18188,
+        "shared_payload_bytes": 6189,
+        "symlinks": 0,
+        "unique_inode_allocated_charge_bytes": 77824,
+        "worker_copied_dependency_payload_bytes": 6189,
+        "worker_private_payload_bytes": 5810,
+        "workers": {
+          "worker-1": {
+            "copied_dependency_allocated_charge_bytes": 24576,
+            "copied_dependency_files": 5,
+            "copied_dependency_payload_bytes": 6189,
+            "files": 12,
+            "private_allocated_charge_bytes": 28672,
+            "private_payload_bytes": 5810
+          }
+        }
+      },
+      "worker_dependency_identity": [
+        {
+          "dep_kind": "directory",
+          "dep_source_inode": 24458640,
+          "shared_source_inode": 24458630,
+          "worker": 1
+        }
+      ],
+      "worker_runs": [
+        {
+          "build": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "-o",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/worker-1/build/Proof.olean",
+              "-i",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/worker-1/build/Proof.ilean",
+              "-c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/worker-1/build/Proof.c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "fresh_check": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/clone-1/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        }
+      ],
+      "workers": 1
+    },
+    "cold-1": {
+      "dependency_build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "-o",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/shared/build/Dep.olean",
+          "-i",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/shared/build/Dep.ilean",
+          "-c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/shared/build/Dep.c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/shared/Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "dependency_hashes": {
+        "Dep.c": "66ca17fed155dd6da075784672ab8250100c6aae14a5929e0d71d98933a607ed",
+        "Dep.ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "Dep.lean": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "Dep.olean": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "lean-toolchain": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      },
+      "mode": "copy",
+      "summary": {
+        "directories": 5,
+        "distinct_inodes": 22,
+        "entries": 22,
+        "regular_allocated_charge_bytes": 77824,
+        "regular_files": 17,
+        "regular_payload_bytes": 18188,
+        "shared_payload_bytes": 6189,
+        "symlinks": 0,
+        "unique_inode_allocated_charge_bytes": 77824,
+        "worker_copied_dependency_payload_bytes": 6189,
+        "worker_private_payload_bytes": 5810,
+        "workers": {
+          "worker-1": {
+            "copied_dependency_allocated_charge_bytes": 24576,
+            "copied_dependency_files": 5,
+            "copied_dependency_payload_bytes": 6189,
+            "files": 12,
+            "private_allocated_charge_bytes": 28672,
+            "private_payload_bytes": 5810
+          }
+        }
+      },
+      "worker_dependency_identity": [
+        {
+          "dep_kind": "directory",
+          "dep_source_inode": 24458457,
+          "shared_source_inode": 24458447,
+          "worker": 1
+        }
+      ],
+      "worker_runs": [
+        {
+          "build": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "-o",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/worker-1/build/Proof.olean",
+              "-i",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/worker-1/build/Proof.ilean",
+              "-c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/worker-1/build/Proof.c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "fresh_check": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-1/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        }
+      ],
+      "workers": 1
+    },
+    "cold-2": {
+      "dependency_build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "-o",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/shared/build/Dep.olean",
+          "-i",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/shared/build/Dep.ilean",
+          "-c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/shared/build/Dep.c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/shared/Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "dependency_hashes": {
+        "Dep.c": "66ca17fed155dd6da075784672ab8250100c6aae14a5929e0d71d98933a607ed",
+        "Dep.ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "Dep.lean": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "Dep.olean": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "lean-toolchain": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      },
+      "mode": "copy",
+      "summary": {
+        "directories": 8,
+        "distinct_inodes": 37,
+        "entries": 37,
+        "regular_allocated_charge_bytes": 131072,
+        "regular_files": 29,
+        "regular_payload_bytes": 30187,
+        "shared_payload_bytes": 6189,
+        "symlinks": 0,
+        "unique_inode_allocated_charge_bytes": 131072,
+        "worker_copied_dependency_payload_bytes": 12378,
+        "worker_private_payload_bytes": 11620,
+        "workers": {
+          "worker-1": {
+            "copied_dependency_allocated_charge_bytes": 24576,
+            "copied_dependency_files": 5,
+            "copied_dependency_payload_bytes": 6189,
+            "files": 12,
+            "private_allocated_charge_bytes": 28672,
+            "private_payload_bytes": 5810
+          },
+          "worker-2": {
+            "copied_dependency_allocated_charge_bytes": 24576,
+            "copied_dependency_files": 5,
+            "copied_dependency_payload_bytes": 6189,
+            "files": 12,
+            "private_allocated_charge_bytes": 28672,
+            "private_payload_bytes": 5810
+          }
+        }
+      },
+      "worker_dependency_identity": [
+        {
+          "dep_kind": "directory",
+          "dep_source_inode": 24458484,
+          "shared_source_inode": 24458473,
+          "worker": 1
+        },
+        {
+          "dep_kind": "directory",
+          "dep_source_inode": 24458505,
+          "shared_source_inode": 24458473,
+          "worker": 2
+        }
+      ],
+      "worker_runs": [
+        {
+          "build": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "-o",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-1/build/Proof.olean",
+              "-i",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-1/build/Proof.ilean",
+              "-c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-1/build/Proof.c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "fresh_check": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        },
+        {
+          "build": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "-o",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-2/build/Proof.olean",
+              "-i",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-2/build/Proof.ilean",
+              "-c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-2/build/Proof.c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-2/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "fresh_check": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/cold-2/worker-2/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        }
+      ],
+      "workers": 2
+    },
+    "hardlink-1": {
+      "dependency_build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "-o",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/shared/build/Dep.olean",
+          "-i",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/shared/build/Dep.ilean",
+          "-c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/shared/build/Dep.c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/shared/Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "dependency_hashes": {
+        "Dep.c": "66ca17fed155dd6da075784672ab8250100c6aae14a5929e0d71d98933a607ed",
+        "Dep.ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "Dep.lean": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "Dep.olean": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "lean-toolchain": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      },
+      "mode": "hardlink",
+      "summary": {
+        "directories": 5,
+        "distinct_inodes": 17,
+        "entries": 22,
+        "regular_allocated_charge_bytes": 77824,
+        "regular_files": 17,
+        "regular_payload_bytes": 18188,
+        "shared_payload_bytes": 6189,
+        "symlinks": 0,
+        "unique_inode_allocated_charge_bytes": 53248,
+        "worker_copied_dependency_payload_bytes": 6189,
+        "worker_private_payload_bytes": 5810,
+        "workers": {
+          "worker-1": {
+            "copied_dependency_allocated_charge_bytes": 24576,
+            "copied_dependency_files": 5,
+            "copied_dependency_payload_bytes": 6189,
+            "files": 12,
+            "private_allocated_charge_bytes": 28672,
+            "private_payload_bytes": 5810
+          }
+        }
+      },
+      "worker_dependency_identity": [
+        {
+          "dep_kind": "directory",
+          "dep_source_inode": 24458601,
+          "shared_source_inode": 24458601,
+          "worker": 1
+        }
+      ],
+      "worker_runs": [
+        {
+          "build": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "-o",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/worker-1/build/Proof.olean",
+              "-i",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/worker-1/build/Proof.ilean",
+              "-c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/worker-1/build/Proof.c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "fresh_check": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/hardlink-1/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        }
+      ],
+      "workers": 1
+    },
+    "warm-1": {
+      "dependency_build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "-o",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/shared/build/Dep.olean",
+          "-i",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/shared/build/Dep.ilean",
+          "-c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/shared/build/Dep.c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/shared/Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "dependency_hashes": {
+        "Dep.c": "66ca17fed155dd6da075784672ab8250100c6aae14a5929e0d71d98933a607ed",
+        "Dep.ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "Dep.lean": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "Dep.olean": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "lean-toolchain": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      },
+      "mode": "symlink",
+      "summary": {
+        "directories": 4,
+        "distinct_inodes": 17,
+        "entries": 17,
+        "regular_allocated_charge_bytes": 53248,
+        "regular_files": 12,
+        "regular_payload_bytes": 11999,
+        "shared_payload_bytes": 6189,
+        "symlinks": 1,
+        "unique_inode_allocated_charge_bytes": 53248,
+        "worker_copied_dependency_payload_bytes": 0,
+        "worker_private_payload_bytes": 5810,
+        "workers": {
+          "worker-1": {
+            "copied_dependency_allocated_charge_bytes": 0,
+            "copied_dependency_files": 0,
+            "copied_dependency_payload_bytes": 0,
+            "files": 7,
+            "private_allocated_charge_bytes": 28672,
+            "private_payload_bytes": 5810
+          }
+        }
+      },
+      "worker_dependency_identity": [
+        {
+          "dep_kind": "symlink",
+          "dep_source_inode": 24458534,
+          "shared_source_inode": 24458534,
+          "worker": 1
+        }
+      ],
+      "worker_runs": [
+        {
+          "build": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "-o",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/worker-1/build/Proof.olean",
+              "-i",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/worker-1/build/Proof.ilean",
+              "-c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/worker-1/build/Proof.c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "fresh_check": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-1/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        }
+      ],
+      "workers": 1
+    },
+    "warm-2": {
+      "dependency_build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "-o",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/shared/build/Dep.olean",
+          "-i",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/shared/build/Dep.ilean",
+          "-c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/shared/build/Dep.c",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/shared/Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "dependency_hashes": {
+        "Dep.c": "66ca17fed155dd6da075784672ab8250100c6aae14a5929e0d71d98933a607ed",
+        "Dep.ilean": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "Dep.lean": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "Dep.olean": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "lean-toolchain": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      },
+      "mode": "symlink",
+      "summary": {
+        "directories": 6,
+        "distinct_inodes": 27,
+        "entries": 27,
+        "regular_allocated_charge_bytes": 81920,
+        "regular_files": 19,
+        "regular_payload_bytes": 17809,
+        "shared_payload_bytes": 6189,
+        "symlinks": 2,
+        "unique_inode_allocated_charge_bytes": 81920,
+        "worker_copied_dependency_payload_bytes": 0,
+        "worker_private_payload_bytes": 11620,
+        "workers": {
+          "worker-1": {
+            "copied_dependency_allocated_charge_bytes": 0,
+            "copied_dependency_files": 0,
+            "copied_dependency_payload_bytes": 0,
+            "files": 7,
+            "private_allocated_charge_bytes": 28672,
+            "private_payload_bytes": 5810
+          },
+          "worker-2": {
+            "copied_dependency_allocated_charge_bytes": 0,
+            "copied_dependency_files": 0,
+            "copied_dependency_payload_bytes": 0,
+            "files": 7,
+            "private_allocated_charge_bytes": 28672,
+            "private_payload_bytes": 5810
+          }
+        }
+      },
+      "worker_dependency_identity": [
+        {
+          "dep_kind": "symlink",
+          "dep_source_inode": 24458552,
+          "shared_source_inode": 24458552,
+          "worker": 1
+        },
+        {
+          "dep_kind": "symlink",
+          "dep_source_inode": 24458552,
+          "shared_source_inode": 24458552,
+          "worker": 2
+        }
+      ],
+      "worker_runs": [
+        {
+          "build": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "-o",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-1/build/Proof.olean",
+              "-i",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-1/build/Proof.ilean",
+              "-c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-1/build/Proof.c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "fresh_check": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-1/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        },
+        {
+          "build": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "-o",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-2/build/Proof.olean",
+              "-i",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-2/build/Proof.ilean",
+              "-c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-2/build/Proof.c",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-2/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "fresh_check": {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r34-explore/run3/warm-2/worker-2/Proof.lean"
+            ],
+            "exit": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        }
+      ],
+      "workers": 2
+    }
+  },
+  "df_preflight": "Filesystem   512-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1  478724992 304467864 106918968    75%    /System/Volumes/Data\n",
+  "filesystem": "APFS",
+  "filesystem_device": "/dev/disk3s1",
+  "lean": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+}

@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "anneal/cross-tool-provenance",
+    "anneal/acceptance-oracle",
+    "aeneas/lean-generation",
+    "charon/llbc-comparison"
+  ],
+  "subjects": [
+    {
+      "name": "pinned local Rust, Charon, Aeneas and Lean executables",
+      "identity": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+      }
+    },
+    {
+      "name": "replayable comparator mutant fixture",
+      "identity": {
+        "file": "support/probe.py",
+        "sha256": "90bbca48554000d61e39da1a81c2f2f11e09071def60bb60bc727c47c28ef4ee"
+      }
+    },
+    {
+      "name": "saved evidence checker",
+      "identity": {
+        "file": "support/check.py",
+        "sha256": "fd2d73894e4de5225e8fe98b2d689ba38d0b8def72f2f1a05fa11042e93436a9"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

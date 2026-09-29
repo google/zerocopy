@@ -1,0 +1,9 @@
+{
+  "topics": ["charon", "aeneas", "lean", "lake", "anneal/cancellation"],
+  "subjects": [
+    {"name": "Pinned Charon CLI", "identity": {"executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"}},
+    {"name": "Pinned Aeneas CLI", "identity": {"executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"}},
+    {"name": "Lean/Lake v4.30.0-rc2", "identity": {"version": "v4.30.0-rc2", "lean_executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997", "lake_executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"}}
+  ],
+  "observed_at": "2026-09-29"
+}

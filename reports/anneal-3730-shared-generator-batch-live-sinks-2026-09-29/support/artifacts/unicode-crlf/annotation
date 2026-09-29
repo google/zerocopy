@@ -1,0 +1,3 @@
+theorem checked : depValue = 7 := by
+  -- λ😀 note
+  decide

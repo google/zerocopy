@@ -1,0 +1,70 @@
+{
+  "status": "bounded assertions passed",
+  "event_count": 224,
+  "probe_sha256": "fb824c4a0549cd72ace1bc872152c5042438dff22df0afa532ab38e42abf48cc",
+  "transcript_sha256": "9d26d845e404706a93e9ee5ff8a95261cb8fb54a553966b4d2a0299464c4b581",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "baseline_artifacts": {
+    "Dep.olean": {
+      "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2",
+      "bytes": 46504
+    },
+    "Dep.ilean": {
+      "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f",
+      "bytes": 432
+    },
+    "Dep.c": {
+      "sha256": "9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3",
+      "bytes": 15625
+    },
+    "plugin__probe_Plugin.dylib": {
+      "sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+      "bytes": 51120
+    }
+  },
+  "plugin_v1_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+  "plugin_v2_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+  "wrong_initializer_sha256": "36444a43c5c5a9b0a4cb3d7f13d1e1922b13428afb30b858f746fccf142ea77b",
+  "command_rc": {
+    "build-seed-v1": 0,
+    "build-seed-v2": 0,
+    "build-seed-alien": 0,
+    "build-alien": 0,
+    "no-build-olean": 3,
+    "batch-before-setup-olean": 1,
+    "setup-olean": 0,
+    "batch-after-setup-olean": 0,
+    "no-build-ilean": 3,
+    "batch-before-setup-ilean": 0,
+    "setup-ilean": 0,
+    "batch-after-setup-ilean": 0,
+    "no-build-c": 3,
+    "batch-before-setup-c": 0,
+    "setup-c": 0,
+    "batch-after-setup-c": 0,
+    "no-build-dynlib": 3,
+    "batch-before-setup-dynlib": 1,
+    "batch-without-plugin-after-prune-dynlib": 0,
+    "setup-dynlib": 0,
+    "batch-after-setup-dynlib": 1,
+    "batch-fresh-after-replace": 0,
+    "batch-fresh-bad-abi": 1,
+    "batch-invalid-dylib": 1,
+    "batch-missing-dylib": 1
+  },
+  "phase_marker": {
+    "old-before": "plugin-v1",
+    "old-process-new-worker": "plugin-v2",
+    "fresh": "plugin-v2",
+    "bad-abi-before": "plugin-v1",
+    "bad-abi-new-worker": "plugin-v1"
+  },
+  "restored": {
+    "olean": true,
+    "ilean": true,
+    "c": true,
+    "dynlib": false
+  },
+  "max_event_ms": 27431.9
+}

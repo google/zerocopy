@@ -1,0 +1,90 @@
+[
+  {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "path": "src/Lean/Server/ProtocolOverview.lean",
+    "url": "https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/ProtocolOverview.lean",
+    "sha256": "89da37e4e70a353f2c39e769560eb704159ea4e1e6bd5c7a2262e1de0c6d29db",
+    "review_scope": "open/init/watchers/request inventory"
+  },
+  {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "path": "src/Lean/Data/Lsp/Extra.lean",
+    "url": "https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Data/Lsp/Extra.lean",
+    "sha256": "f7e8057a07125b6160fcdc1a82d2332a1d9abbfb57b66033a26f35486aa03b05",
+    "review_scope": "dependency build mode/wait/plainGoal/rpc request types"
+  },
+  {
+    "repository": "rust-lang/rust-analyzer",
+    "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+    "path": "docs/book/src/contributing/guide.md",
+    "url": "https://github.com/rust-lang/rust-analyzer/blob/03fcb77246f2568adb0e9b2fa60d19c6cc1686f4/docs/book/src/contributing/guide.md",
+    "sha256": "5c468edac70995cd3bc2eba1703d0c7ca2b332877020ab88160a69be4ee43550",
+    "review_scope": "dated architecture guide; explicit inputs/current state"
+  },
+  {
+    "repository": "rust-lang/rust-analyzer",
+    "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+    "path": "crates/ide/src/lib.rs",
+    "url": "https://github.com/rust-lang/rust-analyzer/blob/03fcb77246f2568adb0e9b2fa60d19c6cc1686f4/crates/ide/src/lib.rs",
+    "sha256": "cfa6c4e7583353fd05334097f2c35d51f43cc714fba7dd064eade4142016fc8e",
+    "review_scope": "AnalysisHost current source API and cancellation"
+  },
+  {
+    "repository": "volarjs/volar.js",
+    "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e",
+    "path": "packages/source-map/README.md",
+    "url": "https://github.com/volarjs/volar.js/blob/44d58aee30d1d476c8ad3f6f5581b288d7185d1e/packages/source-map/README.md",
+    "sha256": "f58cb8f6fe5086ff249b3f31f1c71b971b18cfef7dd7eb8427fd2ee3ba4320fb",
+    "review_scope": "source-map documented range multiplicity/fallback"
+  },
+  {
+    "repository": "volarjs/volar.js",
+    "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e",
+    "path": "packages/source-map/lib/sourceMap.ts",
+    "url": "https://github.com/volarjs/volar.js/blob/44d58aee30d1d476c8ad3f6f5581b288d7185d1e/packages/source-map/lib/sourceMap.ts",
+    "sha256": "1b0b1bde32b9ad81a23ab634401483fc0843de6978e3978527fa7de36dccbaeb",
+    "review_scope": "source-map matching and fallback implementation"
+  },
+  {
+    "repository": "volarjs/volar.js",
+    "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e",
+    "path": "packages/source-map/lib/translateOffset.ts",
+    "url": "https://github.com/volarjs/volar.js/blob/44d58aee30d1d476c8ad3f6f5581b288d7185d1e/packages/source-map/lib/translateOffset.ts",
+    "sha256": "24d6fd4a135cc471aa7bff73af8f2eb59c9e9bc059a75ccf6003b53ddb2a49a5",
+    "review_scope": "offset translation implementation"
+  },
+  {
+    "repository": "volarjs/volar.js",
+    "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e",
+    "path": "packages/language-service/lib/utils/featureWorkers.ts",
+    "url": "https://github.com/volarjs/volar.js/blob/44d58aee30d1d476c8ad3f6f5581b288d7185d1e/packages/language-service/lib/utils/featureWorkers.ts",
+    "sha256": "925e2188d339ae21193439573a7912d195429722e1e41485010b74f413b438d0",
+    "review_scope": "first source range and all ranges"
+  },
+  {
+    "repository": "volarjs/volar.js",
+    "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e",
+    "path": "packages/language-service/lib/utils/transform.ts",
+    "url": "https://github.com/volarjs/volar.js/blob/44d58aee30d1d476c8ad3f6f5581b288d7185d1e/packages/language-service/lib/utils/transform.ts",
+    "sha256": "6e9269ee9353e3d9703fe0b0308ae1e3099eccb5af0ff0fe1d6632661ce59618",
+    "review_scope": "completion and WorkspaceEdit transformation"
+  },
+  {
+    "repository": "volarjs/volar.js",
+    "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e",
+    "path": "packages/language-service/lib/features/provideCompletionItems.ts",
+    "url": "https://github.com/volarjs/volar.js/blob/44d58aee30d1d476c8ad3f6f5581b288d7185d1e/packages/language-service/lib/features/provideCompletionItems.ts",
+    "sha256": "0fd7c9f467897002d2a97671e4dfc05e9e38a70dc605368225b8b68f27ebf768",
+    "review_scope": "virtual document URI and completion mapping"
+  },
+  {
+    "repository": "volarjs/volar.js",
+    "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e",
+    "path": "packages/language-service/lib/features/provideCodeActions.ts",
+    "url": "https://github.com/volarjs/volar.js/blob/44d58aee30d1d476c8ad3f6f5581b288d7185d1e/packages/language-service/lib/features/provideCodeActions.ts",
+    "sha256": "38328135a01e2e0e2dc8438ed1fe05c15c1f1be844483633381654d5d8e7c71b",
+    "review_scope": "code-action WorkspaceEdit transformation"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "topics": ["anneal/3730-3731-coverage", "anneal/mcp", "anneal/lean-lsp"],
+  "subjects": [
+    {
+      "name": "scoped Lean MCP adapter availability in current checkout and PATH",
+      "identity": {
+        "scope": "reference-publish checkout and current executable PATH only",
+        "named_adapter_executables_found": "0",
+        "checkout_adapter_source_found": "0"
+      }
+    },
+    {
+      "name": "synthetic two-client stdio bridge over Lean v4.30.0-rc2",
+      "identity": {
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "bridge_sha256": "985d994dbda88ba99a1c22132b8b2f7c5fd27ef0b53670ec2bdd71e609d8796e",
+        "probe_sha256": "2bd66ac89cea50ae59b93850d20ce7e68157459622415e5778fcc2a9e09b54ed",
+        "results_sha256": "3fc15e388d50767bdae8d187ef649b9dfb2018a671c994a4e80731b557af05f8"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

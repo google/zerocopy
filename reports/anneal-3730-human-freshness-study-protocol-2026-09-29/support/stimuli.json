@@ -1,0 +1,68 @@
+{
+  "schema": "i141-stimuli-v1",
+  "status": "specification-only; not rendered in a real Anneal UI",
+  "participant_prompt": "For the highlighted Rust annotation, which source/model/proof generation is this result about? What can you safely do next? Please say what, if anything, you would trust as verified. You may ask to inspect another view. Think aloud only if comfortable; there is no penalty for uncertainty.",
+  "presentation_conditions": {
+    "A": "Show the same facts in a compact inline status with expandable provenance.",
+    "B": "Show the same facts in a structured status panel with source, model/import, proof, and action sections."
+  },
+  "shared_rule": "Both conditions must present every fact below, use the same words and allowed actions, and never make a pending/stale/failed result look current or verified. Only layout and initial grouping may vary."
+  ,"cases": [
+    {
+      "id": "S1", "class": "stale_model", "source_basis": "agent-workflow-evaluation and vertical-acceptance",
+      "facts": ["The highlighted Rust annotation is revision R12.", "The displayed Lean goal and passing proof refer to generated model R11.", "Rust revision R12 changed the modeled condition; model R12 is not ready."],
+      "expected_subject": "R11 model/proof, not the current R12 claim",
+      "sound_next_step": "Regenerate R12, then query and repair/check the proof against R12; treat R11 result as historical only.",
+      "unsafe_inference": "Report the R12 claim verified from the R11 goal or proof."
+    },
+    {
+      "id": "S2", "class": "pending_import", "source_basis": "Lean stale-import and refresh reports",
+      "facts": ["The highlighted proof source is revision P21 and the generated model source is M21.", "The server has imported compiled model artifact M20.", "Building and loading compiled artifact M21 is pending; a goal from M20 is still visible and labeled M20."],
+      "expected_subject": "Old imported artifact M20; current P21/M21 has no ready goal",
+      "sound_next_step": "Wait for M21 import readiness or restart a worker bound to M21, then requery before treating a proof edit as checked.",
+      "unsafe_inference": "Use the visible M20 goal as proof that P21 is checked against M21."
+    },
+    {
+      "id": "S3", "class": "cancelled_work", "source_basis": "generation-recovery synthetic late-result control",
+      "facts": ["Generation G31 was cancelled after Rust revision R32 superseded R31.", "A G31 worker completed later and returned a passing proof message labeled cancelled G31.", "Generation G32 is still running; it has not published a verification result."],
+      "expected_subject": "Cancelled obsolete G31, not current G32",
+      "sound_next_step": "Wait for or retry G32 and inspect its result; do not promote the late G31 message.",
+      "unsafe_inference": "Treat the late G31 success as current verification."
+    },
+    {
+      "id": "S4", "class": "unsupported_translation", "source_basis": "Charon/Aeneas boundary and acceptance oracle reports",
+      "facts": ["Rust revision R40 is current.", "Translation stopped on an unsupported construct in the highlighted function.", "No generated Lean model or proof result for R40 exists; an older proof tab remains available for history."],
+      "expected_subject": "No translated current R40 claim; old tab is historical",
+      "sound_next_step": "Address the unsupported construct or narrow the requested claim explicitly, then regenerate and verify; report R40 as unverified.",
+      "unsafe_inference": "Treat absence of Lean errors or the old proof tab as an R40 proof."
+    },
+    {
+      "id": "S5", "class": "approximate_location", "source_basis": "projection-provenance illustrative ownership handler",
+      "facts": ["A current diagnostic arose in generated model code.", "The editor points near the highlighted Rust item, but the generated span has only an approximate Rust anchor.", "There is no exact authored byte range for a source edit."],
+      "expected_subject": "Current generated-model diagnostic with approximate Rust navigation, not an exact source edit span",
+      "sound_next_step": "Use the anchor to inspect the item and request an exact source location or edit manually after review; do not apply an automatic mapped patch.",
+      "unsafe_inference": "Apply a generated-code replacement to the approximate Rust anchor as if it were exact."
+    },
+    {
+      "id": "S6", "class": "expired_handle", "source_basis": "retention-economics bounded handle model",
+      "facts": ["The current source and model are generation G61.", "A saved goal handle names generation G60 and is marked expired after worker restart and reclamation.", "The interface has no retained G60 environment to requery through that handle."],
+      "expected_subject": "Expired historical G60 handle; it says nothing about current G61",
+      "sound_next_step": "Obtain a new G61 goal handle, or explicitly reconstruct G60 from retained inputs if historical work is required and supported.",
+      "unsafe_inference": "Reuse the expired handle or its old text as a live G61 goal."
+    },
+    {
+      "id": "C1", "class": "current_editable_control", "source_basis": "agent-workflow exact-goal control",
+      "facts": ["Rust source, generated model, imported artifact, and proof document all name current generation G70.", "The goal handle belongs to the live file worker and its exact source range is in the authored proof annotation.", "The goal is open; no proof result has been published."],
+      "expected_subject": "Current G70 proof goal for the highlighted claim",
+      "sound_next_step": "Edit the authored proof at the exact range and recheck the current goal and full result; do not yet call it verified.",
+      "unsafe_inference": "Report verified merely because the goal is visible, or refuse to edit solely because a historical failure appeared in another case."
+    },
+    {
+      "id": "C2", "class": "current_checked_control", "source_basis": "acceptance-oracle distinction between goal and checked claim",
+      "facts": ["Rust source, model, imports, proof, and checked obligation set all name current generation G80 and the highlighted claim.", "No pending stage, cancellation, unsupported translation, admission, or incomplete obligation is recorded for this claim.", "The current result is labeled checked for this claim and generation."],
+      "expected_subject": "Current G80 checked result for the highlighted claim only",
+      "sound_next_step": "Report the highlighted G80 claim checked with its explicit scope; no repair is required.",
+      "unsafe_inference": "Claim the whole Rust program verified or require needless regeneration for the already current scoped result."
+    }
+  ]
+}

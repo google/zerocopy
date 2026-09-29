@@ -1,0 +1,6992 @@
+[
+  {
+    "seq": 0,
+    "ms": 28.6,
+    "kind": "subject",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "source_sha256": {
+      "v1": "d4179d04ae71a78a8bada2efbdbfdc9231e3a007c6a8ddafb459123a19add2cd",
+      "v2": "b6b041f923fb685cc1696da078417334216eb6712fe5d40863bd330ba5442385",
+      "v3": "b6545ec5c3311b7fb30acebf912f6eb2f85ca0699155f5be72680e9c1192e79c",
+      "slow": "dcb81108cfbf1a2f3bd7417faced093b64cbfb8931e72ac50ef6862741bd5668",
+      "fast": "5c1ace8fa9f1830bf2c745b022403e9a681a5180f7eccd08fba43cfead4b6aba"
+    }
+  },
+  {
+    "seq": 1,
+    "ms": 30.1,
+    "kind": "start",
+    "server": "lifecycle",
+    "pid": 52137
+  },
+  {
+    "seq": 2,
+    "ms": 50.4,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 52135,
+        "rootUri": "$WORK_URI",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 3,
+    "ms": 56.1,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 4,
+    "ms": 56.1,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 5,
+    "ms": 56.2,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo (n : Nat) (h : n = 7) : n + 1 = 8 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "ms": 56.2,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 7,
+    "ms": 56.4,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "ms": 56.4,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 9,
+    "ms": 56.7,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 114.5,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 11,
+    "ms": 294.8,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "ms": 294.8,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "ms": 294.9,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 8",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 8",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 295.0,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 15,
+    "ms": 295.0,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 10,
+    "elapsed_ms": 238.9
+  },
+  {
+    "seq": 16,
+    "ms": 295.1,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean"
+      }
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 295.3,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "6380841903990192598"
+      }
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 295.3,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "$/lean/rpc/connect",
+    "rid": 11,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 19,
+    "ms": 295.3,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        },
+        "sessionId": "6380841903990192598",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 9
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 295.9,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "9"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "1"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "2"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "3"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "4"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "5"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "6"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "7"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "8"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "8"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 295.9,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "$/lean/rpc/call",
+    "rid": 12,
+    "elapsed_ms": 0.6
+  },
+  {
+    "seq": 22,
+    "ms": 296.0,
+    "kind": "retained",
+    "session": "6380841903990192598",
+    "context_ref": {
+      "p": "9"
+    },
+    "plain_json_sha256": "9432a440d03dea6fc4d853d947abef8e07144ba0246e7db22a0f6be40aa6300f"
+  },
+  {
+    "seq": 23,
+    "ms": 296.0,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "theorem demo (n : Nat) (h : n = 7) : n + 1 = 9 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 296.0,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 498.6,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 26,
+    "ms": 498.6,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 498.7,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 9",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 9",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "ms": 498.8,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 498.8,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 13,
+    "elapsed_ms": 202.8
+  },
+  {
+    "seq": 30,
+    "ms": 498.8,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        },
+        "sessionId": "6380841903990192598",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 9
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 499.3,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "19"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "10"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "11"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "12"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "13"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "14"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "15"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "16"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "17"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "18"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "9"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "ms": 499.3,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "$/lean/rpc/call",
+    "rid": 14,
+    "elapsed_ms": 0.6
+  },
+  {
+    "seq": 33,
+    "ms": 499.4,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/rpc/release",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean",
+        "sessionId": "6380841903990192598",
+        "refs": [
+          {
+            "p": "9"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 499.4,
+    "kind": "after_edit",
+    "old_session_result": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "19"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "10"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "11"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "12"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "13"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "14"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "15"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "16"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "17"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "18"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "9"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 499.4,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "ms": 499.4,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo (n : Nat) (h : n = 7) : n + 1 = 10 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 499.4,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 499.7,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 499.9,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "ms": 559.0,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 41,
+    "ms": 740.5,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 42,
+    "ms": 740.5,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "ms": 740.5,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 10",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 51,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 10",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 51,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "ms": 740.6,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 45,
+    "ms": 740.6,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 15,
+    "elapsed_ms": 241.2
+  },
+  {
+    "seq": 46,
+    "ms": 740.6,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        },
+        "sessionId": "6380841903990192598",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 9
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 47,
+    "ms": 740.9,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 16,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 48,
+    "ms": 740.9,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "$/lean/rpc/call",
+    "rid": 16,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 49,
+    "ms": 740.9,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean"
+      }
+    }
+  },
+  {
+    "seq": 50,
+    "ms": 741.1,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "18156903776505800821"
+      }
+    }
+  },
+  {
+    "seq": 51,
+    "ms": 741.1,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "$/lean/rpc/connect",
+    "rid": 17,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 52,
+    "ms": 741.1,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        },
+        "sessionId": "18156903776505800821",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 9
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 53,
+    "ms": 741.7,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "9"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "1"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "2"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "3"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "4"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "5"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "6"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "7"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "8"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "10"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 54,
+    "ms": 741.7,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "$/lean/rpc/call",
+    "rid": 18,
+    "elapsed_ms": 0.6
+  },
+  {
+    "seq": 55,
+    "ms": 753.9,
+    "kind": "after_reopen",
+    "old": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 16,
+      "jsonrpc": "2.0"
+    },
+    "new": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "9"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "1"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "2"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "3"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "4"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "5"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "6"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "7"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "8"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "10"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "old_sid": "6380841903990192598",
+    "new_sid": "18156903776505800821",
+    "child_pids": [
+      [
+        52140,
+        384598016
+      ]
+    ]
+  },
+  {
+    "seq": 56,
+    "ms": 753.9,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Historical.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo (n : Nat) (h : n = 7) : n + 1 = 8 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 57,
+    "ms": 754.0,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Historical.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 58,
+    "ms": 754.3,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Historical.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 59,
+    "ms": 811.2,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Historical.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 60,
+    "ms": 992.4,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Historical.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 992.4,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Historical.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 62,
+    "ms": 992.5,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 8",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 8",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/Historical.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 63,
+    "ms": 992.6,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 64,
+    "ms": 992.6,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 19,
+    "elapsed_ms": 238.7
+  },
+  {
+    "seq": 65,
+    "ms": 992.7,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Historical.lean",
+          "version": 1
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "seq": 66,
+    "ms": 993.2,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 7\n\u22a2 n + 1 = 8"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 8\n```"
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "ms": 993.2,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "$/lean/plainGoal",
+    "rid": 20,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 68,
+    "ms": 993.2,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "seq": 69,
+    "ms": 993.9,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 7\n\u22a2 n + 1 = 10"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 10\n```"
+      }
+    }
+  },
+  {
+    "seq": 70,
+    "ms": 993.9,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "$/lean/plainGoal",
+    "rid": 21,
+    "elapsed_ms": 0.7
+  },
+  {
+    "seq": 71,
+    "ms": 1006.1,
+    "kind": "historical",
+    "source_bytes": 64,
+    "open_ms": 238.8,
+    "historical": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 7\n\u22a2 n + 1 = 8"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 8\n```"
+      }
+    },
+    "current": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 7\n\u22a2 n + 1 = 10"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 10\n```"
+      }
+    },
+    "children": [
+      [
+        52140,
+        384614400
+      ],
+      [
+        52143,
+        383959040
+      ]
+    ]
+  },
+  {
+    "seq": 72,
+    "ms": 1017.8,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 73,
+    "ms": 1018.3,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Historical.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "ms": 1018.5,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 75,
+    "ms": 1024.9,
+    "kind": "server",
+    "server": "lifecycle",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 76,
+    "ms": 1024.9,
+    "kind": "latency",
+    "server": "lifecycle",
+    "method": "shutdown",
+    "rid": 99,
+    "elapsed_ms": 7.1
+  },
+  {
+    "seq": 77,
+    "ms": 1024.9,
+    "kind": "client",
+    "server": "lifecycle",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 78,
+    "ms": 1029.6,
+    "kind": "stop",
+    "server": "lifecycle",
+    "rc": 0,
+    "pid": 52137,
+    "stderr": ""
+  },
+  {
+    "seq": 79,
+    "ms": 1035.2,
+    "kind": "clean_after",
+    "watchdog_rc": 0,
+    "worker_pids": [
+      52140,
+      52143
+    ],
+    "live_prior_pids": []
+  },
+  {
+    "seq": 80,
+    "ms": 1036.2,
+    "kind": "start",
+    "server": "fresh",
+    "pid": 52148
+  },
+  {
+    "seq": 81,
+    "ms": 1036.3,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 52135,
+        "rootUri": "$WORK_URI",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 82,
+    "ms": 1061.7,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 83,
+    "ms": 1061.7,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 84,
+    "ms": 1061.7,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo (n : Nat) (h : n = 7) : n + 1 = 10 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 85,
+    "ms": 1061.8,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 86,
+    "ms": 1061.9,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 87,
+    "ms": 1061.9,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 88,
+    "ms": 1062.1,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "ms": 1117.9,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "ms": 1299.6,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 91,
+    "ms": 1299.6,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 92,
+    "ms": 1299.6,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 10",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 51,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 10",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 51,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 93,
+    "ms": 1299.8,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 94,
+    "ms": 1299.8,
+    "kind": "latency",
+    "server": "fresh",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 10,
+    "elapsed_ms": 238.0
+  },
+  {
+    "seq": 95,
+    "ms": 1299.8,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 50,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        },
+        "sessionId": "18156903776505800821",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 9
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 96,
+    "ms": 1300.1,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 50,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 97,
+    "ms": 1300.1,
+    "kind": "latency",
+    "server": "fresh",
+    "method": "$/lean/rpc/call",
+    "rid": 50,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 98,
+    "ms": 1300.1,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean"
+      }
+    }
+  },
+  {
+    "seq": 99,
+    "ms": 1300.3,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "10262323982502413451"
+      }
+    }
+  },
+  {
+    "seq": 100,
+    "ms": 1300.3,
+    "kind": "latency",
+    "server": "fresh",
+    "method": "$/lean/rpc/connect",
+    "rid": 11,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 101,
+    "ms": 1300.3,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 51,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        },
+        "sessionId": "10262323982502413451",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 9
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 102,
+    "ms": 1300.8,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": 51,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "9"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "1"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "2"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "3"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "4"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "5"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "6"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "7"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "8"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "10"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 103,
+    "ms": 1300.8,
+    "kind": "latency",
+    "server": "fresh",
+    "method": "$/lean/rpc/call",
+    "rid": 51,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 104,
+    "ms": 1300.8,
+    "kind": "fresh_session",
+    "cross": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 50,
+      "jsonrpc": "2.0"
+    },
+    "fresh": {
+      "id": 51,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "9"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "1"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "2"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "3"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "4"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "5"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "6"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "7"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "8"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "10"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "old_sid": "18156903776505800821",
+    "new_sid": "10262323982502413451"
+  },
+  {
+    "seq": 105,
+    "ms": 1518.9,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        },
+        "sessionId": "10262323982502413451",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 9
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 106,
+    "ms": 1519.0,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 2,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 107,
+    "ms": 16559.1,
+    "kind": "worker_crash_unresolved",
+    "before": [
+      [
+        52149,
+        384073728
+      ]
+    ],
+    "after": [],
+    "error": "TimeoutError('fresh read')"
+  },
+  {
+    "seq": 108,
+    "ms": 16559.2,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 109,
+    "ms": 16559.3,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo (n : Nat) (h : n = 7) : n + 1 = 10 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 110,
+    "ms": 16559.3,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 111,
+    "ms": 16559.9,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "error": {
+        "code": -32801,
+        "message": "The file worker for $WORK_URI/Proof.lean has been terminated."
+      },
+      "id": 12,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 112,
+    "ms": 16559.9,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 113,
+    "ms": 16560.3,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "ms": 16636.6,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 115,
+    "ms": 16814.8,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 116,
+    "ms": 16814.8,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "ms": 16814.9,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 10",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 51,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 7\n\u22a2 n + 1 = 10",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 51,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "ms": 16815.0,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 119,
+    "ms": 16815.0,
+    "kind": "latency",
+    "server": "fresh",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 13,
+    "elapsed_ms": 255.7
+  },
+  {
+    "seq": 120,
+    "ms": 16815.1,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/Proof.lean"
+      }
+    }
+  },
+  {
+    "seq": 121,
+    "ms": 16816.8,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "17404937960927104949"
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "ms": 16816.8,
+    "kind": "latency",
+    "server": "fresh",
+    "method": "$/lean/rpc/connect",
+    "rid": 14,
+    "elapsed_ms": 1.8
+  },
+  {
+    "seq": 123,
+    "ms": 16816.9,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Proof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        },
+        "sessionId": "17404937960927104949",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 9
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 124,
+    "ms": 16817.6,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "9"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "1"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "2"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "3"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "4"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "5"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "6"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "7"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "8"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "10"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 125,
+    "ms": 16817.6,
+    "kind": "latency",
+    "server": "fresh",
+    "method": "$/lean/rpc/call",
+    "rid": 15,
+    "elapsed_ms": 0.8
+  },
+  {
+    "seq": 126,
+    "ms": 16830.4,
+    "kind": "worker_crash_recovery",
+    "wait": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "connect": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "17404937960927104949"
+      }
+    },
+    "goal": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "9"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.133.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              },
+              {
+                "fvarIds": [
+                  "_uniq.133.3"
+                ],
+                "names": [
+                  "h"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "1"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "2"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "n"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "3"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.133.4",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "4"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "5"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "6"
+                                  },
+                                  "subexprPos": "/0/1/0/1"
+                                },
+                                {
+                                  "text": "n"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " + "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "7"
+                                  },
+                                  "subexprPos": "/0/1/1"
+                                },
+                                {
+                                  "text": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "8"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "10"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "children": [
+      [
+        52153,
+        383778816
+      ]
+    ]
+  },
+  {
+    "seq": 127,
+    "ms": 16830.5,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 128,
+    "ms": 16830.9,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 129,
+    "ms": 16836.9,
+    "kind": "server",
+    "server": "fresh",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 130,
+    "ms": 16836.9,
+    "kind": "latency",
+    "server": "fresh",
+    "method": "shutdown",
+    "rid": 99,
+    "elapsed_ms": 6.5
+  },
+  {
+    "seq": 131,
+    "ms": 16836.9,
+    "kind": "client",
+    "server": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 132,
+    "ms": 16985.7,
+    "kind": "stop",
+    "server": "fresh",
+    "rc": 0,
+    "pid": 52148,
+    "stderr": ""
+  },
+  {
+    "seq": 133,
+    "ms": 16988.0,
+    "kind": "start",
+    "server": "old-gated",
+    "pid": 52156
+  },
+  {
+    "seq": 134,
+    "ms": 16988.1,
+    "kind": "client",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 52135,
+        "rootUri": "$WORK_URI",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "ms": 17019.9,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 136,
+    "ms": 17020.0,
+    "kind": "client",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 137,
+    "ms": 17020.0,
+    "kind": "client",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\ntheorem demo : True := by\n  run_tac do\n    IO.FS.writeFile \"gate.entered\" \"1\"\n    while !(\u2190 (System.FilePath.mk \"gate.release\").pathExists) do\n      IO.sleep 10\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "ms": 18941.2,
+    "kind": "client",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 50,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 139,
+    "ms": 18942.7,
+    "kind": "start",
+    "server": "replacement",
+    "pid": 52159
+  },
+  {
+    "seq": 140,
+    "ms": 18942.8,
+    "kind": "client",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 52135,
+        "rootUri": "$WORK_URI",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 141,
+    "ms": 18969.3,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 142,
+    "ms": 18969.4,
+    "kind": "client",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 143,
+    "ms": 18969.4,
+    "kind": "client",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo : False := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 144,
+    "ms": 18969.4,
+    "kind": "client",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 145,
+    "ms": 18969.5,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 146,
+    "ms": 18969.5,
+    "kind": "client",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 147,
+    "ms": 18969.8,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 148,
+    "ms": 19031.7,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 149,
+    "ms": 19201.7,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 150,
+    "ms": 19201.7,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 151,
+    "ms": 19208.7,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 152,
+    "ms": 19208.8,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 153,
+    "ms": 19209.2,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 154,
+    "ms": 19209.4,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 155,
+    "ms": 19209.5,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 156,
+    "ms": 19209.6,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 157,
+    "ms": 19209.7,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 158,
+    "ms": 19210.1,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 False",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 False",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 159,
+    "ms": 19210.4,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 160,
+    "ms": 19210.4,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 161,
+    "ms": 19210.4,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 162,
+    "ms": 19210.6,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 163,
+    "ms": 19210.6,
+    "kind": "latency",
+    "server": "replacement",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 10,
+    "elapsed_ms": 241.2
+  },
+  {
+    "seq": 164,
+    "ms": 19210.7,
+    "kind": "client",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 50,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "seq": 165,
+    "ms": 19211.1,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "id": 50,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 False"
+        ],
+        "rendered": "```lean\n\u22a2 False\n```"
+      }
+    }
+  },
+  {
+    "seq": 166,
+    "ms": 19211.1,
+    "kind": "latency",
+    "server": "replacement",
+    "method": "$/lean/plainGoal",
+    "rid": 50,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 167,
+    "ms": 19211.4,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 168,
+    "ms": 19211.4,
+    "kind": "client",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 169,
+    "ms": 19211.4,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 170,
+    "ms": 19211.4,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 171,
+    "ms": 19211.4,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 172,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 173,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 174,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 175,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 176,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 177,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 178,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 179,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 6
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 180,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 181,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 182,
+    "ms": 19211.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 183,
+    "ms": 19223.5,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 184,
+    "ms": 19223.7,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": 50,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 True"
+        ],
+        "rendered": "```lean\n\u22a2 True\n```"
+      }
+    }
+  },
+  {
+    "seq": 185,
+    "ms": 19223.7,
+    "kind": "late_reply",
+    "old_response": {
+      "id": 50,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 True"
+        ],
+        "rendered": "```lean\n\u22a2 True\n```"
+      }
+    },
+    "new_response": {
+      "id": 50,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 False"
+        ],
+        "rendered": "```lean\n\u22a2 False\n```"
+      }
+    },
+    "old_pid": 52156,
+    "new_pid": 52159,
+    "same_request_id": 50,
+    "same_uri": "$WORK_URI/Slow.lean",
+    "same_version": 1
+  },
+  {
+    "seq": 186,
+    "ms": 19223.8,
+    "kind": "client",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 187,
+    "ms": 19226.1,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 188,
+    "ms": 19246.1,
+    "kind": "server",
+    "server": "old-gated",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 189,
+    "ms": 19246.1,
+    "kind": "latency",
+    "server": "old-gated",
+    "method": "shutdown",
+    "rid": 99,
+    "elapsed_ms": 22.4
+  },
+  {
+    "seq": 190,
+    "ms": 19246.1,
+    "kind": "client",
+    "server": "old-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 191,
+    "ms": 19256.7,
+    "kind": "stop",
+    "server": "old-gated",
+    "rc": 0,
+    "pid": 52156,
+    "stderr": ""
+  },
+  {
+    "seq": 192,
+    "ms": 19256.7,
+    "kind": "client",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 193,
+    "ms": 19257.1,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 194,
+    "ms": 19263.0,
+    "kind": "server",
+    "server": "replacement",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 195,
+    "ms": 19263.0,
+    "kind": "latency",
+    "server": "replacement",
+    "method": "shutdown",
+    "rid": 99,
+    "elapsed_ms": 6.3
+  },
+  {
+    "seq": 196,
+    "ms": 19263.0,
+    "kind": "client",
+    "server": "replacement",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 197,
+    "ms": 19264.5,
+    "kind": "stop",
+    "server": "replacement",
+    "rc": 0,
+    "pid": 52159,
+    "stderr": ""
+  },
+  {
+    "seq": 198,
+    "ms": 19265.9,
+    "kind": "start",
+    "server": "rpc-cancel",
+    "pid": 52162
+  },
+  {
+    "seq": 199,
+    "ms": 19266.0,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 52135,
+        "rootUri": "$WORK_URI",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 200,
+    "ms": 19291.6,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 201,
+    "ms": 19291.6,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 202,
+    "ms": 19291.7,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\ntheorem demo : True := by\n  run_tac do\n    IO.FS.writeFile \"gate.entered\" \"1\"\n    while !(\u2190 (System.FilePath.mk \"gate.release\").pathExists) do\n      IO.sleep 10\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 203,
+    "ms": 19998.0,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/Slow.lean"
+      }
+    }
+  },
+  {
+    "seq": 204,
+    "ms": 19998.0,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 205,
+    "ms": 19998.1,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 206,
+    "ms": 19998.1,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 207,
+    "ms": 19998.1,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 208,
+    "ms": 19998.1,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 209,
+    "ms": 19998.1,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 210,
+    "ms": 19998.1,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 211,
+    "ms": 19998.1,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 212,
+    "ms": 19998.1,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 213,
+    "ms": 19998.1,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 214,
+    "ms": 19998.2,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 215,
+    "ms": 19998.2,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 216,
+    "ms": 19998.2,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 217,
+    "ms": 19998.2,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 218,
+    "ms": 19998.4,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "10718217834738557680"
+      }
+    }
+  },
+  {
+    "seq": 219,
+    "ms": 19998.4,
+    "kind": "latency",
+    "server": "rpc-cancel",
+    "method": "$/lean/rpc/connect",
+    "rid": 10,
+    "elapsed_ms": 0.4
+  },
+  {
+    "seq": 220,
+    "ms": 19998.4,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 60,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 8
+        },
+        "sessionId": "10718217834738557680",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Slow.lean"
+          },
+          "position": {
+            "line": 5,
+            "character": 8
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 221,
+    "ms": 19998.4,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/cancelRequest",
+      "params": {
+        "id": 60
+      }
+    }
+  },
+  {
+    "seq": 222,
+    "ms": 20011.3,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 223,
+    "ms": 20012.0,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "error": {
+        "code": -32800,
+        "message": ""
+      },
+      "id": 60,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 224,
+    "ms": 20012.0,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 8
+        },
+        "sessionId": "10718217834738557680",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/Slow.lean"
+          },
+          "position": {
+            "line": 5,
+            "character": 8
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 225,
+    "ms": 20012.6,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "3"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [],
+            "mvarId": "_uniq.3.2",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "2"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "text": "True"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 226,
+    "ms": 20012.6,
+    "kind": "latency",
+    "server": "rpc-cancel",
+    "method": "$/lean/rpc/call",
+    "rid": 11,
+    "elapsed_ms": 0.6
+  },
+  {
+    "seq": 227,
+    "ms": 20012.6,
+    "kind": "rpc_cancel",
+    "response": {
+      "error": {
+        "code": -32800,
+        "message": ""
+      },
+      "id": 60,
+      "jsonrpc": "2.0"
+    },
+    "session_after": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "3"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [],
+            "mvarId": "_uniq.3.2",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "2"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "text": "True"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 228,
+    "ms": 20012.6,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 229,
+    "ms": 20012.9,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 230,
+    "ms": 20031.7,
+    "kind": "server",
+    "server": "rpc-cancel",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 231,
+    "ms": 20031.7,
+    "kind": "latency",
+    "server": "rpc-cancel",
+    "method": "shutdown",
+    "rid": 99,
+    "elapsed_ms": 19.0
+  },
+  {
+    "seq": 232,
+    "ms": 20031.7,
+    "kind": "client",
+    "server": "rpc-cancel",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 233,
+    "ms": 20033.2,
+    "kind": "stop",
+    "server": "rpc-cancel",
+    "rc": 0,
+    "pid": 52162,
+    "stderr": ""
+  },
+  {
+    "seq": 234,
+    "ms": 20034.6,
+    "kind": "start",
+    "server": "forced-gated",
+    "pid": 52165
+  },
+  {
+    "seq": 235,
+    "ms": 20034.7,
+    "kind": "client",
+    "server": "forced-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 52135,
+        "rootUri": "$WORK_URI",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 236,
+    "ms": 20059.7,
+    "kind": "server",
+    "server": "forced-gated",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 237,
+    "ms": 20059.8,
+    "kind": "client",
+    "server": "forced-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 238,
+    "ms": 20059.8,
+    "kind": "client",
+    "server": "forced-gated",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Slow.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\ntheorem demo : True := by\n  run_tac do\n    IO.FS.writeFile \"gate.entered\" \"1\"\n    while !(\u2190 (System.FilePath.mk \"gate.release\").pathExists) do\n      IO.sleep 10\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 239,
+    "ms": 20728.0,
+    "kind": "forced_before",
+    "children": [
+      [
+        52166,
+        1213874176
+      ]
+    ]
+  },
+  {
+    "seq": 240,
+    "ms": 20979.3,
+    "kind": "forced_after",
+    "watchdog_rc": -9,
+    "surviving_direct_children": [],
+    "prior_children": [
+      [
+        52166,
+        1213874176
+      ]
+    ],
+    "live_prior_pids": [],
+    "stderr": "resource vanished (error code: 32, broken pipe)\n"
+  },
+  {
+    "seq": 241,
+    "ms": 20979.3,
+    "kind": "completed"
+  }
+]

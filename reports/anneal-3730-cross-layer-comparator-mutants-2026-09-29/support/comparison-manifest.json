@@ -1,0 +1,456 @@
+{
+  "basis": "fixture-authored contract plus executed output inventory; not Anneal producer metadata",
+  "subjects": {
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+  },
+  "required_obligations": [
+    {
+      "theorem": "obl_inc",
+      "rust_function": "inc",
+      "required_lean_proposition": "comparator_probe.inc 0#u32 = .ok 1#u32"
+    },
+    {
+      "theorem": "obl_twice",
+      "rust_function": "twice",
+      "required_lean_proposition": "comparator_probe.twice 0#u32 = .ok 2#u32"
+    },
+    {
+      "theorem": "obl_choose",
+      "rust_function": "choose",
+      "required_lean_proposition": "comparator_probe.choose 0#u32 = .ok 3#u32"
+    }
+  ],
+  "cases": {
+    "base": {
+      "source_sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+      "llbc_sha256": "ee36614785a52956a4e47fad06ff7be2dd5fe984cb67c358e08e566a3a4fb087",
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1689,
+          "sha256": "bc15e6198147e1059c25089e94eb1399538f674a96907e3a689fe019df4a4db5"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "declarations": [
+        {
+          "name": "inc",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 21
+        },
+        {
+          "name": "twice",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 27
+        },
+        {
+          "name": "choose",
+          "charon_def_id": 2,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 34
+        }
+      ],
+      "imported_funs_olean_sha256": "741d164fc7a832cb302c89ec274af39358b92658428d56083f48be515e76744e",
+      "proof_sha256": "82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3",
+      "batch_axiom_and_type_output": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "rust_selected_value_oracle": {
+        "source_sha256": "6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391",
+        "binary_sha256": "aa595a76023ea1701b43b0acd90cceef5c533cacb48159f74401397e57c42c7b",
+        "binary_bytes": 463480,
+        "exit": 0
+      }
+    },
+    "reorder": {
+      "source_sha256": "5c47f32fcd6df5061e5e1d50ffad9eb93689ee60671aed3f873b394eca9d207f",
+      "llbc_sha256": "734568088d01882d6d09326a3b181941e9e580b451ce62a3c42279c81dcab8ec",
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1698,
+          "sha256": "61de570b374752a4384520d2e6a47ecbcd5004c976add6af3b7b1f9d606fbedb"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "declarations": [
+        {
+          "name": "choose",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 34
+        },
+        {
+          "name": "twice",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 27
+        },
+        {
+          "name": "inc",
+          "charon_def_id": 2,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 21
+        }
+      ],
+      "imported_funs_olean_sha256": "96645d3c18c93b4816b05fe2dea3478b4eff41984b171fb4c8fc4b7c60174822",
+      "proof_sha256": "82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3",
+      "batch_axiom_and_type_output": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "rust_selected_value_oracle": {
+        "source_sha256": "6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391",
+        "binary_sha256": "14e06918d031a52ece874c61101c271127f130729b01e6dd2f362acfc00364ad",
+        "binary_bytes": 463480,
+        "exit": 0
+      }
+    },
+    "changed": {
+      "source_sha256": "fc47ac0e8cb34679fdfb0ef7bc73fd50adebb3f14c83568638fa8136145c13a4",
+      "llbc_sha256": "ec7d0f808f778c2963795bee1faae7c72094660c94662b18b9bb3d6c0ef9c547",
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1698,
+          "sha256": "287273a09e0f2cc0cbaeb9584ea45817645d70390df45cd1b40baa7d0ef89497"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "declarations": [
+        {
+          "name": "inc",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 21
+        },
+        {
+          "name": "twice",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 27
+        },
+        {
+          "name": "choose",
+          "charon_def_id": 2,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 34
+        }
+      ],
+      "imported_funs_olean_sha256": "92ca23323f42b72d66c5577611ecabc6c69f1396af95ceb6c4e19ce4fe0572cf",
+      "proof_sha256": "49602fee85bc1adcd2092312d8d875321084d3e3f174467bafd5ef3b6d98c2f6",
+      "batch_axiom_and_type_output": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 4#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 5#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "rust_selected_value_oracle": {
+        "source_sha256": "7f1fd6407dd50e74dad5f02452caa853daddb071589123e00a737173ec0c3fb2",
+        "binary_sha256": "15539d2e5c85e97119d34128f20d89c127e447a68f628ce83e93931cc456b764",
+        "binary_bytes": 463480,
+        "exit": 0
+      }
+    },
+    "clean-rerun": {
+      "source_sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+      "llbc_sha256": "aafae3a3fd8885c8e2fc629f8ec26460fc624ac17a5033991ab96760db3c72fb",
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1710,
+          "sha256": "e2c59d8fd0ede7abac3d96e232fb15aff190b633d891946ed7b76ceb8f5285ac"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "declarations": [
+        {
+          "name": "inc",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 21
+        },
+        {
+          "name": "twice",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 27
+        },
+        {
+          "name": "choose",
+          "charon_def_id": 2,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 34
+        }
+      ],
+      "imported_funs_olean_sha256": "20097a83eda4600f9f9279fd37fc18f569c5faf4bc31d3612864c6eefe301712",
+      "proof_sha256": "82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3",
+      "batch_axiom_and_type_output": "obl_inc : comparator_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_twice : comparator_probe.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\nobl_choose : comparator_probe.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "rust_selected_value_oracle": {
+        "source_sha256": "6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391",
+        "binary_sha256": "78dea157273a38dee7e84d7d23749aaa6e279f0b4895df265a1b39e479f60098",
+        "binary_bytes": 463480,
+        "exit": 0
+      }
+    },
+    "external": {
+      "source_sha256": "d606a2569d6ce1e1d5ccefab70be2e65d16334239e5e90cf7ddd31657fe9f3a4",
+      "llbc_sha256": "5feecaffca57315268cc13c7df6c611a94e0d1fa187300a765dfee1de6e2f384",
+      "generated": {
+        "Funs.lean": {
+          "bytes": 1056,
+          "sha256": "ca97a094e3c6af0df9ff871d1772ce3f3de604290e522632c4d79a607de26917"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 950,
+          "sha256": "8f0f994ceb39be482bb2c6de859435d8859d6523726de07bec9e6ce9752d0fd8"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 539,
+          "sha256": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+        }
+      },
+      "declarations": [
+        {
+          "name": "call",
+          "charon_def_id": 0,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 60
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": 25
+        },
+        {
+          "name": "external_double",
+          "charon_def_id": 1,
+          "source_span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 20
+              },
+              "end": {
+                "line": 2,
+                "col": 54
+              }
+            },
+            "generated_from_span": null
+          },
+          "generated_lean_def_line": null
+        }
+      ]
+    }
+  },
+  "external_models": {
+    "generated_source_set_sha256": {
+      "Funs.lean": "ca97a094e3c6af0df9ff871d1772ce3f3de604290e522632c4d79a607de26917",
+      "FunsExternal_Template.lean": "8f0f994ceb39be482bb2c6de859435d8859d6523726de07bec9e6ce9752d0fd8",
+      "Source.lean": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0",
+      "Types.lean": "a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b"
+    },
+    "axiom_model_source_sha256": "8f0f994ceb39be482bb2c6de859435d8859d6523726de07bec9e6ce9752d0fd8",
+    "concrete_model_source_sha256": "837dbb23aea8f9805125d057bb868c0ce443ca64217d1d2455bf3c59608bea58",
+    "axiom_import_olean_sha256": "df8fde3a3fa71205212ba8b30eacdb6fce2f269887e008594171b8a2f077fc0f",
+    "concrete_import_olean_sha256": "55eed7373b82ef02a84c2b9db22561c3a87340584ce444a09c6bff99800565b6",
+    "axiom_inventory": "'comparator_probe.call' depends on axioms: [external_double]\n",
+    "concrete_inventory": "'comparator_probe.call' does not depend on any axioms\n"
+  },
+  "proven_item_to_lean_range": null,
+  "trust_rules": [
+    "exact expected proposition and complete theorem-name list",
+    "captured Rust source generation identity",
+    "compiled imported model identity",
+    "no sorryAx in claim axiom inventory"
+  ]
+}

@@ -1,0 +1,31 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["d6dd7d1d935a576e.olean"],
+  "m": false,
+  "i": "485d0ef47f742a3a.ilean",
+  "c": "94c5a8d9013cb55b.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/Model.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/.lake/build/lib/lean/Model.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/.lake/build/lib/lean/Model.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/.lake/build/ir/Model.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/.lake/build/ir/Model.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Model:deps",
+   [["deps",
+     [["layout/Model:extraDep", [["@layout:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/Model.lean",
+   "b1c681da628515eb"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Model", "dd015a39cb7ba503"],
+  ["Package.id?: (some layout)", "8d4a936f4c2ee8f5"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "e3629e5d2bea824d"}

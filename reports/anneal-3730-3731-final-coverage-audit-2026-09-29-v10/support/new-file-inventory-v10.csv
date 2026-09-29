@@ -1,0 +1,124 @@
+package,relative_file,bytes,sha256,inspection,detail
+anneal-3730-external-model-without-codegen-change-2026-09-29,REPORT.json,578,f25a63b7e9921b798a17135318d5ff529e80da006c7c53cd01b833b5ed384f03,json,parsed
+anneal-3730-external-model-without-codegen-change-2026-09-29,REPORT.md,3451,48c4b0bd0acf6e7237e2e43b2aebf5e73e22731c8e5799ca5aa9f2c89c8c5388,utf8,18 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/check.py,3289,bf0cbe24eea97f9a91b280a4c434e6c6fa02a12e3ab7a57ab1dc6d7fa5a8dfba,utf8,52 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/probe.py,13754,aae698cefa28ab9cfd6a09b045c0154ff6fc48537c0606996833e7d9d4adb5a2,utf8,217 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/results.json,107368,086af0e06e92af6079942d0c9365ed1df45113e1ff2db35932f92a27b5b219e0,json,parsed
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/generated/Funs.lean,1064,a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97,utf8,28 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/generated/FunsExternal_Template.lean,942,774531ef77832505794da6abadc4484d2b2723d56fa4cf77e93b03e77003ff16,utf8,21 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/generated/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/generated/Types.lean,533,33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca,utf8,17 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/generated-again/Funs.lean,1064,a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97,utf8,28 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/generated-again/FunsExternal_Template.lean,942,774531ef77832505794da6abadc4484d2b2723d56fa4cf77e93b03e77003ff16,utf8,21 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/generated-again/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/generated-again/Types.lean,533,33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca,utf8,17 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Check.lean,185,5c4a55b456305329578f0945bc08ae617d82f3d7e5d21d4bcd0fd29ce2215b43,utf8,4 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Source/Funs.lean,1064,a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97,utf8,28 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Source/Funs.olean,7912,81d5f2b39661e776f27b27f149ce7cd18cd7606a58003b57f51fa59c6d2cf56c,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Source/FunsExternal.lean,984,129ecaa985b8c0844d16be569ed23897099e892c4f0cde5be58f042960d6c529,utf8,21 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Source/FunsExternal.olean,12488,2347190708211f8c201ee52955861ab7f28533f51768d19d0e2951467d7e1920,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Source/Types.lean,533,33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca,utf8,17 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Source/Types.olean,1608,61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/live/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/source.llbc,5806,6baf2255c0091c11290457d0ac6928df17240f6e05948f3fc060ef75f688df94,utf8,0 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/source.rs,148,73bfb351b6b57bbfcf3e82e0995eec3148b992da2a84d580165c4654e8f202a1,utf8,3 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Check.lean,124,7687483cd02d4f64423fd28d521f8dd9a49d7601905007c4e31662641b030279,utf8,3 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Source/Funs.lean,1064,a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97,utf8,28 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Source/Funs.olean,4288,814b7c901cf8cb15b13fb5b04975d8fdb34ccecafb33770b65d555192e0d722a,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Source/FunsExternal.lean,942,774531ef77832505794da6abadc4484d2b2723d56fa4cf77e93b03e77003ff16,utf8,21 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Source/FunsExternal.olean,3608,616884660c0c121a3dced8f982c403a9c1a27223de7efc2048efb0ba6b6b3ea6,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Source/Types.lean,533,33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca,utf8,17 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Source/Types.olean,1608,61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/axiom/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Check.lean,124,7687483cd02d4f64423fd28d521f8dd9a49d7601905007c4e31662641b030279,utf8,3 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Source/Funs.lean,1064,a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97,utf8,28 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Source/Funs.olean,7520,92b07d6de5234dc0866878743dee2c05f4038d4ca2bb6f3c5452e704bc43415f,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Source/FunsExternal.lean,980,053595263adf1b1792182934ac3838211084437305e0146dea8d4fce8d917cdf,utf8,21 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Source/FunsExternal.olean,7912,a448ed7101a05f61223b2f9724adbfe338aa4999b92e1714dcbd21cd27726367,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Source/Types.lean,533,33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca,utf8,17 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Source/Types.olean,1608,61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/concrete/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/missing/Check.lean,124,7687483cd02d4f64423fd28d521f8dd9a49d7601905007c4e31662641b030279,utf8,3 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/missing/Source/Funs.lean,1064,a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97,utf8,28 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/missing/Source/FunsExternal.lean,932,119d269f3bc6faabaf6d6b5b3fe1768c32d24ba16096bc3dea41b00473d384d5,utf8,21 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/missing/Source/Types.lean,533,33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca,utf8,17 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/missing/Source/Types.olean,1608,61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/missing/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Check.lean,124,7687483cd02d4f64423fd28d521f8dd9a49d7601905007c4e31662641b030279,utf8,3 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Source/Funs.lean,1064,a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97,utf8,28 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Source/Funs.olean,7520,92b07d6de5234dc0866878743dee2c05f4038d4ca2bb6f3c5452e704bc43415f,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Source/FunsExternal.lean,984,129ecaa985b8c0844d16be569ed23897099e892c4f0cde5be58f042960d6c529,utf8,21 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Source/FunsExternal.olean,7912,a448ed7101a05f61223b2f9724adbfe338aa4999b92e1714dcbd21cd27726367,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Source/Types.lean,533,33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca,utf8,17 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Source/Types.olean,1608,61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/stale-cache/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Check.lean,124,7687483cd02d4f64423fd28d521f8dd9a49d7601905007c4e31662641b030279,utf8,3 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Source/Funs.lean,1064,a981b5ba708633366e6cf16a569ed1adcda648cd1849a967ec619b4dfb14af97,utf8,28 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Source/Funs.olean,7912,81d5f2b39661e776f27b27f149ce7cd18cd7606a58003b57f51fa59c6d2cf56c,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Source/FunsExternal.lean,984,129ecaa985b8c0844d16be569ed23897099e892c4f0cde5be58f042960d6c529,utf8,21 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Source/FunsExternal.olean,12488,2347190708211f8c201ee52955861ab7f28533f51768d19d0e2951467d7e1920,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Source/Types.lean,533,33043b91f96eed5186918d26a1df0e0a7ce23af91960c54ddc5490aa5ab0b3ca,utf8,17 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Source/Types.olean,1608,61d66f64aca2e7029f05d8b6837dc667ffa116add01cadecfdefc15199b77efa,binary,opaque
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-external-model-without-codegen-change-2026-09-29,support/work/variants/wrong/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-live-proof-import-state-2026-09-29,REPORT.json,1247,fb5e20b7dd615cbcadba5017620a2f02dc973b297de468779dacd984eb7ecc05,json,parsed
+anneal-3730-live-proof-import-state-2026-09-29,REPORT.md,5191,d0f3514bea19a22aaa15584a50ecfdca3a43cde269d2f796f09b66f179e11ce5,utf8,40 lines
+anneal-3730-live-proof-import-state-2026-09-29,support/artifacts/A0.lean,50,639fb8886e82c890666f471b23b5576942cd642e4f6009ee53eeeb2299ff761e,utf8,2 lines
+anneal-3730-live-proof-import-state-2026-09-29,support/artifacts/A0.olean,5312,a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef,binary,opaque
+anneal-3730-live-proof-import-state-2026-09-29,support/artifacts/A1.lean,53,3267955b15d7578459c148ea403618af826044e7b589f9d011fb426e5b9a7f48,utf8,2 lines
+anneal-3730-live-proof-import-state-2026-09-29,support/artifacts/A1.olean,4760,a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f,binary,opaque
+anneal-3730-live-proof-import-state-2026-09-29,support/probe.py,9178,28bf8756167fd13fe81de5030959a78f3a2fbe435d064cbb77c7344b0b20f802,utf8,127 lines
+anneal-3730-live-proof-import-state-2026-09-29,support/transcript.json,70823,4d38656b4e35a2f5cdb1f98d040ab1f8e18afb5076d8b27ca7d1e62fc5e283e4,json,parsed
+anneal-3730-live-proof-import-state-2026-09-29,support/verify.py,2884,bbd32a426dfdeb6ad1f0baf5842731fb32b90226c162222ddaf66af97639f5ee,utf8,48 lines
+anneal-3730-per-worker-copied-byte-inventory-2026-09-29,REPORT.json,413,52bf5e5f5d53adfe044fd94644387079bf4f21079000773dcd19f2dee55adf24,json,parsed
+anneal-3730-per-worker-copied-byte-inventory-2026-09-29,REPORT.md,8819,f207f037ab7cb5b82d64fcafb5dff194d50a545b81426c60ba1c3f0b0f66e3c0,utf8,49 lines
+anneal-3730-per-worker-copied-byte-inventory-2026-09-29,support/check.py,2734,7a0458076fe43c26ceda12682341a612d138b1eaf78f2dbef11e9c553da19bfb,utf8,52 lines
+anneal-3730-per-worker-copied-byte-inventory-2026-09-29,support/inventory.csv,21396,5cf3398f5eec38d68f2142817a57f4ea566fcf6dd0be9e99ad64b598770cc462,csv,147 data rows
+anneal-3730-per-worker-copied-byte-inventory-2026-09-29,support/probe.py,10554,587d5f967a2b2b6f949e5883fd58a4896e7668ca889931ffafdad892fb42e778,utf8,238 lines
+anneal-3730-per-worker-copied-byte-inventory-2026-09-29,support/results.json,25596,846e5d263a90e1ff866d609d9f0a54d8fba54d34f5648049592ae2fdb736176f,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,REPORT.json,1404,0127cf9edd611d125fd1f8aa403d0db7511aaf0c8c2a17b2b15bb6de82adb871,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,REPORT.md,6068,1ea994320953319878a33251e471fb62f9263fdb369b3fd7162e22dcca071f6a,utf8,45 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-build-env.llbc,29649,90df22c303562bd7ecad77a1d0eaff1da2b59fefb578d9998bd99d8fd08c1c9a,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-build-source.llbc,31143,9829255f979c699b2b13558247eea3d7594ab8dc7e4f18e3eb44fb22cea00ff6,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-clean.llbc,29645,f061ff1c9aa34dbd47c816d6eabc34fdcf794e5b9a2f2e0d70c404f84ec3fe5b,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-include.llbc,29655,0cba3c306b6f36418b155d1bd8f1d388a5d4bd19c666e24fc130179029fc8e42,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-pathdep.llbc,29647,9dc50f3cb44e5f97111553ae851bb13af81deb1e2afd9b1ec857e5c11fcc0513,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-proc-env.llbc,29648,7adf93b6ac4e26f9166efb7ed273e2ad098a86a23d2bef558f7bafb63f805e07,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-proc-source.llbc,31460,6bcad21b245a40fcf43aadb86a0d285a1da6ca2e2d972af0280191168a33f5a5,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-rustc-env.llbc,29650,a1d29f6b262eac49fb06550770447e359bf7217426c3bef25e7114eab06096a9,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/overlay-wrong-unit.llbc,11916,2bf95fee3af2c7d30c2e534456f531d2b85fe5530c77be16e59aa7612392d948,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/artifacts/saved.llbc,29637,40a41bade5414621e8b93b61e994674772ad12069a61d6e6b709a18897376464,utf8,0 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/Cargo.lock,302,03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa,utf8,19 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/Cargo.toml,71,f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4,utf8,3 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/app/Cargo.toml,281,e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4,utf8,17 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/app/build.rs,456,67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a,utf8,9 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/app/src/lib.rs,375,9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6,utf8,12 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/app/src/main.rs,37,0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170,utf8,1 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/app/src/payload.txt,10,146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160,utf8,1 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/app/tests/check.rs,51,effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61,utf8,2 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/dep_path/Cargo.toml,63,9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239,utf8,4 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/dep_path/src/lib.rs,49,9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce,utf8,1 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/proc_local/Cargo.toml,90,1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85,utf8,7 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/fixture/proc_local/src/lib.rs,329,0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee,utf8,10 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-build-env.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-build-source.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-clean.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-include.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-pathdep.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-proc-env.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-proc-source.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-rustc-env.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/overlay-wrong-unit.json,6921,8fda978af8e18e7b373998a957c49c2497d17841402adc02214df37f937e07bb,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/graphs/saved.json,5313,dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/probe.py,8074,5ca55f7a8de3a46ce1764fbafbaaa41d0c51885f8c91a15d485ee065eefabb2b,utf8,113 lines
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/results.json,102899,5e8c3f8c21624362d6e82c890901546701b9c6891c3f123f91bc436c084e0e56,json,parsed
+anneal-3730-saved-vs-private-rust-overlay-2026-09-29,support/verify.py,3077,e05f6ea762e746950690e258a2d6d8ed19069f8de43be8232f31366d47f5b483,utf8,42 lines
+anneal-3730-scratch-pool-scaling-2026-09-29,REPORT.json,412,115f22018300b3cf9430ae348eac1982531f2915fc8af92f95e3579a520e1a59,json,parsed
+anneal-3730-scratch-pool-scaling-2026-09-29,REPORT.md,9609,46d05cf816991e1b7b956b2a22cb8b108be900b9b75bb3b1eff5be83e34216b4,utf8,57 lines
+anneal-3730-scratch-pool-scaling-2026-09-29,support/check.py,3572,d5c814842d8e462cb33681905d2794857207a4ce867100546b176496507e3320,utf8,62 lines
+anneal-3730-scratch-pool-scaling-2026-09-29,support/probe.py,14130,f161ef1eb5823cb63770e5586b6ad58ad2a2b1715dcc03c81d7865975ac25eef,utf8,319 lines
+anneal-3730-scratch-pool-scaling-2026-09-29,support/results.json,420235,bd6934bbb78e66c0fc9c7395a544455ed9501264d0822d484bbeb59c485a0fa9,json,parsed

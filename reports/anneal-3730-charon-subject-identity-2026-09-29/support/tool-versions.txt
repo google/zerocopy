@@ -1,0 +1,33 @@
+$ /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc --version --verbose
+exit 0
+stdout:
+rustc 1.98.0-nightly (f8a08b688 2026-05-30)
+binary: rustc
+commit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1
+commit-date: 2026-05-30
+host: aarch64-apple-darwin
+release: 1.98.0-nightly
+LLVM version: 22.1.6
+
+stderr:
+
+
+$ /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo --version
+exit 0
+stdout:
+cargo 1.98.0-nightly (fbb61be30 2026-05-26)
+
+stderr:
+
+
+$ /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon --version
+exit 2
+stdout:
+
+stderr:
+error: unexpected argument '--version' found
+
+Usage: charon <COMMAND>
+
+For more information, try '--help'.
+

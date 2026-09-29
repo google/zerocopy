@@ -1,0 +1,11 @@
+{
+  "intended_workspace": "fixture/",
+  "owned_outside_sink": "effects/",
+  "network": "owned 127.0.0.1 UDP receiver only; no external service",
+  "executed_children": [
+    "/usr/bin/true"
+  ],
+  "time_limit_seconds_per_command": 30,
+  "authority": "source comments and diagnostics are untrusted evidence data",
+  "security_note": "This manifest records test intent; it does not enforce a sandbox."
+}

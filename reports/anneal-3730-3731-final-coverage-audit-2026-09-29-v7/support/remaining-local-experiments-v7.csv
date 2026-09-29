@@ -1,0 +1,3 @@
+gap,investigation_ids,bounded_next_experiment,resource_and_evidence_limit
+R23,I023,"Provisional last-good Rust model proof through explicit syntax/extraction/signature failures, with provenance and freshness notices.",In progress outside snapshot; tiny pinned-tool fixture cannot replace a real Anneal V2 UI or human evaluation.
+R24,I070,Scratch tactic attempts and application with source/proof subject CAS and a fresh independent checker.,"In progress outside snapshot; local prototype only, pending actual Anneal workspace/tool integration."

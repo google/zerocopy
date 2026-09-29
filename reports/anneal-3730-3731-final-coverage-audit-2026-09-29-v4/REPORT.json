@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/3730-3731-coverage",
+    "anneal/evidence-audit"
+  ],
+  "subjects": [
+    {
+      "name": "public issue #3730 and #3731 snapshot",
+      "identity": {
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "issue_3731_scope_extension_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "reference report package corpus",
+      "identity": {
+        "report_package_count": "61",
+        "new_reviewed_package_count": "6",
+        "new_inspected_file_count": "278"
+      }
+    },
+    {
+      "name": "deterministic row-level audit builder",
+      "identity": {
+        "file": "support/build_audit.py",
+        "sha256": "e9e49c2679f480f2b375b11d3a7911c97afa0757de3386cbf5bda0da1275273c"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

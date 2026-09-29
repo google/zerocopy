@@ -1,0 +1,18 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs": "79152735b8464ffa.o",
+ "log":
+ [{"message":
+   ".> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/clang -c -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/ir/Plugin.c.o.export /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/ir/Plugin.c -I /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/include -fstack-clash-protection -fdata-sections -ffunction-sections -fvisibility=hidden -Wno-unused-command-line-argument --sysroot /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0 -nostdinc -isystem /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/include/clang -O3 -DNDEBUG -DLEAN_EXPORTING",
+   "level": "trace"}],
+ "inputs":
+ [["Plugin:c",
+   [["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/ir/Plugin.c",
+     "3e9eac41abab53d8"],
+    ["Lean 4.29.0, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740",
+     "60bb08ef22408c8a"]]],
+  ["Lean 4.29.0, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740",
+   "60bb08ef22408c8a"],
+  ["traceArgs: #[-O3, -DNDEBUG, -DLEAN_EXPORTING]", "c1efb66122fb2b9a"],
+  ["arm64-apple-darwin24.6.0", "77c16133d139df5a"]],
+ "depHash": "9a82528ea0722e20"}

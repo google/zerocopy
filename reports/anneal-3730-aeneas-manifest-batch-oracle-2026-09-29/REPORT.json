@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "aeneas/lean-generation",
+    "aeneas/external-model",
+    "anneal/cross-tool-provenance",
+    "anneal/batch-acceptance"
+  ],
+  "subjects": [
+    {
+      "name": "pinned local Charon executable",
+      "identity": {
+        "artifact": "macOS arm64 charon 0.1.210 executable",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "pinned local Aeneas executable",
+      "identity": {
+        "artifact": "macOS arm64 aeneas nightly-2026.06.03 executable",
+        "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      }
+    },
+    {
+      "name": "Lean 4 batch checker and prebuilt Aeneas Lean environment",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+      }
+    },
+    {
+      "name": "independent Rust-to-Aeneas batch oracle probe",
+      "identity": {
+        "file": "support/probe.py",
+        "sha256": "2ff31ce81b1a85295b34c3f9aaf80e2e9f36379b4a7da4d266030e34ccd8bb56"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

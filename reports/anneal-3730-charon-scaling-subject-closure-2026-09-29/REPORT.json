@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "cargo/compilation-subjects",
+    "charon/dependency-chasing",
+    "charon/scaling",
+    "charon/output-completeness"
+  ],
+  "subjects": [
+    {
+      "name": "Charon 0.1.210 executable and source",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "version": "0.1.210",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "Rust compiler and Cargo nightly 2026-05-31",
+      "identity": {
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "rustc_commit": "f8a08b688",
+        "cargo_commit": "fbb61be30"
+      }
+    },
+    {
+      "name": "Controlled two-member Cargo workspace and probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "3a97c7f96332b63c1ab021769afec44e83f3de50e9c2fb8e38eeac79174c8d84"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

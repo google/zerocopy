@@ -1,0 +1,51 @@
+{
+  "anneal-3730-nested-parallelism-budget-2026-09-29": {
+    "suite": "R37 / J06",
+    "ids": [115],
+    "method": "Pinned tiny Charon/Cargo and direct Lean LSP ran separate outer 1/2/4 by inner 1/2 matrices (12 cells), retaining Cargo unit logs/LLBC and Lean goal replies, process/thread/RSS/CPU and selected footprint samples under resource admission. All cells completed; warm Charon no-op rewrote LLBC hashes; all process trees cleaned.",
+    "boundary": "Separate tiny component ramps, not a combined Rust→Charon→Aeneas→Lake→Lean Anneal scheduler, realistic workload or physical peak/capacity proof; some short-lived Cargo PIDs escaped footprint sampling.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/probe.py", "support/check.py"]
+  },
+  "anneal-3730-lean-pool-failure-isolation-2026-09-29": {
+    "suite": "R38 / J09",
+    "ids": [105, 110, 139],
+    "method": "Four independent pinned direct Lean LSP process groups opened tiny goals. One malformed unsaved buffer produced a local diagnostic while peers stayed clean; a second group's request was cancelled on the wire and its process group SIGKILLed, then a fresh server reopened saved proof while two peers remained responsive. Experiment-side epoch/version/hash model rejected an old candidate; eight-worker cell was denied by admission.",
+    "boundary": "Cancellation delivery was not acknowledged/processed before kill; stale fencing was a model, not a late Lean reply or Anneal scheduler; no admitted eight-worker, shared-import or generated-project fault run.",
+    "evidence_files": ["REPORT.md", "support/transcript.json", "support/probe.py", "support/verify.py"]
+  },
+  "anneal-3730-lean-server-resource-drift-soak-2026-09-29": {
+    "suite": "R39 / J10",
+    "ids": [116, 122],
+    "method": "One tiny imported direct Lean proof ran 336.55 seconds through three about-111.6-second server lifetimes, 63 versioned edit/goal queries, two orderly restarts and 36 periodic macOS group footprint/process-child/disk ledgers. After initial elaboration, sampled group footprint settled near 332–333 MiB and each owned tree exited cleanly.",
+    "boundary": "Tiny 5.6-minute orderly-restart component soak with two-point-periodic sampling; no hours-long leak classification, hard transient peak, realistic imports, Anneal daemon or crash reconstruction.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/sample-ledger.csv", "support/probe.py", "support/check.py"]
+  },
+  "anneal-3730-apfs-overlayfs-resource-accounting-2026-09-29": {
+    "suite": "R40 / J14",
+    "ids": [113, 115, 119, 124],
+    "method": "One tiny 11-file/2.15-MB fixture compared APFS copy/clone/hardlink/mutation counters with cached Ubuntu 24.04 Docker overlayfs ordinary copy, successful reflink, hardlink and clone mutation. Per-file logical/st_blocks/inode, APFS volume-free, GNU du/df and Docker SizeRw counters diverged; base bytes stayed unchanged.",
+    "boundary": "No exclusive overlayfs physical-extent byte accounting, native ext4/XFS/Windows/network target, large concurrent Lean jobs, cache GC or Anneal archive layout; Docker linux/amd64 is emulated on arm64.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/probe.py", "support/verify.py"]
+  },
+  "anneal-3730-generated-lean-canonical-source-challenge-2026-09-29": {
+    "suite": "R41 / N08",
+    "ids": [159],
+    "method": "Synthetic Rust-source→Lean-model fixture treated initially generated Proof.lean as canonical proof and compiled a Rust-hosted projected view. UTF-16/UTF-8 range edit after emoji, tactic/claim edits, direct canonical edit, stale/scaffold CAS rejection, mapped lean --json error, fixed-proof/model-change failure and derivative regeneration round trips passed.",
+    "boundary": "Tiny manually recognized Rust subset and Python source map; no actual Charon/Aeneas-generated proof workspace, Anneal V2 editor/MCP bridge, cross-file obligation graph, two-client race or product architecture decision.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/artifacts/final-Proof.lean", "support/artifacts/final-HostView.rs", "support/probe.py", "support/check.py"]
+  },
+  "anneal-3730-charon-warm-noop-byte-diff-2026-09-29": {
+    "suite": "R42 / I079-I148",
+    "ids": [79, 148],
+    "method": "Five consecutive pinned Charon/Cargo requests reused the same source manifest, target, output path and flags. All five 10,936-byte LLBC files had distinct hashes/mtimes, but the only changed 225-byte field was translated.short_names array order; keyed entries, definitions, spans and remaining bytes matched. Sorting only that field yielded one byte stream. Source inspection found HashMap iteration feeding insertion-ordered SeqHashMap serialization, consistent with the observed permutations.",
+    "boundary": "One tiny pinned fixture; the Charon source snapshot was not rebuilt into the tested binary, no downstream Aeneas cost/oracle was measured, arbitrary LLBC array normalization is unjustified, and revisions/path/annotation/semantic equivalence remain untested.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/source-inspection.json", "support/artifacts/run-1.llbc", "support/artifacts/run-5.llbc", "support/probe.py", "support/verify.py"]
+  },
+  "anneal-3730-charon-shortname-aeneas-impact-2026-09-29": {
+    "suite": "R43 / I079-I148",
+    "ids": [79, 148],
+    "method": "Five exact R42 order-only LLBC variants went through separate pinned one-shot Aeneas CLI destinations and fresh direct Lean and Lake consumers. All four generated Lean files/declaration sets and direct Lean proof/axiom oracles matched. Five fresh Lake builds succeeded; same-project no-write and four same-path byte-identical replacements replayed all four local modules without trace/OLean changes. One fresh cross-path FunsExternal OLean hash differed because private pathname bytes were embedded.",
+    "boundary": "One tiny fixture with two external dependency axioms, one-shot Aeneas, warmed cached packages and no actual Anneal generator/publisher; arbitrary short-name reordering, semantic refinement, same-process reset, substantive model edits and general cache normalization are unproved.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/work/run-1/probe.llbc", "support/work/run-1/generated/Funs.lean", "support/work/run-5/generated/Funs.lean", "support/probe.py", "support/check.py"]
+  }
+}

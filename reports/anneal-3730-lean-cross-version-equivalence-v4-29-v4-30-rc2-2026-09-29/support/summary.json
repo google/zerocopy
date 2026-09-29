@@ -1,0 +1,991 @@
+{
+  "assertions": [
+    "v4.29.0: clean/prepared, direct/Lake and refresh checks passed",
+    "v4.30.0-rc2: clean/prepared, direct/Lake and refresh checks passed"
+  ],
+  "raw_sha256": "dda8bfc937dc7e5ddb3e735a6e053289f3166fb09e175c34b02ef2a0f01c066d",
+  "toolchains": {
+    "v4.29.0": {
+      "artifact_only": {
+        "batch": {
+          "direct_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          },
+          "lake_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          }
+        },
+        "dependency_source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "no_build_rc": 0
+      },
+      "baseline": {
+        "clean": {
+          "batch": {
+            "direct": {
+              "axiom_free": true,
+              "diagnostics": [
+                {
+                  "data": "'generatedEq' does not depend on any axioms",
+                  "pos": {
+                    "column": 0,
+                    "line": 4
+                  },
+                  "severity": "information"
+                },
+                {
+                  "data": "7",
+                  "pos": {
+                    "column": 0,
+                    "line": 5
+                  },
+                  "severity": "information"
+                }
+              ],
+              "false_proposition": false,
+              "rc": 0,
+              "sorry_ax": false,
+              "value": "7"
+            },
+            "lake-env": {
+              "axiom_free": true,
+              "diagnostics": [
+                {
+                  "data": "'generatedEq' does not depend on any axioms",
+                  "pos": {
+                    "column": 0,
+                    "line": 4
+                  },
+                  "severity": "information"
+                },
+                {
+                  "data": "7",
+                  "pos": {
+                    "column": 0,
+                    "line": 5
+                  },
+                  "severity": "information"
+                }
+              ],
+              "false_proposition": false,
+              "rc": 0,
+              "sorry_ax": false,
+              "value": "7"
+            }
+          },
+          "live": {
+            "direct": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            },
+            "lake-env": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            },
+            "lake-serve": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            }
+          },
+          "setup_rc": 0
+        },
+        "prepared": {
+          "batch": {
+            "direct": {
+              "axiom_free": true,
+              "diagnostics": [
+                {
+                  "data": "'generatedEq' does not depend on any axioms",
+                  "pos": {
+                    "column": 0,
+                    "line": 4
+                  },
+                  "severity": "information"
+                },
+                {
+                  "data": "7",
+                  "pos": {
+                    "column": 0,
+                    "line": 5
+                  },
+                  "severity": "information"
+                }
+              ],
+              "false_proposition": false,
+              "rc": 0,
+              "sorry_ax": false,
+              "value": "7"
+            },
+            "lake-env": {
+              "axiom_free": true,
+              "diagnostics": [
+                {
+                  "data": "'generatedEq' does not depend on any axioms",
+                  "pos": {
+                    "column": 0,
+                    "line": 4
+                  },
+                  "severity": "information"
+                },
+                {
+                  "data": "7",
+                  "pos": {
+                    "column": 0,
+                    "line": 5
+                  },
+                  "severity": "information"
+                }
+              ],
+              "false_proposition": false,
+              "rc": 0,
+              "sorry_ax": false,
+              "value": "7"
+            }
+          },
+          "live": {
+            "direct": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            },
+            "lake-env": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            },
+            "lake-serve": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            }
+          },
+          "setup_rc": 0
+        }
+      },
+      "baseline_dep_olean_sha256": "f325eef7ec1d358718996207a81494ee92c3ec9d3cd4285e5ab8f0cb2520143d",
+      "dependency_source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "lake_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+      "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+      "proof_source_sha256": "4c7906672af8fc5437d9c137ccca99c1161f902d2efa1f9ae4e415ed9408a161",
+      "refresh": {
+        "direct": {
+          "fresh_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          },
+          "old_after_watcher_goal_count": 0,
+          "old_before_goal_count": 0,
+          "reopened_diagnostic_messages": [
+            "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+            "'generatedEq' depends on axioms: [sorryAx]",
+            "9"
+          ],
+          "reopened_goal": "\u22a2 depValue + 1 = 8",
+          "reopened_goal_count": 1
+        },
+        "lake-env": {
+          "fresh_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          },
+          "old_after_watcher_goal_count": 0,
+          "old_before_goal_count": 0,
+          "reopened_diagnostic_messages": [
+            "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+            "'generatedEq' depends on axioms: [sorryAx]",
+            "9"
+          ],
+          "reopened_goal": "\u22a2 depValue + 1 = 8",
+          "reopened_goal_count": 1
+        },
+        "lake-serve": {
+          "fresh_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          },
+          "old_after_watcher_goal_count": 0,
+          "old_before_goal_count": 0,
+          "reopened_diagnostic_messages": [
+            "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+            "'generatedEq' depends on axioms: [sorryAx]",
+            "9"
+          ],
+          "reopened_goal": "\u22a2 depValue + 1 = 8",
+          "reopened_goal_count": 1
+        }
+      },
+      "replacement_dep_olean_sha256": "f1389a240dafcea9b8cf03956cb7f877b356911b32ce4646b3b046ace5cac621",
+      "source_only": {
+        "batch": {
+          "direct_batch": {
+            "axiom_free": true,
+            "diagnostics": [
+              {
+                "data": "'generatedEq' does not depend on any axioms",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "7",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": false,
+            "rc": 0,
+            "sorry_ax": false,
+            "value": "7"
+          },
+          "lake_batch": {
+            "axiom_free": true,
+            "diagnostics": [
+              {
+                "data": "'generatedEq' does not depend on any axioms",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "7",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": false,
+            "rc": 0,
+            "sorry_ax": false,
+            "value": "7"
+          }
+        },
+        "dependency_source_sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+        "live": {
+          "direct": {
+            "after_olean_sha256": "64adab27bfe2eaa6c5c7e0bbd719478b1dbba77b48ac5f1679075fb7916fbed5",
+            "before_olean_sha256": "f325eef7ec1d358718996207a81494ee92c3ec9d3cd4285e5ab8f0cb2520143d",
+            "diagnostic_messages": [
+              "\u2714 [2/3] Built Dep (169ms)\n",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "9"
+            ],
+            "goal_count": 1,
+            "wait_succeeded": true
+          },
+          "lake-env": {
+            "after_olean_sha256": "64adab27bfe2eaa6c5c7e0bbd719478b1dbba77b48ac5f1679075fb7916fbed5",
+            "before_olean_sha256": "f325eef7ec1d358718996207a81494ee92c3ec9d3cd4285e5ab8f0cb2520143d",
+            "diagnostic_messages": [
+              "\u2714 [2/3] Built Dep (169ms)\n",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "9"
+            ],
+            "goal_count": 1,
+            "wait_succeeded": true
+          },
+          "lake-serve": {
+            "after_olean_sha256": "64adab27bfe2eaa6c5c7e0bbd719478b1dbba77b48ac5f1679075fb7916fbed5",
+            "before_olean_sha256": "f325eef7ec1d358718996207a81494ee92c3ec9d3cd4285e5ab8f0cb2520143d",
+            "diagnostic_messages": [
+              "\u2714 [2/3] Built Dep (170ms)\n",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "9"
+            ],
+            "goal_count": 1,
+            "wait_succeeded": true
+          }
+        },
+        "no_build_rc": 3
+      },
+      "version_output": [
+        "Lean (version 4.29.0, arm64-apple-darwin24.6.0, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740, Release)",
+        "Lake version 5.0.0-src+98dc76e (Lean version 4.29.0)"
+      ]
+    },
+    "v4.30.0-rc2": {
+      "artifact_only": {
+        "batch": {
+          "direct_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          },
+          "lake_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          }
+        },
+        "dependency_source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "no_build_rc": 0
+      },
+      "baseline": {
+        "clean": {
+          "batch": {
+            "direct": {
+              "axiom_free": true,
+              "diagnostics": [
+                {
+                  "data": "'generatedEq' does not depend on any axioms",
+                  "pos": {
+                    "column": 0,
+                    "line": 4
+                  },
+                  "severity": "information"
+                },
+                {
+                  "data": "7",
+                  "pos": {
+                    "column": 0,
+                    "line": 5
+                  },
+                  "severity": "information"
+                }
+              ],
+              "false_proposition": false,
+              "rc": 0,
+              "sorry_ax": false,
+              "value": "7"
+            },
+            "lake-env": {
+              "axiom_free": true,
+              "diagnostics": [
+                {
+                  "data": "'generatedEq' does not depend on any axioms",
+                  "pos": {
+                    "column": 0,
+                    "line": 4
+                  },
+                  "severity": "information"
+                },
+                {
+                  "data": "7",
+                  "pos": {
+                    "column": 0,
+                    "line": 5
+                  },
+                  "severity": "information"
+                }
+              ],
+              "false_proposition": false,
+              "rc": 0,
+              "sorry_ax": false,
+              "value": "7"
+            }
+          },
+          "live": {
+            "direct": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            },
+            "lake-env": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            },
+            "lake-serve": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            }
+          },
+          "setup_rc": 0
+        },
+        "prepared": {
+          "batch": {
+            "direct": {
+              "axiom_free": true,
+              "diagnostics": [
+                {
+                  "data": "'generatedEq' does not depend on any axioms",
+                  "pos": {
+                    "column": 0,
+                    "line": 4
+                  },
+                  "severity": "information"
+                },
+                {
+                  "data": "7",
+                  "pos": {
+                    "column": 0,
+                    "line": 5
+                  },
+                  "severity": "information"
+                }
+              ],
+              "false_proposition": false,
+              "rc": 0,
+              "sorry_ax": false,
+              "value": "7"
+            },
+            "lake-env": {
+              "axiom_free": true,
+              "diagnostics": [
+                {
+                  "data": "'generatedEq' does not depend on any axioms",
+                  "pos": {
+                    "column": 0,
+                    "line": 4
+                  },
+                  "severity": "information"
+                },
+                {
+                  "data": "7",
+                  "pos": {
+                    "column": 0,
+                    "line": 5
+                  },
+                  "severity": "information"
+                }
+              ],
+              "false_proposition": false,
+              "rc": 0,
+              "sorry_ax": false,
+              "value": "7"
+            }
+          },
+          "live": {
+            "direct": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            },
+            "lake-env": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            },
+            "lake-serve": {
+              "diagnostic_messages": [
+                "'generatedEq' does not depend on any axioms",
+                "'generatedEq' does not depend on any axioms",
+                "7"
+              ],
+              "goal_count": 0,
+              "wait_succeeded": true
+            }
+          },
+          "setup_rc": 0
+        }
+      },
+      "baseline_dep_olean_sha256": "3f03e66c934405d32f94a087c91e19021d71078cae3e8e33d7d9eadd3e415772",
+      "dependency_source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+      "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+      "proof_source_sha256": "4c7906672af8fc5437d9c137ccca99c1161f902d2efa1f9ae4e415ed9408a161",
+      "refresh": {
+        "direct": {
+          "fresh_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          },
+          "old_after_watcher_goal_count": 0,
+          "old_before_goal_count": 0,
+          "reopened_diagnostic_messages": [
+            "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+            "'generatedEq' depends on axioms: [sorryAx]",
+            "9"
+          ],
+          "reopened_goal": "\u22a2 depValue + 1 = 8",
+          "reopened_goal_count": 1
+        },
+        "lake-env": {
+          "fresh_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          },
+          "old_after_watcher_goal_count": 0,
+          "old_before_goal_count": 0,
+          "reopened_diagnostic_messages": [
+            "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+            "'generatedEq' depends on axioms: [sorryAx]",
+            "9"
+          ],
+          "reopened_goal": "\u22a2 depValue + 1 = 8",
+          "reopened_goal_count": 1
+        },
+        "lake-serve": {
+          "fresh_batch": {
+            "axiom_free": false,
+            "diagnostics": [
+              {
+                "data": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "pos": {
+                  "column": 2,
+                  "line": 3
+                },
+                "severity": "error"
+              },
+              {
+                "data": "'generatedEq' depends on axioms: [sorryAx]",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "9",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": true,
+            "rc": 1,
+            "sorry_ax": true,
+            "value": "9"
+          },
+          "old_after_watcher_goal_count": 0,
+          "old_before_goal_count": 0,
+          "reopened_diagnostic_messages": [
+            "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+            "'generatedEq' depends on axioms: [sorryAx]",
+            "9"
+          ],
+          "reopened_goal": "\u22a2 depValue + 1 = 8",
+          "reopened_goal_count": 1
+        }
+      },
+      "replacement_dep_olean_sha256": "0f0fbd523ef1ce3fce88465a688f7a786beb38969ff690b97c51778d5da30ec0",
+      "source_only": {
+        "batch": {
+          "direct_batch": {
+            "axiom_free": true,
+            "diagnostics": [
+              {
+                "data": "'generatedEq' does not depend on any axioms",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "7",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": false,
+            "rc": 0,
+            "sorry_ax": false,
+            "value": "7"
+          },
+          "lake_batch": {
+            "axiom_free": true,
+            "diagnostics": [
+              {
+                "data": "'generatedEq' does not depend on any axioms",
+                "pos": {
+                  "column": 0,
+                  "line": 4
+                },
+                "severity": "information"
+              },
+              {
+                "data": "7",
+                "pos": {
+                  "column": 0,
+                  "line": 5
+                },
+                "severity": "information"
+              }
+            ],
+            "false_proposition": false,
+            "rc": 0,
+            "sorry_ax": false,
+            "value": "7"
+          }
+        },
+        "dependency_source_sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+        "live": {
+          "direct": {
+            "after_olean_sha256": "be364799ebb99eb2b6ce3afc42b13f7a1ca77331dd393236bd88e510abfcb368",
+            "before_olean_sha256": "3f03e66c934405d32f94a087c91e19021d71078cae3e8e33d7d9eadd3e415772",
+            "diagnostic_messages": [
+              "\u2714 [2/3] Built Dep (177ms)\n",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "9"
+            ],
+            "goal_count": 1,
+            "wait_succeeded": true
+          },
+          "lake-env": {
+            "after_olean_sha256": "be364799ebb99eb2b6ce3afc42b13f7a1ca77331dd393236bd88e510abfcb368",
+            "before_olean_sha256": "3f03e66c934405d32f94a087c91e19021d71078cae3e8e33d7d9eadd3e415772",
+            "diagnostic_messages": [
+              "\u2714 [2/3] Built Dep (181ms)\n",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "9"
+            ],
+            "goal_count": 1,
+            "wait_succeeded": true
+          },
+          "lake-serve": {
+            "after_olean_sha256": "be364799ebb99eb2b6ce3afc42b13f7a1ca77331dd393236bd88e510abfcb368",
+            "before_olean_sha256": "3f03e66c934405d32f94a087c91e19021d71078cae3e8e33d7d9eadd3e415772",
+            "diagnostic_messages": [
+              "\u2714 [2/3] Built Dep (180ms)\n",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+              "'generatedEq' depends on axioms: [sorryAx]",
+              "9"
+            ],
+            "goal_count": 1,
+            "wait_succeeded": true
+          }
+        },
+        "no_build_rc": 3
+      },
+      "version_output": [
+        "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+        "Lake version 5.0.0-src+3dc1a08 (Lean version 4.30.0-rc2)"
+      ]
+    }
+  }
+}

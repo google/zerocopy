@@ -1,0 +1,146 @@
+{
+  "status": "bounded assertions passed",
+  "events": 262,
+  "probe_sha256": "787f967a151e85c93761ae505f98c011af75e95362d4499be5841c354d8514c6",
+  "transcript_sha256": "bfe3ca05a09f821422322543fec3ee47f040dd4b8927250e6f0147ecd539a7da",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "host_ram_bytes": 8589934592,
+  "start_free_percent": 51,
+  "end_free_percent": 46,
+  "groups": {
+    "cold-serial-a": {
+      "consumers": 1,
+      "elapsed_ms": 956.2,
+      "peak_rss_bytes": 1027457024,
+      "sampled_peak_processes": 2,
+      "peak_blocks_bytes": 159744,
+      "peak_files": 15,
+      "temp_seen": [],
+      "olean_sha256": [
+        "7df292842f726ca78d07502ab932e8010a60796e9b3098bd9a4850da4ee29761"
+      ]
+    },
+    "cold-serial-b": {
+      "consumers": 1,
+      "elapsed_ms": 615.4,
+      "peak_rss_bytes": 777338880,
+      "sampled_peak_processes": 2,
+      "peak_blocks_bytes": 159744,
+      "peak_files": 15,
+      "temp_seen": [],
+      "olean_sha256": [
+        "7f42d628991ba251a6999138812e3570b66dbe963cf4e332034a8c46724c9d3f"
+      ]
+    },
+    "cold-parallel-two": {
+      "consumers": 2,
+      "elapsed_ms": 808.1,
+      "peak_rss_bytes": 2102542336,
+      "sampled_peak_processes": 4,
+      "peak_blocks_bytes": 319488,
+      "peak_files": 30,
+      "temp_seen": [],
+      "olean_sha256": [
+        "7df292842f726ca78d07502ab932e8010a60796e9b3098bd9a4850da4ee29761",
+        "7f42d628991ba251a6999138812e3570b66dbe963cf4e332034a8c46724c9d3f"
+      ]
+    },
+    "warm-parallel-two": {
+      "consumers": 2,
+      "elapsed_ms": 537.3,
+      "peak_rss_bytes": 1303625728,
+      "sampled_peak_processes": 2,
+      "peak_blocks_bytes": 319488,
+      "peak_files": 30,
+      "temp_seen": [],
+      "olean_sha256": [
+        "7df292842f726ca78d07502ab932e8010a60796e9b3098bd9a4850da4ee29761",
+        "7f42d628991ba251a6999138812e3570b66dbe963cf4e332034a8c46724c9d3f"
+      ]
+    },
+    "proof-edit-parallel-two": {
+      "consumers": 2,
+      "elapsed_ms": 672.8,
+      "peak_rss_bytes": 1304084480,
+      "sampled_peak_processes": 2,
+      "peak_blocks_bytes": 319488,
+      "peak_files": 30,
+      "temp_seen": [],
+      "olean_sha256": [
+        "fe0d9165e3c126a4af2a2d002bfe05a3c537385cde13db722fc3a07611139d34",
+        "515b2caad96c6be5cfdf699778321e52fbbdc1f62483414af356984a6dc657ce"
+      ]
+    },
+    "warm-after-edit-two": {
+      "consumers": 2,
+      "elapsed_ms": 538.8,
+      "peak_rss_bytes": 1303248896,
+      "sampled_peak_processes": 2,
+      "peak_blocks_bytes": 319488,
+      "peak_files": 30,
+      "temp_seen": [],
+      "olean_sha256": [
+        "fe0d9165e3c126a4af2a2d002bfe05a3c537385cde13db722fc3a07611139d34",
+        "515b2caad96c6be5cfdf699778321e52fbbdc1f62483414af356984a6dc657ce"
+      ]
+    }
+  },
+  "servers": {
+    "initial": {
+      "summed_rss_bytes": 1044250624,
+      "process_count": 4,
+      "summed_phys_footprint_bytes": 369165376
+    },
+    "edit-1": {
+      "summed_rss_bytes": 1163034624,
+      "process_count": 4,
+      "summed_phys_footprint_bytes": null
+    },
+    "edit-2": {
+      "summed_rss_bytes": 1258242048,
+      "process_count": 4,
+      "summed_phys_footprint_bytes": null
+    },
+    "edit-3": {
+      "summed_rss_bytes": 1359773696,
+      "process_count": 4,
+      "summed_phys_footprint_bytes": null
+    },
+    "edit-4": {
+      "summed_rss_bytes": 1385152512,
+      "process_count": 4,
+      "summed_phys_footprint_bytes": null
+    },
+    "reopen": {
+      "summed_rss_bytes": 1382039552,
+      "process_count": 4,
+      "summed_phys_footprint_bytes": 695633472
+    },
+    "after-stop": {
+      "summed_rss_bytes": 0,
+      "process_count": 0,
+      "summed_phys_footprint_bytes": null
+    }
+  },
+  "server_latencies_ms": {
+    "textDocument/waitForDiagnostics": {
+      "count": 12,
+      "minimum": 211.3,
+      "median": 211.55,
+      "maximum": 626.0
+    },
+    "$/lean/plainGoal": {
+      "count": 12,
+      "minimum": 0.4,
+      "median": 0.5,
+      "maximum": 1.4
+    }
+  },
+  "server_open_ms": [
+    610.9,
+    626.0,
+    600.2,
+    590.0
+  ]
+}

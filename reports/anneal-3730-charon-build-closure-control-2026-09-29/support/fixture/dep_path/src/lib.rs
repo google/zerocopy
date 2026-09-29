@@ -1,0 +1,1 @@
+pub fn dep(x: u32) -> u32 { x.wrapping_add(11) }

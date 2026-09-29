@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "anneal/lake",
+    "anneal/3730-3731-coverage",
+    "anneal/native-plugin-identity"
+  ],
+  "subjects": [
+    {
+      "name": "pinned Lean/Lake v4.30.0-rc2 on macOS arm64",
+      "identity": {
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "Lake-discovered combined native/plugin/setup/OLean fixture",
+      "identity": {
+        "probe_sha256": "bee17a0df909f0a3dbbde0a29038d414a0568935c8a7661d9940fb00289fd23f",
+        "transcript_sha256": "a94170f6d250cc7c167c6f9ea4033ba1b9974cf913ad55e63e5c75dd411663e9",
+        "command_records": "10",
+        "fresh_lake_servers": "3"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,11 @@
+{"plugins": [],
+ "package": "layout",
+ "options": {},
+ "name": "Aggregate",
+ "isModule": false,
+ "importArts":
+ {"Model":
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/.lake/build/lib/lean/Model.olean"],
+  "File":
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-file/.lake/build/lib/lean/File.olean"]},
+ "dynlibs": []}

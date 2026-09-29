@@ -1,0 +1,879 @@
+{
+  "observations": {
+    "apfs_aliases": {
+      "batch_exits": {
+        "case_alias": 0,
+        "dir_symlink": 0,
+        "hardlink": 0,
+        "relative": 0,
+        "unicode_alias": 0
+      },
+      "case_directory_entries": [
+        "Case",
+        "dir-link",
+        "hard",
+        "live",
+        "\u00e9"
+      ],
+      "case_same_directory": true,
+      "hard_before": {
+        "bytes": 4552,
+        "device": 16777229,
+        "inode": 24422673,
+        "links": 2,
+        "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+      },
+      "live_before": {
+        "bytes": 4552,
+        "device": 16777229,
+        "inode": 24422673,
+        "links": 2,
+        "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+      },
+      "symlink_resolves_to": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/real-lean-filesystem-run3/apfs/live",
+      "unicode_same_directory": true
+    },
+    "apfs_lifecycle": {
+      "fresh_value9_after_replace": true,
+      "hardlink_after_replace": {
+        "bytes": 4552,
+        "device": 16777229,
+        "inode": 24422673,
+        "links": 1,
+        "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+      },
+      "missing_after_unlink": true,
+      "old": {
+        "bytes": 4552,
+        "device": 16777229,
+        "inode": 24422673,
+        "links": 2,
+        "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+      },
+      "reader_phase1": {
+        "fd_sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "map_sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "path_exists": true,
+        "path_sha256": "0f0fbd523ef1ce3fce88465a688f7a786beb38969ff690b97c51778d5da30ec0",
+        "phase": 1
+      },
+      "reader_phase2": {
+        "fd_sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "map_sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "path_exists": false,
+        "path_sha256": null,
+        "phase": 2
+      },
+      "replacement": {
+        "bytes": 4456,
+        "device": 16777229,
+        "inode": 24422690,
+        "links": 1,
+        "sha256": "0f0fbd523ef1ce3fce88465a688f7a786beb38969ff690b97c51778d5da30ec0"
+      },
+      "resident_value7": true
+    },
+    "environment": {
+      "apfs_df": "Filesystem   512-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1  478724992 303241728 108143272    74%    /System/Volumes/Data",
+      "apfs_diskutil_excerpt": [
+        "Device Node:               /dev/disk3s1",
+        "Mount Point:               /System/Volumes/Data",
+        "File System Personality:   APFS",
+        "Type (Bundle):             apfs"
+      ],
+      "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]"
+    },
+    "overlayfs": {
+      "after_replace_sha256sum": "0f0fbd523ef1ce3fce88465a688f7a786beb38969ff690b97c51778d5da30ec0  /tmp/lean-life/Dep.olean\n7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3  /tmp/lean-life/hard/Dep.olean",
+      "alias_stdout": "case=0 unicode=0",
+      "docker_info": "overlayfs aarch64 4181389312",
+      "filesystem": "overlayfs",
+      "host_batch_roundtrip_new_exit": 0,
+      "host_batch_roundtrip_old_exit": 0,
+      "image": "sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254",
+      "initial_sha256sum": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3  /tmp/lean-life/Dep.olean\n7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3  /tmp/lean-life/hard/Dep.olean",
+      "linux_lean_executed": false,
+      "mapped_fd_snapshot_sha256": {
+        "phase1-fd.bin": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "phase1-map.bin": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "phase2-fd.bin": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "phase2-map.bin": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+      },
+      "missing_after_unlink": true,
+      "os_release": [
+        "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"",
+        "VERSION_ID=\"24.04\""
+      ],
+      "uname_machine": "x86_64"
+    }
+  },
+  "records": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "$WORK/build7/Dep.olean",
+        "$WORK/build7/Dep.lean"
+      ],
+      "cwd": "$WORK/build7",
+      "exit": 0,
+      "label": "compile-dep7",
+      "seconds": 0.1832,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "$WORK/build9/Dep.olean",
+        "$WORK/build9/Dep.lean"
+      ],
+      "cwd": "$WORK/build9",
+      "exit": 0,
+      "label": "compile-dep9",
+      "seconds": 0.1631,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "$WORK/build7/Plugin.olean",
+        "$WORK/build7/Plugin.lean"
+      ],
+      "cwd": "$WORK/build7",
+      "exit": 0,
+      "label": "compile-plugin",
+      "seconds": 0.6594,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-batch7-before",
+      "seconds": 0.5958,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-symlink-root-before",
+      "seconds": 0.602,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-hardlink-root-before",
+      "seconds": 0.5954,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-relative-root-before",
+      "seconds": 0.592,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-case-root-before",
+      "seconds": 0.6014,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-unicode-root-before",
+      "seconds": 0.602,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer9.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-fresh-batch9-after-rename",
+      "seconds": 0.6059,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer9.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 1,
+      "label": "apfs-fresh-batch7-after-rename",
+      "seconds": 0.5811,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue = 7\\nis false\",\"endPos\":{\"column\":50,\"line\":3},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":38,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer9.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 1,
+      "label": "apfs-fresh-batch-after-unlink",
+      "seconds": 0.0931,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/apfs/live\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"$REPORT/fixture/Consumer9.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n"
+    },
+    {
+      "exit": 0,
+      "label": "apfs-open-mmap-reader",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "exit": 0,
+      "label": "apfs-resident-lean",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":6},\"fileName\":\"$WORK/apfs/Resident.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer9.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-fresh-batch-after-republish",
+      "seconds": 0.6054,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer9.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK/apfs",
+      "exit": 0,
+      "label": "apfs-hardlink-old-after-republish",
+      "seconds": 0.5943,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "info",
+        "--format",
+        "{{.Driver}} {{.Architecture}} {{.MemTotal}}"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "docker-info",
+      "seconds": 0.2713,
+      "stderr": "",
+      "stdout": "overlayfs aarch64 4181389312\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "image",
+        "inspect",
+        "ubuntu:24.04",
+        "--format",
+        "{{.Id}} {{.Architecture}} {{.Os}}"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "cached-image-inspect",
+      "seconds": 0.0322,
+      "stderr": "",
+      "stdout": "sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254  \n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "run",
+        "-d",
+        "--rm",
+        "--pull=never",
+        "--network=none",
+        "--platform",
+        "linux/amd64",
+        "--memory=512m",
+        "--cpus=1",
+        "--name",
+        "$CONTAINER",
+        "ubuntu:24.04",
+        "sleep",
+        "120"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-start",
+      "seconds": 0.1762,
+      "stderr": "",
+      "stdout": "bbe7f7d9a9e6ec59eff91c0b29d31ce2ed4358103faa62795d5630d378530108\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "mkdir",
+        "-p",
+        "/tmp/lean-life/hard"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-mkdir",
+      "seconds": 0.0552,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$REPORT/artifacts/Dep7.olean",
+        "$CONTAINER:/tmp/lean-life/Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-Dep.olean",
+      "seconds": 0.0239,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$REPORT/artifacts/Dep9.olean",
+        "$CONTAINER:/tmp/lean-life/Dep9.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-Dep9.olean",
+      "seconds": 0.024,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$REPORT/artifacts/Plugin.olean",
+        "$CONTAINER:/tmp/lean-life/Plugin.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-Plugin.olean",
+      "seconds": 0.0264,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$REPORT/overlay_reader.pl",
+        "$CONTAINER:/tmp/lean-life/overlay_reader.pl"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-overlay_reader.pl",
+      "seconds": 0.0256,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "ln",
+        "-s",
+        "/tmp/lean-life",
+        "/tmp/lean-life-alias"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-symlink-root",
+      "seconds": 0.0563,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "ln",
+        "/tmp/lean-life/Dep.olean",
+        "/tmp/lean-life/hard/Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-hardlink",
+      "seconds": 0.0548,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "stat",
+        "-f",
+        "-c",
+        "%T",
+        "/tmp/lean-life"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-fs",
+      "seconds": 0.0512,
+      "stderr": "",
+      "stdout": "overlayfs\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "uname",
+        "-m"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-uname",
+      "seconds": 0.0472,
+      "stderr": "",
+      "stdout": "x86_64\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "cat",
+        "/etc/os-release"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-release",
+      "seconds": 0.0503,
+      "stderr": "",
+      "stdout": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "perl",
+        "-e",
+        "use utf8; mkdir(\"/tmp/lean-life/Case\"); mkdir(\"/tmp/lean-life/\u00e9\"); print \"case=\".(-d \"/tmp/lean-life/case\"?1:0).\" unicode=\".(-d \"/tmp/lean-life/e\\x{301}\"?1:0).\"\\n\";"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-case-unicode",
+      "seconds": 0.1061,
+      "stderr": "",
+      "stdout": "case=0 unicode=0\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "sha256sum",
+        "/tmp/lean-life/Dep.olean",
+        "/tmp/lean-life/hard/Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-initial-hash",
+      "seconds": 0.0603,
+      "stderr": "",
+      "stdout": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3  /tmp/lean-life/Dep.olean\n7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3  /tmp/lean-life/hard/Dep.olean\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "test",
+        "-e",
+        "/tmp/lean-life/ready"
+      ],
+      "cwd": null,
+      "exit": 1,
+      "label": "ubuntu-wait-ready",
+      "seconds": 0.0497,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "test",
+        "-e",
+        "/tmp/lean-life/ready"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-wait-ready",
+      "seconds": 0.0516,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "mv",
+        "-f",
+        "/tmp/lean-life/Dep9.olean",
+        "/tmp/lean-life/Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-atomic-replace",
+      "seconds": 0.049,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "sha256sum",
+        "/tmp/lean-life/Dep.olean",
+        "/tmp/lean-life/hard/Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-replaced-hash",
+      "seconds": 0.0532,
+      "stderr": "",
+      "stdout": "0f0fbd523ef1ce3fce88465a688f7a786beb38969ff690b97c51778d5da30ec0  /tmp/lean-life/Dep.olean\n7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3  /tmp/lean-life/hard/Dep.olean\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$CONTAINER:/tmp/lean-life/Dep.olean",
+        "$WORK/linux-new-Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-roundtrip-new",
+      "seconds": 0.023,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$CONTAINER:/tmp/lean-life/Plugin.olean",
+        "$WORK/linux-Plugin.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-roundtrip-plugin",
+      "seconds": 0.0229,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "touch",
+        "/tmp/lean-life/go1"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-go1",
+      "seconds": 0.0474,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "test",
+        "-e",
+        "/tmp/lean-life/ack1"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-wait-ack1",
+      "seconds": 0.0448,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "rm",
+        "/tmp/lean-life/Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-unlink",
+      "seconds": 0.0498,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "test",
+        "-e",
+        "/tmp/lean-life/Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 1,
+      "label": "ubuntu-missing",
+      "seconds": 0.0473,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "touch",
+        "/tmp/lean-life/go2"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-go2",
+      "seconds": 0.0471,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "test",
+        "-e",
+        "/tmp/lean-life/ack2"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-wait-ack2",
+      "seconds": 0.0454,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "exit": 0,
+      "label": "ubuntu-mmap-open-reader",
+      "stderr": "",
+      "stdout": "mapped_bytes=4552 phases=2\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$CONTAINER:/tmp/lean-life/phase1-map.bin",
+        "$WORK/linux-snapshots/phase1-map.bin"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-phase1-map.bin",
+      "seconds": 0.0227,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$CONTAINER:/tmp/lean-life/phase1-fd.bin",
+        "$WORK/linux-snapshots/phase1-fd.bin"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-phase1-fd.bin",
+      "seconds": 0.0221,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$CONTAINER:/tmp/lean-life/phase2-map.bin",
+        "$WORK/linux-snapshots/phase2-map.bin"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-phase2-map.bin",
+      "seconds": 0.022,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$CONTAINER:/tmp/lean-life/phase2-fd.bin",
+        "$WORK/linux-snapshots/phase2-fd.bin"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-phase2-fd.bin",
+      "seconds": 0.0221,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$CONTAINER:/tmp/lean-life/hard/Dep.olean",
+        "$WORK/linux-old-Dep.olean"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-copy-roundtrip-old",
+      "seconds": 0.0211,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer9.lean"
+      ],
+      "cwd": "$WORK",
+      "exit": 0,
+      "label": "host-lean-roundtrip-overlay-new",
+      "seconds": 0.594,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer9.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/fixture/Consumer7.lean"
+      ],
+      "cwd": "$WORK",
+      "exit": 0,
+      "label": "host-lean-roundtrip-overlay-old-hardlink",
+      "seconds": 0.5937,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$REPORT/fixture/Consumer7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "rm",
+        "-f",
+        "$CONTAINER"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "ubuntu-stop",
+      "seconds": 0.1396,
+      "stderr": "",
+      "stdout": "$CONTAINER\n"
+    },
+    {
+      "argv": [
+        "diskutil",
+        "info",
+        "/System/Volumes/Data"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "apfs-diskutil",
+      "seconds": 0.1892,
+      "stderr": "",
+      "stdout": "   Device Identifier:         disk3s1\n   Device Node:               /dev/disk3s1\n   Whole:                     No\n   Part of Whole:             disk3\n\n   Volume Name:               Macintosh HD - Data\n   Mounted:                   Yes\n   Mount Point:               /System/Volumes/Data\n\n   Partition Type:            41504653-0000-11AA-AA11-00306543ECAC\n   File System Personality:   APFS\n   Type (Bundle):             apfs\n   Name (User Visible):       APFS\n   Owners:                    Enabled\n\n   OS Can Be Installed:       Yes\n   Booter Disk:               disk3s4\n   Recovery Disk:             disk3s5\n   Media Type:                Generic\n   Protocol:                  Apple Fabric\n   SMART Status:              Verified\n   Volume UUID:               6D962263-06E1-4C85-8660-CC711E4CB19E\n   Disk / Partition UUID:     6D962263-06E1-4C85-8660-CC711E4CB19E\n\n   Disk Size:                 245.1 GB (245107195904 Bytes) (exactly 478724992 512-Byte-Units)\n   Device Block Size:         4096 Bytes\n\n   Volume Used Space:         155.3 GB (155259764736 Bytes) (exactly 303241728 512-Byte-Units)\n   Container Total Space:     245.1 GB (245107195904 Bytes) (exactly 478724992 512-Byte-Units)\n   Container Free Space:      55.4 GB (55369355264 Bytes) (exactly 108143272 512-Byte-Units)\n   Allocation Block Size:     4096 Bytes\n\n   Media OS Use Only:         No\n   Media Read-Only:           No\n   Volume Read-Only:          No\n\n   Device Location:           Internal\n   Removable Media:           Fixed\n\n   Solid State:               Yes\n   Hardware AES Support:      Yes\n\n   This disk is an APFS Volume.  APFS Information:\n   APFS Container:            disk3\n   APFS Physical Store:       disk0s2\n   APFS Volume Group:         7DE6101E-96FE-4DE0-ABE5-14E636D24D74\n   FileVault:                 Yes\n   Sealed:                    No\n   Locked:                    No\n\n   APFS Snapshots are defined upon this APFS Volume.  Snapshot list:\n   Snapshot UUID:             AECA3BA2-6879-4A39-A1EA-C8439D59AB88\n   Name:                      com.apple.TimeMachine.2026-09-28-053257.local\n   XID:                       2807826\n   Snapshot UUID:             D55485AD-82E5-4300-8905-5694E42AD72C\n   Name:                      com.apple.TimeMachine.2026-09-28-063304.local\n   XID:                       2808205\n   Snapshot UUID:             FF6779C6-DA93-4571-80B0-77F648608138\n   Name:                      com.apple.TimeMachine.2026-09-28-073314.local\n   XID:                       2808586\n   Snapshot UUID:             9A40212B-0810-4440-A2B4-6E31E5469B9E\n   Name:                      com.apple.TimeMachine.2026-09-28-083322.local\n   XID:                       2808941\n   Snapshot UUID:             E36E1D40-4773-4ED0-9803-02D7B590ED1B\n   Name:                      com.apple.TimeMachine.2026-09-28-093332.local\n   XID:                       2809297\n   Snapshot UUID:             8A908902-6E81-4FA4-A372-4234B4A1625B\n   Name:                      com.apple.TimeMachine.2026-09-28-103326.local\n   XID:                       2809682\n   Snapshot UUID:             E81BC98F-BE58-4A05-8CA4-3B83CF073C23\n   Name:                      com.apple.TimeMachine.2026-09-28-113338.local\n   XID:                       2810063\n   Snapshot UUID:             A6C6D4A2-932E-4F25-9B8D-4DC2FD5C809E\n   Name:                      com.apple.TimeMachine.2026-09-28-123347.local\n   XID:                       2810468\n   Snapshot UUID:             CE4A1E11-814C-4009-B0A8-90F782C8B774\n   Name:                      com.apple.TimeMachine.2026-09-28-133345.local\n   XID:                       2810832\n   Snapshot UUID:             5686CA19-3933-43A7-9F57-A5AAB27FD9AB\n   Name:                      com.apple.TimeMachine.2026-09-28-143412.local\n   XID:                       2811252\n   Snapshot UUID:             193E055F-8A49-4E74-B008-0A55BB8E6E95\n   Name:                      com.apple.TimeMachine.2026-09-28-153413.local\n   XID:                       2811626\n   Snapshot UUID:             152C44B7-D1A3-4887-A2E1-7FC8FF873C2D\n   Name:                      com.apple.TimeMachine.2026-09-28-173442.local\n   XID:                       2812431\n   Snapshot UUID:             E1B0CC26-FEAA-49D7-BA17-74C123F86700\n   Name:                      com.apple.TimeMachine.2026-09-28-183456.local\n   XID:                       2813079\n   Snapshot UUID:             40E76459-240D-4A2D-AA70-D20238CCA3CF\n   Name:                      com.apple.TimeMachine.2026-09-28-193501.local\n   XID:                       2813519\n   Snapshot UUID:             58059A75-AA69-4204-8EB6-4EC0268084C4\n   Name:                      com.apple.TimeMachine.2026-09-28-203511.local\n   XID:                       2813936\n   Snapshot UUID:             CD4A1200-1D21-4BA1-8DAD-759E618C0A16\n   Name:                      com.apple.TimeMachine.2026-09-28-213556.local\n   XID:                       2814352\n   Snapshot UUID:             5F40C92A-E421-4850-BC1B-6C84AC0F1F98\n   Name:                      com.apple.TimeMachine.2026-09-28-223607.local\n   XID:                       2814748\n   Snapshot UUID:             CEE9096E-BE66-4A1C-8BB9-A178775E5E46\n   Name:                      com.apple.TimeMachine.2026-09-28-233623.local\n   XID:                       2815104\n   Snapshot UUID:             2E3A92FF-A7D5-44E4-94A0-3E94CA1D0D16\n   Name:                      com.apple.TimeMachine.2026-09-29-003708.local\n   XID:                       2815469\n   Snapshot UUID:             8CF779E2-03A2-40A1-B172-B4FB4A5B0EF1\n   Name:                      com.apple.TimeMachine.2026-09-29-013718.local\n   XID:                       2815832\n   Snapshot UUID:             C5F5EF0C-3437-44FF-BFE5-871C5B4AE3A3\n   Name:                      com.apple.TimeMachine.2026-09-29-023748.local\n   XID:                       2816275\n   Snapshot UUID:             45CF1D28-AAC4-4DED-853A-2FE46DEAA4A4\n   Name:                      com.apple.TimeMachine.2026-09-29-033833.local\n   XID:                       2816695\n   Snapshot UUID:             68C0EA93-40DC-4F8A-A710-95EAD471C722\n   Name:                      com.apple.TimeMachine.2026-09-29-043833.local\n   XID:                       2818967\n\n"
+    },
+    {
+      "argv": [
+        "df",
+        "-P",
+        "$WORK/apfs"
+      ],
+      "cwd": null,
+      "exit": 0,
+      "label": "apfs-df",
+      "seconds": 0.0036,
+      "stderr": "",
+      "stdout": "Filesystem   512-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1  478724992 303241728 108143272    74%    /System/Volumes/Data\n"
+    }
+  ]
+}

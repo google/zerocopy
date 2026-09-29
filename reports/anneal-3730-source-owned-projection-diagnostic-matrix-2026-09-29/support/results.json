@@ -1,0 +1,2480 @@
+{
+  "artifacts": {
+    "Proof-error.lean": {
+      "bytes": 198,
+      "sha256": "9078760d4b31b2a2239f81da00741fb91fe199caf26156f3fac24c08ff4562ee"
+    },
+    "Proof-good.lean": {
+      "bytes": 188,
+      "sha256": "6a26f9dfb8a09c074462c275717c41ef2c681482f77db1b8c9f20584ba7652e6"
+    },
+    "Proof-patched.lean": {
+      "bytes": 179,
+      "sha256": "cd6165b337d6017fbfbc0ccabc35d6c4f0b417a2727d4ffb115f77c6b8c6fe80"
+    },
+    "aeneas/Funs.lean": {
+      "bytes": 1774,
+      "sha256": "abad37a40ebb84fb556edd905616762c8f08e685bdb7c573e42af22fc5a37b59"
+    },
+    "aeneas/Source.lean": {
+      "bytes": 19,
+      "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+    },
+    "aeneas/Types.lean": {
+      "bytes": 545,
+      "sha256": "bb33b9cd7c76aac60fbae1323769f0968bbf0cb3f40b64fba237decd4afd1800"
+    },
+    "compiled/Source/Funs.lean": {
+      "bytes": 1774,
+      "sha256": "abad37a40ebb84fb556edd905616762c8f08e685bdb7c573e42af22fc5a37b59"
+    },
+    "compiled/Source/Funs.olean": {
+      "bytes": 20616,
+      "sha256": "6451a4ab63e006be9151028f648570714aeb7fdad438fd574e0e9e178acc75b6"
+    },
+    "compiled/Source/Types.lean": {
+      "bytes": 545,
+      "sha256": "bb33b9cd7c76aac60fbae1323769f0968bbf0cb3f40b64fba237decd4afd1800"
+    },
+    "compiled/Source/Types.olean": {
+      "bytes": 1616,
+      "sha256": "56a9983f95df6ec30d90b703b242e61541312025a8d969dd8d21d3504b4ad8d9"
+    },
+    "generated-error-Funs.lean": {
+      "bytes": 1761,
+      "sha256": "bfc9f060e3d6d144338dbaeb66376662b08ed69c2aea5fb026e785fa396a0691"
+    },
+    "rustc-error.rs": {
+      "bytes": 450,
+      "sha256": "3e7991c937e282f3f605c71e2d9edc4243706f0779fadf3cd0cc7fb43bf9ce90"
+    },
+    "source.llbc": {
+      "bytes": 14386,
+      "sha256": "6464c34c0a2b6b61670e84dda6dd46273a261515dd5c16b7e707d6181f17ea4f"
+    },
+    "source.rmeta": {
+      "bytes": 3491,
+      "sha256": "59b2ca8533713beb4a0654e0f6f1b7fd56c02e5d4001824fc93fd18ae77eba1c"
+    }
+  },
+  "environment": {
+    "aeneas_lib_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "lsp": {
+    "initialize": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    },
+    "messages": [
+      {
+        "direction": "client",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "initialize",
+          "params": {
+            "capabilities": {},
+            "initializationOptions": {
+              "hasWidgets": false
+            },
+            "processId": 64949,
+            "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "initialized",
+          "params": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didOpen",
+          "params": {
+            "textDocument": {
+              "languageId": "lean",
+              "text": "import Source.Funs\nrun_cmd do IO.sleep 1000\n\ntheorem left : True := by\n  /- 🦀 é -/ missingProof\n\ntheorem right : True := by\n  /- 🦀 é -/ missingProof\n\ntheorem second : True := by\n  trivial\n",
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "method": "client/registerCapability",
+          "params": {
+            "registrations": [
+              {
+                "id": "lean_watcher",
+                "method": "workspace/didChangeWatchedFiles",
+                "registerOptions": {
+                  "watchers": [
+                    {
+                      "globPattern": "**/*.lean"
+                    },
+                    {
+                      "globPattern": "**/*.ilean"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 0,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 24,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "method": "workspace/semanticTokens/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 5,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 14,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 14,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 7
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 7
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 26,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 14,
+                    "line": 4
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 26,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 14,
+                    "line": 4
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 14,
+                    "line": 7
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 7
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 7
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 26,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 23,
+                    "line": 3
+                  }
+                },
+                "leanTags": [
+                  1
+                ],
+                "message": "unsolved goals\n⊢ True",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 23,
+                    "line": 3
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 7
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 7
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 26,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 23,
+                    "line": 3
+                  }
+                },
+                "leanTags": [
+                  1
+                ],
+                "message": "unsolved goals\n⊢ True",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 23,
+                    "line": 3
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 26,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 24,
+                    "line": 6
+                  }
+                },
+                "leanTags": [
+                  1
+                ],
+                "message": "unsolved goals\n⊢ True",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 24,
+                    "line": 6
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 4
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 15,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 7
+                  }
+                },
+                "message": "unknown tactic",
+                "range": {
+                  "end": {
+                    "character": 15,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 15,
+                    "line": 7
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 26,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 23,
+                    "line": 3
+                  }
+                },
+                "leanTags": [
+                  1
+                ],
+                "message": "unsolved goals\n⊢ True",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 23,
+                    "line": 3
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 26,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 24,
+                    "line": 6
+                  }
+                },
+                "leanTags": [
+                  1
+                ],
+                "message": "unsolved goals\n⊢ True",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 24,
+                    "line": 6
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 9
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 9
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 9
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 9
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 9
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 9
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 9
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 9
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 9
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 9
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "method": "shutdown",
+          "params": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29/support/artifacts/Proof-error.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "exit"
+        }
+      }
+    ],
+    "new_source_version": 2,
+    "old_version": 1,
+    "patch_rejection": "stale-source-or-projection",
+    "server_exit": 0,
+    "server_settled_ms_after_request": 2754.28,
+    "settled": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "source_deleted_ms_after_request": 0.14,
+    "source_hash_after": "2e27c2c8df36bdbef058443b560da76b50036a71b5a3f7423eef79441b3c1c44",
+    "source_hash_before": "4ee11307f8efb232f2dfa4098c3d775d44a4484a98a9cf63d2614e7488625bcf",
+    "stderr": ""
+  },
+  "matrix": {
+    "aeneas_candidates": [
+      {
+        "editable": false,
+        "evidence": "lexical printed name/comment only",
+        "funs_comment_lines": [
+          18
+        ],
+        "funs_decl_lines": [
+          21
+        ],
+        "llbc_id": 0,
+        "rust_item": "source_owned_probe::step"
+      },
+      {
+        "editable": false,
+        "evidence": "lexical printed name/comment only",
+        "funs_comment_lines": [
+          24
+        ],
+        "funs_decl_lines": [
+          27
+        ],
+        "llbc_id": 1,
+        "rust_item": "source_owned_probe::select"
+      },
+      {
+        "editable": false,
+        "evidence": "lexical printed name/comment only",
+        "funs_comment_lines": [
+          33
+        ],
+        "funs_decl_lines": [
+          36
+        ],
+        "llbc_id": 2,
+        "rust_item": "source_owned_probe::macro_generated"
+      }
+    ],
+    "batch_messages": [
+      {
+        "caption": "",
+        "data": "unknown tactic",
+        "endPos": null,
+        "fileName": "$REPORT/artifacts/Proof-error.lean",
+        "isSilent": false,
+        "keepFullRange": true,
+        "kind": "[anonymous]",
+        "pos": {
+          "column": 14,
+          "line": 5
+        },
+        "severity": "error"
+      },
+      {
+        "caption": "",
+        "data": "unsolved goals\n⊢ True",
+        "endPos": {
+          "column": 25,
+          "line": 5
+        },
+        "fileName": "$REPORT/artifacts/Proof-error.lean",
+        "isSilent": false,
+        "keepFullRange": false,
+        "kind": "Tactic.unsolvedGoals",
+        "pos": {
+          "column": 23,
+          "line": 4
+        },
+        "severity": "error"
+      },
+      {
+        "caption": "",
+        "data": "unknown tactic",
+        "endPos": null,
+        "fileName": "$REPORT/artifacts/Proof-error.lean",
+        "isSilent": false,
+        "keepFullRange": true,
+        "kind": "[anonymous]",
+        "pos": {
+          "column": 14,
+          "line": 8
+        },
+        "severity": "error"
+      },
+      {
+        "caption": "",
+        "data": "unsolved goals\n⊢ True",
+        "endPos": {
+          "column": 25,
+          "line": 8
+        },
+        "fileName": "$REPORT/artifacts/Proof-error.lean",
+        "isSilent": false,
+        "keepFullRange": false,
+        "kind": "Tactic.unsolvedGoals",
+        "pos": {
+          "column": 24,
+          "line": 7
+        },
+        "severity": "error"
+      }
+    ],
+    "charon_items": [
+      {
+        "generated_from_span": null,
+        "id": 0,
+        "name": "source_owned_probe::step",
+        "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}",
+        "span": {
+          "beg": {
+            "col": 0,
+            "line": 6
+          },
+          "end": {
+            "col": 1,
+            "line": 8
+          },
+          "file_id": 0
+        }
+      },
+      {
+        "generated_from_span": null,
+        "id": 1,
+        "name": "source_owned_probe::select",
+        "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}",
+        "span": {
+          "beg": {
+            "col": 0,
+            "line": 13
+          },
+          "end": {
+            "col": 1,
+            "line": 15
+          },
+          "file_id": 0
+        }
+      },
+      {
+        "generated_from_span": null,
+        "id": 2,
+        "name": "source_owned_probe::macro_generated",
+        "source_text": null,
+        "span": {
+          "beg": {
+            "col": 8,
+            "line": 19
+          },
+          "end": {
+            "col": 67,
+            "line": 19
+          },
+          "file_id": 0
+        }
+      }
+    ],
+    "deletion_while_query": {
+      "new_source_sha256": "2e27c2c8df36bdbef058443b560da76b50036a71b5a3f7423eef79441b3c1c44",
+      "new_source_version": 2,
+      "old_server_version": 1,
+      "old_source_sha256": "4ee11307f8efb232f2dfa4098c3d775d44a4484a98a9cf63d2614e7488625bcf",
+      "server_settled_ms_after_request": 2754.28,
+      "source_deleted_ms_after_request": 0.14,
+      "stale_patch_rejection": "stale-source-or-projection"
+    },
+    "edit_checks": {
+      "A-B-A-version": "stale-source-or-projection",
+      "conflicting-duplicate": "conflicting-duplicate-origin",
+      "generated-model-uri": "read-only-or-external-uri",
+      "mixed-generation": "mixed-generation",
+      "synthetic-header": "no-exact-authored-segment"
+    },
+    "generated_model_messages": [
+      {
+        "caption": "",
+        "data": "Unknown identifier `missingGeneratedModelName`",
+        "endPos": {
+          "column": 27,
+          "line": 22
+        },
+        "fileName": "$REPORT/artifacts/generated-error-Funs.lean",
+        "isSilent": false,
+        "keepFullRange": false,
+        "kind": "lean.unknownIdentifier._namedError",
+        "pos": {
+          "column": 2,
+          "line": 22
+        },
+        "severity": "error"
+      }
+    ],
+    "live_final_unknown_tactic": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 4
+          },
+          "start": {
+            "character": 15,
+            "line": 4
+          }
+        },
+        "message": "unknown tactic",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 4
+          },
+          "start": {
+            "character": 15,
+            "line": 4
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 7
+          },
+          "start": {
+            "character": 15,
+            "line": 7
+          }
+        },
+        "message": "unknown tactic",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 7
+          },
+          "start": {
+            "character": 15,
+            "line": 7
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "live_settled_diagnostics": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 4
+          },
+          "start": {
+            "character": 15,
+            "line": 4
+          }
+        },
+        "message": "unknown tactic",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 4
+          },
+          "start": {
+            "character": 15,
+            "line": 4
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 7
+          },
+          "start": {
+            "character": 15,
+            "line": 7
+          }
+        },
+        "message": "unknown tactic",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 7
+          },
+          "start": {
+            "character": 15,
+            "line": 7
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "fullRange": {
+          "end": {
+            "character": 26,
+            "line": 4
+          },
+          "start": {
+            "character": 23,
+            "line": 3
+          }
+        },
+        "leanTags": [
+          1
+        ],
+        "message": "unsolved goals\n⊢ True",
+        "range": {
+          "end": {
+            "character": 0,
+            "line": 4
+          },
+          "start": {
+            "character": 23,
+            "line": 3
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "fullRange": {
+          "end": {
+            "character": 26,
+            "line": 7
+          },
+          "start": {
+            "character": 24,
+            "line": 6
+          }
+        },
+        "leanTags": [
+          1
+        ],
+        "message": "unsolved goals\n⊢ True",
+        "range": {
+          "end": {
+            "character": 0,
+            "line": 7
+          },
+          "start": {
+            "character": 24,
+            "line": 6
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "patch_status": "applied",
+    "patched_source_sha256": "df5d37ada00cb4baa26230d8608e4db766cb388d6624ee79a79d44bbe7a79a99",
+    "projected_maps": [
+      {
+        "authority": "exact-copied-bytes",
+        "generated": [
+          68,
+          71
+        ],
+        "obligation": "left",
+        "owner": "doc-0",
+        "source": [
+          90,
+          93
+        ]
+      },
+      {
+        "authority": "exact-copied-bytes",
+        "generated": [
+          71,
+          96
+        ],
+        "obligation": "left",
+        "owner": "doc-0",
+        "source": [
+          98,
+          123
+        ]
+      },
+      {
+        "authority": "exact-copied-bytes",
+        "generated": [
+          121,
+          124
+        ],
+        "obligation": "right",
+        "owner": "doc-0",
+        "source": [
+          90,
+          93
+        ]
+      },
+      {
+        "authority": "exact-copied-bytes",
+        "generated": [
+          124,
+          149
+        ],
+        "obligation": "right",
+        "owner": "doc-0",
+        "source": [
+          98,
+          123
+        ]
+      },
+      {
+        "authority": "exact-copied-bytes",
+        "generated": [
+          175,
+          178
+        ],
+        "obligation": "second",
+        "owner": "doc-1",
+        "source": [
+          213,
+          216
+        ]
+      },
+      {
+        "authority": "exact-copied-bytes",
+        "generated": [
+          178,
+          188
+        ],
+        "obligation": "second",
+        "owner": "doc-1",
+        "source": [
+          221,
+          231
+        ]
+      }
+    ],
+    "rustc_primary": [
+      {
+        "byte_end": 163,
+        "byte_start": 156,
+        "column_end": 12,
+        "column_start": 5,
+        "expansion": null,
+        "file_name": "$REPORT/artifacts/rustc-error.rs",
+        "is_primary": true,
+        "label": "expected `u32`, found `&str`",
+        "line_end": 7,
+        "line_start": 7,
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "text": [
+          {
+            "highlight_end": 12,
+            "highlight_start": 5,
+            "text": "    \"wrong\""
+          }
+        ]
+      }
+    ],
+    "unicode_position": {
+      "byte_column": 17,
+      "line_zero": 4,
+      "scalar_column": 13,
+      "utf16_column": 14
+    }
+  },
+  "records": [
+    {
+      "argv": [
+        "$LOCAL_TOOLS/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2021",
+        "--crate-name",
+        "source_owned_probe",
+        "--emit",
+        "metadata",
+        "--error-format",
+        "json",
+        "$REPORT/source.rs",
+        "-o",
+        "$REPORT/artifacts/source.rmeta"
+      ],
+      "cwd": "$REPORT",
+      "exit": 0,
+      "label": "rustc",
+      "seconds": 0.2511,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/source.llbc",
+        "--",
+        "$REPORT/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "source_owned_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "$REPORT",
+      "exit": 0,
+      "label": "charon",
+      "seconds": 0.2811,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2021",
+        "--crate-name",
+        "source_owned_probe",
+        "--emit",
+        "metadata",
+        "--error-format",
+        "json",
+        "$REPORT/artifacts/rustc-error.rs",
+        "-o",
+        "$REPORT/artifacts/bad.rmeta"
+      ],
+      "cwd": "$REPORT",
+      "exit": 1,
+      "label": "rustc-error",
+      "seconds": 0.0789,
+      "stderr": "{\"$message_type\":\"diagnostic\",\"message\":\"mismatched types\",\"code\":{\"code\":\"E0308\",\"explanation\":\"Expected type did not match the received type.\\n\\nErroneous code examples:\\n\\n```compile_fail,E0308\\nfn plus_one(x: i32) -> i32 {\\n    x + 1\\n}\\n\\nplus_one(\\\"Not a number\\\");\\n//       ^^^^^^^^^^^^^^ expected `i32`, found `&str`\\n\\nif \\\"Not a bool\\\" {\\n// ^^^^^^^^^^^^ expected `bool`, found `&str`\\n}\\n\\nlet x: f32 = \\\"Not a float\\\";\\n//     ---   ^^^^^^^^^^^^^ expected `f32`, found `&str`\\n//     |\\n//     expected due to this\\n```\\n\\nThis error occurs when an expression was used in a place where the compiler\\nexpected an expression of a different type. It can occur in several cases, the\\nmost common being when calling a function and passing an argument which has a\\ndifferent type than the matching type in the function declaration.\\n\"},\"level\":\"error\",\"spans\":[{\"file_name\":\"$REPORT/artifacts/rustc-error.rs\",\"byte_start\":156,\"byte_end\":163,\"line_start\":7,\"line_end\":7,\"column_start\":5,\"column_end\":12,\"is_primary\":true,\"text\":[{\"text\":\"    \\\"wrong\\\"\",\"highlight_start\":5,\"highlight_end\":12}],\"label\":\"expected `u32`, found `&str`\",\"suggested_replacement\":null,\"suggestion_applicability\":null,\"expansion\":null},{\"file_name\":\"$REPORT/artifacts/rustc-error.rs\",\"byte_start\":146,\"byte_end\":149,\"line_start\":6,\"line_end\":6,\"column_start\":24,\"column_end\":27,\"is_primary\":false,\"text\":[{\"text\":\"pub fn step(x: u32) -> u32 {\",\"highlight_start\":24,\"highlight_end\":27}],\"label\":\"expected `u32` because of return type\",\"suggested_replacement\":null,\"suggestion_applicability\":null,\"expansion\":null}],\"children\":[],\"rendered\":\"error[E0308]: mismatched types\\n --> $REPORT/artifacts/rustc-error.rs:7:5\\n  |\\n6 | pub fn step(x: u32) -> u32 {\\n  |                        --- expected `u32` because of return type\\n7 |     \\\"wrong\\\"\\n  |     ^^^^^^^ expected `u32`, found `&str`\\n\\n\"}\n{\"$message_type\":\"diagnostic\",\"message\":\"aborting due to 1 previous error\",\"code\":null,\"level\":\"error\",\"spans\":[],\"children\":[],\"rendered\":\"error: aborting due to 1 previous error\\n\\n\"}\n{\"$message_type\":\"diagnostic\",\"message\":\"For more information about this error, try `rustc --explain E0308`.\",\"code\":null,\"level\":\"failure-note\",\"spans\":[],\"children\":[],\"rendered\":\"For more information about this error, try `rustc --explain E0308`.\\n\"}\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "$REPORT/artifacts/aeneas",
+        "$REPORT/artifacts/source.llbc"
+      ],
+      "cwd": "$REPORT",
+      "exit": 0,
+      "label": "aeneas",
+      "seconds": 0.2338,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT/artifacts/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT/artifacts/aeneas/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT/artifacts/aeneas/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT/artifacts/aeneas/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.133743 seconds\n"
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "env",
+        "printenv",
+        "LEAN_PATH"
+      ],
+      "cwd": "$LOCAL_TOOLS/aeneas-release/backends/lean",
+      "exit": 0,
+      "label": "aeneas-lean-path",
+      "seconds": 1.8827,
+      "stderr": "",
+      "stdout": "$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/Cli/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/batteries/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/Qq/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/aesop/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/proofwidgets/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/importGraph/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/LeanSearchClient/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/plausible/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/packages/mathlib/.lake/build/lib/lean:$LOCAL_TOOLS/aeneas-release/backends/lean/.lake/build/lib/lean:$LOCAL_TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\n"
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "$REPORT/artifacts/compiled/Source/Types.olean",
+        "$REPORT/artifacts/compiled/Source/Types.lean"
+      ],
+      "cwd": "$REPORT/artifacts",
+      "exit": 0,
+      "label": "lean-compile-Types",
+      "seconds": 3.1431,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "$REPORT/artifacts/compiled/Source/Funs.olean",
+        "$REPORT/artifacts/compiled/Source/Funs.lean"
+      ],
+      "cwd": "$REPORT/artifacts",
+      "exit": 0,
+      "label": "lean-compile-Funs",
+      "seconds": 1.6886,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/artifacts/Proof-good.lean"
+      ],
+      "cwd": "$REPORT/artifacts",
+      "exit": 0,
+      "label": "lean-good-batch",
+      "seconds": 2.749,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/artifacts/Proof-patched.lean"
+      ],
+      "cwd": "$REPORT/artifacts",
+      "exit": 0,
+      "label": "lean-patched-batch",
+      "seconds": 2.6875,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/artifacts/Proof-error.lean"
+      ],
+      "cwd": "$REPORT/artifacts",
+      "exit": 1,
+      "label": "lean-error-batch",
+      "seconds": 2.5982,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown tactic\",\"endPos\":null,\"fileName\":\"$REPORT/artifacts/Proof-error.lean\",\"isSilent\":false,\"keepFullRange\":true,\"kind\":\"[anonymous]\",\"pos\":{\"column\":14,\"line\":5},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\n⊢ True\",\"endPos\":{\"column\":25,\"line\":5},\"fileName\":\"$REPORT/artifacts/Proof-error.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":23,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unknown tactic\",\"endPos\":null,\"fileName\":\"$REPORT/artifacts/Proof-error.lean\",\"isSilent\":false,\"keepFullRange\":true,\"kind\":\"[anonymous]\",\"pos\":{\"column\":14,\"line\":8},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\n⊢ True\",\"endPos\":{\"column\":25,\"line\":8},\"fileName\":\"$REPORT/artifacts/Proof-error.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":24,\"line\":7},\"severity\":\"error\"}\n"
+    },
+    {
+      "argv": [
+        "$LOCAL_TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$REPORT/artifacts/generated-error-Funs.lean"
+      ],
+      "cwd": "$REPORT/artifacts",
+      "exit": 1,
+      "label": "lean-generated-model-error",
+      "seconds": 1.8001,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Unknown identifier `missingGeneratedModelName`\",\"endPos\":{\"column\":27,\"line\":22},\"fileName\":\"$REPORT/artifacts/generated-error-Funs.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"lean.unknownIdentifier._namedError\",\"pos\":{\"column\":2,\"line\":22},\"severity\":\"error\"}\n"
+    }
+  ],
+  "source_sha256": "36b8dc373f8217d0cceaf4574ee8cd06c7567d373345a90e053eccb1fb552c1f"
+}

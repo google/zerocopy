@@ -1,0 +1,16 @@
+[package]
+name = "subject_matrix"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+selected = []
+
+[[bin]]
+name = "subject_matrix_cli"
+path = "src/main.rs"
+
+[[test]]
+name = "check"
+path = "tests/check.rs"

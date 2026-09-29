@@ -1,0 +1,705 @@
+{
+  "crash_matrix": [
+    {
+      "after_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "before_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "child_exit": -9,
+      "phase": "model-source",
+      "reconstructed": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "staging/B"
+        ],
+        "selected": "A"
+      }
+    },
+    {
+      "after_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "before_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "child_exit": -9,
+      "phase": "proof-source",
+      "reconstructed": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "staging/B"
+        ],
+        "selected": "A"
+      }
+    },
+    {
+      "after_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "before_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "child_exit": -9,
+      "phase": "model-artifact",
+      "reconstructed": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "staging/B"
+        ],
+        "selected": "A"
+      }
+    },
+    {
+      "after_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "before_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "child_exit": -9,
+      "phase": "proof-artifact",
+      "reconstructed": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "staging/B"
+        ],
+        "selected": "A"
+      }
+    },
+    {
+      "after_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "before_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "child_exit": -9,
+      "phase": "manifest",
+      "reconstructed": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "staging/B"
+        ],
+        "selected": "A"
+      }
+    },
+    {
+      "after_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "before_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "child_exit": -9,
+      "phase": "validated",
+      "reconstructed": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "staging/B"
+        ],
+        "selected": "A"
+      }
+    },
+    {
+      "after_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "before_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "child_exit": -9,
+      "phase": "lock-acquired",
+      "reconstructed": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "staging/B"
+        ],
+        "selected": "A"
+      }
+    },
+    {
+      "after_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "before_kill": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "child_exit": -9,
+      "phase": "after-move",
+      "reconstructed": {
+        "epoch": 1,
+        "files": [
+          "Legacy.lean",
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "af03bc1d305b9f990c19c8f857229d5a038a4f06388fef124bfac98d3d13910b",
+        "selected": "A",
+        "valid": true,
+        "variant": "A"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "B"
+        ],
+        "selected": "A"
+      }
+    },
+    {
+      "after_kill": {
+        "epoch": 2,
+        "files": [
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "61e1df8644f07a263971321a1085b897b095a2a669798f74359937f4ae137d76",
+        "selected": "B",
+        "valid": true,
+        "variant": "B"
+      },
+      "before_kill": {
+        "epoch": 2,
+        "files": [
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "61e1df8644f07a263971321a1085b897b095a2a669798f74359937f4ae137d76",
+        "selected": "B",
+        "valid": true,
+        "variant": "B"
+      },
+      "child_exit": -9,
+      "phase": "after-pointer",
+      "reconstructed": {
+        "epoch": 2,
+        "files": [
+          "Model.lean",
+          "Model.olean",
+          "Proof.lean",
+          "Proof.olean"
+        ],
+        "manifest_sha256": "61e1df8644f07a263971321a1085b897b095a2a669798f74359937f4ae137d76",
+        "selected": "B",
+        "valid": true,
+        "variant": "B"
+      },
+      "restart_gc": {
+        "held": [],
+        "removed": [
+          "A"
+        ],
+        "selected": "B"
+      }
+    }
+  ],
+  "gc_crashed_reader": {
+    "after_crash_gc": {
+      "held": [],
+      "removed": [
+        "A"
+      ],
+      "selected": "B"
+    },
+    "before_crash_gc": {
+      "held": [
+        "A"
+      ],
+      "removed": [],
+      "selected": "B"
+    },
+    "reader_exit": -9
+  },
+  "gc_readers": [
+    {
+      "first_gc": {
+        "held": [
+          "A"
+        ],
+        "removed": [],
+        "selected": "B"
+      },
+      "mode": "leased",
+      "reader": {
+        "result": "read",
+        "sha256": "46597fe091b38e8772380253f6daf528cfde2c5a17d4933d0c2111f133dec388"
+      },
+      "second_gc": {
+        "held": [],
+        "removed": [
+          "A"
+        ],
+        "selected": "B"
+      }
+    },
+    {
+      "first_gc": {
+        "held": [],
+        "removed": [
+          "A"
+        ],
+        "selected": "B"
+      },
+      "mode": "unleased",
+      "reader": {
+        "result": "missing"
+      },
+      "second_gc": {
+        "held": [],
+        "removed": [],
+        "selected": "B"
+      }
+    }
+  ],
+  "host": {
+    "machine": "arm64",
+    "python": "3.14.7",
+    "system": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+  },
+  "lock_recovery": {
+    "holder_exit": -9,
+    "recovered_selected": {
+      "epoch": 2,
+      "files": [
+        "Model.lean",
+        "Model.olean",
+        "Proof.lean",
+        "Proof.olean"
+      ],
+      "manifest_sha256": "61e1df8644f07a263971321a1085b897b095a2a669798f74359937f4ae137d76",
+      "selected": "B",
+      "valid": true,
+      "variant": "B"
+    }
+  },
+  "phases": [
+    "model-source",
+    "proof-source",
+    "model-artifact",
+    "proof-artifact",
+    "manifest",
+    "validated",
+    "lock-acquired",
+    "after-move",
+    "after-pointer"
+  ],
+  "repeated_restart": {
+    "cycles": [
+      {
+        "epoch": 2,
+        "first_gc": {
+          "held": [],
+          "removed": [
+            "B2"
+          ],
+          "selected": "A"
+        },
+        "killed_exit": -9,
+        "reconstructed": "A",
+        "second_gc": {
+          "held": [],
+          "removed": [],
+          "selected": "A"
+        }
+      },
+      {
+        "epoch": 3,
+        "first_gc": {
+          "held": [],
+          "removed": [
+            "B3"
+          ],
+          "selected": "A"
+        },
+        "killed_exit": -9,
+        "reconstructed": "A",
+        "second_gc": {
+          "held": [],
+          "removed": [],
+          "selected": "A"
+        }
+      },
+      {
+        "epoch": 4,
+        "first_gc": {
+          "held": [],
+          "removed": [
+            "B4"
+          ],
+          "selected": "A"
+        },
+        "killed_exit": -9,
+        "reconstructed": "A",
+        "second_gc": {
+          "held": [],
+          "removed": [],
+          "selected": "A"
+        }
+      }
+    ],
+    "final_gc": {
+      "held": [],
+      "removed": [
+        "A"
+      ],
+      "selected": "B5"
+    },
+    "final_publish_exit": 0,
+    "final_selected": {
+      "epoch": 5,
+      "files": [
+        "Model.lean",
+        "Model.olean",
+        "Proof.lean",
+        "Proof.olean"
+      ],
+      "manifest_sha256": "4905c669195b063130f4dec4490022513bb6705ff67f49330a1db6934c6f9a1e",
+      "selected": "B5",
+      "valid": true,
+      "variant": "B"
+    }
+  },
+  "stale_completion": {
+    "current": {
+      "epoch": 2,
+      "files": [
+        "Model.lean",
+        "Model.olean",
+        "Proof.lean",
+        "Proof.olean"
+      ],
+      "manifest_sha256": "61e1df8644f07a263971321a1085b897b095a2a669798f74359937f4ae137d76",
+      "selected": "B",
+      "valid": true,
+      "variant": "B"
+    },
+    "new_child_exit": 0,
+    "old_child_exit": 0,
+    "old_result": {
+      "authority": {
+        "cancelled": [
+          "Old"
+        ],
+        "epoch": 2
+      },
+      "status": "obsolete"
+    },
+    "restart_gc": {
+      "held": [],
+      "removed": [
+        "A",
+        "staging/Old"
+      ],
+      "selected": "B"
+    }
+  },
+  "watcher_reconcile": {
+    "late_duplicate_event": {
+      "epoch": 1,
+      "selected": "A"
+    },
+    "observed_before": {
+      "epoch": 1,
+      "selected": "A"
+    },
+    "reconciled": {
+      "epoch": 2,
+      "selected": "B"
+    },
+    "selected_manifest": {
+      "epoch": 2,
+      "files": [
+        "Model.lean",
+        "Model.olean",
+        "Proof.lean",
+        "Proof.olean"
+      ],
+      "manifest_sha256": "61e1df8644f07a263971321a1085b897b095a2a669798f74359937f4ae137d76",
+      "selected": "B",
+      "valid": true,
+      "variant": "B"
+    }
+  }
+}

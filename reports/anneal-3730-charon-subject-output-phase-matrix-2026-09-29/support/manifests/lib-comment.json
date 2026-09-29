@@ -1,0 +1,137 @@
+{
+  "argv": [
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+    "cargo",
+    "--preset",
+    "aeneas",
+    "--dest-file",
+    "$REPORT/artifacts/lib-comment.llbc",
+    "--",
+    "--manifest-path",
+    "$WORK/source-lib-comment/Cargo.toml",
+    "--package",
+    "subject_matrix",
+    "--lib",
+    "--offline",
+    "--locked",
+    "-v"
+  ],
+  "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+  "charon_driver_crate_invocations": [
+    "subject_matrix"
+  ],
+  "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+  "cwd": "$WORK/source-lib-comment",
+  "destination": "$REPORT/artifacts/lib-comment.llbc",
+  "destination_bytes": 14754,
+  "destination_exists": true,
+  "destination_sha256": "5b2978de7ff1d924362b97f6fa504ed3a2de8fe0255b6beb09e55eef67c82327",
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_TARGET_DIR": "$WORK/target-lib-comment",
+    "FILE_SIZE_LIMIT": null,
+    "RAYON_NUM_THREADS": "1",
+    "RUSTFLAGS": null
+  },
+  "exit": 0,
+  "label": "lib-comment",
+  "projection": {
+    "crate_name": "subject_matrix",
+    "file_names": [
+      {
+        "Local": "src/lib.rs"
+      },
+      {
+        "Local": "/rustc/library/core/src/num/uint_macros.rs"
+      },
+      {
+        "Local": "/rustc/library/core/src/num/mod.rs"
+      },
+      {
+        "Local": "/rustc/library/core/src/lib.rs"
+      }
+    ],
+    "has_errors": false,
+    "local_functions": [
+      {
+        "body_sha256": "0ee8149625987a7f78305f98d5754fcb813f19ecfaf68b6d8af64b6c45b5e0fd",
+        "markers": [
+          "source marker: alpha"
+        ],
+        "name": "subject_matrix::alpha",
+        "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 49,
+              "line": 4
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "body_sha256": "46998a4201f224ab51a6203e8c896ca9f1599c521de047cc6e1e29cd39461e31",
+        "markers": [
+          "source marker: beta"
+        ],
+        "name": "subject_matrix::beta",
+        "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 48,
+              "line": 6
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "body_sha256": "d74613fc51887658f7b93b5c1ae00b15e82be29483e48ee14cfd650785e7769d",
+        "markers": [],
+        "name": "subject_matrix::default_only",
+        "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 10
+            },
+            "end": {
+              "col": 57,
+              "line": 10
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "raw_sha256": "5b2978de7ff1d924362b97f6fa504ed3a2de8fe0255b6beb09e55eef67c82327"
+  },
+  "remaining_process_group_pids": [],
+  "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+  "seconds": 0.1723,
+  "source_tree": {
+    "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+    "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+    "src/lib.rs": "59591d548603e8221e38a6359543144fcb0a75d10989483d18bc41d6fbe4c4e9",
+    "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+    "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+  },
+  "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-comment)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-lib-comment/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-comment/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-comment/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s\n",
+  "stdout": "",
+  "target_dir": "$WORK/target-lib-comment"
+}

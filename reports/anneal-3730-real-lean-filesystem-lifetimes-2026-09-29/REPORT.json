@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/generation-publication",
+    "lean/artifact-identity",
+    "filesystem/path-aliasing",
+    "filesystem/reader-lifetimes"
+  ],
+  "subjects": [
+    {
+      "name": "Pinned Lean v4.30.0-rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "Cached Ubuntu 24.04 amd64 overlayfs image",
+      "identity": {
+        "image_id": "sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254"
+      }
+    },
+    {
+      "name": "Real Lean filesystem lifetime probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "e83dbaad6a5e5133bb540692aa36f48d63c71ad022108c462e2444f0143585b0"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

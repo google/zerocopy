@@ -1,0 +1,8104 @@
+[
+  {
+    "seq": 0,
+    "ms": 216.0,
+    "kind": "subject",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "host": {
+      "hw_mem_bytes": 8589934592,
+      "pressure_start": {
+        "free_percent": 51,
+        "raw": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 51%\n",
+        "rc": 0
+      },
+      "swap_start": "vm.swapusage: total = 2048.00M  used = 746.38M  free = 1301.62M  (encrypted)",
+      "df_start": {
+        "raw": "Filesystem   1024-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1   239362496 151542076  54151444    74%    /System/Volumes/Data\n",
+        "available_kib": 54151444
+      },
+      "filesystem": "   Device Identifier:         disk3s1\n   Device Node:               /dev/disk3s1\n   Whole:                     No\n   Part of Whole:             disk3\n\n   Volume Name:               Macintosh HD - Data\n   Mounted:                   Yes\n   Mount Point:               /System/Volumes/Data\n\n   Partition Type:            41504653-0000-11AA-AA11-00306543ECAC\n   File System Personality:   APFS\n   Type (Bundle):             apfs\n   Name (User Visible):       APFS\n   Owners:                    Enabled\n\n   OS Can Be Installed:       Yes\n   Booter Disk:               disk3s4\n   Recovery Disk:             disk3s5\n   Media Type:                Generic\n   Protocol:                  Apple Fabric\n   SMART Status:              Verified\n   Volume UUID:               6D962263-06E1-4C85-8660-CC711E4CB19E\n   Disk / Partition UUID:     6D962263-06E1-4C85-8660-CC711E4CB19E\n\n   Disk Size:                 245.1 GB (245107195904 Bytes) (exactly 478724992 512-Byte-Units)\n   Device Block Size:         4096 Bytes\n\n   Volume Used Space:         155.2 GB (155179089920 Bytes) (exactly 303084160 512-Byte-Units)\n   Container Total Space:     245.1 GB (245107195904 Bytes) (exactly 478724992 512-Byte-Units)\n   Container Free Space:      55.5 GB (55451074560 Bytes) (exactly 108302880 512-Byte-Units)\n   Allocation Block Size:     4096 Bytes\n\n   Media OS Use Only:         No\n   Media Read-Only:           No\n   Volume Read-Only:          No\n\n   Device Location:           Internal\n   Removable Media:           Fixed\n\n   Solid State:               Yes\n   Hardware AES Support:      Yes\n\n   This disk is an APFS Volume.  APFS Information:\n   APFS Container:            disk3\n   APFS Physical Store:       disk0s2\n   APFS Volume Group:         7DE6101E-96FE-4DE0-ABE5-14E636D24D74\n   FileVault:                 Yes\n   Sealed:                    No\n   Locked:                    No\n\n   APFS Snapshots are defined upon this APFS Volume.  Snapshot list:\n   Snapshot UUID:             C913BD18-7808-45A0-A501-080D1BE64293\n   Name:                      com.apple.TimeMachine.2026-09-28-043233.local\n   XID:                       2807291\n   Snapshot UUID:             AECA3BA2-6879-4A39-A1EA-C8439D59AB88\n   Name:                      com.apple.TimeMachine.2026-09-28-053257.local\n   XID:                       2807826\n   Snapshot UUID:             D55485AD-82E5-4300-8905-5694E42AD72C\n   Name:                      com.apple.TimeMachine.2026-09-28-063304.local\n   XID:                       2808205\n   Snapshot UUID:             FF6779C6-DA93-4571-80B0-77F648608138\n   Name:                      com.apple.TimeMachine.2026-09-28-073314.local\n   XID:                       2808586\n   Snapshot UUID:             9A40212B-0810-4440-A2B4-6E31E5469B9E\n   Name:                      com.apple.TimeMachine.2026-09-28-083322.local\n   XID:                       2808941\n   Snapshot UUID:             E36E1D40-4773-4ED0-9803-02D7B590ED1B\n   Name:                      com.apple.TimeMachine.2026-09-28-093332.local\n   XID:                       2809297\n   Snapshot UUID:             8A908902-6E81-4FA4-A372-4234B4A1625B\n   Name:                      com.apple.TimeMachine.2026-09-28-103326.local\n   XID:                       2809682\n   Snapshot UUID:             E81BC98F-BE58-4A05-8CA4-3B83CF073C23\n   Name:                      com.apple.TimeMachine.2026-09-28-113338.local\n   XID:                       2810063\n   Snapshot UUID:             A6C6D4A2-932E-4F25-9B8D-4DC2FD5C809E\n   Name:                      com.apple.TimeMachine.2026-09-28-123347.local\n   XID:                       2810468\n   Snapshot UUID:             CE4A1E11-814C-4009-B0A8-90F782C8B774\n   Name:                      com.apple.TimeMachine.2026-09-28-133345.local\n   XID:                       2810832\n   Snapshot UUID:             5686CA19-3933-43A7-9F57-A5AAB27FD9AB\n   Name:                      com.apple.TimeMachine.2026-09-28-143412.local\n   XID:                       2811252\n   Snapshot UUID:             193E055F-8A49-4E74-B008-0A55BB8E6E95\n   Name:                      com.apple.TimeMachine.2026-09-28-153413.local\n   XID:                       2811626\n   Snapshot UUID:             152C44B7-D1A3-4887-A2E1-7FC8FF873C2D\n   Name:                      com.apple.TimeMachine.2026-09-28-173442.local\n   XID:                       2812431\n   Snapshot UUID:             E1B0CC26-FEAA-49D7-BA17-74C123F86700\n   Name:                      com.apple.TimeMachine.2026-09-28-183456.local\n   XID:                       2813079\n   Snapshot UUID:             40E76459-240D-4A2D-AA70-D20238CCA3CF\n   Name:                      com.apple.TimeMachine.2026-09-28-193501.local\n   XID:                       2813519\n   Snapshot UUID:             58059A75-AA69-4204-8EB6-4EC0268084C4\n   Name:                      com.apple.TimeMachine.2026-09-28-203511.local\n   XID:                       2813936\n   Snapshot UUID:             CD4A1200-1D21-4BA1-8DAD-759E618C0A16\n   Name:                      com.apple.TimeMachine.2026-09-28-213556.local\n   XID:                       2814352\n   Snapshot UUID:             5F40C92A-E421-4850-BC1B-6C84AC0F1F98\n   Name:                      com.apple.TimeMachine.2026-09-28-223607.local\n   XID:                       2814748\n   Snapshot UUID:             CEE9096E-BE66-4A1C-8BB9-A178775E5E46\n   Name:                      com.apple.TimeMachine.2026-09-28-233623.local\n   XID:                       2815104\n   Snapshot UUID:             2E3A92FF-A7D5-44E4-94A0-3E94CA1D0D16\n   Name:                      com.apple.TimeMachine.2026-09-29-003708.local\n   XID:                       2815469\n   Snapshot UUID:             8CF779E2-03A2-40A1-B172-B4FB4A5B0EF1\n   Name:                      com.apple.TimeMachine.2026-09-29-013718.local\n   XID:                       2815832\n   Snapshot UUID:             C5F5EF0C-3437-44FF-BFE5-871C5B4AE3A3\n   Name:                      com.apple.TimeMachine.2026-09-29-023748.local\n   XID:                       2816275\n   Snapshot UUID:             45CF1D28-AAC4-4DED-853A-2FE46DEAA4A4\n   Name:                      com.apple.TimeMachine.2026-09-29-033833.local\n   XID:                       2816695\n\n"
+    },
+    "rss_guard_bytes": 4823449600,
+    "free_floor_percent": 20
+  },
+  {
+    "seq": 1,
+    "ms": 216.6,
+    "kind": "fixture",
+    "root": "serial-a",
+    "value": 7,
+    "source_sha256": "d32bdb09876c3c8aa40d4e93943686fb6b1b30d41e57c63eb246565801b115be",
+    "scratch_sha256": "5e179912afa5bac4fafcfa7bf5d9a0ff01190176c6655dbe88a92b8cefb595bc"
+  },
+  {
+    "seq": 2,
+    "ms": 217.0,
+    "kind": "fixture",
+    "root": "serial-b",
+    "value": 9,
+    "source_sha256": "951a7c921b06eece2365f748f5c58365a65a4499c04c6cc1a8929c3fb69155e0",
+    "scratch_sha256": "ee09d310d68135c4277f27b75cbe9b2f837c055f8ef83fc6607d85763bf46b26"
+  },
+  {
+    "seq": 3,
+    "ms": 217.3,
+    "kind": "fixture",
+    "root": "parallel-a",
+    "value": 7,
+    "source_sha256": "d32bdb09876c3c8aa40d4e93943686fb6b1b30d41e57c63eb246565801b115be",
+    "scratch_sha256": "5e179912afa5bac4fafcfa7bf5d9a0ff01190176c6655dbe88a92b8cefb595bc"
+  },
+  {
+    "seq": 4,
+    "ms": 217.7,
+    "kind": "fixture",
+    "root": "parallel-b",
+    "value": 9,
+    "source_sha256": "951a7c921b06eece2365f748f5c58365a65a4499c04c6cc1a8929c3fb69155e0",
+    "scratch_sha256": "ee09d310d68135c4277f27b75cbe9b2f837c055f8ef83fc6607d85763bf46b26"
+  },
+  {
+    "seq": 5,
+    "ms": 1173.9,
+    "kind": "group",
+    "label": "cold-serial-a",
+    "consumers": 1,
+    "elapsed_ms": 956.2,
+    "peak": {
+      "count": 2,
+      "rss_bytes": 1027457024,
+      "processes": [
+        {
+          "pid": 53452,
+          "ppid": 53445,
+          "rss_bytes": 677216256,
+          "comm": "$LAKE_BIN"
+        },
+        {
+          "pid": 53461,
+          "ppid": 53452,
+          "rss_bytes": 350240768,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "peak_blocks_bytes": 159744,
+    "peak_files": 15,
+    "temp_seen": [],
+    "samples": 9,
+    "guard_polls": 1,
+    "min_free_percent_sampled": 50,
+    "footprint_sample": [],
+    "aborted": null,
+    "results": [
+      {
+        "root": "serial-a",
+        "pid": 53452,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Built Generated (206ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (3 jobs).\n",
+        "stderr": "info: resource_probe: no previous manifest, creating one from scratch\n",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 109426,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "7df292842f726ca78d07502ab932e8010a60796e9b3098bd9a4850da4ee29761"
+      }
+    ]
+  },
+  {
+    "seq": 6,
+    "ms": 1789.3,
+    "kind": "group",
+    "label": "cold-serial-b",
+    "consumers": 1,
+    "elapsed_ms": 615.4,
+    "peak": {
+      "count": 2,
+      "rss_bytes": 777338880,
+      "processes": [
+        {
+          "pid": 53464,
+          "ppid": 53445,
+          "rss_bytes": 676593664,
+          "comm": "$LAKE_BIN"
+        },
+        {
+          "pid": 53469,
+          "ppid": 53464,
+          "rss_bytes": 100745216,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "peak_blocks_bytes": 159744,
+    "peak_files": 15,
+    "temp_seen": [],
+    "samples": 6,
+    "guard_polls": 1,
+    "min_free_percent_sampled": 48,
+    "footprint_sample": [],
+    "aborted": null,
+    "results": [
+      {
+        "root": "serial-b",
+        "pid": 53464,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Built Generated (174ms)\ninfo: Generated.lean:3:0: 9\nBuild completed successfully (3 jobs).\n",
+        "stderr": "info: resource_probe: no previous manifest, creating one from scratch\n",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 109298,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "7f42d628991ba251a6999138812e3570b66dbe963cf4e332034a8c46724c9d3f"
+      }
+    ]
+  },
+  {
+    "seq": 7,
+    "ms": 2597.5,
+    "kind": "group",
+    "label": "cold-parallel-two",
+    "consumers": 2,
+    "elapsed_ms": 808.1,
+    "peak": {
+      "count": 4,
+      "rss_bytes": 2102542336,
+      "processes": [
+        {
+          "pid": 53473,
+          "ppid": 53445,
+          "rss_bytes": 677101568,
+          "comm": "$LAKE_BIN"
+        },
+        {
+          "pid": 53474,
+          "ppid": 53445,
+          "rss_bytes": 677298176,
+          "comm": "$LAKE_BIN"
+        },
+        {
+          "pid": 53480,
+          "ppid": 53473,
+          "rss_bytes": 374046720,
+          "comm": "(lean)"
+        },
+        {
+          "pid": 53481,
+          "ppid": 53474,
+          "rss_bytes": 374095872,
+          "comm": "(lean)"
+        }
+      ]
+    },
+    "peak_blocks_bytes": 319488,
+    "peak_files": 30,
+    "temp_seen": [],
+    "samples": 6,
+    "guard_polls": 1,
+    "min_free_percent_sampled": 46,
+    "footprint_sample": [
+      {
+        "pid": 53473,
+        "rc": 0,
+        "phys_footprint_bytes": 125190080,
+        "output": "======================================================================\nlake [53473]: 64-bit    Footprint: 135036864 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 125190080 B\n    phys_footprint_peak: 131596096 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53474,
+        "rc": 0,
+        "phys_footprint_bytes": 135807552,
+        "output": "======================================================================\nlake [53474]: 64-bit    Footprint: 135791168 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 135807552 B\n    phys_footprint_peak: 135807552 B\n\n",
+        "stderr": ""
+      }
+    ],
+    "aborted": null,
+    "results": [
+      {
+        "root": "parallel-a",
+        "pid": 53473,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Built Generated (228ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (3 jobs).\n",
+        "stderr": "info: resource_probe: no previous manifest, creating one from scratch\n",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 109440,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "7df292842f726ca78d07502ab932e8010a60796e9b3098bd9a4850da4ee29761"
+      },
+      {
+        "root": "parallel-b",
+        "pid": 53474,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Built Generated (228ms)\ninfo: Generated.lean:3:0: 9\nBuild completed successfully (3 jobs).\n",
+        "stderr": "info: resource_probe: no previous manifest, creating one from scratch\n",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 109312,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "7f42d628991ba251a6999138812e3570b66dbe963cf4e332034a8c46724c9d3f"
+      }
+    ]
+  },
+  {
+    "seq": 8,
+    "ms": 3134.8,
+    "kind": "group",
+    "label": "warm-parallel-two",
+    "consumers": 2,
+    "elapsed_ms": 537.3,
+    "peak": {
+      "count": 2,
+      "rss_bytes": 1303625728,
+      "processes": [
+        {
+          "pid": 53486,
+          "ppid": 53445,
+          "rss_bytes": 651706368,
+          "comm": "$LAKE_BIN"
+        },
+        {
+          "pid": 53487,
+          "ppid": 53445,
+          "rss_bytes": 651919360,
+          "comm": "$LAKE_BIN"
+        }
+      ]
+    },
+    "peak_blocks_bytes": 319488,
+    "peak_files": 30,
+    "temp_seen": [],
+    "samples": 4,
+    "guard_polls": 0,
+    "min_free_percent_sampled": null,
+    "footprint_sample": [
+      {
+        "pid": 53486,
+        "rc": 0,
+        "phys_footprint_bytes": 123977984,
+        "output": "======================================================================\nlake [53486]: 64-bit    Footprint: 123961600 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 123977984 B\n    phys_footprint_peak: 131432256 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53487,
+        "rc": 0,
+        "phys_footprint_bytes": 124010688,
+        "output": "======================================================================\nlake [53487]: 64-bit\nErrors were encountered while examining the process. Results may be incomplete or incorrect.\n    mach_vm_region_recurse - (os/kern) invalid argument\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 124010688 B\n    phys_footprint_peak: 131579776 B\n\n\nErrors were encountered while examining the following processes:\n    lake\n\nDue to errors, summary results may be incomplete or incorrect\n",
+        "stderr": "lake [53487]: bailing out due to error: mach_vm_region_recurse - (os/kern) invalid argument\n"
+      }
+    ],
+    "aborted": null,
+    "results": [
+      {
+        "root": "parallel-a",
+        "pid": 53486,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Replayed Generated\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (3 jobs).\n",
+        "stderr": "",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 109440,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "7df292842f726ca78d07502ab932e8010a60796e9b3098bd9a4850da4ee29761"
+      },
+      {
+        "root": "parallel-b",
+        "pid": 53487,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Replayed Generated\ninfo: Generated.lean:3:0: 9\nBuild completed successfully (3 jobs).\n",
+        "stderr": "",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 109312,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "7f42d628991ba251a6999138812e3570b66dbe963cf4e332034a8c46724c9d3f"
+      }
+    ]
+  },
+  {
+    "seq": 9,
+    "ms": 3135.5,
+    "kind": "proof_edit",
+    "root": "parallel-a",
+    "sha256": "dbdcf391cc2cb4f717864162bce9139d245c0c3a7ba9447839d7263426596c7d"
+  },
+  {
+    "seq": 10,
+    "ms": 3135.9,
+    "kind": "proof_edit",
+    "root": "parallel-b",
+    "sha256": "137b84383657c104511bd491704f34b8ce418aa21961fb7b369172e7a929fb85"
+  },
+  {
+    "seq": 11,
+    "ms": 3808.8,
+    "kind": "group",
+    "label": "proof-edit-parallel-two",
+    "consumers": 2,
+    "elapsed_ms": 672.8,
+    "peak": {
+      "count": 2,
+      "rss_bytes": 1304084480,
+      "processes": [
+        {
+          "pid": 53494,
+          "ppid": 53445,
+          "rss_bytes": 651935744,
+          "comm": "$LAKE_BIN"
+        },
+        {
+          "pid": 53495,
+          "ppid": 53445,
+          "rss_bytes": 652148736,
+          "comm": "$LAKE_BIN"
+        }
+      ]
+    },
+    "peak_blocks_bytes": 319488,
+    "peak_files": 30,
+    "temp_seen": [],
+    "samples": 5,
+    "guard_polls": 1,
+    "min_free_percent_sampled": 46,
+    "footprint_sample": [
+      {
+        "pid": 53494,
+        "rc": 0,
+        "phys_footprint_bytes": 124371392,
+        "output": "======================================================================\nlake [53494]: 64-bit    Footprint: 124355008 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 124371392 B\n    phys_footprint_peak: 131612608 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53495,
+        "rc": 0,
+        "phys_footprint_bytes": 124551744,
+        "output": "======================================================================\nlake [53495]: 64-bit    Footprint: 124535360 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 124551744 B\n    phys_footprint_peak: 131891328 B\n\n",
+        "stderr": ""
+      }
+    ],
+    "aborted": null,
+    "results": [
+      {
+        "root": "parallel-a",
+        "pid": 53494,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Built Generated (209ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (3 jobs).\n",
+        "stderr": "",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 108325,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "fe0d9165e3c126a4af2a2d002bfe05a3c537385cde13db722fc3a07611139d34"
+      },
+      {
+        "root": "parallel-b",
+        "pid": 53495,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Built Generated (209ms)\ninfo: Generated.lean:3:0: 9\nBuild completed successfully (3 jobs).\n",
+        "stderr": "",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 108197,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "515b2caad96c6be5cfdf699778321e52fbbdc1f62483414af356984a6dc657ce"
+      }
+    ]
+  },
+  {
+    "seq": 12,
+    "ms": 4347.6,
+    "kind": "group",
+    "label": "warm-after-edit-two",
+    "consumers": 2,
+    "elapsed_ms": 538.8,
+    "peak": {
+      "count": 2,
+      "rss_bytes": 1303248896,
+      "processes": [
+        {
+          "pid": 53506,
+          "ppid": 53445,
+          "rss_bytes": 651722752,
+          "comm": "$LAKE_BIN"
+        },
+        {
+          "pid": 53507,
+          "ppid": 53445,
+          "rss_bytes": 651526144,
+          "comm": "$LAKE_BIN"
+        }
+      ]
+    },
+    "peak_blocks_bytes": 319488,
+    "peak_files": 30,
+    "temp_seen": [],
+    "samples": 4,
+    "guard_polls": 0,
+    "min_free_percent_sampled": null,
+    "footprint_sample": [
+      {
+        "pid": 53506,
+        "rc": 0,
+        "phys_footprint_bytes": 123895872,
+        "output": "======================================================================\nlake [53506]: 64-bit    Footprint: 123879488 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 123895872 B\n    phys_footprint_peak: 131432256 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53507,
+        "rc": 0,
+        "phys_footprint_bytes": 123617408,
+        "output": "======================================================================\nlake [53507]: 64-bit\nErrors were encountered while examining the process. Results may be incomplete or incorrect.\n    mach_vm_region_recurse - (os/kern) invalid argument\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 123617408 B\n    phys_footprint_peak: 131235648 B\n\n\nErrors were encountered while examining the following processes:\n    lake\n\nDue to errors, summary results may be incomplete or incorrect\n",
+        "stderr": "lake [53507]: bailing out due to error: mach_vm_region_recurse - (os/kern) invalid argument\n"
+      }
+    ],
+    "aborted": null,
+    "results": [
+      {
+        "root": "parallel-a",
+        "pid": 53506,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Replayed Generated\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (3 jobs).\n",
+        "stderr": "",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 108325,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "fe0d9165e3c126a4af2a2d002bfe05a3c537385cde13db722fc3a07611139d34"
+      },
+      {
+        "root": "parallel-b",
+        "pid": 53507,
+        "rc": 0,
+        "stdout": "\u2139 [2/3] Replayed Generated\ninfo: Generated.lean:3:0: 9\nBuild completed successfully (3 jobs).\n",
+        "stderr": "",
+        "inventory": {
+          "files": 15,
+          "dirs": 7,
+          "logical_bytes": 108197,
+          "blocks_bytes": 159744,
+          "unique_inodes": 15,
+          "temp": [],
+          "symlinks": [],
+          "classes": {
+            ".olean": 2,
+            ".ilean": 1,
+            ".trace": 2,
+            ".c": 1,
+            ".o": 0
+          }
+        },
+        "olean_sha256": "515b2caad96c6be5cfdf699778321e52fbbdc1f62483414af356984a6dc657ce"
+      }
+    ]
+  },
+  {
+    "seq": 13,
+    "ms": 4351.5,
+    "kind": "inventory",
+    "serial": {
+      "serial-a": {
+        "files": 15,
+        "dirs": 7,
+        "logical_bytes": 109426,
+        "blocks_bytes": 159744,
+        "unique_inodes": 15,
+        "temp": [],
+        "symlinks": [],
+        "classes": {
+          ".olean": 2,
+          ".ilean": 1,
+          ".trace": 2,
+          ".c": 1,
+          ".o": 0
+        }
+      },
+      "serial-b": {
+        "files": 15,
+        "dirs": 7,
+        "logical_bytes": 109298,
+        "blocks_bytes": 159744,
+        "unique_inodes": 15,
+        "temp": [],
+        "symlinks": [],
+        "classes": {
+          ".olean": 2,
+          ".ilean": 1,
+          ".trace": 2,
+          ".c": 1,
+          ".o": 0
+        }
+      }
+    },
+    "parallel": {
+      "parallel-a": {
+        "files": 15,
+        "dirs": 7,
+        "logical_bytes": 108325,
+        "blocks_bytes": 159744,
+        "unique_inodes": 15,
+        "temp": [],
+        "symlinks": [],
+        "classes": {
+          ".olean": 2,
+          ".ilean": 1,
+          ".trace": 2,
+          ".c": 1,
+          ".o": 0
+        }
+      },
+      "parallel-b": {
+        "files": 15,
+        "dirs": 7,
+        "logical_bytes": 108197,
+        "blocks_bytes": 159744,
+        "unique_inodes": 15,
+        "temp": [],
+        "symlinks": [],
+        "classes": {
+          ".olean": 2,
+          ".ilean": 1,
+          ".trace": 2,
+          ".c": 1,
+          ".o": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 4353.0,
+    "kind": "server_start",
+    "label": "a",
+    "pid": 53514
+  },
+  {
+    "seq": 15,
+    "ms": 4383.6,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 53445,
+        "rootUri": "$WORK_URI/parallel-a",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 4386.6,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 4386.6,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 4386.7,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n#eval selected\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 4386.7,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 4386.8,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 4386.8,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 22,
+    "ms": 4387.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 23,
+    "ms": 4624.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 4624.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 4841.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u2139 [2/3] Replayed Generated\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 26,
+    "ms": 4842.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "info: Generated.lean:3:0: 7\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 4851.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "ms": 4943.6,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 4994.1,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "ms": 4995.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 4996.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "ms": 4996.1,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 4996.5,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 4996.7,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 4996.8,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "ms": 4996.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 4996.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 4997.3,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 4997.4,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "ms": 4997.5,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 41,
+    "ms": 4997.5,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 42,
+    "ms": 4997.5,
+    "kind": "latency",
+    "label": "a",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 10,
+    "ms_elapsed": 610.8
+  },
+  {
+    "seq": 43,
+    "ms": 4997.5,
+    "kind": "server_open",
+    "label": "a",
+    "version": 1,
+    "source_sha256": "5e179912afa5bac4fafcfa7bf5d9a0ff01190176c6655dbe88a92b8cefb595bc",
+    "elapsed_ms": 610.9,
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-a/Scratch.lean",
+      "version": 1
+    }
+  },
+  {
+    "seq": 44,
+    "ms": 4997.6,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 45,
+    "ms": 4998.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 46,
+    "ms": 4998.0,
+    "kind": "latency",
+    "label": "a",
+    "method": "$/lean/plainGoal",
+    "rid": 11,
+    "ms_elapsed": 0.4
+  },
+  {
+    "seq": 47,
+    "ms": 4998.0,
+    "kind": "sentinel",
+    "label": "a",
+    "phase": "initial",
+    "expected": 7,
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-a/Scratch.lean",
+      "version": 1
+    }
+  },
+  {
+    "seq": 48,
+    "ms": 4999.4,
+    "kind": "server_start",
+    "label": "b",
+    "pid": 53517
+  },
+  {
+    "seq": 49,
+    "ms": 4999.5,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 53445,
+        "rootUri": "$WORK_URI/parallel-b",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 50,
+    "ms": 5025.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 51,
+    "ms": 5026.0,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 52,
+    "ms": 5026.3,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n#eval selected\ntheorem scratch : selected = 9 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 53,
+    "ms": 5026.3,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 54,
+    "ms": 5026.3,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 55,
+    "ms": 5026.3,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 56,
+    "ms": 5026.6,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 57,
+    "ms": 5265.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 58,
+    "ms": 5265.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 59,
+    "ms": 5490.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u2139 [2/3] Replayed Generated\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 60,
+    "ms": 5490.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "info: Generated.lean:3:0: 9\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 5501.0,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 62,
+    "ms": 5582.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 63,
+    "ms": 5647.5,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 64,
+    "ms": 5649.7,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 65,
+    "ms": 5649.7,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 66,
+    "ms": 5650.0,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "ms": 5650.4,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 68,
+    "ms": 5650.6,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 69,
+    "ms": 5650.7,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 70,
+    "ms": 5650.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 71,
+    "ms": 5651.3,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 9",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 72,
+    "ms": 5652.2,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "ms": 5652.2,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "ms": 5652.2,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 75,
+    "ms": 5652.2,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 76,
+    "ms": 5652.2,
+    "kind": "latency",
+    "label": "b",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 10,
+    "ms_elapsed": 626.0
+  },
+  {
+    "seq": 77,
+    "ms": 5652.3,
+    "kind": "server_open",
+    "label": "b",
+    "version": 1,
+    "source_sha256": "ee09d310d68135c4277f27b75cbe9b2f837c055f8ef83fc6607d85763bf46b26",
+    "elapsed_ms": 626.0,
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "9",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-b/Scratch.lean",
+      "version": 1
+    }
+  },
+  {
+    "seq": 78,
+    "ms": 5652.3,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 79,
+    "ms": 5652.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    }
+  },
+  {
+    "seq": 80,
+    "ms": 5652.8,
+    "kind": "latency",
+    "label": "b",
+    "method": "$/lean/plainGoal",
+    "rid": 11,
+    "ms_elapsed": 0.5
+  },
+  {
+    "seq": 81,
+    "ms": 5652.8,
+    "kind": "sentinel",
+    "label": "b",
+    "phase": "initial",
+    "expected": 9,
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "9",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-b/Scratch.lean",
+      "version": 1
+    }
+  },
+  {
+    "seq": 82,
+    "ms": 5864.5,
+    "kind": "server_resource",
+    "phase": "initial",
+    "tree": {
+      "count": 4,
+      "rss_bytes": 1044250624,
+      "processes": [
+        {
+          "pid": 53514,
+          "ppid": 53445,
+          "rss_bytes": 157532160,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53515,
+          "ppid": 53514,
+          "rss_bytes": 388022272,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53517,
+          "ppid": 53445,
+          "rss_bytes": 110952448,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53518,
+          "ppid": 53517,
+          "rss_bytes": 387743744,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "footprints": [
+      {
+        "pid": 53514,
+        "rc": 0,
+        "phys_footprint_bytes": 122358016,
+        "output": "======================================================================\nlean [53514]: 64-bit    Footprint: 123209984 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 122358016 B\n    phys_footprint_peak: 122358016 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53515,
+        "rc": 0,
+        "phys_footprint_bytes": 81336512,
+        "output": "======================================================================\nlean [53515]: 64-bit    Footprint: 81320128 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81336512 B\n    phys_footprint_peak: 81418560 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53517,
+        "rc": 0,
+        "phys_footprint_bytes": 83642688,
+        "output": "======================================================================\nlean [53517]: 64-bit    Footprint: 84625728 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 83642688 B\n    phys_footprint_peak: 83642688 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53518,
+        "rc": 0,
+        "phys_footprint_bytes": 81828160,
+        "output": "======================================================================\nlean [53518]: 64-bit    Footprint: 81811776 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81828160 B\n    phys_footprint_peak: 81910208 B\n\n",
+        "stderr": ""
+      }
+    ]
+  },
+  {
+    "seq": 83,
+    "ms": 5864.8,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n#eval selected\ntheorem scratch : selected = 7 := by\n  rfl\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 84,
+    "ms": 5864.8,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 85,
+    "ms": 5864.8,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 86,
+    "ms": 5994.7,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 87,
+    "ms": 6076.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 88,
+    "ms": 6076.1,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "ms": 6076.1,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "ms": 6076.1,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 91,
+    "ms": 6076.1,
+    "kind": "latency",
+    "label": "a",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 12,
+    "ms_elapsed": 211.3
+  },
+  {
+    "seq": 92,
+    "ms": 6076.2,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 93,
+    "ms": 6076.6,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 94,
+    "ms": 6076.6,
+    "kind": "latency",
+    "label": "a",
+    "method": "$/lean/plainGoal",
+    "rid": 13,
+    "ms_elapsed": 0.5
+  },
+  {
+    "seq": 95,
+    "ms": 6076.6,
+    "kind": "soak",
+    "round": 1,
+    "label": "a",
+    "expected": 7,
+    "source_sha256": "4822e7caa77b104980084cda4eac3b4211202041248e744522f3ee021336102a",
+    "wait": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-a/Scratch.lean",
+      "version": 2
+    }
+  },
+  {
+    "seq": 96,
+    "ms": 6076.8,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n#eval selected\ntheorem scratch : selected = 9 := by\n  rfl\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 97,
+    "ms": 6076.8,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 98,
+    "ms": 6112.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 99,
+    "ms": 6287.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 100,
+    "ms": 6287.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 101,
+    "ms": 6287.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 102,
+    "ms": 6288.2,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 103,
+    "ms": 6288.2,
+    "kind": "latency",
+    "label": "b",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 12,
+    "ms_elapsed": 211.4
+  },
+  {
+    "seq": 104,
+    "ms": 6288.3,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 105,
+    "ms": 6288.7,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    }
+  },
+  {
+    "seq": 106,
+    "ms": 6288.7,
+    "kind": "latency",
+    "label": "b",
+    "method": "$/lean/plainGoal",
+    "rid": 13,
+    "ms_elapsed": 0.5
+  },
+  {
+    "seq": 107,
+    "ms": 6288.8,
+    "kind": "soak",
+    "round": 1,
+    "label": "b",
+    "expected": 9,
+    "source_sha256": "b4e8262b1b8edc2fe1bbaf48168c04d565f64bf0e450cb2c6bb33c3a04ad9c1e",
+    "wait": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "9",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-b/Scratch.lean",
+      "version": 2
+    }
+  },
+  {
+    "seq": 108,
+    "ms": 6312.6,
+    "kind": "server_resource",
+    "phase": "edit-1",
+    "tree": {
+      "count": 4,
+      "rss_bytes": 1163034624,
+      "processes": [
+        {
+          "pid": 53514,
+          "ppid": 53445,
+          "rss_bytes": 214728704,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53515,
+          "ppid": 53514,
+          "rss_bytes": 388464640,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53517,
+          "ppid": 53445,
+          "rss_bytes": 170819584,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53518,
+          "ppid": 53517,
+          "rss_bytes": 389021696,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 109,
+    "ms": 6312.8,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n#eval selected\ntheorem scratch : selected = 9 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 110,
+    "ms": 6312.8,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 111,
+    "ms": 6524.3,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 112,
+    "ms": 6524.3,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 113,
+    "ms": 6524.4,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 9",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "ms": 6524.4,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 115,
+    "ms": 6524.4,
+    "kind": "latency",
+    "label": "b",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 14,
+    "ms_elapsed": 211.6
+  },
+  {
+    "seq": 116,
+    "ms": 6524.5,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "ms": 6524.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "ms": 6524.9,
+    "kind": "latency",
+    "label": "b",
+    "method": "$/lean/plainGoal",
+    "rid": 15,
+    "ms_elapsed": 0.4
+  },
+  {
+    "seq": 119,
+    "ms": 6524.9,
+    "kind": "soak",
+    "round": 2,
+    "label": "b",
+    "expected": 9,
+    "source_sha256": "ee09d310d68135c4277f27b75cbe9b2f837c055f8ef83fc6607d85763bf46b26",
+    "wait": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "9",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-b/Scratch.lean",
+      "version": 3
+    }
+  },
+  {
+    "seq": 120,
+    "ms": 6525.0,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n#eval selected\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 121,
+    "ms": 6525.0,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "ms": 6525.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 123,
+    "ms": 6525.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 124,
+    "ms": 6736.4,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 125,
+    "ms": 6736.4,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 126,
+    "ms": 6736.5,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 127,
+    "ms": 6736.5,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 128,
+    "ms": 6736.5,
+    "kind": "latency",
+    "label": "a",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 14,
+    "ms_elapsed": 211.5
+  },
+  {
+    "seq": 129,
+    "ms": 6736.6,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 130,
+    "ms": 6737.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "ms": 6737.0,
+    "kind": "latency",
+    "label": "a",
+    "method": "$/lean/plainGoal",
+    "rid": 15,
+    "ms_elapsed": 0.4
+  },
+  {
+    "seq": 132,
+    "ms": 6737.0,
+    "kind": "soak",
+    "round": 2,
+    "label": "a",
+    "expected": 7,
+    "source_sha256": "5e179912afa5bac4fafcfa7bf5d9a0ff01190176c6655dbe88a92b8cefb595bc",
+    "wait": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-a/Scratch.lean",
+      "version": 3
+    }
+  },
+  {
+    "seq": 133,
+    "ms": 6759.4,
+    "kind": "server_resource",
+    "phase": "edit-2",
+    "tree": {
+      "count": 4,
+      "rss_bytes": 1258242048,
+      "processes": [
+        {
+          "pid": 53514,
+          "ppid": 53445,
+          "rss_bytes": 262373376,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53515,
+          "ppid": 53514,
+          "rss_bytes": 388661248,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53517,
+          "ppid": 53445,
+          "rss_bytes": 217972736,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53518,
+          "ppid": 53517,
+          "rss_bytes": 389234688,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 134,
+    "ms": 6759.6,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 4
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n#eval selected\ntheorem scratch : selected = 7 := by\n  rfl\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "ms": 6759.7,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 136,
+    "ms": 6970.8,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 137,
+    "ms": 6970.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "ms": 6970.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 139,
+    "ms": 6970.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 140,
+    "ms": 6970.9,
+    "kind": "latency",
+    "label": "a",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 16,
+    "ms_elapsed": 211.3
+  },
+  {
+    "seq": 141,
+    "ms": 6971.0,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 142,
+    "ms": 6971.5,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 143,
+    "ms": 6971.5,
+    "kind": "latency",
+    "label": "a",
+    "method": "$/lean/plainGoal",
+    "rid": 17,
+    "ms_elapsed": 0.6
+  },
+  {
+    "seq": 144,
+    "ms": 6971.6,
+    "kind": "soak",
+    "round": 3,
+    "label": "a",
+    "expected": 7,
+    "source_sha256": "4822e7caa77b104980084cda4eac3b4211202041248e744522f3ee021336102a",
+    "wait": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-a/Scratch.lean",
+      "version": 4
+    }
+  },
+  {
+    "seq": 145,
+    "ms": 6971.7,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 4
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n#eval selected\ntheorem scratch : selected = 9 := by\n  rfl\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 146,
+    "ms": 6971.8,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 147,
+    "ms": 6971.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 148,
+    "ms": 7124.0,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 149,
+    "ms": 7164.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 150,
+    "ms": 7183.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 151,
+    "ms": 7183.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 152,
+    "ms": 7183.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 153,
+    "ms": 7183.2,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 154,
+    "ms": 7183.2,
+    "kind": "latency",
+    "label": "b",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 16,
+    "ms_elapsed": 211.5
+  },
+  {
+    "seq": 155,
+    "ms": 7183.3,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 156,
+    "ms": 7183.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    }
+  },
+  {
+    "seq": 157,
+    "ms": 7183.8,
+    "kind": "latency",
+    "label": "b",
+    "method": "$/lean/plainGoal",
+    "rid": 17,
+    "ms_elapsed": 0.5
+  },
+  {
+    "seq": 158,
+    "ms": 7183.9,
+    "kind": "soak",
+    "round": 3,
+    "label": "b",
+    "expected": 9,
+    "source_sha256": "b4e8262b1b8edc2fe1bbaf48168c04d565f64bf0e450cb2c6bb33c3a04ad9c1e",
+    "wait": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "9",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-b/Scratch.lean",
+      "version": 4
+    }
+  },
+  {
+    "seq": 159,
+    "ms": 7210.2,
+    "kind": "server_resource",
+    "phase": "edit-3",
+    "tree": {
+      "count": 4,
+      "rss_bytes": 1359773696,
+      "processes": [
+        {
+          "pid": 53514,
+          "ppid": 53445,
+          "rss_bytes": 303415296,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53515,
+          "ppid": 53514,
+          "rss_bytes": 388775936,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53517,
+          "ppid": 53445,
+          "rss_bytes": 278233088,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53518,
+          "ppid": 53517,
+          "rss_bytes": 389349376,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 160,
+    "ms": 7210.4,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 5
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n#eval selected\ntheorem scratch : selected = 9 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 161,
+    "ms": 7210.4,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 162,
+    "ms": 7421.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 163,
+    "ms": 7421.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 164,
+    "ms": 7421.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 9",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 165,
+    "ms": 7421.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 166,
+    "ms": 7421.9,
+    "kind": "latency",
+    "label": "b",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 18,
+    "ms_elapsed": 211.5
+  },
+  {
+    "seq": 167,
+    "ms": 7422.0,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 168,
+    "ms": 7422.4,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    }
+  },
+  {
+    "seq": 169,
+    "ms": 7422.4,
+    "kind": "latency",
+    "label": "b",
+    "method": "$/lean/plainGoal",
+    "rid": 19,
+    "ms_elapsed": 0.4
+  },
+  {
+    "seq": 170,
+    "ms": 7422.4,
+    "kind": "soak",
+    "round": 4,
+    "label": "b",
+    "expected": 9,
+    "source_sha256": "ee09d310d68135c4277f27b75cbe9b2f837c055f8ef83fc6607d85763bf46b26",
+    "wait": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "9",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-b/Scratch.lean",
+      "version": 5
+    }
+  },
+  {
+    "seq": 171,
+    "ms": 7422.5,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 5
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n#eval selected\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 172,
+    "ms": 7422.5,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 173,
+    "ms": 7422.6,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 174,
+    "ms": 7571.7,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 175,
+    "ms": 7635.8,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 176,
+    "ms": 7635.8,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 177,
+    "ms": 7636.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 178,
+    "ms": 7636.5,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 179,
+    "ms": 7636.6,
+    "kind": "latency",
+    "label": "a",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 18,
+    "ms_elapsed": 214.0
+  },
+  {
+    "seq": 180,
+    "ms": 7636.7,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 181,
+    "ms": 7638.1,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 182,
+    "ms": 7638.1,
+    "kind": "latency",
+    "label": "a",
+    "method": "$/lean/plainGoal",
+    "rid": 19,
+    "ms_elapsed": 1.4
+  },
+  {
+    "seq": 183,
+    "ms": 7638.1,
+    "kind": "soak",
+    "round": 4,
+    "label": "a",
+    "expected": 7,
+    "source_sha256": "5e179912afa5bac4fafcfa7bf5d9a0ff01190176c6655dbe88a92b8cefb595bc",
+    "wait": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-a/Scratch.lean",
+      "version": 5
+    }
+  },
+  {
+    "seq": 184,
+    "ms": 7684.1,
+    "kind": "server_resource",
+    "phase": "edit-4",
+    "tree": {
+      "count": 4,
+      "rss_bytes": 1385152512,
+      "processes": [
+        {
+          "pid": 53514,
+          "ppid": 53445,
+          "rss_bytes": 303513600,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53515,
+          "ppid": 53514,
+          "rss_bytes": 388857856,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53517,
+          "ppid": 53445,
+          "rss_bytes": 303398912,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53518,
+          "ppid": 53517,
+          "rss_bytes": 389382144,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 185,
+    "ms": 7684.3,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 186,
+    "ms": 7684.3,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 187,
+    "ms": 7684.6,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n#eval selected\ntheorem scratch : selected = 9 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 188,
+    "ms": 7684.6,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 189,
+    "ms": 7684.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 190,
+    "ms": 7685.2,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 191,
+    "ms": 7933.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 192,
+    "ms": 7933.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 193,
+    "ms": 8117.7,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u2139 [2/3] Replayed Generated\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 194,
+    "ms": 8117.7,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "info: Generated.lean:3:0: 9\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 195,
+    "ms": 8134.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 196,
+    "ms": 8252.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 197,
+    "ms": 8281.6,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 198,
+    "ms": 8283.2,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 199,
+    "ms": 8283.3,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 200,
+    "ms": 8283.3,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 201,
+    "ms": 8283.7,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 202,
+    "ms": 8283.8,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 203,
+    "ms": 8283.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 204,
+    "ms": 8283.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 205,
+    "ms": 8284.0,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 206,
+    "ms": 8284.1,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 207,
+    "ms": 8284.5,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 9",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 208,
+    "ms": 8284.6,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 209,
+    "ms": 8284.6,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 210,
+    "ms": 8284.7,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 211,
+    "ms": 8284.7,
+    "kind": "latency",
+    "label": "b",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 20,
+    "ms_elapsed": 600.1
+  },
+  {
+    "seq": 212,
+    "ms": 8284.7,
+    "kind": "server_open",
+    "label": "b",
+    "version": 1,
+    "source_sha256": "ee09d310d68135c4277f27b75cbe9b2f837c055f8ef83fc6607d85763bf46b26",
+    "elapsed_ms": 600.2,
+    "wait": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "9",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-b/Scratch.lean",
+      "version": 1
+    }
+  },
+  {
+    "seq": 213,
+    "ms": 8284.8,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-b/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 214,
+    "ms": 8285.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    }
+  },
+  {
+    "seq": 215,
+    "ms": 8285.9,
+    "kind": "latency",
+    "label": "b",
+    "method": "$/lean/plainGoal",
+    "rid": 21,
+    "ms_elapsed": 1.2
+  },
+  {
+    "seq": 216,
+    "ms": 8285.9,
+    "kind": "sentinel",
+    "label": "b",
+    "phase": "reopen",
+    "expected": 9,
+    "goal": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 9"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 9\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "9",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 9",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-b/Scratch.lean",
+      "version": 1
+    }
+  },
+  {
+    "seq": 217,
+    "ms": 8286.1,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n#eval selected\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 218,
+    "ms": 8286.1,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 219,
+    "ms": 8286.1,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 220,
+    "ms": 8286.4,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 221,
+    "ms": 8526.2,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 222,
+    "ms": 8526.2,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 223,
+    "ms": 8713.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u2139 [2/3] Replayed Generated\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 224,
+    "ms": 8713.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "info: Generated.lean:3:0: 7\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 225,
+    "ms": 8730.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 226,
+    "ms": 8845.3,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 227,
+    "ms": 8872.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 228,
+    "ms": 8874.7,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 229,
+    "ms": 8874.7,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 230,
+    "ms": 8874.8,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 231,
+    "ms": 8875.2,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 232,
+    "ms": 8875.2,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 233,
+    "ms": 8875.3,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 234,
+    "ms": 8875.4,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 235,
+    "ms": 8875.4,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 236,
+    "ms": 8875.4,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 237,
+    "ms": 8875.9,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 8,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 34,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 238,
+    "ms": 8876.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 239,
+    "ms": 8876.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 240,
+    "ms": 8876.0,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 241,
+    "ms": 8876.1,
+    "kind": "latency",
+    "label": "a",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 20,
+    "ms_elapsed": 590.0
+  },
+  {
+    "seq": 242,
+    "ms": 8876.1,
+    "kind": "server_open",
+    "label": "a",
+    "version": 1,
+    "source_sha256": "5e179912afa5bac4fafcfa7bf5d9a0ff01190176c6655dbe88a92b8cefb595bc",
+    "elapsed_ms": 590.0,
+    "wait": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-a/Scratch.lean",
+      "version": 1
+    }
+  },
+  {
+    "seq": 243,
+    "ms": 8876.1,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/parallel-a/Scratch.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 244,
+    "ms": 8876.6,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 245,
+    "ms": 8876.6,
+    "kind": "latency",
+    "label": "a",
+    "method": "$/lean/plainGoal",
+    "rid": 21,
+    "ms_elapsed": 0.5
+  },
+  {
+    "seq": 246,
+    "ms": 8876.6,
+    "kind": "sentinel",
+    "label": "a",
+    "phase": "reopen",
+    "expected": 7,
+    "goal": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 8,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 3
+            },
+            "start": {
+              "character": 34,
+              "line": 2
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/parallel-a/Scratch.lean",
+      "version": 1
+    }
+  },
+  {
+    "seq": 247,
+    "ms": 9081.2,
+    "kind": "server_resource",
+    "phase": "reopen",
+    "tree": {
+      "count": 4,
+      "rss_bytes": 1382039552,
+      "processes": [
+        {
+          "pid": 53514,
+          "ppid": 53445,
+          "rss_bytes": 303562752,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53517,
+          "ppid": 53445,
+          "rss_bytes": 303890432,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53529,
+          "ppid": 53517,
+          "rss_bytes": 387629056,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 53531,
+          "ppid": 53514,
+          "rss_bytes": 386957312,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "footprints": [
+      {
+        "pid": 53514,
+        "rc": 0,
+        "phys_footprint_bytes": 266701440,
+        "output": "======================================================================\nlean [53514]: 64-bit    Footprint: 266685056 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266701440 B\n    phys_footprint_peak: 266701440 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53517,
+        "rc": 0,
+        "phys_footprint_bytes": 266881792,
+        "output": "======================================================================\nlean [53517]: 64-bit    Footprint: 266865408 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 266881792 B\n    phys_footprint_peak: 266881792 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53529,
+        "rc": 0,
+        "phys_footprint_bytes": 80975936,
+        "output": "======================================================================\nlean [53529]: 64-bit    Footprint: 80959552 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 80975936 B\n    phys_footprint_peak: 81057984 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 53531,
+        "rc": 0,
+        "phys_footprint_bytes": 81074304,
+        "output": "======================================================================\nlean [53531]: 64-bit    Footprint: 81057920 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81074304 B\n    phys_footprint_peak: 81156352 B\n\n",
+        "stderr": ""
+      }
+    ]
+  },
+  {
+    "seq": 248,
+    "ms": 9081.2,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 249,
+    "ms": 9081.7,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-a/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 250,
+    "ms": 9086.4,
+    "kind": "server",
+    "label": "a",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 251,
+    "ms": 9086.4,
+    "kind": "client",
+    "label": "a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 252,
+    "ms": 9228.8,
+    "kind": "server_stop",
+    "label": "a",
+    "pid": 53514,
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 253,
+    "ms": 9228.8,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 254,
+    "ms": 9228.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 255,
+    "ms": 9229.3,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/parallel-b/Scratch.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 256,
+    "ms": 9235.9,
+    "kind": "server",
+    "label": "b",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 257,
+    "ms": 9235.9,
+    "kind": "client",
+    "label": "b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 258,
+    "ms": 9384.7,
+    "kind": "server_stop",
+    "label": "b",
+    "pid": 53517,
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 259,
+    "ms": 9410.1,
+    "kind": "server_resource",
+    "phase": "after-stop",
+    "tree": {
+      "count": 0,
+      "rss_bytes": 0,
+      "processes": []
+    }
+  },
+  {
+    "seq": 260,
+    "ms": 9419.9,
+    "kind": "host_end",
+    "pressure": {
+      "free_percent": 46,
+      "raw": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 46%\n",
+      "rc": 0
+    },
+    "swap": "vm.swapusage: total = 2048.00M  used = 746.38M  free = 1301.62M  (encrypted)",
+    "df": {
+      "raw": "Filesystem   1024-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1   239362496 151542792  54150728    74%    /System/Volumes/Data\n",
+      "available_kib": 54150728
+    }
+  },
+  {
+    "seq": 261,
+    "ms": 9420.0,
+    "kind": "completed"
+  }
+]

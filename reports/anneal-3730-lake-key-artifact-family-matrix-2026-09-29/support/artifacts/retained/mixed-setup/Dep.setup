@@ -1,0 +1,7 @@
+{"plugins": [],
+ "package": "probe_dep",
+ "options": {"pp.unicode.fun": true},
+ "name": "Dep",
+ "isModule": false,
+ "importArts": {},
+ "dynlibs": []}

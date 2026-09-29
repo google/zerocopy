@@ -1,0 +1,1068 @@
+{
+  "artifact_sha256": {
+    "baseline.llbc": "3fb98ef48a14ebd392b2d05dd8c09c901a158341a4fc0e1ebf2bffcced8b4a4b",
+    "bin-unit.llbc": "6338ad2ddcf4c4c649f6974d9a3d8df2a37049573f36e906a0fda9feb9746e1b",
+    "build-env.llbc": "aed9a98181f3f76918cdc99372131a719a09341b121b070841f259ef8c7ead18",
+    "build-source.llbc": "e0a7f00fab0d8392b870512a9b13e6ef166df9c2562e7eaa034c10ccda910c7c",
+    "include-str.llbc": "555d2ecda667c929c30bec7ee38f2dd1092b06c166fa2336b7b16b47f281492f",
+    "path-dependency.llbc": "f8db749b43c7190ea707a7466dba830b4f3e3b0ed71b61e0b4e108b8aff28a7d",
+    "proc-env.llbc": "c36ba3e2a6a6d68843de696062a7d62798923b2b70687945d581c87f7d9acaa5",
+    "proc-source.llbc": "782e3801598baf98b28c72e625fb2ecba2f08928616eed5d1068fa0650cb68dd",
+    "rustc-env.llbc": "2825e1787f3cfeaa54b0b2429b4f08902eaadfe5981be8a58332ec169e53db34",
+    "source-path.llbc": "66c29966014383c5170e0460c1dd4b3ed7f718cb4b2b41795d6511d2bac0db76"
+  },
+  "cases": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/baseline.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-00/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "dep_path",
+        "proc_local",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 + 72;\n"
+      ],
+      "label": "baseline",
+      "llbc_sha256": "3fb98ef48a14ebd392b2d05dd8c09c901a158341a4fc0e1ebf2bffcced8b4a4b",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "e2fbdb2dc661cb04cb3d0be83199d07425d1bb7db4000241a8ee6d32ac1078b1",
+          "app_closure::macro_generated": "bbedcfad9025983a9c092cdd747bb54375f0a3df3ea0f6130364ce009e783583",
+          "app_closure::root": "066f44f2899f4c92913d63cbec20660daa5dec2a76981bc2968bada0419f4e9a",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-00/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_add",
+          "dep_path::dep",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.9354,
+      "source_dir": "src-00",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-00/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-00/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-00/debug/deps --verbose`\n     Running `$WORK/target-00/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling dep_path v0.1.0 ($WORK/src-00/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-00/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-00/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-00/debug/deps --verbose`\n   Compiling proc_local v0.1.0 ($WORK/src-00/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-00/debug/deps -L dependency=$WORK/target-00/debug/deps --extern proc_macro --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-00/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-00/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-00/debug/deps --extern dep_path=$WORK/target-00/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-00/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.89s\n",
+      "stdout": "",
+      "target_dir": "target-00"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/build-env.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-01/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "dep_path",
+        "proc_local",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "8",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 8 + 72;\n"
+      ],
+      "label": "build-env",
+      "llbc_sha256": "aed9a98181f3f76918cdc99372131a719a09341b121b070841f259ef8c7ead18",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "6f6c6fc81da6cb59a78d5bb008b8ad193b0f94a0f075a0cf53d95da2f23ca43b",
+          "app_closure::macro_generated": "bbedcfad9025983a9c092cdd747bb54375f0a3df3ea0f6130364ce009e783583",
+          "app_closure::root": "066f44f2899f4c92913d63cbec20660daa5dec2a76981bc2968bada0419f4e9a",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-01/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_add",
+          "dep_path::dep",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.8085,
+      "source_dir": "src-01",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-01/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-01/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-01/debug/deps --verbose`\n     Running `$WORK/target-01/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling dep_path v0.1.0 ($WORK/src-01/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-01/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-01/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-01/debug/deps --verbose`\n   Compiling proc_local v0.1.0 ($WORK/src-01/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-01/debug/deps -L dependency=$WORK/target-01/debug/deps --extern proc_macro --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-01/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-01/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-01/debug/deps --extern dep_path=$WORK/target-01/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-01/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.76s\n",
+      "stdout": "",
+      "target_dir": "target-01"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/proc-env.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-02/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "dep_path",
+        "proc_local",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "4"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 + 72;\n"
+      ],
+      "label": "proc-env",
+      "llbc_sha256": "c36ba3e2a6a6d68843de696062a7d62798923b2b70687945d581c87f7d9acaa5",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "e2fbdb2dc661cb04cb3d0be83199d07425d1bb7db4000241a8ee6d32ac1078b1",
+          "app_closure::macro_generated": "29f7a54b9a255604c659d0d2e28d91fb6a11add3a96499e724f01c0d389931f2",
+          "app_closure::root": "066f44f2899f4c92913d63cbec20660daa5dec2a76981bc2968bada0419f4e9a",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-02/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_add",
+          "dep_path::dep",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.8749,
+      "source_dir": "src-02",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-02/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-02/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-02/debug/deps --verbose`\n     Running `$WORK/target-02/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling dep_path v0.1.0 ($WORK/src-02/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-02/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-02/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-02/debug/deps --verbose`\n   Compiling proc_local v0.1.0 ($WORK/src-02/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-02/debug/deps -L dependency=$WORK/target-02/debug/deps --extern proc_macro --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-02/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-02/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-02/debug/deps --extern dep_path=$WORK/target-02/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-02/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.82s\n",
+      "stdout": "",
+      "target_dir": "target-02"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/rustc-env.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-03/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "dep_path",
+        "proc_local",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "AA",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 + 72;\n"
+      ],
+      "label": "rustc-env",
+      "llbc_sha256": "2825e1787f3cfeaa54b0b2429b4f08902eaadfe5981be8a58332ec169e53db34",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "e2fbdb2dc661cb04cb3d0be83199d07425d1bb7db4000241a8ee6d32ac1078b1",
+          "app_closure::macro_generated": "bbedcfad9025983a9c092cdd747bb54375f0a3df3ea0f6130364ce009e783583",
+          "app_closure::root": "635a6ddcf67d877599addcf947a53ff97dfb762a167dd319081d6117cffd221b",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-03/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_add",
+          "dep_path::dep",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.8626,
+      "source_dir": "src-03",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-03/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-03/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-03/debug/deps --verbose`\n     Running `$WORK/target-03/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling dep_path v0.1.0 ($WORK/src-03/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-03/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-03/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-03/debug/deps --verbose`\n   Compiling proc_local v0.1.0 ($WORK/src-03/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-03/debug/deps -L dependency=$WORK/target-03/debug/deps --extern proc_macro --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-03/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-03/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-03/debug/deps --extern dep_path=$WORK/target-03/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-03/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.81s\n",
+      "stdout": "",
+      "target_dir": "target-03"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/include-str.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-04/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "proc_local",
+        "dep_path",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 + 72;\n"
+      ],
+      "label": "include-str",
+      "llbc_sha256": "555d2ecda667c929c30bec7ee38f2dd1092b06c166fa2336b7b16b47f281492f",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "e2fbdb2dc661cb04cb3d0be83199d07425d1bb7db4000241a8ee6d32ac1078b1",
+          "app_closure::macro_generated": "bbedcfad9025983a9c092cdd747bb54375f0a3df3ea0f6130364ce009e783583",
+          "app_closure::root": "1afc59d36431ca1e63c1001caf942f5a19d34c7047465e697801742facd4266a",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-04/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_add",
+          "dep_path::dep",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.8367,
+      "source_dir": "src-04",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "ba2fcb4a7c936bca247f560eb630164c61ff1ad4d2ca1a64fc47411c2fcc678d",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-04/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-04/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-04/debug/deps --verbose`\n     Running `$WORK/target-04/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling proc_local v0.1.0 ($WORK/src-04/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-04/debug/deps -L dependency=$WORK/target-04/debug/deps --extern proc_macro --verbose`\n   Compiling dep_path v0.1.0 ($WORK/src-04/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-04/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-04/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-04/debug/deps --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-04/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-04/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-04/debug/deps --extern dep_path=$WORK/target-04/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-04/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.79s\n",
+      "stdout": "",
+      "target_dir": "target-04"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/path-dependency.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-05/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "proc_local",
+        "dep_path",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 + 72;\n"
+      ],
+      "label": "path-dependency",
+      "llbc_sha256": "f8db749b43c7190ea707a7466dba830b4f3e3b0ed71b61e0b4e108b8aff28a7d",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "e2fbdb2dc661cb04cb3d0be83199d07425d1bb7db4000241a8ee6d32ac1078b1",
+          "app_closure::macro_generated": "bbedcfad9025983a9c092cdd747bb54375f0a3df3ea0f6130364ce009e783583",
+          "app_closure::root": "066f44f2899f4c92913d63cbec20660daa5dec2a76981bc2968bada0419f4e9a",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-05/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_add",
+          "dep_path::dep",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.8196,
+      "source_dir": "src-05",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "a6cb8b744f5a0d59bc80e9b093ae4a84db34b046169954499211e84fe1a674ca",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-05/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-05/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-05/debug/deps --verbose`\n     Running `$WORK/target-05/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling proc_local v0.1.0 ($WORK/src-05/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-05/debug/deps -L dependency=$WORK/target-05/debug/deps --extern proc_macro --verbose`\n   Compiling dep_path v0.1.0 ($WORK/src-05/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-05/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-05/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-05/debug/deps --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-05/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-05/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-05/debug/deps --extern dep_path=$WORK/target-05/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-05/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.77s\n",
+      "stdout": "",
+      "target_dir": "target-05"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/proc-source.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-06/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "dep_path",
+        "proc_local",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 + 72;\n"
+      ],
+      "label": "proc-source",
+      "llbc_sha256": "782e3801598baf98b28c72e625fb2ecba2f08928616eed5d1068fa0650cb68dd",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "e2fbdb2dc661cb04cb3d0be83199d07425d1bb7db4000241a8ee6d32ac1078b1",
+          "app_closure::macro_generated": "bbedcfad9025983a9c092cdd747bb54375f0a3df3ea0f6130364ce009e783583",
+          "app_closure::root": "b4f7a597b1915eab1c174b78f9762e8b89fa92f106d7564415950b82fcc6e145",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::num::wrapping_mul": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-06/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_mul",
+          "dep_path::dep",
+          "core::num::wrapping_add",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.8273,
+      "source_dir": "src-06",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "8ef0caec6c3b4f090acdfff7853b0053c88333476d07ded2862440111695a1ac"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-06/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-06/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-06/debug/deps --verbose`\n     Running `$WORK/target-06/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling dep_path v0.1.0 ($WORK/src-06/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-06/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-06/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-06/debug/deps --verbose`\n   Compiling proc_local v0.1.0 ($WORK/src-06/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-06/debug/deps -L dependency=$WORK/target-06/debug/deps --extern proc_macro --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-06/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-06/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-06/debug/deps --extern dep_path=$WORK/target-06/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-06/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.78s\n",
+      "stdout": "",
+      "target_dir": "target-06"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/build-source.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-07/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "proc_local",
+        "dep_path",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 * 2 + 72;\n"
+      ],
+      "label": "build-source",
+      "llbc_sha256": "e0a7f00fab0d8392b870512a9b13e6ef166df9c2562e7eaa034c10ccda910c7c",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "4f73e5a4d3c6088e575990de14b832dfcbf74ad9722eeb6433cd75be6b88d409",
+          "app_closure::macro_generated": "bbedcfad9025983a9c092cdd747bb54375f0a3df3ea0f6130364ce009e783583",
+          "app_closure::root": "066f44f2899f4c92913d63cbec20660daa5dec2a76981bc2968bada0419f4e9a",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-07/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_add",
+          "dep_path::dep",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.9191,
+      "source_dir": "src-07",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "0e26a5ef65861f5309a661bf048c26c1824dfd5988e774761a0e2ca2e6977682",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-07/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-07/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-07/debug/deps --verbose`\n     Running `$WORK/target-07/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling proc_local v0.1.0 ($WORK/src-07/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-07/debug/deps -L dependency=$WORK/target-07/debug/deps --extern proc_macro --verbose`\n   Compiling dep_path v0.1.0 ($WORK/src-07/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-07/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-07/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-07/debug/deps --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-07/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-07/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-07/debug/deps --extern dep_path=$WORK/target-07/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-07/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.87s\n",
+      "stdout": "",
+      "target_dir": "target-07"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/source-path.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-08-longer/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "proc_local",
+        "dep_path",
+        "app_closure"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 + 79;\n"
+      ],
+      "label": "source-path",
+      "llbc_sha256": "66c29966014383c5170e0460c1dd4b3ed7f718cb4b2b41795d6511d2bac0db76",
+      "projection": {
+        "body_sha256": {
+          "app_closure::BUILD_SUBJECT": "d2b101859780480162fab008a5417b7f6ae228b6428eec2eb6fead6cc98538da",
+          "app_closure::macro_generated": "bbedcfad9025983a9c092cdd747bb54375f0a3df3ea0f6130364ce009e783583",
+          "app_closure::root": "066f44f2899f4c92913d63cbec20660daa5dec2a76981bc2968bada0419f4e9a",
+          "core::num::wrapping_add": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "core::str::len": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "dep_path::dep": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure",
+        "files": [
+          {
+            "Local": "app/src/lib.rs"
+          },
+          {
+            "Local": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r08-run3/target-08/aarch64-apple-darwin/debug/build/app_closure-6288df3b32037565/out/generated.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "app/src/payload.txt"
+          },
+          {
+            "Local": "dep_path/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/str/mod.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure::macro_generated",
+          "app_closure::root",
+          "app_closure::BUILD_SUBJECT",
+          "core::num::wrapping_add",
+          "dep_path::dep",
+          "core::str::len"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.9035,
+      "source_dir": "src-08-longer",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-08-longer/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-08/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-08/debug/deps --verbose`\n     Running `$WORK/target-08/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling proc_local v0.1.0 ($WORK/src-08-longer/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-08/debug/deps -L dependency=$WORK/target-08/debug/deps --extern proc_macro --verbose`\n   Compiling dep_path v0.1.0 ($WORK/src-08-longer/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-08/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-08/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-08/debug/deps --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-08/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-08/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-08/debug/deps --extern dep_path=$WORK/target-08/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-08/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.85s\n",
+      "stdout": "",
+      "target_dir": "target-08"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/bin-unit.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/src-09/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--bin",
+        "app_closure_cli",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "driver_units": [
+        "build_script_build",
+        "proc_local",
+        "dep_path",
+        "app_closure",
+        "app_closure_cli"
+      ],
+      "environment_inputs": {
+        "BUILD_VALUE": "7",
+        "PROBE_ENV": "A",
+        "PROC_VALUE": "3"
+      },
+      "exit": 0,
+      "generated_rs": [
+        "pub const BUILD_SUBJECT: u32 = 7 + 72;\n"
+      ],
+      "label": "bin-unit",
+      "llbc_sha256": "6338ad2ddcf4c4c649f6974d9a3d8df2a37049573f36e906a0fda9feb9746e1b",
+      "projection": {
+        "body_sha256": {
+          "app_closure_cli::main": "2eb530a2a3019464e7a5d7d948eac86db662892b469620204c55597a69548c5a",
+          "core::fmt::from_str": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0",
+          "std::io::stdio::_print": "b7f7e6dd45056dade06dc7d99eaaef5fbb386c3dd8cbd7f4a3669a1ef87545d0"
+        },
+        "crate_name": "app_closure_cli",
+        "files": [
+          {
+            "Local": "app/src/main.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/io/stdio.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/io/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/lib.rs"
+          }
+        ],
+        "function_names": [
+          "app_closure_cli::main",
+          "core::fmt::from_str",
+          "std::io::stdio::_print"
+        ],
+        "has_errors": false
+      },
+      "seconds": 0.9164,
+      "source_dir": "src-09",
+      "source_sha256": {
+        "Cargo.lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "Cargo.toml": "f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4",
+        "app/Cargo.toml": "e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4",
+        "app/build.rs": "67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a",
+        "app/src/lib.rs": "9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6",
+        "app/src/main.rs": "0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170",
+        "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160",
+        "app/tests/check.rs": "effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61",
+        "dep_path/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+        "dep_path/src/lib.rs": "9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce",
+        "proc_local/Cargo.toml": "1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85",
+        "proc_local/src/lib.rs": "0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee"
+      },
+      "stderr": "   Compiling app_closure v0.1.0 ($WORK/src-09/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/target-09/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/target-09/debug/deps --verbose`\n     Running `$WORK/target-09/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling proc_local v0.1.0 ($WORK/src-09/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/target-09/debug/deps -L dependency=$WORK/target-09/debug/deps --extern proc_macro --verbose`\n   Compiling dep_path v0.1.0 ($WORK/src-09/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/target-09/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-09/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-09/debug/deps --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/target-09/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-09/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-09/debug/deps --extern dep_path=$WORK/target-09/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/target-09/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure_cli --edition=2021 app/src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=648615b399e73b82 -C extra-filename=-55418da9fcc2a3ac --out-dir $WORK/target-09/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-09/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-09/debug/deps --extern app_closure=$WORK/target-09/aarch64-apple-darwin/debug/deps/libapp_closure-35261712c164a144.rlib --extern dep_path=$WORK/target-09/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rlib --extern proc_local=$WORK/target-09/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.87s\n",
+      "stdout": "",
+      "target_dir": "target-09"
+    }
+  ],
+  "const_body_differs": {
+    "build-env": true,
+    "build-source": true,
+    "include-str": false,
+    "path-dependency": false,
+    "proc-env": false,
+    "proc-source": false,
+    "rustc-env": false,
+    "source-path": true
+  },
+  "dependency_body_differs": {
+    "build-env": false,
+    "build-source": false,
+    "include-str": false,
+    "path-dependency": false,
+    "proc-env": false,
+    "proc-source": false,
+    "rustc-env": false,
+    "source-path": false
+  },
+  "host": "aarch64-apple-darwin",
+  "macro_body_differs": {
+    "build-env": false,
+    "build-source": false,
+    "include-str": false,
+    "path-dependency": false,
+    "proc-env": true,
+    "proc-source": false,
+    "rustc-env": false,
+    "source-path": false
+  },
+  "root_body_differs": {
+    "build-env": false,
+    "build-source": false,
+    "include-str": true,
+    "path-dependency": false,
+    "proc-env": false,
+    "proc-source": true,
+    "rustc-env": true,
+    "source-path": false
+  },
+  "tool_sha256": {
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "wrong_unit_rejection": "wrong compilation unit: expected app_closure, got app_closure_cli"
+}

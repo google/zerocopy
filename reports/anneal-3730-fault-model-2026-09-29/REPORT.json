@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/scheduling",
+    "anneal/cancellation",
+    "anneal/publication",
+    "anneal/fault-model"
+  ],
+  "subjects": [
+    {
+      "name": "bounded orchestration model",
+      "identity": {
+        "artifact": "support/model.py",
+        "sha256": "aa91033fd3965c7da9e79dfd933c2d614bd4845c720e9007a07441135d9e37fa"
+      }
+    },
+    {
+      "name": "existing fake-stage subprocess harness",
+      "identity": {
+        "artifact": "reports/anneal-3730-snapshot-capture-jobs-2026-09-29/support/probe.py",
+        "sha256": "fb1a7cbdff9cdb7b66a0f36234756af52c4862508dc5010735d4263d5a1995da"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,374 @@
+{
+  "baseline": {
+    "current_verified": true,
+    "freshness": "current",
+    "generated": {
+      "Current.lean": {
+        "bytes": 20,
+        "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+      },
+      "Funs.lean": {
+        "bytes": 934,
+        "sha256": "ded701794ffe0152ea9c06efcb6275cb9db43615e78054f587cac9c90ae559f3"
+      },
+      "Types.lean": {
+        "bytes": 536,
+        "sha256": "01b42250711810feaa136ccb5127c31518b36b500f840f73d44019c5c3ced125"
+      }
+    },
+    "llbc_sha256": "8258c65ad9843399bbe53d1ec41774ffa58737071d12dcc8ed66d0b269db8bd9",
+    "model_id": "a75b1054926437a6a73e6abbf08add2fe3c1102e0800b1581f7045b19c62c135",
+    "old_compiled": {
+      "Current.lean": {
+        "bytes": 20,
+        "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+      },
+      "Current.olean": {
+        "bytes": 1312,
+        "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+      },
+      "Current/Funs.lean": {
+        "bytes": 934,
+        "sha256": "ded701794ffe0152ea9c06efcb6275cb9db43615e78054f587cac9c90ae559f3"
+      },
+      "Current/Funs.olean": {
+        "bytes": 12848,
+        "sha256": "17a844d740e80e5dd64f4dede11d348044fe854c266b4a5b438e4936eb01d0ae"
+      },
+      "Current/Types.lean": {
+        "bytes": 536,
+        "sha256": "01b42250711810feaa136ccb5127c31518b36b500f840f73d44019c5c3ced125"
+      },
+      "Current/Types.olean": {
+        "bytes": 1608,
+        "sha256": "289a38d819997418c75dde6e7a94396458f831c674a3d49e1b6d389e1385f461"
+      },
+      "Proof.lean": {
+        "bytes": 73,
+        "sha256": "faf7305a00ca5cf270c3a4bba3fca3e0acfdbd992019c002a5b9063def4427ce"
+      }
+    },
+    "proof": {
+      "lean_rc": 0,
+      "lean_stderr": "",
+      "lean_stdout": "",
+      "proof_sha256": "faf7305a00ca5cf270c3a4bba3fca3e0acfdbd992019c002a5b9063def4427ce",
+      "proof_version": "v1"
+    },
+    "rust_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/current.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "last_good_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work",
+      "label": "A:charon",
+      "ms": 304.5,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/generated-A",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work",
+      "label": "A:aeneas",
+      "ms": 209.9,
+      "rc": 0,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/generated-A/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/generated-A/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/generated-A/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.120353 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/old-model",
+      "label": "compile-old:Current/Types",
+      "ms": 5755.1,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/old-model",
+      "label": "compile-old:Current/Funs",
+      "ms": 1688.8,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/old-model",
+      "label": "compile-old:Current",
+      "ms": 1571.5,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/old-model",
+      "label": "A:proof-v1",
+      "ms": 1591.5,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/current.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "last_good_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work",
+      "label": "B:charon-syntax-error",
+      "ms": 190.7,
+      "rc": 2,
+      "stderr": "error: this file contains an unclosed delimiter\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/source.rs:3:16\n  |\n3 | pub fn broken(\n  |              -^\n  |              |\n  |              unclosed delimiter\n\nerror: aborting due to 1 previous error\n\nERROR Code failed to compile\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/old-model",
+      "label": "last-good:rust-syntax-error:proof-v2",
+      "ms": 1720.5,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/candidate.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "last_good_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work",
+      "label": "C:charon",
+      "ms": 197.8,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/generated-C-partial",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/candidate.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work",
+      "label": "C:aeneas-unsupported",
+      "ms": 244.7,
+      "rc": 1,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/candidate.llbc\n[\u001b[91mError\u001b[39m] Aeneas does not yet support dereferencing raw pointers.\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/source.rs', lines 3:44-3:48\n[\u001b[93mWarn\u001b[39m ] Could not translate the body of function 'last_good_probe::bad because of previous error\nName pattern: 'last_good_probe::bad'\nDefinition span: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/source.rs', lines 3:0-3:50\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/source.rs', lines 3:44-3:48\nCompiler source: interp/Interp.ml, line 550\n\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/generated-C-partial/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/generated-C-partial/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/generated-C-partial/Candidate.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.122737 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/support/work/old-model",
+      "label": "last-good:unsupported-extraction:proof-v3",
+      "ms": 1690.7,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "observed_at_utc": "2026-09-29T11:13:20Z",
+  "policy_origin": "experiment-side; not Anneal or tool-generated freshness metadata",
+  "proof_snapshots": {
+    "v1.lean": {
+      "bytes": 73,
+      "sha256": "faf7305a00ca5cf270c3a4bba3fca3e0acfdbd992019c002a5b9063def4427ce"
+    },
+    "v2.lean": {
+      "bytes": 138,
+      "sha256": "3c5389a6d3ba23f6351da1795a6f9ccfacb277fdf26bc4b073e47ab9c57e6266"
+    },
+    "v3.lean": {
+      "bytes": 141,
+      "sha256": "139d42a47a0bfa7c51c35097618cd1f01a6d29c05152ec403cfee142b21b3312"
+    }
+  },
+  "schema": 1,
+  "source_snapshots": {
+    "A-good.rs": {
+      "bytes": 69,
+      "sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995"
+    },
+    "B-syntax.rs": {
+      "bytes": 84,
+      "sha256": "8c3146f3b4853bd3a79814a7d101fecccbb26dc5d26f9060edd2b47a4d39a7ad"
+    },
+    "C-unsupported.rs": {
+      "bytes": 120,
+      "sha256": "4e8f96677fcacbf42b11c0809fa1f9c0392026efaa16fa7730feef9898566a0b"
+    }
+  },
+  "syntax_failure": {
+    "charon_rc": 2,
+    "llbc_path_still_exists": true,
+    "policies": {
+      "last_good": {
+        "current_verified": false,
+        "feedback": "provisional: evaluated against last-good Rust model",
+        "freshness": "stale",
+        "mode": "explicit-last-good",
+        "model_id": "a75b1054926437a6a73e6abbf08add2fe3c1102e0800b1581f7045b19c62c135",
+        "model_rust_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995",
+        "query": {
+          "lean_rc": 0,
+          "lean_stderr": "",
+          "lean_stdout": "",
+          "proof_sha256": "3c5389a6d3ba23f6351da1795a6f9ccfacb277fdf26bc4b073e47ab9c57e6266",
+          "proof_version": "v2"
+        },
+        "query_performed": true,
+        "requested_rust_sha256": "8c3146f3b4853bd3a79814a7d101fecccbb26dc5d26f9060edd2b47a4d39a7ad",
+        "rust_status": "rust-syntax-error"
+      },
+      "naive_exit_zero_would_mislabel_current": true,
+      "stop": {
+        "current_verified": false,
+        "feedback": "unavailable: current Rust model failed",
+        "mode": "stop-interaction",
+        "old_model_rust_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995",
+        "query_performed": false,
+        "requested_rust_sha256": "8c3146f3b4853bd3a79814a7d101fecccbb26dc5d26f9060edd2b47a4d39a7ad",
+        "rust_status": "rust-syntax-error"
+      }
+    },
+    "retained_llbc_sha256": "8258c65ad9843399bbe53d1ec41774ffa58737071d12dcc8ed66d0b269db8bd9",
+    "rust_sha256": "8c3146f3b4853bd3a79814a7d101fecccbb26dc5d26f9060edd2b47a4d39a7ad"
+  },
+  "tools": {
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "unsupported_extraction": {
+    "aeneas_rc": 1,
+    "candidate_llbc_sha256": "a3e534a147c4c0bf2e0d0833f011875816d25c7e7a88c86aafe838a62ff35662",
+    "partial_contains_sorry": true,
+    "partial_generated": {
+      "Candidate.lean": {
+        "bytes": 22,
+        "sha256": "c8b52108d5abc3eefc1d7b560bf2b2726b55202fac79501a463765378886c601"
+      },
+      "Funs.lean": {
+        "bytes": 1290,
+        "sha256": "bc5704b39afa3db450181fa9e52795a7eaaaf14787b73a4a5b00b453960467bb"
+      },
+      "Types.lean": {
+        "bytes": 536,
+        "sha256": "01b42250711810feaa136ccb5127c31518b36b500f840f73d44019c5c3ced125"
+      }
+    },
+    "policies": {
+      "last_good": {
+        "current_verified": false,
+        "feedback": "provisional: evaluated against last-good Rust model",
+        "freshness": "stale",
+        "mode": "explicit-last-good",
+        "model_id": "a75b1054926437a6a73e6abbf08add2fe3c1102e0800b1581f7045b19c62c135",
+        "model_rust_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995",
+        "query": {
+          "lean_rc": 0,
+          "lean_stderr": "",
+          "lean_stdout": "",
+          "proof_sha256": "139d42a47a0bfa7c51c35097618cd1f01a6d29c05152ec403cfee142b21b3312",
+          "proof_version": "v3"
+        },
+        "query_performed": true,
+        "requested_rust_sha256": "4e8f96677fcacbf42b11c0809fa1f9c0392026efaa16fa7730feef9898566a0b",
+        "rust_status": "unsupported-extraction"
+      },
+      "naive_exit_zero_would_mislabel_current": true,
+      "stop": {
+        "current_verified": false,
+        "feedback": "unavailable: current Rust model failed",
+        "mode": "stop-interaction",
+        "old_model_rust_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995",
+        "query_performed": false,
+        "requested_rust_sha256": "4e8f96677fcacbf42b11c0809fa1f9c0392026efaa16fa7730feef9898566a0b",
+        "rust_status": "unsupported-extraction"
+      }
+    },
+    "rust_sha256": "4e8f96677fcacbf42b11c0809fa1f9c0392026efaa16fa7730feef9898566a0b"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "anneal-3730-live-proof-import-state-2026-09-29": {
+    "suite": "R32 / C11",
+    "ids": [38, 39, 40],
+    "method": "Pinned direct Lean LSP/batch A→B fixture varied unsaved A buffer, saved A source, rebuilt A.olean, reused versus new/reopened B file workers and fresh server. B imported old compiled A until rebuild; reused worker retained old import after rebuild; new workers saw type mismatch. Empty LEAN_PATH and source-only cycle controls failed explicitly.",
+    "boundary": "One tiny two-module direct Lean graph; no Anneal annotation graph, supported unsaved-import design, editor transport, sandbox context, or production refresh policy.",
+    "evidence_files": ["REPORT.md", "support/transcript.json", "support/probe.py", "support/verify.py"]
+  },
+  "anneal-3730-external-model-without-codegen-change-2026-09-29": {
+    "suite": "R33 / E10",
+    "ids": [50, 82, 147],
+    "method": "Pinned Charon→one-shot Aeneas output for one extern Rust call stayed byte-identical while an experiment-owned external Lean model changed among correct, wrong, axiom and missing variants. Fresh batch proof/axiom results changed; forced stale OLean accepted the wrong source, and an old Lean file worker retained prior import state after rebuild while a fresh one rejected it.",
+    "boundary": "External Lean source model, not compiled Aeneas registry; tiny extern and manually wired proof, no Anneal cache or full option/version matrix.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/probe.py", "support/check.py"]
+  },
+  "anneal-3730-per-worker-copied-byte-inventory-2026-09-29": {
+    "suite": "R34 / J02",
+    "ids": [113, 114],
+    "method": "Direct pinned Lean tiny proof generated in one/two cold byte-copy and warm shared-symlink worker layouts, plus hardlink and APFS cp -c clone controls. Every path was classified by role, regular payload, st_blocks, device/inode/link identity and SHA; each cold worker added five dependency files/6,189 payload bytes, warm workers added zero dependency payload.",
+    "boundary": "Representative tiny Lean-only fixture; not real Anneal/Mathlib or full Rust→LLBC→Lean/Lake bill, peak writes, unique physical APFS extent accounting, or safe concurrent shared mutation.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/inventory.csv", "support/probe.py", "support/check.py"]
+  },
+  "anneal-3730-scratch-pool-scaling-2026-09-29": {
+    "suite": "R35 / J05",
+    "ids": [114, 116, 153],
+    "method": "Direct pinned Lean LSP pools with 1/2/4/8 concurrent imported tiny proof workers, serial cold local dependency builds versus warm prebuilt symlinks, open/edit/goal fanout, preflight 4.5 GiB admission, macOS per-process/group footprint/RSS samples, complete path/inode disk ledgers and owned worker cleanup. All 30 goal/edit cycles and clean shutdowns passed.",
+    "boundary": "Two memory samples and one run per cell; no hard transient peak, sustained leak/CPU study, actual Anneal scratch service, MCP daemon, Mathlib-sized import or realistic CI capacity.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/probe.py", "support/check.py"]
+  },
+  "anneal-3730-saved-vs-private-rust-overlay-2026-09-29": {
+    "suite": "R36 / D01",
+    "ids": [9, 15, 73, 74, 75, 76, 77, 78, 79, 80],
+    "method": "Pinned Cargo/Charon extracted ten private materialized workspace requests with build.rs, local proc macro, generated include!, include_str!, env!, path dependency and separate binary. Saved/clean copies matched relative source and unit-graph subject keys; input perturbations, stale-key rejection and wrong-unit rejection were observed with retained LLBC, normalized five/six-unit graphs and per-request private targets.",
+    "boundary": "Private filesystem copies are not unsaved editor/rustc overlay API; no same-process Charon reset, arbitrary build closure, complete target/config matrix, concurrent target sharing or Anneal scheduler/publication.",
+    "evidence_files": ["REPORT.md", "support/results.json", "support/probe.py", "support/verify.py"]
+  }
+}

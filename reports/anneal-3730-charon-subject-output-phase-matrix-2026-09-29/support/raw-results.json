@@ -1,0 +1,2792 @@
+{
+  "cases": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/lib-base.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-lib-base/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-lib-base",
+      "destination": "$REPORT/artifacts/lib-base.llbc",
+      "destination_bytes": 14708,
+      "destination_exists": true,
+      "destination_sha256": "c4060a3b6d1221566c26acc9610d4f76e8011bd5c2deb5c831c2e60a0df18e24",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-lib-base",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "lib-base",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 49,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 48,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7a4697ac863c36df3cd0eb1bad69b4ad3950a39e98fa36815d4dcbfddaf51702",
+            "markers": [],
+            "name": "subject_matrix::default_only",
+            "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 9
+                },
+                "end": {
+                  "col": 57,
+                  "line": 9
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "c4060a3b6d1221566c26acc9610d4f76e8011bd5c2deb5c831c2e60a0df18e24"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.5723,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-base)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-lib-base/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-base/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-base/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-lib-base"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/bin-base.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-bin-base/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--bin",
+        "subject_matrix_cli",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix",
+        "subject_matrix_cli"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-bin-base",
+      "destination": "$REPORT/artifacts/bin-base.llbc",
+      "destination_bytes": 54391,
+      "destination_exists": true,
+      "destination_sha256": "54b99888509bccab35cccb65f78c142cd7e3f3ade6157ef01acac67a6ab8368a",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-bin-base",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "bin-base",
+      "projection": {
+        "crate_name": "subject_matrix_cli",
+        "file_names": [
+          {
+            "Local": "src/main.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/rt.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/num.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/io/stdio.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/io/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/result.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "46a08c5f6a9eb7dd157abba36f6b3022a5db53cab22c9582d5a502890488ea7d",
+            "markers": [],
+            "name": "subject_matrix_cli::bin_value",
+            "source_text": "fn bin_value(x: u32) -> u32 { x.wrapping_add(5) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 1
+                },
+                "end": {
+                  "col": 49,
+                  "line": 1
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "44054b498d990bdde86c77810c9d2be939931142a7454cb69f7f30f4d2fb4c83",
+            "markers": [],
+            "name": "subject_matrix_cli::main",
+            "source_text": "fn main() { println!(\"{}\", bin_value(3)); }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 2
+                },
+                "end": {
+                  "col": 43,
+                  "line": 2
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "54b99888509bccab35cccb65f78c142cd7e3f3ade6157ef01acac67a6ab8368a"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.24,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-bin-base)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-bin-base/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-bin-base/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-bin-base/debug/deps --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix_cli --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=a1aa7d5beeb129c7 -C extra-filename=-559d5a63c77df081 --out-dir $WORK/target-bin-base/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-bin-base/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-bin-base/debug/deps --extern subject_matrix=$WORK/target-bin-base/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-bin-base"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/test-base.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-test-base/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--test",
+        "check",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix",
+        "subject_matrix_cli",
+        "check"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-test-base",
+      "destination": "$REPORT/artifacts/test-base.llbc",
+      "destination_bytes": 205696,
+      "destination_exists": true,
+      "destination_sha256": "ae9e209c23d37c0a7c765e22d5cb5b8bc6b309d6f59499939b46ccf66700769c",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-test-base",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "test-base",
+      "projection": {
+        "crate_name": "check",
+        "file_names": [
+          {
+            "Local": "tests/check.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/test/src/types.rs"
+          },
+          {
+            "Local": "/rustc/library/test/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/macros/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/panicking.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/option.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/test/src/options.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/result.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/string.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/marker.rs"
+          },
+          {
+            "Local": "/rustc/library/test/src/bench.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/boxed.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/ops/function.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/ops/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/alloc.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/borrow.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/str.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/borrow.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/process.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "074f8227486aaaf35398786380bcf3f62192466fe7c98c373d2b1e5378955740",
+            "markers": [],
+            "name": "check::local_alpha",
+            "source_text": "fn local_alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 1
+                },
+                "end": {
+                  "col": 51,
+                  "line": 1
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "de6f80c08e7380504dc188529b51221d262b03c9698cc3dc5c8ac93f69f24919",
+            "markers": [],
+            "name": "check::check_alpha",
+            "source_text": "fn check_alpha() { assert_eq!(local_alpha(3), 4); }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "96aa307961497240485f166f7e73ebe534109fa55d37d115db0ec4a58778cd3f",
+            "markers": [],
+            "name": "check::main",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 1
+                },
+                "end": {
+                  "col": 0,
+                  "line": 1
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "2ad643d9cd709f9fd4a07f071dd4241f3fe56cd801df1d2070f135a764350288",
+            "markers": [],
+            "name": "check::check_alpha",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "97b7a06d36f4fdf89886275d4fe67a090a8db80032aa19890ab351a3fe277f28",
+            "markers": [],
+            "name": "check::check_alpha::closure::as_fn",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "791908a7799b9c26d81c038c5994f5216720cda0e5447c4fbb57c74e62c3f03e",
+            "markers": [],
+            "name": "check::check_alpha::call_once",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "2a7cce8aa8503ffdedd4261479a326e2a4d42fc024aae9fc899e864052ad1d57",
+            "markers": [],
+            "name": "check::check_alpha::call_mut",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7ce085849f9a2ddbae4da8dc93266952f934bb22dcc77821d52db4d29b72d84a",
+            "markers": [],
+            "name": "check::check_alpha::call",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7d930cd770be4c04575ebef6a8ac6a9f9f0bf23305a50fd7a9cb8387059a0a79",
+            "markers": [],
+            "name": "check::check_alpha::closure::drop_in_place",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "ae9e209c23d37c0a7c765e22d5cb5b8bc6b309d6f59499939b46ccf66700769c"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.2979,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-test-base)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-test-base/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-base/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-base/debug/deps --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix_cli --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=a1aa7d5beeb129c7 -C extra-filename=-559d5a63c77df081 --out-dir $WORK/target-test-base/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-base/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-base/debug/deps --extern subject_matrix=$WORK/target-test-base/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name check --edition=2021 tests/check.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --test --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=d103b2ed59c2f1d5 -C extra-filename=-2e86c651bbe8df91 --out-dir $WORK/target-test-base/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-base/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-base/debug/deps --extern subject_matrix=$WORK/target-test-base/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-test-base"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/test-repeat-1.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-test-repeat-1/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--test",
+        "check",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix",
+        "check",
+        "subject_matrix_cli"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-test-repeat-1",
+      "destination": "$REPORT/artifacts/test-repeat-1.llbc",
+      "destination_bytes": 54396,
+      "destination_exists": true,
+      "destination_sha256": "4f626d2d40f01b2e745091d97c89de97405d3c9bad0d2fbd3d5b9de92f0ba1a6",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-test-repeat-1",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "test-repeat-1",
+      "projection": {
+        "crate_name": "subject_matrix_cli",
+        "file_names": [
+          {
+            "Local": "src/main.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/rt.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/num.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/io/stdio.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/io/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/result.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "46a08c5f6a9eb7dd157abba36f6b3022a5db53cab22c9582d5a502890488ea7d",
+            "markers": [],
+            "name": "subject_matrix_cli::bin_value",
+            "source_text": "fn bin_value(x: u32) -> u32 { x.wrapping_add(5) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 1
+                },
+                "end": {
+                  "col": 49,
+                  "line": 1
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "44054b498d990bdde86c77810c9d2be939931142a7454cb69f7f30f4d2fb4c83",
+            "markers": [],
+            "name": "subject_matrix_cli::main",
+            "source_text": "fn main() { println!(\"{}\", bin_value(3)); }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 2
+                },
+                "end": {
+                  "col": 43,
+                  "line": 2
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "4f626d2d40f01b2e745091d97c89de97405d3c9bad0d2fbd3d5b9de92f0ba1a6"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.2556,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-test-repeat-1)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-test-repeat-1/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-1/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-1/debug/deps --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name check --edition=2021 tests/check.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --test --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=d103b2ed59c2f1d5 -C extra-filename=-2e86c651bbe8df91 --out-dir $WORK/target-test-repeat-1/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-1/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-1/debug/deps --extern subject_matrix=$WORK/target-test-repeat-1/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix_cli --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=a1aa7d5beeb129c7 -C extra-filename=-559d5a63c77df081 --out-dir $WORK/target-test-repeat-1/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-1/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-1/debug/deps --extern subject_matrix=$WORK/target-test-repeat-1/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-test-repeat-1"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/test-repeat-2.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-test-repeat-2/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--test",
+        "check",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix",
+        "subject_matrix_cli",
+        "check"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-test-repeat-2",
+      "destination": "$REPORT/artifacts/test-repeat-2.llbc",
+      "destination_bytes": 205700,
+      "destination_exists": true,
+      "destination_sha256": "f3f9283cb6e366c2885345174f8cf1bbb4fc6767e1528fe988bb0995c5a82c60",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-test-repeat-2",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "test-repeat-2",
+      "projection": {
+        "crate_name": "check",
+        "file_names": [
+          {
+            "Local": "tests/check.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/test/src/types.rs"
+          },
+          {
+            "Local": "/rustc/library/test/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/macros/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/panicking.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/option.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/test/src/options.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/result.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/string.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/marker.rs"
+          },
+          {
+            "Local": "/rustc/library/test/src/bench.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/boxed.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/ops/function.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/ops/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/alloc.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/borrow.rs"
+          },
+          {
+            "Local": "/rustc/library/alloc/src/str.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/borrow.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/process.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "074f8227486aaaf35398786380bcf3f62192466fe7c98c373d2b1e5378955740",
+            "markers": [],
+            "name": "check::local_alpha",
+            "source_text": "fn local_alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 1
+                },
+                "end": {
+                  "col": 51,
+                  "line": 1
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "de6f80c08e7380504dc188529b51221d262b03c9698cc3dc5c8ac93f69f24919",
+            "markers": [],
+            "name": "check::check_alpha",
+            "source_text": "fn check_alpha() { assert_eq!(local_alpha(3), 4); }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "96aa307961497240485f166f7e73ebe534109fa55d37d115db0ec4a58778cd3f",
+            "markers": [],
+            "name": "check::main",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 1
+                },
+                "end": {
+                  "col": 0,
+                  "line": 1
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "2ad643d9cd709f9fd4a07f071dd4241f3fe56cd801df1d2070f135a764350288",
+            "markers": [],
+            "name": "check::check_alpha",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "97b7a06d36f4fdf89886275d4fe67a090a8db80032aa19890ab351a3fe277f28",
+            "markers": [],
+            "name": "check::check_alpha::closure::as_fn",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "791908a7799b9c26d81c038c5994f5216720cda0e5447c4fbb57c74e62c3f03e",
+            "markers": [],
+            "name": "check::check_alpha::call_once",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "2a7cce8aa8503ffdedd4261479a326e2a4d42fc024aae9fc899e864052ad1d57",
+            "markers": [],
+            "name": "check::check_alpha::call_mut",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7ce085849f9a2ddbae4da8dc93266952f934bb22dcc77821d52db4d29b72d84a",
+            "markers": [],
+            "name": "check::check_alpha::call",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7d930cd770be4c04575ebef6a8ac6a9f9f0bf23305a50fd7a9cb8387059a0a79",
+            "markers": [],
+            "name": "check::check_alpha::closure::drop_in_place",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 51,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "f3f9283cb6e366c2885345174f8cf1bbb4fc6767e1528fe988bb0995c5a82c60"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.2473,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-test-repeat-2)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-test-repeat-2/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-2/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-2/debug/deps --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix_cli --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=a1aa7d5beeb129c7 -C extra-filename=-559d5a63c77df081 --out-dir $WORK/target-test-repeat-2/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-2/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-2/debug/deps --extern subject_matrix=$WORK/target-test-repeat-2/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name check --edition=2021 tests/check.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --test --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=d103b2ed59c2f1d5 -C extra-filename=-2e86c651bbe8df91 --out-dir $WORK/target-test-repeat-2/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-2/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-2/debug/deps --extern subject_matrix=$WORK/target-test-repeat-2/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-test-repeat-2"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/test-repeat-3.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-test-repeat-3/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--test",
+        "check",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix",
+        "check",
+        "subject_matrix_cli"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-test-repeat-3",
+      "destination": "$REPORT/artifacts/test-repeat-3.llbc",
+      "destination_bytes": 54396,
+      "destination_exists": true,
+      "destination_sha256": "8f018ca01a63bb7008805e076f25f2048dabe393bc6312804a20c91e270330d6",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-test-repeat-3",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "test-repeat-3",
+      "projection": {
+        "crate_name": "subject_matrix_cli",
+        "file_names": [
+          {
+            "Local": "src/main.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/rt.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/fmt/num.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/io/stdio.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/io/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/std/src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/result.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "46a08c5f6a9eb7dd157abba36f6b3022a5db53cab22c9582d5a502890488ea7d",
+            "markers": [],
+            "name": "subject_matrix_cli::bin_value",
+            "source_text": "fn bin_value(x: u32) -> u32 { x.wrapping_add(5) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 1
+                },
+                "end": {
+                  "col": 49,
+                  "line": 1
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "44054b498d990bdde86c77810c9d2be939931142a7454cb69f7f30f4d2fb4c83",
+            "markers": [],
+            "name": "subject_matrix_cli::main",
+            "source_text": "fn main() { println!(\"{}\", bin_value(3)); }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 2
+                },
+                "end": {
+                  "col": 43,
+                  "line": 2
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "8f018ca01a63bb7008805e076f25f2048dabe393bc6312804a20c91e270330d6"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.2502,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-test-repeat-3)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-test-repeat-3/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-3/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-3/debug/deps --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name check --edition=2021 tests/check.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --test --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=d103b2ed59c2f1d5 -C extra-filename=-2e86c651bbe8df91 --out-dir $WORK/target-test-repeat-3/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-3/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-3/debug/deps --extern subject_matrix=$WORK/target-test-repeat-3/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix_cli --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=a1aa7d5beeb129c7 -C extra-filename=-559d5a63c77df081 --out-dir $WORK/target-test-repeat-3/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-test-repeat-3/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-test-repeat-3/debug/deps --extern subject_matrix=$WORK/target-test-repeat-3/aarch64-apple-darwin/debug/deps/libsubject_matrix-21be0fdd0836da51.rlib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-test-repeat-3"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/lib-feature.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-lib-feature/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--features",
+        "selected",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-lib-feature",
+      "destination": "$REPORT/artifacts/lib-feature.llbc",
+      "destination_bytes": 14711,
+      "destination_exists": true,
+      "destination_sha256": "2161d909832e207179f97a8b55d4b78e48311875e1731cc8049c2395adfd67b9",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-lib-feature",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "lib-feature",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 49,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 48,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "0a96d8ad2f055adc1c7d5f38d9f40a3d81a5173ae337b69030e3b203de0cc51a",
+            "markers": [],
+            "name": "subject_matrix::feature_only",
+            "source_text": "pub fn feature_only(x: u32) -> u32 { x.wrapping_add(17) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 7
+                },
+                "end": {
+                  "col": 57,
+                  "line": 7
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "2161d909832e207179f97a8b55d4b78e48311875e1731cc8049c2395adfd67b9"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1603,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-feature)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --cfg 'feature=\"selected\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=4e4e1a4eb2af6286 -C extra-filename=-d2c0df1d978a8751 --out-dir $WORK/target-lib-feature/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-feature/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-feature/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-lib-feature"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/lib-explicit-host.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-lib-explicit-host/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--target",
+        "aarch64-apple-darwin",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-lib-explicit-host",
+      "destination": "$REPORT/artifacts/lib-explicit-host.llbc",
+      "destination_bytes": 14717,
+      "destination_exists": true,
+      "destination_sha256": "a346be1b9811280e7e65272518abf278716f5c53433555b64176556062d91332",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-lib-explicit-host",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "lib-explicit-host",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 49,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 48,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7a4697ac863c36df3cd0eb1bad69b4ad3950a39e98fa36815d4dcbfddaf51702",
+            "markers": [],
+            "name": "subject_matrix::default_only",
+            "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 9
+                },
+                "end": {
+                  "col": 57,
+                  "line": 9
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "a346be1b9811280e7e65272518abf278716f5c53433555b64176556062d91332"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.144,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-explicit-host)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-lib-explicit-host/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-explicit-host/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-explicit-host/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-lib-explicit-host"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/lib-rustflags.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-lib-rustflags/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-lib-rustflags",
+      "destination": "$REPORT/artifacts/lib-rustflags.llbc",
+      "destination_bytes": 14713,
+      "destination_exists": true,
+      "destination_sha256": "750c2163f3c2cf411fdea8c2ac3a88bc108b47a129820873eb965a2ee341c56f",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-lib-rustflags",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": "-C opt-level=1"
+      },
+      "exit": 0,
+      "label": "lib-rustflags",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 49,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 48,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7a4697ac863c36df3cd0eb1bad69b4ad3950a39e98fa36815d4dcbfddaf51702",
+            "markers": [],
+            "name": "subject_matrix::default_only",
+            "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 9
+                },
+                "end": {
+                  "col": 57,
+                  "line": 9
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "750c2163f3c2cf411fdea8c2ac3a88bc108b47a129820873eb965a2ee341c56f"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1627,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-rustflags)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-115afa9a22ecac06 --out-dir $WORK/target-lib-rustflags/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-rustflags/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-rustflags/debug/deps -C opt-level=1 --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-lib-rustflags"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/lib-comment.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-lib-comment/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-lib-comment",
+      "destination": "$REPORT/artifacts/lib-comment.llbc",
+      "destination_bytes": 14754,
+      "destination_exists": true,
+      "destination_sha256": "5b2978de7ff1d924362b97f6fa504ed3a2de8fe0255b6beb09e55eef67c82327",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-lib-comment",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "lib-comment",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "0ee8149625987a7f78305f98d5754fcb813f19ecfaf68b6d8af64b6c45b5e0fd",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 4
+                },
+                "end": {
+                  "col": 49,
+                  "line": 4
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "46998a4201f224ab51a6203e8c896ca9f1599c521de047cc6e1e29cd39461e31",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 6
+                },
+                "end": {
+                  "col": 48,
+                  "line": 6
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "d74613fc51887658f7b93b5c1ae00b15e82be29483e48ee14cfd650785e7769d",
+            "markers": [],
+            "name": "subject_matrix::default_only",
+            "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 10
+                },
+                "end": {
+                  "col": 57,
+                  "line": 10
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "5b2978de7ff1d924362b97f6fa504ed3a2de8fe0255b6beb09e55eef67c82327"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1723,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "59591d548603e8221e38a6359543144fcb0a75d10989483d18bc41d6fbe4c4e9",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-comment)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-lib-comment/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-comment/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-comment/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-lib-comment"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/lib-reorder.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-lib-reorder/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-lib-reorder",
+      "destination": "$REPORT/artifacts/lib-reorder.llbc",
+      "destination_bytes": 14711,
+      "destination_exists": true,
+      "destination_sha256": "1413493d3275bab1b2136c401f087a552d677b93eae2a4856a4e94f9c81ccdc0",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-lib-reorder",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "lib-reorder",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "b7540b7072b5e4cc3452778d0157f2388c3104517640b2f55a3cffb4990ec494",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 48,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "1691a84f217d42ea9a257abe9027edfa3f424f394e0a7648318617d59714ed4a",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 49,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "82445c7fc7132defd68da2a45082238029469d791d61e881b4c549bfc748afdc",
+            "markers": [],
+            "name": "subject_matrix::default_only",
+            "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 9
+                },
+                "end": {
+                  "col": 57,
+                  "line": 9
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "1413493d3275bab1b2136c401f087a552d677b93eae2a4856a4e94f9c81ccdc0"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1687,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "16e4bc3c2ba353456b421a82e5cc9c2a05c24ede2a5154d91bc0366a10085754",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-reorder)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-lib-reorder/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-reorder/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-reorder/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-lib-reorder"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/lib-restored.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-lib-restored/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-lib-restored",
+      "destination": "$REPORT/artifacts/lib-restored.llbc",
+      "destination_bytes": 14712,
+      "destination_exists": true,
+      "destination_sha256": "c07e6f1d06ba6108ded6aa94876138184dab25214b46183a5df5b983e4229ad7",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-lib-restored",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "lib-restored",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 49,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 48,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7a4697ac863c36df3cd0eb1bad69b4ad3950a39e98fa36815d4dcbfddaf51702",
+            "markers": [],
+            "name": "subject_matrix::default_only",
+            "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 9
+                },
+                "end": {
+                  "col": 57,
+                  "line": 9
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "c07e6f1d06ba6108ded6aa94876138184dab25214b46183a5df5b983e4229ad7"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1637,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-lib-restored)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-lib-restored/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-lib-restored/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-lib-restored/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-lib-restored"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/parallel-default.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-parallel-default/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-parallel-default",
+      "destination": "$REPORT/artifacts/parallel-default.llbc",
+      "destination_bytes": 14716,
+      "destination_exists": true,
+      "destination_sha256": "ac7205dd9c51655c9f26dc5339ec1aaf7e9320fb83ac83ff7eb63cda21d2e41c",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-parallel-default",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "parallel-default",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 49,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 48,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7a4697ac863c36df3cd0eb1bad69b4ad3950a39e98fa36815d4dcbfddaf51702",
+            "markers": [],
+            "name": "subject_matrix::default_only",
+            "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 9
+                },
+                "end": {
+                  "col": 57,
+                  "line": 9
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "ac7205dd9c51655c9f26dc5339ec1aaf7e9320fb83ac83ff7eb63cda21d2e41c"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1994,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "    Blocking waiting for file lock on package cache\n   Compiling subject_matrix v0.1.0 ($WORK/source-parallel-default)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-parallel-default/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-parallel-default/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-parallel-default/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-parallel-default"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/parallel-feature.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-parallel-feature/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--features",
+        "selected",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-parallel-feature",
+      "destination": "$REPORT/artifacts/parallel-feature.llbc",
+      "destination_bytes": 14716,
+      "destination_exists": true,
+      "destination_sha256": "9e68ba2a7387d5ed2f0874b17ca0351e5063dbcf73e0a90aa5b6356570249022",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-parallel-feature",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "parallel-feature",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 49,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 48,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "0a96d8ad2f055adc1c7d5f38d9f40a3d81a5173ae337b69030e3b203de0cc51a",
+            "markers": [],
+            "name": "subject_matrix::feature_only",
+            "source_text": "pub fn feature_only(x: u32) -> u32 { x.wrapping_add(17) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 7
+                },
+                "end": {
+                  "col": 57,
+                  "line": 7
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "9e68ba2a7387d5ed2f0874b17ca0351e5063dbcf73e0a90aa5b6356570249022"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1896,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "    Blocking waiting for file lock on package cache\n   Compiling subject_matrix v0.1.0 ($WORK/source-parallel-feature)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --cfg 'feature=\"selected\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=4e4e1a4eb2af6286 -C extra-filename=-d2c0df1d978a8751 --out-dir $WORK/target-parallel-feature/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-parallel-feature/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-parallel-feature/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-parallel-feature"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/quota-active.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-quota/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-quota",
+      "destination": "$REPORT/artifacts/quota-active.llbc",
+      "destination_bytes": 4096,
+      "destination_exists": true,
+      "destination_sha256": "4390037b0612ebba6ea815a004418de02c8a60d4e14cb0952ff47750203315aa",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-quota",
+        "FILE_SIZE_LIMIT": 4096,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 255,
+      "label": "quota-output-failure",
+      "projection": null,
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1623,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-quota)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-quota/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-quota/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-quota/debug/deps --verbose`\nerror: could not compile `subject_matrix` (lib)\n\nCaused by:\n  process didn't exit successfully: `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-quota/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-quota/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-quota/debug/deps --verbose` (signal: 25)\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-quota"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/quota-active.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-quota/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-quota",
+      "destination": "$REPORT/artifacts/quota-active.llbc",
+      "destination_bytes": 14712,
+      "destination_exists": true,
+      "destination_sha256": "a5a32f664124a3d7800924a578a848df79a32cf38bc9af4c6dc005064f426844",
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-quota",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 0,
+      "label": "quota-retry",
+      "projection": {
+        "crate_name": "subject_matrix",
+        "file_names": [
+          {
+            "Local": "src/lib.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/uint_macros.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/num/mod.rs"
+          },
+          {
+            "Local": "/rustc/library/core/src/lib.rs"
+          }
+        ],
+        "has_errors": false,
+        "local_functions": [
+          {
+            "body_sha256": "8e414772daef15e530326c68aa591906ae8d40cade82fecb2f244bbdb24939d0",
+            "markers": [
+              "source marker: alpha"
+            ],
+            "name": "subject_matrix::alpha",
+            "source_text": "pub fn alpha(x: u32) -> u32 { x.wrapping_add(1) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 3
+                },
+                "end": {
+                  "col": 49,
+                  "line": 3
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "12f8908407ef38d71d35613ad34ec07d2df3fc5151d06afea658590a0607eff7",
+            "markers": [
+              "source marker: beta"
+            ],
+            "name": "subject_matrix::beta",
+            "source_text": "pub fn beta(x: u32) -> u32 { x.wrapping_mul(2) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 48,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          },
+          {
+            "body_sha256": "7a4697ac863c36df3cd0eb1bad69b4ad3950a39e98fa36815d4dcbfddaf51702",
+            "markers": [],
+            "name": "subject_matrix::default_only",
+            "source_text": "pub fn default_only(x: u32) -> u32 { x.wrapping_add(13) }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 9
+                },
+                "end": {
+                  "col": 57,
+                  "line": 9
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            }
+          }
+        ],
+        "raw_sha256": "a5a32f664124a3d7800924a578a848df79a32cf38bc9af4c6dc005064f426844"
+      },
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1567,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-quota)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=b78587d71a65f561 -C extra-filename=-21be0fdd0836da51 --out-dir $WORK/target-quota/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target-quota/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target-quota/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-quota"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$REPORT/artifacts/target-x86-missing-std.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/source-target-x86-missing-std/Cargo.toml",
+        "--package",
+        "subject_matrix",
+        "--lib",
+        "--target",
+        "x86_64-apple-darwin",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "charon_driver_crate_invocations": [
+        "subject_matrix"
+      ],
+      "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cwd": "$WORK/source-target-x86-missing-std",
+      "destination": "$REPORT/artifacts/target-x86-missing-std.llbc",
+      "destination_bytes": null,
+      "destination_exists": false,
+      "destination_sha256": null,
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_TARGET_DIR": "$WORK/target-target-x86-missing-std",
+        "FILE_SIZE_LIMIT": null,
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null
+      },
+      "exit": 101,
+      "label": "target-x86-missing-std",
+      "projection": null,
+      "remaining_process_group_pids": [],
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "seconds": 0.1499,
+      "source_tree": {
+        "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+        "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+        "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+        "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+        "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+      },
+      "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-target-x86-missing-std)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=d2efcaff6aa1e968 -C extra-filename=-5b789d2870c82f3a --out-dir $WORK/target-target-x86-missing-std/x86_64-apple-darwin/debug/deps --target x86_64-apple-darwin -L dependency=$WORK/target-target-x86-missing-std/x86_64-apple-darwin/debug/deps -L dependency=$WORK/target-target-x86-missing-std/debug/deps --verbose`\nerror[E0463]: can't find crate for `std`\n  |\n  = note: the `x86_64-apple-darwin` target may not be installed\n  = help: consider downloading the target with `rustup target add x86_64-apple-darwin`\n  = help: consider building the standard library from source with `cargo build -Zbuild-std`\n\nFor more information about this error, try `rustc --explain E0463`.\nERROR Code failed to compile\nerror: could not compile `subject_matrix` (lib) due to 1 previous error\n\nCaused by:\n  process didn't exit successfully: `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=d2efcaff6aa1e968 -C extra-filename=-5b789d2870c82f3a --out-dir $WORK/target-target-x86-missing-std/x86_64-apple-darwin/debug/deps --target x86_64-apple-darwin -L dependency=$WORK/target-target-x86-missing-std/x86_64-apple-darwin/debug/deps -L dependency=$WORK/target-target-x86-missing-std/debug/deps --verbose` (exit status: 2)\n",
+      "stdout": "",
+      "target_dir": "$WORK/target-target-x86-missing-std"
+    }
+  ],
+  "environment": {
+    "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "fixture": {
+    "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+    "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+    "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+    "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+    "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+  },
+  "max_concurrent_charon_processes": 2,
+  "quota_output": {
+    "bytes": 4096,
+    "exit": 255,
+    "last_good_sha256": "c4060a3b6d1221566c26acc9610d4f76e8011bd5c2deb5c831c2e60a0df18e24",
+    "parseable": false,
+    "same_as_old": false,
+    "sha256": "4390037b0612ebba6ea815a004418de02c8a60d4e14cb0952ff47750203315aa",
+    "target_before_retry": {
+      "bytes": 4498,
+      "files": 10
+    }
+  },
+  "semantic": {
+    "bin-base": {
+      "crate_name": "subject_matrix_cli",
+      "local_names": [
+        "bin_value",
+        "main"
+      ],
+      "raw_sha256": "54b99888509bccab35cccb65f78c142cd7e3f3ade6157ef01acac67a6ab8368a"
+    },
+    "lib-base": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "default_only"
+      ],
+      "raw_sha256": "c4060a3b6d1221566c26acc9610d4f76e8011bd5c2deb5c831c2e60a0df18e24"
+    },
+    "lib-comment": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "default_only"
+      ],
+      "raw_sha256": "5b2978de7ff1d924362b97f6fa504ed3a2de8fe0255b6beb09e55eef67c82327"
+    },
+    "lib-explicit-host": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "default_only"
+      ],
+      "raw_sha256": "a346be1b9811280e7e65272518abf278716f5c53433555b64176556062d91332"
+    },
+    "lib-feature": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "feature_only"
+      ],
+      "raw_sha256": "2161d909832e207179f97a8b55d4b78e48311875e1731cc8049c2395adfd67b9"
+    },
+    "lib-reorder": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "default_only"
+      ],
+      "raw_sha256": "1413493d3275bab1b2136c401f087a552d677b93eae2a4856a4e94f9c81ccdc0"
+    },
+    "lib-restored": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "default_only"
+      ],
+      "raw_sha256": "c07e6f1d06ba6108ded6aa94876138184dab25214b46183a5df5b983e4229ad7"
+    },
+    "lib-rustflags": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "default_only"
+      ],
+      "raw_sha256": "750c2163f3c2cf411fdea8c2ac3a88bc108b47a129820873eb965a2ee341c56f"
+    },
+    "parallel-default": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "default_only"
+      ],
+      "raw_sha256": "ac7205dd9c51655c9f26dc5339ec1aaf7e9320fb83ac83ff7eb63cda21d2e41c"
+    },
+    "parallel-feature": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "feature_only"
+      ],
+      "raw_sha256": "9e68ba2a7387d5ed2f0874b17ca0351e5063dbcf73e0a90aa5b6356570249022"
+    },
+    "quota-output-failure": {
+      "crate_name": null,
+      "local_names": null,
+      "raw_sha256": "4390037b0612ebba6ea815a004418de02c8a60d4e14cb0952ff47750203315aa"
+    },
+    "quota-retry": {
+      "crate_name": "subject_matrix",
+      "local_names": [
+        "alpha",
+        "beta",
+        "default_only"
+      ],
+      "raw_sha256": "a5a32f664124a3d7800924a578a848df79a32cf38bc9af4c6dc005064f426844"
+    },
+    "target-x86-missing-std": {
+      "crate_name": null,
+      "local_names": null,
+      "raw_sha256": null
+    },
+    "test-base": {
+      "crate_name": "check",
+      "local_names": [
+        "as_fn",
+        "call",
+        "call_mut",
+        "call_once",
+        "check_alpha",
+        "drop_in_place",
+        "local_alpha",
+        "main"
+      ],
+      "raw_sha256": "ae9e209c23d37c0a7c765e22d5cb5b8bc6b309d6f59499939b46ccf66700769c"
+    },
+    "test-repeat-1": {
+      "crate_name": "subject_matrix_cli",
+      "local_names": [
+        "bin_value",
+        "main"
+      ],
+      "raw_sha256": "4f626d2d40f01b2e745091d97c89de97405d3c9bad0d2fbd3d5b9de92f0ba1a6"
+    },
+    "test-repeat-2": {
+      "crate_name": "check",
+      "local_names": [
+        "as_fn",
+        "call",
+        "call_mut",
+        "call_once",
+        "check_alpha",
+        "drop_in_place",
+        "local_alpha",
+        "main"
+      ],
+      "raw_sha256": "f3f9283cb6e366c2885345174f8cf1bbb4fc6767e1528fe988bb0995c5a82c60"
+    },
+    "test-repeat-3": {
+      "crate_name": "subject_matrix_cli",
+      "local_names": [
+        "bin_value",
+        "main"
+      ],
+      "raw_sha256": "8f018ca01a63bb7008805e076f25f2048dabe393bc6312804a20c91e270330d6"
+    }
+  },
+  "target_inventory": {
+    "bin-base": {
+      "bytes": 6435,
+      "files": 15
+    },
+    "lib-base": {
+      "bytes": 5868,
+      "files": 12
+    },
+    "lib-comment": {
+      "bytes": 5868,
+      "files": 12
+    },
+    "lib-explicit-host": {
+      "bytes": 5868,
+      "files": 12
+    },
+    "lib-feature": {
+      "bytes": 5882,
+      "files": 12
+    },
+    "lib-reorder": {
+      "bytes": 5868,
+      "files": 12
+    },
+    "lib-restored": {
+      "bytes": 5868,
+      "files": 12
+    },
+    "lib-rustflags": {
+      "bytes": 5840,
+      "files": 12
+    },
+    "parallel-default": {
+      "bytes": 5868,
+      "files": 12
+    },
+    "parallel-feature": {
+      "bytes": 5882,
+      "files": 12
+    },
+    "quota-shared-retry": {
+      "bytes": 5868,
+      "files": 12
+    },
+    "target-x86-missing-std": {
+      "bytes": 7958,
+      "files": 11
+    },
+    "test-base": {
+      "bytes": 7007,
+      "files": 18
+    },
+    "test-repeat-1": {
+      "bytes": 7007,
+      "files": 18
+    },
+    "test-repeat-2": {
+      "bytes": 7007,
+      "files": 18
+    },
+    "test-repeat-3": {
+      "bytes": 7007,
+      "files": 18
+    }
+  }
+}

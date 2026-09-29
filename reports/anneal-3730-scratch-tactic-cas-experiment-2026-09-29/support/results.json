@@ -1,0 +1,406 @@
+{
+  "artifact_sha256": {
+    "accepted-Proof.lean": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+    "final-ProbeEnv.lean": "f5cba43ebed5ecc52d865662729adb9a5a1904124b172856375ae3a134c9c502",
+    "final-Proof.lean": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+    "initial-Proof.lean": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1"
+  },
+  "canonical_generation_count": 4,
+  "events": [
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "base_version": 1,
+        "batch": {
+          "cancelled": false,
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "candidate_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "request": "good-A",
+        "status": "valid"
+      },
+      "current": {
+        "accepted_request": "good-A",
+        "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+        "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "generation": "g0002",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 2
+      },
+      "decision": {
+        "pointer_sha256": "ca0d9aa32e1f638f6d101fe054974e38e77bcf7f2b2678b499e2007355e9f69c",
+        "request": "good-A",
+        "result": "accepted",
+        "version": 2
+      },
+      "label": "accept"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "base_version": 1,
+        "batch": {
+          "cancelled": false,
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "candidate_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "request": "good-A",
+        "status": "valid"
+      },
+      "current": {
+        "accepted_request": "good-A",
+        "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+        "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "generation": "g0002",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 2
+      },
+      "decision": {
+        "pointer_sha256": "ca0d9aa32e1f638f6d101fe054974e38e77bcf7f2b2678b499e2007355e9f69c",
+        "request": "good-A",
+        "result": "duplicate",
+        "version": 2
+      },
+      "label": "duplicate_retry"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "base_version": 1,
+        "batch": {
+          "cancelled": false,
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "candidate_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "request": "stale-source",
+        "status": "valid"
+      },
+      "current": {
+        "accepted_request": "good-A",
+        "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+        "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "generation": "g0002",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 2
+      },
+      "decision": {
+        "pointer_sha256": "ca0d9aa32e1f638f6d101fe054974e38e77bcf7f2b2678b499e2007355e9f69c",
+        "reason": "stale_source",
+        "request": "stale-source",
+        "result": "rejected",
+        "version": 2
+      },
+      "label": "stale_source"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "base_version": 2,
+        "batch": {
+          "cancelled": false,
+          "exit": 1,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\n\u22a2 n + 0 = n\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$SCRATCH/Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":38,\"line\":2},\"severity\":\"error\"}\n"
+        },
+        "candidate_sha256": "75060d876d5f6665105a2567c43e07362b45d63a2a947bda6e954d8b61e46dbc",
+        "request": "partial",
+        "status": "invalid"
+      },
+      "current": {
+        "accepted_request": "good-A",
+        "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+        "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "generation": "g0002",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 2
+      },
+      "decision": {
+        "pointer_sha256": "ca0d9aa32e1f638f6d101fe054974e38e77bcf7f2b2678b499e2007355e9f69c",
+        "reason": "invalid",
+        "request": "partial",
+        "result": "rejected",
+        "version": 2
+      },
+      "label": "partial_tactic"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "base_version": 2,
+        "batch": {
+          "cancelled": false,
+          "exit": 1,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"Type mismatch\\n  False.elim\\nhas type\\n  False \u2192 ?m.9\\nbut is expected to have type\\n  n + 0 = n\",\"endPos\":{\"column\":18,\"line\":3},\"fileName\":\"$SCRATCH/Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n"
+        },
+        "candidate_sha256": "49f7c5a5d48cf1a3dfe3212fdf6712bb1793f9594b6802a42c54e2a35f50f884",
+        "request": "failed",
+        "status": "invalid"
+      },
+      "current": {
+        "accepted_request": "good-A",
+        "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+        "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "generation": "g0002",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 2
+      },
+      "decision": {
+        "pointer_sha256": "ca0d9aa32e1f638f6d101fe054974e38e77bcf7f2b2678b499e2007355e9f69c",
+        "reason": "invalid",
+        "request": "failed",
+        "result": "rejected",
+        "version": 2
+      },
+      "label": "failed_tactic"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "base_version": 2,
+        "batch": {
+          "cancelled": false,
+          "exit": 0,
+          "stderr": "",
+          "stdout": "{\"caption\":\"\",\"data\":\"declaration uses `sorry`\",\"endPos\":{\"column\":12,\"line\":2},\"fileName\":\"$SCRATCH/Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"hasSorry\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"warning\"}\n"
+        },
+        "candidate_sha256": "c9759751c6cf68e648f9485b0802f00122590fc73390cb30f7d219225d075d5e",
+        "request": "sorry",
+        "status": "invalid"
+      },
+      "current": {
+        "accepted_request": "good-A",
+        "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+        "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "generation": "g0002",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 2
+      },
+      "decision": {
+        "pointer_sha256": "ca0d9aa32e1f638f6d101fe054974e38e77bcf7f2b2678b499e2007355e9f69c",
+        "reason": "invalid",
+        "request": "sorry",
+        "result": "rejected",
+        "version": 2
+      },
+      "label": "sorry_tactic"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "base_version": 2,
+        "batch": {
+          "cancelled": false,
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "candidate_sha256": "9ab61943b5dd38b5cf79756f4528a9df92fa20928acf2343be51b6c061737a30",
+        "request": "statement-changed",
+        "status": "invalid_context"
+      },
+      "current": {
+        "accepted_request": "good-A",
+        "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+        "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "generation": "g0002",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 2
+      },
+      "decision": {
+        "pointer_sha256": "ca0d9aa32e1f638f6d101fe054974e38e77bcf7f2b2678b499e2007355e9f69c",
+        "reason": "invalid_context",
+        "request": "statement-changed",
+        "result": "rejected",
+        "version": 2
+      },
+      "label": "statement_changed"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "base_version": 2,
+        "batch": {
+          "cancelled": false,
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "candidate_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "request": "mutated",
+        "status": "valid"
+      },
+      "current": {
+        "accepted_request": "good-A",
+        "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+        "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "generation": "g0002",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 2
+      },
+      "decision": {
+        "pointer_sha256": "ca0d9aa32e1f638f6d101fe054974e38e77bcf7f2b2678b499e2007355e9f69c",
+        "reason": "candidate_source_changed",
+        "request": "mutated",
+        "result": "rejected",
+        "version": 2
+      },
+      "label": "candidate_mutated"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "base_source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "base_version": 2,
+        "batch": {
+          "cancelled": false,
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "candidate_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "request": "old-environment",
+        "status": "valid"
+      },
+      "current": {
+        "accepted_request": "environment-update",
+        "env_olean_sha256": "30bbd9ea906d12e14fa64b4dfd7d54b8164f1d7a19f9cd78b24e66255876565c",
+        "env_source_sha256": "f5cba43ebed5ecc52d865662729adb9a5a1904124b172856375ae3a134c9c502",
+        "generation": "g0003",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 3
+      },
+      "decision": {
+        "pointer_sha256": "bdae0a829693e7f1b43b472663db0f8d38cc3441ca968b374294b1e4ad692b83",
+        "reason": "environment_changed",
+        "request": "old-environment",
+        "result": "rejected",
+        "version": 3
+      },
+      "label": "environment_changed"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "f5cba43ebed5ecc52d865662729adb9a5a1904124b172856375ae3a134c9c502",
+        "base_source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "base_version": 3,
+        "batch": {
+          "cancelled": true,
+          "exit": -9,
+          "remaining_group": false,
+          "stderr": "",
+          "stdout": ""
+        },
+        "candidate_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "request": "cancel-and-reuse",
+        "status": "cancelled"
+      },
+      "current": {
+        "accepted_request": "environment-update",
+        "env_olean_sha256": "30bbd9ea906d12e14fa64b4dfd7d54b8164f1d7a19f9cd78b24e66255876565c",
+        "env_source_sha256": "f5cba43ebed5ecc52d865662729adb9a5a1904124b172856375ae3a134c9c502",
+        "generation": "g0003",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "version": 3
+      },
+      "decision": {
+        "pointer_sha256": "bdae0a829693e7f1b43b472663db0f8d38cc3441ca968b374294b1e4ad692b83",
+        "reason": "cancelled",
+        "request": "cancel-and-reuse",
+        "result": "rejected",
+        "version": 3
+      },
+      "label": "cancelled"
+    },
+    {
+      "candidate": {
+        "base_env_sha256": "f5cba43ebed5ecc52d865662729adb9a5a1904124b172856375ae3a134c9c502",
+        "base_source_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+        "base_version": 3,
+        "batch": {
+          "cancelled": false,
+          "exit": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "candidate_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "request": "reuse-after-cancel",
+        "status": "valid"
+      },
+      "current": {
+        "accepted_request": "reuse-after-cancel",
+        "env_olean_sha256": "30bbd9ea906d12e14fa64b4dfd7d54b8164f1d7a19f9cd78b24e66255876565c",
+        "env_source_sha256": "f5cba43ebed5ecc52d865662729adb9a5a1904124b172856375ae3a134c9c502",
+        "generation": "g0004",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+        "version": 4
+      },
+      "decision": {
+        "pointer_sha256": "cd65c1e852a439fd5bc7126200c2adaf77679b1906ba74ea08540b8b3460329a",
+        "request": "reuse-after-cancel",
+        "result": "accepted",
+        "version": 4
+      },
+      "label": "reuse_accept"
+    }
+  ],
+  "final": {
+    "accepted_request": "reuse-after-cancel",
+    "env_olean_sha256": "30bbd9ea906d12e14fa64b4dfd7d54b8164f1d7a19f9cd78b24e66255876565c",
+    "env_source_sha256": "f5cba43ebed5ecc52d865662729adb9a5a1904124b172856375ae3a134c9c502",
+    "generation": "g0004",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+    "version": 4
+  },
+  "final_batch": {
+    "exit": 0,
+    "matches_reuse_candidate_batch": true,
+    "stderr": "",
+    "stdout": ""
+  },
+  "fixture_sha256": {
+    "environment": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+    "proof": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1"
+  },
+  "initial": {
+    "accepted_request": "bootstrap",
+    "env_olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+    "env_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+    "generation": "g0001",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1",
+    "version": 1
+  },
+  "journal": {
+    "good-A": 2,
+    "reuse-after-cancel": 4
+  },
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "prototype_only": true
+}

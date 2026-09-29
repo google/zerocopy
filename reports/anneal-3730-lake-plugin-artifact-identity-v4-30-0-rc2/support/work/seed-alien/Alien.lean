@@ -1,0 +1,2 @@
+import Lean
+initialize pure ()

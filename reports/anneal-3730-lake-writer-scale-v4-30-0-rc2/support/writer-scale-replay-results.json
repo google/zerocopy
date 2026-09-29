@@ -1,0 +1,934 @@
+{
+  "toolchain": "leanprover/lean4:v4.30.0-rc2",
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "runs": [
+    {
+      "label": "shared-1-0",
+      "cwd": "shared-1/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2714 [3/5] Built Dep (2.4s)\n\u2139 [4/5] Built Generated (646ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "shared-2-0",
+      "cwd": "shared-2/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2714 [3/5] Built Dep (794ms)\n\u2139 [4/5] Built Generated (736ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "shared-2-1",
+      "cwd": "shared-2/consumer-1",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2714 [3/5] Built Dep (792ms)\n\u2139 [4/5] Built Generated (740ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "shared-4-0",
+      "cwd": "shared-4/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2714 [3/5] Built Dep (1.0s)\n\u2139 [4/5] Built Generated (901ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "shared-4-1",
+      "cwd": "shared-4/consumer-1",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2714 [3/5] Built Dep (1.1s)\n\u2139 [4/5] Built Generated (859ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "shared-4-2",
+      "cwd": "shared-4/consumer-2",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2714 [3/5] Built Dep (1.0s)\n\u2139 [4/5] Built Generated (910ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "shared-4-3",
+      "cwd": "shared-4/consumer-3",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2714 [3/5] Built Dep (1.1s)\n\u2139 [4/5] Built Generated (917ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-1-prime",
+      "cwd": "frozen-1/primer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 1.69,
+      "stdout": "\u2714 [3/5] Built Dep (601ms)\n\u2139 [4/5] Built Generated (634ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-1-0",
+      "cwd": "frozen-1/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2139 [4/5] Built Generated (654ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-2-prime",
+      "cwd": "frozen-2/primer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 1.663,
+      "stdout": "\u2714 [3/5] Built Dep (646ms)\n\u2139 [4/5] Built Generated (618ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-2-0",
+      "cwd": "frozen-2/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2139 [4/5] Built Generated (768ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-2-1",
+      "cwd": "frozen-2/consumer-1",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2139 [4/5] Built Generated (766ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-4-prime",
+      "cwd": "frozen-4/primer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 1.679,
+      "stdout": "\u2714 [3/5] Built Dep (607ms)\n\u2139 [4/5] Built Generated (614ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-4-0",
+      "cwd": "frozen-4/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2139 [4/5] Built Generated (1.0s)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-4-1",
+      "cwd": "frozen-4/consumer-1",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2139 [4/5] Built Generated (1.0s)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-4-2",
+      "cwd": "frozen-4/consumer-2",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2139 [4/5] Built Generated (1.0s)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "frozen-4-3",
+      "cwd": "frozen-4/consumer-3",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2139 [4/5] Built Generated (1.0s)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "interrupted-0",
+      "cwd": "interrupted/consumer-a",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": -9,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "interrupted-1",
+      "cwd": "interrupted/consumer-b",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "stdout": "\u2714 [3/5] Built Dep (2.2s)\n\u2139 [4/5] Built Generated (627ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "interrupted-retry",
+      "cwd": "interrupted/consumer-b",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.413,
+      "stdout": "\u2139 [4/5] Replayed Generated\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "interrupted-no-build-check",
+      "cwd": "interrupted/consumer-b",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "exit": 0,
+      "seconds": 0.418,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "sentinel-seven-build",
+      "cwd": "sentinel/consumer-seven",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 1.703,
+      "stdout": "\u2714 [3/5] Built Dep (628ms)\n\u2139 [4/5] Built Generated (615ms)\ninfo: Generated.lean:3:0: 7\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "sentinel-hash-no-build",
+      "cwd": "sentinel/consumer-nine",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "exit": 3,
+      "seconds": 0.448,
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stderr": ""
+    },
+    {
+      "label": "sentinel-old-no-build",
+      "cwd": "sentinel/consumer-nine",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "exit": 0,
+      "seconds": 0.419,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "sentinel-nine-before-rebuild",
+      "cwd": "sentinel/consumer-nine",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 1,
+      "seconds": 0.963,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue = 9\\nis false\",\"endPos\":{\"column\":49,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":43,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "sentinel-nine-rebuild",
+      "cwd": "sentinel/consumer-nine",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 1.616,
+      "stdout": "\u2714 [3/5] Built Dep (603ms)\n\u2139 [4/5] Built Generated (615ms)\ninfo: Generated.lean:3:0: 9\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "sentinel-seven-after-rebuild",
+      "cwd": "sentinel/consumer-seven",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "exit": 1,
+      "seconds": 0.97,
+      "stdout": "\u2716 [4/5] Building Generated (602ms)\ntrace: .> LEAN_PATH=$WORK/sentinel/producer/.lake/build/lib/lean:$WORK/sentinel/consumer-seven/.lake/build/lib/lean $LEAN_BIN/lean $WORK/sentinel/consumer-seven/Generated.lean -o $WORK/sentinel/consumer-seven/.lake/build/lib/lean/Generated.olean -i $WORK/sentinel/consumer-seven/.lake/build/lib/lean/Generated.ilean -c $WORK/sentinel/consumer-seven/.lake/build/ir/Generated.c --setup $WORK/sentinel/consumer-seven/.lake/build/ir/Generated.setup.json --json\nerror: Generated.lean:2:43: Tactic `decide` proved that the proposition\n  depValue = 7\nis false\ninfo: Generated.lean:3:0: 9\nerror: Lean exited with code 1\nSome required targets logged failures:\n- Generated\n",
+      "stderr": "error: build failed\n"
+    }
+  ],
+  "observations": {
+    "shared-1": {
+      "wall_seconds": 3.599,
+      "peak_sampled": {
+        "rss_kib_sum": 1815856,
+        "processes": 2
+      },
+      "exits": [
+        0
+      ],
+      "marker_seen": [],
+      "killed": false,
+      "consumer_totals": [
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        }
+      ],
+      "producer_totals": {
+        "files": 13,
+        "logical_bytes": 105584,
+        "blocks_bytes": 151552
+      },
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303",
+          "bytes": 1529,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663575602516969
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663575621973613
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663573252390489
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "360ce0aa3fc4861525f7689cf25b91268ee2e6e1b7f218eba0695a61fb3088c3",
+          "bytes": 315,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663575602367968
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "94f153e75322144d3c62457fa28951473d4bbea3848087b1d4e18b734b6d8043",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663575621863612
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "1655c61e49be501e366f40626eb3b524aa5795e87f78294c03dc1454aacc6350",
+          "bytes": 4648,
+          "blocks_bytes": 8192,
+          "mtime_ns": 1790663575601929632
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "a61a808be2a21ffe3eca8802728dfcc5bd4ef0722aedb048b3413174b9e6bbb5",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663575621735361
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "d755600a95a929636c24bf4207ea9fe55168a194c983e90de3eba4b77d131b87",
+          "bytes": 2307,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663575622206365
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "blocks_bytes": 98304,
+          "mtime_ns": 1790663573250871478
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663573223202356
+        },
+        "Dep.lean": {
+          "sha256": "195f6a0685fc4b969a2b7670245b5fcfe9b5061c7ec8bb16c7802996267d68bc",
+          "bytes": 36,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663572785883619
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663572785774077
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663572785955453
+        }
+      }
+    },
+    "shared-2": {
+      "wall_seconds": 2.053,
+      "peak_sampled": {
+        "rss_kib_sum": 3647136,
+        "processes": 4
+      },
+      "exits": [
+        0,
+        0
+      ],
+      "marker_seen": [],
+      "killed": false,
+      "consumer_totals": [
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        }
+      ],
+      "producer_totals": {
+        "files": 13,
+        "logical_bytes": 105584,
+        "blocks_bytes": 151552
+      },
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303",
+          "bytes": 1529,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663577558837576
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663577585353355
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663576792183692
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "360ce0aa3fc4861525f7689cf25b91268ee2e6e1b7f218eba0695a61fb3088c3",
+          "bytes": 315,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663577558693033
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "94f153e75322144d3c62457fa28951473d4bbea3848087b1d4e18b734b6d8043",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663577585244854
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "1655c61e49be501e366f40626eb3b524aa5795e87f78294c03dc1454aacc6350",
+          "bytes": 4648,
+          "blocks_bytes": 8192,
+          "mtime_ns": 1790663577558080028
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "a61a808be2a21ffe3eca8802728dfcc5bd4ef0722aedb048b3413174b9e6bbb5",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663577585106770
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "07be75a4016df300a4991d6c7a905ea81ff75856c046851d0c9ba1ed91b5d73f",
+          "bytes": 2307,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663577585561607
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "blocks_bytes": 98304,
+          "mtime_ns": 1790663576790710848
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663576762440430
+        },
+        "Dep.lean": {
+          "sha256": "195f6a0685fc4b969a2b7670245b5fcfe9b5061c7ec8bb16c7802996267d68bc",
+          "bytes": 36,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663576389668296
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663576389535795
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663576389764255
+        }
+      }
+    },
+    "shared-4": {
+      "wall_seconds": 2.533,
+      "peak_sampled": {
+        "rss_kib_sum": 6986096,
+        "processes": 8
+      },
+      "exits": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "marker_seen": [],
+      "killed": false,
+      "consumer_totals": [
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        }
+      ],
+      "producer_totals": {
+        "files": 13,
+        "logical_bytes": 105584,
+        "blocks_bytes": 151552
+      },
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303",
+          "bytes": 1529,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663579997626004
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663580021153011
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663578935541808
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "360ce0aa3fc4861525f7689cf25b91268ee2e6e1b7f218eba0695a61fb3088c3",
+          "bytes": 315,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663579997500003
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "94f153e75322144d3c62457fa28951473d4bbea3848087b1d4e18b734b6d8043",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663580021014010
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "1655c61e49be501e366f40626eb3b524aa5795e87f78294c03dc1454aacc6350",
+          "bytes": 4648,
+          "blocks_bytes": 8192,
+          "mtime_ns": 1790663579997041708
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "a61a808be2a21ffe3eca8802728dfcc5bd4ef0722aedb048b3413174b9e6bbb5",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663580020879759
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "1bcd2a179a2ca5443dc01a536fd33c6b9839aca3ebc759fb11c53018ca01cac7",
+          "bytes": 2307,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663580021397138
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "blocks_bytes": 98304,
+          "mtime_ns": 1790663578933720795
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663578902407396
+        },
+        "Dep.lean": {
+          "sha256": "195f6a0685fc4b969a2b7670245b5fcfe9b5061c7ec8bb16c7802996267d68bc",
+          "bytes": 36,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663578448084116
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663578447966574
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663578448172242
+        }
+      }
+    },
+    "frozen-1": {
+      "wall_seconds": 1.137,
+      "peak_sampled": {
+        "rss_kib_sum": 1831744,
+        "processes": 2
+      },
+      "exits": [
+        0
+      ],
+      "marker_seen": [],
+      "killed": false,
+      "consumer_totals": [
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        }
+      ],
+      "producer_unchanged": true,
+      "producer_totals": {
+        "files": 13,
+        "logical_bytes": 105580,
+        "blocks_bytes": 151552
+      }
+    },
+    "frozen-2": {
+      "wall_seconds": 1.329,
+      "peak_sampled": {
+        "rss_kib_sum": 3688432,
+        "processes": 4
+      },
+      "exits": [
+        0,
+        0
+      ],
+      "marker_seen": [],
+      "killed": false,
+      "consumer_totals": [
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        }
+      ],
+      "producer_unchanged": true,
+      "producer_totals": {
+        "files": 13,
+        "logical_bytes": 105580,
+        "blocks_bytes": 151552
+      }
+    },
+    "frozen-4": {
+      "wall_seconds": 1.579,
+      "peak_sampled": {
+        "rss_kib_sum": 6985120,
+        "processes": 8
+      },
+      "exits": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "marker_seen": [],
+      "killed": false,
+      "consumer_totals": [
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119026,
+          "blocks_bytes": 167936
+        }
+      ],
+      "producer_unchanged": true,
+      "producer_totals": {
+        "files": 13,
+        "logical_bytes": 105580,
+        "blocks_bytes": 151552
+      }
+    },
+    "interrupted": {
+      "wall_seconds": 3.376,
+      "peak_sampled": {
+        "rss_kib_sum": 3690848,
+        "processes": 4
+      },
+      "exits": [
+        -9,
+        0
+      ],
+      "marker_seen": [
+        true,
+        true
+      ],
+      "killed": true,
+      "consumer_totals": [
+        {
+          "files": 6,
+          "logical_bytes": 109216,
+          "blocks_bytes": 131072
+        },
+        {
+          "files": 14,
+          "logical_bytes": 119053,
+          "blocks_bytes": 167936
+        }
+      ],
+      "producer_inventory": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303",
+          "bytes": 1529,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663592733916741
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663592753516636
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "bytes": 127,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663590506275168
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "464a3469240a2762b5eebf13209a86e925370e420c5167037062a54920783354",
+          "bytes": 814,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663592733765365
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "56bb990b03a4145e53748a5a3bbf87f07414f71ee409130039b8af560542f365",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663592753401802
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "750e919bd9db10c05dda7f98916f39a98e85b81d914fb09ec847d146640035bb",
+          "bytes": 4896,
+          "blocks_bytes": 8192,
+          "mtime_ns": 1790663592732980567
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "11e1d484e872c7db02efd1eed4bc093e8bf28a217ba72294454b8e52731c53db",
+          "bytes": 16,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663592753246718
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "ea06c05d4939d508b494e66694d0d4b54bd9fcc6fd0a6cf5fba4fcf69cf117a2",
+          "bytes": 2331,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663592753874514
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "bytes": 96288,
+          "blocks_bytes": 98304,
+          "mtime_ns": 1790663590504531113
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "bytes": 182,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663590476421364
+        },
+        "Dep.lean": {
+          "sha256": "62bc2ce3f01f0d27f73f6aebdaaf2f65d617c1e4a62efbf3576ccb9b7faef62e",
+          "bytes": 300,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663590103899898
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "bytes": 75,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663590103773647
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "bytes": 29,
+          "blocks_bytes": 4096,
+          "mtime_ns": 1790663590103991648
+        }
+      }
+    },
+    "sentinel_before": {
+      "old_source_sha256": "195f6a0685fc4b969a2b7670245b5fcfe9b5061c7ec8bb16c7802996267d68bc",
+      "new_source_sha256": "44acb75972b0addd77d692627d8d9318ced81820d30aef9622f8469d91bea16f",
+      "source_mtime_same": true,
+      "old_olean_sha256": "1655c61e49be501e366f40626eb3b524aa5795e87f78294c03dc1454aacc6350"
+    },
+    "sentinel_after": {
+      "new_olean_sha256": "bb5da5cf57ec84fd22a4f6e66a9964ee04647bd492e58af870e5618b6256dc25",
+      "producer_totals": {
+        "files": 13,
+        "logical_bytes": 105491,
+        "blocks_bytes": 151552
+      }
+    }
+  }
+}

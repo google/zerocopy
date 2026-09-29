@@ -1,0 +1,709 @@
+{
+  "toolchain": "leanprover/lean4:v4.30.0-rc2",
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "runs": [
+    {
+      "label": "original-build",
+      "cwd": "original/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.836,
+      "stdout": "\u2714 [3/5] Built Dep (175ms)\n\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "relocated-no-build-hash",
+      "cwd": "other/depth/relocated/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.441,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "relocated-no-build-old",
+      "cwd": "other/depth/relocated/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.419,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "relocated-setup-no-build",
+      "cwd": "other/depth/relocated/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.424,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/other/depth/relocated/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "relocated-json",
+      "cwd": "other/depth/relocated/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.483,
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-producer-build",
+      "cwd": "cache-producer/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache": "artifact-cache",
+      "exit": 0,
+      "seconds": 0.798,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (173ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-reconstruction-no-build",
+      "cwd": "cache-reconstruction/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": "artifact-cache",
+      "exit": 0,
+      "seconds": 0.475,
+      "stdout": "\u2714 [2/3] Fetched Dep\nAll targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-reconstruction-build",
+      "cwd": "cache-reconstruction/consumer",
+      "args": [
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cache": "artifact-cache",
+      "exit": 0,
+      "seconds": 0.419,
+      "stdout": "\u2714 [3/5] Fetched Dep\n\u2714 [4/5] Fetched Generated\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-reconstruction-setup",
+      "cwd": "cache-reconstruction/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "artifact-cache",
+      "exit": 0,
+      "seconds": 0.421,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/artifact-cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": "\u2714 [3/4] Fetched Dep\n"
+    },
+    {
+      "label": "cache-reconstruction-json",
+      "cwd": "cache-reconstruction/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache": "artifact-cache",
+      "exit": 1,
+      "seconds": 0.406,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/cache-reconstruction/producer/.lake/build/lib/lean\\n$WORK/cache-reconstruction/consumer/.lake/build/lib/lean\\n$LEAN_LIB/lean\\n$LEAN_LIB/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-missing-no-build",
+      "cwd": "reconstruct-missing/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": "cache-missing",
+      "exit": 3,
+      "seconds": 0.468,
+      "stdout": "\u2716 [2/3] Building Dep\nwarning: input 'bc2ee90' found in package artifact cache, but some output(s) have issues:\n- artifact not found in cache:\n  $WORK/cache-missing/artifacts/4ab07c203eb6f06e.olean\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-missing-setup",
+      "cwd": "reconstruct-missing/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "cache-missing",
+      "exit": 3,
+      "seconds": 0.409,
+      "stdout": "",
+      "stderr": "\u2716 [3/4] Building Dep\nwarning: input 'bc2ee90' found in package artifact cache, but some output(s) have issues:\n- artifact not found in cache:\n  $WORK/cache-missing/artifacts/4ab07c203eb6f06e.olean\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "label": "cache-missing-json",
+      "cwd": "reconstruct-missing/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache": "cache-missing",
+      "exit": 1,
+      "seconds": 0.401,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/reconstruct-missing/producer/.lake/build/lib/lean\\n$WORK/reconstruct-missing/consumer/.lake/build/lib/lean\\n$LEAN_LIB/lean\\n$LEAN_LIB/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-corrupt-no-build",
+      "cwd": "reconstruct-corrupt/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": "cache-corrupt",
+      "exit": 0,
+      "seconds": 0.468,
+      "stdout": "\u2714 [2/3] Fetched Dep\nAll targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "cache-corrupt-setup",
+      "cwd": "reconstruct-corrupt/consumer",
+      "args": [
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "cache-corrupt",
+      "exit": 0,
+      "seconds": 0.422,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-corrupt/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": "\u2714 [3/4] Fetched Dep\n"
+    },
+    {
+      "label": "cache-corrupt-json",
+      "cwd": "reconstruct-corrupt/consumer",
+      "args": [
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cache": "cache-corrupt",
+      "exit": 1,
+      "seconds": 0.407,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/reconstruct-corrupt/producer/.lake/build/lib/lean\\n$WORK/reconstruct-corrupt/consumer/.lake/build/lib/lean\\n$LEAN_LIB/lean\\n$LEAN_LIB/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "loader-clean-json",
+      "cwd": "cache-reconstruction/consumer",
+      "args": [
+        "--json",
+        "Generated.lean"
+      ],
+      "lean_path": "loader-clean",
+      "exit": 0,
+      "seconds": 0.168,
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "loader-missing-json",
+      "cwd": "cache-reconstruction/consumer",
+      "args": [
+        "--json",
+        "Generated.lean"
+      ],
+      "lean_path": "loader-missing",
+      "exit": 1,
+      "seconds": 0.092,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/loader-missing\\n$LEAN_LIB/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "loader-corrupt-json",
+      "cwd": "cache-reconstruction/consumer",
+      "args": [
+        "--json",
+        "Generated.lean"
+      ],
+      "lean_path": "loader-corrupt",
+      "exit": 1,
+      "seconds": 0.093,
+      "stdout": "{\"caption\":\"\",\"data\":\"failed to read file '$WORK/loader-corrupt/Dep.olean', invalid header\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-1-prepare-producer",
+      "cwd": "parallel-1/primer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.794,
+      "stdout": "\u2714 [3/5] Built Dep (175ms)\n\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-1-consumer-0",
+      "cwd": "parallel-1/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.584,
+      "stdout": "\u2139 [4/5] Built Generated (176ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-2-prepare-producer",
+      "cwd": "parallel-2/primer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.802,
+      "stdout": "\u2714 [3/5] Built Dep (168ms)\n\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-2-consumer-0",
+      "cwd": "parallel-2/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.651,
+      "stdout": "\u2139 [4/5] Built Generated (211ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-2-consumer-1",
+      "cwd": "parallel-2/consumer-1",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.653,
+      "stdout": "\u2139 [4/5] Built Generated (211ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-4-prepare-producer",
+      "cwd": "parallel-4/primer",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.801,
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-4-consumer-1",
+      "cwd": "parallel-4/consumer-1",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.82,
+      "stdout": "\u2139 [4/5] Built Generated (263ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-4-consumer-0",
+      "cwd": "parallel-4/consumer-0",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.82,
+      "stdout": "\u2139 [4/5] Built Generated (262ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-4-consumer-2",
+      "cwd": "parallel-4/consumer-2",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.829,
+      "stdout": "\u2139 [4/5] Built Generated (262ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "parallel-4-consumer-3",
+      "cwd": "parallel-4/consumer-3",
+      "args": [
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cache": null,
+      "exit": 0,
+      "seconds": 0.828,
+      "stdout": "\u2139 [4/5] Built Generated (263ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    }
+  ],
+  "observations": {
+    "relocated_producer_unchanged": true,
+    "relocated_producer_inventory": {
+      ".lake/build/ir/Dep.c": {
+        "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "bytes": 1366,
+        "mtime_ns": 1790662744358439425,
+        "mode": "0o444"
+      },
+      ".lake/build/ir/Dep.c.hash": {
+        "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+        "bytes": 16,
+        "mtime_ns": 1790662744364534887,
+        "mode": "0o444"
+      },
+      ".lake/build/ir/Dep.setup.json": {
+        "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+        "bytes": 127,
+        "mtime_ns": 1790662744189627134,
+        "mode": "0o444"
+      },
+      ".lake/build/lib/lean/Dep.ilean": {
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "bytes": 289,
+        "mtime_ns": 1790662744358323966,
+        "mode": "0o444"
+      },
+      ".lake/build/lib/lean/Dep.ilean.hash": {
+        "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+        "bytes": 16,
+        "mtime_ns": 1790662744364430095,
+        "mode": "0o444"
+      },
+      ".lake/build/lib/lean/Dep.olean": {
+        "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "bytes": 4616,
+        "mtime_ns": 1790662744358037131,
+        "mode": "0o444"
+      },
+      ".lake/build/lib/lean/Dep.olean.hash": {
+        "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+        "bytes": 16,
+        "mtime_ns": 1790662744364313011,
+        "mode": "0o444"
+      },
+      ".lake/build/lib/lean/Dep.trace": {
+        "sha256": "0aa945c19b831217259c904ac8362417d55453138b9f33936895eb500dd9d0bf",
+        "bytes": 2281,
+        "mtime_ns": 1790662744364757806,
+        "mode": "0o444"
+      },
+      ".lake/config/probe_dep/lakefile.olean": {
+        "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+        "bytes": 96288,
+        "mtime_ns": 1790662744188186332,
+        "mode": "0o444"
+      },
+      ".lake/config/probe_dep/lakefile.olean.trace": {
+        "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+        "bytes": 182,
+        "mtime_ns": 1790662744161386300,
+        "mode": "0o444"
+      },
+      "Dep.lean": {
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "bytes": 24,
+        "mtime_ns": 1790662743811472293,
+        "mode": "0o444"
+      },
+      "lakefile.lean": {
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "bytes": 75,
+        "mtime_ns": 1790662743811382084,
+        "mode": "0o444"
+      },
+      "lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "bytes": 29,
+        "mtime_ns": 1790662743811549877,
+        "mode": "0o444"
+      }
+    },
+    "cache_inventory_before": {
+      "artifacts/01a62b7a37f647f2.olean": {
+        "sha256": "6ec0c3b7d9ecaef15b5e5458b7a0de40f41f252868f4004d2b58d9c6eb3e8302",
+        "bytes": 6152,
+        "mtime_ns": 1790662747109878793,
+        "mode": "0o444"
+      },
+      "artifacts/1b6022de257ad626.ilean": {
+        "sha256": "1046a5ab5df732122fbf1a4a6267904d1943ab002a3839e6a2d37289cddf8bf4",
+        "bytes": 371,
+        "mtime_ns": 1790662747110204337,
+        "mode": "0o444"
+      },
+      "artifacts/3df289e2daffc40d.c": {
+        "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "bytes": 1366,
+        "mtime_ns": 1790662746934886122,
+        "mode": "0o444"
+      },
+      "artifacts/4ab07c203eb6f06e.olean": {
+        "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "bytes": 4616,
+        "mtime_ns": 1790662746934446786,
+        "mode": "0o444"
+      },
+      "artifacts/7cbe5b9f9b2f9384.c": {
+        "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+        "bytes": 1265,
+        "mtime_ns": 1790662747110297421,
+        "mode": "0o444"
+      },
+      "artifacts/d2264521cb1531dd.ilean": {
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "bytes": 289,
+        "mtime_ns": 1790662746934764871,
+        "mode": "0o444"
+      },
+      "outputs/probe_consumer/bf169a794ed0fefe.json": {
+        "sha256": "ff3a7876887233a425bf28ec36dd63df610d1e62681a78f1b61a0166ee4f4bdc",
+        "bytes": 170,
+        "mtime_ns": 1790662747117810476,
+        "mode": "0o644"
+      },
+      "outputs/probe_dep/bc2ee9095550ff31.json": {
+        "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+        "bytes": 170,
+        "mtime_ns": 1790662746942503804,
+        "mode": "0o644"
+      }
+    },
+    "cache_inventory_after": {
+      "artifacts/01a62b7a37f647f2.olean": {
+        "sha256": "6ec0c3b7d9ecaef15b5e5458b7a0de40f41f252868f4004d2b58d9c6eb3e8302",
+        "bytes": 6152,
+        "mtime_ns": 1790662747109878793,
+        "mode": "0o444"
+      },
+      "artifacts/1b6022de257ad626.ilean": {
+        "sha256": "1046a5ab5df732122fbf1a4a6267904d1943ab002a3839e6a2d37289cddf8bf4",
+        "bytes": 371,
+        "mtime_ns": 1790662747110204337,
+        "mode": "0o444"
+      },
+      "artifacts/3df289e2daffc40d.c": {
+        "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "bytes": 1366,
+        "mtime_ns": 1790662746934886122,
+        "mode": "0o444"
+      },
+      "artifacts/4ab07c203eb6f06e.olean": {
+        "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "bytes": 4616,
+        "mtime_ns": 1790662746934446786,
+        "mode": "0o444"
+      },
+      "artifacts/7cbe5b9f9b2f9384.c": {
+        "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+        "bytes": 1265,
+        "mtime_ns": 1790662747110297421,
+        "mode": "0o444"
+      },
+      "artifacts/d2264521cb1531dd.ilean": {
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "bytes": 289,
+        "mtime_ns": 1790662746934764871,
+        "mode": "0o444"
+      },
+      "outputs/probe_consumer/bf169a794ed0fefe.json": {
+        "sha256": "ff3a7876887233a425bf28ec36dd63df610d1e62681a78f1b61a0166ee4f4bdc",
+        "bytes": 170,
+        "mtime_ns": 1790662747117810476,
+        "mode": "0o644"
+      },
+      "outputs/probe_dep/bc2ee9095550ff31.json": {
+        "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+        "bytes": 170,
+        "mtime_ns": 1790662746942503804,
+        "mode": "0o644"
+      }
+    },
+    "cache_reconstructed_producer": {
+      ".lake/build/lib/lean/Dep.ilean": {
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "bytes": 289,
+        "mtime_ns": 1790662746934764871,
+        "mode": "0o444"
+      },
+      ".lake/build/lib/lean/Dep.ilean.hash": {
+        "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+        "bytes": 16,
+        "mtime_ns": 1790662747579478644,
+        "mode": "0o644"
+      },
+      ".lake/build/lib/lean/Dep.trace": {
+        "sha256": "71b3e7f704321ddd7153c0cbb1f049e4072e81bba1c9ea3646074f51001b572d",
+        "bytes": 234,
+        "mtime_ns": 1790662747579116808,
+        "mode": "0o644"
+      },
+      ".lake/config/probe_dep/lakefile.olean": {
+        "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+        "bytes": 96288,
+        "mtime_ns": 1790662747577745381,
+        "mode": "0o644"
+      },
+      ".lake/config/probe_dep/lakefile.olean.trace": {
+        "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+        "bytes": 182,
+        "mtime_ns": 1790662747551024017,
+        "mode": "0o644"
+      },
+      "Dep.lean": {
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "bytes": 24,
+        "mtime_ns": 1790662747230050307,
+        "mode": "0o644"
+      },
+      "lakefile.lean": {
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "bytes": 75,
+        "mtime_ns": 1790662747229907223,
+        "mode": "0o644"
+      },
+      "lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "bytes": 29,
+        "mtime_ns": 1790662747230164891,
+        "mode": "0o644"
+      }
+    },
+    "cache-missing-artifact": "4ab07c203eb6f06e.olean",
+    "cache-corrupt-artifact": "4ab07c203eb6f06e.olean",
+    "parallel-1": {
+      "wall_seconds": 0.584,
+      "all_success": true,
+      "producer_unchanged": true,
+      "consumer_bytes": [
+        119905
+      ],
+      "producer_bytes": 105339
+    },
+    "parallel-2": {
+      "wall_seconds": 0.654,
+      "all_success": true,
+      "producer_unchanged": true,
+      "consumer_bytes": [
+        119905,
+        119905
+      ],
+      "producer_bytes": 105339
+    },
+    "parallel-4": {
+      "wall_seconds": 0.832,
+      "all_success": true,
+      "producer_unchanged": true,
+      "consumer_bytes": [
+        119905,
+        119905,
+        119905,
+        119905
+      ],
+      "producer_bytes": 105339
+    }
+  }
+}

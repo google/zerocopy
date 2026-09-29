@@ -1,0 +1,2093 @@
+{
+  "cases": {
+    "dynamic-a": {
+      "local_batch_exit": 0,
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-dynamic-a-server/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-dynamic-a-server/Generated.lean",
+            "version": 1
+          }
+        ],
+        "label": "dynamic-a-server",
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait_completed": true
+      },
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679249989860874,
+            "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679248736630669,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679249989741458,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679248736089841,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": {
+            "bytes": 4616,
+            "mtime_ns": 1790679249989448836,
+            "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+          },
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679249821905833,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679249794660791,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 2073,
+            "mtime_ns": 1790679249996613676,
+            "sha256": "9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927"
+          }
+        }
+      }
+    },
+    "dynamic-b": {
+      "local_batch_exit": 1,
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-dynamic-b-server/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 51,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 45,
+                    "line": 1
+                  }
+                },
+                "message": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "range": {
+                  "end": {
+                    "character": 51,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 45,
+                    "line": 1
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "10",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-dynamic-b-server/Generated.lean",
+            "version": 1
+          }
+        ],
+        "label": "dynamic-b-server",
+        "olean_sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait_completed": true
+      },
+      "setup_batch": {
+        "exit": 1,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/cb5016b11d418b60.olean",
+        "setup_import_sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679254068543789,
+            "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679253535428022,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679254068415665,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679253534889736,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": {
+            "bytes": 4520,
+            "mtime_ns": 1790679254068118168,
+            "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+          },
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679253899578593,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679253872529215,
+            "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 2073,
+            "mtime_ns": 1790679254074583266,
+            "sha256": "635ada827999e876ad128228a328a166a3ea0e169e4e35baaf787981eda7b370"
+          }
+        }
+      }
+    },
+    "env-b-stale": {
+      "local_batch_exit": 0,
+      "no_build_exit": 0,
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-env-b-stale-server/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-env-b-stale-server/Generated.lean",
+            "version": 1
+          }
+        ],
+        "label": "env-b-stale-server",
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait_completed": true
+      },
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "ae8ebb304e3ca915.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679249989860874,
+            "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679248736630669,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679249989741458,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679248736089841,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": {
+            "bytes": 4616,
+            "mtime_ns": 1790679249989448836,
+            "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+          },
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679249821905833,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679249794660791,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 2073,
+            "mtime_ns": 1790679249996613676,
+            "sha256": "9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927"
+          }
+        }
+      }
+    },
+    "lean-option": {
+      "local_batch_exit": 0,
+      "server": null,
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "ae8ebb304e3ca915.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679263827259439,
+            "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679263320981220,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679263827136358,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 129,
+            "mtime_ns": 1790679263320539849,
+            "sha256": "14b82e3967699ad71ac4bff665bd79ce3a4bbe6d0fac83b53efe1fef781c00ae"
+          },
+          "olean": {
+            "bytes": 4616,
+            "mtime_ns": 1790679263826837611,
+            "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+          },
+          "setup": {
+            "bytes": 149,
+            "mtime_ns": 1790679263664571343,
+            "sha256": "3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679263320611140,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 2118,
+            "mtime_ns": 1790679263833222293,
+            "sha256": "c1e98e79ff9a24e4699c851a6d0b407dc01ed4f6eefa600a729a59b3fa694f1c"
+          }
+        }
+      }
+    },
+    "same-mtime-source-edit": {
+      "local_batch_exit": 1,
+      "no_build_exit": 0,
+      "setup_batch": {
+        "exit": 1,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/cb5016b11d418b60.olean",
+        "setup_import_sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "ae8ebb304e3ca915.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": null,
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679248736630669,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679249989741458,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679248736089841,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": null,
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679249821905833,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679249794660791,
+            "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 234,
+            "mtime_ns": 1790679274724646597,
+            "sha256": "16097e9c8b2a60a8b66e2dd39b980081e8c2cb857e508e9f098537e697197225"
+          }
+        }
+      }
+    },
+    "source-newer": {
+      "local_batch_exit": 0,
+      "no_build_exit": 0,
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "ae8ebb304e3ca915.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679249989860874,
+            "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679248736630669,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679249989741458,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679248736089841,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": {
+            "bytes": 4616,
+            "mtime_ns": 1790679249989448836,
+            "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+          },
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679249821905833,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790765649794660791,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 2073,
+            "mtime_ns": 1790679249996613676,
+            "sha256": "9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927"
+          }
+        }
+      }
+    },
+    "source-older": {
+      "local_batch_exit": 0,
+      "no_build_exit": 0,
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "ae8ebb304e3ca915.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679249989860874,
+            "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679248736630669,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679249989741458,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679248736089841,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": {
+            "bytes": 4616,
+            "mtime_ns": 1790679249989448836,
+            "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+          },
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679249821905833,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790592849794660791,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 2073,
+            "mtime_ns": 1790679249996613676,
+            "sha256": "9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927"
+          }
+        }
+      }
+    },
+    "toml-nine": {
+      "local_batch_exit": 1,
+      "server": null,
+      "setup_batch": {
+        "exit": 1,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/cb5016b11d418b60.olean",
+        "setup_import_sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679262076235050,
+            "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679261591024939,
+            "sha256": "e784f476a45fb8ea0cbd1f303e904e6e44fa61ed2bfe9a8ac4a38e9b0544ba23"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679262076098343,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": null,
+          "olean": {
+            "bytes": 4520,
+            "mtime_ns": 1790679262075781097,
+            "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+          },
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679261911794806,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679261590624193,
+            "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0"
+          },
+          "toml_config": {
+            "bytes": 70,
+            "mtime_ns": 1790679261590535236,
+            "sha256": "7467cb062c409bbf46b66d418e823f77b428b7b4641b78378c43c4a65ad43bbb"
+          },
+          "trace": {
+            "bytes": 2073,
+            "mtime_ns": 1790679262082264236,
+            "sha256": "c89883ba4763ec77931c4711b5f362d20b5d4588d02c05eb44843ce519a8d744"
+          }
+        }
+      }
+    },
+    "toml-seven": {
+      "local_batch_exit": 0,
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-toml-seven-server/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-toml-seven-server/Generated.lean",
+            "version": 1
+          }
+        ],
+        "label": "toml-seven-server",
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait_completed": true
+      },
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679258070921645,
+            "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679257584204799,
+            "sha256": "e784f476a45fb8ea0cbd1f303e904e6e44fa61ed2bfe9a8ac4a38e9b0544ba23"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679258070800771,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": null,
+          "olean": {
+            "bytes": 4616,
+            "mtime_ns": 1790679258070511149,
+            "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+          },
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679257905414537,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679257583816887,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": {
+            "bytes": 70,
+            "mtime_ns": 1790679257583733179,
+            "sha256": "7467cb062c409bbf46b66d418e823f77b428b7b4641b78378c43c4a65ad43bbb"
+          },
+          "trace": {
+            "bytes": 2081,
+            "mtime_ns": 1790679258076936497,
+            "sha256": "c70ca45ebba8b9f0c3af4c417f27a9596af35e87b54911dd4d76f301be77ec27"
+          }
+        }
+      }
+    },
+    "trace-newer": {
+      "local_batch_exit": 0,
+      "no_build_exit": 0,
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "ae8ebb304e3ca915.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679249989860874,
+            "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679248736630669,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679249989741458,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679248736089841,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": {
+            "bytes": 4616,
+            "mtime_ns": 1790679249989448836,
+            "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+          },
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679249821905833,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679249794660791,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 2073,
+            "mtime_ns": 1790765649996613676,
+            "sha256": "9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927"
+          }
+        }
+      }
+    },
+    "wrong-setup": {
+      "local_batch_exit": 0,
+      "no_build_exit": 0,
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "ae8ebb304e3ca915.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": {
+            "bytes": 1366,
+            "mtime_ns": 1790679249989860874,
+            "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+          },
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679248736630669,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679249989741458,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679248736089841,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": {
+            "bytes": 4616,
+            "mtime_ns": 1790679249989448836,
+            "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+          },
+          "setup": {
+            "bytes": 149,
+            "mtime_ns": 1790679273180197961,
+            "sha256": "3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679249794660791,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 2073,
+            "mtime_ns": 1790679249996613676,
+            "sha256": "9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927"
+          }
+        }
+      }
+    },
+    "wrong-trace": {
+      "local_batch_exit": 1,
+      "no_build_exit": 0,
+      "setup_batch": {
+        "exit": 0,
+        "setup_exit": 0,
+        "setup_import_path": "$WORK/cache/artifacts/4ab07c203eb6f06e.olean",
+        "setup_import_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "snapshot": {
+        "cache_maps": {
+          "9f80558e806f84cd.json": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1",
+          "ae8ebb304e3ca915.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "bc2ee9095550ff31.json": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+        },
+        "files": {
+          "c": null,
+          "consumer_manifest": {
+            "bytes": 372,
+            "mtime_ns": 1790679248736630669,
+            "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+          },
+          "ilean": {
+            "bytes": 289,
+            "mtime_ns": 1790679249989741458,
+            "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+          },
+          "lean_config": {
+            "bytes": 317,
+            "mtime_ns": 1790679248736089841,
+            "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+          },
+          "olean": null,
+          "setup": {
+            "bytes": 127,
+            "mtime_ns": 1790679249821905833,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          "source": {
+            "bytes": 24,
+            "mtime_ns": 1790679249794660791,
+            "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+          },
+          "toml_config": null,
+          "trace": {
+            "bytes": 234,
+            "mtime_ns": 1790679272358979645,
+            "sha256": "71b3e7f704321ddd7153c0cbb1f049e4072e81bba1c9ea3646074f51001b572d"
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": false,
+      "choice": "A",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "dynamic-a-local",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (175ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "A",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "dynamic-a-cache",
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "A",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "dynamic-a-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "A",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "dynamic-a-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "A",
+      "cwd": "$WORK/setup-dynamic-a-setup-batch",
+      "exit": 0,
+      "label": "dynamic-a-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "label": "dynamic-a-server",
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-dynamic-a-server/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-dynamic-a-server/Generated.lean",
+            "version": 1
+          }
+        ],
+        "label": "dynamic-a-server",
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait_completed": true
+      }
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": false,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-b/consumer",
+      "exit": 0,
+      "label": "dynamic-b-local",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (175ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-b/consumer",
+      "exit": 0,
+      "label": "dynamic-b-cache",
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-b/consumer",
+      "exit": 1,
+      "label": "dynamic-b-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue + 1 = 8\\nis false\",\"endPos\":{\"column\":51,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":45,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"10\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-b/consumer",
+      "exit": 0,
+      "label": "dynamic-b-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/cb5016b11d418b60.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/setup-dynamic-b-setup-batch",
+      "exit": 1,
+      "label": "dynamic-b-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue + 1 = 8\\nis false\",\"endPos\":{\"column\":51,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":45,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"10\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "label": "dynamic-b-server",
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-dynamic-b-server/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 51,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 45,
+                    "line": 1
+                  }
+                },
+                "message": "Tactic `decide` proved that the proposition\n  depValue + 1 = 8\nis false",
+                "range": {
+                  "end": {
+                    "character": 51,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 45,
+                    "line": 1
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "10",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-dynamic-b-server/Generated.lean",
+            "version": 1
+          }
+        ],
+        "label": "dynamic-b-server",
+        "olean_sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait_completed": true
+      }
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": false,
+      "choice": null,
+      "cwd": "$WORK/toml-seven/consumer",
+      "exit": 0,
+      "label": "toml-seven-local",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (172ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/toml-seven/consumer",
+      "exit": 0,
+      "label": "toml-seven-cache",
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/toml-seven/consumer",
+      "exit": 0,
+      "label": "toml-seven-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/toml-seven/consumer",
+      "exit": 0,
+      "label": "toml-seven-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/setup-toml-seven-setup-batch",
+      "exit": 0,
+      "label": "toml-seven-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "label": "toml-seven-server",
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-toml-seven-server/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-toml-seven-server/Generated.lean",
+            "version": 1
+          }
+        ],
+        "label": "toml-seven-server",
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait_completed": true
+      }
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": false,
+      "choice": null,
+      "cwd": "$WORK/toml-nine/consumer",
+      "exit": 0,
+      "label": "toml-nine-local",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (171ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/toml-nine/consumer",
+      "exit": 0,
+      "label": "toml-nine-cache",
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/toml-nine/consumer",
+      "exit": 1,
+      "label": "toml-nine-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue + 1 = 8\\nis false\",\"endPos\":{\"column\":51,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":45,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"10\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/toml-nine/consumer",
+      "exit": 0,
+      "label": "toml-nine-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/cb5016b11d418b60.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/setup-toml-nine-setup-batch",
+      "exit": 1,
+      "label": "toml-nine-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue + 1 = 8\\nis false\",\"endPos\":{\"column\":51,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":45,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"10\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": false,
+      "choice": null,
+      "cwd": "$WORK/lean-option/consumer",
+      "exit": 0,
+      "label": "lean-option-local",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (169ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/lean-option/consumer",
+      "exit": 0,
+      "label": "lean-option-cache",
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/lean-option/consumer",
+      "exit": 0,
+      "label": "lean-option-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/lean-option/consumer",
+      "exit": 0,
+      "label": "lean-option-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": null,
+      "cwd": "$WORK/setup-lean-option-setup-batch",
+      "exit": 0,
+      "label": "lean-option-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "env-b-stale-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "env-b-stale-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/setup-env-b-stale-setup-batch",
+      "exit": 0,
+      "label": "env-b-stale-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "env-b-stale-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "label": "env-b-stale-server",
+      "server": {
+        "diagnostics": [
+          {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-env-b-stale-server/Generated.lean",
+            "version": 1
+          },
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "8",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/server-env-b-stale-server/Generated.lean",
+            "version": 1
+          }
+        ],
+        "label": "env-b-stale-server",
+        "olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "process_exit": -9,
+        "source_sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+        "stderr": "",
+        "wait_completed": true
+      }
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "source-older-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "source-older-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/setup-source-older-setup-batch",
+      "exit": 0,
+      "label": "source-older-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "source-older-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "source-newer-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "source-newer-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/setup-source-newer-setup-batch",
+      "exit": 0,
+      "label": "source-newer-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "source-newer-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "trace-newer-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "trace-newer-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/setup-trace-newer-setup-batch",
+      "exit": 0,
+      "label": "trace-newer-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "trace-newer-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "wrong-trace-no-build",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nAll targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "wrong-trace-setup-batch-setup",
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/setup-wrong-trace-setup-batch",
+      "exit": 0,
+      "label": "wrong-trace-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 1,
+      "label": "wrong-trace-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/dynamic-a/producer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "wrong-setup-no-build",
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "wrong-setup-setup-batch-setup",
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/setup-wrong-setup-setup-batch",
+      "exit": 0,
+      "label": "wrong-setup-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "wrong-setup-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "same-mtime-source-edit-no-build",
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nAll targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 0,
+      "label": "same-mtime-source-edit-setup-batch-setup",
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache/artifacts/cb5016b11d418b60.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/setup-same-mtime-source-edit-setup-batch",
+      "exit": 1,
+      "label": "same-mtime-source-edit-setup-batch-via-setup",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue + 1 = 8\\nis false\",\"endPos\":{\"column\":51,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":45,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"10\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "artifact_cache_enabled": true,
+      "choice": "B",
+      "cwd": "$WORK/dynamic-a/consumer",
+      "exit": 1,
+      "label": "same-mtime-source-edit-local-batch",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n$WORK/dynamic-a/producer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n"
+    }
+  ],
+  "environment": {
+    "cache_root": "$WORK/cache",
+    "free_memory_preflight_percent": 50,
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "max_concurrent_commands": 1,
+    "per_command_timeout_seconds": 25,
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "toolchain": "leanprover/lean4:v4.30.0-rc2"
+  },
+  "limits": [
+    "One pinned Lake/Lean host with tiny local packages; no Anneal archive, Mathlib or cross-version claim.",
+    "The dynamic Lean run_cmd source writer is deliberately adversarial config-time I/O; TOML cells are static.",
+    "No network syscall trace or power-loss durability test.",
+    "Direct Lean server imports use explicit local LEAN_PATH; Lake setup may return a different cache object."
+  ],
+  "retained_inventory": {
+    "dynamic-a/config_lean": {
+      "bytes": 317,
+      "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+    },
+    "dynamic-a/consumer": {
+      "bytes": 82,
+      "sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb"
+    },
+    "dynamic-a/olean": {
+      "bytes": 4616,
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "dynamic-a/setup": {
+      "bytes": 127,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    },
+    "dynamic-a/source": {
+      "bytes": 24,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "dynamic-a/trace": {
+      "bytes": 2073,
+      "sha256": "9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927"
+    },
+    "dynamic-b/config_lean": {
+      "bytes": 317,
+      "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+    },
+    "dynamic-b/consumer": {
+      "bytes": 82,
+      "sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb"
+    },
+    "dynamic-b/olean": {
+      "bytes": 4520,
+      "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+    },
+    "dynamic-b/setup": {
+      "bytes": 127,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    },
+    "dynamic-b/source": {
+      "bytes": 24,
+      "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0"
+    },
+    "dynamic-b/trace": {
+      "bytes": 2073,
+      "sha256": "635ada827999e876ad128228a328a166a3ea0e169e4e35baaf787981eda7b370"
+    },
+    "golden-c": {
+      "bytes": 1366,
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+    },
+    "golden-config": {
+      "bytes": 317,
+      "sha256": "a6edc53046fec4239f20abf7dbd8841c130385e4fdb90bb5e605392dd4ff67c7"
+    },
+    "golden-ilean": {
+      "bytes": 289,
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+    },
+    "golden-olean": {
+      "bytes": 4616,
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "golden-setup": {
+      "bytes": 127,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    },
+    "golden-source": {
+      "bytes": 24,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "golden-trace": {
+      "bytes": 2073,
+      "sha256": "9b69466311dea44489eafb6eb41d1a14dd6366d910fd923c1dcc370c19915927"
+    },
+    "lean-option/config_lean": {
+      "bytes": 129,
+      "sha256": "14b82e3967699ad71ac4bff665bd79ce3a4bbe6d0fac83b53efe1fef781c00ae"
+    },
+    "lean-option/consumer": {
+      "bytes": 82,
+      "sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb"
+    },
+    "lean-option/olean": {
+      "bytes": 4616,
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "lean-option/setup": {
+      "bytes": 149,
+      "sha256": "3a6480fda90a7319ae7684dcceb2fd8c8d376a64fb5a1bdf2345d555815c539f"
+    },
+    "lean-option/source": {
+      "bytes": 24,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "lean-option/trace": {
+      "bytes": 2118,
+      "sha256": "c1e98e79ff9a24e4699c851a6d0b407dc01ed4f6eefa600a729a59b3fa694f1c"
+    },
+    "toml-nine/config_toml": {
+      "bytes": 70,
+      "sha256": "7467cb062c409bbf46b66d418e823f77b428b7b4641b78378c43c4a65ad43bbb"
+    },
+    "toml-nine/consumer": {
+      "bytes": 82,
+      "sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb"
+    },
+    "toml-nine/olean": {
+      "bytes": 4520,
+      "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+    },
+    "toml-nine/setup": {
+      "bytes": 127,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    },
+    "toml-nine/source": {
+      "bytes": 24,
+      "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0"
+    },
+    "toml-nine/trace": {
+      "bytes": 2073,
+      "sha256": "c89883ba4763ec77931c4711b5f362d20b5d4588d02c05eb44843ce519a8d744"
+    },
+    "toml-seven/config_toml": {
+      "bytes": 70,
+      "sha256": "7467cb062c409bbf46b66d418e823f77b428b7b4641b78378c43c4a65ad43bbb"
+    },
+    "toml-seven/consumer": {
+      "bytes": 82,
+      "sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb"
+    },
+    "toml-seven/olean": {
+      "bytes": 4616,
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "toml-seven/setup": {
+      "bytes": 127,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    },
+    "toml-seven/source": {
+      "bytes": 24,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "toml-seven/trace": {
+      "bytes": 2081,
+      "sha256": "c70ca45ebba8b9f0c3af4c417f27a9596af35e87b54911dd4d76f301be77ec27"
+    }
+  }
+}

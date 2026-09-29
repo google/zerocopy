@@ -1,0 +1,429 @@
+{
+  "records": [
+    {
+      "aeneas_exit_code": 0,
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc_has_errors": false,
+      "llbc_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "local_declarations": [
+        {
+          "candidate_lean_declaration": [
+            "def step (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "llbc_def_id": 0,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::step",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "candidate_lean_declaration": [
+            "def select"
+          ],
+          "llbc_def_id": 1,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::select",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 8
+            },
+            "end": {
+              "col": 1,
+              "line": 10
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "module_imports": {
+        "Funs.lean": [
+          "import Aeneas",
+          "import Snapshot.Types"
+        ],
+        "Snapshot.lean": [
+          "import Snapshot.Funs"
+        ],
+        "Types.lean": [
+          "import Aeneas"
+        ]
+      },
+      "run": "A1",
+      "source_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+    },
+    {
+      "aeneas_exit_code": 0,
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc_has_errors": false,
+      "llbc_sha256": "5389fa297ab49c20af9c1beb544c80681ddc7f106dade91b3203a311f0142879",
+      "local_declarations": [
+        {
+          "candidate_lean_declaration": [
+            "def step (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "llbc_def_id": 0,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::step",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "candidate_lean_declaration": [
+            "def select"
+          ],
+          "llbc_def_id": 1,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::select",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 8
+            },
+            "end": {
+              "col": 1,
+              "line": 10
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "module_imports": {
+        "Funs.lean": [
+          "import Aeneas",
+          "import Snapshot.Types"
+        ],
+        "Snapshot.lean": [
+          "import Snapshot.Funs"
+        ],
+        "Types.lean": [
+          "import Aeneas"
+        ]
+      },
+      "run": "A2",
+      "source_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+    },
+    {
+      "aeneas_exit_code": 0,
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc_has_errors": false,
+      "llbc_sha256": "375375ad51da2bfe515bed6c1000bea47b1f9a0f14b49ea8a1f22b8e21329641",
+      "local_declarations": [
+        {
+          "candidate_lean_declaration": [
+            "def step (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "llbc_def_id": 0,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::step",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "candidate_lean_declaration": [
+            "def select"
+          ],
+          "llbc_def_id": 1,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::select",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 8
+            },
+            "end": {
+              "col": 1,
+              "line": 10
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "module_imports": {
+        "Funs.lean": [
+          "import Aeneas",
+          "import Snapshot.Types"
+        ],
+        "Snapshot.lean": [
+          "import Snapshot.Funs"
+        ],
+        "Types.lean": [
+          "import Aeneas"
+        ]
+      },
+      "run": "C-comment-only",
+      "source_sha256": "86cf9996242e6b952efa3ad98c3b8028622fd97899ff8c397a8c22e8852f2e93"
+    },
+    {
+      "aeneas_exit_code": 0,
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f0f5ca2744e63ced68d4de6d99fdffc2491c7b5bb8386f437c4020eabd41c519"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc_has_errors": false,
+      "llbc_sha256": "6774e33245dfeddc0a110c9ac2ea2244710a3d233140241589cb19ef370e4c55",
+      "local_declarations": [
+        {
+          "candidate_lean_declaration": [
+            "def step (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "llbc_def_id": 0,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::step",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "candidate_lean_declaration": [
+            "def select"
+          ],
+          "llbc_def_id": 1,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::select",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 8
+            },
+            "end": {
+              "col": 1,
+              "line": 10
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "module_imports": {
+        "Funs.lean": [
+          "import Aeneas",
+          "import Snapshot.Types"
+        ],
+        "Snapshot.lean": [
+          "import Snapshot.Funs"
+        ],
+        "Types.lean": [
+          "import Aeneas"
+        ]
+      },
+      "run": "B",
+      "source_sha256": "c8cf7009786ef366e509b8d46bede05a150627b50121e89df2bf0188dad4da01"
+    },
+    {
+      "aeneas_exit_code": 0,
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc_has_errors": false,
+      "llbc_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "local_declarations": [
+        {
+          "candidate_lean_declaration": [
+            "def step (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "llbc_def_id": 0,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::step",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "candidate_lean_declaration": [
+            "def select"
+          ],
+          "llbc_def_id": 1,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::select",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 8
+            },
+            "end": {
+              "col": 1,
+              "line": 10
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "module_imports": {
+        "Funs.lean": [
+          "import Aeneas",
+          "import Snapshot.Types"
+        ],
+        "Snapshot.lean": [
+          "import Snapshot.Funs"
+        ],
+        "Types.lean": [
+          "import Aeneas"
+        ]
+      },
+      "run": "A3",
+      "source_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+    },
+    {
+      "charon_exit_code": 2,
+      "run": "invalid-rust",
+      "status": "no-new-llbc"
+    },
+    {
+      "aeneas_exit_code": 1,
+      "generated_files": {
+        "Funs.lean": {
+          "bytes": 909,
+          "sha256": "59e33de739df4300d0e46e96ba8d9cc0bd0a516a0735f7fc3b2eba1b974b41b6"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc_has_errors": false,
+      "llbc_sha256": "daab1c093c8af871b3d7751a9625f49137f3bedf03f19e9ab3a3c46b10fb078d",
+      "local_declarations": [
+        {
+          "candidate_lean_declaration": [
+            "def read_raw (ptr : ConstRawPtr Std.U32) : Result Std.U32 := do"
+          ],
+          "llbc_def_id": 0,
+          "relation_basis": "printed-name and Aeneas source-comment match only",
+          "rust_item": "snapshot_probe::read_raw",
+          "source_span": {
+            "beg": {
+              "col": 0,
+              "line": 3
+            },
+            "end": {
+              "col": 1,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "module_imports": {
+        "Funs.lean": [
+          "import Aeneas",
+          "import Snapshot.Types"
+        ],
+        "Snapshot.lean": [
+          "import Snapshot.Funs"
+        ],
+        "Types.lean": [
+          "import Aeneas"
+        ]
+      },
+      "run": "unsupported-rust",
+      "source_sha256": "0539e02f5f6f6a7adb1d1af5b21d47be8f78556a89a87f5819ccd5623cda66f8"
+    }
+  ],
+  "scope": "illustrative lexical cross-layer inventory, not editable proof ranges"
+}

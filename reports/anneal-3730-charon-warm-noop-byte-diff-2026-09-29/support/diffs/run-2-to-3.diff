@@ -1,0 +1,5 @@
+--- run-2:short_names
++++ run-3:short_names
+@@ -1 +1 @@
+-"short_names":[{"key":{"Fun":3},"value":[{"Ident":["wrapping_add",0]}]},{"key":{"Fun":2},"value":[{"Ident":["dep_b",0]}]},{"key":{"Fun":1},"value":[{"Ident":["dep_a",0]}]},{"key":{"Fun":0},"value":[{"Ident":["combined",0]}]}]
++"short_names":[{"key":{"Fun":0},"value":[{"Ident":["combined",0]}]},{"key":{"Fun":2},"value":[{"Ident":["dep_b",0]}]},{"key":{"Fun":1},"value":[{"Ident":["dep_a",0]}]},{"key":{"Fun":3},"value":[{"Ident":["wrapping_add",0]}]}]

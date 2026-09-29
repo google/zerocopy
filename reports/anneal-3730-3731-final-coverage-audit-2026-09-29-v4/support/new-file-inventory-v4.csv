@@ -1,0 +1,279 @@
+package,relative_file,bytes,sha256,inspection,detail
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,REPORT.json,1146,3764188cae5451277e7af5f358cb4771d88d91b65ed34ad95c32d534669ffba7,json,parsed
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,REPORT.md,10598,6129ed7aa0153fedd6ee422c35d9f7329b16663d029a8c235187ed286d5abf59,utf8,60 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/check.py,2349,34c689664d30556d8efe20b6a593c04cac401353983297ce754647362eb934ef,utf8,38 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/inputs/base/trait_probe.llbc,21404,6d9ce35815f0016e4fb0da297cbcef755e8fe6adf2474dddb12afea3d4b2c57d,utf8,0 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/inputs/base/trait_probe.rs,349,ec429548f6180811c25863eedaf64ed03bbbc9b425e9c33df4025bfadc85eedc,utf8,7 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/inputs/error/trait_probe.llbc,16661,8548b85fafeb40d63f93263d69f86b521622f1b04114f178f74593f0977ce21d,utf8,0 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/inputs/error/trait_probe.rs,223,1546e3f211a5e6aaa7ba101f76e644063487c49f93a47834338bff5ddbd754c2,utf8,5 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/inputs/reorder/trait_probe.llbc,21404,06fdea9039a90b0dea05e9cee79e8d75bf69848c2133313a308caac109bbf875,utf8,0 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/inputs/reorder/trait_probe.rs,349,6cc8a6cc69406d67a83f2a85e8ab427eaa81543040bb6ced7435b609f06a9d54,utf8,7 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/inputs/shrink/trait_probe.llbc,14588,a4b65e0019dfca089431457e6f79d1176938ed9db3428d22eb14c81975644293,utf8,0 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/inputs/shrink/trait_probe.rs,174,ae68e23a2faafebe0ec7a497e0f279f3644b642c9d03358a7a2b90eff457494f,utf8,4 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/base/Funs.lean,2673,9e5e18b2557581fbfcc61fa60a1d73c3d7af4d91c8e5818bc8701ea08f5b18c7,utf8,53 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/base/FunsExternal_Template.lean,938,41a960b27b1329efd2f1525d77901e4f03341af4e388c82ba4c99dce82e59931,utf8,21 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/base/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/base/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/error/Funs.lean,2141,79c6eafcdf1b329c06ef3935a68a18350a5d6b664587e388e5fb4e129fea59ce,utf8,43 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/error/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/error/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/reorder/Funs.lean,2673,cdd795ebc443446393e55d7e1e0756e793ffe025f95860e515934727c219d6f9,utf8,53 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/reorder/FunsExternal_Template.lean,938,e8a8c96d61d143cffc211f84afbbbf4aca140f83b30a724eddab4bfd0813fb86,utf8,21 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/reorder/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/reorder/Types.lean,898,ec517fa537144393a149143fed543126d4fbd268f697c7ae72f1748157bbf741,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/shrink/Funs.lean,1791,2b4d4899cc140eff246acedb606c6fd6f8a5e9b2cfd206ef784b2c47b17f1fdb,utf8,37 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/shrink/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/outputs/shrink/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/probe.py,11170,a0dfa2475bd3645a8068ce4740b900b42ed957ef28b819269cdd101856d8997b,utf8,171 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/raw-results.json,73487,d4891c9f4e990f817c4fceaeb2e7aaf316fdfd6d11cbb91e97266e804270d089,json,parsed
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/Consumer.lean,161,7d353d95cbbe1df96615b97cdc3f3d5dc0fe812250eabfb2d3feb41e2cfd3827,utf8,5 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/TraitProbe/Funs.lean,2673,9e5e18b2557581fbfcc61fa60a1d73c3d7af4d91c8e5818bc8701ea08f5b18c7,utf8,53 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/TraitProbe/Funs.olean,22312,cc6e8ba462022960706e5cb9d29fe328a45509436106a3b654f19d840ad6e071,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/TraitProbe/FunsExternal.lean,938,41a960b27b1329efd2f1525d77901e4f03341af4e388c82ba4c99dce82e59931,utf8,21 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/TraitProbe/FunsExternal.olean,3616,21b6e1ddd3b95578fc7bfe4b0d6723e855991000e1f788bf9d1db0772169cf5f,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/TraitProbe/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/TraitProbe/Types.olean,30128,4fad9c6a4c4d855cace8c8875108d410ae22aa5e7002172e90d4ac2ff6327eae,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base/TraitProbe.olean,1320,95699cf7885b777702f87a9aeed60c33b79022abae3b75f0a470d6399d16e519,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/Consumer.lean,122,7954788fe4f8f7333c1aa35232084369afdc1265ee0eb4fd62df7d7d2ebdddbc,utf8,3 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/TraitProbe/Funs.lean,2673,9e5e18b2557581fbfcc61fa60a1d73c3d7af4d91c8e5818bc8701ea08f5b18c7,utf8,53 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/TraitProbe/Funs.olean,22920,190e0a3264d89fb9e7fd3ec92ef509c889c5e0b4e39e62050e479b3cba6f5bc4,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/TraitProbe/FunsExternal.lean,976,1ac2f658825a11b57fc1d00273ce16939ba2584de5d83164f8932c96c2facf3c,utf8,21 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/TraitProbe/FunsExternal.olean,7920,2d5933517f61eda3a8d3a83861058558d7bd632c6c74714b8c035d6a12b16695,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/TraitProbe/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/TraitProbe/Types.olean,30128,4fad9c6a4c4d855cace8c8875108d410ae22aa5e7002172e90d4ac2ff6327eae,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-base-concrete/TraitProbe.olean,1320,95699cf7885b777702f87a9aeed60c33b79022abae3b75f0a470d6399d16e519,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-error/Consumer.lean,71,a5945debc47bb8f17fdd5b40815db9bfc0c99ee472e2099ad8023a2edc2c3359,utf8,3 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-error/TraitProbe/Funs.lean,2141,79c6eafcdf1b329c06ef3935a68a18350a5d6b664587e388e5fb4e129fea59ce,utf8,43 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-error/TraitProbe/Funs.olean,49888,0a874e629e4283a71f9a410b7b657f34dee9d7ad53567d10329389b583e360cf,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-error/TraitProbe/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-error/TraitProbe/Types.olean,30128,4fad9c6a4c4d855cace8c8875108d410ae22aa5e7002172e90d4ac2ff6327eae,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-error/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-error/TraitProbe.olean,1320,95699cf7885b777702f87a9aeed60c33b79022abae3b75f0a470d6399d16e519,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/Consumer.lean,161,7d353d95cbbe1df96615b97cdc3f3d5dc0fe812250eabfb2d3feb41e2cfd3827,utf8,5 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/TraitProbe/Funs.lean,2673,cdd795ebc443446393e55d7e1e0756e793ffe025f95860e515934727c219d6f9,utf8,53 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/TraitProbe/Funs.olean,22312,90bb045a86828ad58e4aa5a14fcddda0913e3005b1fedb5f5233e1d3044acfd3,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/TraitProbe/FunsExternal.lean,938,e8a8c96d61d143cffc211f84afbbbf4aca140f83b30a724eddab4bfd0813fb86,utf8,21 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/TraitProbe/FunsExternal.olean,3616,52f793f975a4ff28ef7644f46991e8ac6c1ef1c52580b2cd51ea051f73b83acc,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/TraitProbe/Types.lean,898,ec517fa537144393a149143fed543126d4fbd268f697c7ae72f1748157bbf741,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/TraitProbe/Types.olean,30128,472475c774eb5a66ab3bd72948d6fc1338426b691df2727ab10d9eeed2291cef,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-reorder/TraitProbe.olean,1320,95699cf7885b777702f87a9aeed60c33b79022abae3b75f0a470d6399d16e519,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-shrink/Consumer.lean,74,813dfaba8b2308302f1dbea55974b336f01c1b106bd92a7af9ba0cd3dbad4e47,utf8,3 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-shrink/TraitProbe/Funs.lean,1791,2b4d4899cc140eff246acedb606c6fd6f8a5e9b2cfd206ef784b2c47b17f1fdb,utf8,37 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-shrink/TraitProbe/Funs.olean,18488,9acc9d38579f48a72d413c7d6e6cfc65fc09c85cd1a151e2c0a66abc1e42bb9a,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-shrink/TraitProbe/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-shrink/TraitProbe/Types.olean,30128,4fad9c6a4c4d855cace8c8875108d410ae22aa5e7002172e90d4ac2ff6327eae,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-shrink/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/compiled-shrink/TraitProbe.olean,1320,95699cf7885b777702f87a9aeed60c33b79022abae3b75f0a470d6399d16e519,binary,opaque
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/generated/Funs.lean,2141,79c6eafcdf1b329c06ef3935a68a18350a5d6b664587e388e5fb4e129fea59ce,utf8,43 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/generated/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/generated/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/reused/Funs.lean,1791,2b4d4899cc140eff246acedb606c6fd6f8a5e9b2cfd206ef784b2c47b17f1fdb,utf8,37 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/reused/FunsExternal_Template.lean,938,41a960b27b1329efd2f1525d77901e4f03341af4e388c82ba4c99dce82e59931,utf8,21 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/reused/TraitProbe.lean,23,6f6add85c93ecfde32ff56b1a5b75150bec695d8f6e575bbf42263ac025379f5,utf8,1 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/reused/Types.lean,898,5bcee7084c63c3461fbbfcfa4b3810f477eb5c7c1a720dfb7e7b9fbf92257d22,utf8,23 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/trait_probe.llbc,14588,a4b65e0019dfca089431457e6f79d1176938ed9db3428d22eb14c81975644293,utf8,0 lines
+anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29,support/work/trait_probe.rs,223,1546e3f211a5e6aaa7ba101f76e644063487c49f93a47834338bff5ddbd754c2,utf8,5 lines
+anneal-3730-charon-build-closure-control-2026-09-29,REPORT.json,990,c103bcdb4d79b5c93c5aee5a686ec275f011db063f2a7ecbfc5307142d80bae2,json,parsed
+anneal-3730-charon-build-closure-control-2026-09-29,REPORT.md,6053,c8dadcb576dee7c9a080b5c72e2c86bfdaed3e9a6a60ab9299fa99030bdc49a0,utf8,50 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/__pycache__/probe.cpython-314.pyc,14139,fc2b0474ae10e68d452864a0d1191932e484260441770c78a8e843719ee20f62,binary,opaque
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/baseline.llbc,29639,3fb98ef48a14ebd392b2d05dd8c09c901a158341a4fc0e1ebf2bffcced8b4a4b,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/bin-unit.llbc,11905,6338ad2ddcf4c4c649f6974d9a3d8df2a37049573f36e906a0fda9feb9746e1b,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/build-env.llbc,29640,aed9a98181f3f76918cdc99372131a719a09341b121b070841f259ef8c7ead18,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/build-source.llbc,31134,e0a7f00fab0d8392b870512a9b13e6ef166df9c2562e7eaa034c10ccda910c7c,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/include-str.llbc,29650,555d2ecda667c929c30bec7ee38f2dd1092b06c166fa2336b7b16b47f281492f,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/path-dependency.llbc,29646,f8db749b43c7190ea707a7466dba830b4f3e3b0ed71b61e0b4e108b8aff28a7d,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/proc-env.llbc,29639,c36ba3e2a6a6d68843de696062a7d62798923b2b70687945d581c87f7d9acaa5,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/proc-source.llbc,31451,782e3801598baf98b28c72e625fb2ecba2f08928616eed5d1068fa0650cb68dd,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/rustc-env.llbc,29641,2825e1787f3cfeaa54b0b2429b4f08902eaadfe5981be8a58332ec169e53db34,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/artifacts/source-path.llbc,29642,66c29966014383c5170e0460c1dd4b3ed7f718cb4b2b41795d6511d2bac0db76,utf8,0 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/Cargo.lock,302,03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa,utf8,19 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/Cargo.toml,71,f00c1ef4f457a7119a6684cdf4a5c957bbffdcdd0e5d2689db79a34f2937c3d4,utf8,3 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/app/Cargo.toml,281,e605143c5d1287a6ab49130718169b0709168ecf053cbd1c991375159376d0a4,utf8,17 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/app/build.rs,456,67cc8e279c40375a91c3c26b3425a60b7059ff0b2f34c2dac60a6c7857de699a,utf8,9 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/app/src/lib.rs,375,9c4f1ac5c0f09ee5c17ee4de16be3c44c5ad62af96714e192720f04d096d47d6,utf8,12 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/app/src/main.rs,37,0b8aa310bb5c1597c86ad401c70a56b60104b8db21421a38839b87a012685170,utf8,1 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/app/src/payload.txt,10,146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160,utf8,1 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/app/tests/check.rs,51,effa7d9eb5feec3579cce6b26b5ac7106ad758dbafcfd7f156d2c9a864667b61,utf8,2 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/dep_path/Cargo.toml,63,9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239,utf8,4 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/dep_path/src/lib.rs,49,9dfa375edb59a1dd5e6b742eace40773e9f7cf2472c1e46b1c0b9fe8500c02ce,utf8,1 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/proc_local/Cargo.toml,90,1161a02217b1eb6b1bac9ac367aece0a18dc4a7faaa3f5de434aae273ff3ca85,utf8,7 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/fixture/proc_local/src/lib.rs,329,0704ee02b60d725fbc32383b8b07cbbd667f348e6b4227f2fee6ee594337ebee,utf8,10 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/probe.py,8699,dbfc239eb2d22faff886befaf203ef44363f441cf5c17e7a8915d825eafcd131,utf8,163 lines
+anneal-3730-charon-build-closure-control-2026-09-29,support/raw-results.json,70969,e8ec4b7d29fafefe706b087659e1c7cc9fe66d11c12ba8a176159656580e367a,json,parsed
+anneal-3730-charon-build-closure-control-2026-09-29,support/verify.py,1319,e91db52ee650c84b2603b09d1bb5097e01719a5a5e4aa3c06bd7b574f64135f8,utf8,23 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,REPORT.json,1198,0563ed8feaf38201d0a411635fe2a0540a3db5716ee5c77cfa0caec87656b0b8,json,parsed
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,REPORT.md,10391,098a1993f5fec83ebd838048396d8c9fc96cccffdfaaf6320d4d0960bafb9276,utf8,62 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/build_manifest.py,2067,cfa7e2f080696e61cd446682aedbcd29b434ccdb774218a1f624ddc1d1878e21,utf8,29 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/check.py,3340,fd2d73894e4de5225e8fe98b2d689ba38d0b8def72f2f1a05fa11042e93436a9,utf8,52 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/comparison-manifest.json,16071,4624390d86654cc626947374a6d768f5060b3b59475dacfdcba854ddf372b179,json,parsed
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/probe.py,15363,90bbca48554000d61e39da1a81c2f2f11e09071def60bb60bc727c47c28ef4ee,utf8,205 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/results.json,79462,31f31ee9ba00b6c1e18d00aac3a5d3f4619f889bfffded37d814d6660ccc403d,json,parsed
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/base/RustOracle.rs,156,6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391,utf8,6 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/base/Source.llbc,16276,ee36614785a52956a4e47fad06ff7be2dd5fe984cb67c358e08e566a3a4fb087,utf8,0 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/base/generated/Funs.lean,1689,bc15e6198147e1059c25089e94eb1399538f674a96907e3a689fe019df4a4db5,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/base/generated/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/base/generated/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/base/source.rs,185,1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622,utf8,4 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/changed/RustOracle.rs,156,7f1fd6407dd50e74dad5f02452caa853daddb071589123e00a737173ec0c3fb2,utf8,6 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/changed/Source.llbc,16282,ec7d0f808f778c2963795bee1faae7c72094660c94662b18b9bb3d6c0ef9c547,utf8,0 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/changed/generated/Funs.lean,1698,287273a09e0f2cc0cbaeb9584ea45817645d70390df45cd1b40baa7d0ef89497,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/changed/generated/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/changed/generated/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/changed/source.rs,185,fc47ac0e8cb34679fdfb0ef7bc73fd50adebb3f14c83568638fa8136145c13a4,utf8,4 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/clean-rerun/RustOracle.rs,156,6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391,utf8,6 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/clean-rerun/Source.llbc,16290,aafae3a3fd8885c8e2fc629f8ec26460fc624ac17a5033991ab96760db3c72fb,utf8,0 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/clean-rerun/generated/Funs.lean,1710,e2c59d8fd0ede7abac3d96e232fb15aff190b633d891946ed7b76ceb8f5285ac,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/clean-rerun/generated/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/clean-rerun/generated/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/clean-rerun/source.rs,185,1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622,utf8,4 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Missing.lean,230,ed18ae077665c2274fa61f1b50a173053b5ddbf56dc0f4a59b8db290504aa3dc,utf8,7 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Proof.lean,346,82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3,utf8,10 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Sorry.lean,106,8152fb830a380babe7278ae631cb4df1189f425fa7b56477a9cab3aca0494a3e,utf8,3 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Source/Funs.lean,1689,bc15e6198147e1059c25089e94eb1399538f674a96907e3a689fe019df4a4db5,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Source/Funs.olean,24088,741d164fc7a832cb302c89ec274af39358b92658428d56083f48be515e76744e,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Source/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Source/Types.olean,1616,0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-base/Weak.lean,232,b9f165e07af372b0a4827491efaf2edeccae4bdedca9ec6ba578a91407e31ff1,utf8,6 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-changed/Proof.lean,346,49602fee85bc1adcd2092312d8d875321084d3e3f174467bafd5ef3b6d98c2f6,utf8,10 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-changed/Source/Funs.lean,1698,287273a09e0f2cc0cbaeb9584ea45817645d70390df45cd1b40baa7d0ef89497,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-changed/Source/Funs.olean,24984,92ca23323f42b72d66c5577611ecabc6c69f1396af95ceb6c4e19ce4fe0572cf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-changed/Source/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-changed/Source/Types.olean,1616,0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-changed/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-changed/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-clean-rerun/Proof.lean,346,82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3,utf8,10 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-clean-rerun/Source/Funs.lean,1710,e2c59d8fd0ede7abac3d96e232fb15aff190b633d891946ed7b76ceb8f5285ac,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-clean-rerun/Source/Funs.olean,24112,20097a83eda4600f9f9279fd37fc18f569c5faf4bc31d3612864c6eefe301712,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-clean-rerun/Source/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-clean-rerun/Source/Types.olean,1616,0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-clean-rerun/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-clean-rerun/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/AxiomCheck.lean,50,55b197691551e39141ffbbfb44d4a43298691bd8acd2120069887e7b8d127552,utf8,2 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/Source/Funs.lean,1056,ca97a094e3c6af0df9ff871d1772ce3f3de604290e522632c4d79a607de26917,utf8,28 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/Source/Funs.olean,4280,df8fde3a3fa71205212ba8b30eacdb6fce2f269887e008594171b8a2f077fc0f,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/Source/FunsExternal.lean,950,8f0f994ceb39be482bb2c6de859435d8859d6523726de07bec9e6ce9752d0fd8,utf8,21 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/Source/FunsExternal.olean,3608,ddd7aa9b903a351705d3062da1f9063f122cf850e711a1ec708cc23375345dba,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/Source/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/Source/Types.olean,1616,0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-axiom/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/ConcreteCheck.lean,119,3669824b9a8aa6c9e68bc2c4acf814418cef898624a8b2466f4218281d4468e1,utf8,3 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/Source/Funs.lean,1056,ca97a094e3c6af0df9ff871d1772ce3f3de604290e522632c4d79a607de26917,utf8,28 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/Source/Funs.olean,7512,55eed7373b82ef02a84c2b9db22561c3a87340584ce444a09c6bff99800565b6,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/Source/FunsExternal.lean,988,837dbb23aea8f9805125d057bb868c0ce443ca64217d1d2455bf3c59608bea58,utf8,21 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/Source/FunsExternal.olean,7912,967ba422b0a1c0ec5efa00683df1d1509f98d4eb86bd86de0d0d07d0754f6f94,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/Source/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/Source/Types.olean,1616,0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-external-concrete/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-reorder/Proof.lean,346,82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3,utf8,10 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-reorder/Source/Funs.lean,1698,61de570b374752a4384520d2e6a47ecbcd5004c976add6af3b7b1f9d606fbedb,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-reorder/Source/Funs.olean,24088,96645d3c18c93b4816b05fe2dea3478b4eff41984b171fb4c8fc4b7c60174822,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-reorder/Source/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-reorder/Source/Types.olean,1616,0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-reorder/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-reorder/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Missing.lean,230,ed18ae077665c2274fa61f1b50a173053b5ddbf56dc0f4a59b8db290504aa3dc,utf8,7 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Proof.lean,346,82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3,utf8,10 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Sorry.lean,106,8152fb830a380babe7278ae631cb4df1189f425fa7b56477a9cab3aca0494a3e,utf8,3 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Source/Funs.lean,1698,287273a09e0f2cc0cbaeb9584ea45817645d70390df45cd1b40baa7d0ef89497,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Source/Funs.olean,24984,92ca23323f42b72d66c5577611ecabc6c69f1396af95ceb6c4e19ce4fe0572cf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Source/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Source/Types.olean,1616,0bd5fcc2d6d84abc50da812322d33fd1820836dd1b2e7c9062829d8311bf4eaf,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Source.olean,1312,ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974,binary,opaque
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/Weak.lean,232,b9f165e07af372b0a4827491efaf2edeccae4bdedca9ec6ba578a91407e31ff1,utf8,6 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/consumer-swapped/WeakOnly.lean,66,fbbad41efcdb1d4c9dece5fc57afbea1f7a4045e51c58d874bba262bedaeeae6,utf8,3 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/external/Source.llbc,5777,5feecaffca57315268cc13c7df6c611a94e0d1fa187300a765dfee1de6e2f384,utf8,0 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/external/generated/Funs.lean,1056,ca97a094e3c6af0df9ff871d1772ce3f3de604290e522632c4d79a607de26917,utf8,28 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/external/generated/FunsExternal_Template.lean,950,8f0f994ceb39be482bb2c6de859435d8859d6523726de07bec9e6ce9752d0fd8,utf8,21 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/external/generated/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/external/generated/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/external/source.rs,139,d606a2569d6ce1e1d5ccefab70be2e65d16334239e5e90cf7ddd31657fe9f3a4,utf8,3 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/reorder/RustOracle.rs,156,6a1d9522f18e242cb6f477dbb8a9a16962bd1759cfa28b864eab354b8421d391,utf8,6 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/reorder/Source.llbc,16283,734568088d01882d6d09326a3b181941e9e580b451ce62a3c42279c81dcab8ec,utf8,0 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/reorder/generated/Funs.lean,1698,61de570b374752a4384520d2e6a47ecbcd5004c976add6af3b7b1f9d606fbedb,utf8,39 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/reorder/generated/Source.lean,19,a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0,utf8,1 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/reorder/generated/Types.lean,539,a94e4f322e62fc61af1b61447d5fd2ab70a8f789374a9813d2452e9fd662d12b,utf8,17 lines
+anneal-3730-cross-layer-comparator-mutants-2026-09-29,support/work/reorder/source.rs,185,5c47f32fcd6df5061e5e1d50ffad9eb93689ee60671aed3f873b394eca9d207f,utf8,4 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,REPORT.json,1028,0d8e6b4ddb2abde4083d4dfbcf1769c9dd3cf5031819e88b8dad087a0356f903,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,REPORT.md,11137,d0e4fe2676101e832c3284d1dd01f06b6984be1032a777c1df17979af717da00,utf8,60 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/golden-cache/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/golden-cache/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/golden-cache/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/golden-cache/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-0/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-0/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-0/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-0/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-1/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-1/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-1/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-1/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-2/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-2/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-2/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/pair-cache-2/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-c.bin,764,a7c45425a5cae73ac39d506b2fcd648789da9759c777af3553685e0c56f0b9eb,utf8,25 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-ilean.bin,404,01ffb16a23b2fad2ee5d8ed1eaa2291af632fda65d6f356e2c8f213ce600c607,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-olean.bin,2448,32c689178e4726bcb20c1d7e14121e62f19daaee43aa78447ef71328a58e016f,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-c/artifacts/19804e4afa920628.c,764,a7c45425a5cae73ac39d506b2fcd648789da9759c777af3553685e0c56f0b9eb,utf8,25 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-c/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-c/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-c/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-ilean/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-ilean/artifacts/256fdbc46043cf30.ilean,404,01ffb16a23b2fad2ee5d8ed1eaa2291af632fda65d6f356e2c8f213ce600c607,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-ilean/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-ilean/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-olean/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-olean/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-olean/artifacts/7b7a31f2adb2306a.olean,2448,32c689178e4726bcb20c1d7e14121e62f19daaee43aa78447ef71328a58e016f,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/partial-present-cache-olean/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-c/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-c/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-c/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-c/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-ilean/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-ilean/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-ilean/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-ilean/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-olean/artifacts/19804e4afa920628.c,1529,51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303,utf8,48 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-olean/artifacts/256fdbc46043cf30.ilean,809,b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b,utf8,0 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-olean/artifacts/7b7a31f2adb2306a.olean,4896,4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85,binary,opaque
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/artifacts/repaired-cache-olean/outputs/probe_dep/566c416840dafb01.json,170,4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/check.py,2263,6ae2afef8fbe4eb620a1635ebe87a9f6250c44f345c0846d463616a6260ba0cc,utf8,38 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/fixture/consumer/Generated.lean,82,fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb,utf8,3 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/fixture/consumer/lake-manifest.json,372,3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2,json,parsed
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/fixture/consumer/lakefile.lean,123,ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1,utf8,6 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/fixture/consumer/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,utf8,1 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/fixture/producer/Dep.lean,174,49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5,utf8,7 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/fixture/producer/lakefile.lean,75,2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad,utf8,5 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/fixture/producer/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,utf8,1 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/probe.py,15461,e8b7eb99f91e168d4c43bd39bf85b44e89ab1559dab5b99f4d7cb73ddc53b280,utf8,235 lines
+anneal-3730-lake-same-key-artifact-writers-2026-09-29,support/results.json,41458,ee75af557ae4c39fe60a8fb73a83d2061b8f98ab7333931ff2e74343fc169b20,json,parsed
+anneal-3730-lean-lsp-projection-code-actions-2026-09-29,REPORT.json,887,fc7041cd4e7462c6d632c0325a6319e9c39cc7e8b50484278c947c7442bbd40e,json,parsed
+anneal-3730-lean-lsp-projection-code-actions-2026-09-29,REPORT.md,5056,395ad6305ab3043927ac5538cb252b03c94866eef3571fc8668d476a9930b71f,utf8,39 lines
+anneal-3730-lean-lsp-projection-code-actions-2026-09-29,support/Unicode.lean,176,b752ced4edc1b9be5437cf10b1f84d76c0544359c12501581361895aed79a237,utf8,7 lines
+anneal-3730-lean-lsp-projection-code-actions-2026-09-29,support/lsp-transcript.json,833361,b1c2f5fc494ab1339e6be0c06373d819ae591e735ab95064939b64cff3fc522f,json,parsed
+anneal-3730-lean-lsp-projection-code-actions-2026-09-29,support/lsp_probe.py,5985,5df5050a7f53c6799e13883b79c185a1ac476cedaf65babaab85b797c76faea9,utf8,88 lines
+anneal-3730-lean-lsp-projection-code-actions-2026-09-29,support/projection-stream.json,218843,de9315ec39e54732d9d0820a7eb70f64c1ca86b5bcfdb735d30c0036eeac47e1,json,parsed
+anneal-3730-lean-lsp-projection-code-actions-2026-09-29,support/projection_model.py,4401,2bd5b2ea161f894e7d32ab48563cdb4e8f8ee16dce05352853725aae631e7e81,utf8,78 lines
+anneal-3730-lean-lsp-projection-code-actions-2026-09-29,support/verify.py,2125,9d6db462b2e3601c094c2cfafe55624ee246840408aca60996db42e5cab7232c,utf8,33 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,REPORT.json,477,d660f81e4c05051b6928c8da7c6c9205ffa22ed3b292a1d52b6f905e01f148d4,json,parsed
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,REPORT.md,10683,df16ba9296c1d30e2cac0ba03af23a26a2924c643331e6ce500e82df28894c63,utf8,66 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/check.py,3254,be554c194b64020791c1817b6a8d947a3abbea3b6de18bffccb65227d99cc844,utf8,49 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/probe.py,13889,ca1cfede5f46103417671350fc0dcc19fdd6f1746c766e358f60a27d7bfe8ced,utf8,213 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/transcript.json,429050,e0e91b44b61f7f6ef5b1ed684fc2748bb31359660e1a7d48528767b0c0ed65aa,json,parsed
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/work/A/Dep.lean,25,b4313e13071af7cbf4771ea492d3ac497be251b1f99b655824ad367790ee0471,utf8,1 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/work/A/Dep.olean,4456,b829d5b0080dde9fe22b17c8455d7581eee66547fff7bfc6202eac86a27ad099,binary,opaque
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/work/A/Proof.lean,126,57d5b55889db098a84a8b5dabf4aebc4504033127343ef0c0a10229e0c4b512e,utf8,6 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/work/B/Dep.lean,25,d2142b6aab604f810f9544c3c25c50b02f3291e3b65d16654afbbaa775b3b057,utf8,1 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/work/B/Dep.olean,4456,d28d66bfd0de6d147728317192e991fd208925fdcddb5e0f293b57a33bbc230b,binary,opaque
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/work/B/Proof.lean,126,29568d72507e628c7a5669aa6128d813e32e138964600d059bba371c580daadb,utf8,6 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/work/B/Timeout.lean,126,29568d72507e628c7a5669aa6128d813e32e138964600d059bba371c580daadb,utf8,6 lines
+anneal-3730-lean-server-soak-context-rpc-2026-09-29,support/work/B/WrongUnderA.lean,126,29568d72507e628c7a5669aa6128d813e32e138964600d059bba371c580daadb,utf8,6 lines

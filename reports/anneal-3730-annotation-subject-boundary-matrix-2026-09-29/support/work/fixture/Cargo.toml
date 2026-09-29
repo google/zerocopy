@@ -1,0 +1,9 @@
+[package]
+name = "annotation_boundary_probe"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[features]
+default = []
+selected = []

@@ -1,0 +1,24 @@
+{
+  "topics": [
+    "anneal/identity-model",
+    "anneal/freshness",
+    "concurrency/cas"
+  ],
+  "subjects": [
+    {
+      "name": "Finite identity and patch state model",
+      "identity": {
+        "artifact": "support/model.py",
+        "sha256": "ef8be2fe88cd027bcdc36cfcabc9b2ebb70fd8317a5525a2d1872afa8fd604ed"
+      }
+    },
+    {
+      "name": "CPython runtime",
+      "identity": {
+        "version": "3.14.7",
+        "platform": "macOS-26.6.2-arm64"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,4 @@
+gap,investigation_ids,bounded_next_experiment,resource_and_evidence_limit
+R18,I030;I059-I063,"Direct Lean LSP nonempty code-action and two-file rename/edit controls, signature help, inlay hints and representative completion edits under selected diagnostics.",Component protocol only; no Rust-hosted Anneal projection or real editor adapter.
+R19,I089-I104;I108-I109,"Lake TOML-versus-Lean dynamic configuration, mtime/trace and setup-family key perturbations with exact consumed-byte checks.","One pinned cached Lake, tiny private graph; no general key proof or Anneal prepared archive."
+R20,I073-I080;I105;I134,Active Aeneas/Lean and more precise Charon/Lake phase cancellation with deterministic barriers and retry/descendant oracles.,Independent CLI process groups; an actual scheduler remains unavailable.

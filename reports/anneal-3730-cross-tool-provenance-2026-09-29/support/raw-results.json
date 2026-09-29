@@ -1,0 +1,1692 @@
+{
+  "artifact_inventory": {
+    "A/lean/Funs.lean": {
+      "bytes": 1331,
+      "sha256": "807263e41d4e0f0b32e6daf74d6ba02985048d3088043b407c1674a7ef8d4447"
+    },
+    "A/lean/Snapshot.lean": {
+      "bytes": 21,
+      "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+    },
+    "A/lean/Types.lean": {
+      "bytes": 533,
+      "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+    },
+    "A/rustc.rmeta": {
+      "bytes": 2792,
+      "sha256": "a7920a37e9e7cb4c4a3d1ea09df8674a5a6875fc41e5e46d24f2e222db2b609e"
+    },
+    "A/snapshot.llbc": {
+      "bytes": 10908,
+      "sha256": "c0f36fd68ad9c6fa2796e1633089d8cef57db9214898bec28f3ddff765bfad00"
+    },
+    "charon-coroutine/rustc.rmeta": {
+      "bytes": 3975,
+      "sha256": "283521b10cf701f902461504c730298d0ba242dd46de9a0d251b579cbdf734f8"
+    },
+    "deleted/lean/Funs.lean": {
+      "bytes": 930,
+      "sha256": "fcff9343d255c5e4bf6b9b1c5e775345cbcd905c8b2ed33a93b52d06a163b930"
+    },
+    "deleted/lean/Snapshot.lean": {
+      "bytes": 21,
+      "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+    },
+    "deleted/lean/Types.lean": {
+      "bytes": 533,
+      "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+    },
+    "deleted/rustc.rmeta": {
+      "bytes": 2668,
+      "sha256": "be8301f350f72abe768f481f3fd6461858f7d2a2d7e5e911cf1c72d15c4f018d"
+    },
+    "deleted/snapshot.llbc": {
+      "bytes": 6948,
+      "sha256": "295426232650a648f5bacac1014dded1aef11bed64b9e9470ba83459a76c62a7"
+    },
+    "lean-check/Proof.lean": {
+      "bytes": 73,
+      "sha256": "bfdad78c368e8aba840a08b5ad69a49ece8683e644a1b4ebab6b4f07f6fddb64"
+    },
+    "lean-check/Snapshot/Funs.lean": {
+      "bytes": 1331,
+      "sha256": "807263e41d4e0f0b32e6daf74d6ba02985048d3088043b407c1674a7ef8d4447"
+    },
+    "lean-check/Snapshot/Funs.olean": {
+      "bytes": 18072,
+      "sha256": "7bc33ad6c15f39e860c26d8e61432c36790ad82a53e169afeb63951f6a16f41b"
+    },
+    "lean-check/Snapshot/Types.lean": {
+      "bytes": 533,
+      "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+    },
+    "lean-check/Snapshot/Types.olean": {
+      "bytes": 1608,
+      "sha256": "6872951c2df1fabaa323d481dba1c4fe513dc48ee7b1f8b50b37dd977cfdacaa"
+    },
+    "unsupported/lean/Funs.lean": {
+      "bytes": 923,
+      "sha256": "b8c579b5721ec5fa31f5d2159a1fe2adc7e9b311624798ba85c8cb2c88a6b2c3"
+    },
+    "unsupported/lean/Snapshot.lean": {
+      "bytes": 21,
+      "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+    },
+    "unsupported/lean/Types.lean": {
+      "bytes": 533,
+      "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+    },
+    "unsupported/rustc.rmeta": {
+      "bytes": 2645,
+      "sha256": "a87dd26521b283d4d018d820aac798b9441ba6921049af68958507f277af67f9"
+    },
+    "unsupported/snapshot.llbc": {
+      "bytes": 4320,
+      "sha256": "e538e0854d6ca469bead4b79fd1b9e53817325ae4384a6c8bef665647b9af5db"
+    }
+  },
+  "cases": {
+    "A": {
+      "aeneas": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/A/lean",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/A/snapshot.llbc"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "A:aeneas",
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/A/snapshot.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/A/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/A/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/A/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.133965 seconds\n"
+      },
+      "charon": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--abort-on-error",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/A/snapshot.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-A.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "A:charon",
+        "stderr": "",
+        "stdout": ""
+      },
+      "lean_files": {
+        "Funs.lean": {
+          "bytes": 1331,
+          "sha256": "807263e41d4e0f0b32e6daf74d6ba02985048d3088043b407c1674a7ef8d4447"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc": {
+        "files": [
+          {
+            "contents_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-A.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "id": 1,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "id": 2,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "id": 0,
+            "name": "snapshot_probe::step",
+            "source_span": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}"
+          },
+          {
+            "id": 1,
+            "name": "snapshot_probe::select",
+            "source_span": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 1,
+                "line": 10
+              },
+              "file_id": 0
+            },
+            "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}"
+          }
+        ],
+        "has_errors": false,
+        "sha256": "c0f36fd68ad9c6fa2796e1633089d8cef57db9214898bec28f3ddff765bfad00"
+      },
+      "rustc": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021",
+          "--emit",
+          "metadata",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/A/rustc.rmeta",
+          "--error-format=json",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-A.rs"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "A:rustc",
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "source-A.rs",
+      "source_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+    },
+    "charon-coroutine": {
+      "charon": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--abort-on-error",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/charon-coroutine/snapshot.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/charon-coroutine.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 101,
+        "label": "charon-coroutine:charon",
+        "stderr": "warning: Coroutine types are not supported yet\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/charon-coroutine.rs:3:1\n  |\n3 | / pub async fn value() -> u32 {\n4 | |     7\n5 | | }\n  | |_^\n\n\nthread 'rustc' (27077118) panicked at src/errors.rs:261:13:\nCoroutine types are not supported yet\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nwarning: Thread panicked when extracting item `snapshot_probe::value`.\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/charon-coroutine.rs:3:1\n  |\n3 | pub async fn value() -> u32 {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (27077118) panicked at src/errors.rs:261:13:\nThread panicked when extracting item `snapshot_probe::value`.\nERROR Compilation panicked\n",
+        "stdout": ""
+      },
+      "llbc": null,
+      "rustc": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021",
+          "--emit",
+          "metadata",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/charon-coroutine/rustc.rmeta",
+          "--error-format=json",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/charon-coroutine.rs"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "charon-coroutine:rustc",
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "charon-coroutine.rs",
+      "source_sha256": "1b9c07cb320e1ff1b797b47a3de42decabe62b71c3e93954a3e321995501c666"
+    },
+    "deleted": {
+      "aeneas": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/deleted/lean",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/deleted/snapshot.llbc"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "deleted:aeneas",
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/deleted/snapshot.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/deleted/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/deleted/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/deleted/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.119996 seconds\n"
+      },
+      "charon": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--abort-on-error",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/deleted/snapshot.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-deleted.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "deleted:charon",
+        "stderr": "",
+        "stdout": ""
+      },
+      "lean_files": {
+        "Funs.lean": {
+          "bytes": 930,
+          "sha256": "fcff9343d255c5e4bf6b9b1c5e775345cbcd905c8b2ed33a93b52d06a163b930"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc": {
+        "files": [
+          {
+            "contents_sha256": "7b960853ae7c38165e73d617ee038d6ba68d69f1ad04e534a9acd6c256681ef2",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-deleted.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "id": 1,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "id": 2,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "id": 0,
+            "name": "snapshot_probe::step",
+            "source_span": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}"
+          }
+        ],
+        "has_errors": false,
+        "sha256": "295426232650a648f5bacac1014dded1aef11bed64b9e9470ba83459a76c62a7"
+      },
+      "rustc": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021",
+          "--emit",
+          "metadata",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/deleted/rustc.rmeta",
+          "--error-format=json",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-deleted.rs"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "deleted:rustc",
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "source-deleted.rs",
+      "source_sha256": "7b960853ae7c38165e73d617ee038d6ba68d69f1ad04e534a9acd6c256681ef2"
+    },
+    "rustc-error": {
+      "charon": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--abort-on-error",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/rustc-error/snapshot.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 2,
+        "label": "rustc-error:charon",
+        "stderr": "error[E0308]: mismatched types\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs:2:44\n  |\n2 | pub fn broken() -> u32 { let marker = \"🧪\"; marker }\n  |                    ---                      ^^^^^^ expected `u32`, found `&str`\n  |                    |\n  |                    expected `u32` because of return type\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\nERROR Code failed to compile\n",
+        "stdout": ""
+      },
+      "llbc": null,
+      "rustc": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021",
+          "--emit",
+          "metadata",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/rustc-error/rustc.rmeta",
+          "--error-format=json",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 1,
+        "label": "rustc-error:rustc",
+        "stderr": "{\"$message_type\":\"diagnostic\",\"message\":\"mismatched types\",\"code\":{\"code\":\"E0308\",\"explanation\":\"Expected type did not match the received type.\\n\\nErroneous code examples:\\n\\n```compile_fail,E0308\\nfn plus_one(x: i32) -> i32 {\\n    x + 1\\n}\\n\\nplus_one(\\\"Not a number\\\");\\n//       ^^^^^^^^^^^^^^ expected `i32`, found `&str`\\n\\nif \\\"Not a bool\\\" {\\n// ^^^^^^^^^^^^ expected `bool`, found `&str`\\n}\\n\\nlet x: f32 = \\\"Not a float\\\";\\n//     ---   ^^^^^^^^^^^^^ expected `f32`, found `&str`\\n//     |\\n//     expected due to this\\n```\\n\\nThis error occurs when an expression was used in a place where the compiler\\nexpected an expression of a different type. It can occur in several cases, the\\nmost common being when calling a function and passing an argument which has a\\ndifferent type than the matching type in the function declaration.\\n\"},\"level\":\"error\",\"spans\":[{\"file_name\":\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs\",\"byte_start\":67,\"byte_end\":73,\"line_start\":2,\"line_end\":2,\"column_start\":44,\"column_end\":50,\"is_primary\":true,\"text\":[{\"text\":\"pub fn broken() -> u32 { let marker = \\\"🧪\\\"; marker }\",\"highlight_start\":44,\"highlight_end\":50}],\"label\":\"expected `u32`, found `&str`\",\"suggested_replacement\":null,\"suggestion_applicability\":null,\"expansion\":null},{\"file_name\":\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs\",\"byte_start\":40,\"byte_end\":43,\"line_start\":2,\"line_end\":2,\"column_start\":20,\"column_end\":23,\"is_primary\":false,\"text\":[{\"text\":\"pub fn broken() -> u32 { let marker = \\\"🧪\\\"; marker }\",\"highlight_start\":20,\"highlight_end\":23}],\"label\":\"expected `u32` because of return type\",\"suggested_replacement\":null,\"suggestion_applicability\":null,\"expansion\":null}],\"children\":[],\"rendered\":\"error[E0308]: mismatched types\\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-rustc-error.rs:2:44\\n  |\\n2 | pub fn broken() -> u32 { let marker = \\\"🧪\\\"; marker }\\n  |                    ---                      ^^^^^^ expected `u32`, found `&str`\\n  |                    |\\n  |                    expected `u32` because of return type\\n\\n\"}\n{\"$message_type\":\"diagnostic\",\"message\":\"aborting due to 1 previous error\",\"code\":null,\"level\":\"error\",\"spans\":[],\"children\":[],\"rendered\":\"error: aborting due to 1 previous error\\n\\n\"}\n{\"$message_type\":\"diagnostic\",\"message\":\"For more information about this error, try `rustc --explain E0308`.\",\"code\":null,\"level\":\"failure-note\",\"spans\":[],\"children\":[],\"rendered\":\"For more information about this error, try `rustc --explain E0308`.\\n\"}\n",
+        "stdout": ""
+      },
+      "source": "source-rustc-error.rs",
+      "source_sha256": "4e8272f25524a7800585bceaae51e1d49224c344d11a10c091d243c78bc2d440"
+    },
+    "unsupported": {
+      "aeneas": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/unsupported/lean",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/unsupported/snapshot.llbc"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 1,
+        "label": "unsupported:aeneas",
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/unsupported/snapshot.llbc\n[\u001b[91mError\u001b[39m] Aeneas does not yet support dereferencing raw pointers.\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-unsupported.rs', lines 5:4-5:8\n[\u001b[93mWarn\u001b[39m ] Could not translate the body of function 'snapshot_probe::read_raw because of previous error\nName pattern: 'snapshot_probe::read_raw'\nDefinition span: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-unsupported.rs', lines 3:0-6:1\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-unsupported.rs', lines 5:4-5:8\nCompiler source: interp/Interp.ml, line 550\n\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/unsupported/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/unsupported/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/unsupported/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.108353 seconds\n"
+      },
+      "charon": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--abort-on-error",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/unsupported/snapshot.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-unsupported.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "unsupported:charon",
+        "stderr": "",
+        "stdout": ""
+      },
+      "lean_files": {
+        "Funs.lean": {
+          "bytes": 923,
+          "sha256": "b8c579b5721ec5fa31f5d2159a1fe2adc7e9b311624798ba85c8cb2c88a6b2c3"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "llbc": {
+        "files": [
+          {
+            "contents_sha256": "0539e02f5f6f6a7adb1d1af5b21d47be8f78556a89a87f5819ccd5623cda66f8",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-unsupported.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "id": 0,
+            "name": "snapshot_probe::read_raw",
+            "source_span": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "source_text": "pub unsafe fn read_raw(ptr: *const u32) -> u32 {\n    // This is deliberately unsupported by the selected Aeneas path.\n    *ptr\n}"
+          }
+        ],
+        "has_errors": false,
+        "sha256": "e538e0854d6ca469bead4b79fd1b9e53817325ae4384a6c8bef665647b9af5db"
+      },
+      "rustc": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021",
+          "--emit",
+          "metadata",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/unsupported/rustc.rmeta",
+          "--error-format=json",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-unsupported.rs"
+        ],
+        "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support",
+        "exit_code": 0,
+        "label": "unsupported:rustc",
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "source-unsupported.rs",
+      "source_sha256": "0539e02f5f6f6a7adb1d1af5b21d47be8f78556a89a87f5819ccd5623cda66f8"
+    }
+  },
+  "environment": {
+    "aeneas_lean_library_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean",
+    "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+    "fixture_hashes": {
+      "Proof-error.lean": {
+        "bytes": 73,
+        "sha256": "bfdad78c368e8aba840a08b5ad69a49ece8683e644a1b4ebab6b4f07f6fddb64"
+      },
+      "charon-coroutine.rs": {
+        "bytes": 60,
+        "sha256": "1b9c07cb320e1ff1b797b47a3de42decabe62b71c3e93954a3e321995501c666"
+      },
+      "source-A.rs": {
+        "bytes": 198,
+        "sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+      },
+      "source-deleted.rs": {
+        "bytes": 108,
+        "sha256": "7b960853ae7c38165e73d617ee038d6ba68d69f1ad04e534a9acd6c256681ef2"
+      },
+      "source-rustc-error.rs": {
+        "bytes": 76,
+        "sha256": "4e8272f25524a7800585bceaae51e1d49224c344d11a10c091d243c78bc2d440"
+      },
+      "source-unsupported.rs": {
+        "bytes": 151,
+        "sha256": "0539e02f5f6f6a7adb1d1af5b21d47be8f78556a89a87f5819ccd5623cda66f8"
+      }
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "project_lean_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/Cli/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/batteries/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/Qq/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/aesop/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/importGraph/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/plausible/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/mathlib/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "script_sha256": "53980c7ec8d3e3dc14cdc3b91404cfb63f41c62ab34e80e0a2c4fb5cb3122114",
+    "tools": {
+      "aeneas": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      },
+      "charon": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      },
+      "lean": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      },
+      "rustc": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    }
+  },
+  "lean_batch": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check",
+    "exit_code": 1,
+    "label": "proof:lean-json",
+    "stderr": "",
+    "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  1\\nis not definitionally equal to the right-hand side\\n  2\\n\\n⊢ 1 = 2\",\"endPos\":{\"column\":13,\"line\":4},\"fileName\":\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":10,\"line\":4},\"severity\":\"error\"}\n"
+  },
+  "lean_build": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Snapshot/Types.olean",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Snapshot/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check",
+      "exit_code": 0,
+      "label": "Types:lean-build",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Snapshot/Funs.olean",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Snapshot/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check",
+      "exit_code": 0,
+      "label": "Funs:lean-build",
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "lean_server": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--server"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check",
+    "env_LEAN_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/Cli/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/batteries/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/Qq/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/aesop/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/importGraph/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/plausible/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/mathlib/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check",
+    "exit_code": 0,
+    "initialize": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    },
+    "messages": [
+      {
+        "direction": "client",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "initialize",
+          "params": {
+            "capabilities": {},
+            "initializationOptions": {
+              "hasWidgets": false
+            },
+            "processId": 46019,
+            "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "initialized",
+          "params": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didOpen",
+          "params": {
+            "textDocument": {
+              "languageId": "lean",
+              "text": "import Snapshot.Funs\n\ntheorem bad : (1 : Nat) = 2 := by\n  /- 🧪 -/ rfl\n",
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "method": "client/registerCapability",
+          "params": {
+            "registrations": [
+              {
+                "id": "lean_watcher",
+                "method": "workspace/didChangeWatchedFiles",
+                "registerOptions": {
+                  "watchers": [
+                    {
+                      "globPattern": "**/*.lean"
+                    },
+                    {
+                      "globPattern": "**/*.ilean"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 0,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 11,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 11,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 11,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 11,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 11,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 11,
+                    "line": 3
+                  }
+                },
+                "message": "Tactic `rfl` failed: The left-hand side\n  1\nis not definitionally equal to the right-hand side\n  2\n\n⊢ 1 = 2",
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 11,
+                    "line": 3
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 4
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 4
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "method": "shutdown",
+          "params": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/artifacts/lean-check/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "exit"
+        }
+      }
+    ],
+    "settled": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "source_sha256": "bfdad78c368e8aba840a08b5ad69a49ece8683e644a1b4ebab6b4f07f6fddb64",
+    "stderr": ""
+  }
+}

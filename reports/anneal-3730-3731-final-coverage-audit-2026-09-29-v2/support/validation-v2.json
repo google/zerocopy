@@ -1,0 +1,54 @@
+{
+  "snapshot_utc": "2026-09-29 09:06 UTC",
+  "issue_3730_state": "closed",
+  "issue_3731_state": "open",
+  "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+  "issue_3730_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+  "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+  "issue_3731_comment_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+  "investigation_rows": 159,
+  "investigation_statuses": {
+    "partial": 145,
+    "not-run": 9,
+    "complete": 2,
+    "conditional": 3
+  },
+  "crosswalk_rows": 174,
+  "crosswalk_statuses": {
+    "partial": 141,
+    "not-run": 25,
+    "complete": 4,
+    "conditional": 4
+  },
+  "complete_investigations": [
+    "I046",
+    "I049"
+  ],
+  "complete_suggestions": [
+    "C03",
+    "C04",
+    "C13",
+    "N11"
+  ],
+  "new_package_count": 11,
+  "new_packages": [
+    "anneal-3730-annotation-subject-boundary-matrix-2026-09-29",
+    "anneal-3730-charon-concurrency-interruption-2026-09-29",
+    "anneal-3730-charon-warm-target-controls-2026-09-29",
+    "anneal-3730-identity-state-mutation-model-2026-09-29",
+    "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2",
+    "anneal-3730-lake-writer-recovery-2026-09-29",
+    "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+    "anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+    "anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29",
+    "anneal-3730-real-lean-filesystem-lifetimes-2026-09-29",
+    "anneal-3730-upstream-api-projection-precedents-2026-09-29"
+  ],
+  "new_inspected_file_count": 695,
+  "new_inspected_bytes": 11563045,
+  "source_prior_investigation_sha256": "0ccd02a668cb7c2edea09408d299e4667d758cacfa728f90637432a62decd5db",
+  "source_prior_crosswalk_sha256": "e32bf5febb2c64bf4c52f4816bfeeefac0b7636ba15e541d1672e0e66c83a08c",
+  "suite_rows": 18,
+  "remaining_locally_executable_suites": 7,
+  "gate_groups": 7
+}

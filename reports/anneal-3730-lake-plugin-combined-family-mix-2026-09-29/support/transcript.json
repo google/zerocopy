@@ -1,0 +1,4262 @@
+[
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--version"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work",
+    "kind": "command",
+    "label": "version",
+    "rc": 0,
+    "seconds": 0.027,
+    "stderr": "",
+    "stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n"
+  },
+  {
+    "argv": [
+      "uname",
+      "-a"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work",
+    "kind": "command",
+    "label": "uname",
+    "rc": 0,
+    "seconds": 0.003,
+    "stderr": "",
+    "stdout": "Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64\n"
+  },
+  {
+    "kind": "subject",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "uname": "Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64",
+    "version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/producer",
+    "kind": "command",
+    "label": "build-v1",
+    "rc": 0,
+    "seconds": 1.459,
+    "stderr": "info: plugin_probe: no previous manifest, creating one from scratch\n",
+    "stdout": "\u2714 [2/6] Built Dep (663ms)\n\u2714 [4/6] Built Plugin (608ms)\n\u2714 [5/6] Built Plugin:c.o (46ms)\n\u2714 [6/6] Built Plugin:dynlib (45ms)\nBuild completed successfully (6 jobs).\n"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer",
+    "kind": "command",
+    "label": "setup-v1",
+    "rc": 0,
+    "seconds": 0.15,
+    "stderr": "info: probe_app: no previous manifest, creating one from scratch\n",
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib\",\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean/libLake_shared.dylib\"]}\n"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/producer",
+    "kind": "command",
+    "label": "build-v2",
+    "rc": 0,
+    "seconds": 1.471,
+    "stderr": "info: plugin_probe: no previous manifest, creating one from scratch\n",
+    "stdout": "\u2714 [2/6] Built Dep (623ms)\n\u2714 [4/6] Built Plugin (604ms)\n\u2714 [5/6] Built Plugin:c.o (46ms)\n\u2714 [6/6] Built Plugin:dynlib (44ms)\nBuild completed successfully (6 jobs).\n"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer",
+    "kind": "command",
+    "label": "setup-v2",
+    "rc": 0,
+    "seconds": 0.158,
+    "stderr": "info: probe_app: no previous manifest, creating one from scratch\n",
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{\"pp.universes\":true},\"plugins\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib\",\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean/libLake_shared.dylib\"]}\n"
+  },
+  {
+    "artifacts": {
+      "c": {
+        "bytes": 15625,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/producer/.lake/build/ir/Dep.c",
+        "sha256": "9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3"
+      },
+      "ilean": {
+        "bytes": 432,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/producer/.lake/build/lib/lean/Dep.ilean",
+        "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+      },
+      "olean": {
+        "bytes": 46504,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/producer/.lake/build/lib/lean/Dep.olean",
+        "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+      },
+      "plugin": {
+        "bytes": 51120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+        "sha256": "5418363ec3b0d09e2cf5d8d058d088d9642da848531fb399cce6f863f2b63d3a"
+      },
+      "setup": {
+        "bytes": 117,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/lakefile.toml",
+        "sha256": "ea76ca3112be61b05e2209991f6fbe33d56df85394d4779928ef5d5eaa982af6"
+      },
+      "source": {
+        "bytes": 120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/producer/Dep.lean",
+        "sha256": "cbed218a5d55d82b23aef58c4be47e477fe71eca71e14c250804b1d15d5483af"
+      }
+    },
+    "kind": "inventory",
+    "label": "v1"
+  },
+  {
+    "artifacts": {
+      "c": {
+        "bytes": 15625,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/producer/.lake/build/ir/Dep.c",
+        "sha256": "cddb20d2857b7998332e77a26aebac9123bbbec3f59814704fd4a6ed1a36ce18"
+      },
+      "ilean": {
+        "bytes": 432,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/producer/.lake/build/lib/lean/Dep.ilean",
+        "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+      },
+      "olean": {
+        "bytes": 46408,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/producer/.lake/build/lib/lean/Dep.olean",
+        "sha256": "82056aa6634611238637e5c3d5dc166a1d0abc359ee14f61f2a12d5a541e8fd8"
+      },
+      "plugin": {
+        "bytes": 51120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+        "sha256": "7e7f461e977f5f4cd22c6151ebeb3096fe40f08116e954527dce923ea6e01968"
+      },
+      "setup": {
+        "bytes": 171,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/lakefile.toml",
+        "sha256": "661b56f25c6373114a18b14570d13f5c9c55b91ff27b02bbbdfd7977644661e7"
+      },
+      "source": {
+        "bytes": 120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/producer/Dep.lean",
+        "sha256": "1ac5f77ce3d4a0e13e52e4af0cbb791a48471c99b5e8873d4bf04475661a65d1"
+      }
+    },
+    "kind": "inventory",
+    "label": "v2"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer",
+    "kind": "command",
+    "label": "batch-v1",
+    "rc": 0,
+    "seconds": 0.661,
+    "stderr": "",
+    "stdout": "7\n"
+  },
+  {
+    "kind": "batch_outcome",
+    "label": "v1",
+    "rc": 0,
+    "stdout": "7\n"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "serve"
+    ],
+    "kind": "server_start",
+    "label": "v1",
+    "pid": 74670
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "initialize",
+      "params": {
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        },
+        "processId": 74647,
+        "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer"
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "languageId": "lean",
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n",
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "$/lean/plainGoal",
+      "params": {
+        "position": {
+          "character": 3,
+          "line": 2
+        },
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean"
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v1",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "diagnostics": [
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v1/consumer/Proof.lean",
+        "version": 1
+      }
+    ],
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "initialize": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    },
+    "kind": "server_outcome",
+    "label": "v1",
+    "marker": "plugin-v1",
+    "rc": 0,
+    "stderr": "",
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer",
+    "kind": "command",
+    "label": "batch-v2",
+    "rc": 0,
+    "seconds": 0.64,
+    "stderr": "",
+    "stdout": "9\n"
+  },
+  {
+    "kind": "batch_outcome",
+    "label": "v2",
+    "rc": 0,
+    "stdout": "9\n"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "serve"
+    ],
+    "kind": "server_start",
+    "label": "v2",
+    "pid": 74677
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "initialize",
+      "params": {
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        },
+        "processId": 74647,
+        "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer"
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "languageId": "lean",
+          "text": "import Dep\ntheorem checked : selected = 9 := by\n  probe_tac\n#eval selected\n",
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "$/lean/plainGoal",
+      "params": {
+        "position": {
+          "character": 3,
+          "line": 2
+        },
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean"
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "v2",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "client",
+    "label": "v2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "diagnostics": [
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/v2/consumer/Proof.lean",
+        "version": 1
+      }
+    ],
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "initialize": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    },
+    "kind": "server_outcome",
+    "label": "v2",
+    "marker": "plugin-v2",
+    "rc": 0,
+    "stderr": "",
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "artifacts": {
+      "c": {
+        "bytes": 15625,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/ir/Dep.c",
+        "sha256": "cddb20d2857b7998332e77a26aebac9123bbbec3f59814704fd4a6ed1a36ce18"
+      },
+      "ilean": {
+        "bytes": 432,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/Dep.ilean",
+        "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+      },
+      "olean": {
+        "bytes": 46504,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/Dep.olean",
+        "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+      },
+      "plugin": {
+        "bytes": 51120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+        "sha256": "7e7f461e977f5f4cd22c6151ebeb3096fe40f08116e954527dce923ea6e01968"
+      },
+      "setup": {
+        "bytes": 171,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/lakefile.toml",
+        "sha256": "661b56f25c6373114a18b14570d13f5c9c55b91ff27b02bbbdfd7977644661e7"
+      },
+      "source": {
+        "bytes": 120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/Dep.lean",
+        "sha256": "cbed218a5d55d82b23aef58c4be47e477fe71eca71e14c250804b1d15d5483af"
+      }
+    },
+    "kind": "inventory",
+    "label": "mix-before"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer",
+    "kind": "command",
+    "label": "setup-mix",
+    "rc": 0,
+    "seconds": 0.141,
+    "stderr": "",
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{\"pp.universes\":true},\"plugins\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib\",\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean/libLake_shared.dylib\"]}\n"
+  },
+  {
+    "kind": "setup_json",
+    "label": "mix",
+    "parsed": {
+      "dynlibs": [],
+      "importArts": {
+        "Dep": [
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/Dep.olean"
+        ]
+      },
+      "isModule": false,
+      "name": "_unknown",
+      "options": {
+        "pp.universes": true
+      },
+      "plugins": [
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean/libLake_shared.dylib"
+      ]
+    }
+  },
+  {
+    "artifacts": {
+      "c": {
+        "bytes": 15625,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/ir/Dep.c",
+        "sha256": "cddb20d2857b7998332e77a26aebac9123bbbec3f59814704fd4a6ed1a36ce18"
+      },
+      "ilean": {
+        "bytes": 432,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/Dep.ilean",
+        "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+      },
+      "olean": {
+        "bytes": 46504,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/Dep.olean",
+        "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+      },
+      "plugin": {
+        "bytes": 51120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+        "sha256": "7e7f461e977f5f4cd22c6151ebeb3096fe40f08116e954527dce923ea6e01968"
+      },
+      "setup": {
+        "bytes": 171,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/lakefile.toml",
+        "sha256": "661b56f25c6373114a18b14570d13f5c9c55b91ff27b02bbbdfd7977644661e7"
+      },
+      "source": {
+        "bytes": 120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/Dep.lean",
+        "sha256": "cbed218a5d55d82b23aef58c4be47e477fe71eca71e14c250804b1d15d5483af"
+      }
+    },
+    "kind": "inventory",
+    "label": "mix-after-setup"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "serve"
+    ],
+    "kind": "server_start",
+    "label": "mix",
+    "pid": 74682
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "initialize",
+      "params": {
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        },
+        "processId": 74647,
+        "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer"
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "languageId": "lean",
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n",
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "$/lean/plainGoal",
+      "params": {
+        "position": {
+          "character": 3,
+          "line": 2
+        },
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean"
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "label": "mix",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "client",
+    "label": "mix",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "diagnostics": [
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/Proof.lean",
+        "version": 1
+      }
+    ],
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "initialize": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    },
+    "kind": "server_outcome",
+    "label": "mix",
+    "marker": "plugin-v2",
+    "rc": 0,
+    "stderr": "",
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "artifacts": {
+      "c": {
+        "bytes": 15625,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/ir/Dep.c",
+        "sha256": "cddb20d2857b7998332e77a26aebac9123bbbec3f59814704fd4a6ed1a36ce18"
+      },
+      "ilean": {
+        "bytes": 432,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/Dep.ilean",
+        "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+      },
+      "olean": {
+        "bytes": 46504,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/Dep.olean",
+        "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+      },
+      "plugin": {
+        "bytes": 51120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+        "sha256": "7e7f461e977f5f4cd22c6151ebeb3096fe40f08116e954527dce923ea6e01968"
+      },
+      "setup": {
+        "bytes": 171,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer/lakefile.toml",
+        "sha256": "661b56f25c6373114a18b14570d13f5c9c55b91ff27b02bbbdfd7977644661e7"
+      },
+      "source": {
+        "bytes": 120,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/producer/Dep.lean",
+        "sha256": "cbed218a5d55d82b23aef58c4be47e477fe71eca71e14c250804b1d15d5483af"
+      }
+    },
+    "kind": "inventory",
+    "label": "mix-after-server"
+  },
+  {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r21-work/mix/consumer",
+    "kind": "command",
+    "label": "batch-mix",
+    "rc": 0,
+    "seconds": 0.646,
+    "stderr": "",
+    "stdout": "7\n"
+  },
+  {
+    "kind": "batch_outcome",
+    "label": "mix",
+    "rc": 0,
+    "stdout": "7\n"
+  },
+  {
+    "inventory": {
+      "mix": {
+        "c": {
+          "bytes": 15625,
+          "sha256": "cddb20d2857b7998332e77a26aebac9123bbbec3f59814704fd4a6ed1a36ce18"
+        },
+        "ilean": {
+          "bytes": 432,
+          "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+        },
+        "olean": {
+          "bytes": 46504,
+          "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+        },
+        "plugin": {
+          "bytes": 51120,
+          "sha256": "7e7f461e977f5f4cd22c6151ebeb3096fe40f08116e954527dce923ea6e01968"
+        },
+        "proof": {
+          "bytes": 75,
+          "sha256": "b10e4c6b9c7ea3ce6253d4555055dfce6167eba042a952686c32cce486fe1470"
+        },
+        "setup": {
+          "bytes": 171,
+          "sha256": "661b56f25c6373114a18b14570d13f5c9c55b91ff27b02bbbdfd7977644661e7"
+        },
+        "source": {
+          "bytes": 120,
+          "sha256": "cbed218a5d55d82b23aef58c4be47e477fe71eca71e14c250804b1d15d5483af"
+        }
+      },
+      "v1": {
+        "c": {
+          "bytes": 15625,
+          "sha256": "9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3"
+        },
+        "ilean": {
+          "bytes": 432,
+          "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+        },
+        "olean": {
+          "bytes": 46504,
+          "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+        },
+        "plugin": {
+          "bytes": 51120,
+          "sha256": "5418363ec3b0d09e2cf5d8d058d088d9642da848531fb399cce6f863f2b63d3a"
+        },
+        "proof": {
+          "bytes": 75,
+          "sha256": "b10e4c6b9c7ea3ce6253d4555055dfce6167eba042a952686c32cce486fe1470"
+        },
+        "setup": {
+          "bytes": 117,
+          "sha256": "ea76ca3112be61b05e2209991f6fbe33d56df85394d4779928ef5d5eaa982af6"
+        },
+        "source": {
+          "bytes": 120,
+          "sha256": "cbed218a5d55d82b23aef58c4be47e477fe71eca71e14c250804b1d15d5483af"
+        }
+      },
+      "v2": {
+        "c": {
+          "bytes": 15625,
+          "sha256": "cddb20d2857b7998332e77a26aebac9123bbbec3f59814704fd4a6ed1a36ce18"
+        },
+        "ilean": {
+          "bytes": 432,
+          "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+        },
+        "olean": {
+          "bytes": 46408,
+          "sha256": "82056aa6634611238637e5c3d5dc166a1d0abc359ee14f61f2a12d5a541e8fd8"
+        },
+        "plugin": {
+          "bytes": 51120,
+          "sha256": "7e7f461e977f5f4cd22c6151ebeb3096fe40f08116e954527dce923ea6e01968"
+        },
+        "proof": {
+          "bytes": 75,
+          "sha256": "2eec0a5acdb977bc49ffb937672978f0ad285f0c7dd61612bc419ebf6e07c14a"
+        },
+        "setup": {
+          "bytes": 171,
+          "sha256": "661b56f25c6373114a18b14570d13f5c9c55b91ff27b02bbbdfd7977644661e7"
+        },
+        "source": {
+          "bytes": 120,
+          "sha256": "1ac5f77ce3d4a0e13e52e4af0cbb791a48471c99b5e8873d4bf04475661a65d1"
+        }
+      }
+    },
+    "kind": "retained"
+  }
+]

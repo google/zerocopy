@@ -1,0 +1,5843 @@
+[
+  {
+    "seq": 0,
+    "time_ms": 27.5,
+    "kind": "command",
+    "label": "memory-pressure",
+    "argv": [
+      "memory_pressure",
+      "-Q"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work",
+    "rc": 0,
+    "elapsed_ms": 3.5,
+    "stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 48%\n",
+    "stderr": ""
+  },
+  {
+    "seq": 1,
+    "time_ms": 54.5,
+    "kind": "command",
+    "label": "lean-version",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--version"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work",
+    "rc": 0,
+    "elapsed_ms": 26.4,
+    "stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+    "stderr": ""
+  },
+  {
+    "seq": 2,
+    "time_ms": 57.1,
+    "kind": "command",
+    "label": "uname",
+    "argv": [
+      "uname",
+      "-a"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work",
+    "rc": 0,
+    "elapsed_ms": 2.6,
+    "stdout": "Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64\n",
+    "stderr": ""
+  },
+  {
+    "seq": 3,
+    "time_ms": 57.1,
+    "kind": "subject",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "os": "Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64"
+  },
+  {
+    "seq": 4,
+    "time_ms": 3616.2,
+    "kind": "command",
+    "label": "build-seed-v1",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-v1",
+    "rc": 0,
+    "elapsed_ms": 3557.9,
+    "stdout": "\u2714 [2/6] Built Dep (1.0s)\n\u2714 [4/6] Built Plugin (611ms)\n\u2714 [5/6] Built Plugin:c.o (235ms)\n\u2714 [6/6] Built Plugin:dynlib (58ms)\nBuild completed successfully (6 jobs).\n",
+    "stderr": "info: plugin_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "seq": 5,
+    "time_ms": 3616.7,
+    "kind": "built",
+    "root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-v1",
+    "artifacts": {
+      "Dep.olean": {
+        "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2",
+        "bytes": 46504
+      },
+      "Dep.ilean": {
+        "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f",
+        "bytes": 432
+      },
+      "Dep.c": {
+        "sha256": "9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3",
+        "bytes": 15625
+      },
+      "plugin__probe_Plugin.dylib": {
+        "sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+        "bytes": 51120
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "time_ms": 5390.1,
+    "kind": "command",
+    "label": "build-seed-v2",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-v2",
+    "rc": 0,
+    "elapsed_ms": 1773.3,
+    "stdout": "\u2714 [2/6] Built Dep (633ms)\n\u2714 [4/6] Built Plugin (606ms)\n\u2714 [5/6] Built Plugin:c.o (49ms)\n\u2714 [6/6] Built Plugin:dynlib (48ms)\nBuild completed successfully (6 jobs).\n",
+    "stderr": "info: plugin_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "seq": 7,
+    "time_ms": 5390.7,
+    "kind": "built",
+    "root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-v2",
+    "artifacts": {
+      "Dep.olean": {
+        "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2",
+        "bytes": 46504
+      },
+      "Dep.ilean": {
+        "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f",
+        "bytes": 432
+      },
+      "Dep.c": {
+        "sha256": "9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3",
+        "bytes": 15625
+      },
+      "plugin__probe_Plugin.dylib": {
+        "sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+        "bytes": 51120
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "time_ms": 7082.6,
+    "kind": "command",
+    "label": "build-seed-alien",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien",
+    "rc": 0,
+    "elapsed_ms": 1690.8,
+    "stdout": "\u2714 [2/6] Built Dep (611ms)\n\u2714 [4/6] Built Plugin (605ms)\n\u2714 [5/6] Built Plugin:c.o (48ms)\n\u2714 [6/6] Built Plugin:dynlib (49ms)\nBuild completed successfully (6 jobs).\n",
+    "stderr": "info: plugin_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "seq": 9,
+    "time_ms": 7083.0,
+    "kind": "built",
+    "root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien",
+    "artifacts": {
+      "Dep.olean": {
+        "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2",
+        "bytes": 46504
+      },
+      "Dep.ilean": {
+        "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f",
+        "bytes": 432
+      },
+      "Dep.c": {
+        "sha256": "9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3",
+        "bytes": 15625
+      },
+      "plugin__probe_Plugin.dylib": {
+        "sha256": "cf0fe20a41e93afd63a4f05b309e0eeba2b924da568d2d34e3f27175af57e22f",
+        "bytes": 51120
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "time_ms": 8154.2,
+    "kind": "command",
+    "label": "build-alien",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "+Alien:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien",
+    "rc": 0,
+    "elapsed_ms": 1071.2,
+    "stdout": "\u2714 [2/4] Built Alien (600ms)\n\u2714 [3/4] Built Alien:c.o (47ms)\n\u2714 [4/4] Built Alien:dynlib (49ms)\nBuild completed successfully (4 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "seq": 11,
+    "time_ms": 8154.9,
+    "kind": "alien-binary",
+    "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/seed-alien/.lake/build/lib/lean/plugin__probe_Alien.dylib",
+    "sha256": "36444a43c5c5a9b0a4cb3d7f13d1e1922b13428afb30b858f746fccf142ea77b"
+  },
+  {
+    "seq": 12,
+    "time_ms": 8166.4,
+    "kind": "prune",
+    "family": "olean",
+    "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean/.lake/build/lib/lean/Dep.olean",
+    "prior_sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+  },
+  {
+    "seq": 13,
+    "time_ms": 8580.7,
+    "kind": "command",
+    "label": "no-build-olean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--no-build",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean",
+    "rc": 3,
+    "elapsed_ms": 414.3,
+    "stdout": "\u2716 [2/6] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+    "stderr": ""
+  },
+  {
+    "seq": 14,
+    "time_ms": 9275.5,
+    "kind": "command",
+    "label": "batch-before-setup-olean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean",
+    "rc": 1,
+    "elapsed_ms": 694.6,
+    "stdout": "Proof.lean:1:0: error: unknown module prefix 'Dep'\n\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean/.lake/build/lib/lean\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\n",
+    "stderr": ""
+  },
+  {
+    "seq": 15,
+    "time_ms": 9275.7,
+    "kind": "batch_outcome",
+    "label": "batch-before-setup-olean",
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 16,
+    "time_ms": 10230.3,
+    "kind": "command",
+    "label": "setup-olean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean",
+    "rc": 0,
+    "elapsed_ms": 954.5,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+    "stderr": "\u2714 [2/3] Built Dep (618ms)\n"
+  },
+  {
+    "seq": 17,
+    "time_ms": 11159.7,
+    "kind": "command",
+    "label": "batch-after-setup-olean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-olean",
+    "rc": 0,
+    "elapsed_ms": 929.3,
+    "stdout": "7\n",
+    "stderr": ""
+  },
+  {
+    "seq": 18,
+    "time_ms": 11159.9,
+    "kind": "batch_outcome",
+    "label": "batch-after-setup-olean",
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 19,
+    "time_ms": 11160.0,
+    "kind": "after-prune",
+    "family": "olean",
+    "restored": true,
+    "sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+  },
+  {
+    "seq": 20,
+    "time_ms": 11167.1,
+    "kind": "prune",
+    "family": "ilean",
+    "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-ilean/.lake/build/lib/lean/Dep.ilean",
+    "prior_sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+  },
+  {
+    "seq": 21,
+    "time_ms": 11576.9,
+    "kind": "command",
+    "label": "no-build-ilean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--no-build",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-ilean",
+    "rc": 3,
+    "elapsed_ms": 409.7,
+    "stdout": "\u2716 [2/6] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+    "stderr": ""
+  },
+  {
+    "seq": 22,
+    "time_ms": 12697.2,
+    "kind": "command",
+    "label": "batch-before-setup-ilean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-ilean/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-ilean",
+    "rc": 0,
+    "elapsed_ms": 1120.2,
+    "stdout": "7\n",
+    "stderr": ""
+  },
+  {
+    "seq": 23,
+    "time_ms": 12697.4,
+    "kind": "batch_outcome",
+    "label": "batch-before-setup-ilean",
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 24,
+    "time_ms": 13656.2,
+    "kind": "command",
+    "label": "setup-ilean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-ilean",
+    "rc": 0,
+    "elapsed_ms": 958.8,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-ilean/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+    "stderr": "\u2714 [2/3] Built Dep (613ms)\n"
+  },
+  {
+    "seq": 25,
+    "time_ms": 14557.5,
+    "kind": "command",
+    "label": "batch-after-setup-ilean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-ilean/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-ilean",
+    "rc": 0,
+    "elapsed_ms": 901.2,
+    "stdout": "7\n",
+    "stderr": ""
+  },
+  {
+    "seq": 26,
+    "time_ms": 14557.7,
+    "kind": "batch_outcome",
+    "label": "batch-after-setup-ilean",
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 27,
+    "time_ms": 14557.8,
+    "kind": "after-prune",
+    "family": "ilean",
+    "restored": true,
+    "sha256": "81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f"
+  },
+  {
+    "seq": 28,
+    "time_ms": 14564.6,
+    "kind": "prune",
+    "family": "c",
+    "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-c/.lake/build/ir/Dep.c",
+    "prior_sha256": "9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3"
+  },
+  {
+    "seq": 29,
+    "time_ms": 14976.0,
+    "kind": "command",
+    "label": "no-build-c",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--no-build",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-c",
+    "rc": 3,
+    "elapsed_ms": 411.4,
+    "stdout": "\u2716 [2/6] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+    "stderr": ""
+  },
+  {
+    "seq": 30,
+    "time_ms": 16101.2,
+    "kind": "command",
+    "label": "batch-before-setup-c",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-c/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-c",
+    "rc": 0,
+    "elapsed_ms": 1125.1,
+    "stdout": "7\n",
+    "stderr": ""
+  },
+  {
+    "seq": 31,
+    "time_ms": 16101.4,
+    "kind": "batch_outcome",
+    "label": "batch-before-setup-c",
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 32,
+    "time_ms": 17036.7,
+    "kind": "command",
+    "label": "setup-c",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-c",
+    "rc": 0,
+    "elapsed_ms": 935.3,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-c/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+    "stderr": "\u2714 [2/3] Built Dep (612ms)\n"
+  },
+  {
+    "seq": 33,
+    "time_ms": 17935.1,
+    "kind": "command",
+    "label": "batch-after-setup-c",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-c/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-c",
+    "rc": 0,
+    "elapsed_ms": 898.2,
+    "stdout": "7\n",
+    "stderr": ""
+  },
+  {
+    "seq": 34,
+    "time_ms": 17935.3,
+    "kind": "batch_outcome",
+    "label": "batch-after-setup-c",
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 35,
+    "time_ms": 17935.4,
+    "kind": "after-prune",
+    "family": "c",
+    "restored": true,
+    "sha256": "9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3"
+  },
+  {
+    "seq": 36,
+    "time_ms": 17942.6,
+    "kind": "prune",
+    "family": "dynlib",
+    "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+    "prior_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4"
+  },
+  {
+    "seq": 37,
+    "time_ms": 18353.8,
+    "kind": "command",
+    "label": "no-build-dynlib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--no-build",
+      "build",
+      "Dep",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib",
+    "rc": 3,
+    "elapsed_ms": 411.2,
+    "stdout": "\u2716 [6/6] Building Plugin:dynlib\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Plugin:dynlib\n",
+    "stderr": ""
+  },
+  {
+    "seq": 38,
+    "time_ms": 18692.4,
+    "kind": "command",
+    "label": "batch-before-setup-dynlib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib",
+    "rc": 1,
+    "elapsed_ms": 338.4,
+    "stdout": "",
+    "stderr": "error: no such file or directory (error code: 2)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib/.lake/build/lib/lean/plugin__probe_Plugin.dylib\n"
+  },
+  {
+    "seq": 39,
+    "time_ms": 18692.5,
+    "kind": "batch_outcome",
+    "label": "batch-before-setup-dynlib",
+    "marker": null
+  },
+  {
+    "seq": 40,
+    "time_ms": 19582.4,
+    "kind": "command",
+    "label": "batch-without-plugin-after-prune-dynlib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib",
+    "rc": 0,
+    "elapsed_ms": 889.9,
+    "stdout": "7\n",
+    "stderr": ""
+  },
+  {
+    "seq": 41,
+    "time_ms": 19582.5,
+    "kind": "batch_outcome",
+    "label": "batch-without-plugin-after-prune-dynlib",
+    "marker": null
+  },
+  {
+    "seq": 42,
+    "time_ms": 19995.5,
+    "kind": "command",
+    "label": "setup-dynlib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib",
+    "rc": 0,
+    "elapsed_ms": 412.9,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 43,
+    "time_ms": 20334.0,
+    "kind": "command",
+    "label": "batch-after-setup-dynlib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib",
+    "rc": 1,
+    "elapsed_ms": 338.4,
+    "stdout": "",
+    "stderr": "error: no such file or directory (error code: 2)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/prune-dynlib/.lake/build/lib/lean/plugin__probe_Plugin.dylib\n"
+  },
+  {
+    "seq": 44,
+    "time_ms": 20334.1,
+    "kind": "batch_outcome",
+    "label": "batch-after-setup-dynlib",
+    "marker": null
+  },
+  {
+    "seq": 45,
+    "time_ms": 20334.1,
+    "kind": "after-prune",
+    "family": "dynlib",
+    "restored": false,
+    "sha256": null
+  },
+  {
+    "seq": 46,
+    "time_ms": 20342.2,
+    "kind": "server_start",
+    "label": "old-loaded",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "--server"
+    ],
+    "pid": 58646
+  },
+  {
+    "seq": 47,
+    "time_ms": 20368.9,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 58581,
+        "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 48,
+    "time_ms": 20546.1,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 49,
+    "time_ms": 20546.1,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 50,
+    "time_ms": 20546.2,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 51,
+    "time_ms": 20546.3,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 52,
+    "time_ms": 20546.3,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 53,
+    "time_ms": 20546.3,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 54,
+    "time_ms": 20546.5,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 55,
+    "time_ms": 20787.3,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 56,
+    "time_ms": 20787.3,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 57,
+    "time_ms": 21017.1,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 58,
+    "time_ms": 21100.5,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 59,
+    "time_ms": 21100.5,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 0,
+      "result": null
+    }
+  },
+  {
+    "seq": 60,
+    "time_ms": 21605.2,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 61,
+    "time_ms": 21605.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 62,
+    "time_ms": 21606.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 63,
+    "time_ms": 21606.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 64,
+    "time_ms": 21606.4,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 65,
+    "time_ms": 21606.9,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 66,
+    "time_ms": 21607.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "time_ms": 21608.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 68,
+    "time_ms": 21608.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 69,
+    "time_ms": 21608.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 70,
+    "time_ms": 21608.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 71,
+    "time_ms": 21608.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 72,
+    "time_ms": 21608.9,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "time_ms": 21609.1,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "time_ms": 21609.1,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 75,
+    "time_ms": 21609.3,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 76,
+    "time_ms": 21609.3,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 77,
+    "time_ms": 21609.5,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 78,
+    "time_ms": 21609.7,
+    "kind": "phase",
+    "label": "old-before",
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+      "version": 1
+    },
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 79,
+    "time_ms": 21610.6,
+    "kind": "replace-plugin",
+    "old_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "new_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+    "old_marker": "plugin-v1"
+  },
+  {
+    "seq": 80,
+    "time_ms": 21610.7,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 81,
+    "time_ms": 21610.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 82,
+    "time_ms": 21610.9,
+    "kind": "old-goal-after",
+    "goal": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 83,
+    "time_ms": 21610.9,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 84,
+    "time_ms": 21611.0,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 85,
+    "time_ms": 21611.1,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 86,
+    "time_ms": 21627.4,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 87,
+    "time_ms": 21627.4,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": null
+    }
+  },
+  {
+    "seq": 88,
+    "time_ms": 22000.7,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "time_ms": 22000.7,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "time_ms": 22157.3,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 91,
+    "time_ms": 22157.3,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": null
+    }
+  },
+  {
+    "seq": 92,
+    "time_ms": 22249.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 93,
+    "time_ms": 22315.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 94,
+    "time_ms": 22315.8,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": null
+    }
+  },
+  {
+    "seq": 95,
+    "time_ms": 22660.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 96,
+    "time_ms": 22660.9,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": null
+    }
+  },
+  {
+    "seq": 97,
+    "time_ms": 22687.6,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 98,
+    "time_ms": 22687.6,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": null
+    }
+  },
+  {
+    "seq": 99,
+    "time_ms": 22845.9,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 100,
+    "time_ms": 22845.9,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "result": null
+    }
+  },
+  {
+    "seq": 101,
+    "time_ms": 22856.1,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 102,
+    "time_ms": 22856.7,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 103,
+    "time_ms": 22856.9,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 104,
+    "time_ms": 22857.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 105,
+    "time_ms": 22857.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 106,
+    "time_ms": 22858.2,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 107,
+    "time_ms": 22858.2,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 108,
+    "time_ms": 22858.6,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 109,
+    "time_ms": 22858.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 110,
+    "time_ms": 22858.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 111,
+    "time_ms": 22859.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 112,
+    "time_ms": 22859.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 113,
+    "time_ms": 22860.5,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "time_ms": 22860.6,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 115,
+    "time_ms": 22860.8,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 116,
+    "time_ms": 22860.9,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "time_ms": 22861.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 118,
+    "time_ms": 22861.1,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 119,
+    "time_ms": 22861.3,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 120,
+    "time_ms": 22861.5,
+    "kind": "phase",
+    "label": "old-process-new-worker",
+    "wait": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+      "version": 1
+    },
+    "marker": "plugin-v2"
+  },
+  {
+    "seq": 121,
+    "time_ms": 22861.6,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 122,
+    "time_ms": 22861.6,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 123,
+    "time_ms": 22862.5,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 124,
+    "time_ms": 22887.0,
+    "kind": "server",
+    "label": "old-loaded",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 125,
+    "time_ms": 22887.1,
+    "kind": "client",
+    "label": "old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 126,
+    "time_ms": 22897.6,
+    "kind": "server_stop",
+    "label": "old-loaded",
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 127,
+    "time_ms": 23804.5,
+    "kind": "command",
+    "label": "batch-fresh-after-replace",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live",
+    "rc": 0,
+    "elapsed_ms": 906.8,
+    "stdout": "7\n",
+    "stderr": ""
+  },
+  {
+    "seq": 128,
+    "time_ms": 23804.7,
+    "kind": "batch_outcome",
+    "label": "batch-fresh-after-replace",
+    "marker": "plugin-v2"
+  },
+  {
+    "seq": 129,
+    "time_ms": 23806.0,
+    "kind": "server_start",
+    "label": "fresh-after-replace",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "--server"
+    ],
+    "pid": 58653
+  },
+  {
+    "seq": 130,
+    "time_ms": 23806.1,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 58581,
+        "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "time_ms": 23832.9,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 132,
+    "time_ms": 23833.0,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 133,
+    "time_ms": 23833.1,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 134,
+    "time_ms": 23833.2,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "time_ms": 23833.2,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 136,
+    "time_ms": 23833.2,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 137,
+    "time_ms": 23833.4,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "time_ms": 24072.7,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 139,
+    "time_ms": 24072.8,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 140,
+    "time_ms": 24300.3,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 141,
+    "time_ms": 24391.6,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 142,
+    "time_ms": 24391.6,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 0,
+      "result": null
+    }
+  },
+  {
+    "seq": 143,
+    "time_ms": 24882.4,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 144,
+    "time_ms": 24882.4,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 145,
+    "time_ms": 24882.4,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 146,
+    "time_ms": 24882.4,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 147,
+    "time_ms": 24882.4,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 148,
+    "time_ms": 24882.5,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 149,
+    "time_ms": 24883.2,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 150,
+    "time_ms": 24883.3,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 151,
+    "time_ms": 24884.4,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 152,
+    "time_ms": 24884.5,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 153,
+    "time_ms": 24884.7,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 154,
+    "time_ms": 24884.7,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 155,
+    "time_ms": 24885.0,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 156,
+    "time_ms": 24885.1,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 157,
+    "time_ms": 24885.4,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 158,
+    "time_ms": 24885.5,
+    "kind": "phase",
+    "label": "fresh",
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+      "version": 1
+    },
+    "marker": "plugin-v2"
+  },
+  {
+    "seq": 159,
+    "time_ms": 24885.5,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 160,
+    "time_ms": 24885.6,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 161,
+    "time_ms": 24903.5,
+    "kind": "server",
+    "label": "fresh-after-replace",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 162,
+    "time_ms": 24903.5,
+    "kind": "client",
+    "label": "fresh-after-replace",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 163,
+    "time_ms": 24908.3,
+    "kind": "server_stop",
+    "label": "fresh-after-replace",
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 164,
+    "time_ms": 24917.9,
+    "kind": "server_start",
+    "label": "bad-abi-old-loaded",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "--server"
+    ],
+    "pid": 58656
+  },
+  {
+    "seq": 165,
+    "time_ms": 24918.0,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 58581,
+        "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 166,
+    "time_ms": 25125.7,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 167,
+    "time_ms": 25125.7,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 168,
+    "time_ms": 25126.1,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 169,
+    "time_ms": 25126.1,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 170,
+    "time_ms": 25126.1,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 171,
+    "time_ms": 25126.1,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 172,
+    "time_ms": 25126.3,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 173,
+    "time_ms": 25386.7,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 174,
+    "time_ms": 25386.7,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 175,
+    "time_ms": 25616.1,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 176,
+    "time_ms": 25690.3,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 177,
+    "time_ms": 25690.3,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 0,
+      "result": null
+    }
+  },
+  {
+    "seq": 178,
+    "time_ms": 26197.8,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 179,
+    "time_ms": 26198.3,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 180,
+    "time_ms": 26198.5,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 181,
+    "time_ms": 26198.6,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 182,
+    "time_ms": 26198.6,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 183,
+    "time_ms": 26199.1,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 184,
+    "time_ms": 26199.5,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 185,
+    "time_ms": 26199.7,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 186,
+    "time_ms": 26199.8,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 187,
+    "time_ms": 26200.1,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 188,
+    "time_ms": 26200.2,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 189,
+    "time_ms": 26200.2,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 190,
+    "time_ms": 26200.3,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 191,
+    "time_ms": 26200.3,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 192,
+    "time_ms": 26201.6,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 193,
+    "time_ms": 26201.8,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 194,
+    "time_ms": 26202.0,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 195,
+    "time_ms": 26202.0,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 196,
+    "time_ms": 26202.4,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 197,
+    "time_ms": 26202.5,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 198,
+    "time_ms": 26202.7,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 199,
+    "time_ms": 26202.9,
+    "kind": "phase",
+    "label": "bad-abi-before",
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+      "version": 1
+    },
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 200,
+    "time_ms": 26203.9,
+    "kind": "replace-bad-abi",
+    "old_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "new_sha256": "36444a43c5c5a9b0a4cb3d7f13d1e1922b13428afb30b858f746fccf142ea77b",
+    "old_marker": "plugin-v1"
+  },
+  {
+    "seq": 201,
+    "time_ms": 26204.0,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 202,
+    "time_ms": 26204.1,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 203,
+    "time_ms": 26204.2,
+    "kind": "bad-abi-old-goal-after",
+    "goal": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 204,
+    "time_ms": 26204.2,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/New.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 205,
+    "time_ms": 26204.2,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 206,
+    "time_ms": 26204.5,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 207,
+    "time_ms": 26208.7,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 208,
+    "time_ms": 26208.7,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": null
+    }
+  },
+  {
+    "seq": 209,
+    "time_ms": 26386.6,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "error": {
+        "code": -32901,
+        "message": "Server process for file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/New.lean crashed, see stderr for exception."
+      },
+      "id": 13,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 210,
+    "time_ms": 26386.7,
+    "kind": "phase",
+    "label": "bad-abi-new-worker",
+    "wait": {
+      "error": {
+        "code": -32901,
+        "message": "Server process for file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/New.lean crashed, see stderr for exception."
+      },
+      "id": 13,
+      "jsonrpc": "2.0"
+    },
+    "goal": null,
+    "diagnostics": null,
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 211,
+    "time_ms": 26386.8,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 212,
+    "time_ms": 26386.8,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 2,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 213,
+    "time_ms": 26386.9,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 214,
+    "time_ms": 26388.3,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 215,
+    "time_ms": 26407.5,
+    "kind": "server",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 216,
+    "time_ms": 26407.5,
+    "kind": "client",
+    "label": "bad-abi-old-loaded",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 217,
+    "time_ms": 26412.1,
+    "kind": "server_stop",
+    "label": "bad-abi-old-loaded",
+    "rc": 0,
+    "stderr": "error: error loading plugin, initializer not found 'initialize_plugin__probe_Plugin'\n"
+  },
+  {
+    "seq": 218,
+    "time_ms": 26743.4,
+    "kind": "command",
+    "label": "batch-fresh-bad-abi",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/bad-abi-live",
+    "rc": 1,
+    "elapsed_ms": 331.3,
+    "stdout": "",
+    "stderr": "error: error loading plugin, initializer not found 'initialize_plugin__probe_Plugin'\n"
+  },
+  {
+    "seq": 219,
+    "time_ms": 26743.6,
+    "kind": "batch_outcome",
+    "label": "batch-fresh-bad-abi",
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 220,
+    "time_ms": 27075.9,
+    "kind": "command",
+    "label": "batch-invalid-dylib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/corrupt/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/corrupt",
+    "rc": 1,
+    "elapsed_ms": 325.0,
+    "stdout": "",
+    "stderr": "error: error loading library, dlopen(/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/corrupt/.lake/build/lib/lean/plugin__probe_Plugin.dylib, 0x0009): tried: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean/plugin__probe_Plugin.dylib' (no such file), '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/plugin__probe_Plugin.dylib' (no such file), '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/corrupt/.lake/build/lib/plugin__probe_Plugin.dylib' (no such file), '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/corrupt/.lake/build/lib/lean/plugin__probe_Plugin.dylib' (slice is not valid mach-o file), '/System/Volumes/Preboot/Cryptexes/OS/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/corrupt/.lake/build/lib/lean/plugin__probe_Plugin.dylib' (no such file), '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/corrupt/.lake/build/lib/lean/plugin__probe_Plugin.dylib' (slice is not valid mach-o file)\n"
+  },
+  {
+    "seq": 221,
+    "time_ms": 27076.0,
+    "kind": "batch_outcome",
+    "label": "batch-invalid-dylib",
+    "marker": null
+  },
+  {
+    "seq": 222,
+    "time_ms": 27431.8,
+    "kind": "command",
+    "label": "batch-missing-dylib",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/missing/.lake/build/lib/lean/plugin__probe_Plugin.dylib",
+      "Proof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/missing",
+    "rc": 1,
+    "elapsed_ms": 349.0,
+    "stdout": "",
+    "stderr": "error: no such file or directory (error code: 2)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2/support/work/missing/.lake/build/lib/lean/plugin__probe_Plugin.dylib\n"
+  },
+  {
+    "seq": 223,
+    "time_ms": 27431.9,
+    "kind": "batch_outcome",
+    "label": "batch-missing-dylib",
+    "marker": null
+  }
+]

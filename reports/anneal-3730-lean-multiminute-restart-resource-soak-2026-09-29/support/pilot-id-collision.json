@@ -1,0 +1,8587 @@
+[
+  {
+    "seq": 0,
+    "ms": 39.3,
+    "kind": "subject",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "host": {
+      "memory_bytes": 8589934592,
+      "free_start": 50,
+      "swap_start": "vm.swapusage: total = 2048.00M  used = 682.38M  free = 1365.62M  (encrypted)",
+      "df": "Filesystem   1024-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1   239362496 152163856  53529584    74%    /System/Volumes/Data\n"
+    },
+    "limits": {
+      "rss": 3355443200,
+      "disk": 31457280,
+      "free": 30,
+      "processes": 6,
+      "seconds": 210
+    }
+  },
+  {
+    "seq": 1,
+    "ms": 221.8,
+    "kind": "compile",
+    "root": "A",
+    "value": 11,
+    "source_sha256": "b4313e13071af7cbf4771ea492d3ac497be251b1f99b655824ad367790ee0471",
+    "olean_sha256": "b829d5b0080dde9fe22b17c8455d7581eee66547fff7bfc6202eac86a27ad099",
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 2,
+    "ms": 391.4,
+    "kind": "compile",
+    "root": "B",
+    "value": 22,
+    "source_sha256": "d2142b6aab604f810f9544c3c25c50b02f3291e3b65d16654afbbaa775b3b057",
+    "olean_sha256": "d28d66bfd0de6d147728317192e991fd208925fdcddb5e0f293b57a33bbc230b",
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 3,
+    "ms": 392.6,
+    "kind": "start",
+    "label": "A-1",
+    "pid": 70142,
+    "lean_path": "$WORK/A"
+  },
+  {
+    "seq": 4,
+    "ms": 416.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 70134,
+        "rootUri": "$WORK_URI/A",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 5,
+    "ms": 421.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "ms": 421.1,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 7,
+    "ms": 421.4,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 0\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "ms": 421.4,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "ms": 422.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 422.4,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 11,
+    "ms": 423.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "ms": 481.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "ms": 662.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 662.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 15,
+    "ms": 663.0,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 663.3,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 663.3,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 10,
+    "elapsed_ms": 241.8
+  },
+  {
+    "seq": 18,
+    "ms": 663.3,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 664.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 664.7,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 11,
+    "elapsed_ms": 1.4
+  },
+  {
+    "seq": 21,
+    "ms": 664.7,
+    "kind": "open_sentinel",
+    "label": "A-1",
+    "file": 0,
+    "base": 11,
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 8,
+              "line": 4
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 8,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 35,
+              "line": 3
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 4
+            },
+            "start": {
+              "character": 35,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Proof0.lean",
+      "version": 1
+    },
+    "sha256": "57d5b55889db098a84a8b5dabf4aebc4504033127343ef0c0a10229e0c4b512e"
+  },
+  {
+    "seq": 22,
+    "ms": 689.2,
+    "kind": "guard",
+    "phase": "A-1-open-0",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 462880768,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 75874304,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 387006464,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 51,
+    "violations": []
+  },
+  {
+    "seq": 23,
+    "ms": 689.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean"
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 689.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "8936345125267610173"
+      }
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 689.5,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/connect",
+    "id": 12,
+    "elapsed_ms": 0.4
+  },
+  {
+    "seq": 26,
+    "ms": 689.6,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "8936345125267610173",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/A/Proof0.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 8
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 690.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "4"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.99.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.99.3",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "1"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "2"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "text": "n"
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "3"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "11"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "ms": 690.2,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/call",
+    "id": 13,
+    "elapsed_ms": 0.7
+  },
+  {
+    "seq": 29,
+    "ms": 690.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "8936345125267610173",
+        "method": "Lean.Widget.InteractiveDiagnostics.infoToInteractive",
+        "params": {
+          "p": "0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "ms": 691.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+        "exprExplicit": {
+          "text": "Nat"
+        },
+        "type": {
+          "tag": [
+            {
+              "info": {
+                "p": "5"
+              },
+              "subexprPos": "/"
+            },
+            {
+              "text": "Type"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 691.2,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/call",
+    "id": 14,
+    "elapsed_ms": 0.9
+  },
+  {
+    "seq": 32,
+    "ms": 691.2,
+    "kind": "rpc_start",
+    "label": "A-1",
+    "session": "8936345125267610173",
+    "reference": {
+      "p": "0"
+    },
+    "popup": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+        "exprExplicit": {
+          "text": "Nat"
+        },
+        "type": {
+          "tag": [
+            {
+              "info": {
+                "p": "5"
+              },
+              "subexprPos": "/"
+            },
+            {
+              "text": "Type"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 807.7,
+    "kind": "resource",
+    "label": "A-1",
+    "phase": "stable",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 464240640,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 76972032,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 387268608,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "footprints": [
+      {
+        "pid": 70142,
+        "rc": 0,
+        "value_bytes": 41371904,
+        "stdout": "======================================================================\nlean [70142]: 64-bit    Footprint: 42207488 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 41371904 B\n    phys_footprint_peak: 41371904 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 70143,
+        "rc": 0,
+        "value_bytes": 80058176,
+        "stdout": "======================================================================\nlean [70143]: 64-bit    Footprint: 80041792 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 80058176 B\n    phys_footprint_peak: 80140224 B\n\n",
+        "stderr": ""
+      }
+    ],
+    "free_percent": 51,
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 807.8,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 1\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 807.8,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "ms": 980.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 1019.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 1019.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 1019.3,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "ms": 1019.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 41,
+    "ms": 1019.4,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 15,
+    "elapsed_ms": 211.6
+  },
+  {
+    "seq": 42,
+    "ms": 1019.4,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "ms": 1019.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "ms": 1019.8,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 16,
+    "elapsed_ms": 0.4
+  },
+  {
+    "seq": 45,
+    "ms": 1043.0,
+    "kind": "guard",
+    "phase": "A-1-round-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 492584960,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 104710144,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 387874816,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 51,
+    "violations": []
+  },
+  {
+    "seq": 46,
+    "ms": 1065.3,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 1,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 493666304,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 105791488,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 387874816,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 51
+  },
+  {
+    "seq": 47,
+    "ms": 5744.7,
+    "kind": "monitor",
+    "label": "A-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 691257344,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303316992,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 387940352,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 47
+  },
+  {
+    "seq": 48,
+    "ms": 6075.5,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 2\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 49,
+    "ms": 6075.5,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 50,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 51,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 52,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 53,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 54,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 55,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 56,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 57,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 58,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 59,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 60,
+    "ms": 6075.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 6287.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 62,
+    "ms": 6287.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 63,
+    "ms": 6287.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 64,
+    "ms": 6287.3,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 65,
+    "ms": 6287.3,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 17,
+    "elapsed_ms": 211.8
+  },
+  {
+    "seq": 66,
+    "ms": 6287.4,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "ms": 6287.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 68,
+    "ms": 6287.8,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 18,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 69,
+    "ms": 6313.0,
+    "kind": "guard",
+    "phase": "A-1-round-2",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 691666944,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303415296,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 388251648,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 49,
+    "violations": []
+  },
+  {
+    "seq": 70,
+    "ms": 6363.5,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 2,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 691666944,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303415296,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 388251648,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 49
+  },
+  {
+    "seq": 71,
+    "ms": 11269.5,
+    "kind": "monitor",
+    "label": "A-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 691798016,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303480832,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 388317184,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 72,
+    "ms": 11373.8,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 4
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 3\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "ms": 11373.9,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "ms": 11374.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 75,
+    "ms": 11374.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 76,
+    "ms": 11374.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 77,
+    "ms": 11588.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 78,
+    "ms": 11588.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 79,
+    "ms": 11588.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 80,
+    "ms": 11589.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 81,
+    "ms": 11589.1,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 19,
+    "elapsed_ms": 215.2
+  },
+  {
+    "seq": 82,
+    "ms": 11589.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 83,
+    "ms": 11590.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 84,
+    "ms": 11590.9,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 20,
+    "elapsed_ms": 1.7
+  },
+  {
+    "seq": 85,
+    "ms": 11591.1,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "8936345125267610173",
+        "method": "Lean.Widget.InteractiveDiagnostics.infoToInteractive",
+        "params": {
+          "p": "0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 86,
+    "ms": 11592.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+        "exprExplicit": {
+          "text": "Nat"
+        },
+        "type": {
+          "tag": [
+            {
+              "info": {
+                "p": "6"
+              },
+              "subexprPos": "/"
+            },
+            {
+              "text": "Type"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "seq": 87,
+    "ms": 11592.1,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/call",
+    "id": 21,
+    "elapsed_ms": 1.1
+  },
+  {
+    "seq": 88,
+    "ms": 11592.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/rpc/release",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "sessionId": "8936345125267610173",
+        "refs": [
+          {
+            "p": "0"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "ms": 11592.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "8936345125267610173",
+        "method": "Lean.Widget.InteractiveDiagnostics.infoToInteractive",
+        "params": {
+          "p": "0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "ms": 11592.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "error": {
+        "code": -32602,
+        "message": "Cannot decode params in RPC call 'Lean.Widget.InteractiveDiagnostics.infoToInteractive({\"p\":\"0\"})'\nRPC reference '0' is not valid"
+      },
+      "id": 22,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 91,
+    "ms": 11592.9,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/call",
+    "id": 22,
+    "elapsed_ms": 0.7
+  },
+  {
+    "seq": 92,
+    "ms": 11592.9,
+    "kind": "rpc_release",
+    "label": "A-1",
+    "session": "8936345125267610173",
+    "reference": {
+      "p": "0"
+    },
+    "before": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+        "exprExplicit": {
+          "text": "Nat"
+        },
+        "type": {
+          "tag": [
+            {
+              "info": {
+                "p": "6"
+              },
+              "subexprPos": "/"
+            },
+            {
+              "text": "Type"
+            }
+          ]
+        }
+      }
+    },
+    "after": {
+      "error": {
+        "code": -32602,
+        "message": "Cannot decode params in RPC call 'Lean.Widget.InteractiveDiagnostics.infoToInteractive({\"p\":\"0\"})'\nRPC reference '0' is not valid"
+      },
+      "id": 22,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 93,
+    "ms": 11640.7,
+    "kind": "guard",
+    "phase": "A-1-round-3",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 692682752,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303874048,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 388808704,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 94,
+    "ms": 11668.0,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 3,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 692682752,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303874048,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 388808704,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 95,
+    "ms": 16675.7,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 5
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 4\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 96,
+    "ms": 16675.8,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 97,
+    "ms": 16676.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 98,
+    "ms": 16676.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 99,
+    "ms": 16877.3,
+    "kind": "monitor",
+    "label": "A-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 692879360,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303906816,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 388972544,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 100,
+    "ms": 16888.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 101,
+    "ms": 16889.0,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 102,
+    "ms": 16889.0,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 103,
+    "ms": 16889.3,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 104,
+    "ms": 16889.3,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 23,
+    "elapsed_ms": 213.6
+  },
+  {
+    "seq": 105,
+    "ms": 16889.3,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 106,
+    "ms": 16890.0,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 107,
+    "ms": 16890.0,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 24,
+    "elapsed_ms": 0.7
+  },
+  {
+    "seq": 108,
+    "ms": 16920.9,
+    "kind": "guard",
+    "phase": "A-1-round-4",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 692862976,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303906816,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 388956160,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 109,
+    "ms": 16944.0,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 4,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 692862976,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 303906816,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70143,
+          "ppid": 70142,
+          "rss_bytes": 388956160,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 110,
+    "ms": 21954.1,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 6
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 5\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 111,
+    "ms": 21954.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 6
+      }
+    }
+  },
+  {
+    "seq": 112,
+    "ms": 21954.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 113,
+    "ms": 21954.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 114,
+    "ms": 21954.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 115,
+    "ms": 22165.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 6
+        }
+      }
+    }
+  },
+  {
+    "seq": 116,
+    "ms": 22165.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 6
+        }
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "ms": 22165.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 6
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "ms": 22165.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 119,
+    "ms": 22165.5,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 25,
+    "elapsed_ms": 211.4
+  },
+  {
+    "seq": 120,
+    "ms": 22165.6,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 121,
+    "ms": 22166.0,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 26,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "ms": 22166.0,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 26,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 123,
+    "ms": 22166.1,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 124,
+    "ms": 22166.1,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 5\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 125,
+    "ms": 22166.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 126,
+    "ms": 22166.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 6
+      }
+    }
+  },
+  {
+    "seq": 127,
+    "ms": 22166.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 128,
+    "ms": 22227.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 129,
+    "ms": 22387.6,
+    "kind": "monitor",
+    "label": "A-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 689537024,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 304103424,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 385433600,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 130,
+    "ms": 22407.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "ms": 22407.6,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 132,
+    "ms": 22407.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 133,
+    "ms": 22407.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 134,
+    "ms": 22407.8,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 27,
+    "elapsed_ms": 241.6
+  },
+  {
+    "seq": 135,
+    "ms": 22407.8,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "8936345125267610173",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/A/Proof0.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 8
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 136,
+    "ms": 22408.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 28,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 137,
+    "ms": 22408.1,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/call",
+    "id": 28,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 138,
+    "ms": 22408.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean"
+      }
+    }
+  },
+  {
+    "seq": 139,
+    "ms": 22410.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 29,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "14370928543899211251"
+      }
+    }
+  },
+  {
+    "seq": 140,
+    "ms": 22410.9,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/connect",
+    "id": 29,
+    "elapsed_ms": 2.7
+  },
+  {
+    "seq": 141,
+    "ms": 22410.9,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "14370928543899211251",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/A/Proof0.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 8
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 142,
+    "ms": 22411.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "4"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.99.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.99.3",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "1"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "2"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "text": "n"
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "3"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "11"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 143,
+    "ms": 22411.5,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/call",
+    "id": 30,
+    "elapsed_ms": 0.6
+  },
+  {
+    "seq": 144,
+    "ms": 22411.5,
+    "kind": "reopen",
+    "label": "A-1",
+    "round": 5,
+    "old_session": "8936345125267610173",
+    "new_session": "14370928543899211251",
+    "stale": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 28,
+      "jsonrpc": "2.0"
+    },
+    "rich": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "4"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.99.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.99.3",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "1"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "2"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "text": "n"
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "3"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "11"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "reference": {
+      "p": "0"
+    }
+  },
+  {
+    "seq": 145,
+    "ms": 22433.4,
+    "kind": "guard",
+    "phase": "A-1-round-5",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 692649984,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 304545792,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 388104192,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 146,
+    "ms": 22455.5,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 5,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 692649984,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 304545792,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 388104192,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 147,
+    "ms": 27465.6,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 6\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 148,
+    "ms": 27465.6,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 149,
+    "ms": 27465.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 150,
+    "ms": 27465.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 151,
+    "ms": 27465.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 152,
+    "ms": 27465.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 153,
+    "ms": 27465.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 154,
+    "ms": 27465.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 155,
+    "ms": 27465.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 26,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 156,
+    "ms": 27465.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 157,
+    "ms": 27465.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 28,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 158,
+    "ms": 27465.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 29,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 159,
+    "ms": 27465.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 160,
+    "ms": 27465.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 161,
+    "ms": 27465.8,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 31,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 162,
+    "ms": 27465.8,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 163,
+    "ms": 27467.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 164,
+    "ms": 27467.4,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 32,
+    "elapsed_ms": 1.6
+  },
+  {
+    "seq": 165,
+    "ms": 27491.8,
+    "kind": "guard",
+    "phase": "A-1-round-6",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 693174272,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 304562176,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 388612096,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 166,
+    "ms": 27513.0,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 6,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 693174272,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 304562176,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 388612096,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 167,
+    "ms": 27719.1,
+    "kind": "monitor",
+    "label": "A-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 693190656,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 304562176,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 388628480,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 168,
+    "ms": 32520.6,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 7\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 169,
+    "ms": 32520.7,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 170,
+    "ms": 32520.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 171,
+    "ms": 32521.0,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 172,
+    "ms": 32521.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 173,
+    "ms": 32521.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 174,
+    "ms": 32521.1,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 175,
+    "ms": 32521.2,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 33,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 176,
+    "ms": 32521.2,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 33,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 177,
+    "ms": 32521.2,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 178,
+    "ms": 32524.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 34,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 179,
+    "ms": 32524.9,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 34,
+    "elapsed_ms": 3.7
+  },
+  {
+    "seq": 180,
+    "ms": 32525.1,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "14370928543899211251",
+        "method": "Lean.Widget.InteractiveDiagnostics.infoToInteractive",
+        "params": {
+          "p": "0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 181,
+    "ms": 32526.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 35,
+      "jsonrpc": "2.0",
+      "result": {
+        "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+        "exprExplicit": {
+          "text": "Nat"
+        },
+        "type": {
+          "tag": [
+            {
+              "info": {
+                "p": "5"
+              },
+              "subexprPos": "/"
+            },
+            {
+              "text": "Type"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "seq": 182,
+    "ms": 32526.5,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/rpc/call",
+    "id": 35,
+    "elapsed_ms": 1.5
+  },
+  {
+    "seq": 183,
+    "ms": 32526.5,
+    "kind": "rpc_after_reopen",
+    "label": "A-1",
+    "session": "14370928543899211251",
+    "reference": {
+      "p": "0"
+    },
+    "popup": {
+      "id": 35,
+      "jsonrpc": "2.0",
+      "result": {
+        "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+        "exprExplicit": {
+          "text": "Nat"
+        },
+        "type": {
+          "tag": [
+            {
+              "info": {
+                "p": "5"
+              },
+              "subexprPos": "/"
+            },
+            {
+              "text": "Type"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "seq": 184,
+    "ms": 32573.1,
+    "kind": "guard",
+    "phase": "A-1-round-7",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569212928,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180011008,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389201920,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 185,
+    "ms": 32602.1,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 7,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569212928,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180011008,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389201920,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 186,
+    "ms": 33164.4,
+    "kind": "monitor",
+    "label": "A-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569360384,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180011008,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389349376,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 187,
+    "ms": 37611.4,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 4
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 8\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 188,
+    "ms": 37611.5,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 189,
+    "ms": 37611.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 34,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 190,
+    "ms": 37611.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 191,
+    "ms": 37611.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 192,
+    "ms": 37611.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 193,
+    "ms": 37611.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 33,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 194,
+    "ms": 37611.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 35,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 195,
+    "ms": 37611.9,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 36,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 196,
+    "ms": 37611.9,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 36,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 197,
+    "ms": 37612.0,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 198,
+    "ms": 37614.8,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 37,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 199,
+    "ms": 37614.9,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 37,
+    "elapsed_ms": 3.0
+  },
+  {
+    "seq": 200,
+    "ms": 37660.1,
+    "kind": "guard",
+    "phase": "A-1-round-8",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569409536,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180011008,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389398528,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 201,
+    "ms": 37689.2,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 8,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569409536,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180011008,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389398528,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 202,
+    "ms": 38618.6,
+    "kind": "monitor",
+    "label": "A-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569556992,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180011008,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389545984,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 203,
+    "ms": 42699.3,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 5
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 9\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 204,
+    "ms": 42699.3,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 205,
+    "ms": 42699.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 206,
+    "ms": 42699.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 207,
+    "ms": 42699.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 208,
+    "ms": 42699.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 36,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 209,
+    "ms": 42699.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 37,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 210,
+    "ms": 42699.5,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 38,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 211,
+    "ms": 42699.5,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 38,
+    "elapsed_ms": 0.1
+  },
+  {
+    "seq": 212,
+    "ms": 42699.5,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 39,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 213,
+    "ms": 42700.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 39,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 214,
+    "ms": 42700.8,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "$/lean/plainGoal",
+    "id": 39,
+    "elapsed_ms": 1.3
+  },
+  {
+    "seq": 215,
+    "ms": 42723.0,
+    "kind": "guard",
+    "phase": "A-1-round-9",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569720832,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180043776,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389677056,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 216,
+    "ms": 42743.9,
+    "kind": "round_resource",
+    "label": "A-1",
+    "round": 9,
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569720832,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180043776,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389677056,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 217,
+    "ms": 44063.9,
+    "kind": "monitor",
+    "label": "A-1",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569704448,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180043776,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389660672,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 218,
+    "ms": 47881.9,
+    "kind": "resource",
+    "label": "A-1",
+    "phase": "end",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 569704448,
+      "processes": [
+        {
+          "pid": 70142,
+          "ppid": 70134,
+          "rss_bytes": 180043776,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70338,
+          "ppid": 70142,
+          "rss_bytes": 389660672,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "footprints": [
+      {
+        "pid": 70142,
+        "rc": 0,
+        "value_bytes": 267832320,
+        "stdout": "======================================================================\nlean [70142]: 64-bit    Footprint: 267815936 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 267832320 B\n    phys_footprint_peak: 267881536 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 70338,
+        "rc": 0,
+        "value_bytes": 82614720,
+        "stdout": "======================================================================\nlean [70338]: 64-bit    Footprint: 82598336 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 82614720 B\n    phys_footprint_peak: 82778816 B\n\n",
+        "stderr": ""
+      }
+    ],
+    "free_percent": 49,
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    }
+  },
+  {
+    "seq": 219,
+    "ms": 47881.9,
+    "kind": "cell",
+    "label": "A-1",
+    "workers": 1,
+    "status": "completed",
+    "rounds": 9,
+    "elapsed_ms": 47074.2,
+    "checks": [
+      {
+        "round": 1,
+        "file": 0,
+        "version": 2,
+        "sha256": "f63e4403d8670d6d221d2847e067235d4ff35ce0ff6288426cbb9910209dfa11",
+        "goal": {
+          "id": 16,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        },
+        "wait": {
+          "id": 15,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "ok": true
+      },
+      {
+        "round": 2,
+        "file": 0,
+        "version": 3,
+        "sha256": "c96c444cd9d30aabef5d6fffe78f45ea7bce800e71a465ac90e4b9a9b6ecd7ed",
+        "goal": {
+          "id": 18,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        },
+        "wait": {
+          "id": 17,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "ok": true
+      },
+      {
+        "round": 3,
+        "file": 0,
+        "version": 4,
+        "sha256": "66677f8f89e6f3ee43d72dd240105091dec5e6f72d9741fdf5d76c2abab4ae59",
+        "goal": {
+          "id": 20,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 4
+        },
+        "wait": {
+          "id": 19,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "ok": true
+      },
+      {
+        "round": 4,
+        "file": 0,
+        "version": 5,
+        "sha256": "12e19c1044189c05570be01ddbc9e86db75cc63674126de1ee92e2e94538b402",
+        "goal": {
+          "id": 24,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 5
+        },
+        "wait": {
+          "id": 23,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "ok": true
+      },
+      {
+        "round": 5,
+        "file": 0,
+        "version": 6,
+        "sha256": "a455678b8be96beef75d8c99375efb41233f16b6762990ac30e303abd63969cc",
+        "goal": {
+          "id": 26,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 6
+        },
+        "wait": {
+          "id": 25,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "ok": true
+      },
+      {
+        "round": 6,
+        "file": 0,
+        "version": 2,
+        "sha256": "4209a32aa9f66b193f36caae0ecddd20bb83254bdb1934dc79d535b340c63568",
+        "goal": {
+          "id": 32,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        },
+        "wait": {
+          "id": 31,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        "ok": true
+      },
+      {
+        "round": 7,
+        "file": 0,
+        "version": 3,
+        "sha256": "ac5ba0501c4cf0de53ec3b838da765acb284421c4be7db246b970d288fbbe3f1",
+        "goal": {
+          "id": 34,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        },
+        "wait": {
+          "id": 33,
+          "jsonrpc": "2.0",
+          "method": "workspace/semanticTokens/refresh"
+        },
+        "ok": true
+      },
+      {
+        "round": 8,
+        "file": 0,
+        "version": 4,
+        "sha256": "b45cc919d2353767b40f0b28bf074de0f2b0afab72fda70c14932e1aa3ddfb30",
+        "goal": {
+          "id": 37,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        },
+        "wait": {
+          "id": 36,
+          "jsonrpc": "2.0",
+          "method": "workspace/semanticTokens/refresh"
+        },
+        "ok": true
+      },
+      {
+        "round": 9,
+        "file": 0,
+        "version": 5,
+        "sha256": "0162a6c65b1848085392d0b83a5b7e24f660b35240b180b6bebf85d8b7a54f31",
+        "goal": {
+          "id": 39,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n\u22a2 n = 11"
+            ],
+            "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "11",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 8,
+                  "line": 4
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 35,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 4
+        },
+        "wait": {
+          "id": 38,
+          "jsonrpc": "2.0",
+          "method": "workspace/semanticTokens/refresh"
+        },
+        "ok": true
+      }
+    ],
+    "stable_rss_bytes": 464240640,
+    "end_rss_bytes": 569704448,
+    "session": "14370928543899211251"
+  },
+  {
+    "seq": 220,
+    "ms": 47901.6,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 999,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 221,
+    "ms": 47901.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 222,
+    "ms": 47901.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 223,
+    "ms": 47901.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 224,
+    "ms": 47901.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 38,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 225,
+    "ms": 47901.7,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 39,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 226,
+    "ms": 47902.0,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 227,
+    "ms": 47908.4,
+    "kind": "server",
+    "label": "A-1",
+    "message": {
+      "id": 999,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 228,
+    "ms": 47908.4,
+    "kind": "latency",
+    "label": "A-1",
+    "method": "shutdown",
+    "id": 999,
+    "elapsed_ms": 6.8
+  },
+  {
+    "seq": 229,
+    "ms": 47908.4,
+    "kind": "client",
+    "label": "A-1",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 230,
+    "ms": 48078.3,
+    "kind": "stop",
+    "label": "A-1",
+    "pid": 70142,
+    "rc": 0,
+    "stderr": "",
+    "after": {
+      "count": 0,
+      "rss_bytes": 0,
+      "processes": []
+    }
+  },
+  {
+    "seq": 231,
+    "ms": 48079.6,
+    "kind": "start",
+    "label": "A-2",
+    "pid": 70513,
+    "lean_path": "$WORK/A"
+  },
+  {
+    "seq": 232,
+    "ms": 48079.7,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 70134,
+        "rootUri": "$WORK_URI/A",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 233,
+    "ms": 48105.0,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 234,
+    "ms": 48105.0,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 235,
+    "ms": 48105.6,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 0\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 236,
+    "ms": 48105.6,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 237,
+    "ms": 48105.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 238,
+    "ms": 48105.6,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 239,
+    "ms": 48105.8,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 240,
+    "ms": 48163.9,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 241,
+    "ms": 48344.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 242,
+    "ms": 48344.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 243,
+    "ms": 48344.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 244,
+    "ms": 48344.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 245,
+    "ms": 48344.6,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 10,
+    "elapsed_ms": 239.0
+  },
+  {
+    "seq": 246,
+    "ms": 48344.6,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 247,
+    "ms": 48345.0,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 248,
+    "ms": 48345.1,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/plainGoal",
+    "id": 11,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 249,
+    "ms": 48345.1,
+    "kind": "open_sentinel",
+    "label": "A-2",
+    "file": 0,
+    "base": 11,
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 8,
+              "line": 4
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 8,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 35,
+              "line": 3
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 4
+            },
+            "start": {
+              "character": 35,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Proof0.lean",
+      "version": 1
+    },
+    "sha256": "57d5b55889db098a84a8b5dabf4aebc4504033127343ef0c0a10229e0c4b512e"
+  },
+  {
+    "seq": 250,
+    "ms": 48366.8,
+    "kind": "guard",
+    "phase": "A-2-open-0",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 464257024,
+      "processes": [
+        {
+          "pid": 70513,
+          "ppid": 70134,
+          "rss_bytes": 76398592,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70514,
+          "ppid": 70513,
+          "rss_bytes": 387858432,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 5,
+      "blocks_bytes": 28672,
+      "logical_bytes": 9088,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 251,
+    "ms": 48367.1,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 12 := by\n  exact ?_\n-- round 0\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 252,
+    "ms": 48367.1,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 253,
+    "ms": 48367.4,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 254,
+    "ms": 48424.2,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 255,
+    "ms": 48605.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 256,
+    "ms": 48605.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 257,
+    "ms": 48605.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 12",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 12",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 258,
+    "ms": 48606.0,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 259,
+    "ms": 48606.0,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 12,
+    "elapsed_ms": 238.9
+  },
+  {
+    "seq": 260,
+    "ms": 48606.0,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 261,
+    "ms": 48606.4,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 12"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 12\n```"
+      }
+    }
+  },
+  {
+    "seq": 262,
+    "ms": 48606.4,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/plainGoal",
+    "id": 13,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 263,
+    "ms": 48606.5,
+    "kind": "open_sentinel",
+    "label": "A-2",
+    "file": 1,
+    "base": 11,
+    "goal": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 12"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 12\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "11",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 8,
+              "line": 4
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 12",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 8,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 4
+            },
+            "start": {
+              "character": 35,
+              "line": 3
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\nn : Nat\n\u22a2 n = 12",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 4
+            },
+            "start": {
+              "character": 35,
+              "line": 3
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/A/Proof1.lean",
+      "version": 1
+    },
+    "sha256": "bec0d0fa7f004e4c221c8e9b1225ec6b287a6c267bdb4ef1105681fa92145dee"
+  },
+  {
+    "seq": 264,
+    "ms": 48629.4,
+    "kind": "guard",
+    "phase": "A-2-open-1",
+    "tree": {
+      "count": 3,
+      "rss_bytes": 875823104,
+      "processes": [
+        {
+          "pid": 70513,
+          "ppid": 70134,
+          "rss_bytes": 100089856,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70514,
+          "ppid": 70513,
+          "rss_bytes": 387858432,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70520,
+          "ppid": 70513,
+          "rss_bytes": 387874816,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 6,
+      "blocks_bytes": 32768,
+      "logical_bytes": 9214,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 265,
+    "ms": 48629.4,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "14370928543899211251",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/A/Proof0.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 8
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 266,
+    "ms": 48630.0,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 14,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 267,
+    "ms": 48630.0,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/rpc/call",
+    "id": 14,
+    "elapsed_ms": 0.6
+  },
+  {
+    "seq": 268,
+    "ms": 48630.0,
+    "kind": "prior_server_session",
+    "label": "A-2",
+    "old_session": "14370928543899211251",
+    "response": {
+      "error": {
+        "code": -32900,
+        "message": "Outdated RPC session"
+      },
+      "id": 14,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 269,
+    "ms": 48630.0,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/rpc/connect",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean"
+      }
+    }
+  },
+  {
+    "seq": 270,
+    "ms": 48630.2,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "sessionId": "13679677856917669552"
+      }
+    }
+  },
+  {
+    "seq": 271,
+    "ms": 48630.2,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/rpc/connect",
+    "id": 15,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 272,
+    "ms": 48630.2,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "13679677856917669552",
+        "method": "Lean.Widget.getInteractiveGoals",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/A/Proof0.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 8
+          }
+        }
+      }
+    }
+  },
+  {
+    "seq": 273,
+    "ms": 48630.8,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          {
+            "ctx": {
+              "p": "4"
+            },
+            "goalPrefix": "\u22a2 ",
+            "hyps": [
+              {
+                "fvarIds": [
+                  "_uniq.99.2"
+                ],
+                "names": [
+                  "n"
+                ],
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "0"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "Nat"
+                    }
+                  ]
+                }
+              }
+            ],
+            "mvarId": "_uniq.99.3",
+            "type": {
+              "tag": [
+                {
+                  "info": {
+                    "p": "1"
+                  },
+                  "subexprPos": "/"
+                },
+                {
+                  "append": [
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "2"
+                          },
+                          "subexprPos": "/0/1"
+                        },
+                        {
+                          "text": "n"
+                        }
+                      ]
+                    },
+                    {
+                      "text": " = "
+                    },
+                    {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "3"
+                          },
+                          "subexprPos": "/1"
+                        },
+                        {
+                          "text": "11"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 274,
+    "ms": 48630.8,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/rpc/call",
+    "id": 16,
+    "elapsed_ms": 0.7
+  },
+  {
+    "seq": 275,
+    "ms": 48630.8,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "$/lean/rpc/call",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        },
+        "sessionId": "13679677856917669552",
+        "method": "Lean.Widget.InteractiveDiagnostics.infoToInteractive",
+        "params": {
+          "p": "0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 276,
+    "ms": 48631.1,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+        "exprExplicit": {
+          "text": "Nat"
+        },
+        "type": {
+          "tag": [
+            {
+              "info": {
+                "p": "5"
+              },
+              "subexprPos": "/"
+            },
+            {
+              "text": "Type"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "seq": 277,
+    "ms": 48631.1,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/rpc/call",
+    "id": 17,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 278,
+    "ms": 48631.1,
+    "kind": "rpc_start",
+    "label": "A-2",
+    "session": "13679677856917669552",
+    "reference": {
+      "p": "0"
+    },
+    "popup": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+        "exprExplicit": {
+          "text": "Nat"
+        },
+        "type": {
+          "tag": [
+            {
+              "info": {
+                "p": "5"
+              },
+              "subexprPos": "/"
+            },
+            {
+              "text": "Type"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "seq": 279,
+    "ms": 48804.4,
+    "kind": "resource",
+    "label": "A-2",
+    "phase": "stable",
+    "tree": {
+      "count": 3,
+      "rss_bytes": 879198208,
+      "processes": [
+        {
+          "pid": 70513,
+          "ppid": 70134,
+          "rss_bytes": 103170048,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70514,
+          "ppid": 70513,
+          "rss_bytes": 388153344,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70520,
+          "ppid": 70513,
+          "rss_bytes": 387874816,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "footprints": [
+      {
+        "pid": 70513,
+        "rc": 0,
+        "value_bytes": 69519808,
+        "stdout": "======================================================================\nlean [70513]: 64-bit    Footprint: 74598848 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 69519808 B\n    phys_footprint_peak: 69519808 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 70514,
+        "rc": 0,
+        "value_bytes": 81025088,
+        "stdout": "======================================================================\nlean [70514]: 64-bit    Footprint: 81008704 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81025088 B\n    phys_footprint_peak: 81074304 B\n\n",
+        "stderr": ""
+      },
+      {
+        "pid": 70520,
+        "rc": 0,
+        "value_bytes": 81123648,
+        "stdout": "======================================================================\nlean [70520]: 64-bit    Footprint: 81107264 B (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 81123648 B\n    phys_footprint_peak: 81205696 B\n\n",
+        "stderr": ""
+      }
+    ],
+    "free_percent": 50,
+    "inventory": {
+      "files": 6,
+      "blocks_bytes": 32768,
+      "logical_bytes": 9214,
+      "temp": []
+    }
+  },
+  {
+    "seq": 280,
+    "ms": 48804.5,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 1\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 281,
+    "ms": 48804.5,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 282,
+    "ms": 48804.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 283,
+    "ms": 48914.8,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 284,
+    "ms": 49015.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 285,
+    "ms": 49015.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 286,
+    "ms": 49015.7,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 11",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 287,
+    "ms": 49015.8,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 288,
+    "ms": 49015.8,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 18,
+    "elapsed_ms": 211.3
+  },
+  {
+    "seq": 289,
+    "ms": 49015.8,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 290,
+    "ms": 49016.2,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 11"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 11\n```"
+      }
+    }
+  },
+  {
+    "seq": 291,
+    "ms": 49016.2,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/plainGoal",
+    "id": 19,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 292,
+    "ms": 49016.3,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 12 := by\n  exact ?_\n-- round 1\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 293,
+    "ms": 49016.3,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof1.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 294,
+    "ms": 49186.9,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 295,
+    "ms": 49227.3,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 296,
+    "ms": 49227.4,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 297,
+    "ms": 49227.4,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "11",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = 12",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 8,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = 12",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 35,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/A/Proof1.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 298,
+    "ms": 49227.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 299,
+    "ms": 49227.5,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 20,
+    "elapsed_ms": 211.2
+  },
+  {
+    "seq": 300,
+    "ms": 49227.6,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof1.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 301,
+    "ms": 49228.0,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = 12"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = 12\n```"
+      }
+    }
+  },
+  {
+    "seq": 302,
+    "ms": 49228.0,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/plainGoal",
+    "id": 21,
+    "elapsed_ms": 0.5
+  },
+  {
+    "seq": 303,
+    "ms": 49249.6,
+    "kind": "guard",
+    "phase": "A-2-round-1",
+    "tree": {
+      "count": 3,
+      "rss_bytes": 941228032,
+      "processes": [
+        {
+          "pid": 70513,
+          "ppid": 70134,
+          "rss_bytes": 164118528,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70514,
+          "ppid": 70513,
+          "rss_bytes": 388579328,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70520,
+          "ppid": 70513,
+          "rss_bytes": 388530176,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 6,
+      "blocks_bytes": 32768,
+      "logical_bytes": 9214,
+      "temp": []
+    },
+    "free_percent": 50,
+    "violations": []
+  },
+  {
+    "seq": 304,
+    "ms": 49270.3,
+    "kind": "round_resource",
+    "label": "A-2",
+    "round": 1,
+    "tree": {
+      "count": 3,
+      "rss_bytes": 942931968,
+      "processes": [
+        {
+          "pid": 70513,
+          "ppid": 70134,
+          "rss_bytes": 165822464,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70514,
+          "ppid": 70513,
+          "rss_bytes": 388579328,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70520,
+          "ppid": 70513,
+          "rss_bytes": 388530176,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 305,
+    "ms": 53602.8,
+    "kind": "monitor",
+    "label": "A-2",
+    "tree": {
+      "count": 3,
+      "rss_bytes": 1081606144,
+      "processes": [
+        {
+          "pid": 70513,
+          "ppid": 70134,
+          "rss_bytes": 304119808,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70514,
+          "ppid": 70513,
+          "rss_bytes": 388759552,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 70520,
+          "ppid": 70513,
+          "rss_bytes": 388726784,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    },
+    "inventory": {
+      "files": 6,
+      "blocks_bytes": 32768,
+      "logical_bytes": 9214,
+      "temp": []
+    },
+    "free_percent": 50
+  },
+  {
+    "seq": 306,
+    "ms": 54280.7,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Dep\n#eval selected\ntheorem check : selected = 11 := by rfl\ntheorem hole (n : Nat) : n = 11 := by\n  exact ?_\n-- round 2\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 307,
+    "ms": 54280.8,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 308,
+    "ms": 54281.1,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 309,
+    "ms": 54281.1,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 310,
+    "ms": 54281.2,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 311,
+    "ms": 54281.2,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 312,
+    "ms": 54281.3,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 313,
+    "ms": 54281.3,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 314,
+    "ms": 54281.4,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 315,
+    "ms": 54281.4,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 316,
+    "ms": 54281.4,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 317,
+    "ms": 54281.4,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 318,
+    "ms": 54281.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 319,
+    "ms": 54281.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 320,
+    "ms": 54281.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 321,
+    "ms": 54281.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 322,
+    "ms": 54281.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 323,
+    "ms": 54281.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 324,
+    "ms": 54281.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 325,
+    "ms": 54281.7,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 326,
+    "ms": 54281.7,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 327,
+    "ms": 54281.7,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 328,
+    "ms": 54281.8,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "textDocument/waitForDiagnostics",
+    "id": 22,
+    "elapsed_ms": 1.0
+  },
+  {
+    "seq": 329,
+    "ms": 54281.8,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/A/Proof0.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "seq": 330,
+    "ms": 54281.9,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 331,
+    "ms": 54281.9,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "$/lean/plainGoal",
+    "id": 23,
+    "elapsed_ms": 0.1
+  },
+  {
+    "seq": 332,
+    "ms": 54282.3,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 999,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 333,
+    "ms": 54284.5,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "error": {
+        "code": -32801,
+        "message": "The file worker for $WORK_URI/A/Proof0.lean has been terminated."
+      },
+      "id": 22,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 334,
+    "ms": 54284.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "error": {
+        "code": -32801,
+        "message": "The file worker for $WORK_URI/A/Proof0.lean has been terminated."
+      },
+      "id": 23,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 335,
+    "ms": 54284.6,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof0.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 336,
+    "ms": 54285.2,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/A/Proof1.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 337,
+    "ms": 54301.1,
+    "kind": "server",
+    "label": "A-2",
+    "message": {
+      "id": 999,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 338,
+    "ms": 54301.1,
+    "kind": "latency",
+    "label": "A-2",
+    "method": "shutdown",
+    "id": 999,
+    "elapsed_ms": 18.8
+  },
+  {
+    "seq": 339,
+    "ms": 54301.1,
+    "kind": "client",
+    "label": "A-2",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 340,
+    "ms": 54348.0,
+    "kind": "stop",
+    "label": "A-2",
+    "pid": 70513,
+    "rc": 0,
+    "stderr": "",
+    "after": {
+      "count": 0,
+      "rss_bytes": 0,
+      "processes": []
+    }
+  },
+  {
+    "seq": 341,
+    "ms": 54348.0,
+    "kind": "fatal",
+    "error": "AssertionError({'id': 23, 'jsonrpc': '2.0', 'method': 'workspace/inlayHint/refresh'})"
+  }
+]

@@ -1,0 +1,1344 @@
+{
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "rustfmt_sha256": "ee717a093f2b2e2c124cde782b4b955fb26ec0c7cf241e6403fed99d624f0c76",
+  "fixture_sha256": {
+    "lean": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+    "rust": "8530bb262bfe063e2835ce478866e1cc8a808a17d56aa4eb64ca437d68825c4a"
+  },
+  "initialize": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "capabilities": {
+        "callHierarchyProvider": true,
+        "codeActionProvider": {
+          "codeActionKinds": [
+            "quickfix",
+            "refactor",
+            "source.organizeImports"
+          ],
+          "resolveProvider": true,
+          "workDoneProgress": false
+        },
+        "colorProvider": {
+          "workDoneProgress": false
+        },
+        "completionProvider": {
+          "resolveProvider": true,
+          "triggerCharacters": [
+            "."
+          ]
+        },
+        "declarationProvider": true,
+        "definitionProvider": true,
+        "documentHighlightProvider": true,
+        "documentSymbolProvider": true,
+        "experimental": {
+          "moduleHierarchyProvider": {},
+          "rpcProvider": {
+            "highlightMatchesProvider": {},
+            "rpcWireFormat": "v1"
+          }
+        },
+        "foldingRangeProvider": true,
+        "hoverProvider": true,
+        "inlayHintProvider": {
+          "resolveProvider": false,
+          "workDoneProgress": false
+        },
+        "referencesProvider": true,
+        "renameProvider": {
+          "prepareProvider": true
+        },
+        "semanticTokensProvider": {
+          "full": true,
+          "legend": {
+            "tokenModifiers": [
+              "declaration",
+              "definition",
+              "readonly",
+              "static",
+              "deprecated",
+              "abstract",
+              "async",
+              "modification",
+              "documentation",
+              "defaultLibrary"
+            ],
+            "tokenTypes": [
+              "keyword",
+              "variable",
+              "property",
+              "function",
+              "namespace",
+              "type",
+              "class",
+              "enum",
+              "interface",
+              "struct",
+              "typeParameter",
+              "parameter",
+              "enumMember",
+              "event",
+              "method",
+              "macro",
+              "modifier",
+              "comment",
+              "string",
+              "number",
+              "regexp",
+              "operator",
+              "decorator",
+              "leanSorryLike"
+            ]
+          },
+          "range": true
+        },
+        "signatureHelpProvider": {
+          "triggerCharacters": [
+            " "
+          ],
+          "workDoneProgress": false
+        },
+        "textDocumentSync": {
+          "change": 2,
+          "openClose": true,
+          "save": {
+            "includeText": true
+          },
+          "willSave": false,
+          "willSaveWaitUntil": false
+        },
+        "typeDefinitionProvider": true,
+        "workspaceSymbolProvider": true
+      },
+      "serverInfo": {
+        "name": "Lean 4 Server",
+        "version": "0.3.0"
+      }
+    }
+  },
+  "lsp_events": [
+    {
+      "ms": 2,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 76047,
+          "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false,
+            "logCfg": {
+              "logDir": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3"
+            }
+          }
+        }
+      }
+    },
+    {
+      "ms": 28,
+      "side": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "ms": 28,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "ms": 28,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "theorem demo (n : Nat) : n + 0 = n := by\n  simp\n"
+          }
+        }
+      }
+    },
+    {
+      "ms": 28,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "ms": 28,
+      "side": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ms": 28,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "ms": 28,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "ms": 85,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "ms": 265,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "ms": 265,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "ms": 265,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "ms": 265,
+      "side": "server",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "ms": 265,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 2
+          },
+          "contentChanges": [
+            {
+              "text": "theorem demo (n : Nat) : n + 0 = n := by\n  skip\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ms": 265,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "ms": 476,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "ms": 476,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "ms": 476,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 1
+                },
+                "start": {
+                  "character": 38,
+                  "line": 0
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 38,
+                  "line": 0
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "ms": 476,
+      "side": "server",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "ms": 836,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "ms": 836,
+      "side": "server",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "ms": 837,
+      "side": "server",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "ms": 837,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didClose",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean"
+          }
+        }
+      }
+    },
+    {
+      "ms": 837,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "languageId": "lean",
+            "version": 3,
+            "text": "theorem demo (n : Nat) : n + 0 = n := by\n  exact Nat.add_zero n\n"
+          }
+        }
+      }
+    },
+    {
+      "ms": 837,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "ms": 837,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "ms": 837,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 3
+          }
+        }
+      }
+    },
+    {
+      "ms": 897,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "ms": 1078,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 3
+          }
+        }
+      }
+    },
+    {
+      "ms": 1078,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 3
+          }
+        }
+      }
+    },
+    {
+      "ms": 1078,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "ms": 1078,
+      "side": "server",
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "ms": 1277,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 4
+          },
+          "contentChanges": [
+            {
+              "text": "theorem demo (n : Nat) : n + 0 = n := by\n  exact Nat.add_zero n\n\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ms": 1277,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 4
+        }
+      }
+    },
+    {
+      "ms": 1398,
+      "side": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "ms": 1488,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 4
+          }
+        }
+      }
+    },
+    {
+      "ms": 1488,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 4
+          }
+        }
+      }
+    },
+    {
+      "ms": 1488,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 4
+        }
+      }
+    },
+    {
+      "ms": 1488,
+      "side": "server",
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "ms": 1670,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 5
+          },
+          "contentChanges": [
+            {
+              "text": "theorem demo (n : Nat) : n + 0 = n := by\n  simp only [Nat.add_zero]\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "ms": 1670,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 5
+        }
+      }
+    },
+    {
+      "ms": 1879,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 5
+          }
+        }
+      }
+    },
+    {
+      "ms": 1879,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+            "version": 5
+          }
+        }
+      }
+    },
+    {
+      "ms": 1879,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 5
+        }
+      }
+    },
+    {
+      "ms": 1880,
+      "side": "server",
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "ms": 1880,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "ms": 1881,
+      "side": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r27-run3/Generated.lean",
+          "version": 5
+        }
+      }
+    },
+    {
+      "ms": 1887,
+      "side": "server",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "ms": 1887,
+      "side": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    }
+  ],
+  "lsp_exit": {
+    "exit": 0,
+    "stderr": ""
+  },
+  "watch_events": [
+    {
+      "label": "initial",
+      "event": "build",
+      "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+      "status": {
+        "exit": 0,
+        "stdout": "",
+        "stderr": "",
+        "cancelled": false
+      },
+      "stage_files": {
+        "Generated.olean": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "Generated.ilean": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9"
+      },
+      "consumed_before": null,
+      "consumed_after": {
+        "generation": "b01-initial",
+        "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+        "olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "ilean_sha256": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9"
+      }
+    },
+    {
+      "label": "dirty-buffer-poll",
+      "event": "duplicate_suppressed",
+      "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+      "consumed": {
+        "generation": "b01-initial",
+        "ilean_sha256": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9",
+        "olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42"
+      }
+    },
+    {
+      "label": "save-invalid",
+      "event": "build",
+      "source_sha256": "3f466d183581dbdc4264134091e30149c92531b40ac70a9c68d24d1a6ef998f8",
+      "status": {
+        "exit": 1,
+        "stdout": "$WORK/Generated.lean:1:38: error: unsolved goals\nn : Nat\n⊢ n + 0 = n\n",
+        "stderr": "",
+        "cancelled": false
+      },
+      "stage_files": {},
+      "consumed_before": {
+        "generation": "b01-initial",
+        "ilean_sha256": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9",
+        "olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42"
+      },
+      "consumed_after": {
+        "generation": "b01-initial",
+        "ilean_sha256": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9",
+        "olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42"
+      }
+    },
+    {
+      "label": "duplicate-save-event",
+      "event": "duplicate_suppressed",
+      "source_sha256": "3f466d183581dbdc4264134091e30149c92531b40ac70a9c68d24d1a6ef998f8",
+      "consumed": {
+        "generation": "b01-initial",
+        "ilean_sha256": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9",
+        "olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42"
+      }
+    },
+    {
+      "label": "external-overwrite",
+      "event": "build",
+      "source_sha256": "80ca37f6e88b58f2b6898e7b874a21522b38bc8999eb1acb0d70a1f8059c719b",
+      "status": {
+        "exit": 0,
+        "stdout": "",
+        "stderr": "",
+        "cancelled": false
+      },
+      "stage_files": {
+        "Generated.olean": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "Generated.ilean": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd"
+      },
+      "consumed_before": {
+        "generation": "b01-initial",
+        "ilean_sha256": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9",
+        "olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42"
+      },
+      "consumed_after": {
+        "generation": "b03-external-overwrite",
+        "source_sha256": "80ca37f6e88b58f2b6898e7b874a21522b38bc8999eb1acb0d70a1f8059c719b",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd"
+      }
+    },
+    {
+      "label": "lean-format-edit",
+      "event": "build",
+      "source_sha256": "7f657ceb250f4bdadfe6c1351da60aa8ed7689f5800af6e9e39a55e08d1762a8",
+      "status": {
+        "exit": 0,
+        "stdout": "",
+        "stderr": "",
+        "cancelled": false
+      },
+      "stage_files": {
+        "Generated.olean": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "Generated.ilean": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd"
+      },
+      "consumed_before": {
+        "generation": "b03-external-overwrite",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "80ca37f6e88b58f2b6898e7b874a21522b38bc8999eb1acb0d70a1f8059c719b"
+      },
+      "consumed_after": {
+        "generation": "b04-lean-format-edit",
+        "source_sha256": "7f657ceb250f4bdadfe6c1351da60aa8ed7689f5800af6e9e39a55e08d1762a8",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd"
+      }
+    },
+    {
+      "label": "cancelled-rebuild",
+      "event": "cancelled_build",
+      "source_sha256": "2eb380566844513b5bbba8818331e8ad059e40dd64637761f11533c2d20d2cb1",
+      "status": {
+        "exit": -9,
+        "stdout": "",
+        "stderr": "",
+        "cancelled": true
+      },
+      "stage_files": {},
+      "consumed_before": {
+        "generation": "b04-lean-format-edit",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "7f657ceb250f4bdadfe6c1351da60aa8ed7689f5800af6e9e39a55e08d1762a8"
+      },
+      "consumed_after": {
+        "generation": "b04-lean-format-edit",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "7f657ceb250f4bdadfe6c1351da60aa8ed7689f5800af6e9e39a55e08d1762a8"
+      }
+    },
+    {
+      "label": "retry-after-cancel",
+      "event": "build",
+      "source_sha256": "2eb380566844513b5bbba8818331e8ad059e40dd64637761f11533c2d20d2cb1",
+      "status": {
+        "exit": 0,
+        "stdout": "",
+        "stderr": "",
+        "cancelled": false
+      },
+      "stage_files": {
+        "Generated.olean": "18fb83a0a6b635740cbd0d0abd06207e8be4d9f56945e69391264a210ea4116c",
+        "Generated.ilean": "f97d5df0cefdb624bec76fef8d7422213439fcd5921238b72f0e63721243233f"
+      },
+      "consumed_before": {
+        "generation": "b04-lean-format-edit",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "7f657ceb250f4bdadfe6c1351da60aa8ed7689f5800af6e9e39a55e08d1762a8"
+      },
+      "consumed_after": {
+        "generation": "b06-retry-after-cancel",
+        "source_sha256": "2eb380566844513b5bbba8818331e8ad059e40dd64637761f11533c2d20d2cb1",
+        "olean_sha256": "18fb83a0a6b635740cbd0d0abd06207e8be4d9f56945e69391264a210ea4116c",
+        "ilean_sha256": "f97d5df0cefdb624bec76fef8d7422213439fcd5921238b72f0e63721243233f"
+      }
+    }
+  ],
+  "observations": [
+    {
+      "step": "dirty_unsaved",
+      "lsp_version": 2,
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 38,
+              "line": 0
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 1
+            },
+            "start": {
+              "character": 38,
+              "line": 0
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "disk_source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+      "consumed": {
+        "generation": "b01-initial",
+        "ilean_sha256": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9",
+        "olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42"
+      }
+    },
+    {
+      "step": "save_invalid",
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 38,
+              "line": 0
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 1
+            },
+            "start": {
+              "character": 38,
+              "line": 0
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "build_exit": 1,
+      "consumed": {
+        "generation": "b01-initial",
+        "ilean_sha256": "d5955b471847ac712c408e535a23694131a8863f214645bd364d465218bfd2a9",
+        "olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+        "source_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42"
+      }
+    },
+    {
+      "step": "external_disk_while_open",
+      "lsp_open_version": 2,
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 1
+            },
+            "start": {
+              "character": 38,
+              "line": 0
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 1
+            },
+            "start": {
+              "character": 38,
+              "line": 0
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "disk_source_sha256": "80ca37f6e88b58f2b6898e7b874a21522b38bc8999eb1acb0d70a1f8059c719b",
+      "consumed": {
+        "generation": "b03-external-overwrite",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "80ca37f6e88b58f2b6898e7b874a21522b38bc8999eb1acb0d70a1f8059c719b"
+      }
+    },
+    {
+      "step": "reopen_external",
+      "lsp_version": 3,
+      "diagnostics": [],
+      "consumed": {
+        "generation": "b03-external-overwrite",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "80ca37f6e88b58f2b6898e7b874a21522b38bc8999eb1acb0d70a1f8059c719b"
+      }
+    },
+    {
+      "step": "rustfmt",
+      "rust_before_sha256": "8530bb262bfe063e2835ce478866e1cc8a808a17d56aa4eb64ca437d68825c4a",
+      "rust_after_sha256": "c8c94ccd0dd90bfe3625a5c22c29025b3f65412648b3900b700d981247b0a203",
+      "model_generated_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+      "lean_disk_unchanged": "80ca37f6e88b58f2b6898e7b874a21522b38bc8999eb1acb0d70a1f8059c719b",
+      "consumed": {
+        "generation": "b03-external-overwrite",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "80ca37f6e88b58f2b6898e7b874a21522b38bc8999eb1acb0d70a1f8059c719b"
+      },
+      "rustfmt_exit": 0
+    },
+    {
+      "step": "lean_format_edit",
+      "lsp_version": 4,
+      "diagnostics": [],
+      "consumed": {
+        "generation": "b04-lean-format-edit",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "7f657ceb250f4bdadfe6c1351da60aa8ed7689f5800af6e9e39a55e08d1762a8"
+      }
+    },
+    {
+      "step": "cancel_retry",
+      "lsp_version": 5,
+      "diagnostics": [],
+      "cancel_exit": -9,
+      "consumed_before": {
+        "generation": "b04-lean-format-edit",
+        "ilean_sha256": "7907bd9bdd6bfbaa079ff0f24f69eff1361cd5a375d7fc813bfd1e0d298cc5dd",
+        "olean_sha256": "a787e416748d196dac9644fb024bdc81c1ad25f38e0efd79284b86efe9be4ee5",
+        "source_sha256": "7f657ceb250f4bdadfe6c1351da60aa8ed7689f5800af6e9e39a55e08d1762a8"
+      },
+      "consumed_after": {
+        "generation": "b06-retry-after-cancel",
+        "ilean_sha256": "f97d5df0cefdb624bec76fef8d7422213439fcd5921238b72f0e63721243233f",
+        "olean_sha256": "18fb83a0a6b635740cbd0d0abd06207e8be4d9f56945e69391264a210ea4116c",
+        "source_sha256": "2eb380566844513b5bbba8818331e8ad059e40dd64637761f11533c2d20d2cb1"
+      }
+    }
+  ],
+  "diagnostic_versions": {
+    "v1": [],
+    "v2": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 6,
+            "line": 1
+          },
+          "start": {
+            "character": 38,
+            "line": 0
+          }
+        },
+        "leanTags": [
+          1
+        ],
+        "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+        "range": {
+          "end": {
+            "character": 0,
+            "line": 1
+          },
+          "start": {
+            "character": 38,
+            "line": 0
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "v3": [],
+    "v4": [],
+    "v5": []
+  },
+  "final": {
+    "generation": "b06-retry-after-cancel",
+    "ilean_sha256": "f97d5df0cefdb624bec76fef8d7422213439fcd5921238b72f0e63721243233f",
+    "olean_sha256": "18fb83a0a6b635740cbd0d0abd06207e8be4d9f56945e69391264a210ea4116c",
+    "source_sha256": "2eb380566844513b5bbba8818331e8ad059e40dd64637761f11533c2d20d2cb1"
+  },
+  "artifact_sha256": {
+    "v1-Generated.lean": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+    "final-Generated.lean": "2eb380566844513b5bbba8818331e8ad059e40dd64637761f11533c2d20d2cb1",
+    "formatted-Source.rs": "c8c94ccd0dd90bfe3625a5c22c29025b3f65412648b3900b700d981247b0a203",
+    "v1-Generated.olean": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+    "final-Generated.olean": "18fb83a0a6b635740cbd0d0abd06207e8be4d9f56945e69391264a210ea4116c"
+  }
+}

@@ -1,0 +1,6 @@
+id,title,remaining_delta,primary_gate
+I028,One generator for batch and live text,"Compare independently materialized and streamed outputs from one real batch/live generator under incomplete proofs/import edits; the new materialized Lean text was reused unchanged for batch and live, without a streaming sink.",Anneal batch/live generator implementation
+I061,Lean InfoView and RPC integration,Actual InfoView widget/RPC/hyperlink flow from a Rust-hosted proof position through reconnect.,Rust-hosted Lean InfoView/RPC integration
+I063,Editor save/build/format interactions,Exercise real editor autosave/format/watch/build loops with dirty-buffer and duplicate-work controls; R18 batch-checked returned edits in isolated branches only.,selected external editor and Anneal transaction loop
+I072,Existing Lean MCP adapters under Anneal conditions,"Two independent MCP clients with concurrent calls, cancellation, and consistent shared workspace observations.",selected Lean MCP adapter and Anneal workspace integration
+I086,In-memory handoff versus serialized artifacts,"Measured in-memory/structured-stream versus serialized LLBC/Lean handoff for copying, diagnostics, cancellation, and evidence cost.",compatible same-process OCaml Aeneas API or dependency scope

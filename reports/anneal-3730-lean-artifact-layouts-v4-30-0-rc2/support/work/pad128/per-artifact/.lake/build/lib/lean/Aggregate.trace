@@ -1,0 +1,33 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["d454430b9aff188c.olean"],
+  "m": false,
+  "i": "065c89f61b35fad2.ilean",
+  "c": "0a9cbaa8a04f2f85.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-artifact/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-artifact/Aggregate.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-artifact/.lake/build/lib/lean/Aggregate.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-artifact/.lake/build/lib/lean/Aggregate.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-artifact/.lake/build/ir/Aggregate.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-artifact/.lake/build/ir/Aggregate.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Aggregate:deps",
+   [["deps",
+     [["layout/Aggregate:extraDep", [["@layout:extraDep", "00000000000006bb"]]],
+      ["imports",
+       [["Artifact transitive imports (legacy)", "00000000000006bb"],
+        ["Artifact:importAllArts", "2f3e62b096db51e6"]]]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad128/per-artifact/Aggregate.lean",
+   "012b731691246dfc"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Aggregate", "9cd1c0562f2bf8e0"],
+  ["Package.id?: (some layout)", "8d4a936f4c2ee8f5"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "991e11af3ae2b0b3"}

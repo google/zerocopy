@@ -1,0 +1,17 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs": "209435b6f580f943.dylib",
+ "log":
+ [{"message":
+   ".> MACOSX_DEPLOYMENT_TARGET=99.0 /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/clang -shared -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/lib/lean/rpc__matrix_Plugin.dylib /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/ir/Plugin.c.o.export -L /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/lib/lean --sysroot /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0 -L /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/lib -L /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/lib/libc -fuse-ld=lld -lc++ -lLake_shared -Wl,-undefined,dynamic_lookup -Wl,-no_fixup_chains -lgmp -luv -Wl,-dead_strip",
+   "level": "trace"}],
+ "inputs":
+ [["linkObjs",
+   [["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/support/work/plugin-v2-4_29_0/.lake/build/ir/Plugin.c.o.export",
+     "79152735b8464ffa"]]],
+  ["linkLibs", "00000000000006bb"],
+  ["Lean 4.29.0, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740",
+   "60bb08ef22408c8a"],
+  ["traceArgs: #[]", "00000000000006bb"],
+  ["arm64-apple-darwin24.6.0", "77c16133d139df5a"]],
+ "depHash": "cfceed8cd6d884b7"}

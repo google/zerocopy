@@ -1,0 +1,122 @@
+package,relative_file,bytes,sha256,inspection,detail
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,REPORT.json,670,2511e4ec2ce66cb83fd6c56f1d3fc3c87d8bfc24f66fcacf277804241116c899,json,parsed
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,REPORT.md,4181,efd93bdbafc9471f84d09a53c9f7b1b25c7f82bfee26200138bd90f6fca7539d,utf8,17 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/check.py,2575,471adbd36386f0f4e8219b05071cb385aebbb497a5c318486c3a9e15e10aefbb,utf8,42 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/ignore_int_supervisor.py,411,cb9818f5cde1f96685d285eadcec79964baa4e454dc66bd16fdfa65c6e436f3c,utf8,9 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/probe.py,11582,68daa08f2528954af611f94a4d75a0b730a9cf829a9d112a15ebbbe74944e8cf,utf8,180 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/results.json.gz,776903,dd4be3e7ebf689697ad390fcb399dca19e6bf47f4d77f38780476a70c19467bf,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/Funs.lean,912,d406ee7399713748d3afacbde9ff7caf3dfbe85d17c9b54471ac014287591010,utf8,24 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/Input.lean,18,e2681f3af04f9e784d707fa991c74cfca80ba847026478cf6fe58653da54c1a5,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/Types.lean,527,df05be71fc6ef865c6e89f91f0a2b5766f0264557931fd38d83785ac24725342,utf8,17 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/consumer/Check.lean,68,44b1aa5cb8902c51d9f0f3dd8976dc7e730f514d435cdfc9b558b7d5ba7359a0,utf8,2 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/consumer/Input/Funs.lean,912,d406ee7399713748d3afacbde9ff7caf3dfbe85d17c9b54471ac014287591010,utf8,24 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/consumer/Input/Funs.olean,12840,469a7efeacfdecbfc58520c087c77aa8af7da2ad8ca3edfa925983420af9f4ef,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/consumer/Input/Types.lean,527,df05be71fc6ef865c6e89f91f0a2b5766f0264557931fd38d83785ac24725342,utf8,17 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/consumer/Input/Types.olean,1608,b2a7d8821889cff084d0e0af8b79e5879833b55f89a2eb6ae7e6c29ac9cd511a,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/consumer/Input.lean,18,e2681f3af04f9e784d707fa991c74cfca80ba847026478cf6fe58653da54c1a5,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-escalation-control/consumer/Input.olean,1312,49afa6c3c1894e10045f0ea24184b5ddd416d468d139b2411ac02cd869a0c81a,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/Funs.lean,912,d406ee7399713748d3afacbde9ff7caf3dfbe85d17c9b54471ac014287591010,utf8,24 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/Input.lean,18,e2681f3af04f9e784d707fa991c74cfca80ba847026478cf6fe58653da54c1a5,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/Types.lean,527,df05be71fc6ef865c6e89f91f0a2b5766f0264557931fd38d83785ac24725342,utf8,17 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/consumer/Check.lean,68,44b1aa5cb8902c51d9f0f3dd8976dc7e730f514d435cdfc9b558b7d5ba7359a0,utf8,2 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/consumer/Input/Funs.lean,912,d406ee7399713748d3afacbde9ff7caf3dfbe85d17c9b54471ac014287591010,utf8,24 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/consumer/Input/Funs.olean,12840,469a7efeacfdecbfc58520c087c77aa8af7da2ad8ca3edfa925983420af9f4ef,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/consumer/Input/Types.lean,527,df05be71fc6ef865c6e89f91f0a2b5766f0264557931fd38d83785ac24725342,utf8,17 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/consumer/Input/Types.olean,1608,b2a7d8821889cff084d0e0af8b79e5879833b55f89a2eb6ae7e6c29ac9cd511a,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/consumer/Input.lean,18,e2681f3af04f9e784d707fa991c74cfca80ba847026478cf6fe58653da54c1a5,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-graceful/consumer/Input.olean,1312,49afa6c3c1894e10045f0ea24184b5ddd416d468d139b2411ac02cd869a0c81a,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/Funs.lean,912,d406ee7399713748d3afacbde9ff7caf3dfbe85d17c9b54471ac014287591010,utf8,24 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/Input.lean,18,e2681f3af04f9e784d707fa991c74cfca80ba847026478cf6fe58653da54c1a5,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/Types.lean,527,df05be71fc6ef865c6e89f91f0a2b5766f0264557931fd38d83785ac24725342,utf8,17 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/consumer/Check.lean,68,44b1aa5cb8902c51d9f0f3dd8976dc7e730f514d435cdfc9b558b7d5ba7359a0,utf8,2 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/consumer/Input/Funs.lean,912,d406ee7399713748d3afacbde9ff7caf3dfbe85d17c9b54471ac014287591010,utf8,24 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/consumer/Input/Funs.olean,12840,469a7efeacfdecbfc58520c087c77aa8af7da2ad8ca3edfa925983420af9f4ef,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/consumer/Input/Types.lean,527,df05be71fc6ef865c6e89f91f0a2b5766f0264557931fd38d83785ac24725342,utf8,17 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/consumer/Input/Types.olean,1608,b2a7d8821889cff084d0e0af8b79e5879833b55f89a2eb6ae7e6c29ac9cd511a,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/consumer/Input.lean,18,e2681f3af04f9e784d707fa991c74cfca80ba847026478cf6fe58653da54c1a5,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/aeneas-kill-control/consumer/Input.olean,1312,49afa6c3c1894e10045f0ea24184b5ddd416d468d139b2411ac02cd869a0c81a,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/baseline/input.llbc,6844,7f80c031f61f121923a046f0673182d26391d1c8c7239958ee2c5189bb6de654,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/baseline/input.llbc.postcard,1377,e2e8084e29ead6e4b4be701d82837307fdd26ef7c411fe6d890f437b229daf1f,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/charon-graceful/input.llbc,6851,a6189624d431473c14ceb0e66c01184c6f6a90eba671af55e286570faae7812e,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/charon-graceful/input.llbc.postcard,1384,11c587aa2582120e98b50f9a77146107560e9834f2ead85a6afd5d6df0190e79,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/charon-kill-control/input.llbc,6855,4ea37486fdc2a3c6a6d9ad17c926ef5788e3934139c9327fc7b82a0685e3f154,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/charon-kill-control/input.llbc.postcard,1388,78e4a6e80bdadb416476160524524a4439950903bd03d3135ce30ab8730fa901,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/input.rs,69,77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995,utf8,2 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/ir/Cancel/A.c,1374,6ac4161419cff108d9a2cdb22f1a3f46e59f0d80c00b2db25d843bff20ada73b,utf8,44 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/ir/Cancel/A.c.hash,16,f7c243c0bfa12faea91fbc9d5c72199a4e52be20ea57f3791787a98c191bbc06,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/ir/Cancel/A.setup.json,135,8244bdfbf453585ad13ed5de6b05a2e30f6f532c65f7867286ed4ab3d69a177c,json,parsed
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/ir/Cancel/B.c,1750,019e0d8ce76802b1ef59d95a4866cb34ef71d5d9f9e30e75eaab93859c6d0c02,utf8,52 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/ir/Cancel/B.c.hash,16,f8fd2c4581917ea2349c9f3f89124225d2c934d92408fca2f3db985cc5c4e1bc,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/ir/Cancel/B.setup.json,388,75abdf6a5164fdad896026938e9db2f7ce74b8955296d4221868384ca688c190,json,parsed
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/A.ilean,285,9a8d8f40109a727450c41bbea97403d15e16ba6442094469a10eb914f53f6aee,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/A.ilean.hash,16,e007ed7261947821703aec9947d249e40f4bd9a530081784802ac2a581b11b0d,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/A.olean,4608,07937caf5fc358d615ded8b21f37cff92f190cbe56d6bc8d850f5a98669472ca,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/A.olean.hash,16,ee54a67a82e315ea67273e3ccd2e9645f469bea85b4269a573e3ebae7a26801a,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/A.trace,2736,78677506c6d1492aaf9ae6a7c98b34f31b052a4ac782b44afd5e1b8b7ad9b1bf,utf8,31 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/B.ilean,1227,0586b9e0f335257c2eb10bbe3d403df9e015d39238f42a98f2becd76a26eb964,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/B.ilean.hash,16,2cdfa369c60c3b0d0edd3308559eb756323ed876046860ce9f9948f213a69dcb,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/B.olean,6968,5dd08aa6f215a6ec0371cc46302d0fef4396c146b495e2b265a90e4b8828ce1e,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/B.olean.hash,16,e521dc2aa3b78ee24e94b27547e0ddbe9ad6cd274933b6c2d5596bb5ae1a5431,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/build/lib/lean/Cancel/B.trace,2843,66bcfdec559f841cf36c5b47f8b239e4d3498e5f40113702f582d84093a96d17,utf8,33 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/config/[anonymous]/lakefile.olean,96552,132b7958fe91878ad66860d0b63b96aab2f419b00dde3f6f3be44a7977bed28c,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/.lake/config/[anonymous]/lakefile.olean.trace,184,41c036891d92626f53e4dcc4dc0ceeb9a07000d987050d7493ddcb91a919cf99,utf8,6 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/Cancel/A.lean,20,5a840fb8f9b7c93174ecf71605a2f89ee03807def59d95f9ef780de4a1064bdd,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/Cancel/B.lean,239,95bae3bd5b9c4d1911465431317f1cd9d2d8c4edd1a6c2c5e40eae07cace87e4,utf8,9 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/Check.lean,47,c6278d0e92d16ff3e33aea6820e5f03b54e74d3cf717126dfbfb8514df4c7083,utf8,2 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/gate.entered,1,6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/gate.release,1,6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/lake-manifest.json,144,5efd93a91e43901632348cfbdbbb629c360b96ff391505c29044b55078cd3314,json,parsed
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/lakefile.lean,63,8a728c458ab847e91e229e849619caab4ac166627191e3281d8535e16bc29200,utf8,4 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-graceful/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/ir/Cancel/A.c,1374,6ac4161419cff108d9a2cdb22f1a3f46e59f0d80c00b2db25d843bff20ada73b,utf8,44 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/ir/Cancel/A.c.hash,16,f7c243c0bfa12faea91fbc9d5c72199a4e52be20ea57f3791787a98c191bbc06,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/ir/Cancel/A.setup.json,135,8244bdfbf453585ad13ed5de6b05a2e30f6f532c65f7867286ed4ab3d69a177c,json,parsed
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/ir/Cancel/B.c,1750,019e0d8ce76802b1ef59d95a4866cb34ef71d5d9f9e30e75eaab93859c6d0c02,utf8,52 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/ir/Cancel/B.c.hash,16,f8fd2c4581917ea2349c9f3f89124225d2c934d92408fca2f3db985cc5c4e1bc,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/ir/Cancel/B.setup.json,392,eefd8df2c93730eadd3086f48c36291293609922627870af1f7080c395f39141,json,parsed
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/A.ilean,285,9a8d8f40109a727450c41bbea97403d15e16ba6442094469a10eb914f53f6aee,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/A.ilean.hash,16,e007ed7261947821703aec9947d249e40f4bd9a530081784802ac2a581b11b0d,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/A.olean,4608,07937caf5fc358d615ded8b21f37cff92f190cbe56d6bc8d850f5a98669472ca,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/A.olean.hash,16,ee54a67a82e315ea67273e3ccd2e9645f469bea85b4269a573e3ebae7a26801a,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/A.trace,2764,2feeaea1686165ca2473c41de1994791e8a4ae12a495b8b4871dbdac88a79c57,utf8,31 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/B.ilean,1227,0586b9e0f335257c2eb10bbe3d403df9e015d39238f42a98f2becd76a26eb964,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/B.ilean.hash,16,2cdfa369c60c3b0d0edd3308559eb756323ed876046860ce9f9948f213a69dcb,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/B.olean,6968,5dd08aa6f215a6ec0371cc46302d0fef4396c146b495e2b265a90e4b8828ce1e,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/B.olean.hash,16,e521dc2aa3b78ee24e94b27547e0ddbe9ad6cd274933b6c2d5596bb5ae1a5431,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/build/lib/lean/Cancel/B.trace,2871,bb99cabf25c9901787a0fd1aa9eb2d419cc382158ab255534881482bba984469,utf8,33 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/config/[anonymous]/lakefile.olean,96552,132b7958fe91878ad66860d0b63b96aab2f419b00dde3f6f3be44a7977bed28c,binary,opaque
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/.lake/config/[anonymous]/lakefile.olean.trace,184,41c036891d92626f53e4dcc4dc0ceeb9a07000d987050d7493ddcb91a919cf99,utf8,6 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/Cancel/A.lean,20,5a840fb8f9b7c93174ecf71605a2f89ee03807def59d95f9ef780de4a1064bdd,utf8,1 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/Cancel/B.lean,239,95bae3bd5b9c4d1911465431317f1cd9d2d8c4edd1a6c2c5e40eae07cace87e4,utf8,9 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/Check.lean,47,c6278d0e92d16ff3e33aea6820e5f03b54e74d3cf717126dfbfb8514df4c7083,utf8,2 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/gate.entered,1,6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/gate.release,1,6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b,utf8,0 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/lake-manifest.json,144,5efd93a91e43901632348cfbdbbb629c360b96ff391505c29044b55078cd3314,json,parsed
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/lakefile.lean,63,8a728c458ab847e91e229e849619caab4ac166627191e3281d8535e16bc29200,utf8,4 lines
+anneal-3730-cli-graceful-cancel-signals-2026-09-29,support/work/lake-kill-control/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,utf8,1 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,REPORT.json,817,24124b70c726c6db415be5340203448e6d731782d1aff0985de5d458e2a28876,json,parsed
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,REPORT.md,6914,d7d03f9a339b8bff6f843be2317e949c94aab92d396240eb6b09a604564866c4,utf8,39 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/mix/c,15625,cddb20d2857b7998332e77a26aebac9123bbbec3f59814704fd4a6ed1a36ce18,utf8,154 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/mix/ilean,432,81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f,utf8,0 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/mix/olean,46504,078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2,binary,opaque
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/mix/plugin,51120,7e7f461e977f5f4cd22c6151ebeb3096fe40f08116e954527dce923ea6e01968,binary,opaque
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/mix/proof,75,b10e4c6b9c7ea3ce6253d4555055dfce6167eba042a952686c32cce486fe1470,utf8,4 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/mix/setup,171,661b56f25c6373114a18b14570d13f5c9c55b91ff27b02bbbdfd7977644661e7,utf8,6 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/mix/source,120,cbed218a5d55d82b23aef58c4be47e477fe71eca71e14c250804b1d15d5483af,utf8,4 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v1/c,15625,9547d9af626029335daf798fa79fb5f280ecc92b10a35639d1f05f1fe77231f3,utf8,154 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v1/ilean,432,81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f,utf8,0 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v1/olean,46504,078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2,binary,opaque
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v1/plugin,51120,5418363ec3b0d09e2cf5d8d058d088d9642da848531fb399cce6f863f2b63d3a,binary,opaque
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v1/proof,75,b10e4c6b9c7ea3ce6253d4555055dfce6167eba042a952686c32cce486fe1470,utf8,4 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v1/setup,117,ea76ca3112be61b05e2209991f6fbe33d56df85394d4779928ef5d5eaa982af6,utf8,5 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v1/source,120,cbed218a5d55d82b23aef58c4be47e477fe71eca71e14c250804b1d15d5483af,utf8,4 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v2/c,15625,cddb20d2857b7998332e77a26aebac9123bbbec3f59814704fd4a6ed1a36ce18,utf8,154 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v2/ilean,432,81fd8c87e825d6db65a3d3fe8c3a3665840964fd46ae527f09a7b5a83c533b6f,utf8,0 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v2/olean,46408,82056aa6634611238637e5c3d5dc166a1d0abc359ee14f61f2a12d5a541e8fd8,binary,opaque
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v2/plugin,51120,7e7f461e977f5f4cd22c6151ebeb3096fe40f08116e954527dce923ea6e01968,binary,opaque
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v2/proof,75,2eec0a5acdb977bc49ffb937672978f0ad285f0c7dd61612bc419ebf6e07c14a,utf8,4 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v2/setup,171,661b56f25c6373114a18b14570d13f5c9c55b91ff27b02bbbdfd7977644661e7,utf8,6 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/artifacts/v2/source,120,1ac5f77ce3d4a0e13e52e4af0cbb791a48471c99b5e8873d4bf04475661a65d1,utf8,4 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/check.py,2593,96f610eb6feacacd0f08d753d3b81d45fe17255884458805b98359e172403cd2,utf8,45 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/probe.py,8618,bee17a0df909f0a3dbbde0a29038d414a0568935c8a7661d9940fb00289fd23f,utf8,133 lines
+anneal-3730-lake-plugin-combined-family-mix-2026-09-29,support/transcript.json,107328,a94170f6d250cc7c167c6f9ea4033ba1b9974cf913ad55e63e5c75dd411663e9,json,parsed

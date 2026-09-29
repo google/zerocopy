@@ -1,0 +1,8 @@
+{
+  "topics": ["lean", "lean/server", "lean/rpc", "anneal/editor", "anneal/annotations"],
+  "subjects": [
+    {"name": "Lean 4 v4.30.0-rc2 direct language server", "identity": {"version": "v4.30.0-rc2", "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"}},
+    {"name": "Pinned nightly rustc", "identity": {"version": "1.98.0-nightly (f8a08b688 2026-05-30)", "executable_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"}}
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,3145 @@
+{
+  "fixture_sha256": {
+    "Plugin.olean": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc",
+    "Dep.olean": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+  },
+  "fixture_blob_count": 8,
+  "fixture_blob_bytes": 262144,
+  "host": {
+    "diskutil_apfs": "apfs",
+    "apfs": {
+      "empty": {
+        "files": [],
+        "file_count": 0,
+        "logical_bytes": 0,
+        "allocated_file_bytes": 0,
+        "distinct_inode_count": 0,
+        "volume_available_bytes": 54529949696
+      },
+      "base": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464865,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464866,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464867,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464868,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464869,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464870,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464871,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464872,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464873,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464874,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464876,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          }
+        ],
+        "file_count": 11,
+        "logical_bytes": 2147019,
+        "allocated_file_bytes": 2158592,
+        "distinct_inode_count": 11,
+        "volume_available_bytes": 54527787008
+      },
+      "full_copy": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464865,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464866,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464867,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464868,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464869,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464870,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464871,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464872,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464873,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464874,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464876,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "full/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464888,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "full/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464878,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "full/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464882,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "full/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464883,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "full/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464881,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "full/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464880,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "full/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464885,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "full/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464884,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "full/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464886,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "full/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464887,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "full/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464890,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          }
+        ],
+        "file_count": 22,
+        "logical_bytes": 4294038,
+        "allocated_file_bytes": 4317184,
+        "distinct_inode_count": 22,
+        "volume_available_bytes": 54525624320
+      },
+      "clone_copy": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464865,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464866,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464867,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464868,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464869,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464870,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464871,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464872,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464873,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464874,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464876,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "clone/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464892,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "clone/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464893,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "clone/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464895,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "clone/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464896,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "clone/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464897,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "clone/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464898,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "clone/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464899,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "clone/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464900,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "clone/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464901,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "clone/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464902,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "clone/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464904,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "full/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464888,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "full/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464878,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "full/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464882,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "full/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464883,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "full/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464881,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "full/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464880,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "full/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464885,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "full/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464884,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "full/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464886,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "full/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464887,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "full/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464890,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          }
+        ],
+        "file_count": 33,
+        "logical_bytes": 6441057,
+        "allocated_file_bytes": 6475776,
+        "distinct_inode_count": 33,
+        "volume_available_bytes": 54525616128
+      },
+      "hardlink": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464865,
+            "links": 2,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464866,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464867,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464868,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464869,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464870,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464871,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464872,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464873,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464874,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464876,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "clone/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464892,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "clone/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464893,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "clone/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464895,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "clone/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464896,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "clone/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464897,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "clone/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464898,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "clone/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464899,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "clone/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464900,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "clone/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464901,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "clone/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464902,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "clone/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464904,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "full/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464888,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "full/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464878,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "full/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464882,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "full/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464883,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "full/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464881,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "full/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464880,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "full/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464885,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "full/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464884,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "full/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464886,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "full/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464887,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "full/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464890,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "read_only_link/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464865,
+            "links": 2,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          }
+        ],
+        "file_count": 34,
+        "logical_bytes": 6445609,
+        "allocated_file_bytes": 6483968,
+        "distinct_inode_count": 33,
+        "volume_available_bytes": 54525616128
+      },
+      "clone_mutated": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464865,
+            "links": 2,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464866,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464867,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464868,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464869,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464870,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464871,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464872,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464873,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464874,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464876,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "clone/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464892,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "clone/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464893,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "clone/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464895,
+            "links": 1,
+            "sha256": "67d7a84956eb44c89dcf53e4d39ee5a90b85eafd216a912805d28b12e2334221"
+          },
+          {
+            "path": "clone/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464896,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "clone/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464897,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "clone/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464898,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "clone/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464899,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "clone/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464900,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "clone/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464901,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "clone/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464902,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "clone/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464904,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "full/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464888,
+            "links": 1,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          },
+          {
+            "path": "full/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "device": 16777229,
+            "inode": 24464878,
+            "links": 1,
+            "sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+          },
+          {
+            "path": "full/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464882,
+            "links": 1,
+            "sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+          },
+          {
+            "path": "full/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464883,
+            "links": 1,
+            "sha256": "a26727ad21172fbb16f6d7bd5c3bb3e7f91534130118ada90c924e2b2f2d3dad"
+          },
+          {
+            "path": "full/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464881,
+            "links": 1,
+            "sha256": "a4010d76146a3ff9ac5fb4076c9a22dab93fa64b959579bf303c72e2cb425df1"
+          },
+          {
+            "path": "full/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464880,
+            "links": 1,
+            "sha256": "f54b3351177d34cb2e49f40ac437426acc2eddede7a3b8babd3ff990a51736dc"
+          },
+          {
+            "path": "full/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464885,
+            "links": 1,
+            "sha256": "91ea38cf281237e142c98d206ffdb6aaaaf9b98c0133ed732aced2fa6c2b96a9"
+          },
+          {
+            "path": "full/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464884,
+            "links": 1,
+            "sha256": "071a0024a26bd4c7c72176bc369733a3831825546dbda481cd026a5a27fc8725"
+          },
+          {
+            "path": "full/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464886,
+            "links": 1,
+            "sha256": "eb5c7a9c58905e96e5fe828e33ba64f83da60307158c0dcf2df784048d7c8d33"
+          },
+          {
+            "path": "full/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "device": 16777229,
+            "inode": 24464887,
+            "links": 1,
+            "sha256": "d16084b4954b1ad71832b83a4f5fbf42a9de8343bc01892099c6ef5b28a35924"
+          },
+          {
+            "path": "full/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "device": 16777229,
+            "inode": 24464890,
+            "links": 1,
+            "sha256": "efba6321c375cd25e2cb0a653165fd5803c30e0951121a06d9a3568760d3f5ec"
+          },
+          {
+            "path": "read_only_link/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "device": 16777229,
+            "inode": 24464865,
+            "links": 2,
+            "sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3"
+          }
+        ],
+        "file_count": 34,
+        "logical_bytes": 6445609,
+        "allocated_file_bytes": 6483968,
+        "distinct_inode_count": 33,
+        "volume_available_bytes": 54525599744
+      },
+      "baseline_blob_sha256": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30"
+    }
+  },
+  "container": {
+    "image": "sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254",
+    "docker_info": "overlayfs aarch64 4181389312",
+    "platform": "linux/amd64",
+    "limits": {
+      "memory": "512m",
+      "cpus": "1",
+      "network": "none",
+      "pull": "never"
+    },
+    "overlayfs": {
+      "filesystem": "overlayfs",
+      "empty": {
+        "files": [],
+        "file_count": 0,
+        "logical_bytes": 0,
+        "allocated_file_bytes": 0,
+        "distinct_inode_count": 0,
+        "du_bytes": 0,
+        "df_text": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+        "docker_size_rw_bytes": 4096
+      },
+      "base": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65353,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65354,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65356,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65357,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65358,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65359,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65360,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65361,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65362,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65363,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65365,
+            "links": 1,
+            "device": 53
+          }
+        ],
+        "file_count": 11,
+        "logical_bytes": 2147019,
+        "allocated_file_bytes": 2158592,
+        "distinct_inode_count": 11,
+        "du_bytes": 2158592,
+        "df_text": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+        "docker_size_rw_bytes": 2162688
+      },
+      "full_copy": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65353,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65354,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65356,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65357,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65358,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65359,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65360,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65361,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65362,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65363,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65365,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65367,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65368,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65370,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65371,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65372,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65373,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65374,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65375,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65376,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65377,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65379,
+            "links": 1,
+            "device": 53
+          }
+        ],
+        "file_count": 22,
+        "logical_bytes": 4294038,
+        "allocated_file_bytes": 4317184,
+        "distinct_inode_count": 22,
+        "du_bytes": 4317184,
+        "df_text": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+        "docker_size_rw_bytes": 4321280
+      },
+      "reflink_attempt": {
+        "exit": 0,
+        "stderr": ""
+      },
+      "clone_copy": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65353,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65354,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65356,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65357,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65358,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65359,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65360,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65361,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65362,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65363,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65365,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65367,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65368,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65370,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65371,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65372,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65373,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65374,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65375,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65376,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65377,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65379,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65381,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65382,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65384,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65385,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65386,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65387,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65388,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65389,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65390,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65391,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65393,
+            "links": 1,
+            "device": 53
+          }
+        ],
+        "file_count": 33,
+        "logical_bytes": 6441057,
+        "allocated_file_bytes": 6475776,
+        "distinct_inode_count": 33,
+        "du_bytes": 6475776,
+        "df_text": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+        "docker_size_rw_bytes": 6479872
+      },
+      "hardlink": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65353,
+            "links": 2,
+            "device": 53
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65354,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65356,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65357,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65358,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65359,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65360,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65361,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65362,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65363,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65365,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65367,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65368,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65370,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65371,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65372,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65373,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65374,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65375,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65376,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65377,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65379,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65381,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65382,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65384,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65385,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65386,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65387,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65388,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65389,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65390,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65391,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65393,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "read_only_link/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65353,
+            "links": 2,
+            "device": 53
+          }
+        ],
+        "file_count": 34,
+        "logical_bytes": 6445609,
+        "allocated_file_bytes": 6483968,
+        "distinct_inode_count": 33,
+        "du_bytes": 6475776,
+        "df_text": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+        "docker_size_rw_bytes": 6479872
+      },
+      "clone_mutated": {
+        "files": [
+          {
+            "path": "base/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65353,
+            "links": 2,
+            "device": 53
+          },
+          {
+            "path": "base/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65354,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65356,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65357,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65358,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65359,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65360,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65361,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65362,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65363,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "base/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65365,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65367,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65368,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65370,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65371,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65372,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65373,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65374,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65375,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65376,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65377,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "full/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65379,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65381,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/Plugin.olean",
+            "bytes": 45272,
+            "blocks_512": 96,
+            "inode": 65382,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-00.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65384,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-01.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65385,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-02.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65386,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-03.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65387,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-04.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65388,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-05.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65389,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-06.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65390,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/cache/unit-07.bin",
+            "bytes": 262144,
+            "blocks_512": 512,
+            "inode": 65391,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "clone/project/Proof.lean",
+            "bytes": 43,
+            "blocks_512": 8,
+            "inode": 65393,
+            "links": 1,
+            "device": 53
+          },
+          {
+            "path": "read_only_link/Dep.olean",
+            "bytes": 4552,
+            "blocks_512": 16,
+            "inode": 65353,
+            "links": 2,
+            "device": 53
+          }
+        ],
+        "file_count": 34,
+        "logical_bytes": 6445609,
+        "allocated_file_bytes": 6483968,
+        "distinct_inode_count": 33,
+        "du_bytes": 6475776,
+        "df_text": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+        "docker_size_rw_bytes": 6479872
+      },
+      "mutation": {
+        "kind": "reflink",
+        "before_sha256sum": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30  /tmp/account/base/cache/unit-00.bin\nb9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30  /tmp/account/clone/cache/unit-00.bin\n",
+        "after_sha256sum": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30  /tmp/account/base/cache/unit-00.bin\n67d7a84956eb44c89dcf53e4d39ee5a90b85eafd216a912805d28b12e2334221  /tmp/account/clone/cache/unit-00.bin\n"
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/sbin/diskutil",
+        "info",
+        "/System/Volumes/Data"
+      ],
+      "exit": 0,
+      "stdout": "   Device Identifier:         disk3s1\n   Device Node:               /dev/disk3s1\n   Whole:                     No\n   Part of Whole:             disk3\n\n   Volume Name:               Macintosh HD - Data\n   Mounted:                   Yes\n   Mount Point:               /System/Volumes/Data\n\n   Partition Type:            41504653-0000-11AA-AA11-00306543ECAC\n   File System Personality:   APFS\n   Type (Bundle):             apfs\n   Name (User Visible):       APFS\n   Owners:                    Enabled\n\n   OS Can Be Installed:       Yes\n   Booter Disk:               disk3s4\n   Recovery Disk:             disk3s5\n   Media Type:                Generic\n   Protocol:                  Apple Fabric\n   SMART Status:              Verified\n   Volume UUID:               6D962263-06E1-4C85-8660-CC711E4CB19E\n   Disk / Partition UUID:     6D962263-06E1-4C85-8660-CC711E4CB19E\n\n   Disk Size:                 245.1 GB (245107195904 Bytes) (exactly 478724992 512-Byte-Units)\n   Device Block Size:         4096 Bytes\n\n   Volume Used Space:         156.1 GB (156099055616 Bytes) (exactly 304880968 512-Byte-Units)\n   Container Total Space:     245.1 GB (245107195904 Bytes) (exactly 478724992 512-Byte-Units)\n   Container Free Space:      54.5 GB (54529949696 Bytes) (exactly 106503808 512-Byte-Units)\n   Allocation Block Size:     4096 Bytes\n\n   Media OS Use Only:         No\n   Media Read-Only:           No\n   Volume Read-Only:          No\n\n   Device Location:           Internal\n   Removable Media:           Fixed\n\n   Solid State:               Yes\n   Hardware AES Support:      Yes\n\n   This disk is an APFS Volume.  APFS Information:\n   APFS Container:            disk3\n   APFS Physical Store:       disk0s2\n   APFS Volume Group:         7DE6101E-96FE-4DE0-ABE5-14E636D24D74\n   FileVault:                 Yes\n   Sealed:                    No\n   Locked:                    No\n\n   APFS Snapshots are defined upon this APFS Volume.  Snapshot list:\n   Snapshot UUID:             9A40212B-0810-4440-A2B4-6E31E5469B9E\n   Name:                      com.apple.TimeMachine.2026-09-28-083322.local\n   XID:                       2808941\n   Snapshot UUID:             E36E1D40-4773-4ED0-9803-02D7B590ED1B\n   Name:                      com.apple.TimeMachine.2026-09-28-093332.local\n   XID:                       2809297\n   Snapshot UUID:             8A908902-6E81-4FA4-A372-4234B4A1625B\n   Name:                      com.apple.TimeMachine.2026-09-28-103326.local\n   XID:                       2809682\n   Snapshot UUID:             E81BC98F-BE58-4A05-8CA4-3B83CF073C23\n   Name:                      com.apple.TimeMachine.2026-09-28-113338.local\n   XID:                       2810063\n   Snapshot UUID:             A6C6D4A2-932E-4F25-9B8D-4DC2FD5C809E\n   Name:                      com.apple.TimeMachine.2026-09-28-123347.local\n   XID:                       2810468\n   Snapshot UUID:             CE4A1E11-814C-4009-B0A8-90F782C8B774\n   Name:                      com.apple.TimeMachine.2026-09-28-133345.local\n   XID:                       2810832\n   Snapshot UUID:             5686CA19-3933-43A7-9F57-A5AAB27FD9AB\n   Name:                      com.apple.TimeMachine.2026-09-28-143412.local\n   XID:                       2811252\n   Snapshot UUID:             193E055F-8A49-4E74-B008-0A55BB8E6E95\n   Name:                      com.apple.TimeMachine.2026-09-28-153413.local\n   XID:                       2811626\n   Snapshot UUID:             152C44B7-D1A3-4887-A2E1-7FC8FF873C2D\n   Name:                      com.apple.TimeMachine.2026-09-28-173442.local\n   XID:                       2812431\n   Snapshot UUID:             E1B0CC26-FEAA-49D7-BA17-74C123F86700\n   Name:                      com.apple.TimeMachine.2026-09-28-183456.local\n   XID:                       2813079\n   Snapshot UUID:             40E76459-240D-4A2D-AA70-D20238CCA3CF\n   Name:                      com.apple.TimeMachine.2026-09-28-193501.local\n   XID:                       2813519\n   Snapshot UUID:             58059A75-AA69-4204-8EB6-4EC0268084C4\n   Name:                      com.apple.TimeMachine.2026-09-28-203511.local\n   XID:                       2813936\n   Snapshot UUID:             CD4A1200-1D21-4BA1-8DAD-759E618C0A16\n   Name:                      com.apple.TimeMachine.2026-09-28-213556.local\n   XID:                       2814352\n   Snapshot UUID:             5F40C92A-E421-4850-BC1B-6C84AC0F1F98\n   Name:                      com.apple.TimeMachine.2026-09-28-223607.local\n   XID:                       2814748\n   Snapshot UUID:             CEE9096E-BE66-4A1C-8BB9-A178775E5E46\n   Name:                      com.apple.TimeMachine.2026-09-28-233623.local\n   XID:                       2815104\n   Snapshot UUID:             2E3A92FF-A7D5-44E4-94A0-3E94CA1D0D16\n   Name:                      com.apple.TimeMachine.2026-09-29-003708.local\n   XID:                       2815469\n   Snapshot UUID:             8CF779E2-03A2-40A1-B172-B4FB4A5B0EF1\n   Name:                      com.apple.TimeMachine.2026-09-29-013718.local\n   XID:                       2815832\n   Snapshot UUID:             C5F5EF0C-3437-44FF-BFE5-871C5B4AE3A3\n   Name:                      com.apple.TimeMachine.2026-09-29-023748.local\n   XID:                       2816275\n   Snapshot UUID:             45CF1D28-AAC4-4DED-853A-2FE46DEAA4A4\n   Name:                      com.apple.TimeMachine.2026-09-29-033833.local\n   XID:                       2816695\n   Snapshot UUID:             68C0EA93-40DC-4F8A-A710-95EAD471C722\n   Name:                      com.apple.TimeMachine.2026-09-29-043833.local\n   XID:                       2818967\n   Snapshot UUID:             DFE86D31-7AA1-46BC-874F-F6EFE5DD803C\n   Name:                      com.apple.TimeMachine.2026-09-29-053918.local\n   XID:                       2820618\n   Snapshot UUID:             C9ECEC46-515C-4095-A3B1-875FC124C547\n   Name:                      com.apple.TimeMachine.2026-09-29-064012.local\n   XID:                       2821379\n   Snapshot UUID:             D6324B26-BE80-4015-BAC5-B98EE8564E67\n   Name:                      com.apple.TimeMachine.2026-09-29-074017.local\n   XID:                       2821788\n\n",
+      "stderr": "",
+      "seconds": 0.166
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/Dep.olean",
+        "$WORK/apfs/clone/Dep.olean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.004
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/Plugin.olean",
+        "$WORK/apfs/clone/Plugin.olean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/cache/unit-00.bin",
+        "$WORK/apfs/clone/cache/unit-00.bin"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/cache/unit-01.bin",
+        "$WORK/apfs/clone/cache/unit-01.bin"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/cache/unit-02.bin",
+        "$WORK/apfs/clone/cache/unit-02.bin"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/cache/unit-03.bin",
+        "$WORK/apfs/clone/cache/unit-03.bin"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/cache/unit-04.bin",
+        "$WORK/apfs/clone/cache/unit-04.bin"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/cache/unit-05.bin",
+        "$WORK/apfs/clone/cache/unit-05.bin"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/cache/unit-06.bin",
+        "$WORK/apfs/clone/cache/unit-06.bin"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/cache/unit-07.bin",
+        "$WORK/apfs/clone/cache/unit-07.bin"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.003
+    },
+    {
+      "argv": [
+        "/bin/cp",
+        "-c",
+        "$WORK/apfs/base/project/Proof.lean",
+        "$WORK/apfs/clone/project/Proof.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.002
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "image",
+        "inspect",
+        "ubuntu:24.04",
+        "--format",
+        "{{.Id}} {{.Os}} {{.Architecture}}"
+      ],
+      "exit": 0,
+      "stdout": "sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254  \n",
+      "stderr": "",
+      "seconds": 0.168
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "info",
+        "--format",
+        "{{.Driver}} {{.Architecture}} {{.MemTotal}}"
+      ],
+      "exit": 0,
+      "stdout": "overlayfs aarch64 4181389312\n",
+      "stderr": "",
+      "seconds": 0.062
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "run",
+        "-d",
+        "--rm",
+        "--pull=never",
+        "--network=none",
+        "--platform",
+        "linux/amd64",
+        "--memory=512m",
+        "--cpus=1",
+        "--name",
+        "$CONTAINER",
+        "ubuntu:24.04",
+        "sleep",
+        "120"
+      ],
+      "exit": 0,
+      "stdout": "107b0b5bdd98b6fe872b6f3acc8f4ac338f9278b1cd88614f10502ddb85d5145\n",
+      "stderr": "",
+      "seconds": 0.217
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "stat",
+        "-f",
+        "-c",
+        "%T",
+        "/tmp"
+      ],
+      "exit": 0,
+      "stdout": "overlayfs\n",
+      "stderr": "",
+      "seconds": 0.057
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "mkdir",
+        "-p",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.055
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "find",
+        "/tmp/account",
+        "-type",
+        "f",
+        "-printf",
+        "%P\t%s\t%b\t%i\t%n\t%D\n"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.062
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "du",
+        "-s",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "0\t/tmp/account\n",
+      "stderr": "",
+      "seconds": 0.053
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "df",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+      "stderr": "",
+      "seconds": 0.053
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "inspect",
+        "--size",
+        "--format",
+        "{{.SizeRw}}",
+        "$CONTAINER"
+      ],
+      "exit": 0,
+      "stdout": "4096\n",
+      "stderr": "",
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "cp",
+        "$WORK/apfs/base",
+        "$CONTAINER:/tmp/account/base"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.029
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "find",
+        "/tmp/account",
+        "-type",
+        "f",
+        "-printf",
+        "%P\t%s\t%b\t%i\t%n\t%D\n"
+      ],
+      "exit": 0,
+      "stdout": "base/Dep.olean\t4552\t16\t65353\t1\t53\nbase/Plugin.olean\t45272\t96\t65354\t1\t53\nbase/cache/unit-00.bin\t262144\t512\t65356\t1\t53\nbase/cache/unit-01.bin\t262144\t512\t65357\t1\t53\nbase/cache/unit-02.bin\t262144\t512\t65358\t1\t53\nbase/cache/unit-03.bin\t262144\t512\t65359\t1\t53\nbase/cache/unit-04.bin\t262144\t512\t65360\t1\t53\nbase/cache/unit-05.bin\t262144\t512\t65361\t1\t53\nbase/cache/unit-06.bin\t262144\t512\t65362\t1\t53\nbase/cache/unit-07.bin\t262144\t512\t65363\t1\t53\nbase/project/Proof.lean\t43\t8\t65365\t1\t53\n",
+      "stderr": "",
+      "seconds": 0.055
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "du",
+        "-s",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "2158592\t/tmp/account\n",
+      "stderr": "",
+      "seconds": 0.05
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "df",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+      "stderr": "",
+      "seconds": 0.052
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "inspect",
+        "--size",
+        "--format",
+        "{{.SizeRw}}",
+        "$CONTAINER"
+      ],
+      "exit": 0,
+      "stdout": "2162688\n",
+      "stderr": "",
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "cp",
+        "-a",
+        "/tmp/account/base",
+        "/tmp/account/full"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.056
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "find",
+        "/tmp/account",
+        "-type",
+        "f",
+        "-printf",
+        "%P\t%s\t%b\t%i\t%n\t%D\n"
+      ],
+      "exit": 0,
+      "stdout": "base/Dep.olean\t4552\t16\t65353\t1\t53\nbase/Plugin.olean\t45272\t96\t65354\t1\t53\nbase/cache/unit-00.bin\t262144\t512\t65356\t1\t53\nbase/cache/unit-01.bin\t262144\t512\t65357\t1\t53\nbase/cache/unit-02.bin\t262144\t512\t65358\t1\t53\nbase/cache/unit-03.bin\t262144\t512\t65359\t1\t53\nbase/cache/unit-04.bin\t262144\t512\t65360\t1\t53\nbase/cache/unit-05.bin\t262144\t512\t65361\t1\t53\nbase/cache/unit-06.bin\t262144\t512\t65362\t1\t53\nbase/cache/unit-07.bin\t262144\t512\t65363\t1\t53\nbase/project/Proof.lean\t43\t8\t65365\t1\t53\nfull/Dep.olean\t4552\t16\t65367\t1\t53\nfull/Plugin.olean\t45272\t96\t65368\t1\t53\nfull/cache/unit-00.bin\t262144\t512\t65370\t1\t53\nfull/cache/unit-01.bin\t262144\t512\t65371\t1\t53\nfull/cache/unit-02.bin\t262144\t512\t65372\t1\t53\nfull/cache/unit-03.bin\t262144\t512\t65373\t1\t53\nfull/cache/unit-04.bin\t262144\t512\t65374\t1\t53\nfull/cache/unit-05.bin\t262144\t512\t65375\t1\t53\nfull/cache/unit-06.bin\t262144\t512\t65376\t1\t53\nfull/cache/unit-07.bin\t262144\t512\t65377\t1\t53\nfull/project/Proof.lean\t43\t8\t65379\t1\t53\n",
+      "stderr": "",
+      "seconds": 0.058
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "du",
+        "-s",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "4317184\t/tmp/account\n",
+      "stderr": "",
+      "seconds": 0.05
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "df",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+      "stderr": "",
+      "seconds": 0.058
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "inspect",
+        "--size",
+        "--format",
+        "{{.SizeRw}}",
+        "$CONTAINER"
+      ],
+      "exit": 0,
+      "stdout": "4321280\n",
+      "stderr": "",
+      "seconds": 0.025
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "cp",
+        "-a",
+        "--reflink=always",
+        "/tmp/account/base",
+        "/tmp/account/clone"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.057
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "find",
+        "/tmp/account",
+        "-type",
+        "f",
+        "-printf",
+        "%P\t%s\t%b\t%i\t%n\t%D\n"
+      ],
+      "exit": 0,
+      "stdout": "base/Dep.olean\t4552\t16\t65353\t1\t53\nbase/Plugin.olean\t45272\t96\t65354\t1\t53\nbase/cache/unit-00.bin\t262144\t512\t65356\t1\t53\nbase/cache/unit-01.bin\t262144\t512\t65357\t1\t53\nbase/cache/unit-02.bin\t262144\t512\t65358\t1\t53\nbase/cache/unit-03.bin\t262144\t512\t65359\t1\t53\nbase/cache/unit-04.bin\t262144\t512\t65360\t1\t53\nbase/cache/unit-05.bin\t262144\t512\t65361\t1\t53\nbase/cache/unit-06.bin\t262144\t512\t65362\t1\t53\nbase/cache/unit-07.bin\t262144\t512\t65363\t1\t53\nbase/project/Proof.lean\t43\t8\t65365\t1\t53\nfull/Dep.olean\t4552\t16\t65367\t1\t53\nfull/Plugin.olean\t45272\t96\t65368\t1\t53\nfull/cache/unit-00.bin\t262144\t512\t65370\t1\t53\nfull/cache/unit-01.bin\t262144\t512\t65371\t1\t53\nfull/cache/unit-02.bin\t262144\t512\t65372\t1\t53\nfull/cache/unit-03.bin\t262144\t512\t65373\t1\t53\nfull/cache/unit-04.bin\t262144\t512\t65374\t1\t53\nfull/cache/unit-05.bin\t262144\t512\t65375\t1\t53\nfull/cache/unit-06.bin\t262144\t512\t65376\t1\t53\nfull/cache/unit-07.bin\t262144\t512\t65377\t1\t53\nfull/project/Proof.lean\t43\t8\t65379\t1\t53\nclone/Dep.olean\t4552\t16\t65381\t1\t53\nclone/Plugin.olean\t45272\t96\t65382\t1\t53\nclone/cache/unit-00.bin\t262144\t512\t65384\t1\t53\nclone/cache/unit-01.bin\t262144\t512\t65385\t1\t53\nclone/cache/unit-02.bin\t262144\t512\t65386\t1\t53\nclone/cache/unit-03.bin\t262144\t512\t65387\t1\t53\nclone/cache/unit-04.bin\t262144\t512\t65388\t1\t53\nclone/cache/unit-05.bin\t262144\t512\t65389\t1\t53\nclone/cache/unit-06.bin\t262144\t512\t65390\t1\t53\nclone/cache/unit-07.bin\t262144\t512\t65391\t1\t53\nclone/project/Proof.lean\t43\t8\t65393\t1\t53\n",
+      "stderr": "",
+      "seconds": 0.057
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "du",
+        "-s",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "6475776\t/tmp/account\n",
+      "stderr": "",
+      "seconds": 0.059
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "df",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+      "stderr": "",
+      "seconds": 0.054
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "inspect",
+        "--size",
+        "--format",
+        "{{.SizeRw}}",
+        "$CONTAINER"
+      ],
+      "exit": 0,
+      "stdout": "6479872\n",
+      "stderr": "",
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "mkdir",
+        "-p",
+        "/tmp/account/read_only_link"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.051
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "ln",
+        "/tmp/account/base/Dep.olean",
+        "/tmp/account/read_only_link/Dep.olean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.051
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "find",
+        "/tmp/account",
+        "-type",
+        "f",
+        "-printf",
+        "%P\t%s\t%b\t%i\t%n\t%D\n"
+      ],
+      "exit": 0,
+      "stdout": "base/Dep.olean\t4552\t16\t65353\t2\t53\nbase/Plugin.olean\t45272\t96\t65354\t1\t53\nbase/cache/unit-00.bin\t262144\t512\t65356\t1\t53\nbase/cache/unit-01.bin\t262144\t512\t65357\t1\t53\nbase/cache/unit-02.bin\t262144\t512\t65358\t1\t53\nbase/cache/unit-03.bin\t262144\t512\t65359\t1\t53\nbase/cache/unit-04.bin\t262144\t512\t65360\t1\t53\nbase/cache/unit-05.bin\t262144\t512\t65361\t1\t53\nbase/cache/unit-06.bin\t262144\t512\t65362\t1\t53\nbase/cache/unit-07.bin\t262144\t512\t65363\t1\t53\nbase/project/Proof.lean\t43\t8\t65365\t1\t53\nfull/Dep.olean\t4552\t16\t65367\t1\t53\nfull/Plugin.olean\t45272\t96\t65368\t1\t53\nfull/cache/unit-00.bin\t262144\t512\t65370\t1\t53\nfull/cache/unit-01.bin\t262144\t512\t65371\t1\t53\nfull/cache/unit-02.bin\t262144\t512\t65372\t1\t53\nfull/cache/unit-03.bin\t262144\t512\t65373\t1\t53\nfull/cache/unit-04.bin\t262144\t512\t65374\t1\t53\nfull/cache/unit-05.bin\t262144\t512\t65375\t1\t53\nfull/cache/unit-06.bin\t262144\t512\t65376\t1\t53\nfull/cache/unit-07.bin\t262144\t512\t65377\t1\t53\nfull/project/Proof.lean\t43\t8\t65379\t1\t53\nclone/Dep.olean\t4552\t16\t65381\t1\t53\nclone/Plugin.olean\t45272\t96\t65382\t1\t53\nclone/cache/unit-00.bin\t262144\t512\t65384\t1\t53\nclone/cache/unit-01.bin\t262144\t512\t65385\t1\t53\nclone/cache/unit-02.bin\t262144\t512\t65386\t1\t53\nclone/cache/unit-03.bin\t262144\t512\t65387\t1\t53\nclone/cache/unit-04.bin\t262144\t512\t65388\t1\t53\nclone/cache/unit-05.bin\t262144\t512\t65389\t1\t53\nclone/cache/unit-06.bin\t262144\t512\t65390\t1\t53\nclone/cache/unit-07.bin\t262144\t512\t65391\t1\t53\nclone/project/Proof.lean\t43\t8\t65393\t1\t53\nread_only_link/Dep.olean\t4552\t16\t65353\t2\t53\n",
+      "stderr": "",
+      "seconds": 0.053
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "du",
+        "-s",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "6475776\t/tmp/account\n",
+      "stderr": "",
+      "seconds": 0.052
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "df",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+      "stderr": "",
+      "seconds": 0.055
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "inspect",
+        "--size",
+        "--format",
+        "{{.SizeRw}}",
+        "$CONTAINER"
+      ],
+      "exit": 0,
+      "stdout": "6479872\n",
+      "stderr": "",
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "sha256sum",
+        "/tmp/account/base/cache/unit-00.bin",
+        "/tmp/account/clone/cache/unit-00.bin"
+      ],
+      "exit": 0,
+      "stdout": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30  /tmp/account/base/cache/unit-00.bin\nb9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30  /tmp/account/clone/cache/unit-00.bin\n",
+      "stderr": "",
+      "seconds": 0.07
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "dd",
+        "if=/dev/zero",
+        "of=/tmp/account/clone/cache/unit-00.bin",
+        "bs=4096",
+        "count=1",
+        "conv=notrunc"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "1+0 records in\n1+0 records out\n4096 bytes (4.1 kB, 4.0 KiB) copied, 0.00200227 s, 2.0 MB/s\n",
+      "seconds": 0.054
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "sha256sum",
+        "/tmp/account/base/cache/unit-00.bin",
+        "/tmp/account/clone/cache/unit-00.bin"
+      ],
+      "exit": 0,
+      "stdout": "b9b9cbe4b4b481da16f1c5e1f05c3c4753a0dd75fc5c7d5c6b9417093134db30  /tmp/account/base/cache/unit-00.bin\n67d7a84956eb44c89dcf53e4d39ee5a90b85eafd216a912805d28b12e2334221  /tmp/account/clone/cache/unit-00.bin\n",
+      "stderr": "",
+      "seconds": 0.055
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "find",
+        "/tmp/account",
+        "-type",
+        "f",
+        "-printf",
+        "%P\t%s\t%b\t%i\t%n\t%D\n"
+      ],
+      "exit": 0,
+      "stdout": "base/Dep.olean\t4552\t16\t65353\t2\t53\nbase/Plugin.olean\t45272\t96\t65354\t1\t53\nbase/cache/unit-00.bin\t262144\t512\t65356\t1\t53\nbase/cache/unit-01.bin\t262144\t512\t65357\t1\t53\nbase/cache/unit-02.bin\t262144\t512\t65358\t1\t53\nbase/cache/unit-03.bin\t262144\t512\t65359\t1\t53\nbase/cache/unit-04.bin\t262144\t512\t65360\t1\t53\nbase/cache/unit-05.bin\t262144\t512\t65361\t1\t53\nbase/cache/unit-06.bin\t262144\t512\t65362\t1\t53\nbase/cache/unit-07.bin\t262144\t512\t65363\t1\t53\nbase/project/Proof.lean\t43\t8\t65365\t1\t53\nfull/Dep.olean\t4552\t16\t65367\t1\t53\nfull/Plugin.olean\t45272\t96\t65368\t1\t53\nfull/cache/unit-00.bin\t262144\t512\t65370\t1\t53\nfull/cache/unit-01.bin\t262144\t512\t65371\t1\t53\nfull/cache/unit-02.bin\t262144\t512\t65372\t1\t53\nfull/cache/unit-03.bin\t262144\t512\t65373\t1\t53\nfull/cache/unit-04.bin\t262144\t512\t65374\t1\t53\nfull/cache/unit-05.bin\t262144\t512\t65375\t1\t53\nfull/cache/unit-06.bin\t262144\t512\t65376\t1\t53\nfull/cache/unit-07.bin\t262144\t512\t65377\t1\t53\nfull/project/Proof.lean\t43\t8\t65379\t1\t53\nclone/Dep.olean\t4552\t16\t65381\t1\t53\nclone/Plugin.olean\t45272\t96\t65382\t1\t53\nclone/cache/unit-00.bin\t262144\t512\t65384\t1\t53\nclone/cache/unit-01.bin\t262144\t512\t65385\t1\t53\nclone/cache/unit-02.bin\t262144\t512\t65386\t1\t53\nclone/cache/unit-03.bin\t262144\t512\t65387\t1\t53\nclone/cache/unit-04.bin\t262144\t512\t65388\t1\t53\nclone/cache/unit-05.bin\t262144\t512\t65389\t1\t53\nclone/cache/unit-06.bin\t262144\t512\t65390\t1\t53\nclone/cache/unit-07.bin\t262144\t512\t65391\t1\t53\nclone/project/Proof.lean\t43\t8\t65393\t1\t53\nread_only_link/Dep.olean\t4552\t16\t65353\t2\t53\n",
+      "stderr": "",
+      "seconds": 0.057
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "du",
+        "-s",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "6475776\t/tmp/account\n",
+      "stderr": "",
+      "seconds": 0.052
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "exec",
+        "$CONTAINER",
+        "df",
+        "-B1",
+        "/tmp/account"
+      ],
+      "exit": 0,
+      "stdout": "Filesystem       1B-blocks       Used   Available Use% Mounted on\noverlay        54626615296 2962776064 51663839232   6% /\n",
+      "stderr": "",
+      "seconds": 0.06
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "inspect",
+        "--size",
+        "--format",
+        "{{.SizeRw}}",
+        "$CONTAINER"
+      ],
+      "exit": 0,
+      "stdout": "6479872\n",
+      "stderr": "",
+      "seconds": 0.024
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "rm",
+        "-f",
+        "$CONTAINER"
+      ],
+      "exit": 0,
+      "stdout": "$CONTAINER\n",
+      "stderr": "",
+      "seconds": 0.102
+    }
+  ]
+}

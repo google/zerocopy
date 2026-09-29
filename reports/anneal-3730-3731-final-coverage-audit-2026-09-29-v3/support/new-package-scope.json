@@ -1,0 +1,177 @@
+{
+  "anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29": {
+    "ids": [
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      91,
+      147
+    ],
+    "method": "Direct Lean/Lake 4.29 and 4.30-rc2 transitive Base\u2192Mid\u2192Proof old/new/fresh worker, option/macro/plugin transition, actual InfoWithCtx dereference/release/stale session, causally gated duplicate-ID reply ordering.",
+    "boundary": "One tiny Lake graph and native marker plugin; no Anneal envelope, complete loaded-environment attestation, rich nested tactic matrix or real crash/replacement race.",
+    "evidence_files": [
+      "support/probe.py",
+      "support/transcript.json",
+      "support/summary.json"
+    ]
+  },
+  "anneal-3730-charon-subject-output-phase-matrix-2026-09-29": {
+    "ids": [
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      105,
+      148
+    ],
+    "method": "Pinned Charon Cargo lib/bin/test/feature/target/flag/reorder controls; four identical --test requests invoked three driver units and alternated final test/binary LLBC despite success; regular-file 4 KiB partial output after RLIMIT_FSIZE, last-good copy and retry; two private concurrent requests.",
+    "boundary": "One small crate, no unsaved overlay, installed x86 target, complete compilation-unit key, same-process library, all kill phases, real Anneal publication or shared writable target.",
+    "evidence_files": [
+      "support/probe.py",
+      "support/raw-results.json",
+      "support/manifests/test-repeat-1.json",
+      "support/manifests/test-repeat-2.json",
+      "support/artifacts/quota-partial.llbc"
+    ]
+  },
+  "anneal-3730-aeneas-manifest-batch-oracle-2026-09-29": {
+    "ids": [
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      148,
+      149
+    ],
+    "method": "Pinned Charon one-shot Rust fixture and Aeneas CLI; changed inc propagates to caller's Lean value, schema mismatch rejects, complete declaration/file inventory, unknown external template, missing/axiom/concrete user models, fresh Lean batch positive/wrong-claim checks.",
+    "boundary": "No compiled Aeneas external registry mutation, same-process/in-memory API, authenticated ID-to-range map, full Rust semantic oracle or downstream service.",
+    "evidence_files": [
+      "support/probe.py",
+      "support/results.json",
+      "support/declaration-manifest.json"
+    ]
+  },
+  "anneal-3730-lake-cache-publication-atomicity-2026-09-29": {
+    "ids": [
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      108,
+      109,
+      150,
+      151
+    ],
+    "method": "Pinned Lake 4.30-rc2 source and tiny cache execution: actual 64-byte output-map interruption and invalid-JSON rejection/repair; artifact insertion permission failure; post-publication truncated OLean false hit and Lean crash; missing-object repair; two private read-only-cache consumers and one shared-writable overlap.",
+    "boundary": "Source review covers some listed configuration/cache rows without direct perturbation; no power-loss durability, all object types, conflicting shared writers, archive, Mathlib or Anneal server.",
+    "evidence_files": [
+      "support/probe.py",
+      "support/results.json",
+      "support/artifacts/partial-output-map.json",
+      "support/artifacts/truncated-olean.bin"
+    ]
+  },
+  "anneal-3730-resource-soak-contamination-2026-09-29": {
+    "ids": [
+      113,
+      114,
+      116,
+      117,
+      118,
+      139,
+      153,
+      154
+    ],
+    "method": "Direct Lean 4.30-rc2 single-server 1/2/4 tiny file-worker guarded sweep, 25 exact-goal/diagnostic sentinels, 3 edits per cell, tree RSS/footprint, scratch bytes, latency and cleanup transcript.",
+    "boundary": "7.87-second tiny import graph; sampled summed RSS is not unique physical memory; no Mathlib-sized jobs, several servers, sustained leak result, full Anneal/MCP topology or cross-workspace conflicts.",
+    "evidence_files": [
+      "support/probe.py",
+      "support/check.py",
+      "transcript.json"
+    ]
+  },
+  "anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29": {
+    "ids": [
+      126,
+      127,
+      129,
+      130,
+      131,
+      132,
+      135,
+      136,
+      158,
+      159
+    ],
+    "method": "Pinned Cargo/Charon/Aeneas/Lean four-case three-function golden path with Rust behavior tests, cold/prepared/clean runs, manually checked cross-layer declarations, fresh Lean theorem/axiom oracle and wrong-claim/missing-obligation/sorry/stale-import/tampered-import controls.",
+    "boundary": "Fixture obligations are manually chosen, not Anneal generated; lexical span correspondence not authenticated; no independent machine, general translator soundness, full dependency rebuild or upgraded cross-tool tuple.",
+    "evidence_files": [
+      "support/probe.py",
+      "support/results.json",
+      "support/work/base-cold/current.llbc",
+      "support/work/mutated-clean/current.llbc"
+    ]
+  },
+  "anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29": {
+    "ids": [
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      59,
+      60,
+      62,
+      63
+    ],
+    "method": "Pinned rustc/Charon/Aeneas/Lean source\u2192model\u2192proof specimen, actual compiler and batch/LSP diagnostics, Unicode coordinates; illustrative source-owned doc-comment map and two-range patch rejects; source range deleted while live version-1 diagnostic pending.",
+    "boundary": "The ///| projection and edit gate are invented, not Anneal; no actual editor UI, client encoding negotiation, rich InfoView, rename/WorkspaceEdit or production batch/live generator. I061 has no new evidence.",
+    "evidence_files": [
+      "support/probe.py",
+      "support/results.json",
+      "support/source.rs",
+      "support/artifacts/source.llbc"
+    ]
+  },
+  "anneal-3730-human-freshness-study-protocol-2026-09-29": {
+    "ids": [
+      141
+    ],
+    "method": "Validated eight-scenario, two-presentation human-study protocol, neutral prompt, balanced 32 empty participant slots, consent and analysis forms.",
+    "boundary": "Protocol only: zero participants, zero outcome rows, no frozen or rendered Anneal UI. Human-understanding claim remains conditional and unmeasured.",
+    "evidence_files": [
+      "support/stimuli.json",
+      "support/assignments.csv",
+      "support/check.py"
+    ]
+  }
+}

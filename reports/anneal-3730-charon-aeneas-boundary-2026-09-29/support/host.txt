@@ -1,0 +1,18 @@
+Python 3.14.7
+ProductName:		macOS
+ProductVersion:		26.6.2
+BuildVersion:		25G83
+Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64
+rustc 1.98.0-nightly (f8a08b688 2026-05-30)
+binary: rustc
+commit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1
+commit-date: 2026-05-30
+host: aarch64-apple-darwin
+release: 1.98.0-nightly
+LLVM version: 22.1.6
+0.1.210
+aeneas unknown
+ca098f663933e0d0993f9a0691ab50a24bec6d31f100e59d6ed3dabc94af82df  support/probe.py
+51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b  /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon
+f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03  /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas
+37a0ecd080d333f93bfe900d9c7dab193608e478

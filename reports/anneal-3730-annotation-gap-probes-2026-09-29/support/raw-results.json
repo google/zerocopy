@@ -1,0 +1,425 @@
+{
+  "actions": {
+    "snippet_with_placeholder": {
+      "ok": false,
+      "reason": "unsupported-snippet",
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by exact helper\r\n//% end\r\n"
+    },
+    "stale_after_unrelated_rust_edit": {
+      "ok": false,
+      "reason": "stale-generation",
+      "source": "pub fn f() -> u32 { 9 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by   exact helper -- retained spacing\r\n//% end\r\n"
+    },
+    "stale_projection": {
+      "ok": false,
+      "reason": "stale-generation",
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by exact helper\r\n//% end\r\n"
+    },
+    "stale_version": {
+      "ok": false,
+      "reason": "stale-generation",
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by exact helper\r\n//% end\r\n"
+    },
+    "synthetic_additional_edit": {
+      "ok": false,
+      "reason": "no-single-authored-origin",
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by exact helper\r\n//% end\r\n"
+    },
+    "two_user_edits": {
+      "ok": true,
+      "reason": "applied-atomically",
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by exact True.intro\r\n//% theorem proof : True := by exact True.intro\r\n//% end\r\n"
+    }
+  },
+  "environment": {
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "rustc_version": "rustc 1.98.1 (48a229cea 2026-09-01) (Homebrew)"
+  },
+  "fixtures": {
+    "baseline": {
+      "blocks": [
+        {
+          "complete": true,
+          "end": 133,
+          "id": "a",
+          "segments": [
+            [
+              42,
+              79
+            ],
+            [
+              83,
+              124
+            ]
+          ],
+          "start": 25
+        }
+      ],
+      "map": [
+        {
+          "id": "a",
+          "out": [
+            34,
+            71
+          ],
+          "source": [
+            42,
+            79
+          ]
+        },
+        {
+          "id": "a",
+          "out": [
+            71,
+            112
+          ],
+          "source": [
+            83,
+            124
+          ]
+        }
+      ],
+      "projection": "-- synthetic header\nnamespace P_a\ntheorem helper : True := by trivial\r\ntheorem proof : True := by exact helper\r\nend P_a\n",
+      "projection_sha256": "50563baaac37c3657259adb3659365b4c2857b3030a2a80a933e176f9aa6dd49",
+      "rustc": {
+        "argv": [
+          "rustc",
+          "--crate-type",
+          "lib",
+          "--emit",
+          "metadata",
+          "--out-dir",
+          "$WORK",
+          "$WORK/baseline.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by exact helper\r\n//% end\r\n",
+      "source_sha256": "74e1732c32004df0e0c6c9af6626f571235480fa47128a7e0db94a4a979d0aa5"
+    },
+    "malformed_annotation_line": {
+      "blocks": [
+        {
+          "complete": true,
+          "end": 132,
+          "id": "a",
+          "segments": [
+            null,
+            [
+              82,
+              123
+            ]
+          ],
+          "start": 25
+        }
+      ],
+      "map": [],
+      "projection": "-- synthetic header\n",
+      "projection_sha256": "ef7edd73239ebd5efd9f85bb2e56c03f3f19e0e817a7bf7635ac91fc2e4896de",
+      "rustc": {
+        "argv": [
+          "rustc",
+          "--crate-type",
+          "lib",
+          "--emit",
+          "metadata",
+          "--out-dir",
+          "$WORK",
+          "$WORK/malformed_annotation_line.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n// theorem helper : True := by trivial\r\n//% theorem proof : True := by exact helper\r\n//% end\r\n",
+      "source_sha256": "2cfae66e31214149f404e0ab358ef090a115e0a683aaaf04d4def5d6680d027a"
+    },
+    "rust_body_changed": {
+      "blocks": [
+        {
+          "complete": true,
+          "end": 155,
+          "id": "a",
+          "segments": [
+            [
+              42,
+              79
+            ],
+            [
+              83,
+              146
+            ]
+          ],
+          "start": 25
+        }
+      ],
+      "map": [
+        {
+          "id": "a",
+          "out": [
+            34,
+            71
+          ],
+          "source": [
+            42,
+            79
+          ]
+        },
+        {
+          "id": "a",
+          "out": [
+            71,
+            134
+          ],
+          "source": [
+            83,
+            146
+          ]
+        }
+      ],
+      "projection": "-- synthetic header\nnamespace P_a\ntheorem helper : True := by trivial\r\ntheorem proof : True := by   exact helper -- retained spacing\r\nend P_a\n",
+      "projection_sha256": "d0ee474f6ccc3a49c3c5d7007205964fa33e77c0d97961d75d70486c86ececac",
+      "rustc": {
+        "argv": [
+          "rustc",
+          "--crate-type",
+          "lib",
+          "--emit",
+          "metadata",
+          "--out-dir",
+          "$WORK",
+          "$WORK/rust_body_changed.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "pub fn f() -> u32 { 9 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by   exact helper -- retained spacing\r\n//% end\r\n",
+      "source_sha256": "2456244cdf664c54e988fdb02c7cec5aabf3612e74a1877583838851122408da"
+    },
+    "rust_incomplete": {
+      "blocks": [
+        {
+          "complete": true,
+          "end": 132,
+          "id": "a",
+          "segments": [
+            [
+              41,
+              78
+            ],
+            [
+              82,
+              123
+            ]
+          ],
+          "start": 24
+        }
+      ],
+      "map": [
+        {
+          "id": "a",
+          "out": [
+            34,
+            71
+          ],
+          "source": [
+            41,
+            78
+          ]
+        },
+        {
+          "id": "a",
+          "out": [
+            71,
+            112
+          ],
+          "source": [
+            82,
+            123
+          ]
+        }
+      ],
+      "projection": "-- synthetic header\nnamespace P_a\ntheorem helper : True := by trivial\r\ntheorem proof : True := by exact helper\r\nend P_a\n",
+      "projection_sha256": "50563baaac37c3657259adb3659365b4c2857b3030a2a80a933e176f9aa6dd49",
+      "rustc": {
+        "argv": [
+          "rustc",
+          "--crate-type",
+          "lib",
+          "--emit",
+          "metadata",
+          "--out-dir",
+          "$WORK",
+          "$WORK/rust_incomplete.rs"
+        ],
+        "exit": 1,
+        "stderr": "error: this file contains an unclosed delimiter\n --> $WORK/rust_incomplete.rs:5:9\n  |\n1 | pub fn f( -> u32 { 7 }\n  |         - unclosed delimiter\n...\n5 | //% end\n  |        ^\n\nerror: aborting due to 1 previous error\n\n",
+        "stdout": ""
+      },
+      "source": "pub fn f( -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by exact helper\r\n//% end\r\n",
+      "source_sha256": "41010e6f5c2229314abc201dc5f61eca18b4f66003ffcb11125a54b2b445ae02"
+    },
+    "unclosed_annotation": {
+      "blocks": [
+        {
+          "complete": false,
+          "end": 124,
+          "id": "a",
+          "segments": [
+            [
+              42,
+              79
+            ],
+            [
+              83,
+              124
+            ]
+          ],
+          "start": 25
+        }
+      ],
+      "map": [],
+      "projection": "-- synthetic header\n",
+      "projection_sha256": "ef7edd73239ebd5efd9f85bb2e56c03f3f19e0e817a7bf7635ac91fc2e4896de",
+      "rustc": {
+        "argv": [
+          "rustc",
+          "--crate-type",
+          "lib",
+          "--emit",
+          "metadata",
+          "--out-dir",
+          "$WORK",
+          "$WORK/unclosed_annotation.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by exact helper\r\n",
+      "source_sha256": "2c2687e9922a2243c7fd08590dcd853a25abb4a39c220a94462100e81a59eb88"
+    },
+    "unsaved_buffer": {
+      "blocks": [
+        {
+          "complete": true,
+          "end": 155,
+          "id": "a",
+          "segments": [
+            [
+              42,
+              79
+            ],
+            [
+              83,
+              146
+            ]
+          ],
+          "start": 25
+        }
+      ],
+      "map": [
+        {
+          "id": "a",
+          "out": [
+            34,
+            71
+          ],
+          "source": [
+            42,
+            79
+          ]
+        },
+        {
+          "id": "a",
+          "out": [
+            71,
+            134
+          ],
+          "source": [
+            83,
+            146
+          ]
+        }
+      ],
+      "projection": "-- synthetic header\nnamespace P_a\ntheorem helper : True := by trivial\r\ntheorem proof : True := by   exact helper -- retained spacing\r\nend P_a\n",
+      "projection_sha256": "d0ee474f6ccc3a49c3c5d7007205964fa33e77c0d97961d75d70486c86ececac",
+      "rustc": {
+        "argv": [
+          "rustc",
+          "--crate-type",
+          "lib",
+          "--emit",
+          "metadata",
+          "--out-dir",
+          "$WORK",
+          "$WORK/unsaved_buffer.rs"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "source": "pub fn f() -> u32 { 7 }\r\n//% begin a\r\n//% theorem helper : True := by trivial\r\n//% theorem proof : True := by   exact helper -- retained spacing\r\n//% end\r\n",
+      "source_sha256": "92e14f592c3f22d6b53aa0988e5537e0f074dbe54f32184390d2d68125d86112"
+    }
+  },
+  "lean_layouts": {
+    "name_collision": {
+      "result": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "$WORK/name_collision.lean"
+        ],
+        "exit": 1,
+        "stderr": "",
+        "stdout": "$WORK/name_collision.lean:2:8: error: `helper` has already been declared\n"
+      },
+      "sha256": "4edce99dec0fa372263f13205e9d97cff32274289f87a9080f8b8a1cee6f8fee",
+      "source": "theorem helper : True := by trivial\ntheorem helper : True := by trivial\n"
+    },
+    "namespaced_independent": {
+      "result": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "$WORK/namespaced_independent.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "sha256": "203a83eda124d1e90f740d1337bea2f1fabd9a8966f9b70c19fded4e69f76a21",
+      "source": "namespace A\ntheorem helper : True := by trivial\nend A\nnamespace B\ntheorem helper : True := by trivial\nend B\n"
+    },
+    "ordered_helpers": {
+      "result": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "$WORK/ordered_helpers.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "sha256": "cf1a7e2909e8017d0fbb226eeefa5de1d1ca145c550061c6c9eaa726261e35a9",
+      "source": "theorem helper : True := by trivial\ntheorem proof : True := by exact helper\n"
+    },
+    "reversed_helpers": {
+      "result": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "$WORK/reversed_helpers.lean"
+        ],
+        "exit": 1,
+        "stderr": "",
+        "stdout": "$WORK/reversed_helpers.lean:1:33: error(lean.unknownIdentifier): Unknown identifier `helper`\n"
+      },
+      "sha256": "98af5c6245bf9f9f325a73e1e34189df8750915498a560e5d1bbe8ccf4596a73",
+      "source": "theorem proof : True := by exact helper\ntheorem helper : True := by trivial\n"
+    }
+  }
+}

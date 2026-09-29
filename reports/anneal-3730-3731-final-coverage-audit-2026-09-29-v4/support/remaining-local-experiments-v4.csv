@@ -1,0 +1,5 @@
+gap,investigation_ids,bounded_next_experiment,resource_and_evidence_limit
+R14,I030;I059-I063,"Direct Lean LSP completion resolve/apply, definition/references/rename, semantic tokens and code actions on a small Unicode proof; then test projection on the existing illustrative model.",No real Rust-hosted projection or editor adapter; direct component/model only.
+R15,I089-I104;I108-I109;I151,Lake key/input ablations and valid but incompatible artifact-family mixes with fresh batch/server oracles in tiny private roots.,One pinned cached Lake; no power loss or real Anneal archive.
+R16,I041-I045;I047;I116-I118;I153-I154,Guarded multi-minute direct Lean server reopen/restart/import/RPC reference lifetime and 1/2/4 worker resource ramp.,Tiny imports and direct Lean; even minutes cannot establish hours-long leak rate.
+R17,I073-I080;I105;I134,"Bounded cross-tool stage cancellation/descendant cleanup with private Cargo/Charon/Aeneas/Lake/Lean outputs, then synthetic generation-fence oracle.",CLI-only stages; no Anneal scheduler or same-process API.

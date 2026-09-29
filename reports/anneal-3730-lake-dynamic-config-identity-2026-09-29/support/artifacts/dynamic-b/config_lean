@@ -1,0 +1,10 @@
+import Lake
+open Lake DSL
+run_cmd do
+  let v ← IO.getEnv "PROBE_CONFIG_VALUE"
+  let some p ← IO.getEnv "PROBE_SOURCE_PATH" | throwError "missing private source path"
+  let n := if v == some "B" then "9" else "7"
+  IO.FS.writeFile p s!"def depValue : Nat := {n}\n"
+package probe_dep
+@[default_target]
+lean_lib Dep

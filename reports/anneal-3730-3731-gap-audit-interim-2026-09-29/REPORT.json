@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "anneal/research-agenda",
+    "anneal/coverage-audit",
+    "research/gap-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy issue #3730",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue": "3730",
+        "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "closure_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e"
+      }
+    },
+    {
+      "name": "google/zerocopy issue #3731",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue": "3731",
+        "body_sha256": "603eb92dc737e34912eff048b9901306239ebba8e77b8a3a2acc6371bcc9227f",
+        "scope_extension_comment_sha256": "2451c7f38f864676a5aa23b16d4eb25ba18f768318829fd68715f9b384c1f533"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

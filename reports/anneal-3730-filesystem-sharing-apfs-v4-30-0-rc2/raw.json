@@ -1,0 +1,636 @@
+{
+  "platform": {
+    "command": [
+      "uname",
+      "-a"
+    ],
+    "exit": 0,
+    "stdout": "Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64\n",
+    "stderr": "",
+    "elapsed_ms": 3
+  },
+  "fs": {
+    "command": [
+      "diskutil",
+      "info",
+      "/System/Volumes/Data"
+    ],
+    "exit": 0,
+    "stdout": "   Device Identifier:         disk3s1\n   Device Node:               /dev/disk3s1\n   Whole:                     No\n   Part of Whole:             disk3\n\n   Volume Name:               Macintosh HD - Data\n   Mounted:                   Yes\n   Mount Point:               /System/Volumes/Data\n\n   Partition Type:            41504653-0000-11AA-AA11-00306543ECAC\n   File System Personality:   APFS\n   Type (Bundle):             apfs\n   Name (User Visible):       APFS\n   Owners:                    Enabled\n\n   OS Can Be Installed:       Yes\n   Booter Disk:               disk3s4\n   Recovery Disk:             disk3s5\n   Media Type:                Generic\n   Protocol:                  Apple Fabric\n   SMART Status:              Verified\n   Volume UUID:               6D962263-06E1-4C85-8660-CC711E4CB19E\n   Disk / Partition UUID:     6D962263-06E1-4C85-8660-CC711E4CB19E\n\n   Disk Size:                 245.1 GB (245107195904 Bytes) (exactly 478724992 512-Byte-Units)\n   Device Block Size:         4096 Bytes\n\n   Volume Used Space:         155.7 GB (155681529856 Bytes) (exactly 304065488 512-Byte-Units)\n   Container Total Space:     245.1 GB (245107195904 Bytes) (exactly 478724992 512-Byte-Units)\n   Container Free Space:      54.9 GB (54948634624 Bytes) (exactly 107321552 512-Byte-Units)\n   Allocation Block Size:     4096 Bytes\n\n   Media OS Use Only:         No\n   Media Read-Only:           No\n   Volume Read-Only:          No\n\n   Device Location:           Internal\n   Removable Media:           Fixed\n\n   Solid State:               Yes\n   Hardware AES Support:      Yes\n\n   This disk is an APFS Volume.  APFS Information:\n   APFS Container:            disk3\n   APFS Physical Store:       disk0s2\n   APFS Volume Group:         7DE6101E-96FE-4DE0-ABE5-14E636D24D74\n   FileVault:                 Yes\n   Sealed:                    No\n   Locked:                    No\n\n   APFS Snapshots are defined upon this APFS Volume.  Snapshot list:\n   Snapshot UUID:             D9975F9C-3142-460D-A4D4-B38F7D380F01\n   Name:                      com.apple.TimeMachine.2026-09-28-033232.local\n   XID:                       2806703\n   Snapshot UUID:             C913BD18-7808-45A0-A501-080D1BE64293\n   Name:                      com.apple.TimeMachine.2026-09-28-043233.local\n   XID:                       2807291\n   Snapshot UUID:             AECA3BA2-6879-4A39-A1EA-C8439D59AB88\n   Name:                      com.apple.TimeMachine.2026-09-28-053257.local\n   XID:                       2807826\n   Snapshot UUID:             D55485AD-82E5-4300-8905-5694E42AD72C\n   Name:                      com.apple.TimeMachine.2026-09-28-063304.local\n   XID:                       2808205\n   Snapshot UUID:             FF6779C6-DA93-4571-80B0-77F648608138\n   Name:                      com.apple.TimeMachine.2026-09-28-073314.local\n   XID:                       2808586\n   Snapshot UUID:             9A40212B-0810-4440-A2B4-6E31E5469B9E\n   Name:                      com.apple.TimeMachine.2026-09-28-083322.local\n   XID:                       2808941\n   Snapshot UUID:             E36E1D40-4773-4ED0-9803-02D7B590ED1B\n   Name:                      com.apple.TimeMachine.2026-09-28-093332.local\n   XID:                       2809297\n   Snapshot UUID:             8A908902-6E81-4FA4-A372-4234B4A1625B\n   Name:                      com.apple.TimeMachine.2026-09-28-103326.local\n   XID:                       2809682\n   Snapshot UUID:             E81BC98F-BE58-4A05-8CA4-3B83CF073C23\n   Name:                      com.apple.TimeMachine.2026-09-28-113338.local\n   XID:                       2810063\n   Snapshot UUID:             A6C6D4A2-932E-4F25-9B8D-4DC2FD5C809E\n   Name:                      com.apple.TimeMachine.2026-09-28-123347.local\n   XID:                       2810468\n   Snapshot UUID:             CE4A1E11-814C-4009-B0A8-90F782C8B774\n   Name:                      com.apple.TimeMachine.2026-09-28-133345.local\n   XID:                       2810832\n   Snapshot UUID:             5686CA19-3933-43A7-9F57-A5AAB27FD9AB\n   Name:                      com.apple.TimeMachine.2026-09-28-143412.local\n   XID:                       2811252\n   Snapshot UUID:             193E055F-8A49-4E74-B008-0A55BB8E6E95\n   Name:                      com.apple.TimeMachine.2026-09-28-153413.local\n   XID:                       2811626\n   Snapshot UUID:             152C44B7-D1A3-4887-A2E1-7FC8FF873C2D\n   Name:                      com.apple.TimeMachine.2026-09-28-173442.local\n   XID:                       2812431\n   Snapshot UUID:             E1B0CC26-FEAA-49D7-BA17-74C123F86700\n   Name:                      com.apple.TimeMachine.2026-09-28-183456.local\n   XID:                       2813079\n   Snapshot UUID:             40E76459-240D-4A2D-AA70-D20238CCA3CF\n   Name:                      com.apple.TimeMachine.2026-09-28-193501.local\n   XID:                       2813519\n   Snapshot UUID:             58059A75-AA69-4204-8EB6-4EC0268084C4\n   Name:                      com.apple.TimeMachine.2026-09-28-203511.local\n   XID:                       2813936\n   Snapshot UUID:             CD4A1200-1D21-4BA1-8DAD-759E618C0A16\n   Name:                      com.apple.TimeMachine.2026-09-28-213556.local\n   XID:                       2814352\n   Snapshot UUID:             5F40C92A-E421-4850-BC1B-6C84AC0F1F98\n   Name:                      com.apple.TimeMachine.2026-09-28-223607.local\n   XID:                       2814748\n   Snapshot UUID:             CEE9096E-BE66-4A1C-8BB9-A178775E5E46\n   Name:                      com.apple.TimeMachine.2026-09-28-233623.local\n   XID:                       2815104\n   Snapshot UUID:             2E3A92FF-A7D5-44E4-94A0-3E94CA1D0D16\n   Name:                      com.apple.TimeMachine.2026-09-29-003708.local\n   XID:                       2815469\n   Snapshot UUID:             8CF779E2-03A2-40A1-B172-B4FB4A5B0EF1\n   Name:                      com.apple.TimeMachine.2026-09-29-013718.local\n   XID:                       2815832\n   Snapshot UUID:             C5F5EF0C-3437-44FF-BFE5-871C5B4AE3A3\n   Name:                      com.apple.TimeMachine.2026-09-29-023748.local\n   XID:                       2816275\n\n",
+    "stderr": "",
+    "elapsed_ms": 171
+  },
+  "df": {
+    "command": [
+      "df",
+      "-P",
+      "$WORK/work"
+    ],
+    "exit": 0,
+    "stdout": "Filesystem   512-blocks      Used Available Capacity  Mounted on\n/dev/disk3s1  478724992 304065488 107321552    74%    /System/Volumes/Data\n",
+    "stderr": "",
+    "elapsed_ms": 3
+  },
+  "tools": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+  },
+  "build": {
+    "7": {
+      "result": {
+        "command": [
+          "$LEAN_BIN/lake",
+          "build",
+          "Dep",
+          "--keep-toolchain",
+          "--no-cache"
+        ],
+        "exit": 0,
+        "stdout": "\u2714 [2/3] Built Dep (174ms)\nBuild completed successfully (3 jobs).\n",
+        "stderr": "info: Probe: no previous manifest, creating one from scratch\n",
+        "elapsed_ms": 586
+      },
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "lakefile_sha256": "5d373bb5c2c0a8b1dec5d4e4c6eb731bc39ff9b58b44b0022f44c5ff6f8b3d36",
+      "olean_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "olean_bytes": 4608
+    },
+    "9": {
+      "result": {
+        "command": [
+          "$LEAN_BIN/lake",
+          "build",
+          "Dep",
+          "--keep-toolchain",
+          "--no-cache"
+        ],
+        "exit": 0,
+        "stdout": "\u2714 [2/3] Built Dep (167ms)\nBuild completed successfully (3 jobs).\n",
+        "stderr": "info: Probe: no previous manifest, creating one from scratch\n",
+        "elapsed_ms": 549
+      },
+      "source_sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+      "lakefile_sha256": "5d373bb5c2c0a8b1dec5d4e4c6eb731bc39ff9b58b44b0022f44c5ff6f8b3d36",
+      "olean_sha256": "daa1410620b8f13f0bd2d958a30ed8cf0d9de8b5407abbef6a23774d8fba394d",
+      "olean_bytes": 4512
+    }
+  },
+  "modes": {
+    "direct-readonly": {
+      "status": "observed",
+      "initial_producer_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "before": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 0,
+        "stdout": "7\n",
+        "stderr": "",
+        "elapsed_ms": 170
+      },
+      "before_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391955,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o444",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [],
+          "file_count": 0,
+          "symlink_count": 0,
+          "logical_bytes": 0,
+          "allocated_bytes_by_st_blocks": 0
+        }
+      },
+      "write": {
+        "attempt": "overwrite first byte via alias r+b",
+        "result": "PermissionError",
+        "errno": 13
+      },
+      "after": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 0,
+        "stdout": "7\n",
+        "stderr": "",
+        "elapsed_ms": 166
+      },
+      "final_producer_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "final_alias_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "after_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391955,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o444",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [],
+          "file_count": 0,
+          "symlink_count": 0,
+          "logical_bytes": 0,
+          "allocated_bytes_by_st_blocks": 0
+        }
+      }
+    },
+    "symlink": {
+      "status": "observed",
+      "initial_producer_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "before": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 0,
+        "stdout": "7\n",
+        "stderr": "",
+        "elapsed_ms": 165
+      },
+      "before_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391961,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "symlink",
+              "inode": 24391962,
+              "nlink": 1,
+              "logical_bytes": 200,
+              "allocated_bytes_by_st_blocks": 0,
+              "mode": "0o755",
+              "link_text": "$WORK/work/symlink/producer/Dep.olean"
+            }
+          ],
+          "file_count": 0,
+          "symlink_count": 1,
+          "logical_bytes": 0,
+          "allocated_bytes_by_st_blocks": 0
+        }
+      },
+      "write": {
+        "attempt": "overwrite first byte via alias r+b",
+        "result": "succeeded"
+      },
+      "after": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 1,
+        "stdout": "Check.lean:1:0: error: failed to read file '$WORK/work/symlink/alias/Dep.olean', invalid header\n",
+        "stderr": "",
+        "elapsed_ms": 92
+      },
+      "final_producer_sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a",
+      "final_alias_sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a",
+      "after_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391961,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "symlink",
+              "inode": 24391962,
+              "nlink": 1,
+              "logical_bytes": 200,
+              "allocated_bytes_by_st_blocks": 0,
+              "mode": "0o755",
+              "link_text": "$WORK/work/symlink/producer/Dep.olean"
+            }
+          ],
+          "file_count": 0,
+          "symlink_count": 1,
+          "logical_bytes": 0,
+          "allocated_bytes_by_st_blocks": 0
+        }
+      }
+    },
+    "hardlink": {
+      "status": "observed",
+      "initial_producer_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "before": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 0,
+        "stdout": "7\n",
+        "stderr": "",
+        "elapsed_ms": 165
+      },
+      "before_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391968,
+              "nlink": 2,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391968,
+              "nlink": 2,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        }
+      },
+      "write": {
+        "attempt": "overwrite first byte via alias r+b",
+        "result": "succeeded"
+      },
+      "after": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 1,
+        "stdout": "Check.lean:1:0: error: failed to read file '$WORK/work/hardlink/alias/Dep.olean', invalid header\n",
+        "stderr": "",
+        "elapsed_ms": 92
+      },
+      "final_producer_sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a",
+      "final_alias_sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a",
+      "after_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391968,
+              "nlink": 2,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391968,
+              "nlink": 2,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        }
+      }
+    },
+    "clone": {
+      "status": "observed",
+      "initial_producer_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "before": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 0,
+        "stdout": "7\n",
+        "stderr": "",
+        "elapsed_ms": 164
+      },
+      "before_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391976,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391977,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        }
+      },
+      "write": {
+        "attempt": "overwrite first byte via alias r+b",
+        "result": "succeeded"
+      },
+      "after": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 1,
+        "stdout": "Check.lean:1:0: error: failed to read file '$WORK/work/clone/alias/Dep.olean', invalid header\n",
+        "stderr": "",
+        "elapsed_ms": 101
+      },
+      "final_producer_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "final_alias_sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a",
+      "after_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391976,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391977,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        }
+      }
+    },
+    "full-copy": {
+      "status": "observed",
+      "initial_producer_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "before": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 0,
+        "stdout": "7\n",
+        "stderr": "",
+        "elapsed_ms": 169
+      },
+      "before_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391985,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391986,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        }
+      },
+      "write": {
+        "attempt": "overwrite first byte via alias r+b",
+        "result": "succeeded"
+      },
+      "after": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Check.lean"
+        ],
+        "exit": 1,
+        "stdout": "Check.lean:1:0: error: failed to read file '$WORK/work/full-copy/alias/Dep.olean', invalid header\n",
+        "stderr": "",
+        "elapsed_ms": 92
+      },
+      "final_producer_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "final_alias_sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a",
+      "after_inventory": {
+        "producer": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391985,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        },
+        "alias": {
+          "entries": [
+            {
+              "path": "Dep.olean",
+              "kind": "file",
+              "inode": 24391986,
+              "nlink": 1,
+              "logical_bytes": 4608,
+              "allocated_bytes_by_st_blocks": 8192,
+              "mode": "0o644",
+              "sha256": "19d2d9c889780b68e6cd2ac447e073a8d02794418c6cefbc3d00d3e9c592b15a"
+            }
+          ],
+          "file_count": 1,
+          "symlink_count": 0,
+          "logical_bytes": 4608,
+          "allocated_bytes_by_st_blocks": 8192
+        }
+      }
+    }
+  },
+  "open_reader": {
+    "rename": {
+      "ready_before_replace": true,
+      "old_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "replacement_sha256": "daa1410620b8f13f0bd2d958a30ed8cf0d9de8b5407abbef6a23774d8fba394d",
+      "resident_exit": 0,
+      "resident_stdout": "7\n",
+      "resident_stderr": "",
+      "fresh": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Read.lean"
+        ],
+        "exit": 0,
+        "stdout": "9\n",
+        "stderr": "",
+        "elapsed_ms": 1419
+      },
+      "final_sha256": "daa1410620b8f13f0bd2d958a30ed8cf0d9de8b5407abbef6a23774d8fba394d"
+    },
+    "unlink": {
+      "ready_before_unlink": true,
+      "unlinked_sha256": "daa1410620b8f13f0bd2d958a30ed8cf0d9de8b5407abbef6a23774d8fba394d",
+      "resident_exit": 0,
+      "resident_stdout": "9\n",
+      "resident_stderr": "",
+      "fresh": {
+        "command": [
+          "$LEAN_BIN/lean",
+          "Read.lean"
+        ],
+        "exit": 1,
+        "stdout": "Read.lean:1:0: error: unknown module prefix 'Dep'\n\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\n$WORK/work/open-reader\n$LEAN_HOME/lib/lean\n",
+        "stderr": "",
+        "elapsed_ms": 121
+      },
+      "path_exists_after": false
+    },
+    "fd_rename": {
+      "open_fd_sha256": "5a4030a600a43d13aa4b111bb81daae47c22636143a273da5e07dedc5916032f",
+      "new_path_sha256": "daa1410620b8f13f0bd2d958a30ed8cf0d9de8b5407abbef6a23774d8fba394d"
+    },
+    "fd_unlink": {
+      "open_fd_sha256": "daa1410620b8f13f0bd2d958a30ed8cf0d9de8b5407abbef6a23774d8fba394d",
+      "path_exists_after": false
+    }
+  }
+}

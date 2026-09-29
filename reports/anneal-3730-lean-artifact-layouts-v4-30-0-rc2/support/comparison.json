@@ -1,0 +1,233 @@
+{
+  "cells": [
+    {
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "AnnOne.olean"
+      ],
+      "layout": "per-annotation",
+      "matched_artifact_hashes": true,
+      "module_count": 5,
+      "ranges": {
+        "aggregate_import_ms": [
+          165.0,
+          165.1
+        ],
+        "cold_ms": [
+          2708.1,
+          3254.6
+        ],
+        "incremental_ms": [
+          2290.5,
+          2300.3
+        ],
+        "proof_batch_total_ms": [
+          342.3,
+          343.2
+        ],
+        "summed_rss_bytes": [
+          917372928,
+          919666688
+        ],
+        "warm_ms": [
+          2090.4,
+          2091.3
+        ]
+      },
+      "sibling_batch_rc_after_failure": 0,
+      "size": 1,
+      "worker_count": 2
+    },
+    {
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "Artifact.olean"
+      ],
+      "layout": "per-artifact",
+      "matched_artifact_hashes": true,
+      "module_count": 2,
+      "ranges": {
+        "aggregate_import_ms": [
+          164.6,
+          164.9
+        ],
+        "cold_ms": [
+          1079.1,
+          1091.3
+        ],
+        "incremental_ms": [
+          1022.8,
+          1031.4
+        ],
+        "proof_batch_total_ms": [
+          180.5,
+          182.4
+        ],
+        "summed_rss_bytes": [
+          498860032,
+          499040256
+        ],
+        "warm_ms": [
+          830.6,
+          831.7
+        ]
+      },
+      "sibling_batch_rc_after_failure": null,
+      "size": 1,
+      "worker_count": 1
+    },
+    {
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "File.olean"
+      ],
+      "layout": "per-file",
+      "matched_artifact_hashes": true,
+      "module_count": 3,
+      "ranges": {
+        "aggregate_import_ms": [
+          165.8,
+          166.1
+        ],
+        "cold_ms": [
+          1612.3,
+          1614.0
+        ],
+        "incremental_ms": [
+          1448.1,
+          1449.4
+        ],
+        "proof_batch_total_ms": [
+          180.8,
+          181.0
+        ],
+        "summed_rss_bytes": [
+          495616000,
+          495910912
+        ],
+        "warm_ms": [
+          1247.8,
+          1249.2
+        ]
+      },
+      "sibling_batch_rc_after_failure": null,
+      "size": 1,
+      "worker_count": 1
+    },
+    {
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "AnnOne.olean"
+      ],
+      "layout": "per-annotation",
+      "matched_artifact_hashes": true,
+      "module_count": 5,
+      "ranges": {
+        "aggregate_import_ms": [
+          164.7,
+          165.4
+        ],
+        "cold_ms": [
+          2671.5,
+          2679.9
+        ],
+        "incremental_ms": [
+          2282.1,
+          2289.0
+        ],
+        "proof_batch_total_ms": [
+          343.1,
+          344.4
+        ],
+        "summed_rss_bytes": [
+          926351360,
+          930807808
+        ],
+        "warm_ms": [
+          2093.9,
+          2096.2
+        ]
+      },
+      "sibling_batch_rc_after_failure": 0,
+      "size": 128,
+      "worker_count": 2
+    },
+    {
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "Artifact.olean"
+      ],
+      "layout": "per-artifact",
+      "matched_artifact_hashes": true,
+      "module_count": 2,
+      "ranges": {
+        "aggregate_import_ms": [
+          164.3,
+          166.3
+        ],
+        "cold_ms": [
+          1072.5,
+          1078.2
+        ],
+        "incremental_ms": [
+          1023.8,
+          1026.6
+        ],
+        "proof_batch_total_ms": [
+          213.9,
+          214.0
+        ],
+        "summed_rss_bytes": [
+          515522560,
+          515571712
+        ],
+        "warm_ms": [
+          828.3,
+          831.2
+        ]
+      },
+      "sibling_batch_rc_after_failure": null,
+      "size": 128,
+      "worker_count": 1
+    },
+    {
+      "changed_modules_after_one_proof_edit": [
+        "Aggregate.olean",
+        "File.olean"
+      ],
+      "layout": "per-file",
+      "matched_artifact_hashes": true,
+      "module_count": 3,
+      "ranges": {
+        "aggregate_import_ms": [
+          164.7,
+          164.8
+        ],
+        "cold_ms": [
+          1606.8,
+          1611.8
+        ],
+        "incremental_ms": [
+          1440.7,
+          1446.9
+        ],
+        "proof_batch_total_ms": [
+          179.8,
+          180.9
+        ],
+        "summed_rss_bytes": [
+          495730688,
+          496123904
+        ],
+        "warm_ms": [
+          1246.1,
+          1250.5
+        ]
+      },
+      "sibling_batch_rc_after_failure": null,
+      "size": 128,
+      "worker_count": 1
+    }
+  ],
+  "runs": 2
+}

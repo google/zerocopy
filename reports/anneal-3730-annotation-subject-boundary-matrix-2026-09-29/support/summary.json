@@ -1,0 +1,42 @@
+{
+  "status": "bounded assertions passed",
+  "events": 35,
+  "raw_sha256": "c9d05f4aa650c6f5a8caa105eedcc63c6b49b6692ba455d6f55975b594029888",
+  "probe_sha256": "d600c58b12e0f2b95aeb1194780e396725024de16d7ee58d1066f30de6b3de71",
+  "tool_hashes": {
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "variant_hashes": {
+    "baseline": "bd5710e84b9c443b5a599f41ec06f559aa9d2ec41b21b6fa992cf9260885a0fb",
+    "moved": "e7ba11a2710c8ed56fd8324fe6cbfdf44697a54e7ccfe1764478979fd1907a95",
+    "duplicated": "b82e0671b6877cb2ae306f4fd5901cb1c459a78bf08a1be12075bdf3c885daa0",
+    "malformed": "27fd9091baadd964c8b90e7c170c769760f5d64f78b8d2166138dcbb064fd90d",
+    "unfinished": "9d05a375fc7482dadd222c117fcf4a0769668d8fdd6ca14ecb4b899d9617195b",
+    "proof-edit": "8bc4966accac12447b24e4e5ae9ed5e19054e791882bf241f63e21a05029d9bc"
+  },
+  "observation": {
+    "baseline": [
+      1141,
+      43240
+    ],
+    "proof_edit": [
+      1147,
+      43805
+    ]
+  },
+  "rmeta_hashes": {
+    "baseline": "23ef9087bf4576115f50b7605bdd63961c3fed72ee38bce3a76326659c30c502",
+    "proof-edit": "22edf61bacbe73ff2c966b97f4f0d5b4cf8d41a3810c09a6daae584ad58aca69"
+  },
+  "charon_function_counts": {
+    "baseline-lib": 5,
+    "baseline-selected": 6,
+    "baseline-tests": 14,
+    "moved-lib": 5,
+    "duplicated-lib": 6
+  },
+  "attachment_manifest_sha256": "82626015b38978eaa5f23043908b67807c1719b02592525191b4ce009d285a90"
+}

@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "identity": {
+        "fixture_sha256": "e62b58357941c35b96e545c0e01919725ab8eaee4cf13e6e630dc7142e053f36",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "transcript_sha256": "95cb9c98771f12fdeab62c4e27fb0c6d3641e0d9ef243115459108dca366c67a"
+      },
+      "name": "Lean 4.30.0-rc2 macOS arm64 LSP navigation/edit fixture"
+    },
+    {
+      "identity": {
+        "applied_lean_sha256": "96045db150d8f000e8c05c3c0d022ab53cbef307bc2d467e3b44a9ec0f9dfdbd",
+        "replay_sha256": "316c44b1dc5e792fcc3e9280eaaa797184c5a44be3d3a05c593e368d23770888"
+      },
+      "name": "Illustrative projection replay of returned edits"
+    }
+  ],
+  "topics": [
+    "lean/lsp-navigation",
+    "lean/lsp-completion",
+    "lean/lsp-rename",
+    "lean/lsp-semantic-tokens",
+    "anneal/source-projection-model"
+  ]
+}

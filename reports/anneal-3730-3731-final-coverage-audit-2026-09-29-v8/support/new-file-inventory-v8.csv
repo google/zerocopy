@@ -1,0 +1,39 @@
+package,relative_file,bytes,sha256,inspection,detail
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,REPORT.json,577,8e9699f39092f3e68cd20b99db83355c7291b0dd7c3aa230b550b518fe4d61a4,json,parsed
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,REPORT.md,3150,080f5da732d7f2fb7fb11d54e4639cafb2b94b4c04c8de32cb42a2d87e183391,utf8,16 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/check.py,2513,f9caa9844942d2374b76e692ff7a0647c7b4175d788d2aa85505f0b8b2155244,utf8,37 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/probe.py,8077,337a738def72d671a172381741f4a91f130e89a904b016bf5486ef02ef2c0ee9,utf8,117 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/results.json,19423,73bc68160f53098b290024be49f275d92c3c679f40f1e0dd3fdc50f1825e4d3e,json,parsed
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/candidate.llbc,8957,a3e534a147c4c0bf2e0d0833f011875816d25c7e7a88c86aafe838a62ff35662,utf8,0 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/current.llbc,6868,8258c65ad9843399bbe53d1ec41774ffa58737071d12dcc8ed66d0b269db8bd9,utf8,0 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/generated-A/Current.lean,20,c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e,utf8,1 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/generated-A/Funs.lean,934,ded701794ffe0152ea9c06efcb6275cb9db43615e78054f587cac9c90ae559f3,utf8,24 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/generated-A/Types.lean,536,01b42250711810feaa136ccb5127c31518b36b500f840f73d44019c5c3ced125,utf8,17 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/generated-C-partial/Candidate.lean,22,c8b52108d5abc3eefc1d7b560bf2b2726b55202fac79501a463765378886c601,utf8,1 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/generated-C-partial/Funs.lean,1290,bc5704b39afa3db450181fa9e52795a7eaaaf14787b73a4a5b00b453960467bb,utf8,30 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/generated-C-partial/Types.lean,536,01b42250711810feaa136ccb5127c31518b36b500f840f73d44019c5c3ced125,utf8,17 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/old-model/Current/Funs.lean,934,ded701794ffe0152ea9c06efcb6275cb9db43615e78054f587cac9c90ae559f3,utf8,24 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/old-model/Current/Funs.olean,12848,17a844d740e80e5dd64f4dede11d348044fe854c266b4a5b438e4936eb01d0ae,binary,opaque
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/old-model/Current/Types.lean,536,01b42250711810feaa136ccb5127c31518b36b500f840f73d44019c5c3ced125,utf8,17 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/old-model/Current/Types.olean,1608,289a38d819997418c75dde6e7a94396458f831c674a3d49e1b6d389e1385f461,binary,opaque
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/old-model/Current.lean,20,c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e,utf8,1 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/old-model/Current.olean,1312,34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149,binary,opaque
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/old-model/Proof.lean,141,139d42a47a0bfa7c51c35097618cd1f01a6d29c05152ec403cfee142b21b3312,utf8,4 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/proof-snapshots/v1.lean,73,faf7305a00ca5cf270c3a4bba3fca3e0acfdbd992019c002a5b9063def4427ce,utf8,2 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/proof-snapshots/v2.lean,138,3c5389a6d3ba23f6351da1795a6f9ccfacb277fdf26bc4b073e47ab9c57e6266,utf8,4 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/proof-snapshots/v3.lean,141,139d42a47a0bfa7c51c35097618cd1f01a6d29c05152ec403cfee142b21b3312,utf8,4 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/snapshots/A-good.rs,69,77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995,utf8,2 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/snapshots/B-syntax.rs,84,8c3146f3b4853bd3a79814a7d101fecccbb26dc5d26f9060edd2b47a4d39a7ad,utf8,3 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/snapshots/C-unsupported.rs,120,4e8f96677fcacbf42b11c0809fa1f9c0392026efaa16fa7730feef9898566a0b,utf8,3 lines
+anneal-3730-last-good-model-after-rust-failure-2026-09-29,support/work/source.rs,120,4e8f96677fcacbf42b11c0809fa1f9c0392026efaa16fa7730feef9898566a0b,utf8,3 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,REPORT.json,911,f93f6327c7ab3b7dcf7faa0e16a741d4850d3f4b17c190dc86eb587acf291928,json,parsed
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,REPORT.md,4551,3f8e8611625a83df37e1e5c888937a44d9c12ce6aebc783b9eed36dba65653e1,utf8,44 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/artifacts/accepted-Proof.lean,64,3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4,utf8,3 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/artifacts/final-ProbeEnv.lean,32,f5cba43ebed5ecc52d865662729adb9a5a1904124b172856375ae3a134c9c502,utf8,1 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/artifacts/final-Proof.lean,80,85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1,utf8,3 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/artifacts/initial-Proof.lean,80,85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1,utf8,3 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/fixture/ProbeEnv.lean,32,715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1,utf8,1 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/fixture/Proof.lean,80,85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1,utf8,3 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/probe.py,12831,884eb98f4313bb5f387b3bc4e21aa5d0c9fb0d6cb9e79f650de763965afebab2,utf8,171 lines
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/results.json,17211,796f642fbeee331ff955c2580a2c4aa0d8f0303c5dbb4632fad79683557d6cee,json,parsed
+anneal-3730-scratch-tactic-cas-experiment-2026-09-29,support/verify.py,2539,cbaa6374aea0be02eedbd53560d8507fc50c6f933dac7bb8a76ee6212ef613cc,utf8,36 lines

@@ -1,0 +1,31 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "name": "APFS Data volume and cached Ubuntu overlayfs image",
+      "identity": {
+        "filesystem_apfs": "apfs",
+        "filesystem_linux": "overlayfs",
+        "ubuntu_image_sha256": "224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254",
+        "dep_olean_sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+        "plugin_olean_sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc"
+      }
+    },
+    {
+      "name": "Bounded base, copy, clone, hardlink, and mutation ledger",
+      "identity": {
+        "probe_sha256": "5a3a9f4547dcdb451242c2cc708a3ca52fefd52906a11b0128e985698638a971",
+        "verifier_sha256": "f28aee12b1b6e03e25ee7ec2b53ce0b4abb336227a21d8db90b4de5847bee992",
+        "results_sha256": "aa3264d28a83d784d863983d01b62e33146961dfb04f32b970beeb979dc4c263",
+        "logical_base_bytes": "2147019"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/filesystem-resource-accounting",
+    "apfs/clonefile",
+    "overlayfs/reflink",
+    "lean/artifact-footprint",
+    "anneal/worker-storage-budget"
+  ]
+}

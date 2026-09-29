@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "lean/server",
+    "lean/rpc",
+    "lean/lake",
+    "lean/imports"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 and Lake 4.29.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+        "version": "v4.29.0",
+        "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+        "lake_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b"
+      }
+    },
+    {
+      "name": "Lean 4 and Lake 4.30.0-rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+      }
+    },
+    {
+      "name": "Transitive import and RPC fixture",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "54d4478ab58cbb5665e19d41ef632c0a1ae79094f6dae6b0bfa32a71b2c1117e"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

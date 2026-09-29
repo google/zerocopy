@@ -1,0 +1,474 @@
+{
+  "subjects": {
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+  },
+  "outputs": {
+    "base": {
+      "source_sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+      "llbc_sha256": "c25b76cdfa26168524d9bf7f57de67a34a39af3f01b0df82180e65732ad85196",
+      "generated": {
+        "Base.lean": {
+          "sha256": "2c1fe3e727c71000a1fd76146006b7be7785e5f1c14dae30b1e94868831aa7b2",
+          "bytes": 17
+        },
+        "Funs.lean": {
+          "sha256": "ae306b7ab222011793a2a3f29cac97e921944dbe9a58a281b756f101030fa6a6",
+          "bytes": 1657
+        },
+        "Types.lean": {
+          "sha256": "90f5ceff682eb94174a8761bdf757383dceecdbbc9c4825896c6b2dec1373c16",
+          "bytes": 527
+        }
+      }
+    },
+    "mutated": {
+      "source_sha256": "fc47ac0e8cb34679fdfb0ef7bc73fd50adebb3f14c83568638fa8136145c13a4",
+      "llbc_sha256": "359f1ad11294873c6f3eb1fa8980f303897e7eaee0341fd5b5ca994f14802d7c",
+      "generated": {
+        "Funs.lean": {
+          "sha256": "97ef3a4318eac5ee982c263e3e92c10b61ff2f42b185364c5cabbfd00fa8ef43",
+          "bytes": 1669
+        },
+        "Mutated.lean": {
+          "sha256": "bb76d406bc59de37429817763a0340c83e26cbc83107cf81e4a89d5abcc72891",
+          "bytes": 20
+        },
+        "Types.lean": {
+          "sha256": "90f5ceff682eb94174a8761bdf757383dceecdbbc9c4825896c6b2dec1373c16",
+          "bytes": 527
+        }
+      }
+    },
+    "external": {
+      "source_sha256": "d606a2569d6ce1e1d5ccefab70be2e65d16334239e5e90cf7ddd31657fe9f3a4",
+      "llbc_sha256": "af7df6e4c198fcc10de14ca80f5dde8ff18397c0a0c680a0de9b18133657f85a",
+      "generated": {
+        "External.lean": {
+          "sha256": "cbe4938afc196f1a1f497094d5e6091a31a6338f123967d51e1a76044a074af8",
+          "bytes": 21
+        },
+        "Funs.lean": {
+          "sha256": "25319657c5a0c8ba250160c674fc019bbba39509da893f92d0d55098409b14ca",
+          "bytes": 1042
+        },
+        "FunsExternal_Template.lean": {
+          "sha256": "20c41bce417c7ac3dad6371491b6ffcb9fb5a0ce15cd93df15f6b0790bfe05c9",
+          "bytes": 938
+        },
+        "Types.lean": {
+          "sha256": "90f5ceff682eb94174a8761bdf757383dceecdbbc9c4825896c6b2dec1373c16",
+          "bytes": 527
+        }
+      }
+    }
+  },
+  "records": [
+    {
+      "label": "base:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/base.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "oracle_probe",
+        "--edition",
+        "2021"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/base.llbc"
+      ],
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/base.llbc\n[\u001b[92mInfo\u001b[39m ] \n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/base/generated/Base.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.135575 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "mutated:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/mutated.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "oracle_probe",
+        "--edition",
+        "2021"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "mutated:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/mutated.llbc"
+      ],
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/mutated.llbc\n[\u001b[92mInfo\u001b[39m ] \n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/mutated/generated/Mutated.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.135334 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "external:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/external.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "oracle_probe",
+        "--edition",
+        "2021"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/external.llbc"
+      ],
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/external.llbc\n[\u001b[92mInfo\u001b[39m ] \n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/generated/FunsExternal_Template.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/external/generated/External.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.120299 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "schema:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-print-unknown-externals",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/schema-output",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/schema-bad.llbc"
+      ],
+      "exit": 1,
+      "stdout": "[\u001b[91mError\u001b[39m] error: Incompatible version of charon: this program supports llbc emitted by charon v0.1.210 but attempted to read a file emitted by charon v0.1.999.\n\n",
+      "stderr": ""
+    },
+    {
+      "label": "base:Base/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Base/Types.olean",
+        "Base/Types.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:Base/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Base/Funs.olean",
+        "Base/Funs.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:Base",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Base.olean",
+        "Base.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base:oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "stdout": "Aeneas.Std.Result.ok { bv := 0x00000001#32 }\nAeneas.Std.Result.ok { bv := 0x00000002#32 }\n'oracle_probe.inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "base:wrong-oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "CheckWrong.lean"
+      ],
+      "exit": 1,
+      "stdout": "CheckWrong.lean:2:51: error: Tactic `rfl` failed: The left-hand side\n  oracle_probe.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 2#u32\n\n\u22a2 oracle_probe.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\n",
+      "stderr": ""
+    },
+    {
+      "label": "mutated:Mutated/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Mutated/Types.olean",
+        "Mutated/Types.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "mutated:Mutated/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Mutated/Funs.olean",
+        "Mutated/Funs.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "mutated:Mutated",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Mutated.olean",
+        "Mutated.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "mutated:oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "stdout": "Aeneas.Std.Result.ok { bv := 0x00000002#32 }\nAeneas.Std.Result.ok { bv := 0x00000004#32 }\n'oracle_probe.inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": ""
+    },
+    {
+      "label": "mutated:wrong-oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "CheckWrong.lean"
+      ],
+      "exit": 1,
+      "stdout": "CheckWrong.lean:2:51: error: Tactic `rfl` failed: The left-hand side\n  oracle_probe.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 3#u32\n\n\u22a2 oracle_probe.inc 0#u32 = Aeneas.Std.Result.ok 3#u32\n",
+      "stderr": ""
+    },
+    {
+      "label": "external-missing:External/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External/Types.olean",
+        "External/Types.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-missing:External/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External/Funs.olean",
+        "External/Funs.lean"
+      ],
+      "exit": 1,
+      "stdout": "External/Funs.lean:3:0: error: object file '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-manifest-batch-oracle-2026-09-29/support/work/compiled-external-missing/External/FunsExternal.olean' of module External.FunsExternal does not exist\n",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:External/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External/Types.olean",
+        "External/Types.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:External/FunsExternal",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External/FunsExternal.olean",
+        "External/FunsExternal.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:External/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External/Funs.olean",
+        "External/Funs.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:External",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External.olean",
+        "External.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-axiom:oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "stdout": "oracle_probe.call (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n'oracle_probe.call' depends on axioms: [external_double]\n",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:External/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External/Types.olean",
+        "External/Types.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:External/FunsExternal",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External/FunsExternal.olean",
+        "External/FunsExternal.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:External/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External/Funs.olean",
+        "External/Funs.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:External",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "External.olean",
+        "External.lean"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "external-concrete:oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "stdout": "Aeneas.Std.Result.ok { bv := 0x00000002#32 }\n'oracle_probe.call' does not depend on any axioms\n",
+      "stderr": ""
+    }
+  ],
+  "external_generated_same_for_axiom_and_concrete": true,
+  "external_model_sha256": {
+    "axiom": "20c41bce417c7ac3dad6371491b6ffcb9fb5a0ce15cd93df15f6b0790bfe05c9",
+    "concrete": "8685ca7f2d61638b46a8e295b2a68b12359dabc365383ae4d8bfbf071b21cfd1"
+  },
+  "model_limits": [
+    "no registered Aeneas registry mutation",
+    "no same-process Aeneas API",
+    "no authenticated Charon def_id to Lean range relation"
+  ]
+}

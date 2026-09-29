@@ -1,0 +1,32 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/snapshots",
+    "anneal/generation-publication",
+    "anneal/cancellation",
+    "filesystem/apfs"
+  ],
+  "subjects": [
+    {
+      "name": "Controlled snapshot and job-stage probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "fb1a7cbdff9cdb7b66a0f36234756af52c4862508dc5010735d4263d5a1995da"
+      }
+    },
+    {
+      "name": "CPython",
+      "identity": {
+        "version": "3.14.7"
+      }
+    },
+    {
+      "name": "macOS APFS data volume",
+      "identity": {
+        "operating_system": "macOS 26.6.2 (25G83)",
+        "filesystem": "APFS"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

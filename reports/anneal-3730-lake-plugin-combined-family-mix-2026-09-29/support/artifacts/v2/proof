@@ -1,0 +1,4 @@
+import Dep
+theorem checked : selected = 9 := by
+  probe_tac
+#eval selected

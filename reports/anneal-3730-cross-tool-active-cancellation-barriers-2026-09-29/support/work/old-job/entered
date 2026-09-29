@@ -1,0 +1,17 @@
+{
+  "aeneas_rc": 0,
+  "argv": [
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+    "-backend",
+    "lean",
+    "-no-progress-bar",
+    "-sequential",
+    "-split-files",
+    "-gen-lib-entry",
+    "-dest",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/old-job/generated",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/charon/base.llbc"
+  ],
+  "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/charon/base.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/old-job/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/old-job/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/old-job/generated/Base.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.123667 seconds\n",
+  "stderr": ""
+}

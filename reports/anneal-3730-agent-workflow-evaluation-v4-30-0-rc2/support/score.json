@@ -1,0 +1,68 @@
+{
+  "budget": {
+    "initial_actions_per_arm": 8,
+    "amended_actions_per_arm": 10,
+    "wall_limit_seconds_per_arm": 180,
+    "amendment_reason": "Both first candidate proofs had an unallowed propext dependency; both arms received the same two-action extension."
+  },
+  "rubric": {
+    "proposition_preserved": "Final proof declaration and fixed consumer state the original current claim exactly; source text is also compared with the captured statement.",
+    "stale_query_error": "An obsolete goal is used as authority for a current edit.",
+    "conflict": "A guarded edit is rejected after a concurrent write; count rejection and whether the agent overwrites it.",
+    "extra_assumptions": "Any reported theorem axiom beyond the displayed h and definitions, including propext; sorry and admitted declarations separately.",
+    "interventions": "Count agent read/query/edit/oracle actions and evaluator prompt amendments; simulated concurrent writes are injected, not agent actions.",
+    "resource": "Sum measured compiler/server command wall time, final arm disk bytes, and process count. MacOS ru_maxrss fields in the transcript are raw cumulative bytes and are not per-arm peak RSS."
+  },
+  "exact_goal": {
+    "agent_actions": 9,
+    "evaluator_prompt_amendments": 1,
+    "human_interventions": 0,
+    "guarded_edit_attempts": 3,
+    "guarded_edit_conflicts": 1,
+    "lost_updates": 0,
+    "obsolete_goal_seen": true,
+    "obsolete_goal_used_for_current_edit": false,
+    "first_oracle": {
+      "proof_and_consumer_pass": true,
+      "axioms": ["propext"],
+      "strict_assumption_policy_pass": false
+    },
+    "final_oracle": {
+      "proof_and_consumer_pass": true,
+      "axioms": [],
+      "admissions": false,
+      "proposition_preserved": true,
+      "strict_assumption_policy_pass": true
+    },
+    "measured_tool_wall_ms": 1312.5,
+    "goal_query_wall_ms_including_old_control": 542.3,
+    "final_disk_bytes": 13278,
+    "max_simultaneous_lean_processes": 1
+  },
+  "batch_diagnostics": {
+    "agent_actions": 8,
+    "evaluator_prompt_amendments": 1,
+    "human_interventions": 0,
+    "guarded_edit_attempts": 3,
+    "guarded_edit_conflicts": 1,
+    "lost_updates": 0,
+    "obsolete_goal_seen": false,
+    "obsolete_goal_used_for_current_edit": false,
+    "first_oracle": {
+      "proof_and_consumer_pass": true,
+      "axioms": ["propext"],
+      "strict_assumption_policy_pass": false
+    },
+    "final_oracle": {
+      "proof_and_consumer_pass": true,
+      "axioms": [],
+      "admissions": false,
+      "proposition_preserved": true,
+      "strict_assumption_policy_pass": true
+    },
+    "measured_tool_wall_ms": 973.4,
+    "batch_diagnostics_wall_ms": 238.9,
+    "final_disk_bytes": 13278,
+    "max_simultaneous_lean_processes": 1
+  }
+}

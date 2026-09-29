@@ -1,0 +1,343 @@
+{
+  "conclusions": {
+    "isolation_after_failure": true,
+    "reconstruction_from_full_request": true,
+    "same_accepted_digests": true
+  },
+  "host": {
+    "machine": "arm64",
+    "python": "3.14.7",
+    "system": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+  },
+  "tool": {
+    "name": "toy-stage",
+    "revision": "v1"
+  },
+  "trials": [
+    {
+      "accepted_digests": [
+        "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+        "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306"
+      ],
+      "concurrent": [
+        {
+          "cache_hit": false,
+          "digest": "bc2fab7d3439d6fd3fcc9c16de7a8ae204bd42196b3c647a3052d98c973c701e",
+          "disposition": "accepted",
+          "elapsed_ms": 200.81,
+          "id": "a-par",
+          "os_exit": 0,
+          "project": "alpha",
+          "worker_pid": 48253
+        },
+        {
+          "cache_hit": false,
+          "digest": "bc472dce33b0ab80dfa9192dba5046dc6169210be8efe4f70e2292a6d35a3161",
+          "disposition": "accepted",
+          "elapsed_ms": 200.875,
+          "id": "b-par",
+          "os_exit": 0,
+          "project": "beta",
+          "worker_pid": 48252
+        }
+      ],
+      "concurrent_pair_wall_ms": 213.408,
+      "kind": "one-shot",
+      "launches": 9,
+      "persistent_worker_pids": [],
+      "reconstructed": {
+        "cache_hit": false,
+        "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "disposition": "accepted",
+        "elapsed_ms": 98.213,
+        "id": "a-restart",
+        "os_exit": 0,
+        "project": "alpha",
+        "worker_pid": 48251
+      },
+      "sequential": [
+        {
+          "cache_hit": false,
+          "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+          "disposition": "accepted",
+          "elapsed_ms": 94.922,
+          "id": "a1",
+          "os_exit": 0,
+          "project": "alpha",
+          "worker_pid": 48235
+        },
+        {
+          "cache_hit": false,
+          "digest": "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+          "disposition": "accepted",
+          "elapsed_ms": 95.897,
+          "id": "b1",
+          "os_exit": 0,
+          "project": "beta",
+          "worker_pid": 48236
+        },
+        {
+          "cache_hit": false,
+          "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+          "disposition": "accepted",
+          "elapsed_ms": 97.649,
+          "id": "a1-repeat",
+          "os_exit": 0,
+          "project": "alpha",
+          "worker_pid": 48237
+        },
+        {
+          "cache_hit": false,
+          "digest": null,
+          "disposition": "process-failed",
+          "elapsed_ms": 98.494,
+          "id": "b-fail",
+          "os_exit": 0,
+          "project": "beta",
+          "worker_pid": 48242
+        },
+        {
+          "cache_hit": false,
+          "digest": "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+          "disposition": "accepted",
+          "elapsed_ms": 98.95,
+          "id": "b-after",
+          "os_exit": 0,
+          "project": "beta",
+          "worker_pid": 48248
+        },
+        {
+          "cache_hit": null,
+          "digest": null,
+          "disposition": "invalid-result",
+          "elapsed_ms": 100.777,
+          "id": "a-bad",
+          "os_exit": 0,
+          "project": "alpha",
+          "worker_pid": null
+        }
+      ]
+    },
+    {
+      "accepted_digests": [
+        "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+        "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306"
+      ],
+      "concurrent": [
+        {
+          "cache_hit": false,
+          "digest": "bc2fab7d3439d6fd3fcc9c16de7a8ae204bd42196b3c647a3052d98c973c701e",
+          "disposition": "accepted",
+          "elapsed_ms": 130.374,
+          "id": "a-par",
+          "os_exit": null,
+          "project": "alpha",
+          "worker_pid": 48256
+        },
+        {
+          "cache_hit": false,
+          "digest": "bc472dce33b0ab80dfa9192dba5046dc6169210be8efe4f70e2292a6d35a3161",
+          "disposition": "accepted",
+          "elapsed_ms": 130.401,
+          "id": "b-par",
+          "os_exit": null,
+          "project": "beta",
+          "worker_pid": 48255
+        }
+      ],
+      "concurrent_pair_wall_ms": 130.925,
+      "kind": "per-project",
+      "launches": 3,
+      "persistent_worker_pids": [
+        48254,
+        48255,
+        48256
+      ],
+      "reconstructed": {
+        "cache_hit": false,
+        "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "disposition": "accepted",
+        "elapsed_ms": 104.014,
+        "id": "a-restart",
+        "os_exit": null,
+        "project": "alpha",
+        "worker_pid": 48256
+      },
+      "sequential": [
+        {
+          "cache_hit": false,
+          "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+          "disposition": "accepted",
+          "elapsed_ms": 104.72,
+          "id": "a1",
+          "os_exit": null,
+          "project": "alpha",
+          "worker_pid": 48254
+        },
+        {
+          "cache_hit": false,
+          "digest": "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+          "disposition": "accepted",
+          "elapsed_ms": 92.166,
+          "id": "b1",
+          "os_exit": null,
+          "project": "beta",
+          "worker_pid": 48255
+        },
+        {
+          "cache_hit": true,
+          "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+          "disposition": "accepted",
+          "elapsed_ms": 0.169,
+          "id": "a1-repeat",
+          "os_exit": null,
+          "project": "alpha",
+          "worker_pid": 48254
+        },
+        {
+          "cache_hit": false,
+          "digest": null,
+          "disposition": "process-failed",
+          "elapsed_ms": 35.156,
+          "id": "b-fail",
+          "os_exit": null,
+          "project": "beta",
+          "worker_pid": 48255
+        },
+        {
+          "cache_hit": true,
+          "digest": "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+          "disposition": "accepted",
+          "elapsed_ms": 0.082,
+          "id": "b-after",
+          "os_exit": null,
+          "project": "beta",
+          "worker_pid": 48255
+        },
+        {
+          "cache_hit": null,
+          "digest": null,
+          "disposition": "invalid-result",
+          "elapsed_ms": 35.263,
+          "id": "a-bad",
+          "os_exit": null,
+          "project": "alpha",
+          "worker_pid": null
+        }
+      ]
+    },
+    {
+      "accepted_digests": [
+        "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+        "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306"
+      ],
+      "concurrent": [
+        {
+          "cache_hit": false,
+          "digest": "bc2fab7d3439d6fd3fcc9c16de7a8ae204bd42196b3c647a3052d98c973c701e",
+          "disposition": "accepted",
+          "elapsed_ms": 130.401,
+          "id": "a-par",
+          "os_exit": null,
+          "project": "alpha",
+          "worker_pid": 48258
+        },
+        {
+          "cache_hit": false,
+          "digest": "bc472dce33b0ab80dfa9192dba5046dc6169210be8efe4f70e2292a6d35a3161",
+          "disposition": "accepted",
+          "elapsed_ms": 260.881,
+          "id": "b-par",
+          "os_exit": null,
+          "project": "beta",
+          "worker_pid": 48258
+        }
+      ],
+      "concurrent_pair_wall_ms": 261.466,
+      "kind": "shared-broker",
+      "launches": 2,
+      "persistent_worker_pids": [
+        48257,
+        48258
+      ],
+      "reconstructed": {
+        "cache_hit": false,
+        "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+        "disposition": "accepted",
+        "elapsed_ms": 111.862,
+        "id": "a-restart",
+        "os_exit": null,
+        "project": "alpha",
+        "worker_pid": 48258
+      },
+      "sequential": [
+        {
+          "cache_hit": false,
+          "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+          "disposition": "accepted",
+          "elapsed_ms": 109.123,
+          "id": "a1",
+          "os_exit": null,
+          "project": "alpha",
+          "worker_pid": 48257
+        },
+        {
+          "cache_hit": false,
+          "digest": "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+          "disposition": "accepted",
+          "elapsed_ms": 35.202,
+          "id": "b1",
+          "os_exit": null,
+          "project": "beta",
+          "worker_pid": 48257
+        },
+        {
+          "cache_hit": true,
+          "digest": "18219a9c3657530fb6203d7084ba9dc8632088552a1f6ad1c25099dc5de6595b",
+          "disposition": "accepted",
+          "elapsed_ms": 0.085,
+          "id": "a1-repeat",
+          "os_exit": null,
+          "project": "alpha",
+          "worker_pid": 48257
+        },
+        {
+          "cache_hit": false,
+          "digest": null,
+          "disposition": "process-failed",
+          "elapsed_ms": 35.144,
+          "id": "b-fail",
+          "os_exit": null,
+          "project": "beta",
+          "worker_pid": 48257
+        },
+        {
+          "cache_hit": true,
+          "digest": "100cdbd7ba8cd9a5c526515ff569b8b5b70b6e17633fc345c75d7d5bd0144306",
+          "disposition": "accepted",
+          "elapsed_ms": 0.081,
+          "id": "b-after",
+          "os_exit": null,
+          "project": "beta",
+          "worker_pid": 48257
+        },
+        {
+          "cache_hit": null,
+          "digest": null,
+          "disposition": "invalid-result",
+          "elapsed_ms": 35.243,
+          "id": "a-bad",
+          "os_exit": null,
+          "project": "alpha",
+          "worker_pid": null
+        }
+      ]
+    }
+  ]
+}

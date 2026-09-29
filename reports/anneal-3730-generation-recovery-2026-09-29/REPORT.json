@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "anneal/generation-publication",
+    "anneal/failure-recovery",
+    "filesystem/atomic-publication",
+    "filesystem/retention"
+  ],
+  "subjects": [
+    {
+      "name": "synthetic generation and recovery process harness",
+      "identity": {
+        "file": "support/probe.py",
+        "sha256": "9d4672d507216c233df5c58f41661843cdddd213f654bfeb6f08a10f676af098"
+      }
+    },
+    {
+      "name": "Anneal consolidated investigation agenda (#3731)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue": "3731",
+        "body_sha256": "603eb92dc737e34912eff048b9901306239ebba8e77b8a3a2acc6371bcc9227f"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

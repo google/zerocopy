@@ -1,0 +1,8 @@
+{
+  "kind": "independent-agent, randomized-card freshness interpretation spot check",
+  "evaluator": "coordinating Codex agent in the same task tree; did not operate the fixture or see this report before answering",
+  "request": "Current intended claim is n + 2 = 7, current Generated.olean SHA is 48944da596a4ec3cb1adede2c4832b4cf1473ecdea2b9ded8f4a02c7ddae73d8, current Proof.lean SHA is 4f75bbe113a867670d2500ce52181d7e51d1f7e44d725e94135dd493ac8974f9. Card X: goal n + 2 = 6, proof SHA 945641b5c59b4865e9c7777a4ea718eebe86349a7dd4ff551be4bebd814be68b, imported SHA 5b825b843309f0816536851d9a9e83beb8230179867d7ad4e5ffd029fcb352b3. Card Y: goal n + 2 = 7, proof SHA 4f75bbe113a867670d2500ce52181d7e51d1f7e44d725e94135dd493ac8974f9, imported SHA 48944da596a4ec3cb1adede2c4832b4cf1473ecdea2b9ded8f4a02c7ddae73d8. Which card can guide a current edit?",
+  "response": "Card Y can guide the current edit: its intended goal, proof hash, and imported artifact hash match the current claim and recorded current files. Card X is stale/wrong-subject because both its proposition and artifact identity differ.",
+  "rubric_result": "Correct: Y is current; X is stale.",
+  "limit": "One model judgment on two labeled cards, with explicit hashes and target. It is not a blinded human study or a presentation comparison."
+}

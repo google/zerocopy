@@ -1,0 +1,13 @@
+{
+  "topics": ["anneal", "anneal/usability", "anneal/freshness", "human-evaluation"],
+  "subjects": [
+    {
+      "name": "google/zerocopy issue 3731 I141 scope snapshot",
+      "identity": {
+        "issue": "https://github.com/google/zerocopy/issues/3731",
+        "snapshot_sha256": "0b8eba07c4e1897fbe97ec5e5c2623a359cab9138b8a5a4b1ce3e09d8a9155f6"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

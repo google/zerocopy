@@ -1,0 +1,7 @@
+{"plugins": [],
+ "package": "plugin_probe",
+ "options": {},
+ "name": "Plugin",
+ "isModule": false,
+ "importArts": {},
+ "dynlibs": []}

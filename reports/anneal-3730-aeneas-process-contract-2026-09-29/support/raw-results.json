@@ -1,0 +1,821 @@
+{
+  "baseline_flags": [
+    "-backend",
+    "lean",
+    "-no-progress-bar",
+    "-sequential",
+    "-split-files",
+    "-gen-lib-entry"
+  ],
+  "different_input_shared": {
+    "final_inventory": {
+      "A.lean": {
+        "bytes": 14,
+        "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+      },
+      "B.lean": {
+        "bytes": 14,
+        "sha256": "ca425ba125383bd81dd51d202669714662295bf5e19a5c80e4e5d43eadb275a6"
+      },
+      "Funs.lean": {
+        "bytes": 1316,
+        "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+      },
+      "Types.lean": {
+        "bytes": 533,
+        "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+      }
+    },
+    "records": [
+      {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/different-input-shared",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+        ],
+        "end_ns": 1945828320469833,
+        "exit_code": 0,
+        "input": "A.llbc",
+        "label": "A",
+        "start_ns": 1945828089161250,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/different-input-shared/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/different-input-shared/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/different-input-shared/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.139280 seconds\n"
+      },
+      {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/different-input-shared",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc"
+        ],
+        "end_ns": 1945828320528958,
+        "exit_code": 0,
+        "input": "B.llbc",
+        "label": "B",
+        "start_ns": 1945828090721916,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/different-input-shared/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/different-input-shared/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/different-input-shared/B.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.139184 seconds\n"
+      }
+    ]
+  },
+  "environment": {
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "aeneas_version": "aeneas unknown",
+    "fixture_hashes": {
+      "A.llbc": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "B.llbc": "6774e33245dfeddc0a110c9ac2ea2244710a3d233140241589cb19ef370e4c55",
+      "source-A.rs": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc",
+      "source-B.rs": "c8cf7009786ef366e509b8d46bede05a150627b50121e89df2bf0188dad4da01",
+      "unsupported.llbc": "daab1c093c8af871b3d7751a9625f49137f3bedf03f19e9ab3a3c46b10fb078d"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "script_sha256": "ea9924ef981f0534bed75d57b0f82ddb23c754b2ddd0fed381c443b5848cbab0"
+  },
+  "failed_shared": {
+    "contains_sorry": true,
+    "previous": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/failed-shared",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+      ],
+      "end_ns": 1945829201384333,
+      "exit_code": 0,
+      "flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "input": "A.llbc",
+      "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "inventory": {
+        "A.lean": {
+          "bytes": 14,
+          "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+        },
+        "Funs.lean": {
+          "bytes": 1316,
+          "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "label": "successful-before-error",
+      "start_ns": 1945828981614708,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/failed-shared/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/failed-shared/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/failed-shared/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132512 seconds\n"
+    },
+    "unsupported": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/failed-shared",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/unsupported.llbc"
+      ],
+      "end_ns": 1945829398306583,
+      "exit_code": 1,
+      "flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "input": "unsupported.llbc",
+      "input_sha256": "daab1c093c8af871b3d7751a9625f49137f3bedf03f19e9ab3a3c46b10fb078d",
+      "inventory": {
+        "A.lean": {
+          "bytes": 14,
+          "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+        },
+        "Funs.lean": {
+          "bytes": 912,
+          "sha256": "f73a6794d10fe1eb130f0ff217c38ba03870a543c77e906a3a051d114d170b10"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        },
+        "Unsupported.lean": {
+          "bytes": 24,
+          "sha256": "2377549898fb32f6c4bdab9f50955c5efae9de97e5974371eb998ab4ccae4799"
+        }
+      },
+      "label": "unsupported-after-success",
+      "start_ns": 1945829201832500,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/unsupported.llbc\n[\u001b[91mError\u001b[39m] Aeneas does not yet support dereferencing raw pointers.\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 5:4-5:8\n[\u001b[93mWarn\u001b[39m ] Could not translate the body of function 'snapshot_probe::read_raw because of previous error\nName pattern: 'snapshot_probe::read_raw'\nDefinition span: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 3:0-6:1\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 5:4-5:8\nCompiler source: interp/Interp.ml, line 550\n\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/failed-shared/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/failed-shared/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/failed-shared/Unsupported.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.108877 seconds\n"
+    }
+  },
+  "flag_change_shared": {
+    "split_first": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/flag-change-shared",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+      ],
+      "end_ns": 1945828541554041,
+      "exit_code": 0,
+      "flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "input": "A.llbc",
+      "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "inventory": {
+        "A.lean": {
+          "bytes": 14,
+          "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+        },
+        "Funs.lean": {
+          "bytes": 1316,
+          "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "label": "split-first",
+      "start_ns": 1945828321124875,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/flag-change-shared/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/flag-change-shared/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/flag-change-shared/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.133077 seconds\n"
+    },
+    "stale_files_after_unsplit": [
+      "Funs.lean",
+      "Types.lean"
+    ],
+    "unsplit_clean_oracle": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/unsplit-oracle",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+      ],
+      "end_ns": 1945828981194583,
+      "exit_code": 0,
+      "flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential"
+      ],
+      "input": "A.llbc",
+      "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "inventory": {
+        "A.lean": {
+          "bytes": 1279,
+          "sha256": "8af2344bb73b75f4b5d3370e8451a91e79e71dd706d75f5c53f59a903fef39e1"
+        }
+      },
+      "label": "unsplit-clean-oracle",
+      "start_ns": 1945828761916375,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/unsplit-oracle/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132357 seconds\n"
+    },
+    "unsplit_second": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/flag-change-shared",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+      ],
+      "end_ns": 1945828761393375,
+      "exit_code": 0,
+      "flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential"
+      ],
+      "input": "A.llbc",
+      "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "inventory": {
+        "A.lean": {
+          "bytes": 1279,
+          "sha256": "8af2344bb73b75f4b5d3370e8451a91e79e71dd706d75f5c53f59a903fef39e1"
+        },
+        "Funs.lean": {
+          "bytes": 1316,
+          "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "label": "unsplit-second",
+      "start_ns": 1945828542015333,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/flag-change-shared/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132326 seconds\n"
+    }
+  },
+  "isolated_groups": [
+    {
+      "jobs": 1,
+      "overlap_pairs": [],
+      "records": [
+        {
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-1/worker-0",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+          ],
+          "end_ns": 1945827386226750,
+          "exit_code": 0,
+          "flags": [
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry"
+          ],
+          "input": "A.llbc",
+          "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+          "inventory": {
+            "A.lean": {
+              "bytes": 14,
+              "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+            },
+            "Funs.lean": {
+              "bytes": 1316,
+              "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+            },
+            "Types.lean": {
+              "bytes": 533,
+              "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+            }
+          },
+          "label": "isolated-1-worker-0",
+          "start_ns": 1945827164354500,
+          "stderr": "",
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-1/worker-0/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-1/worker-0/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-1/worker-0/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.133799 seconds\n"
+        }
+      ]
+    },
+    {
+      "jobs": 2,
+      "overlap_pairs": [
+        [
+          "isolated-2-worker-0",
+          "isolated-2-worker-1"
+        ]
+      ],
+      "records": [
+        {
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-2/worker-0",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+          ],
+          "end_ns": 1945827618342541,
+          "exit_code": 0,
+          "flags": [
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry"
+          ],
+          "input": "A.llbc",
+          "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+          "inventory": {
+            "A.lean": {
+              "bytes": 14,
+              "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+            },
+            "Funs.lean": {
+              "bytes": 1316,
+              "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+            },
+            "Types.lean": {
+              "bytes": 533,
+              "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+            }
+          },
+          "label": "isolated-2-worker-0",
+          "start_ns": 1945827386916500,
+          "stderr": "",
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-2/worker-0/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-2/worker-0/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-2/worker-0/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.138879 seconds\n"
+        },
+        {
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-2/worker-1",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc"
+          ],
+          "end_ns": 1945827618413125,
+          "exit_code": 0,
+          "flags": [
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry"
+          ],
+          "input": "B.llbc",
+          "input_sha256": "6774e33245dfeddc0a110c9ac2ea2244710a3d233140241589cb19ef370e4c55",
+          "inventory": {
+            "B.lean": {
+              "bytes": 14,
+              "sha256": "ca425ba125383bd81dd51d202669714662295bf5e19a5c80e4e5d43eadb275a6"
+            },
+            "Funs.lean": {
+              "bytes": 1316,
+              "sha256": "fffaaf29133bcf23e81b53589cc9adcf56653c6d26752834b505b7ee5a807e9b"
+            },
+            "Types.lean": {
+              "bytes": 533,
+              "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+            }
+          },
+          "label": "isolated-2-worker-1",
+          "start_ns": 1945827388604875,
+          "stderr": "",
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-2/worker-1/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-2/worker-1/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-2/worker-1/B.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.138873 seconds\n"
+        }
+      ]
+    },
+    {
+      "jobs": 4,
+      "overlap_pairs": [
+        [
+          "isolated-4-worker-0",
+          "isolated-4-worker-1"
+        ],
+        [
+          "isolated-4-worker-0",
+          "isolated-4-worker-2"
+        ],
+        [
+          "isolated-4-worker-0",
+          "isolated-4-worker-3"
+        ],
+        [
+          "isolated-4-worker-1",
+          "isolated-4-worker-2"
+        ],
+        [
+          "isolated-4-worker-1",
+          "isolated-4-worker-3"
+        ],
+        [
+          "isolated-4-worker-2",
+          "isolated-4-worker-3"
+        ]
+      ],
+      "records": [
+        {
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-0",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+          ],
+          "end_ns": 1945827866661375,
+          "exit_code": 0,
+          "flags": [
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry"
+          ],
+          "input": "A.llbc",
+          "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+          "inventory": {
+            "A.lean": {
+              "bytes": 14,
+              "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+            },
+            "Funs.lean": {
+              "bytes": 1316,
+              "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+            },
+            "Types.lean": {
+              "bytes": 533,
+              "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+            }
+          },
+          "label": "isolated-4-worker-0",
+          "start_ns": 1945827619145000,
+          "stderr": "",
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-0/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-0/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-0/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.147579 seconds\n"
+        },
+        {
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-1",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc"
+          ],
+          "end_ns": 1945827866784875,
+          "exit_code": 0,
+          "flags": [
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry"
+          ],
+          "input": "B.llbc",
+          "input_sha256": "6774e33245dfeddc0a110c9ac2ea2244710a3d233140241589cb19ef370e4c55",
+          "inventory": {
+            "B.lean": {
+              "bytes": 14,
+              "sha256": "ca425ba125383bd81dd51d202669714662295bf5e19a5c80e4e5d43eadb275a6"
+            },
+            "Funs.lean": {
+              "bytes": 1316,
+              "sha256": "fffaaf29133bcf23e81b53589cc9adcf56653c6d26752834b505b7ee5a807e9b"
+            },
+            "Types.lean": {
+              "bytes": 533,
+              "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+            }
+          },
+          "label": "isolated-4-worker-1",
+          "start_ns": 1945827620888750,
+          "stderr": "",
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-1/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-1/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-1/B.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.147173 seconds\n"
+        },
+        {
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-2",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+          ],
+          "end_ns": 1945827867400333,
+          "exit_code": 0,
+          "flags": [
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry"
+          ],
+          "input": "A.llbc",
+          "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+          "inventory": {
+            "A.lean": {
+              "bytes": 14,
+              "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+            },
+            "Funs.lean": {
+              "bytes": 1316,
+              "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+            },
+            "Types.lean": {
+              "bytes": 533,
+              "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+            }
+          },
+          "label": "isolated-4-worker-2",
+          "start_ns": 1945827621856000,
+          "stderr": "",
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-2/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-2/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-2/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.147493 seconds\n"
+        },
+        {
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-3",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc"
+          ],
+          "end_ns": 1945827868065250,
+          "exit_code": 0,
+          "flags": [
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry"
+          ],
+          "input": "B.llbc",
+          "input_sha256": "6774e33245dfeddc0a110c9ac2ea2244710a3d233140241589cb19ef370e4c55",
+          "inventory": {
+            "B.lean": {
+              "bytes": 14,
+              "sha256": "ca425ba125383bd81dd51d202669714662295bf5e19a5c80e4e5d43eadb275a6"
+            },
+            "Funs.lean": {
+              "bytes": 1316,
+              "sha256": "fffaaf29133bcf23e81b53589cc9adcf56653c6d26752834b505b7ee5a807e9b"
+            },
+            "Types.lean": {
+              "bytes": 533,
+              "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+            }
+          },
+          "label": "isolated-4-worker-3",
+          "start_ns": 1945827622967666,
+          "stderr": "",
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-3/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-3/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/isolated-4/worker-3/B.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.147042 seconds\n"
+        }
+      ]
+    }
+  ],
+  "namespace_option": {
+    "command": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+      "-backend",
+      "lean",
+      "-no-progress-bar",
+      "-sequential",
+      "-split-files",
+      "-gen-lib-entry",
+      "-namespace",
+      "Alternate",
+      "-dest",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/namespace-option",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+    ],
+    "end_ns": 1945828088667000,
+    "exit_code": 0,
+    "flags": [
+      "-backend",
+      "lean",
+      "-no-progress-bar",
+      "-sequential",
+      "-split-files",
+      "-gen-lib-entry",
+      "-namespace",
+      "Alternate"
+    ],
+    "input": "A.llbc",
+    "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+    "inventory": {
+      "A.lean": {
+        "bytes": 14,
+        "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+      },
+      "Funs.lean": {
+        "bytes": 1306,
+        "sha256": "edd688c9b50265f92be46e049b378c4489b5c66fb373cf6327c7607772b704af"
+      },
+      "Types.lean": {
+        "bytes": 523,
+        "sha256": "a7839dc125915af867a949ce779ed4a0b189c23d537776029defb9556f2cfac4"
+      }
+    },
+    "label": "namespace-option",
+    "start_ns": 1945827868483625,
+    "stderr": "",
+    "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/namespace-option/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/namespace-option/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/namespace-option/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132714 seconds\n"
+  },
+  "oracles": [
+    {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/oracle-A",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+      ],
+      "end_ns": 1945826943041833,
+      "exit_code": 0,
+      "flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "input": "A.llbc",
+      "input_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "inventory": {
+        "A.lean": {
+          "bytes": 14,
+          "sha256": "239c10302c46b8f031f1aa6b23b0f10b2bdf1eecfcdc08614600ff16571cf4e8"
+        },
+        "Funs.lean": {
+          "bytes": 1316,
+          "sha256": "61d00aea663520745d8bcb392a0ce7d337eb2770b50f92422d2bd9ef89813da2"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "label": "oracle-A",
+      "start_ns": 1945826720082416,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/oracle-A/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/oracle-A/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/oracle-A/A.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.133293 seconds\n"
+    },
+    {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/oracle-B",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc"
+      ],
+      "end_ns": 1945827163816583,
+      "exit_code": 0,
+      "flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "input": "B.llbc",
+      "input_sha256": "6774e33245dfeddc0a110c9ac2ea2244710a3d233140241589cb19ef370e4c55",
+      "inventory": {
+        "B.lean": {
+          "bytes": 14,
+          "sha256": "ca425ba125383bd81dd51d202669714662295bf5e19a5c80e4e5d43eadb275a6"
+        },
+        "Funs.lean": {
+          "bytes": 1316,
+          "sha256": "fffaaf29133bcf23e81b53589cc9adcf56653c6d26752834b505b7ee5a807e9b"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "label": "oracle-B",
+      "start_ns": 1945826943628250,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/B.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/oracle-B/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/oracle-B/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/oracle-B/B.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132868 seconds\n"
+    }
+  ],
+  "timeout_control": {
+    "command": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+      "-backend",
+      "lean",
+      "-no-progress-bar",
+      "-sequential",
+      "-split-files",
+      "-gen-lib-entry",
+      "-dest",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/artifacts/killed-timeout",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-process-contract-2026-09-29/support/fixture/A.llbc"
+    ],
+    "elapsed_ns": 1768500,
+    "exit_code": -9,
+    "inventory_after": {},
+    "stderr": "",
+    "stdout": "",
+    "timed_out": true
+  }
+}

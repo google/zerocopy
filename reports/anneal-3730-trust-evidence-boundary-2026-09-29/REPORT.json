@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal/trust-boundary",
+    "rust/build-scripts",
+    "rust/proc-macros",
+    "lean/elaboration",
+    "reference/evidence"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+        "version": "1.98.1",
+        "binary_sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340"
+      }
+    },
+    {
+      "name": "Cargo executable",
+      "identity": {
+        "version": "1.98.1",
+        "binary_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

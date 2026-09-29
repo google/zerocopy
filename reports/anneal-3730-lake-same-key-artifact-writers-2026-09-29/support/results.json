@@ -1,0 +1,1261 @@
+{
+  "cases": {
+    "golden": {
+      "artifact_paths": {
+        "c": "19804e4afa920628.c",
+        "ilean": "256fdbc46043cf30.ilean",
+        "olean": "7b7a31f2adb2306a.olean"
+      },
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      }
+    },
+    "interrupt-c": {
+      "cache_after_failure": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 764,
+          "sha256": "a7c45425a5cae73ac39d506b2fcd648789da9759c777af3553685e0c56f0b9eb"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        }
+      },
+      "cache_after_present_retry": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 764,
+          "sha256": "a7c45425a5cae73ac39d506b2fcd648789da9759c777af3553685e0c56f0b9eb"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_after_repair": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "failed_exit": -25,
+      "file_size_limit": 764,
+      "fresh_import_exit": 0,
+      "fresh_import_with_partial_present_exit": 0,
+      "fresh_setup_exit": 0,
+      "fresh_setup_with_partial_present_exit": 0,
+      "no_build_exit_after_failure": 3,
+      "partial_bytes": 764,
+      "partial_observed": true,
+      "partial_present_integrity_matches_golden": false,
+      "partial_sha256": "a7c45425a5cae73ac39d506b2fcd648789da9759c777af3553685e0c56f0b9eb",
+      "retry_with_partial_present_exit": 0,
+      "target_expected_bytes": 1529,
+      "target_expected_sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303",
+      "target_file": "19804e4afa920628.c"
+    },
+    "interrupt-ilean": {
+      "cache_after_failure": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 404,
+          "sha256": "01ffb16a23b2fad2ee5d8ed1eaa2291af632fda65d6f356e2c8f213ce600c607"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        }
+      },
+      "cache_after_present_retry": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 404,
+          "sha256": "01ffb16a23b2fad2ee5d8ed1eaa2291af632fda65d6f356e2c8f213ce600c607"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_after_repair": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "failed_exit": -25,
+      "file_size_limit": 404,
+      "fresh_import_exit": 0,
+      "fresh_import_with_partial_present_exit": 0,
+      "fresh_setup_exit": 0,
+      "fresh_setup_with_partial_present_exit": 0,
+      "no_build_exit_after_failure": 3,
+      "partial_bytes": 404,
+      "partial_observed": true,
+      "partial_present_integrity_matches_golden": false,
+      "partial_sha256": "01ffb16a23b2fad2ee5d8ed1eaa2291af632fda65d6f356e2c8f213ce600c607",
+      "retry_with_partial_present_exit": 0,
+      "target_expected_bytes": 809,
+      "target_expected_sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b",
+      "target_file": "256fdbc46043cf30.ilean"
+    },
+    "interrupt-olean": {
+      "cache_after_failure": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 2448,
+          "sha256": "32c689178e4726bcb20c1d7e14121e62f19daaee43aa78447ef71328a58e016f"
+        }
+      },
+      "cache_after_present_retry": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 2448,
+          "sha256": "32c689178e4726bcb20c1d7e14121e62f19daaee43aa78447ef71328a58e016f"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_after_repair": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "failed_exit": -25,
+      "file_size_limit": 2448,
+      "fresh_import_exit": 0,
+      "fresh_import_with_partial_present_exit": -11,
+      "fresh_setup_exit": 0,
+      "fresh_setup_with_partial_present_exit": 0,
+      "no_build_exit_after_failure": 3,
+      "partial_bytes": 2448,
+      "partial_observed": true,
+      "partial_present_integrity_matches_golden": false,
+      "partial_sha256": "32c689178e4726bcb20c1d7e14121e62f19daaee43aa78447ef71328a58e016f",
+      "retry_with_partial_present_exit": 0,
+      "target_expected_bytes": 4896,
+      "target_expected_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "target_file": "7b7a31f2adb2306a.olean"
+    },
+    "pair-0": {
+      "cache_after": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_before_repair": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_matches_golden_before_repair": true,
+      "exits": [
+        0,
+        0
+      ],
+      "fresh_import_exit": 0,
+      "fresh_setup_exit": 0,
+      "map_valid_before_repair": true,
+      "markers": [
+        true,
+        true
+      ],
+      "peak_sampled": {
+        "processes": 4,
+        "rss_kib_sum": 3531712
+      },
+      "repair_needed": false
+    },
+    "pair-1": {
+      "cache_after": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_before_repair": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_matches_golden_before_repair": true,
+      "exits": [
+        0,
+        0
+      ],
+      "fresh_import_exit": 0,
+      "fresh_setup_exit": 0,
+      "map_valid_before_repair": true,
+      "markers": [
+        true,
+        true
+      ],
+      "peak_sampled": {
+        "processes": 4,
+        "rss_kib_sum": 3672960
+      },
+      "repair_needed": false
+    },
+    "pair-2": {
+      "cache_after": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_before_repair": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "cache_matches_golden_before_repair": true,
+      "exits": [
+        0,
+        0
+      ],
+      "fresh_import_exit": 0,
+      "fresh_setup_exit": 0,
+      "map_valid_before_repair": true,
+      "markers": [
+        true,
+        true
+      ],
+      "peak_sampled": {
+        "processes": 4,
+        "rss_kib_sum": 3694704
+      },
+      "repair_needed": false
+    }
+  },
+  "environment": {
+    "cache_writer_source_sha256": "4ce4b9ce5ad8b55335719928c56ec5a057e2d1b749e54022bca0c95c553d8ea3",
+    "disk_cap_bytes": 268435456,
+    "fixture": {
+      "consumer/Generated.lean": {
+        "bytes": 82,
+        "sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb"
+      },
+      "consumer/lake-manifest.json": {
+        "bytes": 372,
+        "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+      },
+      "consumer/lakefile.lean": {
+        "bytes": 123,
+        "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+      },
+      "consumer/lean-toolchain": {
+        "bytes": 29,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      },
+      "producer/Dep.lean": {
+        "bytes": 174,
+        "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+      },
+      "producer/lakefile.lean": {
+        "bytes": 75,
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+      },
+      "producer/lean-toolchain": {
+        "bytes": 29,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    },
+    "image_logical_bytes": 134217728,
+    "initial_memory_free_percent": 47,
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "local_fixture_device": 16777229,
+    "max_concurrent_consumers": 2,
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "rss_cap_kib": 3800000,
+    "scratch_cache_device": 16777248
+  },
+  "limits": [
+    "No power-loss or filesystem-crash durability claim.",
+    "Two tiny same-key writers in three gated schedules; one success is not general shared-writer safety.",
+    "Artifact interrupts use macOS APFS cross-volume hard-link fallback and RLIMIT_FSIZE, not arbitrary kill phases.",
+    "Fresh direct Lean import checks OLean semantics; all three object hashes are separately compared to golden.",
+    "No Anneal generated workspace, Mathlib-sized dependency, or native Linux/Windows filesystem."
+  ],
+  "records": [
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/golden-cache",
+      "cwd": "$WORK/golden/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68059
+    },
+    {
+      "exit": 0,
+      "label": "golden-prebuild",
+      "pid": 68059,
+      "seconds": 4.0509,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.2s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/golden-cache",
+      "cwd": "$WORK/golden/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68134
+    },
+    {
+      "exit": 0,
+      "label": "golden-cache",
+      "pid": 68134,
+      "seconds": 0.4917,
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "golden-direct-import",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/pair-cache-0",
+      "cwd": "$WORK/pair-0-a/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68144
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/pair-cache-0",
+      "cwd": "$WORK/pair-0-b/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68145
+    },
+    {
+      "exit": 0,
+      "label": "same-key-pair-0-0",
+      "pid": 68144,
+      "seconds": 2.8829,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.4s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "exit": 0,
+      "label": "same-key-pair-0-1",
+      "pid": 68145,
+      "seconds": 2.883,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.4s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/pair-cache-0",
+      "cwd": "$WORK/pair-0-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68202
+    },
+    {
+      "exit": 0,
+      "label": "pair-0-fresh-setup",
+      "pid": 68202,
+      "seconds": 0.5161,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/pair-cache-0/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "pair-0-fresh-import",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/pair-cache-1",
+      "cwd": "$WORK/pair-1-a/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68212
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/pair-cache-1",
+      "cwd": "$WORK/pair-1-b/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68213
+    },
+    {
+      "exit": 0,
+      "label": "same-key-pair-1-0",
+      "pid": 68212,
+      "seconds": 2.7927,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.3s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "exit": 0,
+      "label": "same-key-pair-1-1",
+      "pid": 68213,
+      "seconds": 2.7927,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.3s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/pair-cache-1",
+      "cwd": "$WORK/pair-1-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68256
+    },
+    {
+      "exit": 0,
+      "label": "pair-1-fresh-setup",
+      "pid": 68256,
+      "seconds": 0.527,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/pair-cache-1/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "pair-1-fresh-import",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/pair-cache-2",
+      "cwd": "$WORK/pair-2-a/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68267
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/pair-cache-2",
+      "cwd": "$WORK/pair-2-b/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68268
+    },
+    {
+      "exit": 0,
+      "label": "same-key-pair-2-0",
+      "pid": 68267,
+      "seconds": 2.7724,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.3s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "exit": 0,
+      "label": "same-key-pair-2-1",
+      "pid": 68268,
+      "seconds": 2.7724,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.3s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/pair-cache-2",
+      "cwd": "$WORK/pair-2-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68310
+    },
+    {
+      "exit": 0,
+      "label": "pair-2-fresh-setup",
+      "pid": 68310,
+      "seconds": 0.55,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/pair-cache-2/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "pair-2-fresh-import",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-olean",
+      "cwd": "$WORK/interrupt-olean/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68324
+    },
+    {
+      "exit": 0,
+      "label": "olean-prebuild",
+      "pid": 68324,
+      "seconds": 1.0785,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (628ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-olean",
+      "cwd": "$WORK/interrupt-olean/consumer",
+      "file_size_limit": 2448,
+      "label": "launch",
+      "pid": 68342
+    },
+    {
+      "exit": -25,
+      "label": "olean-limited-write",
+      "pid": 68342,
+      "seconds": 0.3377,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-olean",
+      "cwd": "$WORK/interrupt-olean-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68348
+    },
+    {
+      "exit": 3,
+      "label": "olean-fresh-no-build-after-failure",
+      "pid": 68348,
+      "seconds": 0.4753,
+      "stderr": "\u2716 [3/4] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-olean",
+      "cwd": "$WORK/interrupt-olean/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68356
+    },
+    {
+      "exit": 0,
+      "label": "olean-retry-with-partial-present",
+      "pid": 68356,
+      "seconds": 0.4751,
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-olean",
+      "cwd": "$WORK/interrupt-olean-present-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68364
+    },
+    {
+      "exit": 0,
+      "label": "olean-fresh-no-build-with-partial-present",
+      "pid": 68364,
+      "seconds": 0.4904,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/interrupt-cache-olean/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": -11,
+      "label": "olean-fresh-import-with-partial-present",
+      "object_bytes": 2448,
+      "object_sha256": "32c689178e4726bcb20c1d7e14121e62f19daaee43aa78447ef71328a58e016f",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-olean",
+      "cwd": "$WORK/interrupt-olean/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68377
+    },
+    {
+      "exit": 0,
+      "label": "olean-repair-build",
+      "pid": 68377,
+      "seconds": 0.413,
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-olean",
+      "cwd": "$WORK/interrupt-olean-repaired-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68384
+    },
+    {
+      "exit": 0,
+      "label": "olean-repaired-fresh-setup",
+      "pid": 68384,
+      "seconds": 0.4924,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/interrupt-cache-olean/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "olean-repaired-fresh-import",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-ilean",
+      "cwd": "$WORK/interrupt-ilean/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68393
+    },
+    {
+      "exit": 0,
+      "label": "ilean-prebuild",
+      "pid": 68393,
+      "seconds": 1.046,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (644ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-ilean",
+      "cwd": "$WORK/interrupt-ilean/consumer",
+      "file_size_limit": 404,
+      "label": "launch",
+      "pid": 68410
+    },
+    {
+      "exit": -25,
+      "label": "ilean-limited-write",
+      "pid": 68410,
+      "seconds": 0.3496,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-ilean",
+      "cwd": "$WORK/interrupt-ilean-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68416
+    },
+    {
+      "exit": 3,
+      "label": "ilean-fresh-no-build-after-failure",
+      "pid": 68416,
+      "seconds": 0.4999,
+      "stderr": "\u2716 [3/4] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-ilean",
+      "cwd": "$WORK/interrupt-ilean/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68424
+    },
+    {
+      "exit": 0,
+      "label": "ilean-retry-with-partial-present",
+      "pid": 68424,
+      "seconds": 0.4222,
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-ilean",
+      "cwd": "$WORK/interrupt-ilean-present-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68431
+    },
+    {
+      "exit": 0,
+      "label": "ilean-fresh-no-build-with-partial-present",
+      "pid": 68431,
+      "seconds": 0.4923,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/interrupt-cache-ilean/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "ilean-fresh-import-with-partial-present",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-ilean",
+      "cwd": "$WORK/interrupt-ilean/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68441
+    },
+    {
+      "exit": 0,
+      "label": "ilean-repair-build",
+      "pid": 68441,
+      "seconds": 0.5085,
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-ilean",
+      "cwd": "$WORK/interrupt-ilean-repaired-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68452
+    },
+    {
+      "exit": 0,
+      "label": "ilean-repaired-fresh-setup",
+      "pid": 68452,
+      "seconds": 0.583,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/interrupt-cache-ilean/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "ilean-repaired-fresh-import",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-c",
+      "cwd": "$WORK/interrupt-c/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68466
+    },
+    {
+      "exit": 0,
+      "label": "c-prebuild",
+      "pid": 68466,
+      "seconds": 1.0874,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (636ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-c",
+      "cwd": "$WORK/interrupt-c/consumer",
+      "file_size_limit": 764,
+      "label": "launch",
+      "pid": 68485
+    },
+    {
+      "exit": -25,
+      "label": "c-limited-write",
+      "pid": 68485,
+      "seconds": 0.3656,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-c",
+      "cwd": "$WORK/interrupt-c-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68492
+    },
+    {
+      "exit": 3,
+      "label": "c-fresh-no-build-after-failure",
+      "pid": 68492,
+      "seconds": 0.5166,
+      "stderr": "\u2716 [3/4] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-c",
+      "cwd": "$WORK/interrupt-c/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68502
+    },
+    {
+      "exit": 0,
+      "label": "c-retry-with-partial-present",
+      "pid": 68502,
+      "seconds": 0.5247,
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-c",
+      "cwd": "$WORK/interrupt-c-present-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68510
+    },
+    {
+      "exit": 0,
+      "label": "c-fresh-no-build-with-partial-present",
+      "pid": 68510,
+      "seconds": 0.521,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/interrupt-cache-c/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "c-fresh-import-with-partial-present",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-c",
+      "cwd": "$WORK/interrupt-c/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68519
+    },
+    {
+      "exit": 0,
+      "label": "c-repair-build",
+      "pid": 68519,
+      "seconds": 0.4397,
+      "stderr": "",
+      "stdout": "Build completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/mount/interrupt-cache-c",
+      "cwd": "$WORK/interrupt-c-repaired-fresh/consumer",
+      "file_size_limit": null,
+      "label": "launch",
+      "pid": 68526
+    },
+    {
+      "exit": 0,
+      "label": "c-repaired-fresh-setup",
+      "pid": 68526,
+      "seconds": 0.5281,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/mount/interrupt-cache-c/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "exit": 0,
+      "label": "c-repaired-fresh-import",
+      "object_bytes": 4896,
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    }
+  ]
+}

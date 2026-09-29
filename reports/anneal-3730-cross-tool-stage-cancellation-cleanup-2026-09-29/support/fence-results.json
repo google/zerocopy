@@ -1,0 +1,92 @@
+{
+  "atomic_pointer_method": "write temporary JSON and os.replace",
+  "events": [
+    {
+      "current_generation": 2,
+      "final_pointer_sha256": "87c1e1f82b1a3404245c4330fc5a3cd521cf85562df9f066235f91badfcf7041",
+      "fresh_accepted": true,
+      "late_generation": 1,
+      "late_rejected": true,
+      "payload_sha256": "b76ece5398f9bf5da7d96daf4cc1135a3474e2017da628858bb5f0657ab1e281",
+      "pointer_unchanged_after_late": true,
+      "stage": "cargo"
+    },
+    {
+      "current_generation": 2,
+      "final_pointer_sha256": "69f0cbf12e83d2fd2e4cf70796be8134b5c95d33cb9515a04414aa83fdf0693f",
+      "fresh_accepted": true,
+      "late_generation": 1,
+      "late_rejected": true,
+      "payload_sha256": "3339f43fe6f682bb04d23812e870e972f304ea1dbf5bbc4410a4fc38f2880d2c",
+      "pointer_unchanged_after_late": true,
+      "stage": "charon"
+    },
+    {
+      "current_generation": 2,
+      "final_pointer_sha256": "a530e1364fecde9f6ce6b3e943d6069e6d3b6a33b9f98c8c3aad269947bc25e0",
+      "fresh_accepted": true,
+      "late_generation": 1,
+      "late_rejected": true,
+      "payload_sha256": "d64b3674b7d4ceaac4129c4f52023a16cc9809d810eac76eccb6f4d6ecd04a24",
+      "pointer_unchanged_after_late": true,
+      "stage": "aeneas"
+    },
+    {
+      "current_generation": 2,
+      "final_pointer_sha256": "c5ea1590b3809c2f55fddd49bbfcf6be5b73f3c18f0d033982926fc70ded8dd9",
+      "fresh_accepted": true,
+      "late_generation": 1,
+      "late_rejected": true,
+      "payload_sha256": "59dab5b738de6689cf8f61436c53209608a21b009a27b0950d1170dea4a0760c",
+      "pointer_unchanged_after_late": true,
+      "stage": "lake"
+    },
+    {
+      "current_generation": 2,
+      "final_pointer_sha256": "c3da2f3b367501077d8694f3a703bb8978a6e24007633ee66494d61552798a31",
+      "fresh_accepted": true,
+      "late_generation": 1,
+      "late_rejected": true,
+      "payload_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "pointer_unchanged_after_late": true,
+      "stage": "lean"
+    },
+    {
+      "current_generation": 2,
+      "final_pointer_sha256": "fbaf27ada17279af26f982aca1ee0d5262ee2c6e335a4cacc3e018184bff6be3",
+      "fresh_accepted": true,
+      "late_generation": 1,
+      "late_rejected": true,
+      "payload_sha256": "27e2c5693730077382dd254cde76ec8ff71eb7131f537b20af27855f7bfa1cb4",
+      "pointer_unchanged_after_late": true,
+      "stage": "cargo-active"
+    },
+    {
+      "current_generation": 2,
+      "final_pointer_sha256": "0af181ee3bad28e40168a86ceda848d989ec9a984bd701c1c05e4f02d6efd4bf",
+      "fresh_accepted": true,
+      "late_generation": 1,
+      "late_rejected": true,
+      "payload_sha256": "5d4b86748065c34b66cc95d0ef6cde7f68d65cd52ba30dc05a29fba60c53de45",
+      "pointer_unchanged_after_late": true,
+      "stage": "charon-active"
+    },
+    {
+      "current_generation": 2,
+      "final_pointer_sha256": "f0fe8d04324c940223fbe34b1c4e24d804cddabe7cc9e36232edd41592ff95f5",
+      "fresh_accepted": true,
+      "late_generation": 1,
+      "late_rejected": true,
+      "payload_sha256": "17913bb7421ca10d1be0cdc2bc6ebcc7a2d764ce1c46eab3449835423e135e53",
+      "pointer_unchanged_after_late": true,
+      "stage": "lake-active"
+    }
+  ],
+  "final_pointer": {
+    "generation": 2,
+    "payload_sha256": "17913bb7421ca10d1be0cdc2bc6ebcc7a2d764ce1c46eab3449835423e135e53",
+    "stage": "lake-active"
+  },
+  "input_results_sha256": "a6807ef72366c483ab37f743090fafdf8c715f6ff9a14ec0f6316a1416721cab",
+  "model_only": true
+}

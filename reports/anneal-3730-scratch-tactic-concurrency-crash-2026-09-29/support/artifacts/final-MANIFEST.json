@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "env_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+  "generation": "g0004-reader-swap-44261df8",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "olean_sha256": "46c2091fdd00a09a7bf544fb4ee7729c0095b77c963ab78e66b2e1718ad9cfd9",
+  "proof_sha256": "3a493db6a8f376ec42816aa3b31de10b55da7fe83baa0d233a94d28a45bfd6d4",
+  "request": "reader-swap",
+  "version": 4
+}

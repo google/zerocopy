@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/verification",
+    "lean/language-server",
+    "lean/batch-checking",
+    "lean/claim-oracle"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Anneal source checkout used for scope comparison",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

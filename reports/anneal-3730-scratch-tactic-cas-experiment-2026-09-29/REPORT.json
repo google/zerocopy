@@ -1,0 +1,26 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "identity": {
+        "environment_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "proof_source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1"
+      },
+      "name": "Pinned Lean 4.30.0-rc2 macOS arm64 proof fixture"
+    },
+    {
+      "identity": {
+        "probe_sha256": "884eb98f4313bb5f387b3bc4e21aa5d0c9fb0d6cb9e79f650de763965afebab2",
+        "results_sha256": "796f642fbeee331ff955c2580a2c4aa0d8f0303c5dbb4632fad79683557d6cee"
+      },
+      "name": "Private scratch candidate and immutable-generation CAS prototype"
+    }
+  ],
+  "topics": [
+    "anneal/scratch-proof-candidates",
+    "anneal/proof-cas",
+    "lean/batch-check",
+    "anneal/generation-publication-model"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "status": "bounded matrix passed",
+  "events": 344,
+  "transcript_sha256": "af3249d8ddf9da06628b00fba72d13eb0b08827766c98606c9f65b69f899ba10",
+  "probe_sha256": "1a52598fa127dbdc06ca021a8b954e03c320419c3c8575a98f66116913a5f6a9",
+  "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+  "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "matrix": {
+    "unfinished": {
+      "batch_diagnostics": 4,
+      "final_lsp_diagnostics": 4,
+      "failure_goal": [
+        "\u22a2 True"
+      ],
+      "before_goal": [
+        "\u22a2 True"
+      ],
+      "after_goal": [
+        "\u22a2 True"
+      ],
+      "batch_ms": 1848.5,
+      "source_sha256": "3586095a9ac057354480c07d25c6387c598719af0591814bcc5b231b4ffd09c1"
+    },
+    "unknown_tactic": {
+      "batch_diagnostics": 4,
+      "final_lsp_diagnostics": 4,
+      "failure_goal": [
+        "\u22a2 True"
+      ],
+      "before_goal": [
+        "\u22a2 True"
+      ],
+      "after_goal": [
+        "\u22a2 True"
+      ],
+      "batch_ms": 584.7,
+      "source_sha256": "2ca5291e72a2e0cfe459e7a192d292844a7a67f45b7d09b7d071dcd71bcbe358"
+    },
+    "heartbeat": {
+      "batch_diagnostics": 3,
+      "final_lsp_diagnostics": 3,
+      "failure_goal": null,
+      "before_goal": [
+        "\u22a2 True"
+      ],
+      "after_goal": [
+        "\u22a2 True"
+      ],
+      "batch_ms": 584.5,
+      "source_sha256": "60ffd88b2d5f9eb26ce257857364db8a3220a8987012977d299cb4a78ce3c37b"
+    },
+    "syntax": {
+      "batch_diagnostics": 4,
+      "final_lsp_diagnostics": 4,
+      "failure_goal": null,
+      "before_goal": [
+        "\u22a2 True"
+      ],
+      "after_goal": [
+        "\u22a2 True"
+      ],
+      "batch_ms": 582.7,
+      "source_sha256": "5aa7560bf7b4df2251ecc18a5f78f50b103fb82b7db5f52ac86d99b6f7a3887b"
+    }
+  },
+  "edit_case": {
+    "old_goal": [
+      "\u22a2 True"
+    ],
+    "immediate_goal": [
+      "\u22a2 False"
+    ],
+    "late_version_1_goal": [
+      "\u22a2 False"
+    ],
+    "late_version_2_goal": [
+      "\u22a2 False"
+    ],
+    "v1_sha256": "3586095a9ac057354480c07d25c6387c598719af0591814bcc5b231b4ffd09c1",
+    "v2_sha256": "daae769ebb70e5557b37a8ff18dad5c66264287b5e4ad5f5771d8e79e4bb41b3"
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "clean_exit_zero_observed_rss": true,
+  "fixtures": {
+    "A": {
+      "dep_sha256": "b4313e13071af7cbf4771ea492d3ac497be251b1f99b655824ad367790ee0471",
+      "olean_sha256": "b829d5b0080dde9fe22b17c8455d7581eee66547fff7bfc6202eac86a27ad099",
+      "proof_sha256": "ae36eb7bbe72863e8e2966925e689ec5e4fe3308fffe2dc9bd9bbd54e0c0bf29"
+    },
+    "B": {
+      "dep_sha256": "d2142b6aab604f810f9544c3c25c50b02f3291e3b65d16654afbbaa775b3b057",
+      "olean_sha256": "d28d66bfd0de6d147728317192e991fd208925fdcddb5e0f293b57a33bbc230b",
+      "proof_sha256": "9febd99163827968c6feaebc1f2254cb0e9c4451ee8a304b8954db6a9c7af64a"
+    }
+  },
+  "latencies_ms": {
+    "initialize": {
+      "scratch-fresh-server": 26.5,
+      "scratch-reuse": 26.3,
+      "separate-A": 26.4,
+      "separate-B": 26.4,
+      "shared-A": 30.0
+    },
+    "open_wait": [
+      {
+        "label": "shared-A",
+        "version": 1,
+        "wall_ms": 238.6
+      },
+      {
+        "label": "shared-A",
+        "version": 1,
+        "wall_ms": 239.0
+      },
+      {
+        "label": "separate-A",
+        "version": 1,
+        "wall_ms": 239.2
+      },
+      {
+        "label": "separate-B",
+        "version": 1,
+        "wall_ms": 235.5
+      },
+      {
+        "label": "scratch-reuse",
+        "version": 1,
+        "wall_ms": 237.5
+      },
+      {
+        "label": "scratch-reuse",
+        "version": 1,
+        "wall_ms": 240.0
+      },
+      {
+        "label": "scratch-fresh-server",
+        "version": 1,
+        "wall_ms": 238.3
+      }
+    ],
+    "plain_goal": [
+      {
+        "label": "shared-A",
+        "request_id": 3,
+        "wall_ms": 1.4
+      },
+      {
+        "label": "shared-A",
+        "request_id": 5,
+        "wall_ms": 0.4
+      },
+      {
+        "label": "separate-A",
+        "request_id": 3,
+        "wall_ms": 0.5
+      },
+      {
+        "label": "separate-B",
+        "request_id": 3,
+        "wall_ms": 0.5
+      },
+      {
+        "label": "scratch-reuse",
+        "request_id": 3,
+        "wall_ms": 0.4
+      },
+      {
+        "label": "scratch-reuse",
+        "request_id": 7,
+        "wall_ms": 0.3
+      },
+      {
+        "label": "scratch-reuse",
+        "request_id": 12,
+        "wall_ms": 0.3
+      },
+      {
+        "label": "scratch-fresh-server",
+        "request_id": 3,
+        "wall_ms": 0.4
+      }
+    ]
+  },
+  "rss_difference_bytes": 100614144,
+  "scratch": {
+    "fresh_server_goal": [
+      "\u22a2 selected = 11"
+    ],
+    "new_rpc_session": "10841209215245337246",
+    "new_worker_pid": 47657,
+    "old_rpc_error_code": -32900,
+    "old_rpc_session": "11110799329295683680",
+    "old_worker_pid": 47653,
+    "reopened_worker_goal": [
+      "\u22a2 selected = 11"
+    ],
+    "reused_worker_solved_goal": []
+  },
+  "separate_two_servers": {
+    "A_eval": "11",
+    "B_claim_rfl_failed": false,
+    "B_eval": "22",
+    "per_process": [
+      {
+        "command": "$LEAN_BIN",
+        "pid": 47644,
+        "ppid": 47633,
+        "rss_bytes": 97517568
+      },
+      {
+        "command": "$LEAN_BIN",
+        "pid": 47645,
+        "ppid": 47633,
+        "rss_bytes": 95289344
+      },
+      {
+        "command": "$LEAN_BIN",
+        "pid": 47646,
+        "ppid": 47644,
+        "rss_bytes": 387563520
+      },
+      {
+        "command": "$LEAN_BIN",
+        "pid": 47648,
+        "ppid": 47645,
+        "rss_bytes": 387317760
+      }
+    ],
+    "process_count": 4,
+    "summed_rss_bytes": 967688192
+  },
+  "shared_two_files": {
+    "A_eval": "11",
+    "B_claim_rfl_failed": true,
+    "B_eval": "11",
+    "per_process": [
+      {
+        "command": "$LEAN_BIN",
+        "pid": 47637,
+        "ppid": 47633,
+        "rss_bytes": 91553792
+      },
+      {
+        "command": "$LEAN_BIN",
+        "pid": 47638,
+        "ppid": 47637,
+        "rss_bytes": 388022272
+      },
+      {
+        "command": "$LEAN_BIN",
+        "pid": 47640,
+        "ppid": 47637,
+        "rss_bytes": 387497984
+      }
+    ],
+    "process_count": 3,
+    "summed_rss_bytes": 867074048
+  }
+}

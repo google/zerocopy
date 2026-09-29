@@ -1,0 +1,28 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "identity": {
+        "helper_source_sha256": "88ab46a2f5640781815e68a189348d12cb8aa854bb1ae6a4351be02cd07a0ef3",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "main_source_sha256": "d75c7766dd33e725c28217605eaa0a724320b3aa0e4d72987d09d04b783e188e",
+        "transcript_sha256": "0b790f3b965b55f59fb95b2ff416f0e080db8fd017c91336c35a2575c799f426"
+      },
+      "name": "Pinned Lean 4.30.0-rc2 macOS arm64 two-file LSP fixture"
+    },
+    {
+      "identity": {
+        "applied_results_sha256": "39fc4ca61c432fbf2446837eea91d867553422c321ae6ac35bbf8b7a83e39d28",
+        "apply_script_sha256": "03355eb477d452130f067d1d5f5343dd52fa4c8477120022bcdb18f1e8084397"
+      },
+      "name": "Applied returned edits and fresh batch Lean results"
+    }
+  ],
+  "topics": [
+    "lean/lsp-code-actions",
+    "lean/lsp-multifile-rename",
+    "lean/lsp-signature-help",
+    "lean/lsp-inlay-hints",
+    "anneal/editor-projection-boundary"
+  ]
+}

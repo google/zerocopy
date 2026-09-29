@@ -1,0 +1,882 @@
+{
+  "artifacts_sha256": {
+    "aeneas-Funs.lean": "f9890c1c12a6b563e05cb0b4c0404560b03b3f0dcbc9ffd30569fde58d1babe4",
+    "cargo-app.rmeta": "da832d6a9488398759391119834d4b67db9895087cab14409415edab23b2da96",
+    "charon-app.llbc": "93c8eb72a8bd96f4e53af8105dc65edcf8e34d1753526e086fe6eee378992c9f",
+    "lake-Probe.olean": "18a703e4243cf37110bb3f9ffc5b998793bb83f83f2bf482d3054d317b3ee861"
+  },
+  "fixture_sha256": {
+    "aeneas_input": "d446aee1aff6be072ffd05a46a01c9a730836c7b5917318bd0519dc7dac02eb5",
+    "cargo_lock": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa"
+  },
+  "stages": [
+    {
+      "argv": [
+        "$TOOLS/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "$WORK/cargo-source/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib"
+      ],
+      "cancel": {
+        "exit": -9,
+        "output_after": {},
+        "output_before": {},
+        "remaining_group": [],
+        "seconds": 0.8858,
+        "signal": "SIGSTOP then SIGKILL",
+        "stderr": "",
+        "stdout": "",
+        "stopped_group": [
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+            "pgid": 72079,
+            "pid": 72079,
+            "ppid": 72078,
+            "rss_kib": 32,
+            "stat": "Ts"
+          }
+        ],
+        "surviving_recorded_pids": []
+      },
+      "cwd": "$WORK/cargo-source",
+      "delay_before_stop_ms": 0,
+      "retry": {
+        "exit": 0,
+        "output_after": {
+          ".rustc_info.json": {
+            "bytes": 2691,
+            "sha256": "92690656f224c4f3df8f78ceb8d2adb050a479ee1597fbab96e08f3b723fd476"
+          },
+          "CACHEDIR.TAG": {
+            "bytes": 177,
+            "sha256": "6d9d1d216e0f83abc5e5662ca62c92b4f23009466b54fa27321a69acdb778bb2"
+          },
+          "debug/.cargo-artifact-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.cargo-build-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.cargo-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.fingerprint/app_closure-4191be4af2073e3f/run-build-script-build-script-build": {
+            "bytes": 16,
+            "sha256": "6305b14fce88031b2da617921ba34f6275fcdde5b827e7b1d683f3ca4b347193"
+          },
+          "debug/.fingerprint/app_closure-4191be4af2073e3f/run-build-script-build-script-build.json": {
+            "bytes": 284,
+            "sha256": "cfba5ed2c5666141542bd5e3b7ffde239ceeef2f182241471e912f3af36714d5"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/build-script-build-script-build": {
+            "bytes": 16,
+            "sha256": "c12655f1c447bdb6c9905563d660391253b16525a171403163926161fab93f43"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/build-script-build-script-build.json": {
+            "bytes": 367,
+            "sha256": "a4bc44513bdc912441ce96531ad4b7806857a9e6d6402310108c1aff2593d6a4"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/dep-build-script-build-script-build": {
+            "bytes": 28,
+            "sha256": "a71f952e7f3252ef5608298951fd55b25f3590c98bc0765ae4145e623604ee7d"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/.fingerprint/app_closure-da49ba37009a43c2/dep-lib-app_closure": {
+            "bytes": 133,
+            "sha256": "7abbe853422a44caed95135f4182261e358b516a6e634578dc915917cc4a259a"
+          },
+          "debug/.fingerprint/app_closure-da49ba37009a43c2/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/.fingerprint/app_closure-da49ba37009a43c2/lib-app_closure": {
+            "bytes": 16,
+            "sha256": "79a6f92fec47f18826d7b2c2966963127d252ae48a85db9f8d2936c2fd61bae7"
+          },
+          "debug/.fingerprint/app_closure-da49ba37009a43c2/lib-app_closure.json": {
+            "bytes": 545,
+            "sha256": "6c192931c329abd372f35acd1be42bbb3a34180bd35db40be0068fad7ed2fcae"
+          },
+          "debug/.fingerprint/dep_path-78b3917d8d20c3f7/dep-lib-dep_path": {
+            "bytes": 30,
+            "sha256": "f14f96adde2da250a05802a30e565519ea310fa1799083f7444b109fa37007fc"
+          },
+          "debug/.fingerprint/dep_path-78b3917d8d20c3f7/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/.fingerprint/dep_path-78b3917d8d20c3f7/lib-dep_path": {
+            "bytes": 16,
+            "sha256": "22240053cf8e523922860f973eb4f979c3ed1aa49c449707f8be471e3495a643"
+          },
+          "debug/.fingerprint/dep_path-78b3917d8d20c3f7/lib-dep_path.json": {
+            "bytes": 348,
+            "sha256": "2ce00934b941e4d1417f65b97a05ef6df76f4ea8640e93ff6757de079eac1d81"
+          },
+          "debug/.fingerprint/proc_local-e53788bbcf9bd661/dep-lib-proc_local": {
+            "bytes": 30,
+            "sha256": "f14f96adde2da250a05802a30e565519ea310fa1799083f7444b109fa37007fc"
+          },
+          "debug/.fingerprint/proc_local-e53788bbcf9bd661/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/.fingerprint/proc_local-e53788bbcf9bd661/lib-proc_local": {
+            "bytes": 16,
+            "sha256": "de4bf602cdcfe3cea7e22aa97ab05a4fa1ede2ca63f53e5bfbbefcb2c7aedb2e"
+          },
+          "debug/.fingerprint/proc_local-e53788bbcf9bd661/lib-proc_local.json": {
+            "bytes": 351,
+            "sha256": "1f2a97eb850c97575075738edee9be6b40560646720620b718d7e1c2ef0acafc"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/out/generated.rs": {
+            "bytes": 39,
+            "sha256": "d6c24b3815d097e8fd292ef4c57af1100eaa6d49c073f07c861e75cb33618015"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/output": {
+            "bytes": 39,
+            "sha256": "c618e72d0998c501e0fe4657080d86cb456c7e16309af1b5fff54df2844cbd5f"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/root-output": {
+            "bytes": 119,
+            "sha256": "f12fefd7b66b8abf0d7a18e7bc9566f53d7a838c8344c06806ed54c2ca04446b"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/build/app_closure-6cc8fe63ac46315d/build-script-build": {
+            "bytes": 496096,
+            "sha256": "546918f65ac185a4e637f75f74d185527c50ada604ffe8e4c838211f999922c2"
+          },
+          "debug/build/app_closure-6cc8fe63ac46315d/build_script_build-6cc8fe63ac46315d": {
+            "bytes": 496096,
+            "sha256": "546918f65ac185a4e637f75f74d185527c50ada604ffe8e4c838211f999922c2"
+          },
+          "debug/build/app_closure-6cc8fe63ac46315d/build_script_build-6cc8fe63ac46315d.d": {
+            "bytes": 350,
+            "sha256": "66dc533f7aaa2c72e2b2daf84567560c192da023d50c2ad6e3f5fdd13f182e37"
+          },
+          "debug/deps/app_closure-da49ba37009a43c2.app_closure.20c0f664b560f450-cgu.0.rcgu.o": {
+            "bytes": 4952,
+            "sha256": "9195533bd70a142cd9737eabf9ee1f691d9d2ac9050fe18d9e2c815bec22a3a3"
+          },
+          "debug/deps/app_closure-da49ba37009a43c2.d": {
+            "bytes": 1206,
+            "sha256": "7fff6886afd0f1ab79e7e4d6997dd7b688cf90aa86c4ddabf27c41dd4feed75e"
+          },
+          "debug/deps/dep_path-78b3917d8d20c3f7.d": {
+            "bytes": 442,
+            "sha256": "ae6e8e9384cbf9dca341d9495b950db2bf459a134495892a62c1250e6df3a470"
+          },
+          "debug/deps/dep_path-78b3917d8d20c3f7.dep_path.405c8cf7415f8fb9-cgu.0.rcgu.o": {
+            "bytes": 2896,
+            "sha256": "86e50d1b89a16a1230243a8d70a42448b3700081cae7b95c2e06fd08e5187d59"
+          },
+          "debug/deps/libapp_closure-da49ba37009a43c2.rlib": {
+            "bytes": 9512,
+            "sha256": "2dbf0c8fd69c414e57757b02815e24e061792ca4c208cf1feba5a69d9099e292"
+          },
+          "debug/deps/libapp_closure-da49ba37009a43c2.rmeta": {
+            "bytes": 3350,
+            "sha256": "da832d6a9488398759391119834d4b67db9895087cab14409415edab23b2da96"
+          },
+          "debug/deps/libdep_path-78b3917d8d20c3f7.rlib": {
+            "bytes": 6288,
+            "sha256": "77ca89f35d40c3971d39bc6496dd4c5085929f6505fb5e685246ad1594c66014"
+          },
+          "debug/deps/libdep_path-78b3917d8d20c3f7.rmeta": {
+            "bytes": 2253,
+            "sha256": "661cdb830438f3c4e8e2717e864573b7184cef5755cc7e175fba5294dd1444f8"
+          },
+          "debug/deps/libproc_local-e53788bbcf9bd661.dylib": {
+            "bytes": 480440,
+            "sha256": "15a1ff828222be20787cf9f31dcb24903d05fa1eb3cdcc9aae76e5a8009ca7c4"
+          },
+          "debug/deps/proc_local-e53788bbcf9bd661.d": {
+            "bytes": 310,
+            "sha256": "0e9e941a7d52aeb81ebed07c378f098167ea10dc2f7a821e130f73e6b51a0e11"
+          },
+          "debug/libapp_closure.d": {
+            "bytes": 700,
+            "sha256": "b43e9d1b4bdcdb2647265e174af720ab2dc798e81de06d29fe6f7afb222381d1"
+          },
+          "debug/libapp_closure.rlib": {
+            "bytes": 9512,
+            "sha256": "2dbf0c8fd69c414e57757b02815e24e061792ca4c208cf1feba5a69d9099e292"
+          }
+        },
+        "seconds": 0.7685,
+        "stderr": "   Compiling app_closure v0.1.0 ($WORK/cargo-source/app)\n   Compiling dep_path v0.1.0 ($WORK/cargo-source/dep_path)\n   Compiling proc_local v0.1.0 ($WORK/cargo-source/proc_local)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.74s\n",
+        "stdout": ""
+      },
+      "stage": "cargo"
+    },
+    {
+      "argv": [
+        "$TOOLS/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$WORK/charon-output/app.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/cargo-source/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cancel": {
+        "exit": -9,
+        "output_after": {},
+        "output_before": {},
+        "remaining_group": [],
+        "seconds": 0.9578,
+        "signal": "SIGSTOP then SIGKILL",
+        "stderr": "",
+        "stdout": "",
+        "stopped_group": [
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+            "pgid": 72108,
+            "pid": 72108,
+            "ppid": 72078,
+            "rss_kib": 448,
+            "stat": "Ts"
+          }
+        ],
+        "surviving_recorded_pids": []
+      },
+      "cwd": "$WORK/cargo-source",
+      "delay_before_stop_ms": 0,
+      "retry": {
+        "exit": 0,
+        "output_after": {
+          "app.llbc": {
+            "bytes": 29523,
+            "sha256": "93c8eb72a8bd96f4e53af8105dc65edcf8e34d1753526e086fe6eee378992c9f"
+          }
+        },
+        "seconds": 0.8266,
+        "stderr": "   Compiling app_closure v0.1.0 ($WORK/cargo-source/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/charon-target/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/charon-target/debug/deps --verbose`\n     Running `$WORK/charon-target/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling proc_local v0.1.0 ($WORK/cargo-source/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/charon-target/debug/deps -L dependency=$WORK/charon-target/debug/deps --extern proc_macro --verbose`\n   Compiling dep_path v0.1.0 ($WORK/cargo-source/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/charon-target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/charon-target/aarch64-apple-darwin/debug/deps -L dependency=$WORK/charon-target/debug/deps --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/charon-target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/charon-target/aarch64-apple-darwin/debug/deps -L dependency=$WORK/charon-target/debug/deps --extern dep_path=$WORK/charon-target/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/charon-target/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.78s\n",
+        "stdout": ""
+      },
+      "stage": "charon"
+    },
+    {
+      "argv": [
+        "$TOOLS/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "$WORK/aeneas-output",
+        "$TOOLS/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-stage-cancellation-cleanup-2026-09-29/support/aeneas-input.llbc"
+      ],
+      "cancel": {
+        "exit": -9,
+        "output_after": {},
+        "output_before": {},
+        "remaining_group": [],
+        "seconds": 0.3941,
+        "signal": "SIGSTOP then SIGKILL",
+        "stderr": "",
+        "stdout": "",
+        "stopped_group": [
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "pgid": 72140,
+            "pid": 72140,
+            "ppid": 72078,
+            "rss_kib": 320,
+            "stat": "Ts"
+          }
+        ],
+        "surviving_recorded_pids": []
+      },
+      "cwd": "$WORK",
+      "delay_before_stop_ms": 0,
+      "retry": {
+        "exit": 0,
+        "output_after": {
+          "Aeneas-input.lean": {
+            "bytes": 25,
+            "sha256": "e53e58897868ab68b8679791e44125840a2ae25433628f1d8c76b282da685d78"
+          },
+          "Funs.lean": {
+            "bytes": 4634,
+            "sha256": "f9890c1c12a6b563e05cb0b4c0404560b03b3f0dcbc9ffd30569fde58d1babe4"
+          },
+          "Types.lean": {
+            "bytes": 1205,
+            "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+          }
+        },
+        "seconds": 0.2564,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $TOOLS/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-stage-cancellation-cleanup-2026-09-29/support/aeneas-input.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $WORK/aeneas-output/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $WORK/aeneas-output/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $WORK/aeneas-output/Aeneas-input.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.165976 seconds\n"
+      },
+      "stage": "aeneas"
+    },
+    {
+      "argv": [
+        "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Probe"
+      ],
+      "cancel": {
+        "exit": -9,
+        "output_after": {},
+        "output_before": {},
+        "remaining_group": [],
+        "seconds": 0.6898,
+        "signal": "SIGSTOP then SIGKILL",
+        "stderr": "",
+        "stdout": "",
+        "stopped_group": [
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+            "pgid": 72145,
+            "pid": 72145,
+            "ppid": 72078,
+            "rss_kib": 32,
+            "stat": "Ts"
+          }
+        ],
+        "surviving_recorded_pids": []
+      },
+      "cwd": "$WORK/lake-source",
+      "delay_before_stop_ms": 0,
+      "retry": {
+        "exit": 0,
+        "output_after": {
+          "build/ir/Probe.c": {
+            "bytes": 1409,
+            "sha256": "de33f164e7d8adf457a4893fd1934654525c69cf3648b2003071ce73e5f7fdfc"
+          },
+          "build/ir/Probe.c.hash": {
+            "bytes": 16,
+            "sha256": "7b95840fe1d2523071d70757c1d5af8231e17a6ee523729dd342db8abd88d5c3"
+          },
+          "build/ir/Probe.setup.json": {
+            "bytes": 138,
+            "sha256": "445f59662f75daa3cb4f9ff3647ed68db154e4b2b2d83ceca2ecf678ddfab854"
+          },
+          "build/lib/lean/Probe.ilean": {
+            "bytes": 411,
+            "sha256": "c25bad8a8f00d54b51cdd769f44ecc7700aaadcb0388b0858b0b13238c929573"
+          },
+          "build/lib/lean/Probe.ilean.hash": {
+            "bytes": 16,
+            "sha256": "af77b43d193a18d1f88e20599d34274f88fe743ebab0b3908bfa008513f6a095"
+          },
+          "build/lib/lean/Probe.olean": {
+            "bytes": 7360,
+            "sha256": "18a703e4243cf37110bb3f9ffc5b998793bb83f83f2bf482d3054d317b3ee861"
+          },
+          "build/lib/lean/Probe.olean.hash": {
+            "bytes": 16,
+            "sha256": "baa412a5b831b3bc2dd5cce5bd9c1e1fa55e2454f02835520280bfa6b57de00b"
+          },
+          "build/lib/lean/Probe.trace": {
+            "bytes": 1854,
+            "sha256": "da93ae2a0eca6588c14a40278d4d628d71c5e50dba8495a39f583a5256bfe196"
+          },
+          "config/[anonymous]/lakefile.olean": {
+            "bytes": 96680,
+            "sha256": "ca06db641bfa58dbfe7c3a3652cc193a4e3e830f342677d94e7da523262309a5"
+          },
+          "config/[anonymous]/lakefile.olean.trace": {
+            "bytes": 184,
+            "sha256": "a8e111968681446c33a5337c02e28642967ff1705834659326589e7117efd87e"
+          }
+        },
+        "seconds": 0.5737,
+        "stderr": "info: cancellation_probe: no previous manifest, creating one from scratch\n",
+        "stdout": "\u2714 [2/3] Built Probe (175ms)\nBuild completed successfully (3 jobs).\n"
+      },
+      "stage": "lake"
+    },
+    {
+      "argv": [
+        "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$WORK/lean-output/Check.lean"
+      ],
+      "cancel": {
+        "exit": -9,
+        "output_after": {},
+        "output_before": {},
+        "remaining_group": [],
+        "seconds": 0.2927,
+        "signal": "SIGSTOP then SIGKILL",
+        "stderr": "",
+        "stdout": "",
+        "stopped_group": [
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "pgid": 72151,
+            "pid": 72151,
+            "ppid": 72078,
+            "rss_kib": 32,
+            "stat": "Ts"
+          }
+        ],
+        "surviving_recorded_pids": []
+      },
+      "cwd": "$WORK/lean-output",
+      "delay_before_stop_ms": 0,
+      "retry": {
+        "exit": 0,
+        "output_after": {},
+        "seconds": 0.1771,
+        "stderr": "",
+        "stdout": "{\"caption\":\"\",\"data\":\"value : Nat\",\"endPos\":{\"column\":6,\"line\":2},\"fileName\":\"$WORK/lean-output/Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n"
+      },
+      "stage": "lean"
+    },
+    {
+      "argv": [
+        "$TOOLS/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "$WORK/cargo-source/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib"
+      ],
+      "cancel": {
+        "exit": -9,
+        "output_after": {
+          "CACHEDIR.TAG": {
+            "bytes": 177,
+            "sha256": "6d9d1d216e0f83abc5e5662ca62c92b4f23009466b54fa27321a69acdb778bb2"
+          },
+          "debug/.cargo-artifact-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.cargo-build-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.cargo-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/build/app_closure-6cc8fe63ac46315d/build_script_build-6cc8fe63ac46315d.d": {
+            "bytes": 364,
+            "sha256": "d4821f6193dc71c6535bbb098ebbbdefdb33d0a4aa926d8aae897d71eaadbd5b"
+          }
+        },
+        "output_before": {},
+        "remaining_group": [],
+        "seconds": 0.929,
+        "signal": "SIGSTOP then SIGKILL",
+        "stderr": "   Compiling app_closure v0.1.0 ($WORK/cargo-source/app)\n",
+        "stdout": "",
+        "stopped_group": [
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+            "pgid": 72158,
+            "pid": 72158,
+            "ppid": 72078,
+            "rss_kib": 32096,
+            "stat": "Ts"
+          },
+          {
+            "comm": "rustc",
+            "pgid": 72158,
+            "pid": 72162,
+            "ppid": 72158,
+            "rss_kib": 98832,
+            "stat": "T"
+          }
+        ],
+        "surviving_recorded_pids": []
+      },
+      "cwd": "$WORK/cargo-source",
+      "delay_before_stop_ms": 80,
+      "retry": {
+        "exit": 0,
+        "output_after": {
+          ".rustc_info.json": {
+            "bytes": 2691,
+            "sha256": "33739fd4c20237ab370af39246cc0a3155d18ec547f0d0afdb739b19bd27790e"
+          },
+          "CACHEDIR.TAG": {
+            "bytes": 177,
+            "sha256": "6d9d1d216e0f83abc5e5662ca62c92b4f23009466b54fa27321a69acdb778bb2"
+          },
+          "debug/.cargo-artifact-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.cargo-build-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.cargo-lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/.fingerprint/app_closure-4191be4af2073e3f/run-build-script-build-script-build": {
+            "bytes": 16,
+            "sha256": "6305b14fce88031b2da617921ba34f6275fcdde5b827e7b1d683f3ca4b347193"
+          },
+          "debug/.fingerprint/app_closure-4191be4af2073e3f/run-build-script-build-script-build.json": {
+            "bytes": 284,
+            "sha256": "cfba5ed2c5666141542bd5e3b7ffde239ceeef2f182241471e912f3af36714d5"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/build-script-build-script-build": {
+            "bytes": 16,
+            "sha256": "c12655f1c447bdb6c9905563d660391253b16525a171403163926161fab93f43"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/build-script-build-script-build.json": {
+            "bytes": 367,
+            "sha256": "a4bc44513bdc912441ce96531ad4b7806857a9e6d6402310108c1aff2593d6a4"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/dep-build-script-build-script-build": {
+            "bytes": 28,
+            "sha256": "a71f952e7f3252ef5608298951fd55b25f3590c98bc0765ae4145e623604ee7d"
+          },
+          "debug/.fingerprint/app_closure-6cc8fe63ac46315d/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/.fingerprint/app_closure-da49ba37009a43c2/dep-lib-app_closure": {
+            "bytes": 133,
+            "sha256": "7942f8667776ec126e8bad6c4e1d04c65b036be298d8d721dc0d35fd5967ff4c"
+          },
+          "debug/.fingerprint/app_closure-da49ba37009a43c2/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/.fingerprint/app_closure-da49ba37009a43c2/lib-app_closure": {
+            "bytes": 16,
+            "sha256": "79a6f92fec47f18826d7b2c2966963127d252ae48a85db9f8d2936c2fd61bae7"
+          },
+          "debug/.fingerprint/app_closure-da49ba37009a43c2/lib-app_closure.json": {
+            "bytes": 545,
+            "sha256": "6c192931c329abd372f35acd1be42bbb3a34180bd35db40be0068fad7ed2fcae"
+          },
+          "debug/.fingerprint/dep_path-78b3917d8d20c3f7/dep-lib-dep_path": {
+            "bytes": 30,
+            "sha256": "f14f96adde2da250a05802a30e565519ea310fa1799083f7444b109fa37007fc"
+          },
+          "debug/.fingerprint/dep_path-78b3917d8d20c3f7/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/.fingerprint/dep_path-78b3917d8d20c3f7/lib-dep_path": {
+            "bytes": 16,
+            "sha256": "22240053cf8e523922860f973eb4f979c3ed1aa49c449707f8be471e3495a643"
+          },
+          "debug/.fingerprint/dep_path-78b3917d8d20c3f7/lib-dep_path.json": {
+            "bytes": 348,
+            "sha256": "2ce00934b941e4d1417f65b97a05ef6df76f4ea8640e93ff6757de079eac1d81"
+          },
+          "debug/.fingerprint/proc_local-e53788bbcf9bd661/dep-lib-proc_local": {
+            "bytes": 30,
+            "sha256": "f14f96adde2da250a05802a30e565519ea310fa1799083f7444b109fa37007fc"
+          },
+          "debug/.fingerprint/proc_local-e53788bbcf9bd661/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/.fingerprint/proc_local-e53788bbcf9bd661/lib-proc_local": {
+            "bytes": 16,
+            "sha256": "de4bf602cdcfe3cea7e22aa97ab05a4fa1ede2ca63f53e5bfbbefcb2c7aedb2e"
+          },
+          "debug/.fingerprint/proc_local-e53788bbcf9bd661/lib-proc_local.json": {
+            "bytes": 351,
+            "sha256": "1f2a97eb850c97575075738edee9be6b40560646720620b718d7e1c2ef0acafc"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/invoked.timestamp": {
+            "bytes": 48,
+            "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/out/generated.rs": {
+            "bytes": 39,
+            "sha256": "d6c24b3815d097e8fd292ef4c57af1100eaa6d49c073f07c861e75cb33618015"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/output": {
+            "bytes": 39,
+            "sha256": "c618e72d0998c501e0fe4657080d86cb456c7e16309af1b5fff54df2844cbd5f"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/root-output": {
+            "bytes": 126,
+            "sha256": "aa50da029b832833facc940633c8ec5e04e13e2c453cd3c0687e15eeeb339a64"
+          },
+          "debug/build/app_closure-4191be4af2073e3f/stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "debug/build/app_closure-6cc8fe63ac46315d/build-script-build": {
+            "bytes": 496096,
+            "sha256": "546918f65ac185a4e637f75f74d185527c50ada604ffe8e4c838211f999922c2"
+          },
+          "debug/build/app_closure-6cc8fe63ac46315d/build_script_build-6cc8fe63ac46315d": {
+            "bytes": 496096,
+            "sha256": "546918f65ac185a4e637f75f74d185527c50ada604ffe8e4c838211f999922c2"
+          },
+          "debug/build/app_closure-6cc8fe63ac46315d/build_script_build-6cc8fe63ac46315d.d": {
+            "bytes": 364,
+            "sha256": "d4821f6193dc71c6535bbb098ebbbdefdb33d0a4aa926d8aae897d71eaadbd5b"
+          },
+          "debug/deps/app_closure-da49ba37009a43c2.app_closure.20c0f664b560f450-cgu.0.rcgu.o": {
+            "bytes": 4952,
+            "sha256": "9195533bd70a142cd9737eabf9ee1f691d9d2ac9050fe18d9e2c815bec22a3a3"
+          },
+          "debug/deps/app_closure-da49ba37009a43c2.d": {
+            "bytes": 1262,
+            "sha256": "9381692ca992e99f123872d0f246dcbcfb426946b4b493298d5e173fe0e82c3a"
+          },
+          "debug/deps/dep_path-78b3917d8d20c3f7.d": {
+            "bytes": 463,
+            "sha256": "f890250ea90bb3411137d03f1e7c3036cfb130f692ce66b7d9044206d6e7c2d4"
+          },
+          "debug/deps/dep_path-78b3917d8d20c3f7.dep_path.405c8cf7415f8fb9-cgu.0.rcgu.o": {
+            "bytes": 2896,
+            "sha256": "86e50d1b89a16a1230243a8d70a42448b3700081cae7b95c2e06fd08e5187d59"
+          },
+          "debug/deps/libapp_closure-da49ba37009a43c2.rlib": {
+            "bytes": 9528,
+            "sha256": "ee4554b9e73196d9eddae96d063c6f5874d3c875cf7fc0349a4a445777139d11"
+          },
+          "debug/deps/libapp_closure-da49ba37009a43c2.rmeta": {
+            "bytes": 3364,
+            "sha256": "8eda2699289a38e1708e5dc9ce4cc1f2c386f0d881d24d6389c6e7dd4a14f66a"
+          },
+          "debug/deps/libdep_path-78b3917d8d20c3f7.rlib": {
+            "bytes": 6288,
+            "sha256": "77ca89f35d40c3971d39bc6496dd4c5085929f6505fb5e685246ad1594c66014"
+          },
+          "debug/deps/libdep_path-78b3917d8d20c3f7.rmeta": {
+            "bytes": 2253,
+            "sha256": "661cdb830438f3c4e8e2717e864573b7184cef5755cc7e175fba5294dd1444f8"
+          },
+          "debug/deps/libproc_local-e53788bbcf9bd661.dylib": {
+            "bytes": 480440,
+            "sha256": "b36a8b2b997dfe9b9fb430a93880bff6dee5b9af067f33d154a0f3ea3eb45a5a"
+          },
+          "debug/deps/proc_local-e53788bbcf9bd661.d": {
+            "bytes": 324,
+            "sha256": "20f81621e5750147ecdbb8d264aa1f7fdb3683994e4b393d21570cd5c8e7b8b6"
+          },
+          "debug/libapp_closure.d": {
+            "bytes": 714,
+            "sha256": "ffd6ed0928c981e121ff339a29f123214a10ea7745c13f753ead17c649404919"
+          },
+          "debug/libapp_closure.rlib": {
+            "bytes": 9528,
+            "sha256": "ee4554b9e73196d9eddae96d063c6f5874d3c875cf7fc0349a4a445777139d11"
+          }
+        },
+        "seconds": 0.7199,
+        "stderr": "   Compiling app_closure v0.1.0 ($WORK/cargo-source/app)\n   Compiling dep_path v0.1.0 ($WORK/cargo-source/dep_path)\n   Compiling proc_local v0.1.0 ($WORK/cargo-source/proc_local)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.69s\n",
+        "stdout": ""
+      },
+      "stage": "cargo-active"
+    },
+    {
+      "argv": [
+        "$TOOLS/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$WORK/charon-active-output/app.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/cargo-source/Cargo.toml",
+        "--package",
+        "app_closure",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cancel": {
+        "exit": -9,
+        "output_after": {},
+        "output_before": {},
+        "remaining_group": [],
+        "seconds": 1.071,
+        "signal": "SIGSTOP then SIGKILL",
+        "stderr": "",
+        "stdout": "",
+        "stopped_group": [
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+            "pgid": 72192,
+            "pid": 72192,
+            "ppid": 72078,
+            "rss_kib": 3680,
+            "stat": "Ts"
+          },
+          {
+            "comm": "cargo",
+            "pgid": 72192,
+            "pid": 72194,
+            "ppid": 72192,
+            "rss_kib": 18032,
+            "stat": "T"
+          },
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/charon-driver",
+            "pgid": 72192,
+            "pid": 72197,
+            "ppid": 72194,
+            "rss_kib": 112,
+            "stat": "T"
+          }
+        ],
+        "surviving_recorded_pids": []
+      },
+      "cwd": "$WORK/cargo-source",
+      "delay_before_stop_ms": 80,
+      "retry": {
+        "exit": 0,
+        "output_after": {
+          "app.llbc": {
+            "bytes": 29537,
+            "sha256": "1f10b98ba2ac969867cb1fa94c54280021e9815ad8f3d9e34ca1bb4f68ff9c70"
+          }
+        },
+        "seconds": 0.8636,
+        "stderr": "   Compiling app_closure v0.1.0 ($WORK/cargo-source/app)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 app/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e8f64f8622569ab8 -C extra-filename=-5cfca6cb24cf85eb --out-dir $WORK/charon-active-target/debug/build/app_closure-5cfca6cb24cf85eb -L dependency=$WORK/charon-active-target/debug/deps --verbose`\n     Running `$WORK/charon-active-target/debug/build/app_closure-5cfca6cb24cf85eb/build-script-build`\n   Compiling proc_local v0.1.0 ($WORK/cargo-source/proc_local)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name proc_local --edition=2021 proc_local/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4c6b4ded63a6c6b0 -C extra-filename=-1182834661d0ab58 --out-dir $WORK/charon-active-target/debug/deps -L dependency=$WORK/charon-active-target/debug/deps --extern proc_macro --verbose`\n   Compiling dep_path v0.1.0 ($WORK/cargo-source/dep_path)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name dep_path --edition=2021 dep_path/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=25dad1ed96b1ab3a -C extra-filename=-2a5edd287af86172 --out-dir $WORK/charon-active-target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/charon-active-target/aarch64-apple-darwin/debug/deps -L dependency=$WORK/charon-active-target/debug/deps --verbose`\n     Running `$TOOLS/bin/charon-driver rustc --crate-name app_closure --edition=2021 app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d323d30b889fb91f -C extra-filename=-35261712c164a144 --out-dir $WORK/charon-active-target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/charon-active-target/aarch64-apple-darwin/debug/deps -L dependency=$WORK/charon-active-target/debug/deps --extern dep_path=$WORK/charon-active-target/aarch64-apple-darwin/debug/deps/libdep_path-2a5edd287af86172.rmeta --extern proc_local=$WORK/charon-active-target/debug/deps/libproc_local-1182834661d0ab58.dylib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.82s\n",
+        "stdout": ""
+      },
+      "stage": "charon-active"
+    },
+    {
+      "argv": [
+        "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Probe"
+      ],
+      "cancel": {
+        "exit": -9,
+        "output_after": {
+          "config/[anonymous]/lakefile.olean.trace": {
+            "bytes": 184,
+            "sha256": "a8e111968681446c33a5337c02e28642967ff1705834659326589e7117efd87e"
+          }
+        },
+        "output_before": {},
+        "remaining_group": [],
+        "seconds": 0.7735,
+        "signal": "SIGSTOP then SIGKILL",
+        "stderr": "",
+        "stdout": "",
+        "stopped_group": [
+          {
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+            "pgid": 72229,
+            "pid": 72229,
+            "ppid": 72078,
+            "rss_kib": 83472,
+            "stat": "Ts"
+          }
+        ],
+        "surviving_recorded_pids": []
+      },
+      "cwd": "$WORK/lake-active-source",
+      "delay_before_stop_ms": 80,
+      "retry": {
+        "exit": 0,
+        "output_after": {
+          "build/ir/Probe.c": {
+            "bytes": 1409,
+            "sha256": "de33f164e7d8adf457a4893fd1934654525c69cf3648b2003071ce73e5f7fdfc"
+          },
+          "build/ir/Probe.c.hash": {
+            "bytes": 16,
+            "sha256": "7b95840fe1d2523071d70757c1d5af8231e17a6ee523729dd342db8abd88d5c3"
+          },
+          "build/ir/Probe.setup.json": {
+            "bytes": 138,
+            "sha256": "445f59662f75daa3cb4f9ff3647ed68db154e4b2b2d83ceca2ecf678ddfab854"
+          },
+          "build/lib/lean/Probe.ilean": {
+            "bytes": 411,
+            "sha256": "c25bad8a8f00d54b51cdd769f44ecc7700aaadcb0388b0858b0b13238c929573"
+          },
+          "build/lib/lean/Probe.ilean.hash": {
+            "bytes": 16,
+            "sha256": "af77b43d193a18d1f88e20599d34274f88fe743ebab0b3908bfa008513f6a095"
+          },
+          "build/lib/lean/Probe.olean": {
+            "bytes": 7360,
+            "sha256": "18a703e4243cf37110bb3f9ffc5b998793bb83f83f2bf482d3054d317b3ee861"
+          },
+          "build/lib/lean/Probe.olean.hash": {
+            "bytes": 16,
+            "sha256": "baa412a5b831b3bc2dd5cce5bd9c1e1fa55e2454f02835520280bfa6b57de00b"
+          },
+          "build/lib/lean/Probe.trace": {
+            "bytes": 1903,
+            "sha256": "ba671b17df6cfabadf7c173e64515d60447a9647e93f3ba03c504ae0d0eec33f"
+          },
+          "config/[anonymous]/lakefile.olean": {
+            "bytes": 96680,
+            "sha256": "ca06db641bfa58dbfe7c3a3652cc193a4e3e830f342677d94e7da523262309a5"
+          },
+          "config/[anonymous]/lakefile.olean.lock": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "config/[anonymous]/lakefile.olean.trace": {
+            "bytes": 184,
+            "sha256": "a8e111968681446c33a5337c02e28642967ff1705834659326589e7117efd87e"
+          }
+        },
+        "seconds": 0.5642,
+        "stderr": "",
+        "stdout": "\u2714 [2/3] Built Probe (170ms)\nBuild completed successfully (3 jobs).\n"
+      },
+      "stage": "lake-active"
+    }
+  ],
+  "tool_sha256": {
+    "aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "lake": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "work_root": "$WORK"
+}

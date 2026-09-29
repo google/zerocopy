@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "lake/prepared-environments",
+    "lake/artifact-cache",
+    "lake/relocation",
+    "lean/native-libraries",
+    "lean/batch-checking",
+    "anneal/interactive-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Lean and Lake 4.30.0-rc2 local executables",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+      }
+    },
+    {
+      "name": "Controlled producer and consumer Lake fixture",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "49164a0ff66b0feb871c774242b1d5d89c517512a847340992ab806495b81f19"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

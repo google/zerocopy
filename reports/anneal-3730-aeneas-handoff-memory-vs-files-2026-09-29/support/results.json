@@ -1,0 +1,1058 @@
+{
+  "boundary": "Python bytes around one-shot Aeneas CLI; no direct OCaml/library in-memory call",
+  "buffer": {
+    "aeneas": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-buffer",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/buffer-stage/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 211.44,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "buffer:aeneas",
+      "peak_sampled_rss_kib": 43936,
+      "pid": 77660,
+      "rc": 0,
+      "rss_sample_count": 6,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/buffer-stage/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-buffer/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-buffer/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-buffer/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.121520 seconds\n"
+    },
+    "generated": {
+      "Funs.lean": {
+        "bytes": 921,
+        "sha256": "36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77"
+      },
+      "Source.lean": {
+        "bytes": 19,
+        "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+      },
+      "Types.lean": {
+        "bytes": 530,
+        "sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2"
+      }
+    },
+    "lean": {
+      "chain_rc": [
+        0,
+        0,
+        0
+      ],
+      "compile_peak_sampled_rss_kib": 2054128,
+      "compile_wall_ms": 4893.85,
+      "compiled_inventory": {
+        "Check.lean": {
+          "bytes": 70,
+          "sha256": "453adad09c4c611171335abb67bf0e061cdce0c7e56fd239656b4e98b44b9b1c"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Source.olean": {
+          "bytes": 1312,
+          "sha256": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974"
+        },
+        "Source/Funs.lean": {
+          "bytes": 921,
+          "sha256": "36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77"
+        },
+        "Source/Funs.olean": {
+          "bytes": 12848,
+          "sha256": "587de4720d822b98abf81f3de4304d21bbbf298d1e7b815a90a07c37b4616db6"
+        },
+        "Source/Types.lean": {
+          "bytes": 530,
+          "sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2"
+        },
+        "Source/Types.olean": {
+          "bytes": 1608,
+          "sha256": "46c1aeb635137390d26a097620c65d7d7b1d79dae833a7b14f916d16c2c7ea84"
+        }
+      },
+      "oracle_rc": 0,
+      "oracle_stdout": ""
+    }
+  },
+  "buffer_stage": {
+    "input_sha256": "0645cd7f4b3930d7da543d8af19a838c3c2b26fdda9c5a5e6f34ec8e653d97e6",
+    "materialize_us": 132.375,
+    "python_peak_bytes": 7196
+  },
+  "cancellation": {
+    "buffer": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-buffer",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/buffer-stage/source.llbc"
+      ],
+      "gate_ms": 218.18,
+      "members_after": [],
+      "members_before": [
+        {
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "pid": 78439,
+          "ppid": 77389,
+          "stat": "Ss"
+        }
+      ],
+      "partial_inventory": {
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2"
+        }
+      },
+      "pid": 78439,
+      "rc": -15,
+      "retry_inventory": {
+        "Funs.lean": {
+          "bytes": 921,
+          "sha256": "36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2"
+        }
+      },
+      "retry_rc": 0,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/buffer-stage/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-buffer/Types.lean\n",
+      "term_to_exit_ms": 0.78
+    },
+    "file": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc"
+      ],
+      "gate_ms": 257.44,
+      "members_after": [],
+      "members_before": [
+        {
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "pid": 78429,
+          "ppid": 77389,
+          "stat": "Ss"
+        }
+      ],
+      "partial_inventory": {
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2"
+        }
+      },
+      "pid": 78429,
+      "rc": -15,
+      "retry_inventory": {
+        "Funs.lean": {
+          "bytes": 921,
+          "sha256": "36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2"
+        }
+      },
+      "retry_rc": 0,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-file/Types.lean\n",
+      "term_to_exit_ms": 1.02
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "handoff_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 370.55,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "charon",
+      "peak_sampled_rss_kib": 3952,
+      "pid": 77390,
+      "rc": 0,
+      "rss_sample_count": 10,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 208.99,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "file:aeneas",
+      "peak_sampled_rss_kib": 45488,
+      "pid": 77403,
+      "rc": 0,
+      "rss_sample_count": 6,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-file/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-file/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-file/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.121242 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-file",
+      "elapsed_ms": 4176.35,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "file:lean:Source/Types",
+      "peak_sampled_rss_kib": 2003296,
+      "pid": 77410,
+      "rc": 0,
+      "rss_sample_count": 112,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-file",
+      "elapsed_ms": 1644.51,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "file:lean:Source/Funs",
+      "peak_sampled_rss_kib": 2017792,
+      "pid": 77524,
+      "rc": 0,
+      "rss_sample_count": 44,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-file",
+      "elapsed_ms": 1658.35,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "file:lean:Source",
+      "peak_sampled_rss_kib": 2003168,
+      "pid": 77569,
+      "rc": 0,
+      "rss_sample_count": 45,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-file",
+      "elapsed_ms": 1589.21,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "file:lean:oracle",
+      "peak_sampled_rss_kib": 2026096,
+      "pid": 77616,
+      "rc": 0,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-buffer",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/buffer-stage/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 211.44,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "buffer:aeneas",
+      "peak_sampled_rss_kib": 43936,
+      "pid": 77660,
+      "rc": 0,
+      "rss_sample_count": 6,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/buffer-stage/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-buffer/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-buffer/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-buffer/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.121520 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-buffer",
+      "elapsed_ms": 1660.81,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "buffer:lean:Source/Types",
+      "peak_sampled_rss_kib": 1994976,
+      "pid": 77667,
+      "rc": 0,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-buffer",
+      "elapsed_ms": 1663.32,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "buffer:lean:Source/Funs",
+      "peak_sampled_rss_kib": 2050528,
+      "pid": 77711,
+      "rc": 0,
+      "rss_sample_count": 45,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-buffer",
+      "elapsed_ms": 1569.72,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "buffer:lean:Source",
+      "peak_sampled_rss_kib": 2054128,
+      "pid": 77757,
+      "rc": 0,
+      "rss_sample_count": 42,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-buffer",
+      "elapsed_ms": 1848.92,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "buffer:lean:oracle",
+      "peak_sampled_rss_kib": 2003024,
+      "pid": 77800,
+      "rc": 0,
+      "rss_sample_count": 50,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--stdin",
+        "-o",
+        "Source/Types.olean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-stdin",
+      "elapsed_ms": 1609.75,
+      "input_bytes": 530,
+      "input_sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2",
+      "label": "stdin:lean:Source/Types",
+      "peak_sampled_rss_kib": 1995376,
+      "pid": 77856,
+      "rc": 0,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--stdin",
+        "-o",
+        "Source/Funs.olean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-stdin",
+      "elapsed_ms": 1589.48,
+      "input_bytes": 921,
+      "input_sha256": "36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77",
+      "label": "stdin:lean:Source/Funs",
+      "peak_sampled_rss_kib": 2045776,
+      "pid": 77900,
+      "rc": 0,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--stdin",
+        "-o",
+        "Source.olean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-stdin",
+      "elapsed_ms": 1578.75,
+      "input_bytes": 19,
+      "input_sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0",
+      "label": "stdin:lean:Source",
+      "peak_sampled_rss_kib": 2050448,
+      "pid": 77944,
+      "rc": 0,
+      "rss_sample_count": 42,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-stdin",
+      "elapsed_ms": 1591.28,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "stdin:lean:oracle",
+      "peak_sampled_rss_kib": 2053056,
+      "pid": 77987,
+      "rc": 0,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "CheckWrong.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-file",
+      "elapsed_ms": 1579.47,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "diagnostic:file",
+      "peak_sampled_rss_kib": 2057040,
+      "pid": 78031,
+      "rc": 1,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": "CheckWrong.lean:2:52: error: Tactic `rfl` failed: The left-hand side\n  handoff_probe.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 9#u32\n\n\u22a2 handoff_probe.inc 0#u32 = Aeneas.Std.Result.ok 9#u32\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--stdin"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-file",
+      "elapsed_ms": 1592.69,
+      "input_bytes": 70,
+      "input_sha256": "ca7b13940c86a531a2dc10e184c360f755f925454b23d29d78ad4c87319fb719",
+      "label": "diagnostic:stdin",
+      "peak_sampled_rss_kib": 2061888,
+      "pid": 78075,
+      "rc": 1,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": "<stdin>:2:52: error: Tactic `rfl` failed: The left-hand side\n  handoff_probe.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 9#u32\n\n\u22a2 handoff_probe.inc 0#u32 = Aeneas.Std.Result.ok 9#u32\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/truncated-llbc/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/truncated-llbc/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 132.71,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "truncated:aeneas",
+      "peak_sampled_rss_kib": 31120,
+      "pid": 78119,
+      "rc": 2,
+      "rss_sample_count": 4,
+      "stderr": "Uncaught exception:\n  \n  Yojson__Common.Json_error(\"Line 1, bytes 3424-3425:\\nUnexpected end of input\")\n\nRaised at Yojson__Common.json_error in file \"lib/common.ml\", line 5, characters 19-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 224, characters 23-47\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 230, characters 43-61\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 221, characters 41-59\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 221, characters 41-59\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 221, characters 41-59\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 230, characters 43-61\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 241, characters 28-46\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 230, characters 43-61\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 230, characters 43-61\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.from_lexbuf in file \"lib/read.mll\", line 1087, characters 8-26\nCalled from Yojson__Basic.from_channel in file \"lib/read.mll\", line 1108, characters 6-26\nCalled from Yojson__Basic.from_file in file \"lib/read.mll\", line 1115, characters 14-47\nRe-raised at Yojson__Basic.from_file in file \"lib/read.mll\", line 1120, characters 6-13\nCalled from Charon__OfJson.crate_of_json_file in file \"charon-ml/src/OfJson.ml\", line 59, characters 17-44\nCalled from Dune__exe__Main in file \"Main.ml\", line 557, characters 8-35\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/corrupt-llbc/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/corrupt-llbc/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 93.27,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "corrupt:aeneas",
+      "peak_sampled_rss_kib": 30592,
+      "pid": 78124,
+      "rc": 1,
+      "rss_sample_count": 3,
+      "stderr": "",
+      "stdout": "[\u001b[91mError\u001b[39m] error: This file looks like Postcard, but JSON deserialization was requested: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/corrupt-llbc/source.llbc. Please use Postcard deserialization or regenerate as JSON.\n\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-truncated",
+      "elapsed_ms": 1620.32,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "truncated:lean:Source/Types",
+      "peak_sampled_rss_kib": 1998800,
+      "pid": 78128,
+      "rc": 0,
+      "rss_sample_count": 44,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-truncated",
+      "elapsed_ms": 1583.07,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "truncated:lean:Source/Funs",
+      "peak_sampled_rss_kib": 2020800,
+      "pid": 78173,
+      "rc": 1,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": "Source/Funs.lean:13:56: error: unterminated comment\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Types.olean",
+        "Source/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-semantic_mutation",
+      "elapsed_ms": 1936.67,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "semantic_mutation:lean:Source/Types",
+      "peak_sampled_rss_kib": 1939568,
+      "pid": 78217,
+      "rc": 0,
+      "rss_sample_count": 53,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source/Funs.olean",
+        "Source/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-semantic_mutation",
+      "elapsed_ms": 2020.51,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "semantic_mutation:lean:Source/Funs",
+      "peak_sampled_rss_kib": 2001360,
+      "pid": 78286,
+      "rc": 0,
+      "rss_sample_count": 54,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Source.olean",
+        "Source.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-semantic_mutation",
+      "elapsed_ms": 1596.89,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "semantic_mutation:lean:Source",
+      "peak_sampled_rss_kib": 2007424,
+      "pid": 78341,
+      "rc": 0,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/lean-semantic_mutation",
+      "elapsed_ms": 1590.63,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "semantic_mutation:oracle",
+      "peak_sampled_rss_kib": 2063088,
+      "pid": 78385,
+      "rc": 1,
+      "rss_sample_count": 43,
+      "stderr": "",
+      "stdout": "Check.lean:2:52: error: Tactic `rfl` failed: The left-hand side\n  handoff_probe.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 1#u32\n\n\u22a2 handoff_probe.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 218.13,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "file:aeneas-retry",
+      "peak_sampled_rss_kib": 46272,
+      "pid": 78432,
+      "rc": 0,
+      "rss_sample_count": 6,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-file/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-file/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-file/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.121523 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-buffer",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/buffer-stage/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 217.72,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "buffer:aeneas-retry",
+      "peak_sampled_rss_kib": 43696,
+      "pid": 78442,
+      "rc": 0,
+      "rss_sample_count": 6,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/buffer-stage/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-buffer/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-buffer/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/cancel-buffer/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.121044 seconds\n"
+    }
+  ],
+  "file": {
+    "aeneas": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work",
+      "elapsed_ms": 208.99,
+      "input_bytes": null,
+      "input_sha256": null,
+      "label": "file:aeneas",
+      "peak_sampled_rss_kib": 45488,
+      "pid": 77403,
+      "rc": 0,
+      "rss_sample_count": 6,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-file/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-file/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/generated-file/Source.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.121242 seconds\n"
+    },
+    "generated": {
+      "Funs.lean": {
+        "bytes": 921,
+        "sha256": "36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77"
+      },
+      "Source.lean": {
+        "bytes": 19,
+        "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+      },
+      "Types.lean": {
+        "bytes": 530,
+        "sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2"
+      }
+    },
+    "lean": {
+      "chain_rc": [
+        0,
+        0,
+        0
+      ],
+      "compile_peak_sampled_rss_kib": 2017792,
+      "compile_wall_ms": 7479.21,
+      "compiled_inventory": {
+        "Check.lean": {
+          "bytes": 70,
+          "sha256": "453adad09c4c611171335abb67bf0e061cdce0c7e56fd239656b4e98b44b9b1c"
+        },
+        "Source.lean": {
+          "bytes": 19,
+          "sha256": "a223e761854f37f00f33fc37d4387797f922f6dcd2ae4997d62b4e9c1225c5f0"
+        },
+        "Source.olean": {
+          "bytes": 1312,
+          "sha256": "ed79e6c70d044823b15db4ac2dd0b252da24581c45957a1320ad7f41dd7df974"
+        },
+        "Source/Funs.lean": {
+          "bytes": 921,
+          "sha256": "36848a4cc945bb478d92071a76c8706451e25c2e463835c62e1e1dc005320d77"
+        },
+        "Source/Funs.olean": {
+          "bytes": 12848,
+          "sha256": "587de4720d822b98abf81f3de4304d21bbbf298d1e7b815a90a07c37b4616db6"
+        },
+        "Source/Types.lean": {
+          "bytes": 530,
+          "sha256": "620ff7465569bc27ab7559bf1f4275233ca4394d146b4115d5f306172cc28dd2"
+        },
+        "Source/Types.olean": {
+          "bytes": 1608,
+          "sha256": "46c1aeb635137390d26a097620c65d7d7b1d79dae833a7b14f916d16c2c7ea84"
+        }
+      },
+      "oracle_rc": 0,
+      "oracle_stdout": ""
+    }
+  },
+  "generated_text_errors": {
+    "semantic_mutation": {
+      "compile_rcs": [
+        0,
+        0,
+        0
+      ],
+      "diagnostics": [
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": ""
+        }
+      ],
+      "funs_bytes": 921,
+      "funs_sha256": "3ba20fef12f91d2a94449c4de2e07f96f118b3e0944d5ebb00bddcdc2ebe431d",
+      "oracle_rc": 1
+    },
+    "truncated": {
+      "compile_rcs": [
+        0,
+        1
+      ],
+      "diagnostics": [
+        {
+          "stderr": "",
+          "stdout": ""
+        },
+        {
+          "stderr": "",
+          "stdout": "Source/Funs.lean:13:56: error: unterminated comment\n"
+        }
+      ],
+      "funs_bytes": 460,
+      "funs_sha256": "a6e0c41d1eaddd2549fbedd81de30afcbcc360ed5689671fdce16f797ae27210",
+      "oracle_rc": null
+    }
+  },
+  "input_errors": {
+    "corrupt": {
+      "generated": {},
+      "input_bytes": 6851,
+      "input_sha256": "6a32baa0df14c34ad7c62df4c207e5e245aa5e80524ad6e373fb5fe78d2f06cb",
+      "rc": 1,
+      "stderr": "",
+      "stdout": "[\u001b[91mError\u001b[39m] error: This file looks like Postcard, but JSON deserialization was requested: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/corrupt-llbc/source.llbc. Please use Postcard deserialization or regenerate as JSON.\n\n"
+    },
+    "truncated": {
+      "generated": {},
+      "input_bytes": 3425,
+      "input_sha256": "6cf1eb0f622a1a49437228fa9481321f052f7f4266c90a40fcd3e9fe12f383ab",
+      "rc": 2,
+      "stderr": "Uncaught exception:\n  \n  Yojson__Common.Json_error(\"Line 1, bytes 3424-3425:\\nUnexpected end of input\")\n\nRaised at Yojson__Common.json_error in file \"lib/common.ml\", line 5, characters 19-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 224, characters 23-47\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 230, characters 43-61\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 221, characters 41-59\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 221, characters 41-59\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 221, characters 41-59\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 230, characters 43-61\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 241, characters 28-46\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 230, characters 43-61\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.__ocaml_lex_read_json_rec in file \"lib/read.mll\", line 230, characters 43-61\nCalled from Yojson__Basic.read_json in file \"lib/read.ml\" (inlined), line 1006, characters 3-39\nCalled from Yojson__Basic.from_lexbuf in file \"lib/read.mll\", line 1087, characters 8-26\nCalled from Yojson__Basic.from_channel in file \"lib/read.mll\", line 1108, characters 6-26\nCalled from Yojson__Basic.from_file in file \"lib/read.mll\", line 1115, characters 14-47\nRe-raised at Yojson__Basic.from_file in file \"lib/read.mll\", line 1120, characters 6-13\nCalled from Charon__OfJson.crate_of_json_file in file \"charon-ml/src/OfJson.ml\", line 59, characters 17-44\nCalled from Dune__exe__Main in file \"Main.ml\", line 557, characters 8-35\n",
+      "stdout": ""
+    }
+  },
+  "llbc_bytes": 6851,
+  "llbc_sha256": "0645cd7f4b3930d7da543d8af19a838c3c2b26fdda9c5a5e6f34ec8e653d97e6",
+  "observed_at_utc": "2026-09-29T11:32:23Z",
+  "schema": 1,
+  "source_map": {
+    "charon_version": "0.1.210",
+    "generated_source_lines": [
+      "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29/support/work/source.rs', lines 2:0-2:47"
+    ],
+    "has_errors": false,
+    "llbc_functions": [
+      {
+        "def_id": 0,
+        "name": [
+          {
+            "Ident": [
+              "handoff_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "inc",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 2
+            },
+            "end": {
+              "col": 47,
+              "line": 2
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "def_id": 1,
+        "name": [
+          {
+            "Ident": [
+              "core",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "num",
+              0
+            ]
+          },
+          {
+            "Impl": {
+              "Ty": {
+                "kind": "InherentImplBlock",
+                "params": {
+                  "const_generics": [],
+                  "regions": [],
+                  "regions_outlive": [],
+                  "trait_clauses": [],
+                  "trait_type_constraints": [],
+                  "types": [],
+                  "types_outlive": []
+                },
+                "skip_binder": {
+                  "Deduplicated": 232
+                }
+              }
+            }
+          },
+          {
+            "Ident": [
+              "wrapping_add",
+              0
+            ]
+          }
+        ],
+        "span": {
+          "data": {
+            "beg": {
+              "col": 8,
+              "line": 2583
+            },
+            "end": {
+              "col": 58,
+              "line": 2583
+            },
+            "file_id": 1
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "source_path_in_generated": true
+  },
+  "source_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995",
+  "stdin": {
+    "chain_rc": [
+      0,
+      0,
+      0
+    ],
+    "consumer_rc": 0,
+    "context_equivalence_proven": false,
+    "diagnostic_path_control": {
+      "diagnostics_byte_equal": false,
+      "file_rc": 1,
+      "file_stdout": "CheckWrong.lean:2:52: error: Tactic `rfl` failed: The left-hand side\n  handoff_probe.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 9#u32\n\n\u22a2 handoff_probe.inc 0#u32 = Aeneas.Std.Result.ok 9#u32\n",
+      "source_sha256": "ca7b13940c86a531a2dc10e184c360f755f925454b23d29d78ad4c87319fb719",
+      "stdin_rc": 1,
+      "stdin_stdout": "<stdin>:2:52: error: Tactic `rfl` failed: The left-hand side\n  handoff_probe.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 9#u32\n\n\u22a2 handoff_probe.inc 0#u32 = Aeneas.Std.Result.ok 9#u32\n"
+    },
+    "diagnostics": [
+      {
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "stderr": "",
+        "stdout": ""
+      }
+    ],
+    "inventory": {
+      "Check.lean": {
+        "bytes": 70,
+        "sha256": "453adad09c4c611171335abb67bf0e061cdce0c7e56fd239656b4e98b44b9b1c"
+      },
+      "Source.olean": {
+        "bytes": 1312,
+        "sha256": "dc310e5bfe58cd664fb000fc6c855af236719a11b7968fb934ccf651cf6beabe"
+      },
+      "Source/Funs.olean": {
+        "bytes": 12848,
+        "sha256": "66fc71245ba4197c152e9399e5685f523e6773ad17f01476c172e1f169e5b952"
+      },
+      "Source/Types.olean": {
+        "bytes": 1608,
+        "sha256": "b02a6f9e022609d7eef62dc48b2f025faff30314fb1e3949f62ce221c369c681"
+      }
+    },
+    "limitations": "stdin source lacks the authored filename/module-root and diagnostic path; imported context equivalence requires explicit artifact and provenance checks",
+    "olean_hash_equal_to_file": {
+      "Source.olean": false,
+      "Source/Funs.olean": false,
+      "Source/Types.olean": false
+    }
+  },
+  "tools": {
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "transfer": {
+    "copied_sha256": "0645cd7f4b3930d7da543d8af19a838c3c2b26fdda9c5a5e6f34ec8e653d97e6",
+    "forced_copy_median_us": 0.4375,
+    "llbc_bytes": 6851,
+    "python_tracemalloc_peak_bytes": 14080,
+    "repetitions": 16,
+    "target_sha256": "0645cd7f4b3930d7da543d8af19a838c3c2b26fdda9c5a5e6f34ec8e653d97e6",
+    "warm_read_median_us": 19.521,
+    "write_fsync_median_us": 67.208
+  }
+}

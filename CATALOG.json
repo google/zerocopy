@@ -1222,6 +1222,3118 @@
         "lake/generation-publication"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "closure_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "body_sha256": "603eb92dc737e34912eff048b9901306239ebba8e77b8a3a2acc6371bcc9227f",
+            "issue": "3731",
+            "repository": "google/zerocopy",
+            "scope_extension_comment_sha256": "2451c7f38f864676a5aa23b16d4eb25ba18f768318829fd68715f9b384c1f533"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "git_commit": "37a0ecd080d333f93bfe900d9c7dab193608e478",
+            "post_interim_package_count": "15",
+            "snapshot_utc": "2026-09-29 08:18 UTC"
+          },
+          "name": "reference research snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/research-agenda",
+        "anneal/coverage-audit",
+        "research/gap-analysis"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v10": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/research-coverage",
+        "lean/lake",
+        "anneal/interactive-verification"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v11": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/research-coverage",
+        "lean/lake",
+        "anneal/interactive-verification"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730 current body and consolidation comment"
+        },
+        {
+          "identity": {
+            "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "comment_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731 current body and scope extension comment"
+        }
+      ],
+      "topics": [
+        "anneal/research-agenda",
+        "anneal/coverage-audit",
+        "research/gap-analysis"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v3": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "issue_3731_scope_extension_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+          },
+          "name": "public issue #3730 and #3731 snapshot"
+        },
+        {
+          "identity": {
+            "new_inspected_file_count": "424",
+            "new_reviewed_package_count": "8",
+            "report_package_count": "55"
+          },
+          "name": "reference report package corpus"
+        },
+        {
+          "identity": {
+            "file": "support/build_audit.py",
+            "sha256": "414464144939732dae952069a61a2d09406620b1c451f7325fecad892911b1b5"
+          },
+          "name": "deterministic row-level audit builder"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/3730-3731-coverage",
+        "anneal/evidence-audit"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v4": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "issue_3731_scope_extension_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+          },
+          "name": "public issue #3730 and #3731 snapshot"
+        },
+        {
+          "identity": {
+            "new_inspected_file_count": "278",
+            "new_reviewed_package_count": "6",
+            "report_package_count": "61"
+          },
+          "name": "reference report package corpus"
+        },
+        {
+          "identity": {
+            "file": "support/build_audit.py",
+            "sha256": "e9e49c2679f480f2b375b11d3a7911c97afa0757de3386cbf5bda0da1275273c"
+          },
+          "name": "deterministic row-level audit builder"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/3730-3731-coverage",
+        "anneal/evidence-audit"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v5": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "issue_3731_scope_extension_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+          },
+          "name": "public issue #3730 and #3731 snapshot"
+        },
+        {
+          "identity": {
+            "new_inspected_file_count": "107",
+            "new_reviewed_package_count": "4",
+            "report_package_count": "65"
+          },
+          "name": "reference report package corpus"
+        },
+        {
+          "identity": {
+            "file": "support/build_audit.py",
+            "sha256": "84458f7bc713354b9eec788a54311ec3affbf6777afebda2c1cb54740f030990"
+          },
+          "name": "deterministic row-level audit builder"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/3730-3731-coverage",
+        "anneal/evidence-audit"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v6": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "issue_3731_scope_extension_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+          },
+          "name": "public issue #3730 and #3731 snapshot"
+        },
+        {
+          "identity": {
+            "new_inspected_file_count": "126",
+            "new_reviewed_package_count": "3",
+            "report_package_count": "68"
+          },
+          "name": "reference report package corpus"
+        },
+        {
+          "identity": {
+            "file": "support/build_audit.py",
+            "sha256": "50d8fe574b1afb71b4caf50885af4997495ef53dbf27ebb2841522edacc42d45"
+          },
+          "name": "deterministic row-level audit builder"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/3730-3731-coverage",
+        "anneal/evidence-audit"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v7": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "3730_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "3731_comment_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+          },
+          "name": "Issue #3730 and #3731 public scope at 2026-09-29T11:09:11Z"
+        },
+        {
+          "identity": {
+            "source_v6_crosswalk_sha256": "8beb834effefccbe7017c5d891af6b7fccc48934f92cea78c2eb0a4366d038c6",
+            "source_v6_investigation_sha256": "c0edaca60bc674b2fc1ac2733ca1793cf9af31303402c594fec1902918659ddf"
+          },
+          "name": "159 investigations, 174 crosswalk suggestions, 70 completed substantive report packages"
+        }
+      ],
+      "topics": [
+        "anneal/3730-3731-coverage",
+        "anneal/research-audit"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v8": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "3730_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "3731_comment_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+          },
+          "name": "Issue #3730 and #3731 public scope at 2026-09-29T11:16:36Z"
+        },
+        {
+          "identity": {
+            "source_v7_crosswalk_sha256": "7dfd45e7a9dacc1298aac82036ebb3fc4f11f077920ab1012a6dc3ca5d038da1",
+            "source_v7_investigation_sha256": "612d7398c5ec524ec7b92bac26712ef597acacb3a080fe1058e7992caca080d9"
+          },
+          "name": "159 investigations, 174 crosswalk suggestions, 72 completed substantive report packages"
+        }
+      ],
+      "topics": [
+        "anneal/3730-3731-coverage",
+        "anneal/research-audit"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v9": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "3730_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "3731_comment_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+          },
+          "name": "Issue #3730 and #3731 public scope at 2026-09-29T11:35:20Z"
+        },
+        {
+          "identity": {
+            "source_v8_crosswalk_sha256": "364796a09d67981e6f03ddd630453e1e60745fd71b6a8ce4eeb105d20ad75256",
+            "source_v8_investigation_sha256": "fee613745ca963a5784bacbab758be55a2faff8b9afb41fb08f3a6a5024e81b5"
+          },
+          "name": "159 investigations, 174 crosswalk suggestions, 79 completed substantive report packages"
+        }
+      ],
+      "topics": [
+        "anneal/3730-3731-coverage",
+        "anneal/research-audit"
+      ]
+    },
+    "anneal-3730-3731-gap-audit-interim-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "closure_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "body_sha256": "603eb92dc737e34912eff048b9901306239ebba8e77b8a3a2acc6371bcc9227f",
+            "issue": "3731",
+            "repository": "google/zerocopy",
+            "scope_extension_comment_sha256": "2451c7f38f864676a5aa23b16d4eb25ba18f768318829fd68715f9b384c1f533"
+          },
+          "name": "google/zerocopy issue #3731"
+        }
+      ],
+      "topics": [
+        "anneal/research-agenda",
+        "anneal/coverage-audit",
+        "research/gap-analysis"
+      ]
+    },
+    "anneal-3730-acceptance-oracle-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 compiler and language server"
+        },
+        {
+          "identity": {
+            "file": "support/probe.py",
+            "sha256": "74b6ef237386a50b811733ddaae1168509767f36196ff88b8180d281ee47684d"
+          },
+          "name": "synthetic acceptance/comparator fixture"
+        }
+      ],
+      "topics": [
+        "anneal/acceptance-contract",
+        "anneal/evaluation",
+        "lean/batch-server-equivalence",
+        "lean/trust-and-obligations"
+      ]
+    },
+    "anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Pinned Charon CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned Aeneas CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "charon",
+        "aeneas",
+        "lean",
+        "anneal/handoff",
+        "anneal/resources"
+      ]
+    },
+    "anneal-3730-aeneas-identity-manifest-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "local macOS arm64 charon executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Pinned Charon extraction executable"
+        },
+        {
+          "identity": {
+            "artifact": "local macOS arm64 aeneas nightly-2026.06.03",
+            "libgmp_sha256": "1b0ae61990da7a4661f2c8c601f55f6c9950279bbfef12453dd5bb0c01e4b0df",
+            "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned Aeneas translation executable and runtime library"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "e561d0eaba807dcc9c23d2df1f084e7b8f6cb97aec88f09ffe0d13deea18426e"
+          },
+          "name": "Aeneas CLI identity and output-manifest probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/generation-publication",
+        "aeneas/lean-generation",
+        "aeneas/process-boundary"
+      ]
+    },
+    "anneal-3730-aeneas-manifest-batch-oracle-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "macOS arm64 charon 0.1.210 executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "pinned local Charon executable"
+        },
+        {
+          "identity": {
+            "artifact": "macOS arm64 aeneas nightly-2026.06.03 executable",
+            "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "pinned local Aeneas executable"
+        },
+        {
+          "identity": {
+            "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 batch checker and prebuilt Aeneas Lean environment"
+        },
+        {
+          "identity": {
+            "file": "support/probe.py",
+            "sha256": "2ff31ce81b1a85295b34c3f9aaf80e2e9f36379b4a7da4d266030e34ccd8bb56"
+          },
+          "name": "independent Rust-to-Aeneas batch oracle probe"
+        }
+      ],
+      "topics": [
+        "aeneas/lean-generation",
+        "aeneas/external-model",
+        "anneal/cross-tool-provenance",
+        "anneal/batch-acceptance"
+      ]
+    },
+    "anneal-3730-aeneas-process-contract-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "local macOS arm64 aeneas executable",
+            "release_label": "nightly-2026.06.03",
+            "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Aeneas nightly-2026.06.03 local release executable"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas source API checkout"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "ea9924ef981f0534bed75d57b0f82ddb23c754b2ddd0fed381c443b5848cbab0"
+          },
+          "name": "Aeneas process contract probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/generation-publication",
+        "aeneas/process-boundary",
+        "aeneas/lean-generation"
+      ]
+    },
+    "anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "macOS arm64 charon 0.1.210 executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "pinned local Charon extraction executable"
+        },
+        {
+          "identity": {
+            "artifact": "macOS arm64 aeneas nightly-2026.06.03 executable",
+            "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "pinned local Aeneas translation executable"
+        },
+        {
+          "identity": {
+            "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 fresh batch consumer and Aeneas runtime"
+        }
+      ],
+      "topics": [
+        "aeneas/lean-generation",
+        "aeneas/traits",
+        "aeneas/external-model",
+        "anneal/generation-publication",
+        "anneal/cross-tool-provenance"
+      ]
+    },
+    "anneal-3730-agent-workflow-evaluation-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "artifact": "support/experiment.py",
+            "sha256": "6b12b9c25d512c68e1cf16dd97032c2942e418f9f42cda594bc4d6a04c0d94bc"
+          },
+          "name": "disposable proof workflow evaluator"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/verification",
+        "lean/language-server",
+        "lean/batch-checking",
+        "lean/agent-workflow",
+        "lean/freshness"
+      ]
+    },
+    "anneal-3730-annotation-gap-probes-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "c80616ee85dcb6437eff17c18e1cf1a03b6f3037c61238ea7f47d1e5c5ee8b7b"
+          },
+          "name": "Controlled Rust-hosted annotation and edit-action fixture"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "commit": "48a229cea",
+            "sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340",
+            "version": "1.98.1"
+          },
+          "name": "Rust compiler"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/annotations",
+        "anneal/projection",
+        "lean/declaration-order",
+        "lsp/code-actions"
+      ]
+    },
+    "anneal-3730-annotation-subject-boundary-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "version": "nightly-2026-05-31"
+          },
+          "name": "Rust nightly rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "version": "nightly-2026-05-31"
+          },
+          "name": "Cargo nightly"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Charon executable"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "d600c58b12e0f2b95aeb1194780e396725024de16d7ee58d1066f30de6b3de71"
+          },
+          "name": "Minimal annotation fixture model"
+        }
+      ],
+      "topics": [
+        "rust/annotations",
+        "rust/cargo",
+        "charon",
+        "lean/projection"
+      ]
+    },
+    "anneal-3730-apfs-overlayfs-resource-accounting-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "dep_olean_sha256": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+            "filesystem_apfs": "apfs",
+            "filesystem_linux": "overlayfs",
+            "plugin_olean_sha256": "24d1cf9fcaa36b2d918eb2985e517153a537958e7f4393bfbf768966a2084bbc",
+            "ubuntu_image_sha256": "224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254"
+          },
+          "name": "APFS Data volume and cached Ubuntu overlayfs image"
+        },
+        {
+          "identity": {
+            "logical_base_bytes": "2147019",
+            "probe_sha256": "5a3a9f4547dcdb451242c2cc708a3ca52fefd52906a11b0128e985698638a971",
+            "results_sha256": "aa3264d28a83d784d863983d01b62e33146961dfb04f32b970beeb979dc4c263",
+            "verifier_sha256": "f28aee12b1b6e03e25ee7ec2b53ce0b4abb336227a21d8db90b4de5847bee992"
+          },
+          "name": "Bounded base, copy, clone, hardlink, and mutation ledger"
+        }
+      ],
+      "topics": [
+        "anneal/filesystem-resource-accounting",
+        "apfs/clonefile",
+        "overlayfs/reflink",
+        "lean/artifact-footprint",
+        "anneal/worker-storage-budget"
+      ]
+    },
+    "anneal-3730-architecture-contracts-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "google/zerocopy Anneal V2 source baseline"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+          },
+          "name": "Anneal selected Charon source"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Anneal selected Aeneas source"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "file": "support/topology_probe.py",
+            "sha256": "bd3189ca48a42ff772c41b13db761df7363263a8d60d9e235162803f83e11070"
+          },
+          "name": "synthetic Python topology fixture"
+        },
+        {
+          "identity": {
+            "clangd_www_revision": "ae5866d4552e30a173b8e9c3cec872a82e4c0120",
+            "roslyn_revision": "3f15e26bcfc984bd9582487713e252f78b8cbbd1",
+            "rust_analyzer_revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+            "typescript_wiki_revision": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d",
+            "volar_revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e"
+          },
+          "name": "language tooling precedent documentation"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/batch-live-contract",
+        "anneal/orchestration",
+        "research/decision-gates"
+      ]
+    },
+    "anneal-3730-charon-aeneas-boundary-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "local macOS arm64 release executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Charon 0.1.210 release executable"
+        },
+        {
+          "identity": {
+            "artifact": "local macOS arm64 release executable",
+            "release_label": "nightly-2026.06.03",
+            "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Aeneas nightly-2026.06.03 release executable"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+          },
+          "name": "Rust compiler nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "ca098f663933e0d0993f9a0691ab50a24bec6d31f100e59d6ed3dabc94af82df"
+          },
+          "name": "Sequential Charon/Aeneas boundary probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/generation-publication",
+        "charon/llbc",
+        "aeneas/lean-generation",
+        "source/provenance"
+      ]
+    },
+    "anneal-3730-charon-build-closure-control-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Pinned Charon/Cargo/rustc macOS arm64"
+        },
+        {
+          "identity": {
+            "fixture_cargo_lock_sha256": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+            "probe_sha256": "dbfc239eb2d22faff886befaf203ef44363f441cf5c17e7a8915d825eafcd131",
+            "raw_results_sha256": "e8ec4b7d29fafefe706b087659e1c7cc9fe66d11c12ba8a176159656580e367a"
+          },
+          "name": "Offline Cargo closure fixture and executable probe"
+        }
+      ],
+      "topics": [
+        "anneal/rust-subject-identity",
+        "charon/cargo-extraction",
+        "charon/build-input-closure",
+        "anneal/compilation-unit-validation"
+      ]
+    },
+    "anneal-3730-charon-concurrency-interruption-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Charon 0.1.210 executable and source"
+        },
+        {
+          "identity": {
+            "cargo_commit": "fbb61be30",
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_commit": "f8a08b688",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Rust compiler and Cargo nightly 2026-05-31"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "bf8867ed0d0da1719c39fb963c3f15896901cae7af73c544145cc568b8d0565f"
+          },
+          "name": "Controlled local Charon/Cargo concurrency probe"
+        }
+      ],
+      "topics": [
+        "anneal/charon-concurrency",
+        "anneal/output-publication",
+        "charon/process-interruption",
+        "research/failure-injection"
+      ]
+    },
+    "anneal-3730-charon-scaling-subject-closure-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Charon 0.1.210 executable and source"
+        },
+        {
+          "identity": {
+            "cargo_commit": "fbb61be30",
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_commit": "f8a08b688",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Rust compiler and Cargo nightly 2026-05-31"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "3a97c7f96332b63c1ab021769afec44e83f3de50e9c2fb8e38eeac79174c8d84"
+          },
+          "name": "Controlled two-member Cargo workspace and probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "cargo/compilation-subjects",
+        "charon/dependency-chasing",
+        "charon/scaling",
+        "charon/output-completeness"
+      ]
+    },
+    "anneal-3730-charon-shortname-aeneas-impact-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned Aeneas CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+          },
+          "name": "Lake v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "charon",
+        "aeneas",
+        "lean",
+        "lake",
+        "anneal/invalidation"
+      ]
+    },
+    "anneal-3730-charon-subject-identity-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Rust nightly-2026-05-31 rustc executable"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+            "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+          },
+          "name": "Cargo nightly-2026-05-31 executable"
+        },
+        {
+          "identity": {
+            "artifact": "local macOS arm64 charon executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Local Charon executable"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "4561c1da3a588c91d35c1c534a101170e43a9a5a3c9a4bab78c456e5f7f16814"
+          },
+          "name": "Compiler subject identity probe"
+        }
+      ],
+      "topics": [
+        "anneal/annotation-attachment",
+        "anneal/compilation-subjects",
+        "charon/llbc",
+        "rust/conditional-compilation",
+        "rust/macro-expansion"
+      ]
+    },
+    "anneal-3730-charon-subject-output-phase-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Pinned Charon/Cargo nightly macOS arm64"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "71f10e3745448d1da23af25c985688bdff7c7aff71f325b87e127b5ecda1e8fa"
+          },
+          "name": "Private-subject and regular-file output probe"
+        }
+      ],
+      "topics": [
+        "anneal/rust-subject-identity",
+        "charon/cargo-extraction",
+        "charon/output-publication",
+        "charon/concurrency",
+        "anneal/generation-publication"
+      ]
+    },
+    "anneal-3730-charon-warm-noop-byte-diff-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "source_commit": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+          },
+          "name": "Pinned Charon/Cargo R37-derived same-path crate"
+        },
+        {
+          "identity": {
+            "canonical_sha256": "ec4dc523318d6e1ed34b0d82f3650fe68c69998d17bbd65a3552c19d0cbed1ba",
+            "probe_sha256": "da7599de5f9b054f3d859ea075a6fbbbbb7da8bae499fca3e25b0d80ff1a7e7e",
+            "results_sha256": "55a9237130254c5d457567fa5829230a7fdab4246808ad028605dea53b506181",
+            "source_inspection_sha256": "b489159bd94520fa893384215c054d9a834f7e870c068348732197e165c762a2",
+            "verifier_sha256": "45ba5314c9379ff7ea9150f76dc87e7fe5cb2cd91bc4e7d752bf968e578249af"
+          },
+          "name": "Five LLBC byte snapshots and isolated short-name order diff"
+        }
+      ],
+      "topics": [
+        "charon/llbc-determinism",
+        "charon/short-name-order",
+        "anneal/llbc-normalization",
+        "anneal/golden-diff-provenance"
+      ]
+    },
+    "anneal-3730-charon-warm-target-controls-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "local macOS arm64 charon executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Pinned Charon Cargo extraction"
+        },
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Pinned nightly Cargo and rustc"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "c9bc12936bf3dd34741f615eee0670457c5d22e156c750bfb6bc0c5bcdade665"
+          },
+          "name": "Charon warm-target controls"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/generation-publication",
+        "charon/cargo-extraction",
+        "charon/incremental-boundaries"
+      ]
+    },
+    "anneal-3730-cli-graceful-cancel-signals-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Pinned Charon CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned Aeneas CLI"
+        },
+        {
+          "identity": {
+            "lake_executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean/Lake v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "charon",
+        "aeneas",
+        "lean",
+        "lake",
+        "anneal/cancellation"
+      ]
+    },
+    "anneal-3730-cross-layer-comparator-mutants-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+            "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "pinned local Rust, Charon, Aeneas and Lean executables"
+        },
+        {
+          "identity": {
+            "file": "support/probe.py",
+            "sha256": "90bbca48554000d61e39da1a81c2f2f11e09071def60bb60bc727c47c28ef4ee"
+          },
+          "name": "replayable comparator mutant fixture"
+        },
+        {
+          "identity": {
+            "file": "support/check.py",
+            "sha256": "fd2d73894e4de5225e8fe98b2d689ba38d0b8def72f2f1a05fa11042e93436a9"
+          },
+          "name": "saved evidence checker"
+        }
+      ],
+      "topics": [
+        "anneal/cross-tool-provenance",
+        "anneal/acceptance-oracle",
+        "aeneas/lean-generation",
+        "charon/llbc-comparison"
+      ]
+    },
+    "anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Pinned Charon CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned Aeneas CLI"
+        },
+        {
+          "identity": {
+            "lake_executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean/Lake v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "charon",
+        "aeneas",
+        "lean",
+        "lake",
+        "anneal/cancellation",
+        "anneal/freshness"
+      ]
+    },
+    "anneal-3730-cross-tool-provenance-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Rust nightly-2026-05-31 rustc executable"
+        },
+        {
+          "identity": {
+            "artifact": "local macOS arm64 charon executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Local Charon executable"
+        },
+        {
+          "identity": {
+            "artifact": "local macOS arm64 aeneas executable",
+            "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Aeneas nightly-2026.06.03 executable"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "Lean v4.30.0-rc2 executable"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "53980c7ec8d3e3dc14cdc3b91404cfb63f41c62ab34e80e0a2c4fb5cb3122114"
+          },
+          "name": "Cross-tool provenance specimen harness"
+        }
+      ],
+      "topics": [
+        "anneal/diagnostics",
+        "anneal/source-provenance",
+        "charon/llbc",
+        "aeneas/lean-generation",
+        "lean/lsp"
+      ]
+    },
+    "anneal-3730-cross-tool-stage-cancellation-cleanup-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "Pinned Cargo Charon Aeneas Lake Lean CLI process groups"
+        },
+        {
+          "identity": {
+            "fence_sha256": "c66127990803f3dc0cfa992cf836d9a95b46c1cdeea7e6537e5eb6e58f5c36de",
+            "probe_sha256": "116a7e46c9a44c0569920b06f34926b16b3b908671642e1da38f6ea3e12abd6e",
+            "results_sha256": "a6807ef72366c483ab37f743090fafdf8c715f6ff9a14ec0f6316a1416721cab"
+          },
+          "name": "Private stage cancellation and retry fixture"
+        }
+      ],
+      "topics": [
+        "anneal/cancellation",
+        "anneal/process-cleanup",
+        "charon/cargo-extraction",
+        "lean/lake-build",
+        "anneal/generation-fence-model"
+      ]
+    },
+    "anneal-3730-document-context-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        }
+      ],
+      "topics": [
+        "lean/lsp",
+        "lean/lake",
+        "lean/module-imports",
+        "anneal/projected-documents"
+      ]
+    },
+    "anneal-3730-editor-mcp-shadow-authority-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/language-server-protocol",
+            "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+            "specification": "3.18"
+          },
+          "name": "Language Server Protocol 3.18 specification source"
+        },
+        {
+          "identity": {
+            "repository": "modelcontextprotocol/modelcontextprotocol",
+            "revision": "5f5440bb26a62e2cf3440b92da5a667efa03b267",
+            "version": "2026-07-28"
+          },
+          "name": "Model Context Protocol core specification"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Anneal current source checkout"
+        }
+      ],
+      "topics": [
+        "anneal/editor-mcp",
+        "lean/language-server",
+        "lsp/document-synchronization",
+        "mcp/subscriptions",
+        "mcp/state"
+      ]
+    },
+    "anneal-3730-editor-save-format-watch-loop-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_fixture_sha256": "f5e8cee953e6f355bc2ffda3f7b1ce7a72b197451531f8ad57accf2d2132ce42",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "rust_fixture_sha256": "8530bb262bfe063e2835ce478866e1cc8a808a17d56aa4eb64ca437d68825c4a",
+            "rustfmt_sha256": "ee717a093f2b2e2c124cde782b4b955fb26ec0c7cf241e6403fed99d624f0c76"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 and local rustfmt"
+        },
+        {
+          "identity": {
+            "final_olean_sha256": "18fb83a0a6b635740cbd0d0abd06207e8be4d9f56945e69391264a210ea4116c",
+            "initial_olean_sha256": "8ea70a281294672df6869af60b55d20ace674423bce6075ddfd56ab91179840b",
+            "probe_sha256": "fe824066f391a01c191390c3a1068f8c5934ed7b7cf02af674624aabd4ebc6e2",
+            "results_sha256": "4ac07b740dba2caf6e78e363b7e25d360eccc96e964621c85a7f802d19875ce6",
+            "verifier_sha256": "8e1d38eefdac821152d00c2ec124027303cb040961f3537e5cd8c8d483614787"
+          },
+          "name": "Direct LSP and private hash-polling build harness"
+        }
+      ],
+      "topics": [
+        "anneal/editor-save-watch-loop",
+        "lean/lsp-diagnostics",
+        "lean/artifact-consumption",
+        "rustfmt/format-event",
+        "anneal/cancellation-model"
+      ]
+    },
+    "anneal-3730-external-model-without-codegen-change-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Pinned Charon CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned Aeneas CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "lean",
+        "lean/server",
+        "anneal/freshness",
+        "anneal/handoff"
+      ]
+    },
+    "anneal-3730-fault-model-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "support/model.py",
+            "sha256": "aa91033fd3965c7da9e79dfd933c2d614bd4845c720e9007a07441135d9e37fa"
+          },
+          "name": "bounded orchestration model"
+        },
+        {
+          "identity": {
+            "artifact": "reports/anneal-3730-snapshot-capture-jobs-2026-09-29/support/probe.py",
+            "sha256": "fb1a7cbdff9cdb7b66a0f36234756af52c4862508dc5010735d4263d5a1995da"
+          },
+          "name": "existing fake-stage subprocess harness"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/scheduling",
+        "anneal/cancellation",
+        "anneal/publication",
+        "anneal/fault-model"
+      ]
+    },
+    "anneal-3730-filesystem-sharing-apfs-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "filesystem": "APFS /System/Volumes/Data",
+            "fixture": "probe.py sha256 0a6de307f62e5334171360eaac343afcdae6ad58761ed02a9419f7fc9739d40b",
+            "platform": "Darwin 25.6.0 arm64"
+          },
+          "name": "macOS APFS filesystem sharing fixture"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lean/artifacts",
+        "filesystem/sharing",
+        "anneal/prepared-environment"
+      ]
+    },
+    "anneal-3730-generated-lean-canonical-source-challenge-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "version": "rustc 1.98.1 (48a229cea 2026-09-01)"
+          },
+          "name": "Rust compiler"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/architecture-alternatives",
+        "anneal/source-provenance",
+        "lean/language-server",
+        "lean/generated-source"
+      ]
+    },
+    "anneal-3730-generation-recovery-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "file": "support/probe.py",
+            "sha256": "9d4672d507216c233df5c58f41661843cdddd213f654bfeb6f08a10f676af098"
+          },
+          "name": "synthetic generation and recovery process harness"
+        },
+        {
+          "identity": {
+            "body_sha256": "603eb92dc737e34912eff048b9901306239ebba8e77b8a3a2acc6371bcc9227f",
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "Anneal consolidated investigation agenda (#3731)"
+        }
+      ],
+      "topics": [
+        "anneal/generation-publication",
+        "anneal/failure-recovery",
+        "filesystem/atomic-publication",
+        "filesystem/retention"
+      ]
+    },
+    "anneal-3730-human-freshness-study-protocol-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "https://github.com/google/zerocopy/issues/3731",
+            "snapshot_sha256": "0b8eba07c4e1897fbe97ec5e5c2623a359cab9138b8a5a4b1ce3e09d8a9155f6"
+          },
+          "name": "google/zerocopy issue 3731 I141 scope snapshot"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/usability",
+        "anneal/freshness",
+        "human-evaluation"
+      ]
+    },
+    "anneal-3730-identity-state-mutation-model-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "support/model.py",
+            "sha256": "ef8be2fe88cd027bcdc36cfcabc9b2ebb70fd8317a5525a2d1872afa8fd604ed"
+          },
+          "name": "Finite identity and patch state model"
+        },
+        {
+          "identity": {
+            "platform": "macOS-26.6.2-arm64",
+            "version": "3.14.7"
+          },
+          "name": "CPython runtime"
+        }
+      ],
+      "topics": [
+        "anneal/identity-model",
+        "anneal/freshness",
+        "concurrency/cas"
+      ]
+    },
+    "anneal-3730-independent-vertical-reproduction-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 compiler and language server"
+        },
+        {
+          "identity": {
+            "report_file": "reports/anneal-3730-vertical-acceptance-v4-30-0-rc2/REPORT.md",
+            "report_sha256": "8ec34505ae7c3bad9f9840788a6d17ddf60293e2b5060f54e033336833acf409",
+            "transcript_sha256": "55e0dfc1083ee7d1a5ee5f71f9517a0018f2d4db81148a2843da4d97fd03bf80"
+          },
+          "name": "original vertical acceptance report and third transcript"
+        },
+        {
+          "identity": {
+            "file": "support/reproduce.py",
+            "sha256": "80ba94089321454a35443a8d469870d4820ebb952f4a019f3a1d0609c99a29fa"
+          },
+          "name": "independent procedural reproduction driver"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/reproducibility",
+        "lean/batch-checking",
+        "lean/language-server"
+      ]
+    },
+    "anneal-3730-lake-cache-publication-atomicity-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Pinned Lean/Lake v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "b0402a686de8e3c8e880a8a888823ab04378b1475b5dd832deffe62cd7c94313"
+          },
+          "name": "Lake cache publication probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/generation-publication",
+        "lake/artifact-cache",
+        "lake/concurrency",
+        "lake/cache-integrity"
+      ]
+    },
+    "anneal-3730-lake-concurrency-preparation-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lake/prepared-environment",
+        "lake/artifact-cache",
+        "lake/concurrency",
+        "lean/artifacts"
+      ]
+    },
+    "anneal-3730-lake-dynamic-config-identity-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+          },
+          "name": "pinned Lean/Lake v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "case_count": "12",
+            "command_records": "57",
+            "probe_sha256": "38b625cd2674a414db2824b55470b4b89f576cdee2d1479e991dd47c1d166b69",
+            "results_sha256": "4c9adfcaae077c8a875165d6a87223818737ce089f712f9e66c2a8a9a332d8b0"
+          },
+          "name": "dynamic configuration, timestamp, trace and setup matrix"
+        }
+      ],
+      "topics": [
+        "anneal/lake",
+        "anneal/3730-3731-coverage",
+        "anneal/configuration-identity"
+      ]
+    },
+    "anneal-3730-lake-identity-matrix-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lake/cache",
+        "lake/configuration",
+        "lean/artifacts",
+        "lake/prepared-environment"
+      ]
+    },
+    "anneal-3730-lake-key-artifact-family-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+          },
+          "name": "pinned Lean/Lake v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "command_records": "39",
+            "probe_sha256": "6e0f838f8717472a069476542a69edb75fa9e5577e692114bd0c2bd0822e4455",
+            "results_sha256": "88a206b4c42a1072791c1d40c2c6c81faf6f8bcce70850c8af77932a88552981"
+          },
+          "name": "replay harness and retained results"
+        },
+        {
+          "identity": {
+            "plugin_v1_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+            "plugin_v2_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9"
+          },
+          "name": "native plugin artifact generations"
+        }
+      ],
+      "topics": [
+        "anneal/lake",
+        "anneal/3730-3731-coverage",
+        "anneal/artifact-identity"
+      ]
+    },
+    "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "fb824c4a0549cd72ace1bc872152c5042438dff22df0afa532ab38e42abf48cc"
+          },
+          "name": "Native plugin artifact fixture"
+        }
+      ],
+      "topics": [
+        "lean/plugins",
+        "lean/lake",
+        "lean/prepared-artifacts"
+      ]
+    },
+    "anneal-3730-lake-plugin-combined-family-mix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "pinned Lean/Lake v4.30.0-rc2 on macOS arm64"
+        },
+        {
+          "identity": {
+            "command_records": "10",
+            "fresh_lake_servers": "3",
+            "probe_sha256": "bee17a0df909f0a3dbbde0a29038d414a0568935c8a7661d9940fb00289fd23f",
+            "transcript_sha256": "a94170f6d250cc7c167c6f9ea4033ba1b9974cf913ad55e63e5c75dd411663e9"
+          },
+          "name": "Lake-discovered combined native/plugin/setup/OLean fixture"
+        }
+      ],
+      "topics": [
+        "anneal/lake",
+        "anneal/3730-3731-coverage",
+        "anneal/native-plugin-identity"
+      ]
+    },
+    "anneal-3730-lake-prepared-contract-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake 4.30.0-rc2 local executables"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "49164a0ff66b0feb871c774242b1d5d89c517512a847340992ab806495b81f19"
+          },
+          "name": "Controlled producer and consumer Lake fixture"
+        }
+      ],
+      "topics": [
+        "lake/prepared-environments",
+        "lake/artifact-cache",
+        "lake/relocation",
+        "lean/native-libraries",
+        "lean/batch-checking",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-lake-same-key-artifact-writers-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "cache_writer_source_sha256": "4ce4b9ce5ad8b55335719928c56ec5a057e2d1b749e54022bca0c95c553d8ea3",
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "pinned Lean/Lake 4.30.0-rc2 executable and cache writer source"
+        },
+        {
+          "identity": {
+            "file": "support/probe.py",
+            "sha256": "e8b7eb99f91e168d4c43bd39bf85b44e89ab1559dab5b99f4d7cb73ddc53b280"
+          },
+          "name": "bounded same-key and interrupted-artifact replay"
+        },
+        {
+          "identity": {
+            "file": "support/check.py",
+            "sha256": "6ae2afef8fbe4eb620a1635ebe87a9f6250c44f345c0846d463616a6260ba0cc"
+          },
+          "name": "preserved-result validator"
+        }
+      ],
+      "topics": [
+        "lake/artifact-cache",
+        "lake/concurrency",
+        "lake/cache-integrity",
+        "anneal/prepared-environment"
+      ]
+    },
+    "anneal-3730-lake-writer-recovery-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Pinned Lean/Lake v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "6304d7953ed43bc75dd621f85f882d51824d26341f7a63c2091cb8daf90badf2"
+          },
+          "name": "Lake shared artifact-cache writer recovery probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/generation-publication",
+        "lake/artifact-cache",
+        "lake/concurrency"
+      ]
+    },
+    "anneal-3730-lake-writer-scale-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lake/concurrency",
+        "lake/build-tree",
+        "lake/freshness",
+        "lean/artifacts"
+      ]
+    },
+    "anneal-3730-last-good-model-after-rust-failure-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Pinned Charon CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned Aeneas CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "charon",
+        "aeneas",
+        "lean",
+        "anneal/freshness",
+        "anneal/annotations"
+      ]
+    },
+    "anneal-3730-last-good-model-signature-recovery-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Pinned Charon CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned Aeneas CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "charon",
+        "aeneas",
+        "lean",
+        "anneal/freshness",
+        "anneal/annotations"
+      ]
+    },
+    "anneal-3730-lean-artifact-layouts-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "4a603f56ae82d91d95060b05df5d09aff1225264774ffe0b183ed796871eeea0"
+          },
+          "name": "disposable layout probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/projection",
+        "lean/module-layout",
+        "lean/language-server",
+        "lake/incremental-build"
+      ]
+    },
+    "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_binary_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+            "lean_binary_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "upstream_commit": "98dc76e3c0a9b856c9b98726b713fb04fab16740"
+          },
+          "name": "Lean and Lake v4.29.0"
+        },
+        {
+          "identity": {
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "upstream_commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Lean and Lake v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy",
+            "scope_extension_comment_sha256": "2451c7f38f864676a5aa23b16d4eb25ba18f768318829fd68715f9b384c1f533"
+          },
+          "name": "google/zerocopy issue #3731"
+        }
+      ],
+      "topics": [
+        "anneal/lean-version-matrix",
+        "anneal/acceptance-oracle",
+        "anneal/prepared-environment"
+      ]
+    },
+    "anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake 4"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "d20a5c7b20b71d7fdfec608144934f227c6a48678fc4ebff3487d1d18a7b5a01"
+          },
+          "name": "direct and Lake launch refresh probe"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/lake",
+        "lean/imports",
+        "lean/tactic-state",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "helper_source_sha256": "88ab46a2f5640781815e68a189348d12cb8aa854bb1ae6a4351be02cd07a0ef3",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "main_source_sha256": "d75c7766dd33e725c28217605eaa0a724320b3aa0e4d72987d09d04b783e188e",
+            "transcript_sha256": "0b790f3b965b55f59fb95b2ff416f0e080db8fd017c91336c35a2575c799f426"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 macOS arm64 two-file LSP fixture"
+        },
+        {
+          "identity": {
+            "applied_results_sha256": "39fc4ca61c432fbf2446837eea91d867553422c321ae6ac35bbf8b7a83e39d28",
+            "apply_script_sha256": "03355eb477d452130f067d1d5f5343dd52fa4c8477120022bcdb18f1e8084397"
+          },
+          "name": "Applied returned edits and fresh batch Lean results"
+        }
+      ],
+      "topics": [
+        "lean/lsp-code-actions",
+        "lean/lsp-multifile-rename",
+        "lean/lsp-signature-help",
+        "lean/lsp-inlay-hints",
+        "anneal/editor-projection-boundary"
+      ]
+    },
+    "anneal-3730-lean-lsp-navigation-edit-operations-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "fixture_sha256": "e62b58357941c35b96e545c0e01919725ab8eaee4cf13e6e630dc7142e053f36",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "transcript_sha256": "95cb9c98771f12fdeab62c4e27fb0c6d3641e0d9ef243115459108dca366c67a"
+          },
+          "name": "Lean 4.30.0-rc2 macOS arm64 LSP navigation/edit fixture"
+        },
+        {
+          "identity": {
+            "applied_lean_sha256": "96045db150d8f000e8c05c3c0d022ab53cbef307bc2d467e3b44a9ec0f9dfdbd",
+            "replay_sha256": "316c44b1dc5e792fcc3e9280eaaa797184c5a44be3d3a05c593e368d23770888"
+          },
+          "name": "Illustrative projection replay of returned edits"
+        }
+      ],
+      "topics": [
+        "lean/lsp-navigation",
+        "lean/lsp-completion",
+        "lean/lsp-rename",
+        "lean/lsp-semantic-tokens",
+        "anneal/source-projection-model"
+      ]
+    },
+    "anneal-3730-lean-lsp-projection-code-actions-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "fixture_sha256": "b752ced4edc1b9be5437cf10b1f84d76c0544359c12501581361895aed79a237",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "transcript_sha256": "b1c2f5fc494ab1339e6be0c06373d819ae591e735ab95064939b64cff3fc522f"
+          },
+          "name": "Lean 4.30.0-rc2 macOS arm64 LSP"
+        },
+        {
+          "identity": {
+            "script_sha256": "2bd5b2ea161f894e7d32ab48563cdb4e8f8ee16dce05352853725aae631e7e81",
+            "seed": "373013",
+            "stream_sha256": "de9315ec39e54732d9d0820a7eb70f64c1ca86b5bcfdb735d30c0036eeac47e1"
+          },
+          "name": "Illustrative 64-line 500-edit projection model"
+        }
+      ],
+      "topics": [
+        "lean/lsp-position-encoding",
+        "lean/lsp-completion",
+        "lean/lsp-code-actions",
+        "anneal/source-projection-model"
+      ]
+    },
+    "anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "checkout_adapter_source_found": "0",
+            "named_adapter_executables_found": "0",
+            "scope": "reference-publish checkout and current executable PATH only"
+          },
+          "name": "scoped Lean MCP adapter availability in current checkout and PATH"
+        },
+        {
+          "identity": {
+            "bridge_sha256": "985d994dbda88ba99a1c22132b8b2f7c5fd27ef0b53670ec2bdd71e609d8796e",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "probe_sha256": "2bd66ac89cea50ae59b93850d20ce7e68157459622415e5778fcc2a9e09b54ed",
+            "results_sha256": "3fc15e388d50767bdae8d187ef649b9dfb2018a671c994a4e80731b557af05f8"
+          },
+          "name": "synthetic two-client stdio bridge over Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal/3730-3731-coverage",
+        "anneal/mcp",
+        "anneal/lean-lsp"
+      ]
+    },
+    "anneal-3730-lean-multiminute-restart-resource-soak-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 v4.30.0-rc2 direct language server"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/server",
+        "lean/rpc",
+        "lean/resources",
+        "anneal/freshness"
+      ]
+    },
+    "anneal-3730-lean-pool-failure-isolation-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "physical_bytes": "8589934592",
+            "rss_cap_bytes": "2516582400",
+            "worker_count": "4"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 four-worker direct-server fixture"
+        },
+        {
+          "identity": {
+            "eight_admitted": "false",
+            "probe_sha256": "4f9e9ea1231b0c6c6210cd4d298fa01ca1b98af395dac2677ceadd73be0b019e",
+            "transcript_sha256": "4cd6c5becb743aa96c796b6ee0d0b9a7b6d8deffd31b3b918487b74e8fd03fe7",
+            "verifier_sha256": "2fd8986ff497c5b83361e4067b273517a53c39e1fa8cad82ef36783e8777985b"
+          },
+          "name": "Fault, crash, resource and synthetic fence transcript"
+        }
+      ],
+      "topics": [
+        "lean/direct-server-failure-isolation",
+        "lean/process-group-crash-restart",
+        "anneal/stale-result-fence-model",
+        "anneal/resource-admission",
+        "lean/malformed-proof"
+      ]
+    },
+    "anneal-3730-lean-protocol-import-deletion-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/language-server",
+        "lean/imports",
+        "lean/workers",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-lean-protocol-races-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/language-server",
+        "lean/tactic-state",
+        "lean/protocol-concurrency",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-lean-rpc-lifetimes-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "b17723466f7ff64e8566cd1df1b861fa81b3c3b8893d365cd99a31703f6b859b"
+          },
+          "name": "direct Lean RPC lifecycle probe"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/rpc",
+        "lean/tactic-state",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-lean-server-resource-drift-soak-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/resource-economics",
+        "lean/concurrency",
+        "anneal/server-lifecycle",
+        "anneal/issue-3730"
+      ]
+    },
+    "anneal-3730-lean-server-soak-context-rpc-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 v4.30.0-rc2 direct language server"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/server",
+        "lean/rpc",
+        "lean/resources",
+        "anneal/freshness"
+      ]
+    },
+    "anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+            "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0"
+          },
+          "name": "Lean 4 and Lake 4.29.0"
+        },
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake 4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "54d4478ab58cbb5665e19d41ef632c0a1ae79094f6dae6b0bfa32a71b2c1117e"
+          },
+          "name": "Transitive import and RPC fixture"
+        }
+      ],
+      "topics": [
+        "lean/server",
+        "lean/rpc",
+        "lean/lake",
+        "lean/imports"
+      ]
+    },
+    "anneal-3730-live-proof-import-state-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "A0_olean_sha256": "a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef",
+            "A0_source_sha256": "639fb8886e82c890666f471b23b5576942cd642e4f6009ee53eeeb2299ff761e",
+            "A1_olean_sha256": "a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f",
+            "A1_source_sha256": "3267955b15d7578459c148ea403618af826044e7b589f9d011fb426e5b9a7f48",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "Lean 4.30.0-rc2 macOS arm64 two-proof import fixture"
+        },
+        {
+          "identity": {
+            "probe_sha256": "28bf8756167fd13fe81de5030959a78f3a2fbe435d064cbb77c7344b0b20f802",
+            "transcript_sha256": "4d38656b4e35a2f5cdb1f98d040ab1f8e18afb5076d8b27ca7d1e62fc5e283e4",
+            "verifier_sha256": "bbd32a426dfdeb6ad1f0baf5842731fb32b90226c162222ddaf66af97639f5ee"
+          },
+          "name": "Direct LSP, batch, and import-context control"
+        }
+      ],
+      "topics": [
+        "anneal/live-proof-imports",
+        "lean/unsaved-upstream-buffer",
+        "lean/imported-artifact-generation",
+        "lean/lsp-worker-refresh",
+        "lean/import-context",
+        "anneal/cyclic-import-residual"
+      ]
+    },
+    "anneal-3730-multiclient-editor-contract-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 language server"
+        },
+        {
+          "identity": {
+            "file": "support/probe.py",
+            "sha256": "f222d8e7397bc9ffadeeaab10924aeadc3da55546ac770d2b78321dc67e17e75"
+          },
+          "name": "synthetic two-client editor and MCP-shaped broker fixture"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/language-server-protocol",
+            "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff"
+          },
+          "name": "Language Server Protocol 3.18 specification"
+        },
+        {
+          "identity": {
+            "repository": "modelcontextprotocol/modelcontextprotocol",
+            "revision": "5f5440bb26a62e2cf3440b92da5a667efa03b267"
+          },
+          "name": "Model Context Protocol 2026-07-28 specification"
+        }
+      ],
+      "topics": [
+        "anneal/editor-integration",
+        "anneal/mcp-contract",
+        "lean/language-server",
+        "lean/document-authority"
+      ]
+    },
+    "anneal-3730-nested-parallelism-budget-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Pinned Charon CLI"
+        },
+        {
+          "identity": {
+            "executable_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+          },
+          "name": "Pinned Cargo nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2 direct server"
+        }
+      ],
+      "topics": [
+        "cargo",
+        "charon",
+        "lean/server",
+        "anneal/resources",
+        "anneal/parallelism"
+      ]
+    },
+    "anneal-3730-partial-elaboration-queries-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "1a52598fa127dbdc06ca021a8b954e03c320419c3c8575a98f66116913a5f6a9"
+          },
+          "name": "partial-elaboration batch and LSP probe"
+        }
+      ],
+      "topics": [
+        "lean/elaboration",
+        "lean/language-server",
+        "lean/tactic-state",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-per-worker-copied-byte-inventory-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lean/concurrency",
+        "lean/artifact-sharing",
+        "anneal/workspace-isolation",
+        "anneal/resource-economics"
+      ]
+    },
+    "anneal-3730-platform-filesystem-boundary-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "device": "disk3s1",
+            "filesystem": "APFS",
+            "kernel": "Darwin 25.6.0 arm64",
+            "operating_system": "macOS 26.6.2 build 25G83"
+          },
+          "name": "macOS host APFS scratch filesystem"
+        },
+        {
+          "identity": {
+            "filesystem": "overlayfs",
+            "image": "ubuntu:24.04",
+            "image_digest": "sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254",
+            "kernel": "7.0.14-orbstack-00380-ga7e0a2dc9535",
+            "linux_image_id": "sha256:a61567bd31828687156d735ea8eb01ba4e37636e225dd6a48ba94136a70d9d61"
+          },
+          "name": "cached Ubuntu container on OrbStack Linux overlayfs"
+        },
+        {
+          "identity": {
+            "file": "support/fs_probe.pl",
+            "sha256": "05e619e1fd3c6241070f5b3c421c66d5f84803c66a1e26e8a8623bc2eb98d54a"
+          },
+          "name": "scratch-only cross-platform filesystem probe"
+        }
+      ],
+      "topics": [
+        "anneal/filesystem-publication",
+        "anneal/platform-portability",
+        "filesystem/rename-and-unlink",
+        "filesystem/locking"
+      ]
+    },
+    "anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "llbc_sha256": "a3695b9ecea33c962f1409db4d598fa56d1dce5cedc080fdd7811aff0bc444a7",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "source_sha256": "8000c44b932d72c22a026333f3f484d70cd88d33d738e729bedebff9e16c1dc5"
+          },
+          "name": "Pinned nightly Rust and Charon fixture"
+        },
+        {
+          "identity": {
+            "generated_sha256": "88f95120e60ba65cdb9cfa3e9b4ad6e5ee8d07d82d918b437608a3896d1e8181",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "Pinned Lean v4.30.0-rc2 diagnostic specimens"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "9a6f4fd11ae21b7843e88647f3667ba8ab2bdf6b8eca09e0e2d954203fabbb47"
+          },
+          "name": "Illustrative projection and patch matrix"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/projection",
+        "anneal/provenance",
+        "lean/diagnostics",
+        "rust/charon-macro-spans"
+      ]
+    },
+    "anneal-3730-projection-properties-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "78e4b04b5f1278a3c24f6b4d38360bf3ec8eb3cd69fa6dc37ac41d87bbee6e83"
+          },
+          "name": "Illustrative piecewise projection property harness"
+        },
+        {
+          "identity": {
+            "version": "3.14.7"
+          },
+          "name": "CPython"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/source-mapping",
+        "anneal/projection",
+        "lsp/coordinates",
+        "property-testing"
+      ]
+    },
+    "anneal-3730-projection-provenance-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "frozen_macro_llbc_sha256": "aacad16387a02f5589d2f0006eaaf41ff91fa419854b773870e470dd04ecf0d6",
+            "frozen_snapshot_llbc_sha256": "c0f36fd68ad9c6fa2796e1633089d8cef57db9214898bec28f3ddff765bfad00",
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Charon 0.1.210 executable and frozen LLBC specimens"
+        },
+        {
+          "identity": {
+            "artifact": "support/frozen/Funs.lean",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+            "sha256": "807263e41d4e0f0b32e6daf74d6ba02985048d3088043b407c1674a7ef8d4447"
+          },
+          "name": "Aeneas generated Lean specimen"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "15aff27d8721aa746401dee31740ac3f048c1a23b985221fc9d30b470e608026"
+          },
+          "name": "Controlled exact-origin and edit-authority harness"
+        }
+      ],
+      "topics": [
+        "anneal/source-mapping",
+        "anneal/projection",
+        "charon/source-spans",
+        "aeneas/generated-provenance",
+        "lsp/coordinates",
+        "lsp/workspace-edits"
+      ]
+    },
+    "anneal-3730-real-lean-filesystem-lifetimes-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Pinned Lean v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "image_id": "sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254"
+          },
+          "name": "Cached Ubuntu 24.04 amd64 overlayfs image"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "e83dbaad6a5e5133bb540692aa36f48d63c71ad022108c462e2444f0143585b0"
+          },
+          "name": "Real Lean filesystem lifetime probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/generation-publication",
+        "lean/artifact-identity",
+        "filesystem/path-aliasing",
+        "filesystem/reader-lifetimes"
+      ]
+    },
+    "anneal-3730-resource-economics-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake 4"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "787f967a151e85c93761ae505f98c011af75e95362d4499be5841c354d8514c6"
+          },
+          "name": "bounded resource-economics probe"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lean/language-server",
+        "lean/resource-use",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-resource-soak-contamination-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 v4.30.0-rc2 arm64 macOS executable"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/server",
+        "lean/resources",
+        "lean/isolation"
+      ]
+    },
+    "anneal-3730-retention-economics-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lean/retention",
+        "lake/prepared-environment",
+        "lean/concurrency",
+        "anneal/resource-economics"
+      ]
+    },
+    "anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "pinned local Charon and Aeneas executables"
+        },
+        {
+          "identity": {
+            "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "pinned local Rust/Cargo nightly and Lean batch checker"
+        },
+        {
+          "identity": {
+            "file": "support/probe.py",
+            "sha256": "a09a11988be827b35fc300a55d960a9e9419353366a3a37da871f81e28486430"
+          },
+          "name": "self-contained Rust-to-Lean replay"
+        }
+      ],
+      "topics": [
+        "anneal/cross-tool-golden-vertical",
+        "charon/cargo-extraction",
+        "aeneas/lean-generation",
+        "anneal/batch-acceptance",
+        "anneal/negative-controls"
+      ]
+    },
+    "anneal-3730-rust-input-snapshot-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+          },
+          "name": "Rust compiler nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          },
+          "name": "Cargo 1.98.0-nightly"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "4101c4def098de100aaa87b2cb8002d7f22ff7872717f50950a8fa6cee37b079"
+          },
+          "name": "Offline Cargo input and ownership probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/fixture",
+            "canonical_file_hash_manifest_sha256": "2e78b1712c66a02a2167b2102e16c4dfe0b60ecb75e1b89d1bae320640b2561f"
+          },
+          "name": "Two-crate no-registry fixture"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/snapshots",
+        "rust/cargo-inputs",
+        "rust/procedural-macros",
+        "workspace/ownership"
+      ]
+    },
+    "anneal-3730-rust-to-lean-infoview-reconnect-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 v4.30.0-rc2 direct language server"
+        },
+        {
+          "identity": {
+            "executable_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "version": "1.98.0-nightly (f8a08b688 2026-05-30)"
+          },
+          "name": "Pinned nightly rustc"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/server",
+        "lean/rpc",
+        "anneal/editor",
+        "anneal/annotations"
+      ]
+    },
+    "anneal-3730-saved-vs-private-rust-overlay-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "fixture_tree_sha256": "2f8bce5daaea80b2c104afec7c903a68230848b6ee8b1e0085bafbd029e2f4da",
+            "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Pinned Cargo/Charon and three-package Rust fixture"
+        },
+        {
+          "identity": {
+            "clean_overlay_subject_sha256": "f1c8ac4ffd7ecce58f07d547e370658b3e3cec76f8b953095bba8ef151a7f248",
+            "probe_sha256": "5ca55f7a8de3a46ce1764fbafbaaa41d0c51885f8c91a15d485ee065eefabb2b",
+            "results_sha256": "5e8c3f8c21624362d6e82c890901546701b9c6891c3f123f91bc436c084e0e56",
+            "saved_subject_sha256": "f1c8ac4ffd7ecce58f07d547e370658b3e3cec76f8b953095bba8ef151a7f248",
+            "saved_unit_graph_sha256": "dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0",
+            "verifier_sha256": "e05f6ea762e746950690e258a2d6d8ed19069f8de43be8232f31366d47f5b483"
+          },
+          "name": "Saved and materialized private-overlay Cargo/Charon matrix"
+        }
+      ],
+      "topics": [
+        "anneal/rust-subject-overlay",
+        "cargo/unit-graph",
+        "charon/llbc-provenance",
+        "anneal/stale-output-rejection",
+        "anneal/wrong-unit-rejection"
+      ]
+    },
+    "anneal-3730-scratch-pool-scaling-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lean/language-server",
+        "lean/concurrency",
+        "anneal/resource-economics",
+        "anneal/workspace-isolation"
+      ]
+    },
+    "anneal-3730-scratch-tactic-cas-experiment-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "environment_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "proof_source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 macOS arm64 proof fixture"
+        },
+        {
+          "identity": {
+            "probe_sha256": "884eb98f4313bb5f387b3bc4e21aa5d0c9fb0d6cb9e79f650de763965afebab2",
+            "results_sha256": "796f642fbeee331ff955c2580a2c4aa0d8f0303c5dbb4632fad79683557d6cee"
+          },
+          "name": "Private scratch candidate and immutable-generation CAS prototype"
+        }
+      ],
+      "topics": [
+        "anneal/scratch-proof-candidates",
+        "anneal/proof-cas",
+        "lean/batch-check",
+        "anneal/generation-publication-model"
+      ]
+    },
+    "anneal-3730-scratch-tactic-concurrency-crash-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "environment_source_sha256": "715492091649a63fdf9dd4ce6ac08b96319e0ee8ed09347775d50149859b70e1",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "proof_source_sha256": "85cbe18dc39e096d9a266600f2f00ad280389eed1f4103a07df0e3d9cfde15d1"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 macOS arm64 proof fixture"
+        },
+        {
+          "identity": {
+            "orphan_manifest_sha256": "f5cd3f3147adfa3b1865efad7345874c1409469936faba5ecf3f1d51fcccd021",
+            "probe_sha256": "0655ef02a442130f2ec8165d43913660244afbbe2b8bfdea3e834121944c6acf",
+            "results_sha256": "067e50deedc29cab80367c590640f1f38dd7af9b65b8fce3097fa21af2068d61"
+          },
+          "name": "Two-writer and crash-injected generation-pointer prototype"
+        }
+      ],
+      "topics": [
+        "anneal/scratch-proof-candidates",
+        "anneal/proof-cas",
+        "anneal/concurrent-writers",
+        "anneal/crash-recovery-model",
+        "lean/batch-check"
+      ]
+    },
+    "anneal-3730-server-topology-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "e25dffeefadbd86f7d3eec4f862a8cf882e709fb99365a6730d8359be42288c0"
+          },
+          "name": "direct server topology probe"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/workspace-isolation",
+        "lean/rpc",
+        "lean/memory",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-shared-generator-batch-live-sinks-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "Lean v4.30.0-rc2 on macOS arm64"
+        },
+        {
+          "identity": {
+            "probe_sha256": "b22ec9536b70f0a49e840f3d3e7cd37535708206bae6c059a377216af74eed5f",
+            "results_sha256": "381315225e16680f56dce0dfc7539d8731a31b2c9c9ae2f80e77ac96797eb640"
+          },
+          "name": "synthetic shared-plan file/live generator and four controls"
+        }
+      ],
+      "topics": [
+        "anneal/3730-3731-coverage",
+        "anneal/generated-source-identity",
+        "anneal/batch-live-equivalence"
+      ]
+    },
+    "anneal-3730-snapshot-capture-jobs-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "fb1a7cbdff9cdb7b66a0f36234756af52c4862508dc5010735d4263d5a1995da"
+          },
+          "name": "Controlled snapshot and job-stage probe"
+        },
+        {
+          "identity": {
+            "version": "3.14.7"
+          },
+          "name": "CPython"
+        },
+        {
+          "identity": {
+            "filesystem": "APFS",
+            "operating_system": "macOS 26.6.2 (25G83)"
+          },
+          "name": "macOS APFS data volume"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/snapshots",
+        "anneal/generation-publication",
+        "anneal/cancellation",
+        "filesystem/apfs"
+      ]
+    },
+    "anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "source_sha256": "36b8dc373f8217d0cceaf4574ee8cd06c7567d373345a90e053eccb1fb552c1f"
+          },
+          "name": "Pinned Rust/Charon/Aeneas/Lean toolchain specimen"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "694521d4e7f656bfdbbd75785e59e814e80b52606ed807fdd7dc6d13568f8bb3"
+          },
+          "name": "Source-owned projection and diagnostic probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/projection",
+        "anneal/provenance",
+        "lean/lsp-diagnostics",
+        "anneal/versioned-edits"
+      ]
+    },
+    "anneal-3730-trust-evidence-boundary-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340",
+            "repository": "rust-lang/rust",
+            "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+            "version": "1.98.1"
+          },
+          "name": "Rust compiler"
+        },
+        {
+          "identity": {
+            "binary_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a",
+            "version": "1.98.1"
+          },
+          "name": "Cargo executable"
+        },
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "anneal/trust-boundary",
+        "rust/build-scripts",
+        "rust/proc-macros",
+        "lean/elaboration",
+        "reference/evidence"
+      ]
+    },
+    "anneal-3730-upstream-api-projection-precedents-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 server protocol at the selected Anneal pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+          },
+          "name": "rust-analyzer IDE host and architecture guide"
+        },
+        {
+          "identity": {
+            "repository": "volarjs/volar.js",
+            "revision": "44d58aee30d1d476c8ad3f6f5581b288d7185d1e"
+          },
+          "name": "Volar source map and language-service edit transforms"
+        },
+        {
+          "identity": {
+            "file": "support/projection_probe.py",
+            "sha256": "4f1974c8f49ddc2f630364b45a8e49c2cf9ebc5640921b3c16e5ae6547ffa99d"
+          },
+          "name": "synthetic projection and edit mapping fixture"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/source-projection",
+        "anneal/upstream-api",
+        "lean/lsp",
+        "research/editor-precedents"
+      ]
+    },
+    "anneal-3730-vertical-acceptance-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Anneal source checkout used for scope comparison"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/verification",
+        "lean/language-server",
+        "lean/batch-checking",
+        "lean/claim-oracle"
+      ]
+    },
     "anneal-archive-read-only-behavior-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [

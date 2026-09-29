@@ -1,0 +1,32 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["182c21cab16b24b6.olean"],
+  "m": false,
+  "i": "c0e73f6a01c8f837.ilean",
+  "c": "e088fe66f516c14d.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/lake/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/lake/Cancel/A.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/lake/.lake/build/lib/lean/Cancel/A.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/lake/.lake/build/lib/lean/Cancel/A.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/lake/.lake/build/ir/Cancel/A.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/lake/.lake/build/ir/Cancel/A.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Cancel.A:deps",
+   [["deps",
+     [["cancel_probe/Cancel:extraDep",
+       [["@cancel_probe:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29/support/work/lake/Cancel/A.lean",
+   "a8b3c72e86c5a235"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Cancel.A", "9ecb1326c5cfd51f"],
+  ["Package.id?: (some cancel_probe)", "b9bbf6b690fefe1c"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "34695d5fdf507c22"}

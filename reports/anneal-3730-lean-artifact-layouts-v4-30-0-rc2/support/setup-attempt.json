@@ -1,0 +1,57 @@
+[
+  {
+    "seq": 0,
+    "ms": 28.8,
+    "kind": "subject",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "rss_limit_bytes": 1610612736
+  },
+  {
+    "seq": 1,
+    "ms": 29.7,
+    "kind": "fixture",
+    "size": 1,
+    "layout": "per-annotation",
+    "directory": "$WORK/pad1/per-annotation",
+    "source_hashes": {
+      "Model.lean": "9d6885ab448993f73f59af93af2287563976063b58adfefefce8bf59c2bbb64b",
+      "Shared.lean": "38554b138dca39441a580addaf3a2e414ede01eb0f5350158fa35a430998a0a7",
+      "AnnOne.lean": "9a4bb5dfc936432493845928163f191bd519572b04ea18a93db5c1f1645c2dcb",
+      "AnnTwo.lean": "f6b5eb119be2b7bc86ad72aeb642d3dcefe70a0d3fe9d4f97806f99a9f06a3cf",
+      "Aggregate.lean": "2c3795d868e901472458d188bc0e4002da7ceb93aab663c67ccd90d1d79b369e",
+      "lakefile.lean": "0d21cf2bc4947cdc72a7664a4c007252ae955666adac49b00d934f516952d017",
+      "lean-toolchain": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+    },
+    "proof_files": [
+      "AnnOne.lean",
+      "AnnTwo.lean"
+    ],
+    "edit_file": "AnnOne.lean"
+  },
+  {
+    "seq": 2,
+    "ms": 3044.2,
+    "kind": "command",
+    "label": "1-per-annotation-cold",
+    "argv": [
+      "$LAKE_BIN",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "Aggregate"
+    ],
+    "cwd": "$WORK/pad1/per-annotation",
+    "rc": 1,
+    "stdout": "\u2716 [2/3] Building Aggregate (102ms)\ntrace: .> LEAN_PATH=$WORK/pad1/per-annotation/.lake/build/lib/lean $LEAN_BIN $WORK/pad1/per-annotation/Aggregate.lean -o $WORK/pad1/per-annotation/.lake/build/lib/lean/Aggregate.olean -i $WORK/pad1/per-annotation/.lake/build/lib/lean/Aggregate.ilean -c $WORK/pad1/per-annotation/.lake/build/ir/Aggregate.c --setup $WORK/pad1/per-annotation/.lake/build/ir/Aggregate.setup.json --json\nerror: Aggregate.lean:1:0: unknown module prefix 'AnnOne'\n\nNo directory 'AnnOne' or file 'AnnOne.olean' in the search path entries:\n$WORK/pad1/per-annotation/.lake/build/lib/lean\n$LEAN_HOME/lib/lean\nerror: Lean exited with code 1\nSome required targets logged failures:\n- Aggregate\n",
+    "stderr": "info: layout: no previous manifest, creating one from scratch\nerror: build failed\n",
+    "wall_ms": 3014.5
+  },
+  {
+    "seq": 3,
+    "ms": 3044.3,
+    "kind": "fatal",
+    "error": "AssertionError(('1-per-annotation', {'label': '1-per-annotation-cold', 'argv': ['$LAKE_BIN', '--keep-toolchain', '--no-cache', 'build', 'Aggregate'], 'cwd': '$WORK/pad1/per-annotation', 'rc': 1, 'stdout': \"\u2716 [2/3] Building Aggregate (102ms)\\ntrace: .> LEAN_PATH=$WORK/pad1/per-annotation/.lake/build/lib/lean $LEAN_BIN $WORK/pad1/per-annotation/Aggregate.lean -o $WORK/pad1/per-annotation/.lake/build/lib/lean/Aggregate.olean -i $WORK/pad1/per-annotation/.lake/build/lib/lean/Aggregate.ilean -c $WORK/pad1/per-annotation/.lake/build/ir/Aggregate.c --setup $WORK/pad1/per-annotation/.lake/build/ir/Aggregate.setup.json --json\\nerror: Aggregate.lean:1:0: unknown module prefix 'AnnOne'\\n\\nNo directory 'AnnOne' or file 'AnnOne.olean' in the search path entries:\\n$WORK/pad1/per-annotation/.lake/build/lib/lean\\n$LEAN_HOME/lib/lean\\nerror: Lean exited with code 1\\nSome required targets logged failures:\\n- Aggregate\\n\", 'stderr': 'info: layout: no previous manifest, creating one from scratch\\nerror: build failed\\n', 'wall_ms': 3014.5}))"
+  }
+]

@@ -1,0 +1,26 @@
+Python 3.14.7
+ProductName:		macOS
+ProductVersion:		26.6.2
+BuildVersion:		25G83
+Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64
+rustc 1.98.0-nightly (f8a08b688 2026-05-30)
+binary: rustc
+commit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1
+commit-date: 2026-05-30
+host: aarch64-apple-darwin
+release: 1.98.0-nightly
+LLVM version: 22.1.6
+cargo 1.98.0-nightly (fbb61be30 2026-05-26)
+4101c4def098de100aaa87b2cb8002d7f22ff7872717f50950a8fa6cee37b079  support/probe.py
+37a0ecd080d333f93bfe900d9c7dab193608e478
+cargo 1.98.0-nightly (fbb61be30 2026-05-26)
+release: 1.98.0-nightly
+commit-hash: fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef
+commit-date: 2026-05-26
+host: aarch64-apple-darwin
+libgit2: 1.9.2 (sys:0.20.4 vendored)
+libcurl: 8.7.1 (sys:0.4.88+curl-8.20.0 system ssl:(SecureTransport) LibreSSL/3.3.6)
+ssl: OpenSSL 3.6.2 7 Apr 2026
+os: Mac OS 26.6.2 [64-bit]
+2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc  /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc
+71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1  /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo

@@ -1,0 +1,3 @@
+[workspace]
+members = ["app", "doc_macro"]
+resolver = "2"

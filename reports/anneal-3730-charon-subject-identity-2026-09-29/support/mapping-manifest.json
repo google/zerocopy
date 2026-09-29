@@ -1,0 +1,676 @@
+{
+  "ambiguous_locator_controls": {
+    "duplicated_movable_marker": [
+      {
+        "id": 0,
+        "name": "subject_identity_probe::movable",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 30,
+              "line": 4
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "id": 10,
+        "name": "subject_identity_probe::copy::movable",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 4,
+              "line": 47
+            },
+            "end": {
+              "col": 34,
+              "line": 47
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "short_name_duplicate_in_distinct_modules": [
+      {
+        "id": 4,
+        "name": "subject_identity_probe::left::duplicate",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 4,
+              "line": 12
+            },
+            "end": {
+              "col": 36,
+              "line": 12
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "id": 5,
+        "name": "subject_identity_probe::right::duplicate",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 4,
+              "line": 17
+            },
+            "end": {
+              "col": 36,
+              "line": 17
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "trait_default_marker_on_trait_and_impl_items": [
+      {
+        "id": 6,
+        "name": "subject_identity_probe::Rule::defaulted",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 4,
+              "line": 22
+            },
+            "end": {
+              "col": 37,
+              "line": 22
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "id": 8,
+        "name": "subject_identity_probe::<impl>{\"Trait\": 0}::defaulted",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 27
+            },
+            "end": {
+              "col": 1,
+              "line": 30
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ]
+  },
+  "cross_run_candidate_comparison": [
+    {
+      "A_id": 8,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 27
+          },
+          "end": {
+            "col": 1,
+            "line": 30
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 8,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 30
+          },
+          "end": {
+            "col": 1,
+            "line": 33
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::<impl>{\"Trait\": 0}::defaulted"
+    },
+    {
+      "A_id": 9,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 29
+          },
+          "end": {
+            "col": 36,
+            "line": 29
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 9,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 32
+          },
+          "end": {
+            "col": 36,
+            "line": 32
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::<impl>{\"Trait\": 0}::required"
+    },
+    {
+      "A_id": 6,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 22
+          },
+          "end": {
+            "col": 37,
+            "line": 22
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 6,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 25
+          },
+          "end": {
+            "col": 37,
+            "line": 25
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::Rule::defaulted"
+    },
+    {
+      "A_id": 7,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 23
+          },
+          "end": {
+            "col": 30,
+            "line": 23
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 7,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 26
+          },
+          "end": {
+            "col": 30,
+            "line": 26
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::Rule::required"
+    },
+    {
+      "A_id": 0,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 8
+          },
+          "end": {
+            "col": 35,
+            "line": 8
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 1,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 11
+          },
+          "end": {
+            "col": 35,
+            "line": 11
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::default_only"
+    },
+    {
+      "A_id": 1,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 8,
+            "line": 35
+          },
+          "end": {
+            "col": 40,
+            "line": 35
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 2,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 8,
+            "line": 38
+          },
+          "end": {
+            "col": 40,
+            "line": 38
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::generated"
+    },
+    {
+      "A_id": 4,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 12
+          },
+          "end": {
+            "col": 36,
+            "line": 12
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 4,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 15
+          },
+          "end": {
+            "col": 36,
+            "line": 15
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::left::duplicate"
+    },
+    {
+      "A_id": 2,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 41
+          },
+          "end": {
+            "col": 30,
+            "line": 41
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 0,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 4
+          },
+          "end": {
+            "col": 30,
+            "line": 4
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::movable"
+    },
+    {
+      "A_id": 3,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 43
+          },
+          "end": {
+            "col": 31,
+            "line": 43
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 3,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 43
+          },
+          "end": {
+            "col": 31,
+            "line": 43
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::neighbor"
+    },
+    {
+      "A_id": 5,
+      "A_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 17
+          },
+          "end": {
+            "col": 36,
+            "line": 17
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "B_moved_id": 5,
+      "B_moved_span": {
+        "data": {
+          "beg": {
+            "col": 4,
+            "line": 20
+          },
+          "end": {
+            "col": 36,
+            "line": 20
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      },
+      "edge_kind": "lexical structured-path comparison across separate LLBCs",
+      "path": "subject_identity_probe::right::duplicate"
+    }
+  ],
+  "evidence_levels": {
+    "lexical_candidate": "Matching authored proof-id doc-comment text or display names across LLBCs is a comparison heuristic, not an authenticated cross-run attachment.",
+    "serialized_compiler_derived": "Within one LLBC, Charon's typed ID, structured name, attribute, file table, and source span are serialized results of the selected rustc subject; IDs are not proven stable across runs."
+  },
+  "macro_generated": [
+    {
+      "id": 1,
+      "name": "subject_identity_probe::generated",
+      "span": {
+        "data": {
+          "beg": {
+            "col": 8,
+            "line": 35
+          },
+          "end": {
+            "col": 40,
+            "line": 35
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      }
+    }
+  ],
+  "missing_subject_controls": {
+    "default_lib_selected_only": [],
+    "default_lib_test_subject": [],
+    "selected_lib_conditional_marker": [
+      {
+        "id": 0,
+        "name": "subject_identity_probe::selected_only",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 36,
+              "line": 5
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "selected_lib_default_only": []
+  },
+  "structural_revisions": {
+    "A": [
+      {
+        "id": 2,
+        "name": "subject_identity_probe::movable",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 41
+            },
+            "end": {
+              "col": 30,
+              "line": 41
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "A_restored": [
+      {
+        "id": 2,
+        "name": "subject_identity_probe::movable",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 41
+            },
+            "end": {
+              "col": 30,
+              "line": 41
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "A_restored_movable_id_equal": true,
+    "A_restored_projection_equal_excluding_raw_sha": true,
+    "A_restored_source_bytes_equal": true,
+    "B_moved": [
+      {
+        "id": 0,
+        "name": "subject_identity_probe::movable",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 30,
+              "line": 4
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ],
+    "C_duplicated": [
+      {
+        "id": 0,
+        "name": "subject_identity_probe::movable",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 30,
+              "line": 4
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      },
+      {
+        "id": 10,
+        "name": "subject_identity_probe::copy::movable",
+        "span": {
+          "data": {
+            "beg": {
+              "col": 4,
+              "line": 47
+            },
+            "end": {
+              "col": 34,
+              "line": 47
+            },
+            "file_id": 0
+          },
+          "generated_from_span": null
+        }
+      }
+    ]
+  },
+  "subjects": [
+    {
+      "cargo_flags": [
+        "--lib"
+      ],
+      "label": "A-default-lib",
+      "llbc_sha256": "aacad16387a02f5589d2f0006eaaf41ff91fa419854b773870e470dd04ecf0d6",
+      "local_function_count": 10,
+      "source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "variant": "A.rs"
+    },
+    {
+      "cargo_flags": [
+        "--lib",
+        "--features",
+        "selected"
+      ],
+      "label": "A-selected-lib",
+      "llbc_sha256": "77b9393c3cb79d30b50194e7407510eb3102382e1db01ebc067110554a11b13b",
+      "local_function_count": 10,
+      "source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "variant": "A.rs"
+    },
+    {
+      "cargo_flags": [
+        "--tests"
+      ],
+      "label": "A-default-tests",
+      "llbc_sha256": "a7720e5e1714213819731daa39c929b5649d4b2180f23a4094382e3cfbd72b4a",
+      "local_function_count": 19,
+      "source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "variant": "A.rs"
+    },
+    {
+      "cargo_flags": [
+        "--lib"
+      ],
+      "label": "B-moved-default-lib",
+      "llbc_sha256": "e8f716a0a9bc87465381283819c1b0a4b1b5d11529c2498c4b3153a4c2fe7aa5",
+      "local_function_count": 10,
+      "source_sha256": "dd6c63a192b51e92ec9b64876f4d53a10a38bb543445111512c4c1674370dea2",
+      "variant": "B-moved.rs"
+    },
+    {
+      "cargo_flags": [
+        "--lib"
+      ],
+      "label": "C-duplicated-default-lib",
+      "llbc_sha256": "7673c8e32ff1ec8ddb4828624b41c6623a83923c3b6b6f86f1922f984283dda8",
+      "local_function_count": 11,
+      "source_sha256": "e2dcedf3b5480d6b08d2a3ec8d87636cb22ecb3a28041b407b000c5bc6a72e51",
+      "variant": "C-duplicated.rs"
+    },
+    {
+      "cargo_flags": [
+        "--lib"
+      ],
+      "label": "A-restored-default-lib",
+      "llbc_sha256": "44ef52fc98515c182270e4367c82c1a33abd2da2edfd38e68a8b118fee90727c",
+      "local_function_count": 10,
+      "source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "variant": "A.rs"
+    }
+  ]
+}

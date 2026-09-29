@@ -1,0 +1,1903 @@
+{
+  "cases": {
+    "run-1": {
+      "aeneas_command": "run-1:aeneas",
+      "copied_llbc_sha256": "ec4dc523318d6e1ed34b0d82f3650fe68c69998d17bbd65a3552c19d0cbed1ba",
+      "declarations": {
+        "Funs.lean": {
+          "decl_lines": [
+            "def combined (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types",
+            "import Probe.FunsExternal"
+          ]
+        },
+        "FunsExternal_Template.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types"
+          ]
+        },
+        "Probe.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Probe.Funs"
+          ]
+        },
+        "Types.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas"
+          ]
+        }
+      },
+      "direct": {
+        "commands": [
+          "run-1:lean:Probe_Types",
+          "run-1:lean:Probe_FunsExternal",
+          "run-1:lean:Probe_Funs",
+          "run-1:lean:Probe",
+          "run-1:lean:Proof"
+        ],
+        "olean": {
+          "Probe.olean": {
+            "bytes": 1312,
+            "mtime_ns": 1790685837769525453,
+            "sha256": "b60f20428be8684ef615397233669a5c7aaf977f84341d14a02c2ee1175d0fd7"
+          },
+          "Probe/Funs.olean": {
+            "bytes": 5624,
+            "mtime_ns": 1790685836213523770,
+            "sha256": "18c4956552fee7aa0713c341a2c129d28b3cadcdd755233b42a95d18e26f3e90"
+          },
+          "Probe/FunsExternal.olean": {
+            "bytes": 5704,
+            "mtime_ns": 1790685834599314761,
+            "sha256": "8e612021cb706ce8291d7e59233a7de8510e2b92f993db8a8146ab8473ff599a"
+          },
+          "Probe/Types.olean": {
+            "bytes": 1600,
+            "mtime_ns": 1790685832944407952,
+            "sha256": "fda0a21d1b6e567b7f7a81a5e72430664c4927d8a6cfeb7272c26de04463af6f"
+          }
+        },
+        "proof_output": "r37u0.combined (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n'combined_self' depends on axioms: [dep_a.dep_a, dep_b.dep_b]\n",
+        "source": {
+          "Probe.lean": {
+            "bytes": 18,
+            "mtime_ns": 1790685827716538837,
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+          },
+          "Probe/Funs.lean": {
+            "bytes": 893,
+            "mtime_ns": 1790685827716212007,
+            "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+          },
+          "Probe/FunsExternal.lean": {
+            "bytes": 1125,
+            "mtime_ns": 1790685827716390380,
+            "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+          },
+          "Probe/Types.lean": {
+            "bytes": 506,
+            "mtime_ns": 1790685827716039300,
+            "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+          },
+          "Proof.lean": {
+            "bytes": 154,
+            "mtime_ns": 1790685827716634378,
+            "sha256": "c7698ec63007650d5efaee89f97bc7691452c647030b92ef2e11348f50e58304"
+          }
+        }
+      },
+      "generated": {
+        "Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685827714114607,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685827713938442,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685827714193648,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685827712703826,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      },
+      "lake_fresh": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685860793302062,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685860827440122,
+            "sha256": "6e85710be65c50ddacde5a992bd83de5b103088651d08671dc1b861137204ee2"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685854112434024,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685854152852992,
+            "sha256": "25caa81748a866a47eedb4b9030e0af0e603f06a93252f74a4fcfd1a01ffb8bc"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685847015228982,
+            "sha256": "3d6da86f2da5d42d9f0d8dcf7f3ba0bdd31e5025a6ca837eb14348c5197ed9bd"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685847051378443,
+            "sha256": "ddaa3c73f10318bce4f38cb3e3a41f0687d895cd9703d3efa3b2432ba78d1f76"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685844001486913,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685844036291135,
+            "sha256": "f3bd53b186ca894d11e5161104dfbb63bdb35cc883af17790130c35b05f32194"
+          }
+        },
+        "command": "run-1:lake:fresh",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Built Probe.Types (2.3s)",
+          "\u2139 [1683/1686] Built Probe.FunsExternal (3.0s)",
+          "\u2139 [1684/1686] Built Probe.Funs (7.1s)",
+          "\u2139 [1685/1686] Built Probe (6.7s)"
+        ]
+      },
+      "r42_llbc_sha256": "ec4dc523318d6e1ed34b0d82f3650fe68c69998d17bbd65a3552c19d0cbed1ba"
+    },
+    "run-2": {
+      "aeneas_command": "run-2:aeneas",
+      "copied_llbc_sha256": "e211fbe97e7193a1253cbd7debe0f60741c6f439494b5a0afab66df76dbed982",
+      "declarations": {
+        "Funs.lean": {
+          "decl_lines": [
+            "def combined (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types",
+            "import Probe.FunsExternal"
+          ]
+        },
+        "FunsExternal_Template.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types"
+          ]
+        },
+        "Probe.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Probe.Funs"
+          ]
+        },
+        "Types.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas"
+          ]
+        }
+      },
+      "direct": {
+        "commands": [
+          "run-2:lean:Probe_Types",
+          "run-2:lean:Probe_FunsExternal",
+          "run-2:lean:Probe_Funs",
+          "run-2:lean:Probe",
+          "run-2:lean:Proof"
+        ],
+        "olean": {
+          "Probe.olean": {
+            "bytes": 1312,
+            "mtime_ns": 1790685871584659690,
+            "sha256": "b60f20428be8684ef615397233669a5c7aaf977f84341d14a02c2ee1175d0fd7"
+          },
+          "Probe/Funs.olean": {
+            "bytes": 5624,
+            "mtime_ns": 1790685869998006419,
+            "sha256": "18c4956552fee7aa0713c341a2c129d28b3cadcdd755233b42a95d18e26f3e90"
+          },
+          "Probe/FunsExternal.olean": {
+            "bytes": 5704,
+            "mtime_ns": 1790685867189759665,
+            "sha256": "8e612021cb706ce8291d7e59233a7de8510e2b92f993db8a8146ab8473ff599a"
+          },
+          "Probe/Types.olean": {
+            "bytes": 1600,
+            "mtime_ns": 1790685865441164689,
+            "sha256": "fda0a21d1b6e567b7f7a81a5e72430664c4927d8a6cfeb7272c26de04463af6f"
+          }
+        },
+        "proof_output": "r37u0.combined (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n'combined_self' depends on axioms: [dep_a.dep_a, dep_b.dep_b]\n",
+        "source": {
+          "Probe.lean": {
+            "bytes": 18,
+            "mtime_ns": 1790685861195313306,
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+          },
+          "Probe/Funs.lean": {
+            "bytes": 893,
+            "mtime_ns": 1790685861195033224,
+            "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+          },
+          "Probe/FunsExternal.lean": {
+            "bytes": 1125,
+            "mtime_ns": 1790685861195177307,
+            "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+          },
+          "Probe/Types.lean": {
+            "bytes": 506,
+            "mtime_ns": 1790685861194852684,
+            "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+          },
+          "Proof.lean": {
+            "bytes": 154,
+            "mtime_ns": 1790685861195405305,
+            "sha256": "c7698ec63007650d5efaee89f97bc7691452c647030b92ef2e11348f50e58304"
+          }
+        }
+      },
+      "generated": {
+        "Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685861193189364,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685861193050115,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685861193255614,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685861191872125,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      },
+      "lake_fresh": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685885294722313,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685885333830001,
+            "sha256": "f06d64747c3f73af48229e3d7abcab4258a5981f1f941dee8a4ce7665532baff"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685883498265512,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685883538009194,
+            "sha256": "432abedeba3d5ffe64eafdb2d0495b2199be98483239ff3852df51b3ca3beeb6"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685881556010125,
+            "sha256": "4b39ffcec44e2617c32292c727f0187889573da7ce21d89a266234202956efd8"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685881590720639,
+            "sha256": "f09136b1229c4a0661f23667234a6e93dd40ffe0dc235dea1a61b4318e7818c3"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685879333538896,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685879370529475,
+            "sha256": "ed4ae5a4a1195f030e2481490c497df883bdff7c17a2672140fb83a3d06deced"
+          }
+        },
+        "command": "run-2:lake:fresh",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Built Probe.Types (3.8s)",
+          "\u2139 [1683/1686] Built Probe.FunsExternal (2.2s)",
+          "\u2139 [1684/1686] Built Probe.Funs (1.9s)",
+          "\u2139 [1685/1686] Built Probe (1.8s)"
+        ]
+      },
+      "r42_llbc_sha256": "e211fbe97e7193a1253cbd7debe0f60741c6f439494b5a0afab66df76dbed982"
+    },
+    "run-3": {
+      "aeneas_command": "run-3:aeneas",
+      "copied_llbc_sha256": "bb30246bfd6f73598dd2b451125bc8c326eff61c2cb137fded8f4b0c7bffc2e5",
+      "declarations": {
+        "Funs.lean": {
+          "decl_lines": [
+            "def combined (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types",
+            "import Probe.FunsExternal"
+          ]
+        },
+        "FunsExternal_Template.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types"
+          ]
+        },
+        "Probe.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Probe.Funs"
+          ]
+        },
+        "Types.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas"
+          ]
+        }
+      },
+      "direct": {
+        "commands": [
+          "run-3:lean:Probe_Types",
+          "run-3:lean:Probe_FunsExternal",
+          "run-3:lean:Probe_Funs",
+          "run-3:lean:Probe",
+          "run-3:lean:Proof"
+        ],
+        "olean": {
+          "Probe.olean": {
+            "bytes": 1312,
+            "mtime_ns": 1790685892321662501,
+            "sha256": "b60f20428be8684ef615397233669a5c7aaf977f84341d14a02c2ee1175d0fd7"
+          },
+          "Probe/Funs.olean": {
+            "bytes": 5624,
+            "mtime_ns": 1790685890667227230,
+            "sha256": "18c4956552fee7aa0713c341a2c129d28b3cadcdd755233b42a95d18e26f3e90"
+          },
+          "Probe/FunsExternal.olean": {
+            "bytes": 5704,
+            "mtime_ns": 1790685888959612592,
+            "sha256": "8e612021cb706ce8291d7e59233a7de8510e2b92f993db8a8146ab8473ff599a"
+          },
+          "Probe/Types.olean": {
+            "bytes": 1600,
+            "mtime_ns": 1790685887353786307,
+            "sha256": "fda0a21d1b6e567b7f7a81a5e72430664c4927d8a6cfeb7272c26de04463af6f"
+          }
+        },
+        "proof_output": "r37u0.combined (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n'combined_self' depends on axioms: [dep_a.dep_a, dep_b.dep_b]\n",
+        "source": {
+          "Probe.lean": {
+            "bytes": 18,
+            "mtime_ns": 1790685885764855846,
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+          },
+          "Probe/Funs.lean": {
+            "bytes": 893,
+            "mtime_ns": 1790685885764518307,
+            "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+          },
+          "Probe/FunsExternal.lean": {
+            "bytes": 1125,
+            "mtime_ns": 1790685885764696472,
+            "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+          },
+          "Probe/Types.lean": {
+            "bytes": 506,
+            "mtime_ns": 1790685885764370391,
+            "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+          },
+          "Proof.lean": {
+            "bytes": 154,
+            "mtime_ns": 1790685885764965762,
+            "sha256": "c7698ec63007650d5efaee89f97bc7691452c647030b92ef2e11348f50e58304"
+          }
+        }
+      },
+      "generated": {
+        "Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685885762670905,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685885762516948,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685885762737738,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685885761325208,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      },
+      "lake_fresh": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685906875362920,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685906907136916,
+            "sha256": "cdc044e04b9ef339728ac366ff4192a330780b492c2cc745a8e5bd02e50206b7"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685905101603061,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685905135710997,
+            "sha256": "728e3bbd3522bcb52254d7d08648055c1abc46d26300fbc9492a721a09f88288"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685901764240580,
+            "sha256": "ba8107d437b7314d94f030355573ffecc53a21c8693586e2ad883846025c83a2"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685901801013703,
+            "sha256": "c843591dc36bb6be26389808e60731684d485139d60690557292672e7e503116"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685899510927640,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685899544209832,
+            "sha256": "037c35483bcb87319d1c70538f19c00e0d56891cf6bbe989438e4d7a533c3a3b"
+          }
+        },
+        "command": "run-3:lake:fresh",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Built Probe.Types (3.2s)",
+          "\u2139 [1683/1686] Built Probe.FunsExternal (2.3s)",
+          "\u2139 [1684/1686] Built Probe.Funs (3.3s)",
+          "\u2139 [1685/1686] Built Probe (1.8s)"
+        ]
+      },
+      "r42_llbc_sha256": "bb30246bfd6f73598dd2b451125bc8c326eff61c2cb137fded8f4b0c7bffc2e5"
+    },
+    "run-4": {
+      "aeneas_command": "run-4:aeneas",
+      "copied_llbc_sha256": "5fcf6f2673878efe6d3c0aa3ab67541f6f8568ff9614a2951a41ee64cd53c436",
+      "declarations": {
+        "Funs.lean": {
+          "decl_lines": [
+            "def combined (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types",
+            "import Probe.FunsExternal"
+          ]
+        },
+        "FunsExternal_Template.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types"
+          ]
+        },
+        "Probe.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Probe.Funs"
+          ]
+        },
+        "Types.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas"
+          ]
+        }
+      },
+      "direct": {
+        "commands": [
+          "run-4:lean:Probe_Types",
+          "run-4:lean:Probe_FunsExternal",
+          "run-4:lean:Probe_Funs",
+          "run-4:lean:Probe",
+          "run-4:lean:Proof"
+        ],
+        "olean": {
+          "Probe.olean": {
+            "bytes": 1312,
+            "mtime_ns": 1790685913895790243,
+            "sha256": "b60f20428be8684ef615397233669a5c7aaf977f84341d14a02c2ee1175d0fd7"
+          },
+          "Probe/Funs.olean": {
+            "bytes": 5624,
+            "mtime_ns": 1790685912251202684,
+            "sha256": "18c4956552fee7aa0713c341a2c129d28b3cadcdd755233b42a95d18e26f3e90"
+          },
+          "Probe/FunsExternal.olean": {
+            "bytes": 5704,
+            "mtime_ns": 1790685910636107682,
+            "sha256": "8e612021cb706ce8291d7e59233a7de8510e2b92f993db8a8146ab8473ff599a"
+          },
+          "Probe/Types.olean": {
+            "bytes": 1600,
+            "mtime_ns": 1790685908919748906,
+            "sha256": "fda0a21d1b6e567b7f7a81a5e72430664c4927d8a6cfeb7272c26de04463af6f"
+          }
+        },
+        "proof_output": "r37u0.combined (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n'combined_self' depends on axioms: [dep_a.dep_a, dep_b.dep_b]\n",
+        "source": {
+          "Probe.lean": {
+            "bytes": 18,
+            "mtime_ns": 1790685907281902753,
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+          },
+          "Probe/Funs.lean": {
+            "bytes": 893,
+            "mtime_ns": 1790685907281555422,
+            "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+          },
+          "Probe/FunsExternal.lean": {
+            "bytes": 1125,
+            "mtime_ns": 1790685907281734546,
+            "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+          },
+          "Probe/Types.lean": {
+            "bytes": 506,
+            "mtime_ns": 1790685907281407881,
+            "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+          },
+          "Proof.lean": {
+            "bytes": 154,
+            "mtime_ns": 1790685907282003335,
+            "sha256": "c7698ec63007650d5efaee89f97bc7691452c647030b92ef2e11348f50e58304"
+          }
+        }
+      },
+      "generated": {
+        "Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685907279399398,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685907279252232,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685907279471439,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685907278029075,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      },
+      "lake_fresh": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685924535369376,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685924566509710,
+            "sha256": "bec21f7aae20c3865316ccec8627d12269ae65fd8720e55ba3fc02fcc1a8cc02"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685923020715654,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685923054932922,
+            "sha256": "bb95dd5075bf08e20bcada0746c5c7542dada9447c3423bbe375b38326d03756"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685921427602268,
+            "sha256": "62b483de4203160201e9f238b79f32f6bc28d3d9babace464c80806916852a7b"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685921462557655,
+            "sha256": "fd17eeeb641fc027bc67e622c0111ba60370bf243a9f97962defd559136e8b9e"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685919886727547,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685919919430494,
+            "sha256": "f7da39a9f5f747f898136aa578bb7cc2df516d7bff3a2dbb5b7a64ae8a688c74"
+          }
+        },
+        "command": "run-4:lake:fresh",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Built Probe.Types (2.1s)",
+          "\u2139 [1683/1686] Built Probe.FunsExternal (1.5s)",
+          "\u2139 [1684/1686] Built Probe.Funs (1.6s)",
+          "\u2139 [1685/1686] Built Probe (1.5s)"
+        ]
+      },
+      "r42_llbc_sha256": "5fcf6f2673878efe6d3c0aa3ab67541f6f8568ff9614a2951a41ee64cd53c436"
+    },
+    "run-5": {
+      "aeneas_command": "run-5:aeneas",
+      "copied_llbc_sha256": "d9559b90f96ee1a7608014db74b67d46c1725fb1a6e9132b7f467355a6faa752",
+      "declarations": {
+        "Funs.lean": {
+          "decl_lines": [
+            "def combined (x : Std.U32) : Result Std.U32 := do"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types",
+            "import Probe.FunsExternal"
+          ]
+        },
+        "FunsExternal_Template.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas",
+            "import Probe.Types"
+          ]
+        },
+        "Probe.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Probe.Funs"
+          ]
+        },
+        "Types.lean": {
+          "decl_lines": [],
+          "imports": [
+            "import Aeneas"
+          ]
+        }
+      },
+      "direct": {
+        "commands": [
+          "run-5:lean:Probe_Types",
+          "run-5:lean:Probe_FunsExternal",
+          "run-5:lean:Probe_Funs",
+          "run-5:lean:Probe",
+          "run-5:lean:Proof"
+        ],
+        "olean": {
+          "Probe.olean": {
+            "bytes": 1312,
+            "mtime_ns": 1790685931684760626,
+            "sha256": "b60f20428be8684ef615397233669a5c7aaf977f84341d14a02c2ee1175d0fd7"
+          },
+          "Probe/Funs.olean": {
+            "bytes": 5624,
+            "mtime_ns": 1790685930020309601,
+            "sha256": "18c4956552fee7aa0713c341a2c129d28b3cadcdd755233b42a95d18e26f3e90"
+          },
+          "Probe/FunsExternal.olean": {
+            "bytes": 5704,
+            "mtime_ns": 1790685928095867573,
+            "sha256": "8e612021cb706ce8291d7e59233a7de8510e2b92f993db8a8146ab8473ff599a"
+          },
+          "Probe/Types.olean": {
+            "bytes": 1600,
+            "mtime_ns": 1790685926521325954,
+            "sha256": "fda0a21d1b6e567b7f7a81a5e72430664c4927d8a6cfeb7272c26de04463af6f"
+          }
+        },
+        "proof_output": "r37u0.combined (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\n'combined_self' depends on axioms: [dep_a.dep_a, dep_b.dep_b]\n",
+        "source": {
+          "Probe.lean": {
+            "bytes": 18,
+            "mtime_ns": 1790685924988857125,
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+          },
+          "Probe/Funs.lean": {
+            "bytes": 893,
+            "mtime_ns": 1790685924988561377,
+            "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+          },
+          "Probe/FunsExternal.lean": {
+            "bytes": 1125,
+            "mtime_ns": 1790685924988720793,
+            "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+          },
+          "Probe/Types.lean": {
+            "bytes": 506,
+            "mtime_ns": 1790685924988379629,
+            "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+          },
+          "Proof.lean": {
+            "bytes": 154,
+            "mtime_ns": 1790685924988953041,
+            "sha256": "c7698ec63007650d5efaee89f97bc7691452c647030b92ef2e11348f50e58304"
+          }
+        }
+      },
+      "generated": {
+        "Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685924986485602,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "FunsExternal_Template.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685924986342853,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685924986551060,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685924985115405,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      },
+      "lake_fresh": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685946068108699,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685946101430099,
+            "sha256": "ccd77b286233a6ce07f699039b768eafeda69cb0fe6f7adc8bdff3418d2f1af3"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685944130455109,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685944163669469,
+            "sha256": "7e6cf685c9382c71acb39d7d81c79224213225bf402a38ea34d63d1e11e58a61"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685942343024693,
+            "sha256": "9f4c8e5a8409e45f6fa30132451d781ea0e392df44f72d3100cfbd52cb512f57"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685942379360903,
+            "sha256": "c098216a5aac7b34fdc9bc6acf4c05e3afa84cb40d308490c83486f977fdf533"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685938920261353,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685938957536305,
+            "sha256": "5bd5d1e8baa5cd1804069033ccc0738481ca27a6e826aee9ee31833f45ae765f"
+          }
+        },
+        "command": "run-5:lake:fresh",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Built Probe.Types (3.2s)",
+          "\u2139 [1683/1686] Built Probe.FunsExternal (3.4s)",
+          "\u2139 [1684/1686] Built Probe.Funs (1.8s)",
+          "\u2139 [1685/1686] Built Probe (1.9s)"
+        ]
+      },
+      "r42_llbc_sha256": "d9559b90f96ee1a7608014db74b67d46c1725fb1a6e9132b7f467355a6faa752"
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1",
+      "elapsed_ms": 235.95,
+      "exit": 0,
+      "label": "run-1:aeneas",
+      "stderr": "logs/run-1_aeneas.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-1_aeneas.stdout",
+      "stdout_sha256": "be7f209fecd79698cd783eed490ac3c7151bea8b0f244f6f96c461260c86e2f3"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Types.olean",
+        "Probe/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/direct-consumer",
+      "elapsed_ms": 5259.11,
+      "exit": 0,
+      "label": "run-1:lean:Probe_Types",
+      "stderr": "logs/run-1_lean_Probe_Types.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-1_lean_Probe_Types.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/FunsExternal.olean",
+        "Probe/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/direct-consumer",
+      "elapsed_ms": 1652.16,
+      "exit": 0,
+      "label": "run-1:lean:Probe_FunsExternal",
+      "stderr": "logs/run-1_lean_Probe_FunsExternal.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-1_lean_Probe_FunsExternal.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Funs.olean",
+        "Probe/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/direct-consumer",
+      "elapsed_ms": 1617.33,
+      "exit": 0,
+      "label": "run-1:lean:Probe_Funs",
+      "stderr": "logs/run-1_lean_Probe_Funs.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-1_lean_Probe_Funs.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe.olean",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/direct-consumer",
+      "elapsed_ms": 1553.75,
+      "exit": 0,
+      "label": "run-1:lean:Probe",
+      "stderr": "logs/run-1_lean_Probe.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-1_lean_Probe.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/direct-consumer",
+      "elapsed_ms": 1585.08,
+      "exit": 0,
+      "label": "run-1:lean:Proof",
+      "stderr": "logs/run-1_lean_Proof.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-1_lean_Proof.stdout",
+      "stdout_sha256": "7cd293c71b45b03e5468bb232346636839904c73c56b71bdc580f064f7786a10"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/lake-consumer",
+      "elapsed_ms": 21516.08,
+      "exit": 0,
+      "label": "run-1:lake:fresh",
+      "stderr": "logs/run-1_lake_fresh.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-1_lake_fresh.stdout",
+      "stdout_sha256": "27768afb55c2201a609e02abee4b0808f421028a0e965a53ab6992443254413a"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2",
+      "elapsed_ms": 251.78,
+      "exit": 0,
+      "label": "run-2:aeneas",
+      "stderr": "logs/run-2_aeneas.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-2_aeneas.stdout",
+      "stdout_sha256": "d1af56cffd1da0cbd919b628e676ac11a4c10613846ab79c313466a635e3860e"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Types.olean",
+        "Probe/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2/direct-consumer",
+      "elapsed_ms": 4281.0,
+      "exit": 0,
+      "label": "run-2:lean:Probe_Types",
+      "stderr": "logs/run-2_lean_Probe_Types.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-2_lean_Probe_Types.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/FunsExternal.olean",
+        "Probe/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2/direct-consumer",
+      "elapsed_ms": 1747.93,
+      "exit": 0,
+      "label": "run-2:lean:Probe_FunsExternal",
+      "stderr": "logs/run-2_lean_Probe_FunsExternal.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-2_lean_Probe_FunsExternal.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Funs.olean",
+        "Probe/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2/direct-consumer",
+      "elapsed_ms": 2805.62,
+      "exit": 0,
+      "label": "run-2:lean:Probe_Funs",
+      "stderr": "logs/run-2_lean_Probe_Funs.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-2_lean_Probe_Funs.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe.olean",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2/direct-consumer",
+      "elapsed_ms": 1584.74,
+      "exit": 0,
+      "label": "run-2:lean:Probe",
+      "stderr": "logs/run-2_lean_Probe.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-2_lean_Probe.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2/direct-consumer",
+      "elapsed_ms": 1584.9,
+      "exit": 0,
+      "label": "run-2:lean:Proof",
+      "stderr": "logs/run-2_lean_Proof.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-2_lean_Proof.stdout",
+      "stdout_sha256": "7cd293c71b45b03e5468bb232346636839904c73c56b71bdc580f064f7786a10"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-2/lake-consumer",
+      "elapsed_ms": 12271.82,
+      "exit": 0,
+      "label": "run-2:lake:fresh",
+      "stderr": "logs/run-2_lake_fresh.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-2_lake_fresh.stdout",
+      "stdout_sha256": "f34c555f3acdc7a3f2f31710073f38575b2a96fe9e7729e5d816730664e89fac"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3",
+      "elapsed_ms": 249.44,
+      "exit": 0,
+      "label": "run-3:aeneas",
+      "stderr": "logs/run-3_aeneas.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-3_aeneas.stdout",
+      "stdout_sha256": "9bc122468a6104b8905a745a8bcc44ab2d200dda702388ff63086ceda6e9f8ae"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Types.olean",
+        "Probe/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3/direct-consumer",
+      "elapsed_ms": 1618.06,
+      "exit": 0,
+      "label": "run-3:lean:Probe_Types",
+      "stderr": "logs/run-3_lean_Probe_Types.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-3_lean_Probe_Types.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/FunsExternal.olean",
+        "Probe/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3/direct-consumer",
+      "elapsed_ms": 1608.17,
+      "exit": 0,
+      "label": "run-3:lean:Probe_FunsExternal",
+      "stderr": "logs/run-3_lean_Probe_FunsExternal.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-3_lean_Probe_FunsExternal.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Funs.olean",
+        "Probe/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3/direct-consumer",
+      "elapsed_ms": 1712.27,
+      "exit": 0,
+      "label": "run-3:lean:Probe_Funs",
+      "stderr": "logs/run-3_lean_Probe_Funs.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-3_lean_Probe_Funs.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe.olean",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3/direct-consumer",
+      "elapsed_ms": 1653.91,
+      "exit": 0,
+      "label": "run-3:lean:Probe",
+      "stderr": "logs/run-3_lean_Probe.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-3_lean_Probe.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3/direct-consumer",
+      "elapsed_ms": 1701.73,
+      "exit": 0,
+      "label": "run-3:lean:Proof",
+      "stderr": "logs/run-3_lean_Proof.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-3_lean_Proof.stdout",
+      "stdout_sha256": "7cd293c71b45b03e5468bb232346636839904c73c56b71bdc580f064f7786a10"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-3/lake-consumer",
+      "elapsed_ms": 12920.33,
+      "exit": 0,
+      "label": "run-3:lake:fresh",
+      "stderr": "logs/run-3_lake_fresh.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-3_lake_fresh.stdout",
+      "stdout_sha256": "2f77665e90d94b75de605c86014577411a51b51cb336b1237a4826a1e57b1d5f"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4",
+      "elapsed_ms": 259.42,
+      "exit": 0,
+      "label": "run-4:aeneas",
+      "stderr": "logs/run-4_aeneas.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-4_aeneas.stdout",
+      "stdout_sha256": "cb8933e6a0c691adffe4c4b1fb797938032349fa35ef725c47fb343f343f0e02"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Types.olean",
+        "Probe/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4/direct-consumer",
+      "elapsed_ms": 1667.48,
+      "exit": 0,
+      "label": "run-4:lean:Probe_Types",
+      "stderr": "logs/run-4_lean_Probe_Types.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-4_lean_Probe_Types.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/FunsExternal.olean",
+        "Probe/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4/direct-consumer",
+      "elapsed_ms": 1717.63,
+      "exit": 0,
+      "label": "run-4:lean:Probe_FunsExternal",
+      "stderr": "logs/run-4_lean_Probe_FunsExternal.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-4_lean_Probe_FunsExternal.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Funs.olean",
+        "Probe/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4/direct-consumer",
+      "elapsed_ms": 1614.97,
+      "exit": 0,
+      "label": "run-4:lean:Probe_Funs",
+      "stderr": "logs/run-4_lean_Probe_Funs.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-4_lean_Probe_Funs.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe.olean",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4/direct-consumer",
+      "elapsed_ms": 1642.6,
+      "exit": 0,
+      "label": "run-4:lean:Probe",
+      "stderr": "logs/run-4_lean_Probe.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-4_lean_Probe.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4/direct-consumer",
+      "elapsed_ms": 1684.92,
+      "exit": 0,
+      "label": "run-4:lean:Proof",
+      "stderr": "logs/run-4_lean_Proof.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-4_lean_Proof.stdout",
+      "stdout_sha256": "7cd293c71b45b03e5468bb232346636839904c73c56b71bdc580f064f7786a10"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-4/lake-consumer",
+      "elapsed_ms": 9083.86,
+      "exit": 0,
+      "label": "run-4:lake:fresh",
+      "stderr": "logs/run-4_lake_fresh.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-4_lake_fresh.stdout",
+      "stdout_sha256": "a917fb691de75a493baeb59da4f0bc9ef0dd3ae6f4c327fdc8fb402f02229a4b"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5",
+      "elapsed_ms": 249.23,
+      "exit": 0,
+      "label": "run-5:aeneas",
+      "stderr": "logs/run-5_aeneas.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-5_aeneas.stdout",
+      "stdout_sha256": "b8a6fd1518a2d569ca5140a0e62863b74bf594beddda614628589b9c9fd1d7ae"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Types.olean",
+        "Probe/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5/direct-consumer",
+      "elapsed_ms": 1561.56,
+      "exit": 0,
+      "label": "run-5:lean:Probe_Types",
+      "stderr": "logs/run-5_lean_Probe_Types.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-5_lean_Probe_Types.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/FunsExternal.olean",
+        "Probe/FunsExternal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5/direct-consumer",
+      "elapsed_ms": 1578.03,
+      "exit": 0,
+      "label": "run-5:lean:Probe_FunsExternal",
+      "stderr": "logs/run-5_lean_Probe_FunsExternal.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-5_lean_Probe_FunsExternal.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe/Funs.olean",
+        "Probe/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5/direct-consumer",
+      "elapsed_ms": 1922.93,
+      "exit": 0,
+      "label": "run-5:lean:Probe_Funs",
+      "stderr": "logs/run-5_lean_Probe_Funs.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-5_lean_Probe_Funs.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Probe.olean",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5/direct-consumer",
+      "elapsed_ms": 1667.4,
+      "exit": 0,
+      "label": "run-5:lean:Probe",
+      "stderr": "logs/run-5_lean_Probe.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-5_lean_Probe.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5/direct-consumer",
+      "elapsed_ms": 1778.39,
+      "exit": 0,
+      "label": "run-5:lean:Proof",
+      "stderr": "logs/run-5_lean_Proof.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-5_lean_Proof.stdout",
+      "stdout_sha256": "7cd293c71b45b03e5468bb232346636839904c73c56b71bdc580f064f7786a10"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-5/lake-consumer",
+      "elapsed_ms": 12702.69,
+      "exit": 0,
+      "label": "run-5:lake:fresh",
+      "stderr": "logs/run-5_lake_fresh.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/run-5_lake_fresh.stdout",
+      "stdout_sha256": "bc513f0487a4e36a2398448e693d50d2198410f1385778b42eaafe1594991c54"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/lake-consumer",
+      "elapsed_ms": 2293.44,
+      "exit": 0,
+      "label": "incremental:no-write",
+      "stderr": "logs/incremental_no-write.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/incremental_no-write.stdout",
+      "stdout_sha256": "c9403dd6df1b02e0b058c26575c7c2ccef6fd7c7b1546e0792e8b1de381a00b2"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/lake-consumer",
+      "elapsed_ms": 1940.42,
+      "exit": 0,
+      "label": "incremental:run-2",
+      "stderr": "logs/incremental_run-2.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/incremental_run-2.stdout",
+      "stdout_sha256": "29158140b9a33b0f5d510ab0725a2da08c611685fbc37523d14d27ff644a85cc"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/lake-consumer",
+      "elapsed_ms": 1898.88,
+      "exit": 0,
+      "label": "incremental:run-3",
+      "stderr": "logs/incremental_run-3.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/incremental_run-3.stdout",
+      "stdout_sha256": "06e142e505d9b94b0207e2f18bbdde2e331af2f757be6355a7f5b6973b0f9ccd"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/lake-consumer",
+      "elapsed_ms": 1883.77,
+      "exit": 0,
+      "label": "incremental:run-4",
+      "stderr": "logs/incremental_run-4.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/incremental_run-4.stdout",
+      "stdout_sha256": "79a07a9c607a32e27c2edad2513989ace53b0b0fbe838a9f0a8ec8f8248036e0"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-shortname-aeneas-impact-2026-09-29/support/work/run-1/lake-consumer",
+      "elapsed_ms": 1792.06,
+      "exit": 0,
+      "label": "incremental:run-5",
+      "stderr": "logs/incremental_run-5.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "logs/incremental_run-5.stdout",
+      "stdout_sha256": "acf11f9b09ff4c882027859f0d790aec2f91de8284b6c9407d1b96ad27311036"
+    }
+  ],
+  "comparison": {
+    "decl_groups": {
+      "Funs.lean": [
+        "{\"decl_lines\": [\"def combined (x : Std.U32) : Result Std.U32 := do\"], \"imports\": [\"import Aeneas\", \"import Probe.Types\", \"import Probe.FunsExternal\"]}"
+      ],
+      "FunsExternal_Template.lean": [
+        "{\"decl_lines\": [], \"imports\": [\"import Aeneas\", \"import Probe.Types\"]}"
+      ],
+      "Probe.lean": [
+        "{\"decl_lines\": [], \"imports\": [\"import Probe.Funs\"]}"
+      ],
+      "Types.lean": [
+        "{\"decl_lines\": [], \"imports\": [\"import Aeneas\"]}"
+      ]
+    },
+    "generated_hash_groups": {
+      "Funs.lean": [
+        "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+      ],
+      "FunsExternal_Template.lean": [
+        "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+      ],
+      "Probe.lean": [
+        "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+      ],
+      "Types.lean": [
+        "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+      ]
+    },
+    "raw_llbc_distinct": 5
+  },
+  "incremental": [
+    {
+      "input": "no-write",
+      "lake": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685860793302062,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685860827440122,
+            "sha256": "6e85710be65c50ddacde5a992bd83de5b103088651d08671dc1b861137204ee2"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685854112434024,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685854152852992,
+            "sha256": "25caa81748a866a47eedb4b9030e0af0e603f06a93252f74a4fcfd1a01ffb8bc"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685847015228982,
+            "sha256": "3d6da86f2da5d42d9f0d8dcf7f3ba0bdd31e5025a6ca837eb14348c5197ed9bd"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685847051378443,
+            "sha256": "ddaa3c73f10318bce4f38cb3e3a41f0687d895cd9703d3efa3b2432ba78d1f76"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685844001486913,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685844036291135,
+            "sha256": "f3bd53b186ca894d11e5161104dfbb63bdb35cc883af17790130c35b05f32194"
+          }
+        },
+        "command": "incremental:no-write",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Replayed Probe.Types",
+          "\u2139 [1683/1686] Replayed Probe.FunsExternal",
+          "\u2139 [1684/1686] Replayed Probe.Funs",
+          "\u2139 [1685/1686] Replayed Probe"
+        ]
+      }
+    },
+    {
+      "input": "run-2",
+      "lake": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685860793302062,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685860827440122,
+            "sha256": "6e85710be65c50ddacde5a992bd83de5b103088651d08671dc1b861137204ee2"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685854112434024,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685854152852992,
+            "sha256": "25caa81748a866a47eedb4b9030e0af0e603f06a93252f74a4fcfd1a01ffb8bc"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685847015228982,
+            "sha256": "3d6da86f2da5d42d9f0d8dcf7f3ba0bdd31e5025a6ca837eb14348c5197ed9bd"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685847051378443,
+            "sha256": "ddaa3c73f10318bce4f38cb3e3a41f0687d895cd9703d3efa3b2432ba78d1f76"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685844001486913,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685844036291135,
+            "sha256": "f3bd53b186ca894d11e5161104dfbb63bdb35cc883af17790130c35b05f32194"
+          }
+        },
+        "command": "incremental:run-2",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Replayed Probe.Types",
+          "\u2139 [1683/1686] Replayed Probe.FunsExternal",
+          "\u2139 [1684/1686] Replayed Probe.Funs",
+          "\u2139 [1685/1686] Replayed Probe"
+        ]
+      },
+      "source_hashes": {
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685948573044169,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Probe/Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685948572397924,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "Probe/FunsExternal.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685948572868921,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe/Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685948572095468,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      }
+    },
+    {
+      "input": "run-3",
+      "lake": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685860793302062,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685860827440122,
+            "sha256": "6e85710be65c50ddacde5a992bd83de5b103088651d08671dc1b861137204ee2"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685854112434024,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685854152852992,
+            "sha256": "25caa81748a866a47eedb4b9030e0af0e603f06a93252f74a4fcfd1a01ffb8bc"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685847015228982,
+            "sha256": "3d6da86f2da5d42d9f0d8dcf7f3ba0bdd31e5025a6ca837eb14348c5197ed9bd"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685847051378443,
+            "sha256": "ddaa3c73f10318bce4f38cb3e3a41f0687d895cd9703d3efa3b2432ba78d1f76"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685844001486913,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685844036291135,
+            "sha256": "f3bd53b186ca894d11e5161104dfbb63bdb35cc883af17790130c35b05f32194"
+          }
+        },
+        "command": "incremental:run-3",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Replayed Probe.Types",
+          "\u2139 [1683/1686] Replayed Probe.FunsExternal",
+          "\u2139 [1684/1686] Replayed Probe.Funs",
+          "\u2139 [1685/1686] Replayed Probe"
+        ]
+      },
+      "source_hashes": {
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685950550395358,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Probe/Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685950550026820,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "Probe/FunsExternal.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685950550216026,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe/Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685950549828196,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      }
+    },
+    {
+      "input": "run-4",
+      "lake": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685860793302062,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685860827440122,
+            "sha256": "6e85710be65c50ddacde5a992bd83de5b103088651d08671dc1b861137204ee2"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685854112434024,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685854152852992,
+            "sha256": "25caa81748a866a47eedb4b9030e0af0e603f06a93252f74a4fcfd1a01ffb8bc"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685847015228982,
+            "sha256": "3d6da86f2da5d42d9f0d8dcf7f3ba0bdd31e5025a6ca837eb14348c5197ed9bd"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685847051378443,
+            "sha256": "ddaa3c73f10318bce4f38cb3e3a41f0687d895cd9703d3efa3b2432ba78d1f76"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685844001486913,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685844036291135,
+            "sha256": "f3bd53b186ca894d11e5161104dfbb63bdb35cc883af17790130c35b05f32194"
+          }
+        },
+        "command": "incremental:run-4",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Replayed Probe.Types",
+          "\u2139 [1683/1686] Replayed Probe.FunsExternal",
+          "\u2139 [1684/1686] Replayed Probe.Funs",
+          "\u2139 [1685/1686] Replayed Probe"
+        ]
+      },
+      "source_hashes": {
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685952487206371,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Probe/Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685952486878999,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "Probe/FunsExternal.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685952487059122,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe/Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685952486695750,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      }
+    },
+    {
+      "input": "run-5",
+      "lake": {
+        "artifacts": {
+          "lib/lean/Probe.olean": {
+            "bytes": 1376,
+            "mtime_ns": 1790685860793302062,
+            "sha256": "7a345ac65b31633dc179b6233455e52b657795ac5f2b16b32ff129f8e6ae3d2c"
+          },
+          "lib/lean/Probe.trace": {
+            "bytes": 4305,
+            "mtime_ns": 1790685860827440122,
+            "sha256": "6e85710be65c50ddacde5a992bd83de5b103088651d08671dc1b861137204ee2"
+          },
+          "lib/lean/Probe/Funs.olean": {
+            "bytes": 5688,
+            "mtime_ns": 1790685854112434024,
+            "sha256": "caad6fb36214425ea6051445aaf18b7460561becca2a5eddadbb126b9e5b15ad"
+          },
+          "lib/lean/Probe/Funs.trace": {
+            "bytes": 4615,
+            "mtime_ns": 1790685854152852992,
+            "sha256": "25caa81748a866a47eedb4b9030e0af0e603f06a93252f74a4fcfd1a01ffb8bc"
+          },
+          "lib/lean/Probe/FunsExternal.olean": {
+            "bytes": 5976,
+            "mtime_ns": 1790685847015228982,
+            "sha256": "3d6da86f2da5d42d9f0d8dcf7f3ba0bdd31e5025a6ca837eb14348c5197ed9bd"
+          },
+          "lib/lean/Probe/FunsExternal.trace": {
+            "bytes": 4533,
+            "mtime_ns": 1790685847051378443,
+            "sha256": "ddaa3c73f10318bce4f38cb3e3a41f0687d895cd9703d3efa3b2432ba78d1f76"
+          },
+          "lib/lean/Probe/Types.olean": {
+            "bytes": 1664,
+            "mtime_ns": 1790685844001486913,
+            "sha256": "b73bad74922fc9bd686e578e501a9385c0cb9c81f53628fd52cdaff251251f66"
+          },
+          "lib/lean/Probe/Types.trace": {
+            "bytes": 4345,
+            "mtime_ns": 1790685844036291135,
+            "sha256": "f3bd53b186ca894d11e5161104dfbb63bdb35cc883af17790130c35b05f32194"
+          }
+        },
+        "command": "incremental:run-5",
+        "own_job_lines": [
+          "\u2139 [1682/1686] Replayed Probe.Types",
+          "\u2139 [1683/1686] Replayed Probe.FunsExternal",
+          "\u2139 [1684/1686] Replayed Probe.Funs",
+          "\u2139 [1685/1686] Replayed Probe"
+        ]
+      },
+      "source_hashes": {
+        "Probe.lean": {
+          "bytes": 18,
+          "mtime_ns": 1790685954408013679,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d"
+        },
+        "Probe/Funs.lean": {
+          "bytes": 893,
+          "mtime_ns": 1790685954407761889,
+          "sha256": "8d37f4df6657c7f9a8d6395d121296d593474d027b1f40f610e9a62e0f3aea12"
+        },
+        "Probe/FunsExternal.lean": {
+          "bytes": 1125,
+          "mtime_ns": 1790685954407889430,
+          "sha256": "bb7d27d3d4682c5f04c622402479c4d80c4c6304acb0d923cf6184cab0e86c3f"
+        },
+        "Probe/Types.lean": {
+          "bytes": 506,
+          "mtime_ns": 1790685954407608599,
+          "sha256": "a6c43f99b3360b04150a06bda58a45e4b66c8bb96921ae540cba060bf8733888"
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Aeneas is a one-shot CLI, not the same-process OCaml API.",
+    "The two path-dependency functions use generated axiom templates as external Lean contracts.",
+    "This fixture isolates short_names order only; it does not license whole-LLBC normalization.",
+    "Lake uses a private consumer with a path dependency and symlink to already cached Aeneas packages; no dependency was downloaded.",
+    "Fresh batch acceptance checks elaboration/type preservation, not a semantic refinement proof of the Rust functions."
+  ],
+  "r42_report_sha256": "d05936e8fda62ffc72e2edd0ea0b2d95c186465975bf36426fb5ef8a08bfd714",
+  "schema": 1,
+  "tools": {
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean/Aeneas.olean": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/lake-manifest.json": "92f8605a5f81a49924d1cac5e5a16d1b8328b797df787cf3afe87bdfdcc12bdb",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  }
+}

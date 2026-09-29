@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Offline deterministic v4 issue/report coverage audit; no network or source edits."""
+from __future__ import annotations
+import csv,hashlib,json,re,sys
+from collections import Counter,defaultdict
+from pathlib import Path
+HERE=Path(__file__).resolve().parent
+REPORTS=HERE.parents[1]
+V3=REPORTS/'anneal-3730-3731-final-coverage-audit-2026-09-29-v3'/'support'
+sys.path.insert(0,str(REPORTS.parent/'tools'))
+import reference
+
+def sha(b): return hashlib.sha256(b).hexdigest()
+def read_csv(p):
+    with p.open(newline='') as f: return list(csv.DictReader(f))
+def write_csv(p,rows):
+    assert rows
+    with p.open('w',newline='') as f:
+        w=csv.DictWriter(f,fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+def inspect(p):
+    result=[]
+    for f in sorted(x for x in p.rglob('*') if x.is_file()):
+        b=f.read_bytes();typ='binary';detail='opaque'
+        if f.suffix.lower()=='.json':
+            try:json.loads(b);typ='json';detail='parsed'
+            except (ValueError,UnicodeDecodeError):typ='json-invalid-specimen';detail='retained raw bytes'
+        elif f.suffix.lower()=='.csv':typ='csv';detail=f'{len(read_csv(f))} data rows'
+        else:
+            try:txt=b.decode();typ='utf8';detail=f'{txt.count(chr(10))} lines'
+            except UnicodeDecodeError:pass
+        result.append({'package':p.name,'relative_file':f.relative_to(p).as_posix(),
+                       'bytes':len(b),'sha256':sha(b),'inspection':typ,'detail':detail})
+    return result
+
+def main():
+    issue=json.loads((HERE/'issue-scope-snapshot.json').read_text())
+    b30=issue['3730']['body'];b31=issue['3731']['body']
+    assert len(issue['3730']['comments'])==len(issue['3731']['comments'])==1
+    c30=issue['3730']['comments'][0]['body'];c31=issue['3731']['comments'][0]['body']
+    heads30=re.findall(r'^### ([A-Z]\d{2})\.',b30,re.M)
+    heads31=re.findall(r'^\*\*(I\d{3})\s+[—-]',b31,re.M)+re.findall(r'^\*\*(I\d{3})\s+[—-]',c31,re.M)
+    cross_text=c31.split('## Complete #3730 → #3731 crosswalk',1)[1]
+    cross_issue=re.findall(r'^\| ([A-Z]\d{2}) \| [^\n]* \| (I\d{3}[^|]*) \|$',cross_text,re.M)
+    assert len(heads30)==len(set(heads30))==174
+    assert heads31==[f'I{i:03}' for i in range(1,160)]
+    assert len(cross_issue)==len({k for k,_ in cross_issue})==174
+    assert set(heads30)=={k for k,_ in cross_issue}
+    issue_sha={'3730_body':sha(b30.encode()),'3730_comment':sha(c30.encode()),
+               '3731_body':sha(b31.encode()),'3731_comment':sha(c31.encode())}
+    v3=json.loads((V3/'validation-v3.json').read_text())
+    assert issue_sha==v3['issue_sha256'], 'Upstream issue changed; re-audit source required'
+    assert issue['3730']['state']=='closed' and issue['3731']['state']=='open'
+    prior=read_csv(V3/'investigation-final-v3.csv')
+    old_cross=read_csv(V3/'3730-crosswalk-final-v3.csv')
+    assert len(prior)==159 and [r['id'] for r in prior]==heads31
+    assert len(old_cross)==174 and [r['3730_id'] for r in old_cross]==heads30
+    old_map={r['3730_id']:set(r['3731_destinations'].split(';')) for r in old_cross}
+    for key,dest in cross_issue:assert set(re.findall(r'I\d{3}',dest))==old_map[key],key
+    scope=json.loads((HERE/'new-package-scope.json').read_text())
+    residuals=json.loads((HERE/'residual-overrides.json').read_text())
+    assert set(residuals)<=set(heads31)
+    all_packages={p.name for p in REPORTS.iterdir() if p.is_dir() and p.name.startswith('anneal-3730-')
+                  and 'coverage-audit' not in p.name and 'gap-audit' not in p.name}
+    prior_cited=set()
+    for row in prior:
+        for value in row.values():prior_cited.update(re.findall(r'anneal-3730-[a-z0-9-]+',value or ''))
+    assert all_packages-prior_cited==set(scope),(sorted(all_packages-prior_cited),sorted(scope))
+    assert len(all_packages)==61 and len(prior_cited)==55 and len(scope)==6
+    coverage=[]
+    for name in sorted(all_packages):
+        p=REPORTS/name;report,problems=reference._load_report(p)
+        assert report is not None and not problems,(name,problems)
+        coverage.append({'package':name,'in_v3_ledger':name in prior_cited,'new_in_v4':name in scope,
+                         'report_md_sha256':sha((p/'REPORT.md').read_bytes()),
+                         'validator':'reference._load_report: valid'})
+    write_csv(HERE/'all-package-accounting-v4.csv',coverage)
+    mapped=defaultdict(list);review=[];inventory=[]
+    for name,data in sorted(scope.items()):
+        p=REPORTS/name;files=inspect(p);inventory.extend(files)
+        assert all((p/f).is_file() for f in data['evidence_files'])
+        for n in data['ids']:
+            key=f'I{n:03}';assert key in heads31; mapped[key].append(name)
+        review.append({'suite':data['suite'],'package':name,'reviewed_ids':';'.join(f'I{x:03}' for x in data['ids']),
+                       'actual_procedure_and_observation':data['method'],'evidence_boundary':data['boundary'],
+                       'primary_evidence_files':';'.join(data['evidence_files']),
+                       'file_count':len(files),'bytes':sum(int(x['bytes']) for x in files),
+                       'validator':'reference._load_report: valid'})
+    assert {r['suite'] for r in review}=={f'R{i:02}' for i in range(8,14)}
+    write_csv(HERE/'new-package-review-v4.csv',review)
+    write_csv(HERE/'new-file-inventory-v4.csv',inventory)
+    rows=[]
+    for row in prior:
+        key=row['id'];new=mapped[key]
+        status='partial' if key=='I059' else row['status']
+        rows.append({**row,'status':status,
+                     'specific_remaining_delta':residuals.get(key,row['specific_remaining_delta']),
+                     'v4_experiment_packages':';'.join(new),
+                     'v4_evidence_scope_and_limit':' | '.join(scope[n]['method']+' Boundary: '+scope[n]['boundary'] for n in new),
+                     'v4_evidence_files':';'.join(n+'/'+f for n in new for f in scope[n]['evidence_files'])})
+    write_csv(HERE/'investigation-final-v4.csv',rows)
+    byid={r['id']:r for r in rows};cross=[]
+    for row in old_cross:
+        key=row['3730_id'];dest=row['3731_destinations'].split(';')
+        packages=';'.join(dict.fromkeys(p for d in dest for p in byid[d]['v4_experiment_packages'].split(';') if p))
+        files=';'.join(dict.fromkeys(p for d in dest for p in byid[d]['v4_evidence_files'].split(';') if p))
+        status='partial' if key in {'B11','B12'} else row['status']
+        basis=row['suggestion_scope_basis']
+        if key=='B11':basis='Direct Lean completion returned 223 items and one selected code-action request returned []; these features were queried but no returned edit/rename/navigation was projected into Rust.'
+        if key=='B12':basis='Direct Lean hover range and completion results were observed in a Unicode proof; no Rust-hosted range mapping, signature help, tokens, inlay hints or references were exercised.'
+        exact='; '.join(d+': '+byid[d]['specific_remaining_delta'] for d in dest)
+        if key in {'N11','C04'}:exact=row['specific_remaining_delta']
+        cross.append({**row,'status':status,
+                      'destination_statuses':';'.join(byid[d]['status'] for d in dest),
+                      'suggestion_scope_basis':basis,'specific_remaining_delta':exact,
+                      'v4_experiment_packages':packages,'v4_evidence_files':files})
+    write_csv(HERE/'3730-crosswalk-final-v4.csv',cross)
+    old_suites=read_csv(V3/'remaining-local-experiments-v3.csv')
+    suite_map={data['suite']:name for name,data in scope.items()}
+    assert {r['gap'] for r in old_suites}==set(suite_map)
+    disposition=[]
+    for r in old_suites:
+        name=suite_map[r['gap']];data=scope[name]
+        disposition.append({'suite':r['gap'],'requested_ids':r['investigation_ids'],
+                            'completed_package':name,'procedure':data['method'],'exact_boundary':data['boundary']})
+    write_csv(HERE/'r08-r13-disposition-v4.csv',disposition)
+    # Distinguish the closed, planned suite list from further executable component controls.
+    remaining=[
+      ('R14','I030;I059-I063','Direct Lean LSP completion resolve/apply, definition/references/rename, semantic tokens and code actions on a small Unicode proof; then test projection on the existing illustrative model.','No real Rust-hosted projection or editor adapter; direct component/model only.'),
+      ('R15','I089-I104;I108-I109;I151','Lake key/input ablations and valid but incompatible artifact-family mixes with fresh batch/server oracles in tiny private roots.','One pinned cached Lake; no power loss or real Anneal archive.'),
+      ('R16','I041-I045;I047;I116-I118;I153-I154','Guarded multi-minute direct Lean server reopen/restart/import/RPC reference lifetime and 1/2/4 worker resource ramp.','Tiny imports and direct Lean; even minutes cannot establish hours-long leak rate.'),
+      ('R17','I073-I080;I105;I134','Bounded cross-tool stage cancellation/descendant cleanup with private Cargo/Charon/Aeneas/Lake/Lean outputs, then synthetic generation-fence oracle.','CLI-only stages; no Anneal scheduler or same-process API.'),
+    ]
+    write_csv(HERE/'remaining-local-experiments-v4.csv',[
+      {'gap':x,'investigation_ids':ids,'bounded_next_experiment':work,'resource_and_evidence_limit':limit}
+      for x,ids,work,limit in remaining])
+    gates=read_csv(V3/'gated-work-v3.csv')
+    for g in gates:
+        if g['gate']=='G01':g['exact_unavailable_or_conditional_dimension']='R09 added one-shot trait/external/reorder/shrink/error evidence; same-process Aeneas reset and in-memory handoff still require an OCaml library build or compatible prebuilt API.'
+        if g['gate']=='G05':g['exact_unavailable_or_conditional_dimension']='R13 added direct Lean hover/completion and empty quick-fix response; actual Volar/Razor/editor client and Lean MCP adapter process comparisons still require unavailable clients/services.'
+        if g['gate']=='G06':g['exact_unavailable_or_conditional_dimension']='R08-R13 component and model probes do not supply the missing Anneal V2 editor/MCP bridge, Rust-hosted Lean projection, shared workspace authority or integrated batch/live engine.'
+    write_csv(HERE/'gated-work-v4.csv',gates)
+    validation={'snapshot_utc':issue['snapshot_utc'],'issue_3730_state':issue['3730']['state'],
+                'issue_3731_state':issue['3731']['state'],'issue_sha256':issue_sha,
+                'investigation_rows':len(rows),'investigation_statuses':dict(Counter(r['status'] for r in rows)),
+                'crosswalk_rows':len(cross),'crosswalk_statuses':dict(Counter(r['status'] for r in cross)),
+                'complete_investigations':[r['id'] for r in rows if r['status']=='complete'],
+                'complete_suggestions':[r['3730_id'] for r in cross if r['status']=='complete'],
+                'all_report_packages':len(all_packages),'prior_accounted_packages':len(prior_cited),
+                'new_package_count':len(scope),'new_packages':sorted(scope),
+                'new_inspected_file_count':len(inventory),
+                'new_inspected_bytes':sum(int(x['bytes']) for x in inventory),
+                'source_v3_investigation_sha256':sha((V3/'investigation-final-v3.csv').read_bytes()),
+                'source_v3_crosswalk_sha256':sha((V3/'3730-crosswalk-final-v3.csv').read_bytes()),
+                'r08_r13_completed':len(disposition),'remaining_locally_executable_suites':len(remaining),
+                'gate_groups':len(gates)}
+    (HERE/'validation-v4.json').write_text(json.dumps(validation,indent=2,ensure_ascii=False)+'\n')
+    print(json.dumps(validation,indent=2,ensure_ascii=False))
+if __name__=='__main__':main()

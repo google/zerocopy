@@ -1,0 +1,2571 @@
+{
+  "schema": 1,
+  "subject": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)"
+  },
+  "cases": {
+    "valid": {
+      "input": {
+        "module": "Base",
+        "annotation_sha256": "35d8a10341551d4c726fb231da680ba79d301f7bb53b301763085b66394f90e4",
+        "annotation_bytes": 46
+      },
+      "segments": [
+        {
+          "kind": "header",
+          "sha256": "87fe774fed7dc7accb169b89f4f7ad068732cccdd0be33450b5fe09dc8727da6",
+          "bytes": 32
+        },
+        {
+          "kind": "annotation",
+          "sha256": "35d8a10341551d4c726fb231da680ba79d301f7bb53b301763085b66394f90e4",
+          "bytes": 46
+        },
+        {
+          "kind": "footer",
+          "sha256": "d7d64d5925c0b4d6f58f6f58c083187044f1d2829cd29de18135b666de3204cb",
+          "bytes": 71
+        }
+      ],
+      "file_sha256": "85a39246572e2afdf59db30674f3272516b82b10fe4a3532ce66a244909aecaa",
+      "stream_sha256": "85a39246572e2afdf59db30674f3272516b82b10fe4a3532ce66a244909aecaa",
+      "file_bytes": 149,
+      "import_source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "import_olean_sha256": "0d7cc92073e6cb5f6c8c99668439e31b22b58013b97968aa1fcc784bd5bc5e80",
+      "source_map_sha256": "a816c61e44f5bd858b12a22d81d12f01d1570f8aa11276f53b7185dff246fc89",
+      "batch_file": {
+        "label": "file-batch",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"Generated.checked : depValue = 7\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Generated.checked' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "Generated.checked : depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 6
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 6
+            },
+            "severity": "information"
+          },
+          {
+            "caption": "",
+            "data": "'Generated.checked' does not depend on any axioms",
+            "endPos": {
+              "column": 6,
+              "line": 7
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 7
+            },
+            "severity": "information"
+          }
+        ]
+      },
+      "batch_stream": {
+        "label": "stream-batch",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"Generated.checked : depValue = 7\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Generated.checked' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "Generated.checked : depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 6
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 6
+            },
+            "severity": "information"
+          },
+          {
+            "caption": "",
+            "data": "'Generated.checked' does not depend on any axioms",
+            "endPos": {
+              "column": 6,
+              "line": 7
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 7
+            },
+            "severity": "information"
+          }
+        ]
+      },
+      "live": {
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 5
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 5
+                  }
+                },
+                "message": "Generated.checked : depValue = 7",
+                "range": {
+                  "end": {
+                    "character": 6,
+                    "line": 5
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 5
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                },
+                "message": "'Generated.checked' does not depend on any axioms",
+                "range": {
+                  "end": {
+                    "character": 6,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+            "version": 3
+          }
+        ],
+        "versions": 3,
+        "virtual_file_absent_at_final": true,
+        "messages": [
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "method": "initialize",
+              "params": {
+                "processId": 75946,
+                "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream",
+                "capabilities": {},
+                "initializationOptions": {
+                  "hasWidgets": false
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 1,
+              "jsonrpc": "2.0",
+              "result": {
+                "capabilities": {
+                  "callHierarchyProvider": true,
+                  "codeActionProvider": {
+                    "codeActionKinds": [
+                      "quickfix",
+                      "refactor",
+                      "source.organizeImports"
+                    ],
+                    "resolveProvider": true,
+                    "workDoneProgress": false
+                  },
+                  "colorProvider": {
+                    "workDoneProgress": false
+                  },
+                  "completionProvider": {
+                    "resolveProvider": true,
+                    "triggerCharacters": [
+                      "."
+                    ]
+                  },
+                  "declarationProvider": true,
+                  "definitionProvider": true,
+                  "documentHighlightProvider": true,
+                  "documentSymbolProvider": true,
+                  "experimental": {
+                    "moduleHierarchyProvider": {},
+                    "rpcProvider": {
+                      "highlightMatchesProvider": {},
+                      "rpcWireFormat": "v1"
+                    }
+                  },
+                  "foldingRangeProvider": true,
+                  "hoverProvider": true,
+                  "inlayHintProvider": {
+                    "resolveProvider": false,
+                    "workDoneProgress": false
+                  },
+                  "referencesProvider": true,
+                  "renameProvider": {
+                    "prepareProvider": true
+                  },
+                  "semanticTokensProvider": {
+                    "full": true,
+                    "legend": {
+                      "tokenModifiers": [
+                        "declaration",
+                        "definition",
+                        "readonly",
+                        "static",
+                        "deprecated",
+                        "abstract",
+                        "async",
+                        "modification",
+                        "documentation",
+                        "defaultLibrary"
+                      ],
+                      "tokenTypes": [
+                        "keyword",
+                        "variable",
+                        "property",
+                        "function",
+                        "namespace",
+                        "type",
+                        "class",
+                        "enum",
+                        "interface",
+                        "struct",
+                        "typeParameter",
+                        "parameter",
+                        "enumMember",
+                        "event",
+                        "method",
+                        "macro",
+                        "modifier",
+                        "comment",
+                        "string",
+                        "number",
+                        "regexp",
+                        "operator",
+                        "decorator",
+                        "leanSorryLike"
+                      ]
+                    },
+                    "range": true
+                  },
+                  "signatureHelpProvider": {
+                    "triggerCharacters": [
+                      " "
+                    ],
+                    "workDoneProgress": false
+                  },
+                  "textDocumentSync": {
+                    "change": 2,
+                    "openClose": true,
+                    "save": {
+                      "includeText": true
+                    },
+                    "willSave": false,
+                    "willSaveWaitUntil": false
+                  },
+                  "typeDefinitionProvider": true,
+                  "workspaceSymbolProvider": true
+                },
+                "serverInfo": {
+                  "name": "Lean 4 Server",
+                  "version": "0.3.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "initialized",
+              "params": {}
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didOpen",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                  "languageId": "lean",
+                  "version": 1,
+                  "text": "import Base\nnamespace Generated\n"
+                }
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didChange",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                  "version": 2
+                },
+                "contentChanges": [
+                  {
+                    "text": "import Base\nnamespace Generated\ntheorem checked : depValue = 7 := by\n  decide\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didChange",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                  "version": 3
+                },
+                "contentChanges": [
+                  {
+                    "text": "import Base\nnamespace Generated\ntheorem checked : depValue = 7 := by\n  decide\nend Generated\n#check Generated.checked\n#print axioms Generated.checked\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 2,
+              "method": "textDocument/waitForDiagnostics",
+              "params": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": "register_lean_watcher",
+              "jsonrpc": "2.0",
+              "method": "client/registerCapability",
+              "params": {
+                "registrations": [
+                  {
+                    "id": "lean_watcher",
+                    "method": "workspace/didChangeWatchedFiles",
+                    "registerOptions": {
+                      "watchers": [
+                        {
+                          "globPattern": "**/*.lean"
+                        },
+                        {
+                          "globPattern": "**/*.ilean"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": "register_lean_watcher",
+              "result": null
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [
+                  {
+                    "kind": 1,
+                    "range": {
+                      "end": {
+                        "character": 0,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 0
+                      }
+                    }
+                  }
+                ],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                  "version": 1
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                  "version": 3
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                  "version": 3
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/publishDiagnostics",
+              "params": {
+                "diagnostics": [
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 5
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 5
+                      }
+                    },
+                    "message": "Generated.checked : depValue = 7",
+                    "range": {
+                      "end": {
+                        "character": 6,
+                        "line": 5
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 5
+                      }
+                    },
+                    "severity": 3,
+                    "source": "Lean 4"
+                  },
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 6
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 6
+                      }
+                    },
+                    "message": "'Generated.checked' does not depend on any axioms",
+                    "range": {
+                      "end": {
+                        "character": 6,
+                        "line": 6
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 6
+                      }
+                    },
+                    "severity": 3,
+                    "source": "Lean 4"
+                  }
+                ],
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 99,
+              "method": "shutdown",
+              "params": null
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/publishDiagnostics",
+              "params": {
+                "diagnostics": [],
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/valid/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 99,
+              "jsonrpc": "2.0",
+              "result": null
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "exit"
+            }
+          }
+        ],
+        "process": {
+          "rc": 0,
+          "stderr": ""
+        }
+      }
+    },
+    "incomplete": {
+      "input": {
+        "module": "Base",
+        "annotation_sha256": "b572e784bca01a8eb5275188ac8c61880f295e9165fb5fe63437f2d463633ec1",
+        "annotation_bytes": 44
+      },
+      "segments": [
+        {
+          "kind": "header",
+          "sha256": "87fe774fed7dc7accb169b89f4f7ad068732cccdd0be33450b5fe09dc8727da6",
+          "bytes": 32
+        },
+        {
+          "kind": "annotation",
+          "sha256": "b572e784bca01a8eb5275188ac8c61880f295e9165fb5fe63437f2d463633ec1",
+          "bytes": 44
+        },
+        {
+          "kind": "footer",
+          "sha256": "d7d64d5925c0b4d6f58f6f58c083187044f1d2829cd29de18135b666de3204cb",
+          "bytes": 71
+        }
+      ],
+      "file_sha256": "0ff077cc11fa4da10f3cd5be6965e6a75604711c126cb4d737160817114fca3e",
+      "stream_sha256": "0ff077cc11fa4da10f3cd5be6965e6a75604711c126cb4d737160817114fca3e",
+      "file_bytes": 147,
+      "import_source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "import_olean_sha256": "0d7cc92073e6cb5f6c8c99668439e31b22b58013b97968aa1fcc784bd5bc5e80",
+      "source_map_sha256": "2c1d5c30ed0d15f29e1b6a29d0250f4add029b2c8878012975867daddf7b4020",
+      "batch_file": {
+        "label": "file-batch",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"unsolved goals\\n⊢ depValue = 7\",\"endPos\":{\"column\":6,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":34,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"Generated.checked : depValue = 7\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Generated.checked' depends on axioms: [sorryAx]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "unsolved goals\n⊢ depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 4
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "Tactic.unsolvedGoals",
+            "pos": {
+              "column": 34,
+              "line": 3
+            },
+            "severity": "error"
+          },
+          {
+            "caption": "",
+            "data": "Generated.checked : depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 6
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 6
+            },
+            "severity": "information"
+          },
+          {
+            "caption": "",
+            "data": "'Generated.checked' depends on axioms: [sorryAx]",
+            "endPos": {
+              "column": 6,
+              "line": 7
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 7
+            },
+            "severity": "information"
+          }
+        ]
+      },
+      "batch_stream": {
+        "label": "stream-batch",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"unsolved goals\\n⊢ depValue = 7\",\"endPos\":{\"column\":6,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":34,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"Generated.checked : depValue = 7\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Generated.checked' depends on axioms: [sorryAx]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "unsolved goals\n⊢ depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 4
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "Tactic.unsolvedGoals",
+            "pos": {
+              "column": 34,
+              "line": 3
+            },
+            "severity": "error"
+          },
+          {
+            "caption": "",
+            "data": "Generated.checked : depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 6
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 6
+            },
+            "severity": "information"
+          },
+          {
+            "caption": "",
+            "data": "'Generated.checked' depends on axioms: [sorryAx]",
+            "endPos": {
+              "column": 6,
+              "line": 7
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 7
+            },
+            "severity": "information"
+          }
+        ]
+      },
+      "live": {
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 34,
+                    "line": 2
+                  }
+                },
+                "leanTags": [
+                  1
+                ],
+                "message": "unsolved goals\n⊢ depValue = 7",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 34,
+                    "line": 2
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 5
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 5
+                  }
+                },
+                "message": "Generated.checked : depValue = 7",
+                "range": {
+                  "end": {
+                    "character": 6,
+                    "line": 5
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 5
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                },
+                "message": "'Generated.checked' depends on axioms: [sorryAx]",
+                "range": {
+                  "end": {
+                    "character": 6,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+            "version": 3
+          }
+        ],
+        "versions": 3,
+        "virtual_file_absent_at_final": true,
+        "messages": [
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "method": "initialize",
+              "params": {
+                "processId": 75946,
+                "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream",
+                "capabilities": {},
+                "initializationOptions": {
+                  "hasWidgets": false
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 1,
+              "jsonrpc": "2.0",
+              "result": {
+                "capabilities": {
+                  "callHierarchyProvider": true,
+                  "codeActionProvider": {
+                    "codeActionKinds": [
+                      "quickfix",
+                      "refactor",
+                      "source.organizeImports"
+                    ],
+                    "resolveProvider": true,
+                    "workDoneProgress": false
+                  },
+                  "colorProvider": {
+                    "workDoneProgress": false
+                  },
+                  "completionProvider": {
+                    "resolveProvider": true,
+                    "triggerCharacters": [
+                      "."
+                    ]
+                  },
+                  "declarationProvider": true,
+                  "definitionProvider": true,
+                  "documentHighlightProvider": true,
+                  "documentSymbolProvider": true,
+                  "experimental": {
+                    "moduleHierarchyProvider": {},
+                    "rpcProvider": {
+                      "highlightMatchesProvider": {},
+                      "rpcWireFormat": "v1"
+                    }
+                  },
+                  "foldingRangeProvider": true,
+                  "hoverProvider": true,
+                  "inlayHintProvider": {
+                    "resolveProvider": false,
+                    "workDoneProgress": false
+                  },
+                  "referencesProvider": true,
+                  "renameProvider": {
+                    "prepareProvider": true
+                  },
+                  "semanticTokensProvider": {
+                    "full": true,
+                    "legend": {
+                      "tokenModifiers": [
+                        "declaration",
+                        "definition",
+                        "readonly",
+                        "static",
+                        "deprecated",
+                        "abstract",
+                        "async",
+                        "modification",
+                        "documentation",
+                        "defaultLibrary"
+                      ],
+                      "tokenTypes": [
+                        "keyword",
+                        "variable",
+                        "property",
+                        "function",
+                        "namespace",
+                        "type",
+                        "class",
+                        "enum",
+                        "interface",
+                        "struct",
+                        "typeParameter",
+                        "parameter",
+                        "enumMember",
+                        "event",
+                        "method",
+                        "macro",
+                        "modifier",
+                        "comment",
+                        "string",
+                        "number",
+                        "regexp",
+                        "operator",
+                        "decorator",
+                        "leanSorryLike"
+                      ]
+                    },
+                    "range": true
+                  },
+                  "signatureHelpProvider": {
+                    "triggerCharacters": [
+                      " "
+                    ],
+                    "workDoneProgress": false
+                  },
+                  "textDocumentSync": {
+                    "change": 2,
+                    "openClose": true,
+                    "save": {
+                      "includeText": true
+                    },
+                    "willSave": false,
+                    "willSaveWaitUntil": false
+                  },
+                  "typeDefinitionProvider": true,
+                  "workspaceSymbolProvider": true
+                },
+                "serverInfo": {
+                  "name": "Lean 4 Server",
+                  "version": "0.3.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "initialized",
+              "params": {}
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didOpen",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                  "languageId": "lean",
+                  "version": 1,
+                  "text": "import Base\nnamespace Generated\n"
+                }
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didChange",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                  "version": 2
+                },
+                "contentChanges": [
+                  {
+                    "text": "import Base\nnamespace Generated\ntheorem checked : depValue = 7 := by\n  skip\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didChange",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                  "version": 3
+                },
+                "contentChanges": [
+                  {
+                    "text": "import Base\nnamespace Generated\ntheorem checked : depValue = 7 := by\n  skip\nend Generated\n#check Generated.checked\n#print axioms Generated.checked\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 2,
+              "method": "textDocument/waitForDiagnostics",
+              "params": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": "register_lean_watcher",
+              "jsonrpc": "2.0",
+              "method": "client/registerCapability",
+              "params": {
+                "registrations": [
+                  {
+                    "id": "lean_watcher",
+                    "method": "workspace/didChangeWatchedFiles",
+                    "registerOptions": {
+                      "watchers": [
+                        {
+                          "globPattern": "**/*.lean"
+                        },
+                        {
+                          "globPattern": "**/*.ilean"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": "register_lean_watcher",
+              "result": null
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [
+                  {
+                    "kind": 1,
+                    "range": {
+                      "end": {
+                        "character": 0,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 0
+                      }
+                    }
+                  }
+                ],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                  "version": 1
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                  "version": 3
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                  "version": 3
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/publishDiagnostics",
+              "params": {
+                "diagnostics": [
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 3
+                      },
+                      "start": {
+                        "character": 34,
+                        "line": 2
+                      }
+                    },
+                    "leanTags": [
+                      1
+                    ],
+                    "message": "unsolved goals\n⊢ depValue = 7",
+                    "range": {
+                      "end": {
+                        "character": 0,
+                        "line": 3
+                      },
+                      "start": {
+                        "character": 34,
+                        "line": 2
+                      }
+                    },
+                    "severity": 1,
+                    "source": "Lean 4"
+                  },
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 5
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 5
+                      }
+                    },
+                    "message": "Generated.checked : depValue = 7",
+                    "range": {
+                      "end": {
+                        "character": 6,
+                        "line": 5
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 5
+                      }
+                    },
+                    "severity": 3,
+                    "source": "Lean 4"
+                  },
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 6
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 6
+                      }
+                    },
+                    "message": "'Generated.checked' depends on axioms: [sorryAx]",
+                    "range": {
+                      "end": {
+                        "character": 6,
+                        "line": 6
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 6
+                      }
+                    },
+                    "severity": 3,
+                    "source": "Lean 4"
+                  }
+                ],
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 99,
+              "method": "shutdown",
+              "params": null
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/publishDiagnostics",
+              "params": {
+                "diagnostics": [],
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/incomplete/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 99,
+              "jsonrpc": "2.0",
+              "result": null
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "exit"
+            }
+          }
+        ],
+        "process": {
+          "rc": 0,
+          "stderr": ""
+        }
+      }
+    },
+    "import-edit": {
+      "input": {
+        "module": "Alt",
+        "annotation_sha256": "35d8a10341551d4c726fb231da680ba79d301f7bb53b301763085b66394f90e4",
+        "annotation_bytes": 46
+      },
+      "segments": [
+        {
+          "kind": "header",
+          "sha256": "9d91f03020ef07ff05411f10059b7bcc9eeb228da2e5fec81147ca037c479792",
+          "bytes": 31
+        },
+        {
+          "kind": "annotation",
+          "sha256": "35d8a10341551d4c726fb231da680ba79d301f7bb53b301763085b66394f90e4",
+          "bytes": 46
+        },
+        {
+          "kind": "footer",
+          "sha256": "d7d64d5925c0b4d6f58f6f58c083187044f1d2829cd29de18135b666de3204cb",
+          "bytes": 71
+        }
+      ],
+      "file_sha256": "f8088463eb04e121684b6e178c4db4a531c2fece73026f4a0189d43d4b31f73b",
+      "stream_sha256": "f8088463eb04e121684b6e178c4db4a531c2fece73026f4a0189d43d4b31f73b",
+      "file_bytes": 148,
+      "import_source_sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+      "import_olean_sha256": "f524eb221ac2fcf12ecb0605e4f3df996e022487a179bfa85db4a82aee5eadb8",
+      "source_map_sha256": "e26a6c3a469b67de85d1797c166fa38062a8dad04b15d954b5f3da31701b81ee",
+      "batch_file": {
+        "label": "file-batch",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue = 7\\nis false\",\"endPos\":{\"column\":8,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"Generated.checked : depValue = 7\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Generated.checked' depends on axioms: [sorryAx]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "Tactic `decide` proved that the proposition\n  depValue = 7\nis false",
+            "endPos": {
+              "column": 8,
+              "line": 4
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 2,
+              "line": 4
+            },
+            "severity": "error"
+          },
+          {
+            "caption": "",
+            "data": "Generated.checked : depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 6
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 6
+            },
+            "severity": "information"
+          },
+          {
+            "caption": "",
+            "data": "'Generated.checked' depends on axioms: [sorryAx]",
+            "endPos": {
+              "column": 6,
+              "line": 7
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 7
+            },
+            "severity": "information"
+          }
+        ]
+      },
+      "batch_stream": {
+        "label": "stream-batch",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue = 7\\nis false\",\"endPos\":{\"column\":8,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"Generated.checked : depValue = 7\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Generated.checked' depends on axioms: [sorryAx]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "Tactic `decide` proved that the proposition\n  depValue = 7\nis false",
+            "endPos": {
+              "column": 8,
+              "line": 4
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 2,
+              "line": 4
+            },
+            "severity": "error"
+          },
+          {
+            "caption": "",
+            "data": "Generated.checked : depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 6
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 6
+            },
+            "severity": "information"
+          },
+          {
+            "caption": "",
+            "data": "'Generated.checked' depends on axioms: [sorryAx]",
+            "endPos": {
+              "column": 6,
+              "line": 7
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 7
+            },
+            "severity": "information"
+          }
+        ]
+      },
+      "live": {
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 8,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 2,
+                    "line": 3
+                  }
+                },
+                "message": "Tactic `decide` proved that the proposition\n  depValue = 7\nis false",
+                "range": {
+                  "end": {
+                    "character": 8,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 2,
+                    "line": 3
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 5
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 5
+                  }
+                },
+                "message": "Generated.checked : depValue = 7",
+                "range": {
+                  "end": {
+                    "character": 6,
+                    "line": 5
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 5
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                },
+                "message": "'Generated.checked' depends on axioms: [sorryAx]",
+                "range": {
+                  "end": {
+                    "character": 6,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+            "version": 3
+          }
+        ],
+        "versions": 3,
+        "virtual_file_absent_at_final": true,
+        "messages": [
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "method": "initialize",
+              "params": {
+                "processId": 75946,
+                "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream",
+                "capabilities": {},
+                "initializationOptions": {
+                  "hasWidgets": false
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 1,
+              "jsonrpc": "2.0",
+              "result": {
+                "capabilities": {
+                  "callHierarchyProvider": true,
+                  "codeActionProvider": {
+                    "codeActionKinds": [
+                      "quickfix",
+                      "refactor",
+                      "source.organizeImports"
+                    ],
+                    "resolveProvider": true,
+                    "workDoneProgress": false
+                  },
+                  "colorProvider": {
+                    "workDoneProgress": false
+                  },
+                  "completionProvider": {
+                    "resolveProvider": true,
+                    "triggerCharacters": [
+                      "."
+                    ]
+                  },
+                  "declarationProvider": true,
+                  "definitionProvider": true,
+                  "documentHighlightProvider": true,
+                  "documentSymbolProvider": true,
+                  "experimental": {
+                    "moduleHierarchyProvider": {},
+                    "rpcProvider": {
+                      "highlightMatchesProvider": {},
+                      "rpcWireFormat": "v1"
+                    }
+                  },
+                  "foldingRangeProvider": true,
+                  "hoverProvider": true,
+                  "inlayHintProvider": {
+                    "resolveProvider": false,
+                    "workDoneProgress": false
+                  },
+                  "referencesProvider": true,
+                  "renameProvider": {
+                    "prepareProvider": true
+                  },
+                  "semanticTokensProvider": {
+                    "full": true,
+                    "legend": {
+                      "tokenModifiers": [
+                        "declaration",
+                        "definition",
+                        "readonly",
+                        "static",
+                        "deprecated",
+                        "abstract",
+                        "async",
+                        "modification",
+                        "documentation",
+                        "defaultLibrary"
+                      ],
+                      "tokenTypes": [
+                        "keyword",
+                        "variable",
+                        "property",
+                        "function",
+                        "namespace",
+                        "type",
+                        "class",
+                        "enum",
+                        "interface",
+                        "struct",
+                        "typeParameter",
+                        "parameter",
+                        "enumMember",
+                        "event",
+                        "method",
+                        "macro",
+                        "modifier",
+                        "comment",
+                        "string",
+                        "number",
+                        "regexp",
+                        "operator",
+                        "decorator",
+                        "leanSorryLike"
+                      ]
+                    },
+                    "range": true
+                  },
+                  "signatureHelpProvider": {
+                    "triggerCharacters": [
+                      " "
+                    ],
+                    "workDoneProgress": false
+                  },
+                  "textDocumentSync": {
+                    "change": 2,
+                    "openClose": true,
+                    "save": {
+                      "includeText": true
+                    },
+                    "willSave": false,
+                    "willSaveWaitUntil": false
+                  },
+                  "typeDefinitionProvider": true,
+                  "workspaceSymbolProvider": true
+                },
+                "serverInfo": {
+                  "name": "Lean 4 Server",
+                  "version": "0.3.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "initialized",
+              "params": {}
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didOpen",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                  "languageId": "lean",
+                  "version": 1,
+                  "text": "import Alt\nnamespace Generated\n"
+                }
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didChange",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                  "version": 2
+                },
+                "contentChanges": [
+                  {
+                    "text": "import Alt\nnamespace Generated\ntheorem checked : depValue = 7 := by\n  decide\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didChange",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                  "version": 3
+                },
+                "contentChanges": [
+                  {
+                    "text": "import Alt\nnamespace Generated\ntheorem checked : depValue = 7 := by\n  decide\nend Generated\n#check Generated.checked\n#print axioms Generated.checked\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 2,
+              "method": "textDocument/waitForDiagnostics",
+              "params": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": "register_lean_watcher",
+              "jsonrpc": "2.0",
+              "method": "client/registerCapability",
+              "params": {
+                "registrations": [
+                  {
+                    "id": "lean_watcher",
+                    "method": "workspace/didChangeWatchedFiles",
+                    "registerOptions": {
+                      "watchers": [
+                        {
+                          "globPattern": "**/*.lean"
+                        },
+                        {
+                          "globPattern": "**/*.ilean"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": "register_lean_watcher",
+              "result": null
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [
+                  {
+                    "kind": 1,
+                    "range": {
+                      "end": {
+                        "character": 0,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 0
+                      }
+                    }
+                  }
+                ],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                  "version": 1
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                  "version": 3
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                  "version": 3
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/publishDiagnostics",
+              "params": {
+                "diagnostics": [
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 8,
+                        "line": 3
+                      },
+                      "start": {
+                        "character": 2,
+                        "line": 3
+                      }
+                    },
+                    "message": "Tactic `decide` proved that the proposition\n  depValue = 7\nis false",
+                    "range": {
+                      "end": {
+                        "character": 8,
+                        "line": 3
+                      },
+                      "start": {
+                        "character": 2,
+                        "line": 3
+                      }
+                    },
+                    "severity": 1,
+                    "source": "Lean 4"
+                  },
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 5
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 5
+                      }
+                    },
+                    "message": "Generated.checked : depValue = 7",
+                    "range": {
+                      "end": {
+                        "character": 6,
+                        "line": 5
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 5
+                      }
+                    },
+                    "severity": 3,
+                    "source": "Lean 4"
+                  },
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 6
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 6
+                      }
+                    },
+                    "message": "'Generated.checked' depends on axioms: [sorryAx]",
+                    "range": {
+                      "end": {
+                        "character": 6,
+                        "line": 6
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 6
+                      }
+                    },
+                    "severity": 3,
+                    "source": "Lean 4"
+                  }
+                ],
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 99,
+              "method": "shutdown",
+              "params": null
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/publishDiagnostics",
+              "params": {
+                "diagnostics": [],
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/import-edit/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 99,
+              "jsonrpc": "2.0",
+              "result": null
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "exit"
+            }
+          }
+        ],
+        "process": {
+          "rc": 0,
+          "stderr": ""
+        }
+      }
+    },
+    "unicode-crlf": {
+      "input": {
+        "module": "Base",
+        "annotation_sha256": "9767dcb003c990f6927f867c407bb50599363a95ed41be0f5008ac7cbf0fe426",
+        "annotation_bytes": 66
+      },
+      "segments": [
+        {
+          "kind": "header",
+          "sha256": "87fe774fed7dc7accb169b89f4f7ad068732cccdd0be33450b5fe09dc8727da6",
+          "bytes": 32
+        },
+        {
+          "kind": "annotation",
+          "sha256": "9767dcb003c990f6927f867c407bb50599363a95ed41be0f5008ac7cbf0fe426",
+          "bytes": 66
+        },
+        {
+          "kind": "footer",
+          "sha256": "d7d64d5925c0b4d6f58f6f58c083187044f1d2829cd29de18135b666de3204cb",
+          "bytes": 71
+        }
+      ],
+      "file_sha256": "562a988a9b4d68353699a998ca05e703f4088f5a046fbcdfae32a11147918e5a",
+      "stream_sha256": "562a988a9b4d68353699a998ca05e703f4088f5a046fbcdfae32a11147918e5a",
+      "file_bytes": 169,
+      "import_source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "import_olean_sha256": "0d7cc92073e6cb5f6c8c99668439e31b22b58013b97968aa1fcc784bd5bc5e80",
+      "source_map_sha256": "e63d2afbe80e87f9f8c24f3dc7970a4ba73da7ee696d8d95dddd48f6cfeb54da",
+      "batch_file": {
+        "label": "file-batch",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"Generated.checked : depValue = 7\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Generated.checked' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":8},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":8},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "Generated.checked : depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 7
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 7
+            },
+            "severity": "information"
+          },
+          {
+            "caption": "",
+            "data": "'Generated.checked' does not depend on any axioms",
+            "endPos": {
+              "column": 6,
+              "line": 8
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 8
+            },
+            "severity": "information"
+          }
+        ]
+      },
+      "batch_stream": {
+        "label": "stream-batch",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"Generated.checked : depValue = 7\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Generated.checked' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":8},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":8},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "diagnostics": [
+          {
+            "caption": "",
+            "data": "Generated.checked : depValue = 7",
+            "endPos": {
+              "column": 6,
+              "line": 7
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 7
+            },
+            "severity": "information"
+          },
+          {
+            "caption": "",
+            "data": "'Generated.checked' does not depend on any axioms",
+            "endPos": {
+              "column": 6,
+              "line": 8
+            },
+            "fileName": "Generated.lean",
+            "isSilent": false,
+            "keepFullRange": false,
+            "kind": "[anonymous]",
+            "pos": {
+              "column": 0,
+              "line": 8
+            },
+            "severity": "information"
+          }
+        ]
+      },
+      "live": {
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                },
+                "message": "Generated.checked : depValue = 7",
+                "range": {
+                  "end": {
+                    "character": 6,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              },
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 6,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                },
+                "message": "'Generated.checked' does not depend on any axioms",
+                "range": {
+                  "end": {
+                    "character": 6,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+            "version": 3
+          }
+        ],
+        "versions": 3,
+        "virtual_file_absent_at_final": true,
+        "messages": [
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "method": "initialize",
+              "params": {
+                "processId": 75946,
+                "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream",
+                "capabilities": {},
+                "initializationOptions": {
+                  "hasWidgets": false
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 1,
+              "jsonrpc": "2.0",
+              "result": {
+                "capabilities": {
+                  "callHierarchyProvider": true,
+                  "codeActionProvider": {
+                    "codeActionKinds": [
+                      "quickfix",
+                      "refactor",
+                      "source.organizeImports"
+                    ],
+                    "resolveProvider": true,
+                    "workDoneProgress": false
+                  },
+                  "colorProvider": {
+                    "workDoneProgress": false
+                  },
+                  "completionProvider": {
+                    "resolveProvider": true,
+                    "triggerCharacters": [
+                      "."
+                    ]
+                  },
+                  "declarationProvider": true,
+                  "definitionProvider": true,
+                  "documentHighlightProvider": true,
+                  "documentSymbolProvider": true,
+                  "experimental": {
+                    "moduleHierarchyProvider": {},
+                    "rpcProvider": {
+                      "highlightMatchesProvider": {},
+                      "rpcWireFormat": "v1"
+                    }
+                  },
+                  "foldingRangeProvider": true,
+                  "hoverProvider": true,
+                  "inlayHintProvider": {
+                    "resolveProvider": false,
+                    "workDoneProgress": false
+                  },
+                  "referencesProvider": true,
+                  "renameProvider": {
+                    "prepareProvider": true
+                  },
+                  "semanticTokensProvider": {
+                    "full": true,
+                    "legend": {
+                      "tokenModifiers": [
+                        "declaration",
+                        "definition",
+                        "readonly",
+                        "static",
+                        "deprecated",
+                        "abstract",
+                        "async",
+                        "modification",
+                        "documentation",
+                        "defaultLibrary"
+                      ],
+                      "tokenTypes": [
+                        "keyword",
+                        "variable",
+                        "property",
+                        "function",
+                        "namespace",
+                        "type",
+                        "class",
+                        "enum",
+                        "interface",
+                        "struct",
+                        "typeParameter",
+                        "parameter",
+                        "enumMember",
+                        "event",
+                        "method",
+                        "macro",
+                        "modifier",
+                        "comment",
+                        "string",
+                        "number",
+                        "regexp",
+                        "operator",
+                        "decorator",
+                        "leanSorryLike"
+                      ]
+                    },
+                    "range": true
+                  },
+                  "signatureHelpProvider": {
+                    "triggerCharacters": [
+                      " "
+                    ],
+                    "workDoneProgress": false
+                  },
+                  "textDocumentSync": {
+                    "change": 2,
+                    "openClose": true,
+                    "save": {
+                      "includeText": true
+                    },
+                    "willSave": false,
+                    "willSaveWaitUntil": false
+                  },
+                  "typeDefinitionProvider": true,
+                  "workspaceSymbolProvider": true
+                },
+                "serverInfo": {
+                  "name": "Lean 4 Server",
+                  "version": "0.3.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "initialized",
+              "params": {}
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didOpen",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                  "languageId": "lean",
+                  "version": 1,
+                  "text": "import Base\nnamespace Generated\n"
+                }
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didChange",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                  "version": 2
+                },
+                "contentChanges": [
+                  {
+                    "text": "import Base\nnamespace Generated\ntheorem checked : depValue = 7 := by\r\n  -- λ😀 note\r\n  decide\r\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/didChange",
+              "params": {
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                  "version": 3
+                },
+                "contentChanges": [
+                  {
+                    "text": "import Base\nnamespace Generated\ntheorem checked : depValue = 7 := by\r\n  -- λ😀 note\r\n  decide\r\nend Generated\n#check Generated.checked\n#print axioms Generated.checked\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 2,
+              "method": "textDocument/waitForDiagnostics",
+              "params": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": "register_lean_watcher",
+              "jsonrpc": "2.0",
+              "method": "client/registerCapability",
+              "params": {
+                "registrations": [
+                  {
+                    "id": "lean_watcher",
+                    "method": "workspace/didChangeWatchedFiles",
+                    "registerOptions": {
+                      "watchers": [
+                        {
+                          "globPattern": "**/*.lean"
+                        },
+                        {
+                          "globPattern": "**/*.ilean"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": "register_lean_watcher",
+              "result": null
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [
+                  {
+                    "kind": 1,
+                    "range": {
+                      "end": {
+                        "character": 0,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 0
+                      }
+                    }
+                  }
+                ],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                  "version": 1
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                  "version": 3
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "$/lean/fileProgress",
+              "params": {
+                "processing": [],
+                "textDocument": {
+                  "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                  "version": 3
+                }
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/publishDiagnostics",
+              "params": {
+                "diagnostics": [
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 6
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 6
+                      }
+                    },
+                    "message": "Generated.checked : depValue = 7",
+                    "range": {
+                      "end": {
+                        "character": 6,
+                        "line": 6
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 6
+                      }
+                    },
+                    "severity": 3,
+                    "source": "Lean 4"
+                  },
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 7
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 7
+                      }
+                    },
+                    "message": "'Generated.checked' does not depend on any axioms",
+                    "range": {
+                      "end": {
+                        "character": 6,
+                        "line": 7
+                      },
+                      "start": {
+                        "character": 0,
+                        "line": 7
+                      }
+                    },
+                    "severity": 3,
+                    "source": "Lean 4"
+                  }
+                ],
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 99,
+              "method": "shutdown",
+              "params": null
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "textDocument/publishDiagnostics",
+              "params": {
+                "diagnostics": [],
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i028-work/unicode-crlf/stream/Generated.lean",
+                "version": 3
+              }
+            }
+          },
+          {
+            "direction": "server",
+            "message": {
+              "id": 99,
+              "jsonrpc": "2.0",
+              "result": null
+            }
+          },
+          {
+            "direction": "client",
+            "message": {
+              "jsonrpc": "2.0",
+              "method": "exit"
+            }
+          }
+        ],
+        "process": {
+          "rc": 0,
+          "stderr": ""
+        }
+      }
+    }
+  }
+}

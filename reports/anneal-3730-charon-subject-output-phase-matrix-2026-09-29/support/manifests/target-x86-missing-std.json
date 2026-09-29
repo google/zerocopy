@@ -1,0 +1,55 @@
+{
+  "argv": [
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+    "cargo",
+    "--preset",
+    "aeneas",
+    "--dest-file",
+    "$REPORT/artifacts/target-x86-missing-std.llbc",
+    "--",
+    "--manifest-path",
+    "$WORK/source-target-x86-missing-std/Cargo.toml",
+    "--package",
+    "subject_matrix",
+    "--lib",
+    "--target",
+    "x86_64-apple-darwin",
+    "--offline",
+    "--locked",
+    "-v"
+  ],
+  "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+  "charon_driver_crate_invocations": [
+    "subject_matrix"
+  ],
+  "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+  "cwd": "$WORK/source-target-x86-missing-std",
+  "destination": "$REPORT/artifacts/target-x86-missing-std.llbc",
+  "destination_bytes": null,
+  "destination_exists": false,
+  "destination_sha256": null,
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_TARGET_DIR": "$WORK/target-target-x86-missing-std",
+    "FILE_SIZE_LIMIT": null,
+    "RAYON_NUM_THREADS": "1",
+    "RUSTFLAGS": null
+  },
+  "exit": 101,
+  "label": "target-x86-missing-std",
+  "projection": null,
+  "remaining_process_group_pids": [],
+  "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+  "seconds": 0.1499,
+  "source_tree": {
+    "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+    "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+    "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+    "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+    "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+  },
+  "stderr": "   Compiling subject_matrix v0.1.0 ($WORK/source-target-x86-missing-std)\n     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=d2efcaff6aa1e968 -C extra-filename=-5b789d2870c82f3a --out-dir $WORK/target-target-x86-missing-std/x86_64-apple-darwin/debug/deps --target x86_64-apple-darwin -L dependency=$WORK/target-target-x86-missing-std/x86_64-apple-darwin/debug/deps -L dependency=$WORK/target-target-x86-missing-std/debug/deps --verbose`\nerror[E0463]: can't find crate for `std`\n  |\n  = note: the `x86_64-apple-darwin` target may not be installed\n  = help: consider downloading the target with `rustup target add x86_64-apple-darwin`\n  = help: consider building the standard library from source with `cargo build -Zbuild-std`\n\nFor more information about this error, try `rustc --explain E0463`.\nERROR Code failed to compile\nerror: could not compile `subject_matrix` (lib) due to 1 previous error\n\nCaused by:\n  process didn't exit successfully: `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name subject_matrix --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature=\"default\"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"default\", \"selected\"))' -C metadata=d2efcaff6aa1e968 -C extra-filename=-5b789d2870c82f3a --out-dir $WORK/target-target-x86-missing-std/x86_64-apple-darwin/debug/deps --target x86_64-apple-darwin -L dependency=$WORK/target-target-x86-missing-std/x86_64-apple-darwin/debug/deps -L dependency=$WORK/target-target-x86-missing-std/debug/deps --verbose` (exit status: 2)\n",
+  "stdout": "",
+  "target_dir": "$WORK/target-target-x86-missing-std"
+}

@@ -1,0 +1,756 @@
+{
+  "environment": {
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "toolchain": "leanprover/lean4:v4.30.0-rc2"
+  },
+  "observations": {
+    "cache7_olean": {
+      "artifact": "cache7/artifacts/4ab07c203eb6f06e.olean",
+      "mapping": "cache7/outputs/probe_dep/bc2ee9095550ff31.json",
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    },
+    "cache9_olean": {
+      "artifact": "cache9/artifacts/cb5016b11d418b60.olean",
+      "mapping": "cache9/outputs/probe_dep/9f80558e806f84cd.json",
+      "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+    },
+    "clean-lean-consumer": {
+      ".lake/build/ir/Generated.c": {
+        "bytes": 1265,
+        "mode": "0o644",
+        "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b"
+      },
+      ".lake/build/ir/Generated.c.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0"
+      },
+      ".lake/build/ir/Generated.setup.json": {
+        "bytes": 283,
+        "mode": "0o644",
+        "sha256": "164cffb94b8404598a46be8e27b816c9f248aecf532895742902ff53e5792f63"
+      },
+      ".lake/build/lib/lean/Generated.ilean": {
+        "bytes": 382,
+        "mode": "0o644",
+        "sha256": "5bfd1f73a69acdf977be9700e4cd548a0072796265c8b5252961ae1a144b200d"
+      },
+      ".lake/build/lib/lean/Generated.ilean.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "89c39a32945e5312d15fe9cb4681c333dfc3dec191fea21359dfaeb77d04fb92"
+      },
+      ".lake/build/lib/lean/Generated.olean": {
+        "bytes": 6152,
+        "mode": "0o644",
+        "sha256": "6ec0c3b7d9ecaef15b5e5458b7a0de40f41f252868f4004d2b58d9c6eb3e8302"
+      },
+      ".lake/build/lib/lean/Generated.olean.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "421f1e7cd3ca015a82cc93ee77cd2848bfef53018b328b11f56d9a600ed42376"
+      },
+      ".lake/build/lib/lean/Generated.trace": {
+        "bytes": 2445,
+        "mode": "0o644",
+        "sha256": "7ff1dc86f9186904f55e2595a56a074dc033196e95f1902a19db28af60d66291"
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "bytes": 108432,
+        "mode": "0o644",
+        "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67"
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "bytes": 184,
+        "mode": "0o644",
+        "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de"
+      },
+      "Generated.lean": {
+        "bytes": 108,
+        "mode": "0o644",
+        "sha256": "116dda146d08b6488e9cc052581341901599f65b71c72a7f4b6bbfdb8d7a9a81"
+      },
+      "lake-manifest.json": {
+        "bytes": 372,
+        "mode": "0o644",
+        "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2"
+      },
+      "lakefile.lean": {
+        "bytes": 123,
+        "mode": "0o644",
+        "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+      },
+      "lean-toolchain": {
+        "bytes": 29,
+        "mode": "0o644",
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    },
+    "clean-lean-producer": {
+      ".lake/build/ir/Dep.c": {
+        "bytes": 1366,
+        "mode": "0o644",
+        "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+      },
+      ".lake/build/ir/Dep.c.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274"
+      },
+      ".lake/build/ir/Dep.setup.json": {
+        "bytes": 127,
+        "mode": "0o644",
+        "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+      },
+      ".lake/build/lib/lean/Dep.ilean": {
+        "bytes": 289,
+        "mode": "0o644",
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+      },
+      ".lake/build/lib/lean/Dep.ilean.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42"
+      },
+      ".lake/build/lib/lean/Dep.olean": {
+        "bytes": 4616,
+        "mode": "0o644",
+        "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      ".lake/build/lib/lean/Dep.olean.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479"
+      },
+      ".lake/build/lib/lean/Dep.trace": {
+        "bytes": 2113,
+        "mode": "0o644",
+        "sha256": "23472463f97c6fb9b200c7b85e85a0908e539c618071a1a01c0e191321a94e67"
+      },
+      ".lake/config/probe_dep/lakefile.olean": {
+        "bytes": 96288,
+        "mode": "0o644",
+        "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+      },
+      ".lake/config/probe_dep/lakefile.olean.trace": {
+        "bytes": 182,
+        "mode": "0o644",
+        "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+      },
+      "Dep.lean": {
+        "bytes": 24,
+        "mode": "0o644",
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+      },
+      "lakefile.lean": {
+        "bytes": 75,
+        "mode": "0o644",
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+      },
+      "lean-toolchain": {
+        "bytes": 29,
+        "mode": "0o644",
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    },
+    "clean-toml-consumer": {
+      ".lake/build/ir/Generated.c": {
+        "bytes": 1265,
+        "mode": "0o644",
+        "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b"
+      },
+      ".lake/build/ir/Generated.c.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0"
+      },
+      ".lake/build/ir/Generated.setup.json": {
+        "bytes": 283,
+        "mode": "0o644",
+        "sha256": "e7a23091a5e0366309ddf9f4500b0d4114e533c6257020b48d729d50cea59d0b"
+      },
+      ".lake/build/lib/lean/Generated.ilean": {
+        "bytes": 382,
+        "mode": "0o644",
+        "sha256": "5bfd1f73a69acdf977be9700e4cd548a0072796265c8b5252961ae1a144b200d"
+      },
+      ".lake/build/lib/lean/Generated.ilean.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "89c39a32945e5312d15fe9cb4681c333dfc3dec191fea21359dfaeb77d04fb92"
+      },
+      ".lake/build/lib/lean/Generated.olean": {
+        "bytes": 6152,
+        "mode": "0o644",
+        "sha256": "6ec0c3b7d9ecaef15b5e5458b7a0de40f41f252868f4004d2b58d9c6eb3e8302"
+      },
+      ".lake/build/lib/lean/Generated.olean.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "421f1e7cd3ca015a82cc93ee77cd2848bfef53018b328b11f56d9a600ed42376"
+      },
+      ".lake/build/lib/lean/Generated.trace": {
+        "bytes": 2445,
+        "mode": "0o644",
+        "sha256": "d749c5278227b5e8dbac5cb4374b7adebc0c1164a46b7798efaaac7c55b3ece9"
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "bytes": 108432,
+        "mode": "0o644",
+        "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67"
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "bytes": 184,
+        "mode": "0o644",
+        "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de"
+      },
+      "Generated.lean": {
+        "bytes": 108,
+        "mode": "0o644",
+        "sha256": "116dda146d08b6488e9cc052581341901599f65b71c72a7f4b6bbfdb8d7a9a81"
+      },
+      "lake-manifest.json": {
+        "bytes": 372,
+        "mode": "0o644",
+        "sha256": "e784f476a45fb8ea0cbd1f303e904e6e44fa61ed2bfe9a8ac4a38e9b0544ba23"
+      },
+      "lakefile.lean": {
+        "bytes": 123,
+        "mode": "0o644",
+        "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1"
+      },
+      "lean-toolchain": {
+        "bytes": 29,
+        "mode": "0o644",
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    },
+    "clean-toml-producer": {
+      ".lake/build/ir/Dep.c": {
+        "bytes": 1366,
+        "mode": "0o644",
+        "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+      },
+      ".lake/build/ir/Dep.c.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274"
+      },
+      ".lake/build/ir/Dep.setup.json": {
+        "bytes": 127,
+        "mode": "0o644",
+        "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+      },
+      ".lake/build/lib/lean/Dep.ilean": {
+        "bytes": 289,
+        "mode": "0o644",
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+      },
+      ".lake/build/lib/lean/Dep.ilean.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42"
+      },
+      ".lake/build/lib/lean/Dep.olean": {
+        "bytes": 4616,
+        "mode": "0o644",
+        "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      ".lake/build/lib/lean/Dep.olean.hash": {
+        "bytes": 16,
+        "mode": "0o644",
+        "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479"
+      },
+      ".lake/build/lib/lean/Dep.trace": {
+        "bytes": 2113,
+        "mode": "0o644",
+        "sha256": "1e14eb1ca45cb89013bfcb1704280638ebd9b70c3fd9d5d95ca4bcfca8a36f18"
+      },
+      "Dep.lean": {
+        "bytes": 24,
+        "mode": "0o644",
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+      },
+      "lakefile.toml": {
+        "bytes": 70,
+        "mode": "0o644",
+        "sha256": "7467cb062c409bbf46b66d418e823f77b428b7b4641b78378c43c4a65ad43bbb"
+      },
+      "lean-toolchain": {
+        "bytes": 29,
+        "mode": "0o644",
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    },
+    "dynlibs": {
+      ".lake/build/lib/lean/probe__dep_Dep.dylib": {
+        "bytes": 50464,
+        "sha256": "f33e23d9227a6fc0205ca052a6a35e038d6596b79aa609d14b87b2b703b259b4"
+      }
+    },
+    "preserved_artifacts": {
+      "Dep.dylib": {
+        "bytes": 50464,
+        "sha256": "f33e23d9227a6fc0205ca052a6a35e038d6596b79aa609d14b87b2b703b259b4"
+      },
+      "cache7-Dep.olean": {
+        "bytes": 4616,
+        "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "cache7-output.json": {
+        "bytes": 170,
+        "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9"
+      },
+      "cache9-Dep.olean": {
+        "bytes": 4520,
+        "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+      },
+      "cache9-output.json": {
+        "bytes": 170,
+        "sha256": "aa2539bb2b663b16a7e2fe0dc5f613c37e1818d203a73911803346149b1300b1"
+      },
+      "lean-config.olean": {
+        "bytes": 96288,
+        "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+      },
+      "toml-Dep.c": {
+        "bytes": 1366,
+        "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+      },
+      "toml-Dep.ilean": {
+        "bytes": 289,
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+      },
+      "toml-Dep.olean": {
+        "bytes": 4616,
+        "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+      },
+      "toml-Dep.trace": {
+        "bytes": 2113,
+        "sha256": "1e14eb1ca45cb89013bfcb1704280638ebd9b70c3fd9d5d95ca4bcfca8a36f18"
+      }
+    },
+    "relocated_consumer_changed_paths": [],
+    "relocated_producer_unchanged": true,
+    "wrong_valid_object": {
+      "artifact": "cache-wrong-valid/artifacts/4ab07c203eb6f06e.olean",
+      "mapping": "cache-wrong-valid/outputs/probe_dep/bc2ee9095550ff31.json",
+      "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745"
+    }
+  },
+  "runs": [
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cwd": "$WORK/clean-lean/consumer",
+      "exit": 0,
+      "label": "clean-lean-build",
+      "seconds": 1.0017,
+      "stderr": "",
+      "stdout": "\u2714 [3/5] Built Dep (169ms)\n\u2139 [4/5] Built Generated (178ms)\ninfo: Generated.lean:3:0: 'generatedEq' does not depend on any axioms\ninfo: Generated.lean:4:0: 8\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/clean-lean/consumer",
+      "exit": 0,
+      "label": "clean-lean-setup",
+      "seconds": 0.4216,
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/clean-lean/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/clean-lean/consumer",
+      "exit": 0,
+      "label": "clean-lean-batch",
+      "seconds": 0.4841,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"'generatedEq' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cwd": "$WORK/clean-toml/consumer",
+      "exit": 0,
+      "label": "clean-toml-build",
+      "seconds": 0.7735,
+      "stderr": "",
+      "stdout": "\u2714 [3/5] Built Dep (170ms)\n\u2139 [4/5] Built Generated (175ms)\ninfo: Generated.lean:3:0: 'generatedEq' does not depend on any axioms\ninfo: Generated.lean:4:0: 8\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/clean-toml/consumer",
+      "exit": 0,
+      "label": "clean-toml-setup",
+      "seconds": 0.4208,
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/clean-toml/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/clean-toml/consumer",
+      "exit": 0,
+      "label": "clean-toml-batch",
+      "seconds": 0.4824,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"'generatedEq' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "+Dep:dynlib"
+      ],
+      "cwd": "$WORK/clean-toml/producer",
+      "exit": 0,
+      "label": "dynlib-build",
+      "seconds": 0.3611,
+      "stderr": "info: probe_dep: no previous manifest, creating one from scratch\n",
+      "stdout": "\u2714 [3/4] Built Dep:c.o (207ms)\n\u2714 [4/4] Built Dep:dynlib (53ms)\nBuild completed successfully (4 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--load-dynlib",
+        "$WORK/clean-toml/producer/.lake/build/lib/lean/probe__dep_Dep.dylib",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/clean-toml/consumer",
+      "exit": 0,
+      "label": "batch-with-dynlib",
+      "seconds": 0.7614,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"'generatedEq' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--load-dynlib",
+        "$WORK/bad-native.dylib",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/clean-toml/consumer",
+      "exit": 1,
+      "label": "batch-with-bad-dynlib",
+      "seconds": 0.3294,
+      "stderr": "error: error loading library, dlopen($WORK/bad-native.dylib, 0x0009): tried: '$TOOLCHAIN/lib/lean/bad-native.dylib' (no such file), '$TOOLCHAIN/lib/bad-native.dylib' (no such file), '$WORK/clean-toml/consumer/.lake/build/lib/bad-native.dylib' (no such file), '$WORK/clean-toml/producer/.lake/build/lib/bad-native.dylib' (no such file), '$WORK/bad-native.dylib' (slice is not valid mach-o file), '/System/Volumes/Preboot/Cryptexes/OS$WORK/bad-native.dylib' (no such file), '$WORK/bad-native.dylib' (slice is not valid mach-o file)\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "+Dep:dynlib"
+      ],
+      "cwd": "$WORK/native-removed/producer",
+      "exit": 3,
+      "label": "native-missing-no-build",
+      "seconds": 0.1402,
+      "stderr": "",
+      "stdout": "\u2716 [4/4] Building Dep:dynlib\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep:dynlib\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/native-removed/consumer",
+      "exit": 0,
+      "label": "native-missing-batch-ordinary",
+      "seconds": 0.4934,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"'generatedEq' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (allow default) (deny network*)",
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/different/depth/prepared/consumer",
+      "exit": 0,
+      "label": "relocated-offline-no-build",
+      "seconds": 0.4465,
+      "stderr": "",
+      "stdout": "All targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (allow default) (deny network*)",
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/different/depth/prepared/consumer",
+      "exit": 0,
+      "label": "relocated-offline-setup",
+      "seconds": 0.4306,
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/different/depth/prepared/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (allow default) (deny network*)",
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/different/depth/prepared/consumer",
+      "exit": 0,
+      "label": "relocated-offline-batch",
+      "seconds": 0.4911,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"'generatedEq' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (allow default) (deny network*)",
+        "/usr/bin/python3",
+        "-c",
+        "import socket; socket.socket().connect((\"127.0.0.1\", 1))"
+      ],
+      "cwd": "$WORK/different/depth/prepared/consumer",
+      "exit": 1,
+      "label": "network-denial-control",
+      "seconds": 0.0802,
+      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nPermissionError: [Errno 1] Operation not permitted\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Generated"
+      ],
+      "cwd": "$WORK/readonly-consumer/consumer",
+      "exit": 1,
+      "label": "readonly-consumer-build",
+      "seconds": 0.029,
+      "stderr": "error: permission denied (error code: 13)\n  file: $WORK/readonly-consumer/consumer/.lake\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cwd": "$WORK/cache-seed7/consumer",
+      "exit": 0,
+      "label": "cache7-build",
+      "seconds": 0.8331,
+      "stderr": "",
+      "stdout": "\u2714 [3/5] Built Dep (173ms)\n\u2139 [4/5] Built Generated (177ms)\ninfo: Generated.lean:3:0: 'generatedEq' does not depend on any axioms\ninfo: Generated.lean:4:0: 8\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cwd": "$WORK/cache-seed9/consumer",
+      "exit": 0,
+      "label": "cache9-build",
+      "seconds": 0.813,
+      "stderr": "",
+      "stdout": "\u2714 [3/5] Built Dep (170ms)\n\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:3:0: 'generatedEq' does not depend on any axioms\ninfo: Generated.lean:4:0: 10\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/Loader.lean"
+      ],
+      "cwd": "$WORK/loader7",
+      "exit": 0,
+      "label": "cache7-direct-loader",
+      "seconds": 0.1721,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"$WORK/Loader.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/Loader.lean"
+      ],
+      "cwd": "$WORK/loader9",
+      "exit": 0,
+      "label": "cache9-direct-loader",
+      "seconds": 0.1707,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"$WORK/Loader.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/wrong-reconstruct/consumer",
+      "exit": 0,
+      "label": "wrong-valid-cache-no-build",
+      "seconds": 0.4752,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nAll targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/wrong-reconstruct/consumer",
+      "exit": 0,
+      "label": "wrong-valid-cache-setup",
+      "seconds": 0.4212,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-wrong-valid/artifacts/4ab07c203eb6f06e.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/Loader.lean"
+      ],
+      "cwd": "$WORK/loader-wrong",
+      "exit": 0,
+      "label": "wrong-valid-direct-loader",
+      "seconds": 0.1778,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"$WORK/Loader.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/wrong-reconstruct/consumer/Generated.lean"
+      ],
+      "cwd": "$WORK/wrong-reconstruct/consumer",
+      "exit": 1,
+      "label": "wrong-valid-proof-against-7",
+      "seconds": 0.1679,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  depValue + 1 = 8\\nis false\",\"endPos\":{\"column\":51,\"line\":2},\"fileName\":\"$WORK/wrong-reconstruct/consumer/Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":45,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'generatedEq' depends on axioms: [sorryAx]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$WORK/wrong-reconstruct/consumer/Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"10\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"$WORK/wrong-reconstruct/consumer/Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/truncated-reconstruct/consumer",
+      "exit": 3,
+      "label": "truncated-map-no-build",
+      "seconds": 0.4691,
+      "stderr": "",
+      "stdout": "\u2716 [2/3] Building Dep\nwarning: $WORK/cache-truncated-map/outputs/probe_dep/bc2ee9095550ff31.json: invalid JSON: offset 8: unexpected end of input\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/truncated-reconstruct/consumer",
+      "exit": 3,
+      "label": "truncated-map-setup",
+      "seconds": 0.4217,
+      "stderr": "\u2716 [3/4] Building Dep\nwarning: $WORK/cache-truncated-map/outputs/probe_dep/bc2ee9095550ff31.json: invalid JSON: offset 8: unexpected end of input\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stdout": ""
+    }
+  ]
+}

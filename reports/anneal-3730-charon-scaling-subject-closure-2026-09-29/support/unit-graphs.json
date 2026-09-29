@@ -1,0 +1,619 @@
+{
+  "app-default": {
+    "roots": [
+      0
+    ],
+    "units": [
+      {
+        "dependencies": [
+          {
+            "extern_crate_name": "build_script_build",
+            "index": 2,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          },
+          {
+            "extern_crate_name": "shared_closure",
+            "index": 3,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          }
+        ],
+        "features": [
+          "default"
+        ],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "lib"
+          ],
+          "doc": true,
+          "doctest": true,
+          "edition": "2021",
+          "kind": [
+            "lib"
+          ],
+          "name": "app_closure",
+          "src_path": "$FIX/app/src/lib.rs",
+          "test": true
+        }
+      },
+      {
+        "dependencies": [],
+        "features": [
+          "default"
+        ],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 0,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "bin"
+          ],
+          "doc": false,
+          "doctest": false,
+          "edition": "2021",
+          "kind": [
+            "custom-build"
+          ],
+          "name": "build-script-build",
+          "src_path": "$FIX/app/build.rs",
+          "test": false
+        }
+      },
+      {
+        "dependencies": [
+          {
+            "extern_crate_name": "build_script_build",
+            "index": 1,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          }
+        ],
+        "features": [
+          "default"
+        ],
+        "mode": "run-custom-build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": false,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": null,
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "bin"
+          ],
+          "doc": false,
+          "doctest": false,
+          "edition": "2021",
+          "kind": [
+            "custom-build"
+          ],
+          "name": "build-script-build",
+          "src_path": "$FIX/app/build.rs",
+          "test": false
+        }
+      },
+      {
+        "dependencies": [],
+        "features": [],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/shared#shared_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "lib"
+          ],
+          "doc": true,
+          "doctest": true,
+          "edition": "2021",
+          "kind": [
+            "lib"
+          ],
+          "name": "shared_closure",
+          "src_path": "$FIX/shared/src/lib.rs",
+          "test": true
+        }
+      }
+    ],
+    "version": 1
+  },
+  "app-selected": {
+    "roots": [
+      0
+    ],
+    "units": [
+      {
+        "dependencies": [
+          {
+            "extern_crate_name": "build_script_build",
+            "index": 2,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          },
+          {
+            "extern_crate_name": "shared_closure",
+            "index": 3,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          }
+        ],
+        "features": [
+          "default",
+          "selected"
+        ],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "lib"
+          ],
+          "doc": true,
+          "doctest": true,
+          "edition": "2021",
+          "kind": [
+            "lib"
+          ],
+          "name": "app_closure",
+          "src_path": "$FIX/app/src/lib.rs",
+          "test": true
+        }
+      },
+      {
+        "dependencies": [],
+        "features": [
+          "default",
+          "selected"
+        ],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 0,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "bin"
+          ],
+          "doc": false,
+          "doctest": false,
+          "edition": "2021",
+          "kind": [
+            "custom-build"
+          ],
+          "name": "build-script-build",
+          "src_path": "$FIX/app/build.rs",
+          "test": false
+        }
+      },
+      {
+        "dependencies": [
+          {
+            "extern_crate_name": "build_script_build",
+            "index": 1,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          }
+        ],
+        "features": [
+          "default",
+          "selected"
+        ],
+        "mode": "run-custom-build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": false,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": null,
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "bin"
+          ],
+          "doc": false,
+          "doctest": false,
+          "edition": "2021",
+          "kind": [
+            "custom-build"
+          ],
+          "name": "build-script-build",
+          "src_path": "$FIX/app/build.rs",
+          "test": false
+        }
+      },
+      {
+        "dependencies": [],
+        "features": [],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/shared#shared_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "lib"
+          ],
+          "doc": true,
+          "doctest": true,
+          "edition": "2021",
+          "kind": [
+            "lib"
+          ],
+          "name": "shared_closure",
+          "src_path": "$FIX/shared/src/lib.rs",
+          "test": true
+        }
+      }
+    ],
+    "version": 1
+  },
+  "shared-lib": {
+    "roots": [
+      0
+    ],
+    "units": [
+      {
+        "dependencies": [],
+        "features": [],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/shared#shared_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "lib"
+          ],
+          "doc": true,
+          "doctest": true,
+          "edition": "2021",
+          "kind": [
+            "lib"
+          ],
+          "name": "shared_closure",
+          "src_path": "$FIX/shared/src/lib.rs",
+          "test": true
+        }
+      }
+    ],
+    "version": 1
+  },
+  "workspace-libs": {
+    "roots": [
+      0,
+      3
+    ],
+    "units": [
+      {
+        "dependencies": [
+          {
+            "extern_crate_name": "build_script_build",
+            "index": 2,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          },
+          {
+            "extern_crate_name": "shared_closure",
+            "index": 3,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          }
+        ],
+        "features": [
+          "default"
+        ],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "lib"
+          ],
+          "doc": true,
+          "doctest": true,
+          "edition": "2021",
+          "kind": [
+            "lib"
+          ],
+          "name": "app_closure",
+          "src_path": "$FIX/app/src/lib.rs",
+          "test": true
+        }
+      },
+      {
+        "dependencies": [],
+        "features": [
+          "default"
+        ],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 0,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "bin"
+          ],
+          "doc": false,
+          "doctest": false,
+          "edition": "2021",
+          "kind": [
+            "custom-build"
+          ],
+          "name": "build-script-build",
+          "src_path": "$FIX/app/build.rs",
+          "test": false
+        }
+      },
+      {
+        "dependencies": [
+          {
+            "extern_crate_name": "build_script_build",
+            "index": 1,
+            "noprelude": false,
+            "nounused": false,
+            "public": false
+          }
+        ],
+        "features": [
+          "default"
+        ],
+        "mode": "run-custom-build",
+        "pkg_id": "path+file://$FIX/app#app_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": false,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": null,
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "bin"
+          ],
+          "doc": false,
+          "doctest": false,
+          "edition": "2021",
+          "kind": [
+            "custom-build"
+          ],
+          "name": "build-script-build",
+          "src_path": "$FIX/app/build.rs",
+          "test": false
+        }
+      },
+      {
+        "dependencies": [],
+        "features": [],
+        "mode": "build",
+        "pkg_id": "path+file://$FIX/shared#shared_closure@0.1.0",
+        "platform": null,
+        "profile": {
+          "codegen_backend": null,
+          "codegen_units": null,
+          "debug_assertions": true,
+          "debuginfo": 2,
+          "incremental": false,
+          "lto": "false",
+          "name": "dev",
+          "opt_level": "0",
+          "overflow_checks": true,
+          "panic": "unwind",
+          "rpath": false,
+          "split_debuginfo": "unpacked",
+          "strip": {
+            "deferred": "None"
+          }
+        },
+        "target": {
+          "crate_types": [
+            "lib"
+          ],
+          "doc": true,
+          "doctest": true,
+          "edition": "2021",
+          "kind": [
+            "lib"
+          ],
+          "name": "shared_closure",
+          "src_path": "$FIX/shared/src/lib.rs",
+          "test": true
+        }
+      }
+    ],
+    "version": 1
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "anneal/annotation-attachment",
+    "anneal/compilation-subjects",
+    "charon/llbc",
+    "rust/conditional-compilation",
+    "rust/macro-expansion"
+  ],
+  "subjects": [
+    {
+      "name": "Rust nightly-2026-05-31 rustc executable",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Cargo nightly-2026-05-31 executable",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+      }
+    },
+    {
+      "name": "Local Charon executable",
+      "identity": {
+        "artifact": "local macOS arm64 charon executable",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "Compiler subject identity probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "4561c1da3a588c91d35c1c534a101170e43a9a5a3c9a4bab78c456e5f7f16814"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

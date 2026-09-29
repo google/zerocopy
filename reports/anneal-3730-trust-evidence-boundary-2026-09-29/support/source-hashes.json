@@ -1,0 +1,30 @@
+{
+  "Cargo.toml": {
+    "sha256": "23ff1a4a57cdaa01e53cb8a3c535937312770928ec4dfd08ec5d78cbeee40dcd",
+    "bytes": 70
+  },
+  "Fixture.lean": {
+    "sha256": "1ef42dc74752cbd9cdad68d9a28392c24b38f3bbfbb833478c5ccfff785e7636",
+    "bytes": 796
+  },
+  "fixture-app/Cargo.toml": {
+    "sha256": "b79d5d74011a30f71c5aaa0ad9caa34cd47f7856ab9a50fa61d6e6694bdf2ad0",
+    "bytes": 127
+  },
+  "fixture-app/build.rs": {
+    "sha256": "c6640d8805d78785a1da559128f9d37802b0052231dc362bf6466385fc06d3d2",
+    "bytes": 868
+  },
+  "fixture-app/src/lib.rs": {
+    "sha256": "61e2f35ce67b4d91ee0e31d5decb32efae26108085ef5f063582e028ba32efe2",
+    "bytes": 212
+  },
+  "fixture-macro/Cargo.toml": {
+    "sha256": "293b3084f03a4fd292172c438ca74931643bbf4762ea0bd956523e10a87b94bd",
+    "bytes": 92
+  },
+  "fixture-macro/src/lib.rs": {
+    "sha256": "260d0030070a40d0dd6b22aa066910857173959ac2a196fba838778e7d14aa88",
+    "bytes": 990
+  }
+}

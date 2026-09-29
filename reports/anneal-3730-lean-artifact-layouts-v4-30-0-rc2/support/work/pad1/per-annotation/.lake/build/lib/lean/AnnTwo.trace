@@ -1,0 +1,33 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["1ccc2f6b891341d0.olean"],
+  "m": false,
+  "i": "457c2a46799ffea4.ilean",
+  "c": "948caa518658a68d.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/AnnTwo.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/.lake/build/lib/lean/AnnTwo.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/.lake/build/lib/lean/AnnTwo.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/.lake/build/ir/AnnTwo.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/.lake/build/ir/AnnTwo.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["AnnTwo:deps",
+   [["deps",
+     [["layout/AnnTwo:extraDep", [["@layout:extraDep", "00000000000006bb"]]],
+      ["imports",
+       [["Shared transitive imports (legacy)", "43bf00fe34a98f76"],
+        ["Shared:importAllArts", "0d975000521f5102"]]]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/AnnTwo.lean",
+   "59ba2a90a4939d71"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: AnnTwo", "456878d196dd3c10"],
+  ["Package.id?: (some layout)", "8d4a936f4c2ee8f5"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "4f300c291898f4d7"}

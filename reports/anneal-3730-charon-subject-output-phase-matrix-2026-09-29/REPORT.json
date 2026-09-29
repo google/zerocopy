@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "anneal/rust-subject-identity",
+    "charon/cargo-extraction",
+    "charon/output-publication",
+    "charon/concurrency",
+    "anneal/generation-publication"
+  ],
+  "subjects": [
+    {
+      "name": "Pinned Charon/Cargo nightly macOS arm64",
+      "identity": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Private-subject and regular-file output probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "71f10e3745448d1da23af25c985688bdff7c7aff71f325b87e127b5ecda1e8fa"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,36 @@
+{
+  "anneal-3730-last-good-model-after-rust-failure-2026-09-29": {
+    "suite": "R23",
+    "ids": [
+      23
+    ],
+    "method": "Pinned Charon\u2192one-shot Aeneas\u2192Lean established model A and a passing proof, then changed Rust toward x+2 with malformed syntax B and unsupported raw-pointer extraction C while proof text advanced. Charon B failed with unchanged old LLBC path; Aeneas C failed after partial Lean with sorry. Experiment policy suppressed current queries or batch-checked v2/v3 against explicitly labeled last-good model A, recording old/current hashes and current_verified=false.",
+    "boundary": "One saved tiny crate and batch Lean as interaction surrogate; provisional labels are experiment-side policy, no Anneal UI/live RPC, signature-change/recovery case or comprehension participants.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/work/snapshots/A-good.rs",
+      "support/work/snapshots/B-syntax.rs",
+      "support/work/snapshots/C-unsupported.rs",
+      "support/work/generated-C-partial/Funs.lean",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-scratch-tactic-cas-experiment-2026-09-29": {
+    "suite": "R24",
+    "ids": [
+      70
+    ],
+    "method": "Pinned Lean batch-check contract prototype ran eleven private tactic-candidate decisions: valid accept, duplicate retry, stale proof/import, partial/failing/admission/weakened-target, post-check mutation, cancellation and scratch reuse. Exact source/environment/binary preimage under file lock guarded immutable-generation pointer publication; final fresh batch matched accepted candidate.",
+    "boundary": "One theorem/direct import and fixture-specific statement/admission guards; no Anneal subject identities, Rust source map, long-lived server, concurrent writer/crash injection or general proposition/axiom oracle.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/artifacts/accepted-Proof.lean",
+      "support/artifacts/final-Proof.lean",
+      "support/probe.py",
+      "support/verify.py"
+    ]
+  }
+}

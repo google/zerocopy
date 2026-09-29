@@ -1,0 +1,3 @@
+gap,investigation_ids,bounded_next_experiment,resource_and_evidence_limit
+R25,I023,"Last-good model after a changed function signature and after Rust/Aeneas recovery, with old/new proof queries and explicit provisional/current status.","In progress outside snapshot; pinned tiny local fixture, real Anneal UI/live RPC and comprehension remain gated."
+R26,I070,"Two competing scratch publishers plus crash injection around candidate verification, journal, immutable-generation creation and CURRENT-pointer switch.","In progress outside snapshot; fixture-specific guard, no Anneal subject mapping or durable transaction claim."

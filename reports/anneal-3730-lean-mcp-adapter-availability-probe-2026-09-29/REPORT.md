@@ -1,0 +1,25 @@
+# I072: scoped Lean MCP adapter availability and toy two-client contract
+
+## Availability result
+
+An availability-first inventory found **no Lean MCP adapter executable in the current PATH** under six likely names or executable names containing an MCP/Lean token, and **no vendored existing adapter source in this `reference-publish` checkout**. The checkout's 16 matching paths were report/documentation files, earlier contract probes, and this report's own toy files. The pre-existing [`lean-mcp-implementations-2026-09-27`](../lean-mcp-implementations-2026-09-27/REPORT.md) report surveyed public adapter sources but explicitly did not install or run them. `support/results.json` retains every PATH directory scanned, named resolution, and matching checkout path. This is a scoped availability statement; it does not search the rest of the machine or prove that no adapter exists elsewhere.
+
+Because no installed adapter was available in that scope, the executed experiment used **`support/bridge.py`, a synthetic MCP-shaped JSON-RPC stdio bridge over a real pinned Lean 4.30.0-rc2 language server**. It is not an existing Lean MCP adapter, not a conformance-tested MCP implementation, and not Anneal. Each of two stdio clients launched its own bridge and Lean LSP process against one private shared `Proof.lean` workspace. The bridge made the current file hash an explicit precondition for goal queries and edits; that hash guard is toy policy, not a property supplied by MCP or Lean.
+
+## Executed two-client sequence
+
+Both clients completed toy `initialize` and `tools/list` handshakes. They then used JSON-RPC request ID **42 simultaneously in separate stdio sessions** for a delayed goal query. Client A sent `notifications/cancelled` for its 42 and received protocol error `-32800`; client B's 42 completed against the old proof, with the same goal and unsolved-goal diagnostic returned to A's independent request 43. The two Lean LSP PIDs were distinct, so A's cancellation did not propagate to B through the toy bridge.
+
+Client A then atomically replaced the shared proof from a `skip` tactic to `exact Nat.add_zero n` under a source-hash compare-and-swap. Client B queried with the old hash and received a tool-level stale result naming both old and current hashes. When A and B next queried with the current hash, each bridge refreshed its own Lean document to version 2. Both reported no diagnostics and `no goals`; both Lean processes stayed alive and exited 0 after orderly bridge shutdown. The source hash changed from `7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3` to `b40ac46bc6ade3aca44b3d9d863269d1530ef9079623379c1776fef0d38bacee`.
+
+`support/results.json` retains eleven labeled event replies, complete client and bridge JSON-RPC messages, PIDs, Lean goal/diagnostic replies, source hashes, scoped availability inventory and process exits. `support/artifacts/Proof-v1.lean` and `Proof-v2.lean` retain the exact shared source bytes. `support/check.py` validates the availability result, independent request IDs and cancellation, old/new goal and diagnostic observations, stale rejection, source bytes, distinct Lean workers, and orderly exits. `support/probe.py` regenerates the experiment under one private Meta scratch root with no installation or download.
+
+## I072 coverage and residual
+
+The toy shows a feasible **contract shape** for two stdio clients: per-session request IDs, a cancellable outstanding request, a source-hash freshness guard, and two Lean workers observing one shared proof after explicit refresh. It does not measure an existing Lean MCP adapter. It also lacks actual Anneal workspace/model identity, generated Rust-to-Lean projection, MCP protocol conformance/SDK validation, adapter permission and tool taxonomy, realistic editor changes, multiple projects, restart recovery, and production concurrent request or cancellation behavior. The test did not force two simultaneous mutating calls; the only shared edit was serialized by its experiment-side file lock.
+
+Therefore the requested **existing-adapter under Anneal conditions** experiment in I072 remains **not run**. To execute it, select and make a specific Lean MCP adapter available in an approved local scope, then run two independent clients against an Anneal workspace with concurrent calls, cancellation, and coherent shared generation observations. The present report contributes a bounded toy fixture and an exact availability record; it is not evidence that an adapter or Anneal already satisfies that contract.
+
+## Reproduce
+
+From this package run `python3 support/check.py` for offline retained-evidence validation. On the pinned host, run `python3 support/probe.py` to repeat the scoped inventory and toy experiment, then rerun the checker. The probe replaces only this package's `support/results.json`/`support/artifacts/` and its owned scratch directory `/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/i072-work`; copy the package first to preserve the original observation. This local replay may legitimately see a different availability result if the user's PATH or checkout changes.

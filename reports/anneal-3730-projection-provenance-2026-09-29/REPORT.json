@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal/source-mapping",
+    "anneal/projection",
+    "charon/source-spans",
+    "aeneas/generated-provenance",
+    "lsp/coordinates",
+    "lsp/workspace-edits"
+  ],
+  "subjects": [
+    {
+      "name": "Charon 0.1.210 executable and frozen LLBC specimens",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "frozen_macro_llbc_sha256": "aacad16387a02f5589d2f0006eaaf41ff91fa419854b773870e470dd04ecf0d6",
+        "frozen_snapshot_llbc_sha256": "c0f36fd68ad9c6fa2796e1633089d8cef57db9214898bec28f3ddff765bfad00"
+      }
+    },
+    {
+      "name": "Aeneas generated Lean specimen",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+        "artifact": "support/frozen/Funs.lean",
+        "sha256": "807263e41d4e0f0b32e6daf74d6ba02985048d3088043b407c1674a7ef8d4447"
+      }
+    },
+    {
+      "name": "Controlled exact-origin and edit-authority harness",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "15aff27d8721aa746401dee31740ac3f048c1a23b985221fc9d30b470e608026"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

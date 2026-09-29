@@ -1,0 +1,31 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["cb5016b11d418b60.olean"],
+  "m": false,
+  "i": "d2264521cb1531dd.ilean",
+  "c": "adb99f314e5eb438.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/toml-nine/producer/.lake/build/lib/lean:/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/toml-nine/consumer/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/toml-nine/producer/Dep.lean -o /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/toml-nine/producer/.lake/build/lib/lean/Dep.olean -i /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/toml-nine/producer/.lake/build/lib/lean/Dep.ilean -c /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/toml-nine/producer/.lake/build/ir/Dep.c --setup /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/toml-nine/producer/.lake/build/ir/Dep.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Dep:deps",
+   [["deps",
+     [["probe_dep/Dep:extraDep", [["@probe_dep:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731/r19-lake-dynamic-config/toml-nine/producer/Dep.lean",
+   "0a28a8140dffe654"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Dep", "b5a238a443dfa755"],
+  ["Package.id?: (some probe_dep)", "1ac435369954dbd4"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "9f80558e806f84cd"}

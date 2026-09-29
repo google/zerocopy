@@ -1,0 +1,319 @@
+{
+  "original_path": "reports/anneal-3730-vertical-acceptance-v4-30-0-rc2/support/transcript-run3.json",
+  "new_path": "reports/anneal-3730-independent-vertical-reproduction-2026-09-29/support/reproduction-run2.json",
+  "causal_order": {
+    "original": [
+      53,
+      58,
+      68,
+      69,
+      74
+    ],
+    "original_B_publication": 67,
+    "reproduced": [
+      50,
+      54,
+      99,
+      101
+    ],
+    "reproduced_B_publication": 97,
+    "both_gate_before_failure_before_B_before_old_completion": true
+  },
+  "exact_matches": 33,
+  "expected_exact": 33,
+  "intentional_differences": [
+    {
+      "comparison": "weak-on-B proof source",
+      "original": "e9de96e077d0e19fb730d77d79c8a5cecc1b0a747601a95dbfd424d5c0c506e9",
+      "reproduced": "f72a7e7c102904fda398218c3e95bbe0adb5568c673197091ad7fb3a76fbfd8d",
+      "equal": false,
+      "expected_exact": false
+    },
+    {
+      "comparison": "admitted-on-B proof source",
+      "original": "96b39d632f43a2957b5d80d3a9966050b88bee90d2c381f4d13b5fcc6b84b98f",
+      "reproduced": "56678542278ad8277544ba5669bcbb6c1c4e7b5ea78cbd7bcbd7a9fee19878b1",
+      "equal": false,
+      "expected_exact": false
+    },
+    {
+      "comparison": "late A model source",
+      "original": "fc40104c44c8eb94a8a5c78e2358d6566e8f9cc15544792d750ed23aba22c485",
+      "reproduced": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "equal": false,
+      "expected_exact": false
+    },
+    {
+      "comparison": "late A proof source",
+      "original": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956",
+      "reproduced": "aaa2040bf670ff621f43cadc12ac767f3315c607997578dd861091925e3e7966",
+      "equal": false,
+      "expected_exact": false
+    }
+  ],
+  "rows": [
+    {
+      "comparison": "A-initial rust_sha256",
+      "original": "d9b137904b6696c08920488741159f05f2d99cf945757a768ced8346cc063633",
+      "reproduced": "d9b137904b6696c08920488741159f05f2d99cf945757a768ced8346cc063633",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A-initial generated_sha256",
+      "original": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "reproduced": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A-initial proof_sha256",
+      "original": "4790d798541cccebfd0acb6bb27e0c22a5ff5c52b1c57e579d0ab7608cee7b8d",
+      "reproduced": "4790d798541cccebfd0acb6bb27e0c22a5ff5c52b1c57e579d0ab7608cee7b8d",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A rust_sha256",
+      "original": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "reproduced": "437b282d5496f378f0f145edb0a7ac95dd13af985a32aef59d493f7bb874e222",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A generated_sha256",
+      "original": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "reproduced": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A proof_sha256",
+      "original": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956",
+      "reproduced": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B rust_sha256",
+      "original": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+      "reproduced": "6a56f637a66ff7b13426b360df832a4c446a6d7a74a6f2a8c009844d22d1a9b8",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B generated_sha256",
+      "original": "a9f118f7fb3e6919b955576af7ca556c6b653ae2ed16711b46cfca3160674e43",
+      "reproduced": "a9f118f7fb3e6919b955576af7ca556c6b653ae2ed16711b46cfca3160674e43",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B proof_sha256",
+      "original": "e02c9eb7095d499ccc5211fbfe6a9196bbac4c87f848cfa9527fe5cd6faa1dd7",
+      "reproduced": "e02c9eb7095d499ccc5211fbfe6a9196bbac4c87f848cfa9527fe5cd6faa1dd7",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "F-invalid rust_sha256",
+      "original": "ff90ed574c6f7b83ec17fd85360c1894ce2e55170ada4efbf6b58cdb2dcbede8",
+      "reproduced": "ff90ed574c6f7b83ec17fd85360c1894ce2e55170ada4efbf6b58cdb2dcbede8",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "F-invalid generated_sha256",
+      "original": "753a03d7d085e12481c8eff55344bc16a3475d7b8f6e8ee5923083034a8ffdde",
+      "reproduced": "753a03d7d085e12481c8eff55344bc16a3475d7b8f6e8ee5923083034a8ffdde",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "F-invalid proof_sha256",
+      "original": "3cb749bb46aab6b35871b0a1f4e8fce1ed2ea8d7534f69f7499c8ae0757c8678",
+      "reproduced": "3cb749bb46aab6b35871b0a1f4e8fce1ed2ea8d7534f69f7499c8ae0757c8678",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A model artifact",
+      "original": "9dd4d2a1c8cf7d909299d4bb92a45f8ff3f7c4593f8913b64eafa1eed800b4e5",
+      "reproduced": "9dd4d2a1c8cf7d909299d4bb92a45f8ff3f7c4593f8913b64eafa1eed800b4e5",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A batch_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A compiled_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A oracle_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A oracle_sha256",
+      "original": "5ef764b257029f64580c34c28a12fe82588340fa683243b248dd7374416cb4aa",
+      "reproduced": "5ef764b257029f64580c34c28a12fe82588340fa683243b248dd7374416cb4aa",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "A proof_artifact_sha256",
+      "original": "24ff1eadf3b0456611ff00202c150f89980e801b5832d65fcf12f14bb39519e0",
+      "reproduced": "24ff1eadf3b0456611ff00202c150f89980e801b5832d65fcf12f14bb39519e0",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B model artifact",
+      "original": "9ed8713387b59eaf45c0f261cb92ed8ad4663c86301973e57e73ea73f1441a38",
+      "reproduced": "9ed8713387b59eaf45c0f261cb92ed8ad4663c86301973e57e73ea73f1441a38",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B batch_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B compiled_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B oracle_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B oracle_sha256",
+      "original": "bcf17e6fc2f7daedaf57fec166ad8d54fcf3581fb9de30abe358f0ce44b124ad",
+      "reproduced": "bcf17e6fc2f7daedaf57fec166ad8d54fcf3581fb9de30abe358f0ce44b124ad",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "B proof_artifact_sha256",
+      "original": "ba08ca066322195e2b2271b4c4eae8249a84eabdb18ea912ba210d98da8ff41b",
+      "reproduced": "ba08ca066322195e2b2271b4c4eae8249a84eabdb18ea912ba210d98da8ff41b",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "weak-on-B batch_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "weak-on-B oracle_rc",
+      "original": 1,
+      "reproduced": 1,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "weak-on-B proof source",
+      "original": "e9de96e077d0e19fb730d77d79c8a5cecc1b0a747601a95dbfd424d5c0c506e9",
+      "reproduced": "f72a7e7c102904fda398218c3e95bbe0adb5568c673197091ad7fb3a76fbfd8d",
+      "equal": false,
+      "expected_exact": false
+    },
+    {
+      "comparison": "admitted-on-B batch_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "admitted-on-B oracle_rc",
+      "original": 0,
+      "reproduced": 0,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "admitted-on-B proof source",
+      "original": "96b39d632f43a2957b5d80d3a9966050b88bee90d2c381f4d13b5fcc6b84b98f",
+      "reproduced": "56678542278ad8277544ba5669bcbb6c1c4e7b5ea78cbd7bcbd7a9fee19878b1",
+      "equal": false,
+      "expected_exact": false
+    },
+    {
+      "comparison": "F generated compile exit",
+      "original": 1,
+      "reproduced": 1,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "old proof on B batch exit",
+      "original": 1,
+      "reproduced": 1,
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "old proof on B live goal",
+      "original": [
+        "⊢ modelValue = 3"
+      ],
+      "reproduced": [
+        "⊢ modelValue = 3"
+      ],
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "late A publication decision",
+      "original": "reject-stale",
+      "reproduced": "reject-stale",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "final selected generation",
+      "original": "B",
+      "reproduced": "B",
+      "equal": true,
+      "expected_exact": true
+    },
+    {
+      "comparison": "late A model source",
+      "original": "fc40104c44c8eb94a8a5c78e2358d6566e8f9cc15544792d750ed23aba22c485",
+      "reproduced": "de1854df35e77036236c9fbbcc04418c3b43b9b6f77a504a4a606715b5037a91",
+      "equal": false,
+      "expected_exact": false
+    },
+    {
+      "comparison": "late A proof source",
+      "original": "a1278057e77ab0b0b32ba0a17738b9e3f208716d1fd519e210ccbbf611c45956",
+      "reproduced": "aaa2040bf670ff621f43cadc12ac767f3315c607997578dd861091925e3e7966",
+      "equal": false,
+      "expected_exact": false
+    }
+  ]
+}

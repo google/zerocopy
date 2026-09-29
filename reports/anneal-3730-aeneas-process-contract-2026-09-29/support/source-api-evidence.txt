@@ -1,0 +1,391 @@
+Aeneas source checkout: AeneasVerif/aeneas@ac9f1bc5262a5e4ff1e24ca78617121382202727
+Source excerpts are line numbered; SHA-256 values hash each full file, not this excerpt.
+
+src/dune SHA-256 b36d07645c939d0cc741a75d6896c9fb19fe91b866fe411ea6bdde71585180f3
+--- src/dune:1-29 ---
+1: (executable
+2:  (name main)
+3:  (public_name aeneas)
+4:  (package aeneas)
+5:  (libraries aeneas)
+6:  (modes byte exe)
+7:  (preprocess
+8:   (pps
+9:    ppx_deriving.show
+10:    ppx_deriving.eq
+11:    ppx_deriving.ord
+12:    visitors.ppx
+13:    aeneas.ppx))
+14:  (modules Main))
+15: 
+16: ;; TODO: change to qualified
+17: 
+18: (include_subdirs unqualified)
+19: 
+20: ;; Scan all subdirectories for OCaml files
+21: 
+22: (library
+23:  (name aeneas) ;; The name as used in the project
+24:  (public_name aeneas) ;; The name as revealed to the projects importing this library
+25:  (preprocess
+26:   (pps
+27:    ppx_deriving.show
+28:    ppx_deriving.eq
+29:    ppx_deriving.ord
+
+src/Main.ml SHA-256 cc429adb3fe329aa66f28679f032ed67e2dac041e60f9e7608888957330418bd
+--- src/Main.ml:60-70 ---
+60:   let ids = String.split_on_char ',' ids in
+61:   marked_ids := ids @ !marked_ids
+62: 
+63: let () =
+64:   (* Measure start time *)
+65:   let start_time = Unix.gettimeofday () in
+66: 
+67:   (* Read the command line arguments *)
+68:   let dest_dir = ref "" in
+69: 
+70:   (* Print the imported llbc *)
+--- src/Main.ml:95-105 ---
+95:         " Only borrow-check the program and do not generate any translation" );
+96:       ( "-backend",
+97:         Arg.Symbol (backend_names, set_backend),
+98:         " Specify the target backend (" ^ String.concat ", " backend_names ^ ")"
+99:       );
+100:       ( "-namespace",
+101:         Arg.String set_namespace,
+102:         " Set the namespace of the definitions in the pure model" );
+103:       ("-dest", Arg.Set_string dest_dir, " Specify the output directory");
+104:       ( "-subdir",
+105:         Arg.String set_subdir,
+--- src/Main.ml:120-128 ---
+120:         Arg.Clear extract_template_decreases_clauses,
+121:         " Do not generate templates for the required decreases \
+122:          clauses/termination measures, in a dedicated file, if you also put \
+123:          the option -decreases-clauses" );
+124:       ( "-split-files",
+125:         Arg.Set split_files,
+126:         " Split the definitions between different files for types, functions, \
+127:          etc." );
+128:       ( "-checks",
+--- src/Main.ml:177-185 ---
+177:          generate them; this is useful to insert breakpoints when debugging by \
+178:          using the log. For example, one can mark the symbolic value ids 1 and \
+179:          2 with '-mark-ids s1,s2', or '-mark-ids s@1, s@2. The supported \
+180:          prefixes are: 's' (symbolic value id), 'b' (borrow id), 'a' \
+181:          (abstraction id), 'r' (region id), 'f' (pure free variable id)." );
+182:       ("-sequential", Arg.Clear parallel, " Execute sequentially");
+183:       ( "-no-progress-bar",
+184:         Arg.Clear progress_bar,
+185:         " Do not display a progress bar" );
+--- src/Main.ml:257-267 ---
+257:     ]
+258:   in
+259: 
+260:   let spec = Arg.align spec_ls in
+261:   let filenames = ref [] in
+262:   let add_filename f = filenames := f :: !filenames in
+263:   Arg.parse spec add_filename usage;
+264:   let fail (print_doc : bool) =
+265:     if print_doc then print_string usage;
+266:     exit 1
+267:   in
+--- src/Main.ml:535-576 ---
+535:   let filename =
+536:     match !filenames with
+537:     | [ f ] ->
+538:         (* TODO: update the extension *)
+539:         if not (Filename.check_suffix f ".llbc") then (
+540:           print_string ("Unrecognized file extension: " ^ f ^ "\n");
+541:           fail true)
+542:         else if not (Sys.file_exists f) then (
+543:           print_string ("File not found: " ^ f ^ "\n");
+544:           fail true)
+545:         else f
+546:     | _ ->
+547:         (* For now, we only process one file at a time *)
+548:         print_string usage;
+549:         exit 1
+550:   in
+551:   (* Check the destination directory *)
+552:   let dest_dir =
+553:     if !dest_dir = "" then Filename.dirname filename else !dest_dir
+554:   in
+555: 
+556:   (* Load the module *)
+557:   match crate_of_json_file filename with
+558:   | Error s ->
+559:       log#error "error: %s\n" s;
+560:       exit 1
+561:   | Ok m ->
+562:       (* Clear short names to make printing more deterministic. *)
+563:       let m = { m with short_names = [] } in
+564:       (* Logging *)
+565:       log#linfo (lazy ("Imported: " ^ filename));
+566:       if !print_llbc then
+567:         log#linfo (lazy ("\n" ^ Print.crate_to_string m ^ "\n"))
+568:       else log#ldebug (lazy ("\n" ^ Print.crate_to_string m ^ "\n"));
+569: 
+570:       (* Check that Charon was called with the `--preset=aeneas` option *)
+571:       check_no_doc
+572:         (m.options.preset = Some Aeneas)
+573:         "Invalid option detected: the serialized crate was generated by Charon \
+574:          without the `--preset=aeneas` option. Please regenerate the crate by \
+575:          calling Charon with `--preset=aeneas`.\n";
+576: 
+--- src/Main.ml:725-746 ---
+725:               @ trait_impls)));
+726:         ());
+727: 
+728:       (* Apply the pre-passes *)
+729:       let m = Aeneas.PrePasses.apply_passes m in
+730: 
+731:       (* Test the unit functions with the concrete interpreter *)
+732:       if !test_unit_functions then Test.test_unit_functions m;
+733: 
+734:       (* Translate or borrow-check the crate *)
+735:       let extracted_opaque = ref false in
+736:       if !borrow_check then Aeneas.BorrowCheck.borrow_check_crate m marked_ids
+737:       else
+738:         Aeneas.Translate.translate_crate filename dest_dir !Config.subdir m
+739:           extracted_opaque marked_ids;
+740: 
+741:       let has_errors =
+742:         if !Errors.error_list <> [] then true
+743:         else (
+744:           if !borrow_check then
+745:             log#linfo (lazy "Crate successfully borrow-checked");
+746:           false)
+--- src/Main.ml:775-788 ---
+775:                        ^ ", occurrences: " ^ string_of_int num)
+776:                      unique_errors))));
+777: 
+778:       (* Print total elapsed time *)
+779:       log#linfo
+780:         (lazy
+781:           (Printf.sprintf "Total execution time: %f seconds"
+782:              (Unix.gettimeofday () -. start_time)));
+783: 
+784:       (* *)
+785:       if has_errors then exit 1
+
+src/Translate.ml SHA-256 8bc35150f2b50ec18c92ea0da7dd3243a5dd398832575a0e606c74c867133cfa
+--- src/Translate.ml:307-315 ---
+307: let translate_crate_to_pure (crate : crate) (marked_ids : marked_ids) :
+308:     trans_ctx * translated_crate =
+309:   (* Debug *)
+310:   [%ltrace ""];
+311: 
+312:   (* Compute the translation context *)
+313:   let trans_ctx = compute_contexts crate in
+314: 
+315:   (* Translate all the type definitions *)
+--- src/Translate.ml:1393-1405 ---
+1393: let extract_translated_crate (filename : string) (dest_dir : string)
+1394:     (subdir : string option) (crate : crate) (trans_ctx : trans_ctx)
+1395:     (trans_crate : translated_crate) (extracted_opaque : bool ref) : unit =
+1396:   let {
+1397:     type_decls = trans_types;
+1398:     builtin_fun_sigs = builtin_sigs;
+1399:     fun_decls = trans_funs;
+1400:     global_decls = trans_globals;
+1401:     trait_decls = trans_trait_decls;
+1402:     trait_impls = trans_trait_impls;
+1403:   } =
+1404:     trans_crate
+1405:   in
+--- src/Translate.ml:1655-1702 ---
+1655:   let namespace, crate_name, full_dest_dir, extract_filebasename =
+1656:     match Filename.chop_suffix_opt ~suffix:".llbc" filename with
+1657:     | None ->
+1658:         (* Note that we already checked the suffix upon opening the file *)
+1659:         raise (Failure "Unreachable")
+1660:     | Some filename ->
+1661:         (* Retrieve the file basename *)
+1662:         let basename = Filename.basename filename in
+1663:         (* Convert the case *)
+1664:         let crate_name = StringUtils.to_camel_case basename in
+1665:         let crate_name =
+1666:           if Config.backend () = HOL4 then
+1667:             StringUtils.lowercase_first_letter crate_name
+1668:           else crate_name
+1669:         in
+1670:         (* We use the raw crate name for the namespaces, unless the user
+1671:            has provided one *)
+1672:         let namespace =
+1673:           match !Config.namespace with
+1674:           | Some namespace -> namespace
+1675:           | None -> (
+1676:               match Config.backend () with
+1677:               | FStar | Coq | HOL4 -> crate.name
+1678:               | Lean -> crate.name)
+1679:         in
+1680:         let full_dest_dir =
+1681:           match subdir with
+1682:           | None -> dest_dir
+1683:           | Some subdir -> Filename.concat dest_dir subdir
+1684:         in
+1685:         (*
+1686:            If the backend is Lean the module names depends on the path,
+1687:            so we generate names of the shape [Types.lean], [Funs.lean], etc.
+1688:            because those files should be placed in the proper sub-folder.
+1689: 
+1690:            Otherwise, we prepend the crate name to generate, e.g.,
+1691:            [Foo_Types.fst], [Foo_Funs.fst], etc.
+1692:          *)
+1693:         let filebasename =
+1694:           if !Config.split_files then
+1695:             if Config.backend () = Lean then full_dest_dir ^ "/"
+1696:             else Filename.concat full_dest_dir crate_name ^ module_delimiter
+1697:           else Filename.concat full_dest_dir crate_name
+1698:         in
+1699: 
+1700:         (* Concatenate *)
+1701:         (namespace, crate_name, full_dest_dir, filebasename)
+1702:   in
+--- src/Translate.ml:2121-2136 ---
+2121: 
+2122: (** Translate a crate and write the synthesized code to an output file. *)
+2123: let translate_crate (filename : string) (dest_dir : string)
+2124:     (subdir : string option) (crate : crate) (extracted_opaque : bool ref)
+2125:     (marked_ids : marked_ids) : unit =
+2126:   [%ltrace
+2127:     "- filename: " ^ filename ^ "\n- dest_dir: " ^ dest_dir ^ "\n- subdir: "
+2128:     ^ Print.option_to_string (fun x -> x) subdir];
+2129: 
+2130:   (* Translate the module to the pure AST *)
+2131:   let trans_ctx, trans_crate = translate_crate_to_pure crate marked_ids in
+2132: 
+2133:   extract_translated_crate filename dest_dir subdir crate trans_ctx trans_crate
+2134:     extracted_opaque
+
+src/Config.ml SHA-256 46e71dae78770b131692e29696b8f088f5a373ce7431254180f6700fcdb125f4
+--- src/Config.ml:17-38 ---
+17:   | _ -> None
+18: 
+19: let opt_backend : backend option ref = ref None
+20: 
+21: let set_backend (b : string) : unit =
+22:   match backend_of_string b with
+23:   | Some b -> opt_backend := Some b
+24:   | None ->
+25:       (* We shouldn't get there: the string should have been checked as
+26:          belonging to the proper set *)
+27:       raise (Failure "Unexpected")
+28: 
+29: (** Specify the namespace of the extract code.
+30: 
+31:     For instance, if the crate name is [foo] the namespace used for the
+32:     extracted code will be [foo] but the user might want to use [Foo] instead.
+33: *)
+34: let namespace : string option ref = ref None
+35: 
+36: let set_namespace (s : string) : unit = namespace := Some s
+37: 
+38: (** Place the files inside a subdirectory in the destination.
+--- src/Config.ml:218-224 ---
+218: 
+219: (** Controls whether we split the generated definitions between different files
+220:     for the types, clauses and functions, or if we group them in one file. *)
+221: let split_files = ref false
+222: 
+223: (** Only for Lean: generate the library entry point, if the crate is split
+224:     between different files. The entry point is simply a file with the name of
+--- src/Config.ml:454-472 ---
+454: 
+455: (** Should we run the translation in parallel?
+456: 
+457:     Note: the race condition on Pack.Digraph's global vertex counter in SCC.ml
+458:     has been fixed by switching to Imperative.Digraph.Concrete, and the pool is
+459:     now persistent (created once and reused).
+460: 
+461:     Note: the way functions are ordered before being translated is wrong:
+462:     - the function which computes the size of the function should count the the
+463:       loops differently (the body of a loop is executed twice to compute a fixed
+464:       point: the result is exponential)
+465:     - the way the parellelism is executed implies that the first domain will
+466:       translate all the biggest functions! We should rather have a queue of
+467:       tasks (or an index of the next function to translate that we would
+468:       atomically increment)
+469:     - it is probably worth reordering the functions also before running the
+470:       micro-passes *)
+471: let parallel = ref true
+472: 
+
+src/Errors.ml SHA-256 f340ba24b907f748a6d5c89fa663e5f50478991918e5d946490566f7bea04efb
+--- src/Errors.ml:75-98 ---
+75: 
+76: module FileLineSet = Collections.MakeSet (FileLineOrderedType)
+77: module FileLineMap = Collections.MakeMap (FileLineOrderedType)
+78: 
+79: let error_list : (string * int * Meta.span option * string) list ref = ref []
+80: let unique_errors = ref FileLineMap.empty
+81: 
+82: (** Save an error and print it at the same time.
+83: 
+84:     We prefer printing errors gradually rather than reporting everyting at the
+85:     very end. *)
+86: let push_error (file : string) (line : int) (span : Meta.span option)
+87:     (msg : string) =
+88:   Mutex.protect error_mutex (fun _ ->
+89:       error_list := (file, line, span, msg) :: !error_list;
+90:       unique_errors :=
+91:         FileLineMap.update (file, line)
+92:           (function
+93:             | None -> Some 1
+94:             | Some n -> Some (n + 1))
+95:           !unique_errors);
+96:   if !Config.print_error_emitters then
+97:     log#serror (format_error_message_with_file_line file line span msg)
+98:   else log#serror (format_error_message span msg)
+
+src/Parallel.ml SHA-256 d68fd67aa01c01ddc20fe078fe7bc6f3c108bcd632a577c73381f6a24b9c145b
+--- src/Parallel.ml:18-36 ---
+18: 
+19: (** A persistent pool that is created once and reused for all parallel
+20:     operations. This avoids the overhead of creating and tearing down domains
+21:     for each parallel call. *)
+22: module Pool = struct
+23:   module T = Domainslib.Task
+24: 
+25:   let pool =
+26:     lazy
+27:       (let num_domains = recommended_domain_count () in
+28:        T.setup_pool ~num_domains ())
+29: 
+30:   let get () = Lazy.force pool
+31: 
+32:   (* Tear down the pool at program exit *)
+33:   let () =
+34:     at_exit (fun () ->
+35:         if Lazy.is_val pool then T.teardown_pool (Lazy.force pool))
+36: end
+--- src/Parallel.ml:89-102 ---
+89: let parallel_map_pool_aux (f : 'a -> 'b) (ls : 'a list) : 'b list =
+90:   (* Only run in parallel if the option is activated *)
+91:   if !Config.parallel then
+92:     let f = run_with_backtrace f in
+93:     let module T = Domainslib.Task in
+94:     let pool = Pool.get () in
+95:     (* Run the tasks asynchronously *)
+96:     let run (x : 'a) () = f x in
+97:     let tasks = List.map (fun x -> T.async pool (run x)) ls in
+98:     (* Wait *)
+99:     T.run pool (fun _ -> List.map (T.await pool) tasks)
+100:   else List.map f ls
+101: 
+102: let parallel_map_pool f ls = catch_reraise (parallel_map_pool_aux f) ls
+--- src/Parallel.ml:120-127 ---
+120:   else List.filter_map f ls
+121: 
+122: let parallel_filter_map_pool f ls =
+123:   catch_reraise (parallel_filter_map_pool_aux f) ls
+124: 
+125: let parallel_map = parallel_map_pool
+126: let parallel_filter_map = parallel_filter_map_pool
+
+Local build/API availability checks:
+command -v dune: (not found on PATH)
+command -v ocamlc: (not found on PATH)
+command -v opam: (not found on PATH)
+Compiled OCaml library/interface objects in selected checkout: 0

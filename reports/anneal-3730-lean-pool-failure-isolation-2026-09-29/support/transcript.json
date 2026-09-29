@@ -1,0 +1,4393 @@
+{
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "preflight": {
+    "free_percent": 41,
+    "physical_bytes": 8589934592,
+    "free_disk_bytes": 54560923648
+  },
+  "admission": {
+    "free_percent": 42,
+    "prior_peak_rss_bytes": 620003328,
+    "eight_admitted": false
+  },
+  "limits": {
+    "rss_bytes": 2516582400,
+    "disk_blocks_bytes": 26214400,
+    "free_percent_floor": 30,
+    "duration_seconds": 90
+  },
+  "abort": [],
+  "cells": [
+    {
+      "workers": 4,
+      "started": [
+        {
+          "index": 0,
+          "pid": 82003,
+          "barrier": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {}
+          },
+          "goal": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": [],
+          "source_sha256": "6480f9be803e58c02fa02c1b01aab1699bbfe9743892d79bbd50fd00c625ad42",
+          "resources": {
+            "free_percent": 41,
+            "rss_bytes": 75808768,
+            "process_count": 1,
+            "processes": [
+              {
+                "pid": 82003,
+                "ppid": 82000,
+                "pgid": 82003,
+                "rss_bytes": 75808768,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              }
+            ],
+            "disk_blocks_bytes": 4096,
+            "elapsed_seconds": 0.311
+          }
+        },
+        {
+          "index": 1,
+          "pid": 82008,
+          "barrier": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {}
+          },
+          "goal": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": [],
+          "source_sha256": "a9382a8f41fef137a32ff71c6bde930ef3eaebd61942c91953573ae717f58c66",
+          "resources": {
+            "free_percent": 41,
+            "rss_bytes": 176455680,
+            "process_count": 2,
+            "processes": [
+              {
+                "pid": 82003,
+                "ppid": 82000,
+                "pgid": 82003,
+                "rss_bytes": 100007936,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              },
+              {
+                "pid": 82008,
+                "ppid": 82000,
+                "pgid": 82008,
+                "rss_bytes": 76447744,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              }
+            ],
+            "disk_blocks_bytes": 8192,
+            "elapsed_seconds": 0.6
+          }
+        },
+        {
+          "index": 2,
+          "pid": 82016,
+          "barrier": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {}
+          },
+          "goal": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": [],
+          "source_sha256": "5c0af1c62afda3c8ea7fbd84bd367a44cba85d7af2256e98a7c780434d83ba01",
+          "resources": {
+            "free_percent": 41,
+            "rss_bytes": 303120384,
+            "process_count": 3,
+            "processes": [
+              {
+                "pid": 82003,
+                "ppid": 82000,
+                "pgid": 82003,
+                "rss_bytes": 127057920,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              },
+              {
+                "pid": 82008,
+                "ppid": 82000,
+                "pgid": 82008,
+                "rss_bytes": 100106240,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              },
+              {
+                "pid": 82016,
+                "ppid": 82000,
+                "pgid": 82016,
+                "rss_bytes": 75956224,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              }
+            ],
+            "disk_blocks_bytes": 12288,
+            "elapsed_seconds": 0.898
+          }
+        },
+        {
+          "index": 3,
+          "pid": 82023,
+          "barrier": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {}
+          },
+          "goal": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": [],
+          "source_sha256": "be04c0ccdeb63b9a621a46a309c8b9003af9f2d6798505ba5ac691b4df8e3eb1",
+          "resources": {
+            "free_percent": 41,
+            "rss_bytes": 446087168,
+            "process_count": 4,
+            "processes": [
+              {
+                "pid": 82003,
+                "ppid": 82000,
+                "pgid": 82003,
+                "rss_bytes": 150421504,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              },
+              {
+                "pid": 82008,
+                "ppid": 82000,
+                "pgid": 82008,
+                "rss_bytes": 126107648,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              },
+              {
+                "pid": 82016,
+                "ppid": 82000,
+                "pgid": 82016,
+                "rss_bytes": 97828864,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              },
+              {
+                "pid": 82023,
+                "ppid": 82000,
+                "pgid": 82023,
+                "rss_bytes": 71729152,
+                "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+              }
+            ],
+            "disk_blocks_bytes": 16384,
+            "elapsed_seconds": 1.207
+          }
+        }
+      ],
+      "peer_checks": [
+        {
+          "index": 1,
+          "barrier": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": {}
+          },
+          "goal": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": []
+        },
+        {
+          "index": 2,
+          "barrier": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": {}
+          },
+          "goal": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": []
+        },
+        {
+          "index": 3,
+          "barrier": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": {}
+          },
+          "goal": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": []
+        },
+        {
+          "index": 0,
+          "after_crash": true,
+          "goal": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 8,
+                  "line": 1
+                }
+              },
+              "message": "numerals are data in Lean, but the expected type is a proposition\n  True : Prop",
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 8,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "after_crash": true,
+          "goal": {
+            "id": 6,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": []
+        },
+        {
+          "index": 3,
+          "after_crash": true,
+          "goal": {
+            "id": 6,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "diagnostics": []
+        }
+      ],
+      "malformed": {
+        "index": 0,
+        "barrier": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 9,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "numerals are data in Lean, but the expected type is a proposition\n  True : Prop",
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "disk_sha256": "6480f9be803e58c02fa02c1b01aab1699bbfe9743892d79bbd50fd00c625ad42",
+        "buffer_sha256": "c082a30098c9a8dcd2bc79eb040f2f22166f7be2938dae83ea67d2b42441cba8"
+      },
+      "crash": {
+        "index": 1,
+        "pid": 82008,
+        "pending_request_id": 6,
+        "cancel_sent": true,
+        "exit": -9,
+        "process_group_after": [],
+        "resources_before": {
+          "free_percent": 41,
+          "rss_bytes": 540475392,
+          "process_count": 4,
+          "processes": [
+            {
+              "pid": 82003,
+              "ppid": 82000,
+              "pgid": 82003,
+              "rss_bytes": 174014464,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+            },
+            {
+              "pid": 82008,
+              "ppid": 82000,
+              "pgid": 82008,
+              "rss_bytes": 149504000,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+            },
+            {
+              "pid": 82016,
+              "ppid": 82000,
+              "pgid": 82016,
+              "rss_bytes": 122028032,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+            },
+            {
+              "pid": 82023,
+              "ppid": 82000,
+              "pgid": 82023,
+              "rss_bytes": 94928896,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+            }
+          ],
+          "disk_blocks_bytes": 16384,
+          "elapsed_seconds": 1.479
+        }
+      },
+      "model_fence": {
+        "old_candidate": {
+          "worker_epoch": 1,
+          "document_version": 2,
+          "source_sha256": "793da12ad3cdd6f12ac78f5280df7326e777dca834ff5d293059e0730e56be70"
+        },
+        "restart_current": {
+          "worker_epoch": 2,
+          "document_version": 1,
+          "source_sha256": "a9382a8f41fef137a32ff71c6bde930ef3eaebd61942c91953573ae717f58c66"
+        },
+        "old_accepted": false,
+        "fresh_accepted": true
+      },
+      "restart": {
+        "old_pid": 82008,
+        "new_pid": 82036,
+        "barrier": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ True"
+            ],
+            "rendered": "```lean\n⊢ True\n```"
+          }
+        },
+        "diagnostics": [],
+        "resources": {
+          "free_percent": 42,
+          "rss_bytes": 608944128,
+          "process_count": 4,
+          "processes": [
+            {
+              "pid": 82003,
+              "ppid": 82000,
+              "pgid": 82003,
+              "rss_bytes": 224067584,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+            },
+            {
+              "pid": 82016,
+              "ppid": 82000,
+              "pgid": 82016,
+              "rss_bytes": 170606592,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+            },
+            {
+              "pid": 82023,
+              "ppid": 82000,
+              "pgid": 82023,
+              "rss_bytes": 141344768,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+            },
+            {
+              "pid": 82036,
+              "ppid": 82000,
+              "pgid": 82036,
+              "rss_bytes": 72925184,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+            }
+          ],
+          "disk_blocks_bytes": 16384,
+          "elapsed_seconds": 2.043
+        }
+      },
+      "final_resources": {
+        "free_percent": 42,
+        "rss_bytes": 620003328,
+        "process_count": 4,
+        "processes": [
+          {
+            "pid": 82003,
+            "ppid": 82000,
+            "pgid": 82003,
+            "rss_bytes": 227033088,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82016,
+            "ppid": 82000,
+            "pgid": 82016,
+            "rss_bytes": 172769280,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82023,
+            "ppid": 82000,
+            "pgid": 82023,
+            "rss_bytes": 143704064,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82036,
+            "ppid": 82000,
+            "pgid": 82036,
+            "rss_bytes": 76496896,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ],
+        "disk_blocks_bytes": 16384,
+        "elapsed_seconds": 2.07
+      },
+      "post_cleanup": {
+        "process_rows": [],
+        "resources": {
+          "free_percent": 42,
+          "rss_bytes": 0,
+          "process_count": 0,
+          "processes": [],
+          "disk_blocks_bytes": 16384,
+          "elapsed_seconds": 2.255
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 82000,
+          "rootUri": "file://$WORK/pool4-w0",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "theorem peer_0 : True := by\n  trivial\n"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w0/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w0/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w0/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "resource",
+      "label": "pool4-start-0",
+      "value": {
+        "free_percent": 41,
+        "rss_bytes": 75808768,
+        "process_count": 1,
+        "processes": [
+          {
+            "pid": 82003,
+            "ppid": 82000,
+            "pgid": 82003,
+            "rss_bytes": 75808768,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ],
+        "disk_blocks_bytes": 4096,
+        "elapsed_seconds": 0.311
+      },
+      "violations": []
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 82000,
+          "rootUri": "file://$WORK/pool4-w1",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "theorem peer_1 : True := by\n  trivial\n"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "resource",
+      "label": "pool4-start-1",
+      "value": {
+        "free_percent": 41,
+        "rss_bytes": 176455680,
+        "process_count": 2,
+        "processes": [
+          {
+            "pid": 82003,
+            "ppid": 82000,
+            "pgid": 82003,
+            "rss_bytes": 100007936,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82008,
+            "ppid": 82000,
+            "pgid": 82008,
+            "rss_bytes": 76447744,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ],
+        "disk_blocks_bytes": 8192,
+        "elapsed_seconds": 0.6
+      },
+      "violations": []
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 82000,
+          "rootUri": "file://$WORK/pool4-w2",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w2/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "theorem peer_2 : True := by\n  trivial\n"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w2/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w2/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w2/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w2/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w2/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w2/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w2/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "resource",
+      "label": "pool4-start-2",
+      "value": {
+        "free_percent": 41,
+        "rss_bytes": 303120384,
+        "process_count": 3,
+        "processes": [
+          {
+            "pid": 82003,
+            "ppid": 82000,
+            "pgid": 82003,
+            "rss_bytes": 127057920,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82008,
+            "ppid": 82000,
+            "pgid": 82008,
+            "rss_bytes": 100106240,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82016,
+            "ppid": 82000,
+            "pgid": 82016,
+            "rss_bytes": 75956224,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ],
+        "disk_blocks_bytes": 12288,
+        "elapsed_seconds": 0.898
+      },
+      "violations": []
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 82000,
+          "rootUri": "file://$WORK/pool4-w3",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "theorem peer_3 : True := by\n  trivial\n"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w3/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w3/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w3/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w3/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "resource",
+      "label": "pool4-start-3",
+      "value": {
+        "free_percent": 41,
+        "rss_bytes": 446087168,
+        "process_count": 4,
+        "processes": [
+          {
+            "pid": 82003,
+            "ppid": 82000,
+            "pgid": 82003,
+            "rss_bytes": 150421504,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82008,
+            "ppid": 82000,
+            "pgid": 82008,
+            "rss_bytes": 126107648,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82016,
+            "ppid": 82000,
+            "pgid": 82016,
+            "rss_bytes": 97828864,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82023,
+            "ppid": 82000,
+            "pgid": 82023,
+            "rss_bytes": 71729152,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ],
+        "disk_blocks_bytes": 16384,
+        "elapsed_seconds": 1.207
+      },
+      "violations": []
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "version": 2
+          },
+          "contentChanges": [
+            {
+              "text": "theorem peer_0 : True := by\n  exact 0\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w0/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 8,
+                  "line": 1
+                }
+              },
+              "message": "numerals are data in Lean, but the expected type is a proposition\n  True : Prop",
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 8,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://$WORK/pool4-w0/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w2/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w2/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w3/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "resource",
+      "label": "pool4-after-malformed",
+      "value": {
+        "free_percent": 41,
+        "rss_bytes": 529580032,
+        "process_count": 4,
+        "processes": [
+          {
+            "pid": 82003,
+            "ppid": 82000,
+            "pgid": 82003,
+            "rss_bytes": 171606016,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82008,
+            "ppid": 82000,
+            "pgid": 82008,
+            "rss_bytes": 147324928,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82016,
+            "ppid": 82000,
+            "pgid": 82016,
+            "rss_bytes": 119455744,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82023,
+            "ppid": 82000,
+            "pgid": 82023,
+            "rss_bytes": 91193344,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ],
+        "disk_blocks_bytes": 16384,
+        "elapsed_seconds": 1.448
+      },
+      "violations": []
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 2
+          },
+          "contentChanges": [
+            {
+              "text": "theorem peer_1 : True := by\n  trivial\n-- request before crash\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/cancelRequest",
+        "params": {
+          "id": 6
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 82000,
+          "rootUri": "file://$WORK/pool4-w1",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "theorem peer_1 : True := by\n  trivial\n"
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 9,
+                  "line": 1
+                },
+                "start": {
+                  "character": 2,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w1/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "resource",
+      "label": "pool4-restart",
+      "value": {
+        "free_percent": 42,
+        "rss_bytes": 608944128,
+        "process_count": 4,
+        "processes": [
+          {
+            "pid": 82003,
+            "ppid": 82000,
+            "pgid": 82003,
+            "rss_bytes": 224067584,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82016,
+            "ppid": 82000,
+            "pgid": 82016,
+            "rss_bytes": 170606592,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82023,
+            "ppid": 82000,
+            "pgid": 82023,
+            "rss_bytes": 141344768,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82036,
+            "ppid": 82000,
+            "pgid": 82036,
+            "rss_bytes": 72925184,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ],
+        "disk_blocks_bytes": 16384,
+        "elapsed_seconds": 2.043
+      },
+      "violations": []
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w0/Proof.lean",
+            "version": 2
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w2/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/pool4-w3/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 1,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ True"
+          ],
+          "rendered": "```lean\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "kind": "resource",
+      "label": "pool4-final",
+      "value": {
+        "free_percent": 42,
+        "rss_bytes": 620003328,
+        "process_count": 4,
+        "processes": [
+          {
+            "pid": 82003,
+            "ppid": 82000,
+            "pgid": 82003,
+            "rss_bytes": 227033088,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82016,
+            "ppid": 82000,
+            "pgid": 82016,
+            "rss_bytes": 172769280,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82023,
+            "ppid": 82000,
+            "pgid": 82023,
+            "rss_bytes": 143704064,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 82036,
+            "ppid": 82000,
+            "pgid": 82036,
+            "rss_bytes": 76496896,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ],
+        "disk_blocks_bytes": 16384,
+        "elapsed_seconds": 2.07
+      },
+      "violations": []
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w0/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 0,
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 0,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w2/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 2,
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 2,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w3/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 3,
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 3,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/pool4-w1/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "server",
+      "label": 1,
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "kind": "rpc",
+      "side": "client",
+      "label": 1,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    }
+  ],
+  "final_live_groups": []
+}

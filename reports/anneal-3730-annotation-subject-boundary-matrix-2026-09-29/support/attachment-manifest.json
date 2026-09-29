@@ -1,0 +1,338 @@
+{
+  "baseline-lib": {
+    "claim-a": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 4,
+          "name": "annotation_boundary_probe::left::alpha",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "claim-b": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 5,
+          "name": "annotation_boundary_probe::right::beta",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 27,
+                "col": 4
+              },
+              "end": {
+                "line": 27,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "selected": {
+      "status": "missing",
+      "candidates": []
+    },
+    "test-only": {
+      "status": "missing",
+      "candidates": []
+    }
+  },
+  "baseline-selected": {
+    "claim-a": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 5,
+          "name": "annotation_boundary_probe::left::alpha",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "claim-b": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 6,
+          "name": "annotation_boundary_probe::right::beta",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 27,
+                "col": 4
+              },
+              "end": {
+                "line": 27,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "selected": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 1,
+          "name": "annotation_boundary_probe::selected_only",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 37,
+                "col": 0
+              },
+              "end": {
+                "line": 37,
+                "col": 35
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "test-only": {
+      "status": "missing",
+      "candidates": []
+    }
+  },
+  "baseline-tests": {
+    "claim-a": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 5,
+          "name": "annotation_boundary_probe::left::alpha",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "claim-b": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 6,
+          "name": "annotation_boundary_probe::right::beta",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 27,
+                "col": 4
+              },
+              "end": {
+                "line": 27,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "selected": {
+      "status": "missing",
+      "candidates": []
+    },
+    "test-only": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 7,
+          "name": "annotation_boundary_probe::tests::test_only",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 47,
+                "col": 4
+              },
+              "end": {
+                "line": 47,
+                "col": 35
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    }
+  },
+  "moved-lib": {
+    "claim-a": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 5,
+          "name": "annotation_boundary_probe::relocated::alpha",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 49,
+                "col": 4
+              },
+              "end": {
+                "line": 49,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "claim-b": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 4,
+          "name": "annotation_boundary_probe::right::beta",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "selected": {
+      "status": "missing",
+      "candidates": []
+    },
+    "test-only": {
+      "status": "missing",
+      "candidates": []
+    }
+  },
+  "duplicated-lib": {
+    "claim-a": {
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "def_id": 4,
+          "name": "annotation_boundary_probe::left::alpha",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 17,
+                "col": 4
+              },
+              "end": {
+                "line": 17,
+                "col": 31
+              }
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "def_id": 5,
+          "name": "annotation_boundary_probe::copied::alpha_copy",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 27,
+                "col": 4
+              },
+              "end": {
+                "line": 27,
+                "col": 36
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "claim-b": {
+      "status": "unique",
+      "candidates": [
+        {
+          "def_id": 6,
+          "name": "annotation_boundary_probe::right::beta",
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 37,
+                "col": 4
+              },
+              "end": {
+                "line": 37,
+                "col": 30
+              }
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "selected": {
+      "status": "missing",
+      "candidates": []
+    },
+    "test-only": {
+      "status": "missing",
+      "candidates": []
+    }
+  }
+}

@@ -1,0 +1,2 @@
+r37u0.combined (x : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32
+'combined_self' depends on axioms: [dep_a.dep_a, dep_b.dep_b]

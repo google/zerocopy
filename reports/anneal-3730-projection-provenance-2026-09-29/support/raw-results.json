@@ -1,0 +1,281 @@
+{
+  "aeneas": {
+    "aeneas_comments": [
+      {
+        "display_span": "4:0-6:1",
+        "name": "step",
+        "source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-A.rs"
+      },
+      {
+        "display_span": "8:0-10:1",
+        "name": "select",
+        "source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-tool-provenance-2026-09-29/support/fixture/source-A.rs"
+      }
+    ],
+    "candidate_edge_evidence": "lexical name/comment match only",
+    "charon_items": {
+      "select": [
+        {
+          "attributes": [],
+          "def_id": 1,
+          "is_local": true,
+          "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 1,
+                "line": 10
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "step": [
+        {
+          "attributes": [
+            {
+              "DocComment": " model-source-marker-A"
+            }
+          ],
+          "def_id": 0,
+          "is_local": true,
+          "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        }
+      ]
+    },
+    "edit_authority_from_generated_comment": false,
+    "generated_sha256": "807263e41d4e0f0b32e6daf74d6ba02985048d3088043b407c1674a7ef8d4447",
+    "llbc_sha256": "c0f36fd68ad9c6fa2796e1633089d8cef57db9214898bec28f3ddff765bfad00",
+    "source_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+  },
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7"
+  },
+  "formatter": {
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "command": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "rustc",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "$REPORT/formatted-macro.llbc",
+      "--",
+      "$REPORT/formatted-macro.rs",
+      "--crate-type",
+      "lib",
+      "--crate-name",
+      "subject_identity_probe",
+      "--edition",
+      "2021"
+    ],
+    "exit": 0,
+    "formatted_generated": {
+      "attributes": [
+        {
+          "DocComment": " proof-id: macro-generated"
+        }
+      ],
+      "def_id": 1,
+      "is_local": true,
+      "source_text": null,
+      "span": {
+        "data": {
+          "beg": {
+            "col": 8,
+            "line": 47
+          },
+          "end": {
+            "col": 9,
+            "line": 49
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      }
+    },
+    "formatted_llbc_sha256": "f538c18d46b1975e626f6d5cad56dc05ab1613653e948753ac5670c2a9a043b1",
+    "formatted_movable": {
+      "attributes": [
+        {
+          "DocComment": " proof-id: movable"
+        }
+      ],
+      "def_id": 2,
+      "is_local": true,
+      "source_text": "pub fn movable() -> u32 {\n    51\n}",
+      "span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 55
+          },
+          "end": {
+            "col": 1,
+            "line": 57
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      }
+    },
+    "formatted_source_sha256": "ef566f0a360a64a26891d93bcf5a42224ab576a16a95b56a8c4a5720bd4b15e5",
+    "original_generated": {
+      "attributes": [
+        {
+          "DocComment": " proof-id: macro-generated"
+        }
+      ],
+      "def_id": 1,
+      "is_local": true,
+      "source_text": null,
+      "span": {
+        "data": {
+          "beg": {
+            "col": 8,
+            "line": 35
+          },
+          "end": {
+            "col": 40,
+            "line": 35
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      }
+    },
+    "original_llbc_sha256": "aacad16387a02f5589d2f0006eaaf41ff91fa419854b773870e470dd04ecf0d6",
+    "original_movable": {
+      "attributes": [
+        {
+          "DocComment": " proof-id: movable"
+        }
+      ],
+      "def_id": 2,
+      "is_local": true,
+      "source_text": "pub fn movable() -> u32 { 51 }",
+      "span": {
+        "data": {
+          "beg": {
+            "col": 0,
+            "line": 41
+          },
+          "end": {
+            "col": 30,
+            "line": 41
+          },
+          "file_id": 0
+        },
+        "generated_from_span": null
+      }
+    },
+    "original_source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+    "rustfmt_sha256": "ee717a093f2b2e2c124cde782b4b955fb26ec0c7cf241e6403fed99d624f0c76",
+    "rustfmt_version": "rustfmt 1.9.0",
+    "stderr": "",
+    "stdout": ""
+  },
+  "frozen_hashes": {
+    "Funs.lean": "807263e41d4e0f0b32e6daf74d6ba02985048d3088043b407c1674a7ef8d4447",
+    "macro-A.llbc": "aacad16387a02f5589d2f0006eaaf41ff91fa419854b773870e470dd04ecf0d6",
+    "macro-A.rs": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+    "snapshot.llbc": "c0f36fd68ad9c6fa2796e1633089d8cef57db9214898bec28f3ddff765bfad00",
+    "snapshot.rs": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+  },
+  "projection": {
+    "cases": {
+      "across_segments": {
+        "accepted": false,
+        "reason": "no-exact-single-origin",
+        "source": "pub fn item() {}\r\n/// ```lean\r\n/// theorem first : True := by exact True.intro -- \ud83e\uddea e\u0301\t\r\n/// theorem second : True := by exact True.intro\r\n/// ```\r\n"
+      },
+      "generated_model_edit": {
+        "accepted": false,
+        "reason": "read-only-or-external-uri",
+        "source": "pub fn item() {}\r\n/// ```lean\r\n/// theorem first : True := by exact True.intro -- \ud83e\uddea e\u0301\t\r\n/// theorem second : True := by exact True.intro\r\n/// ```\r\n"
+      },
+      "host_shift_same_projection": {
+        "accepted": false,
+        "reason": "stale-source-or-projection",
+        "source": "// moved\r\npub fn item() {}\r\n/// ```lean\r\n/// theorem first : True := by exact True.intro -- \ud83e\uddea e\u0301\t\r\n/// theorem second : True := by exact True.intro\r\n/// ```\r\n"
+      },
+      "rename_resource_op": {
+        "accepted": false,
+        "reason": "resource-operation-unsupported",
+        "source": "pub fn item() {}\r\n/// ```lean\r\n/// theorem first : True := by exact True.intro -- \ud83e\uddea e\u0301\t\r\n/// theorem second : True := by exact True.intro\r\n/// ```\r\n"
+      },
+      "synthetic_header": {
+        "accepted": false,
+        "reason": "no-exact-single-origin",
+        "source": "pub fn item() {}\r\n/// ```lean\r\n/// theorem first : True := by exact True.intro -- \ud83e\uddea e\u0301\t\r\n/// theorem second : True := by exact True.intro\r\n/// ```\r\n"
+      },
+      "two_authored_ranges": {
+        "accepted": true,
+        "reason": "exact-atomic",
+        "source": "pub fn item() {}\r\n/// ```lean\r\n/// theorem first : True := by exact trivial -- \ud83e\uddea e\u0301\t\r\n/// theorem second : True := by exact trivial\r\n/// ```\r\n"
+      }
+    },
+    "coordinate_boundaries": 158,
+    "different_numeric_columns": 6,
+    "emoji_start": {
+      "byte": 89,
+      "line": 2,
+      "scalar": 47,
+      "utf16": 47
+    },
+    "exact_mapped_boundaries": 102,
+    "host": "pub fn item() {}\r\n/// ```lean\r\n/// theorem first : True := by exact True.intro -- \ud83e\uddea e\u0301\t\r\n/// theorem second : True := by exact True.intro\r\n/// ```\r\n",
+    "host_sha256": "3e8312a8228785fba7848d88e8328cea8288b2709a5bec86057b8c59679049d5",
+    "invalid_surrogate_interior": [
+      2,
+      48
+    ],
+    "projection": "-- synthetic header\r\nnamespace Generated\r\ntheorem first : True := by exact True.intro -- \ud83e\uddea e\u0301\t\r\ntheorem second : True := by exact True.intro\r\nend Generated\r\n",
+    "projection_sha256": "fbbf54a2da4cb6a1a942fd0f2807e94815ced597a289a03342701b44aad5ef28",
+    "segments": [
+      {
+        "projected": [
+          42,
+          100
+        ],
+        "source": [
+          35,
+          93
+        ]
+      },
+      {
+        "projected": [
+          100,
+          146
+        ],
+        "source": [
+          97,
+          143
+        ]
+      }
+    ],
+    "shifted_host_sha256": "2bef2f4f3305a7d8fe0674f45354d52f064cde9aa572aab05451d79f14530819",
+    "shifted_projection_sha256": "fbbf54a2da4cb6a1a942fd0f2807e94815ced597a289a03342701b44aad5ef28"
+  }
+}

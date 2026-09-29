@@ -1,0 +1,55 @@
+{
+  "snapshot_utc": "2026-09-29 09:51 UTC",
+  "issue_3730_state": "closed",
+  "issue_3731_state": "open",
+  "issue_sha256": {
+    "3730_body": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+    "3730_comment": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+    "3731_body": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+    "3731_comment": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+  },
+  "investigation_rows": 159,
+  "investigation_statuses": {
+    "partial": 145,
+    "not-run": 9,
+    "complete": 2,
+    "conditional": 3
+  },
+  "crosswalk_rows": 174,
+  "crosswalk_statuses": {
+    "partial": 141,
+    "not-run": 25,
+    "complete": 4,
+    "conditional": 4
+  },
+  "complete_investigations": [
+    "I046",
+    "I049"
+  ],
+  "complete_suggestions": [
+    "C03",
+    "C04",
+    "C13",
+    "N11"
+  ],
+  "all_report_packages": 55,
+  "prior_accounted_packages": 47,
+  "new_package_count": 8,
+  "new_packages": [
+    "anneal-3730-aeneas-manifest-batch-oracle-2026-09-29",
+    "anneal-3730-charon-subject-output-phase-matrix-2026-09-29",
+    "anneal-3730-human-freshness-study-protocol-2026-09-29",
+    "anneal-3730-lake-cache-publication-atomicity-2026-09-29",
+    "anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29",
+    "anneal-3730-resource-soak-contamination-2026-09-29",
+    "anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29",
+    "anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29"
+  ],
+  "new_inspected_file_count": 424,
+  "new_inspected_bytes": 3828113,
+  "source_v2_investigation_sha256": "e542cd61a38c271e536a88a4e59cdbef48893add8c380259e13bcbc225716f74",
+  "source_v2_crosswalk_sha256": "c95e32306641a2887b2762cbc5146a48cfeb2d8a9a6caa141940b8b8488a8ed8",
+  "r01_r07_completed": 7,
+  "remaining_locally_executable_suites": 6,
+  "gate_groups": 7
+}

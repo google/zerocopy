@@ -1,0 +1,1718 @@
+{
+  "comparisons": {
+    "A1_A2_raw_difference_paths": [
+      "/translated/short_names/0/key/Fun",
+      "/translated/short_names/0/value/0/Ident/0",
+      "/translated/short_names/1/key/Fun",
+      "/translated/short_names/1/value/0/Ident/0"
+    ],
+    "A1_A3_raw_difference_paths": [],
+    "A_canonical_llbc_identical": true,
+    "A_lean_inventories_identical": true,
+    "A_sources_identical": true,
+    "B_lean_inventory_different": true,
+    "B_source_different": true,
+    "C_canonical_llbc_different": true,
+    "C_lean_inventory_identical": true,
+    "C_source_different": true,
+    "failed_charon_retained_prior_destination": true,
+    "unsupported_aeneas_emitted_sorry": true
+  },
+  "environment": {
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "aeneas_version": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-version"
+      ],
+      "cwd_role": "work",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "aeneas unknown\n"
+    },
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "charon_version": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "version"
+      ],
+      "cwd_role": "work",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "0.1.210\n"
+    },
+    "flags": [
+      "--preset aeneas",
+      "-backend lean",
+      "-split-files",
+      "-gen-lib-entry",
+      "-sequential",
+      "-no-progress-bar"
+    ],
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "rustc_version": {
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--version",
+        "--verbose"
+      ],
+      "cwd_role": "work",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n"
+    },
+    "script_sha256": "ca098f663933e0d0993f9a0691ab50a24bec6d31f100e59d6ed3dabc94af82df"
+  },
+  "runs": [
+    {
+      "aeneas": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A1/lean",
+          "-no-progress-bar",
+          "-split-files",
+          "-gen-lib-entry",
+          "-sequential",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A1/snapshot.llbc"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A1/snapshot.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A1/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A1/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A1/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132768 seconds\n"
+      },
+      "canonical_llbc_sha256": "5eaaaea233c5d043890ddb94a7178f9efd6db8de18b3e9c91e337cca3be75cdb",
+      "charon": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "destination_exists": true,
+      "destination_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "label": "A1",
+      "lean_inventory": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "lean_manifest": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "declaration_lines": [
+            "def step (x : Std.U32) : Result Std.U32 := do",
+            "def select"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Snapshot.Types"
+          ],
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: function definitions",
+            "namespace snapshot_probe",
+            "/-- [snapshot_probe::step]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 4:0-6:1",
+            "/-- [snapshot_probe::select]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 8:0-10:1",
+            "end snapshot_probe"
+          ]
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "declaration_lines": [],
+          "imports": [
+            "import Snapshot.Funs"
+          ],
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7",
+          "source_comment_lines": []
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "declaration_lines": [],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: type definitions",
+            "namespace snapshot_probe",
+            "end snapshot_probe"
+          ]
+        }
+      },
+      "llbc_bytes": 10898,
+      "llbc_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "manifest": {
+        "charon_version": "0.1.210",
+        "crate_name": "snapshot_probe",
+        "dest_file": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+        "files": [
+          {
+            "contents_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc",
+            "crate_name": "snapshot_probe",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 1,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 2,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "attributes": [
+              {
+                "DocComment": " model-source-marker-A"
+              }
+            ],
+            "body_kind": "Structured",
+            "id": 0,
+            "local": true,
+            "name": "snapshot_probe::step",
+            "opacity": "Transparent",
+            "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [],
+            "body_kind": "Structured",
+            "id": 1,
+            "local": true,
+            "name": "snapshot_probe::select",
+            "opacity": "Transparent",
+            "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 1,
+                "line": 10
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [
+              {
+                "DocComment": " Wrapping (modular) addition. Computes `self + rhs`,"
+              },
+              {
+                "DocComment": " wrapping around at the boundary of the type."
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " # Examples"
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " ```"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(55), 255);"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(u32::MAX), 199);"
+              },
+              {
+                "DocComment": " ```"
+              }
+            ],
+            "body_kind": "Opaque",
+            "id": 2,
+            "local": false,
+            "name": "core::num::<impl>::wrapping_add",
+            "opacity": "Foreign",
+            "source_text": null,
+            "span": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 1
+            }
+          }
+        ],
+        "has_errors": false,
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "name": "snapshot_probe::step"
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "name": "snapshot_probe::select"
+          },
+          {
+            "key": {
+              "Fun": 2
+            },
+            "name": "core::num::<impl>::wrapping_add"
+          }
+        ],
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          }
+        ],
+        "preset": "Aeneas",
+        "target_information": [
+          {
+            "key": "aarch64-apple-darwin",
+            "value": {
+              "is_little_endian": true,
+              "target_pointer_size": 8
+            }
+          }
+        ]
+      },
+      "source_fixture": "source-A.rs",
+      "source_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+    },
+    {
+      "aeneas": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A2/lean",
+          "-no-progress-bar",
+          "-split-files",
+          "-gen-lib-entry",
+          "-sequential",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A2/snapshot.llbc"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A2/snapshot.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A2/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A2/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A2/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132518 seconds\n"
+      },
+      "canonical_llbc_sha256": "5eaaaea233c5d043890ddb94a7178f9efd6db8de18b3e9c91e337cca3be75cdb",
+      "charon": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "destination_exists": true,
+      "destination_sha256": "5389fa297ab49c20af9c1beb544c80681ddc7f106dade91b3203a311f0142879",
+      "label": "A2",
+      "lean_inventory": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "lean_manifest": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "declaration_lines": [
+            "def step (x : Std.U32) : Result Std.U32 := do",
+            "def select"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Snapshot.Types"
+          ],
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: function definitions",
+            "namespace snapshot_probe",
+            "/-- [snapshot_probe::step]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 4:0-6:1",
+            "/-- [snapshot_probe::select]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 8:0-10:1",
+            "end snapshot_probe"
+          ]
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "declaration_lines": [],
+          "imports": [
+            "import Snapshot.Funs"
+          ],
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7",
+          "source_comment_lines": []
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "declaration_lines": [],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: type definitions",
+            "namespace snapshot_probe",
+            "end snapshot_probe"
+          ]
+        }
+      },
+      "llbc_bytes": 10898,
+      "llbc_sha256": "5389fa297ab49c20af9c1beb544c80681ddc7f106dade91b3203a311f0142879",
+      "manifest": {
+        "charon_version": "0.1.210",
+        "crate_name": "snapshot_probe",
+        "dest_file": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+        "files": [
+          {
+            "contents_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc",
+            "crate_name": "snapshot_probe",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 1,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 2,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "attributes": [
+              {
+                "DocComment": " model-source-marker-A"
+              }
+            ],
+            "body_kind": "Structured",
+            "id": 0,
+            "local": true,
+            "name": "snapshot_probe::step",
+            "opacity": "Transparent",
+            "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [],
+            "body_kind": "Structured",
+            "id": 1,
+            "local": true,
+            "name": "snapshot_probe::select",
+            "opacity": "Transparent",
+            "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 1,
+                "line": 10
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [
+              {
+                "DocComment": " Wrapping (modular) addition. Computes `self + rhs`,"
+              },
+              {
+                "DocComment": " wrapping around at the boundary of the type."
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " # Examples"
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " ```"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(55), 255);"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(u32::MAX), 199);"
+              },
+              {
+                "DocComment": " ```"
+              }
+            ],
+            "body_kind": "Opaque",
+            "id": 2,
+            "local": false,
+            "name": "core::num::<impl>::wrapping_add",
+            "opacity": "Foreign",
+            "source_text": null,
+            "span": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 1
+            }
+          }
+        ],
+        "has_errors": false,
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "name": "snapshot_probe::step"
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "name": "snapshot_probe::select"
+          },
+          {
+            "key": {
+              "Fun": 2
+            },
+            "name": "core::num::<impl>::wrapping_add"
+          }
+        ],
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          }
+        ],
+        "preset": "Aeneas",
+        "target_information": [
+          {
+            "key": "aarch64-apple-darwin",
+            "value": {
+              "is_little_endian": true,
+              "target_pointer_size": 8
+            }
+          }
+        ]
+      },
+      "source_fixture": "source-A.rs",
+      "source_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+    },
+    {
+      "aeneas": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/C-comment-only/lean",
+          "-no-progress-bar",
+          "-split-files",
+          "-gen-lib-entry",
+          "-sequential",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/C-comment-only/snapshot.llbc"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/C-comment-only/snapshot.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/C-comment-only/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/C-comment-only/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/C-comment-only/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132505 seconds\n"
+      },
+      "canonical_llbc_sha256": "22c580dc7ad726c64a2df5845c25a14f23aa2bd08a66fc5456d01cf74d1c61a7",
+      "charon": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "destination_exists": true,
+      "destination_sha256": "375375ad51da2bfe515bed6c1000bea47b1f9a0f14b49ea8a1f22b8e21329641",
+      "label": "C-comment-only",
+      "lean_inventory": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "lean_manifest": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "declaration_lines": [
+            "def step (x : Std.U32) : Result Std.U32 := do",
+            "def select"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Snapshot.Types"
+          ],
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: function definitions",
+            "namespace snapshot_probe",
+            "/-- [snapshot_probe::step]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 4:0-6:1",
+            "/-- [snapshot_probe::select]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 8:0-10:1",
+            "end snapshot_probe"
+          ]
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "declaration_lines": [],
+          "imports": [
+            "import Snapshot.Funs"
+          ],
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7",
+          "source_comment_lines": []
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "declaration_lines": [],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: type definitions",
+            "namespace snapshot_probe",
+            "end snapshot_probe"
+          ]
+        }
+      },
+      "llbc_bytes": 10898,
+      "llbc_sha256": "375375ad51da2bfe515bed6c1000bea47b1f9a0f14b49ea8a1f22b8e21329641",
+      "manifest": {
+        "charon_version": "0.1.210",
+        "crate_name": "snapshot_probe",
+        "dest_file": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+        "files": [
+          {
+            "contents_sha256": "86cf9996242e6b952efa3ad98c3b8028622fd97899ff8c397a8c22e8852f2e93",
+            "crate_name": "snapshot_probe",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 1,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 2,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "attributes": [
+              {
+                "DocComment": " model-source-marker-C"
+              }
+            ],
+            "body_kind": "Structured",
+            "id": 0,
+            "local": true,
+            "name": "snapshot_probe::step",
+            "opacity": "Transparent",
+            "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [],
+            "body_kind": "Structured",
+            "id": 1,
+            "local": true,
+            "name": "snapshot_probe::select",
+            "opacity": "Transparent",
+            "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 1,
+                "line": 10
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [
+              {
+                "DocComment": " Wrapping (modular) addition. Computes `self + rhs`,"
+              },
+              {
+                "DocComment": " wrapping around at the boundary of the type."
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " # Examples"
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " ```"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(55), 255);"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(u32::MAX), 199);"
+              },
+              {
+                "DocComment": " ```"
+              }
+            ],
+            "body_kind": "Opaque",
+            "id": 2,
+            "local": false,
+            "name": "core::num::<impl>::wrapping_add",
+            "opacity": "Foreign",
+            "source_text": null,
+            "span": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 1
+            }
+          }
+        ],
+        "has_errors": false,
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "name": "snapshot_probe::step"
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "name": "snapshot_probe::select"
+          },
+          {
+            "key": {
+              "Fun": 2
+            },
+            "name": "core::num::<impl>::wrapping_add"
+          }
+        ],
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          }
+        ],
+        "preset": "Aeneas",
+        "target_information": [
+          {
+            "key": "aarch64-apple-darwin",
+            "value": {
+              "is_little_endian": true,
+              "target_pointer_size": 8
+            }
+          }
+        ]
+      },
+      "source_fixture": "source-C-comment-only.rs",
+      "source_sha256": "86cf9996242e6b952efa3ad98c3b8028622fd97899ff8c397a8c22e8852f2e93"
+    },
+    {
+      "aeneas": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/B/lean",
+          "-no-progress-bar",
+          "-split-files",
+          "-gen-lib-entry",
+          "-sequential",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/B/snapshot.llbc"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/B/snapshot.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/B/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/B/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/B/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132933 seconds\n"
+      },
+      "canonical_llbc_sha256": "88a60bbedf5208f50984c67c40c74aa14c81dafd792a873a24835327e57b59be",
+      "charon": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "destination_exists": true,
+      "destination_sha256": "6774e33245dfeddc0a110c9ac2ea2244710a3d233140241589cb19ef370e4c55",
+      "label": "B",
+      "lean_inventory": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f0f5ca2744e63ced68d4de6d99fdffc2491c7b5bb8386f437c4020eabd41c519"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "lean_manifest": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "declaration_lines": [
+            "def step (x : Std.U32) : Result Std.U32 := do",
+            "def select"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Snapshot.Types"
+          ],
+          "sha256": "f0f5ca2744e63ced68d4de6d99fdffc2491c7b5bb8386f437c4020eabd41c519",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: function definitions",
+            "namespace snapshot_probe",
+            "/-- [snapshot_probe::step]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 4:0-6:1",
+            "/-- [snapshot_probe::select]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 8:0-10:1",
+            "end snapshot_probe"
+          ]
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "declaration_lines": [],
+          "imports": [
+            "import Snapshot.Funs"
+          ],
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7",
+          "source_comment_lines": []
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "declaration_lines": [],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: type definitions",
+            "namespace snapshot_probe",
+            "end snapshot_probe"
+          ]
+        }
+      },
+      "llbc_bytes": 10898,
+      "llbc_sha256": "6774e33245dfeddc0a110c9ac2ea2244710a3d233140241589cb19ef370e4c55",
+      "manifest": {
+        "charon_version": "0.1.210",
+        "crate_name": "snapshot_probe",
+        "dest_file": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+        "files": [
+          {
+            "contents_sha256": "c8cf7009786ef366e509b8d46bede05a150627b50121e89df2bf0188dad4da01",
+            "crate_name": "snapshot_probe",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 1,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 2,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "attributes": [
+              {
+                "DocComment": " model-source-marker-B"
+              }
+            ],
+            "body_kind": "Structured",
+            "id": 0,
+            "local": true,
+            "name": "snapshot_probe::step",
+            "opacity": "Transparent",
+            "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(2)\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [],
+            "body_kind": "Structured",
+            "id": 1,
+            "local": true,
+            "name": "snapshot_probe::select",
+            "opacity": "Transparent",
+            "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 1,
+                "line": 10
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [
+              {
+                "DocComment": " Wrapping (modular) addition. Computes `self + rhs`,"
+              },
+              {
+                "DocComment": " wrapping around at the boundary of the type."
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " # Examples"
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " ```"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(55), 255);"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(u32::MAX), 199);"
+              },
+              {
+                "DocComment": " ```"
+              }
+            ],
+            "body_kind": "Opaque",
+            "id": 2,
+            "local": false,
+            "name": "core::num::<impl>::wrapping_add",
+            "opacity": "Foreign",
+            "source_text": null,
+            "span": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 1
+            }
+          }
+        ],
+        "has_errors": false,
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "name": "snapshot_probe::step"
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "name": "snapshot_probe::select"
+          },
+          {
+            "key": {
+              "Fun": 2
+            },
+            "name": "core::num::<impl>::wrapping_add"
+          }
+        ],
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          }
+        ],
+        "preset": "Aeneas",
+        "target_information": [
+          {
+            "key": "aarch64-apple-darwin",
+            "value": {
+              "is_little_endian": true,
+              "target_pointer_size": 8
+            }
+          }
+        ]
+      },
+      "source_fixture": "source-B.rs",
+      "source_sha256": "c8cf7009786ef366e509b8d46bede05a150627b50121e89df2bf0188dad4da01"
+    },
+    {
+      "aeneas": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A3/lean",
+          "-no-progress-bar",
+          "-split-files",
+          "-gen-lib-entry",
+          "-sequential",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A3/snapshot.llbc"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A3/snapshot.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A3/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A3/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/A3/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.132273 seconds\n"
+      },
+      "canonical_llbc_sha256": "5eaaaea233c5d043890ddb94a7178f9efd6db8de18b3e9c91e337cca3be75cdb",
+      "charon": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "destination_exists": true,
+      "destination_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "label": "A3",
+      "lean_inventory": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "lean_manifest": {
+        "Funs.lean": {
+          "bytes": 1323,
+          "declaration_lines": [
+            "def step (x : Std.U32) : Result Std.U32 := do",
+            "def select"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Snapshot.Types"
+          ],
+          "sha256": "f7f03a06c76b08b1cb1fe205f99cd0b5b0a7b65374846d0e5520ce3b50f55591",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: function definitions",
+            "namespace snapshot_probe",
+            "/-- [snapshot_probe::step]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 4:0-6:1",
+            "/-- [snapshot_probe::select]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 8:0-10:1",
+            "end snapshot_probe"
+          ]
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "declaration_lines": [],
+          "imports": [
+            "import Snapshot.Funs"
+          ],
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7",
+          "source_comment_lines": []
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "declaration_lines": [],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: type definitions",
+            "namespace snapshot_probe",
+            "end snapshot_probe"
+          ]
+        }
+      },
+      "llbc_bytes": 10898,
+      "llbc_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "manifest": {
+        "charon_version": "0.1.210",
+        "crate_name": "snapshot_probe",
+        "dest_file": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+        "files": [
+          {
+            "contents_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc",
+            "crate_name": "snapshot_probe",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 1,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 2,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "attributes": [
+              {
+                "DocComment": " model-source-marker-A"
+              }
+            ],
+            "body_kind": "Structured",
+            "id": 0,
+            "local": true,
+            "name": "snapshot_probe::step",
+            "opacity": "Transparent",
+            "source_text": "pub fn step(x: u32) -> u32 {\n    x.wrapping_add(1)\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [],
+            "body_kind": "Structured",
+            "id": 1,
+            "local": true,
+            "name": "snapshot_probe::select",
+            "opacity": "Transparent",
+            "source_text": "pub fn select(flag: bool, left: u32, right: u32) -> u32 {\n    if flag { left } else { right }\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 1,
+                "line": 10
+              },
+              "file_id": 0
+            }
+          },
+          {
+            "attributes": [
+              {
+                "DocComment": " Wrapping (modular) addition. Computes `self + rhs`,"
+              },
+              {
+                "DocComment": " wrapping around at the boundary of the type."
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " # Examples"
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " ```"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(55), 255);"
+              },
+              {
+                "DocComment": "assert_eq!(200u32.wrapping_add(u32::MAX), 199);"
+              },
+              {
+                "DocComment": " ```"
+              }
+            ],
+            "body_kind": "Opaque",
+            "id": 2,
+            "local": false,
+            "name": "core::num::<impl>::wrapping_add",
+            "opacity": "Foreign",
+            "source_text": null,
+            "span": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 1
+            }
+          }
+        ],
+        "has_errors": false,
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "name": "snapshot_probe::step"
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "name": "snapshot_probe::select"
+          },
+          {
+            "key": {
+              "Fun": 2
+            },
+            "name": "core::num::<impl>::wrapping_add"
+          }
+        ],
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          }
+        ],
+        "preset": "Aeneas",
+        "target_information": [
+          {
+            "key": "aarch64-apple-darwin",
+            "value": {
+              "is_little_endian": true,
+              "target_pointer_size": 8
+            }
+          }
+        ]
+      },
+      "source_fixture": "source-A.rs",
+      "source_sha256": "2a6546c68674345f9ba1ff06fa410367095f74df152d93ba5e9d9468264b89fc"
+    },
+    {
+      "charon": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd_role": "work",
+        "exit_code": 2,
+        "stderr": "error: this file contains an unclosed delimiter\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs:1:16\n  |\n1 | pub fn broken(\n  |              -^\n  |              |\n  |              unclosed delimiter\n\nerror: aborting due to 1 previous error\n\nERROR Code failed to compile\n",
+        "stdout": ""
+      },
+      "destination_exists": true,
+      "destination_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "label": "invalid-rust",
+      "prior_success_llbc_sha256": "0784839f4f1fd3ade660340301810d4a2109729b0ecbf47e6c2bf72bc9f96e7e",
+      "source_fixture": "source-invalid.rs",
+      "source_sha256": "82e06253ad3baafda03f0e2c8e642c62eef6d7b597275146c15820b713272add"
+    },
+    {
+      "aeneas": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+          "-backend",
+          "lean",
+          "-dest",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/unsupported-rust/lean",
+          "-no-progress-bar",
+          "-split-files",
+          "-gen-lib-entry",
+          "-sequential",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/unsupported-rust/snapshot.llbc"
+        ],
+        "cwd_role": "work",
+        "exit_code": 1,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/unsupported-rust/snapshot.llbc\n[\u001b[91mError\u001b[39m] Aeneas does not yet support dereferencing raw pointers.\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 5:4-5:8\n[\u001b[93mWarn\u001b[39m ] Could not translate the body of function 'snapshot_probe::read_raw because of previous error\nName pattern: 'snapshot_probe::read_raw'\nDefinition span: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 3:0-6:1\nSource: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 5:4-5:8\nCompiler source: interp/Interp.ml, line 550\n\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/unsupported-rust/lean/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated the partial file (because of 1 errors, including 1 unique errors): /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/unsupported-rust/lean/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/artifacts/unsupported-rust/lean/Snapshot.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.108842 seconds\n"
+      },
+      "canonical_llbc_sha256": "399a0210d6932879a6cb205a68dd42845e061f390e37c579c15b6b124665da5f",
+      "charon": {
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "rustc",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+          "--",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs",
+          "--crate-type",
+          "lib",
+          "--crate-name",
+          "snapshot_probe",
+          "--edition",
+          "2021"
+        ],
+        "cwd_role": "work",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "destination_exists": true,
+      "destination_sha256": "daab1c093c8af871b3d7751a9625f49137f3bedf03f19e9ab3a3c46b10fb078d",
+      "label": "unsupported-rust",
+      "lean_inventory": {
+        "Funs.lean": {
+          "bytes": 909,
+          "sha256": "59e33de739df4300d0e46e96ba8d9cc0bd0a516a0735f7fc3b2eba1b974b41b6"
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7"
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+        }
+      },
+      "lean_manifest": {
+        "Funs.lean": {
+          "bytes": 909,
+          "declaration_lines": [
+            "def read_raw (ptr : ConstRawPtr Std.U32) : Result Std.U32 := do"
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Snapshot.Types"
+          ],
+          "sha256": "59e33de739df4300d0e46e96ba8d9cc0bd0a516a0735f7fc3b2eba1b974b41b6",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: function definitions",
+            "namespace snapshot_probe",
+            "/-- [snapshot_probe::read_raw]:",
+            "Source: '/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs', lines 3:0-6:1",
+            "end snapshot_probe"
+          ]
+        },
+        "Snapshot.lean": {
+          "bytes": 21,
+          "declaration_lines": [],
+          "imports": [
+            "import Snapshot.Funs"
+          ],
+          "sha256": "f655d06ebf9dbd6812b53be9c7a3bd3d162cb1d848e554aaff6b160922913ca7",
+          "source_comment_lines": []
+        },
+        "Types.lean": {
+          "bytes": 533,
+          "declaration_lines": [],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4",
+          "source_comment_lines": [
+            "-- [snapshot_probe]: type definitions",
+            "namespace snapshot_probe",
+            "end snapshot_probe"
+          ]
+        }
+      },
+      "llbc_bytes": 4290,
+      "llbc_sha256": "daab1c093c8af871b3d7751a9625f49137f3bedf03f19e9ab3a3c46b10fb078d",
+      "manifest": {
+        "charon_version": "0.1.210",
+        "crate_name": "snapshot_probe",
+        "dest_file": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/current.llbc",
+        "files": [
+          {
+            "contents_sha256": "0539e02f5f6f6a7adb1d1af5b21d47be8f78556a89a87f5819ccd5623cda66f8",
+            "crate_name": "snapshot_probe",
+            "id": 0,
+            "name": {
+              "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-aeneas-boundary-2026-09-29/support/work/source.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "attributes": [],
+            "body_kind": "Structured",
+            "id": 0,
+            "local": true,
+            "name": "snapshot_probe::read_raw",
+            "opacity": "Transparent",
+            "source_text": "pub unsafe fn read_raw(ptr: *const u32) -> u32 {\n    // This is deliberately unsupported by the selected Aeneas path.\n    *ptr\n}",
+            "span": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 1,
+                "line": 6
+              },
+              "file_id": 0
+            }
+          }
+        ],
+        "has_errors": false,
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "name": "snapshot_probe::read_raw"
+          }
+        ],
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          }
+        ],
+        "preset": "Aeneas",
+        "target_information": [
+          {
+            "key": "aarch64-apple-darwin",
+            "value": {
+              "is_little_endian": true,
+              "target_pointer_size": 8
+            }
+          }
+        ]
+      },
+      "source_fixture": "source-unsupported.rs",
+      "source_sha256": "0539e02f5f6f6a7adb1d1af5b21d47be8f78556a89a87f5819ccd5623cda66f8"
+    }
+  ]
+}

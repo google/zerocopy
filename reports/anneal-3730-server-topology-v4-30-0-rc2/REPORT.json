@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "lean/language-server",
+    "lean/workspace-isolation",
+    "lean/rpc",
+    "lean/memory",
+    "anneal/interactive-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "direct server topology probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "e25dffeefadbd86f7d3eec4f862a8cf882e709fb99365a6730d8359be42288c0"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

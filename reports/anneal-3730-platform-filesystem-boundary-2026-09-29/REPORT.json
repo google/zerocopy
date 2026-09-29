@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal/filesystem-publication",
+    "anneal/platform-portability",
+    "filesystem/rename-and-unlink",
+    "filesystem/locking"
+  ],
+  "subjects": [
+    {
+      "name": "macOS host APFS scratch filesystem",
+      "identity": {
+        "operating_system": "macOS 26.6.2 build 25G83",
+        "kernel": "Darwin 25.6.0 arm64",
+        "filesystem": "APFS",
+        "device": "disk3s1"
+      }
+    },
+    {
+      "name": "cached Ubuntu container on OrbStack Linux overlayfs",
+      "identity": {
+        "image": "ubuntu:24.04",
+        "image_digest": "sha256:224a1869083a311ef3f13648a154ba79832fbef6364d31493642ca03082da254",
+        "linux_image_id": "sha256:a61567bd31828687156d735ea8eb01ba4e37636e225dd6a48ba94136a70d9d61",
+        "kernel": "7.0.14-orbstack-00380-ga7e0a2dc9535",
+        "filesystem": "overlayfs"
+      }
+    },
+    {
+      "name": "scratch-only cross-platform filesystem probe",
+      "identity": {
+        "file": "support/fs_probe.pl",
+        "sha256": "05e619e1fd3c6241070f5b3c421c66d5f84803c66a1e26e8a8623bc2eb98d54a"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "lean/lake",
+    "lean/language-server",
+    "lean/resource-use",
+    "anneal/interactive-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 and Lake 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+      }
+    },
+    {
+      "name": "bounded resource-economics probe",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "787f967a151e85c93761ae505f98c011af75e95362d4499be5841c354d8514c6"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "anneal/editor-integration",
+    "anneal/mcp-contract",
+    "lean/language-server",
+    "lean/document-authority"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 language server",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "synthetic two-client editor and MCP-shaped broker fixture",
+      "identity": {
+        "file": "support/probe.py",
+        "sha256": "f222d8e7397bc9ffadeeaab10924aeadc3da55546ac770d2b78321dc67e17e75"
+      }
+    },
+    {
+      "name": "Language Server Protocol 3.18 specification",
+      "identity": {
+        "repository": "microsoft/language-server-protocol",
+        "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff"
+      }
+    },
+    {
+      "name": "Model Context Protocol 2026-07-28 specification",
+      "identity": {
+        "repository": "modelcontextprotocol/modelcontextprotocol",
+        "revision": "5f5440bb26a62e2cf3440b92da5a667efa03b267"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

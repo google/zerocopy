@@ -1,0 +1,172 @@
+{
+  "anneal-3730-charon-build-closure-control-2026-09-29": {
+    "suite": "R08",
+    "ids": [
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      105
+    ],
+    "method": "Ten offline private-target Cargo/Charon requests varied build.rs, proc macro, include_str, env, path dependency and source path; parsed LLBC/declaration projections and rejected a successful wrong binary unit.",
+    "boundary": "One pinned Charon/Cargo tuple and saved copied workspace; no unsaved overlays, arbitrary input closure, same-process reset or Anneal scheduler.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/raw-results.json",
+      "support/artifacts/baseline.llbc",
+      "support/artifacts/bin-unit.llbc",
+      "support/probe.py",
+      "support/verify.py"
+    ]
+  },
+  "anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29": {
+    "suite": "R09",
+    "ids": [
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      148,
+      149
+    ],
+    "method": "Fresh one-shot Charon/Aeneas base, reorder, shrink and unsupported-pointer requests; inventoried emitted files/declaration ranges, checked fresh Lean consumers, stale reused destination and sorryAx after translation exit 1.",
+    "boundary": "One-shot CLI, lexical source/range links and locally supplied external Lean model; no compiled external registry mutation, same-process OCaml API or authenticated producer map.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/raw-results.json",
+      "support/inputs/base/trait_probe.rs",
+      "support/outputs/base/Funs.lean",
+      "support/outputs/error/Funs.lean",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-lake-same-key-artifact-writers-2026-09-29": {
+    "suite": "R10",
+    "ids": [
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      108,
+      109,
+      151
+    ],
+    "method": "Three two-process same-key Lake cache-miss pairs, then real RLIMIT_FSIZE partial OLean/ILean/C object writes, no-build false-hit, direct import oracle and explicit delete/rebuild repair.",
+    "boundary": "Tiny private package roots and one pinned Lake on APFS; no causally forced simultaneous artifact syscall, power loss, shared writable build tree or Anneal last-good recovery.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/artifacts/partial-olean.bin",
+      "support/artifacts/partial-ilean.bin",
+      "support/artifacts/partial-c.bin",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-lean-server-soak-context-rpc-2026-09-29": {
+    "suite": "R11",
+    "ids": [
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      139,
+      153,
+      154
+    ],
+    "method": "Direct pinned Lean server handled 24 edits, four close/reopens, restarts, wrong-import sentinel, rich info reference dereference/release and client timeout; sampled processes, RSS and footprint.",
+    "boundary": "Tiny direct Lean 15-second run; no Anneal broker, Mathlib scale, hours-long leak inference, unique tree memory or proof of cancellation.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/transcript.json",
+      "support/work/A/Proof.lean",
+      "support/work/B/Proof.lean",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-cross-layer-comparator-mutants-2026-09-29": {
+    "suite": "R12",
+    "ids": [
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      135,
+      147,
+      148,
+      149,
+      158,
+      159
+    ],
+    "method": "Pinned Rust/Charon/Aeneas/Lean base, reorder, changed source and fresh rerun; rustc and fresh Lean oracles plus weaker, missing, sorry, stale, swapped-import and axiom/concrete-model comparator mutants.",
+    "boundary": "Manually assembled small fixture on same host and pins; no Anneal generator, authenticated producer manifest, independent machine, full toolchain upgrade or translation soundness proof.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/results.json",
+      "support/comparison-manifest.json",
+      "support/probe.py",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-lean-lsp-projection-code-actions-2026-09-29": {
+    "suite": "R13",
+    "ids": [
+      25,
+      26,
+      29,
+      30,
+      31,
+      32,
+      59,
+      62
+    ],
+    "method": "Two pinned Lean LSP sessions tested UTF-16 diagnostic after astral Unicode, hover, 223 completion items and empty quick-fix response; 500-edits/64-line seeded illustrative projection model exercised stale/cross-segment rejects.",
+    "boundary": "Direct Lean and synthetic Python source map only; no Rust-hosted projection, actual completion edit application, rename/navigation/tokens/InfoView or editor client.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/lsp-transcript.json",
+      "support/projection-stream.json",
+      "support/Unicode.lean",
+      "support/lsp_probe.py",
+      "support/projection_model.py",
+      "support/verify.py"
+    ]
+  }
+}

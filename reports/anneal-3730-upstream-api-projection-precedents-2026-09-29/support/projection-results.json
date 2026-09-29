@@ -1,0 +1,102 @@
+{
+  "ambiguous_same_generated_edit": {
+    "all_candidates": [
+      {
+        "end_mapping": "first-source-to-first-virtual",
+        "source_range": [
+          27,
+          33
+        ],
+        "start_mapping": "first-source-to-first-virtual"
+      },
+      {
+        "end_mapping": "second-source-to-first-virtual",
+        "source_range": [
+          64,
+          70
+        ],
+        "start_mapping": "second-source-to-first-virtual"
+      }
+    ],
+    "first_choice_original_order": [
+      27,
+      33
+    ],
+    "first_choice_reversed_order": [
+      64,
+      70
+    ],
+    "generated_range": [
+      0,
+      6
+    ],
+    "strict_policy": {
+      "accepted": false,
+      "reason": "ambiguous-or-unmapped"
+    }
+  },
+  "basis": "Python standard-library contract model; upstream packages were source-reviewed, not executed",
+  "completion_additional_edits": {
+    "additional_generated_ranges": [
+      [
+        30,
+        32
+      ],
+      [
+        10,
+        12
+      ]
+    ],
+    "main_generated_range": [
+      28,
+      30
+    ],
+    "strict_atomic_candidate_accepted": false,
+    "volar_like_dropped_count": 1,
+    "volar_like_kept_source_ranges": [
+      [
+        66,
+        68
+      ]
+    ]
+  },
+  "cross_segment_edit": {
+    "fallback_candidates": [
+      {
+        "end_mapping": "second-source-to-second-virtual",
+        "source_range": [
+          30,
+          67
+        ],
+        "start_mapping": "first-source-to-first-virtual"
+      },
+      {
+        "end_mapping": "second-source-to-second-virtual",
+        "source_range": [
+          67,
+          67
+        ],
+        "start_mapping": "second-source-to-first-virtual"
+      }
+    ],
+    "first_candidate_source_excerpt": "rfl\n}\nfn second() {\n    /// @lean by ",
+    "generated_range": [
+      3,
+      31
+    ],
+    "strict_policy": {
+      "accepted": false,
+      "reason": "cross-segment"
+    }
+  },
+  "generated_offsets": [
+    0,
+    28
+  ],
+  "generated_sha256": "60ad96e14cc2eb0fd55343a203d906b8de49e8604ff5d409e222f76e5baa0873",
+  "source_offsets": [
+    27,
+    64
+  ],
+  "source_sha256": "374e48ce7e1d1ba6694fb3a7aa831ee46c4ab9a53c64450a2b7c3aec27bbbe99"
+}

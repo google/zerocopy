@@ -1,0 +1,28 @@
+{
+  "kind": "local_contract_model_over_recorded_lean_lsp",
+  "input_transcript": "transcript-run3.json",
+  "disconnect_after_seq": 36,
+  "reconcile_at_seq": 47,
+  "subscription_cache_without_replay": {
+    "Shadow.lean": {
+      "version": 2,
+      "errors": 2
+    },
+    "Other.lean": {
+      "version": 1,
+      "errors": 1
+    }
+  },
+  "authoritative_snapshot_after_poll": {
+    "Shadow.lean": {
+      "version": 3,
+      "errors": 0
+    },
+    "Other.lean": {
+      "version": 1,
+      "errors": 1
+    }
+  },
+  "flattened_last_notification_error_count": 0,
+  "interpretation": "Lost Shadow v3 event leaves a stale error; authoritative polling repairs Shadow while retaining Other. Flattening diagnostics by latest event loses Other."
+}

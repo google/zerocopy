@@ -1,0 +1,11 @@
+{"plugins": [],
+ "package": "layout",
+ "options": {},
+ "name": "AnnTwo",
+ "isModule": false,
+ "importArts":
+ {"Shared":
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/.lake/build/lib/lean/Shared.olean"],
+  "Model":
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-artifact-layouts-v4-30-0-rc2/support/work/pad1/per-annotation/.lake/build/lib/lean/Model.olean"]},
+ "dynlibs": []}

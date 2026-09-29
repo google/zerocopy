@@ -1,0 +1,4376 @@
+{
+  "environment": {
+    "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "script_sha256": "4561c1da3a588c91d35c1c534a101170e43a9a5a3c9a4bab78c456e5f7f16814",
+    "variant_hashes": {
+      "A.rs": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "B-moved.rs": "dd6c63a192b51e92ec9b64876f4d53a10a38bb543445111512c4c1674370dea2",
+      "C-duplicated.rs": "e2dcedf3b5480d6b08d2a3ec8d87636cb22ecb3a28041b407b000c5bc6a72e51"
+    }
+  },
+  "runs": [
+    {
+      "cargo_flags": [
+        "--lib"
+      ],
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/A-default-lib.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture",
+      "env": {
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/target-A-default-lib",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "PATH_prefix": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin"
+        ],
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+      },
+      "exit_code": 0,
+      "label": "A-default-lib",
+      "lock_sha256": "ce22be91bdb3077c47473098f3c8f68a0409b080ce41e86522536cfe7752c785",
+      "manifest_sha256": "61c3123835f89ae8c6ce2d198c6813e866ca7c4e06d0bd06393653529a24187c",
+      "output_exists": true,
+      "projection": {
+        "crate_name": "subject_identity_probe",
+        "files": [
+          {
+            "contents_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+            "crate_name": "subject_identity_probe",
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "all_attributes": [],
+            "id": 0,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::default_only",
+            "short_name": "default_only",
+            "source_text": "pub fn default_only() -> u32 { 12 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 8
+                },
+                "end": {
+                  "col": 35,
+                  "line": 8
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "default_only",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: macro-generated"
+              }
+            ],
+            "id": 1,
+            "local": true,
+            "markers": [
+              "proof-id: macro-generated"
+            ],
+            "name": "subject_identity_probe::generated",
+            "short_name": "generated",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 8,
+                  "line": 35
+                },
+                "end": {
+                  "col": 40,
+                  "line": 35
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "generated",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: movable"
+              }
+            ],
+            "id": 2,
+            "local": true,
+            "markers": [
+              "proof-id: movable"
+            ],
+            "name": "subject_identity_probe::movable",
+            "short_name": "movable",
+            "source_text": "pub fn movable() -> u32 { 51 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 41
+                },
+                "end": {
+                  "col": 30,
+                  "line": 41
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "movable",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 3,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::neighbor",
+            "short_name": "neighbor",
+            "source_text": "pub fn neighbor() -> u32 { 52 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 43
+                },
+                "end": {
+                  "col": 31,
+                  "line": 43
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "neighbor",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: left-duplicate"
+              }
+            ],
+            "id": 4,
+            "local": true,
+            "markers": [
+              "proof-id: left-duplicate"
+            ],
+            "name": "subject_identity_probe::left::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 21 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 12
+                },
+                "end": {
+                  "col": 36,
+                  "line": 12
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "left",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: right-duplicate"
+              }
+            ],
+            "id": 5,
+            "local": true,
+            "markers": [
+              "proof-id: right-duplicate"
+            ],
+            "name": "subject_identity_probe::right::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 22 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 17
+                },
+                "end": {
+                  "col": 36,
+                  "line": 17
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "right",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 6,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::Rule::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 22
+                },
+                "end": {
+                  "col": 37,
+                  "line": 22
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 7,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::Rule::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32;",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 23
+                },
+                "end": {
+                  "col": 30,
+                  "line": 23
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 8,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 27
+                },
+                "end": {
+                  "col": 1,
+                  "line": 30
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-impl"
+              }
+            ],
+            "id": 9,
+            "local": true,
+            "markers": [
+              "proof-id: trait-impl"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32 { 32 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 29
+                },
+                "end": {
+                  "col": 36,
+                  "line": 29
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          }
+        ],
+        "has_errors": false,
+        "llbc_sha256": "aacad16387a02f5589d2f0006eaaf41ff91fa419854b773870e470dd04ecf0d6",
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 4
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 5
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 6
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 7
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 9
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 8
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 3
+            }
+          }
+        ]
+      },
+      "source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/src/lib.rs",
+      "source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "stderr": "   Compiling subject_identity_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s\n",
+      "stdout": "",
+      "variant": "A.rs"
+    },
+    {
+      "cargo_flags": [
+        "--lib",
+        "--features",
+        "selected"
+      ],
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/A-selected-lib.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/Cargo.toml",
+        "--lib",
+        "--features",
+        "selected",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture",
+      "env": {
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/target-A-selected-lib",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "PATH_prefix": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin"
+        ],
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+      },
+      "exit_code": 0,
+      "label": "A-selected-lib",
+      "lock_sha256": "ce22be91bdb3077c47473098f3c8f68a0409b080ce41e86522536cfe7752c785",
+      "manifest_sha256": "61c3123835f89ae8c6ce2d198c6813e866ca7c4e06d0bd06393653529a24187c",
+      "output_exists": true,
+      "projection": {
+        "crate_name": "subject_identity_probe",
+        "files": [
+          {
+            "contents_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+            "crate_name": "subject_identity_probe",
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "all_attributes": [
+              {
+                "DocComment": "proof-id: conditional"
+              }
+            ],
+            "id": 0,
+            "local": true,
+            "markers": [
+              "proof-id: conditional"
+            ],
+            "name": "subject_identity_probe::selected_only",
+            "short_name": "selected_only",
+            "source_text": "pub fn selected_only() -> u32 { 11 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 5
+                },
+                "end": {
+                  "col": 36,
+                  "line": 5
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "selected_only",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: macro-generated"
+              }
+            ],
+            "id": 1,
+            "local": true,
+            "markers": [
+              "proof-id: macro-generated"
+            ],
+            "name": "subject_identity_probe::generated",
+            "short_name": "generated",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 8,
+                  "line": 35
+                },
+                "end": {
+                  "col": 40,
+                  "line": 35
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "generated",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: movable"
+              }
+            ],
+            "id": 2,
+            "local": true,
+            "markers": [
+              "proof-id: movable"
+            ],
+            "name": "subject_identity_probe::movable",
+            "short_name": "movable",
+            "source_text": "pub fn movable() -> u32 { 51 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 41
+                },
+                "end": {
+                  "col": 30,
+                  "line": 41
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "movable",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 3,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::neighbor",
+            "short_name": "neighbor",
+            "source_text": "pub fn neighbor() -> u32 { 52 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 43
+                },
+                "end": {
+                  "col": 31,
+                  "line": 43
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "neighbor",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: left-duplicate"
+              }
+            ],
+            "id": 4,
+            "local": true,
+            "markers": [
+              "proof-id: left-duplicate"
+            ],
+            "name": "subject_identity_probe::left::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 21 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 12
+                },
+                "end": {
+                  "col": 36,
+                  "line": 12
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "left",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: right-duplicate"
+              }
+            ],
+            "id": 5,
+            "local": true,
+            "markers": [
+              "proof-id: right-duplicate"
+            ],
+            "name": "subject_identity_probe::right::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 22 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 17
+                },
+                "end": {
+                  "col": 36,
+                  "line": 17
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "right",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 6,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::Rule::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 22
+                },
+                "end": {
+                  "col": 37,
+                  "line": 22
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 7,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::Rule::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32;",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 23
+                },
+                "end": {
+                  "col": 30,
+                  "line": 23
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 8,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 27
+                },
+                "end": {
+                  "col": 1,
+                  "line": 30
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-impl"
+              }
+            ],
+            "id": 9,
+            "local": true,
+            "markers": [
+              "proof-id: trait-impl"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32 { 32 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 29
+                },
+                "end": {
+                  "col": 36,
+                  "line": 29
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          }
+        ],
+        "has_errors": false,
+        "llbc_sha256": "77b9393c3cb79d30b50194e7407510eb3102382e1db01ebc067110554a11b13b",
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 4
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 5
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 6
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 7
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 9
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 8
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 3
+            }
+          }
+        ]
+      },
+      "source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/src/lib.rs",
+      "source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "stderr": "   Compiling subject_identity_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s\n",
+      "stdout": "",
+      "variant": "A.rs"
+    },
+    {
+      "cargo_flags": [
+        "--tests"
+      ],
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/A-default-tests.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/Cargo.toml",
+        "--tests",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture",
+      "env": {
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/target-A-default-tests",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "PATH_prefix": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin"
+        ],
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+      },
+      "exit_code": 0,
+      "label": "A-default-tests",
+      "lock_sha256": "ce22be91bdb3077c47473098f3c8f68a0409b080ce41e86522536cfe7752c785",
+      "manifest_sha256": "61c3123835f89ae8c6ce2d198c6813e866ca7c4e06d0bd06393653529a24187c",
+      "output_exists": true,
+      "projection": {
+        "crate_name": "subject_identity_probe",
+        "files": [
+          {
+            "contents_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+            "crate_name": "subject_identity_probe",
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "test",
+            "id": 1,
+            "name": {
+              "Local": "/rustc/library/test/src/types.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "test",
+            "id": 2,
+            "name": {
+              "Local": "/rustc/library/test/src/lib.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/macros/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 4,
+            "name": {
+              "Local": "/rustc/library/core/src/panicking.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 5,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 6,
+            "name": {
+              "Local": "/rustc/library/core/src/option.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 7,
+            "name": {
+              "Local": "/rustc/library/core/src/fmt/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "test",
+            "id": 8,
+            "name": {
+              "Local": "/rustc/library/test/src/options.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 9,
+            "name": {
+              "Local": "/rustc/library/core/src/result.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "alloc",
+            "id": 10,
+            "name": {
+              "Local": "/rustc/library/alloc/src/string.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "alloc",
+            "id": 11,
+            "name": {
+              "Local": "/rustc/library/alloc/src/lib.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 12,
+            "name": {
+              "Local": "/rustc/library/core/src/marker.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "test",
+            "id": 13,
+            "name": {
+              "Local": "/rustc/library/test/src/bench.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "alloc",
+            "id": 14,
+            "name": {
+              "Local": "/rustc/library/alloc/src/boxed.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 15,
+            "name": {
+              "Local": "/rustc/library/core/src/ops/function.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 16,
+            "name": {
+              "Local": "/rustc/library/core/src/ops/mod.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "alloc",
+            "id": 17,
+            "name": {
+              "Local": "/rustc/library/alloc/src/alloc.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "alloc",
+            "id": 18,
+            "name": {
+              "Local": "/rustc/library/alloc/src/borrow.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "alloc",
+            "id": 19,
+            "name": {
+              "Local": "/rustc/library/alloc/src/str.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "core",
+            "id": 20,
+            "name": {
+              "Local": "/rustc/library/core/src/borrow.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "std",
+            "id": 21,
+            "name": {
+              "Local": "/rustc/library/std/src/process.rs"
+            }
+          },
+          {
+            "contents_sha256": null,
+            "crate_name": "std",
+            "id": 22,
+            "name": {
+              "Local": "/rustc/library/std/src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "all_attributes": [],
+            "id": 0,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::default_only",
+            "short_name": "default_only",
+            "source_text": "pub fn default_only() -> u32 { 12 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 8
+                },
+                "end": {
+                  "col": 35,
+                  "line": 8
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "default_only",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: macro-generated"
+              }
+            ],
+            "id": 1,
+            "local": true,
+            "markers": [
+              "proof-id: macro-generated"
+            ],
+            "name": "subject_identity_probe::generated",
+            "short_name": "generated",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 8,
+                  "line": 35
+                },
+                "end": {
+                  "col": 40,
+                  "line": 35
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "generated",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: movable"
+              }
+            ],
+            "id": 2,
+            "local": true,
+            "markers": [
+              "proof-id: movable"
+            ],
+            "name": "subject_identity_probe::movable",
+            "short_name": "movable",
+            "source_text": "pub fn movable() -> u32 { 51 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 41
+                },
+                "end": {
+                  "col": 30,
+                  "line": 41
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "movable",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 3,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::neighbor",
+            "short_name": "neighbor",
+            "source_text": "pub fn neighbor() -> u32 { 52 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 43
+                },
+                "end": {
+                  "col": 31,
+                  "line": 43
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "neighbor",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 4,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::main",
+            "short_name": "main",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 1
+                },
+                "end": {
+                  "col": 0,
+                  "line": 1
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "main",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: left-duplicate"
+              }
+            ],
+            "id": 5,
+            "local": true,
+            "markers": [
+              "proof-id: left-duplicate"
+            ],
+            "name": "subject_identity_probe::left::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 21 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 12
+                },
+                "end": {
+                  "col": 36,
+                  "line": 12
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "left",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: right-duplicate"
+              }
+            ],
+            "id": 6,
+            "local": true,
+            "markers": [
+              "proof-id: right-duplicate"
+            ],
+            "name": "subject_identity_probe::right::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 22 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 17
+                },
+                "end": {
+                  "col": 36,
+                  "line": 17
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "right",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 7,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::Rule::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 22
+                },
+                "end": {
+                  "col": 37,
+                  "line": 22
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 8,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::Rule::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32;",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 23
+                },
+                "end": {
+                  "col": 30,
+                  "line": 23
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 9,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 27
+                },
+                "end": {
+                  "col": 1,
+                  "line": 30
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-impl"
+              }
+            ],
+            "id": 10,
+            "local": true,
+            "markers": [
+              "proof-id: trait-impl"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32 { 32 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 29
+                },
+                "end": {
+                  "col": 36,
+                  "line": 29
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: test-only"
+              }
+            ],
+            "id": 11,
+            "local": true,
+            "markers": [
+              "proof-id: test-only"
+            ],
+            "name": "subject_identity_probe::tests::test_subject",
+            "short_name": "test_subject",
+            "source_text": "pub fn test_subject() -> u32 { 61 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 48
+                },
+                "end": {
+                  "col": 39,
+                  "line": 48
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "tests",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "test_subject",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 12,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::tests::smoke",
+            "short_name": "smoke",
+            "source_text": "fn smoke() { assert_eq!(test_subject(), 61); }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 50
+                },
+                "end": {
+                  "col": 50,
+                  "line": 50
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "tests",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "smoke",
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 14,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::tests::smoke",
+            "short_name": "smoke",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 50
+                },
+                "end": {
+                  "col": 50,
+                  "line": 50
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "tests",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "smoke",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 17,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::tests::smoke::closure::as_fn",
+            "short_name": "as_fn",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 50
+                },
+                "end": {
+                  "col": 50,
+                  "line": 50
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "tests",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "smoke",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "closure",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "as_fn",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 19,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::tests::smoke::<impl>{\"Trait\": 1}::call_once",
+            "short_name": "call_once",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 50
+                },
+                "end": {
+                  "col": 50,
+                  "line": 50
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "tests",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "smoke",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 1
+                }
+              },
+              {
+                "Ident": [
+                  "call_once",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 20,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::tests::smoke::<impl>{\"Trait\": 2}::call_mut",
+            "short_name": "call_mut",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 50
+                },
+                "end": {
+                  "col": 50,
+                  "line": 50
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "tests",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "smoke",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 2
+                }
+              },
+              {
+                "Ident": [
+                  "call_mut",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 21,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::tests::smoke::<impl>{\"Trait\": 3}::call",
+            "short_name": "call",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 50
+                },
+                "end": {
+                  "col": 50,
+                  "line": 50
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "tests",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "smoke",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 3
+                }
+              },
+              {
+                "Ident": [
+                  "call",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 35,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::tests::smoke::closure::<impl>{\"Trait\": 9}::drop_in_place",
+            "short_name": "drop_in_place",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 50
+                },
+                "end": {
+                  "col": 50,
+                  "line": 50
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "tests",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "smoke",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "closure",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 9
+                }
+              },
+              {
+                "Ident": [
+                  "drop_in_place",
+                  0
+                ]
+              }
+            ]
+          }
+        ],
+        "has_errors": false,
+        "llbc_sha256": "a7720e5e1714213819731daa39c929b5649d4b2180f23a4094382e3cfbd72b4a",
+        "ordered_decls": [
+          {
+            "Type": {
+              "NonRec": 5
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 3
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 1
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 16
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 17
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 15
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 2
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 5
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 4
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 26
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 27
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 25
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 4
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 3
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 11
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 24
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 8
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 36
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 37
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 10
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 18
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 12
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 14
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 19
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 8
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 10
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 9
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 6
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 7
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 13
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 32
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 22
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 23
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 24
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 13
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 35
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 11
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 12
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 21
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 20
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 19
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 17
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 14
+            }
+          },
+          {
+            "Global": {
+              "NonRec": 1
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 4
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 5
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 6
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 7
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 8
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 10
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 9
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 3
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 1
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 2
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 3
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 9
+            }
+          }
+        ]
+      },
+      "source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/src/lib.rs",
+      "source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "stderr": "   Compiling subject_identity_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s\n",
+      "stdout": "",
+      "variant": "A.rs"
+    },
+    {
+      "cargo_flags": [
+        "--lib"
+      ],
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/B-moved-default-lib.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture",
+      "env": {
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/target-B-moved-default-lib",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "PATH_prefix": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin"
+        ],
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+      },
+      "exit_code": 0,
+      "label": "B-moved-default-lib",
+      "lock_sha256": "ce22be91bdb3077c47473098f3c8f68a0409b080ce41e86522536cfe7752c785",
+      "manifest_sha256": "61c3123835f89ae8c6ce2d198c6813e866ca7c4e06d0bd06393653529a24187c",
+      "output_exists": true,
+      "projection": {
+        "crate_name": "subject_identity_probe",
+        "files": [
+          {
+            "contents_sha256": "dd6c63a192b51e92ec9b64876f4d53a10a38bb543445111512c4c1674370dea2",
+            "crate_name": "subject_identity_probe",
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: movable"
+              }
+            ],
+            "id": 0,
+            "local": true,
+            "markers": [
+              "proof-id: movable"
+            ],
+            "name": "subject_identity_probe::movable",
+            "short_name": "movable",
+            "source_text": "pub fn movable() -> u32 { 51 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 4
+                },
+                "end": {
+                  "col": 30,
+                  "line": 4
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "movable",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 1,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::default_only",
+            "short_name": "default_only",
+            "source_text": "pub fn default_only() -> u32 { 12 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 11
+                },
+                "end": {
+                  "col": 35,
+                  "line": 11
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "default_only",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: macro-generated"
+              }
+            ],
+            "id": 2,
+            "local": true,
+            "markers": [
+              "proof-id: macro-generated"
+            ],
+            "name": "subject_identity_probe::generated",
+            "short_name": "generated",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 8,
+                  "line": 38
+                },
+                "end": {
+                  "col": 40,
+                  "line": 38
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "generated",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 3,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::neighbor",
+            "short_name": "neighbor",
+            "source_text": "pub fn neighbor() -> u32 { 52 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 43
+                },
+                "end": {
+                  "col": 31,
+                  "line": 43
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "neighbor",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: left-duplicate"
+              }
+            ],
+            "id": 4,
+            "local": true,
+            "markers": [
+              "proof-id: left-duplicate"
+            ],
+            "name": "subject_identity_probe::left::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 21 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 15
+                },
+                "end": {
+                  "col": 36,
+                  "line": 15
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "left",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: right-duplicate"
+              }
+            ],
+            "id": 5,
+            "local": true,
+            "markers": [
+              "proof-id: right-duplicate"
+            ],
+            "name": "subject_identity_probe::right::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 22 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 20
+                },
+                "end": {
+                  "col": 36,
+                  "line": 20
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "right",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 6,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::Rule::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 25
+                },
+                "end": {
+                  "col": 37,
+                  "line": 25
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 7,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::Rule::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32;",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 26
+                },
+                "end": {
+                  "col": 30,
+                  "line": 26
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 8,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 30
+                },
+                "end": {
+                  "col": 1,
+                  "line": 33
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-impl"
+              }
+            ],
+            "id": 9,
+            "local": true,
+            "markers": [
+              "proof-id: trait-impl"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32 { 32 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 32
+                },
+                "end": {
+                  "col": 36,
+                  "line": 32
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          }
+        ],
+        "has_errors": false,
+        "llbc_sha256": "e8f716a0a9bc87465381283819c1b0a4b1b5d11529c2498c4b3153a4c2fe7aa5",
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 4
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 5
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 6
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 7
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 9
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 8
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 3
+            }
+          }
+        ]
+      },
+      "source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/src/lib.rs",
+      "source_sha256": "dd6c63a192b51e92ec9b64876f4d53a10a38bb543445111512c4c1674370dea2",
+      "stderr": "   Compiling subject_identity_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s\n",
+      "stdout": "",
+      "variant": "B-moved.rs"
+    },
+    {
+      "cargo_flags": [
+        "--lib"
+      ],
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/C-duplicated-default-lib.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture",
+      "env": {
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/target-C-duplicated-default-lib",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "PATH_prefix": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin"
+        ],
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+      },
+      "exit_code": 0,
+      "label": "C-duplicated-default-lib",
+      "lock_sha256": "ce22be91bdb3077c47473098f3c8f68a0409b080ce41e86522536cfe7752c785",
+      "manifest_sha256": "61c3123835f89ae8c6ce2d198c6813e866ca7c4e06d0bd06393653529a24187c",
+      "output_exists": true,
+      "projection": {
+        "crate_name": "subject_identity_probe",
+        "files": [
+          {
+            "contents_sha256": "e2dcedf3b5480d6b08d2a3ec8d87636cb22ecb3a28041b407b000c5bc6a72e51",
+            "crate_name": "subject_identity_probe",
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: movable"
+              }
+            ],
+            "id": 0,
+            "local": true,
+            "markers": [
+              "proof-id: movable"
+            ],
+            "name": "subject_identity_probe::movable",
+            "short_name": "movable",
+            "source_text": "pub fn movable() -> u32 { 51 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 4
+                },
+                "end": {
+                  "col": 30,
+                  "line": 4
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "movable",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 1,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::default_only",
+            "short_name": "default_only",
+            "source_text": "pub fn default_only() -> u32 { 12 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 11
+                },
+                "end": {
+                  "col": 35,
+                  "line": 11
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "default_only",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: macro-generated"
+              }
+            ],
+            "id": 2,
+            "local": true,
+            "markers": [
+              "proof-id: macro-generated"
+            ],
+            "name": "subject_identity_probe::generated",
+            "short_name": "generated",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 8,
+                  "line": 38
+                },
+                "end": {
+                  "col": 40,
+                  "line": 38
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "generated",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 3,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::neighbor",
+            "short_name": "neighbor",
+            "source_text": "pub fn neighbor() -> u32 { 52 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 43
+                },
+                "end": {
+                  "col": 31,
+                  "line": 43
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "neighbor",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: left-duplicate"
+              }
+            ],
+            "id": 4,
+            "local": true,
+            "markers": [
+              "proof-id: left-duplicate"
+            ],
+            "name": "subject_identity_probe::left::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 21 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 15
+                },
+                "end": {
+                  "col": 36,
+                  "line": 15
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "left",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: right-duplicate"
+              }
+            ],
+            "id": 5,
+            "local": true,
+            "markers": [
+              "proof-id: right-duplicate"
+            ],
+            "name": "subject_identity_probe::right::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 22 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 20
+                },
+                "end": {
+                  "col": 36,
+                  "line": 20
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "right",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 6,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::Rule::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 25
+                },
+                "end": {
+                  "col": 37,
+                  "line": 25
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 7,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::Rule::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32;",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 26
+                },
+                "end": {
+                  "col": 30,
+                  "line": 26
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 8,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 30
+                },
+                "end": {
+                  "col": 1,
+                  "line": 33
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-impl"
+              }
+            ],
+            "id": 9,
+            "local": true,
+            "markers": [
+              "proof-id: trait-impl"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32 { 32 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 32
+                },
+                "end": {
+                  "col": 36,
+                  "line": 32
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: movable"
+              }
+            ],
+            "id": 10,
+            "local": true,
+            "markers": [
+              "proof-id: movable"
+            ],
+            "name": "subject_identity_probe::copy::movable",
+            "short_name": "movable",
+            "source_text": "pub fn movable() -> u32 { 51 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 47
+                },
+                "end": {
+                  "col": 34,
+                  "line": 47
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "copy",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "movable",
+                  0
+                ]
+              }
+            ]
+          }
+        ],
+        "has_errors": false,
+        "llbc_sha256": "7673c8e32ff1ec8ddb4828624b41c6623a83923c3b6b6f86f1922f984283dda8",
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 4
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 5
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 6
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 7
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 9
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 8
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 3
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 10
+            }
+          }
+        ]
+      },
+      "source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/src/lib.rs",
+      "source_sha256": "e2dcedf3b5480d6b08d2a3ec8d87636cb22ecb3a28041b407b000c5bc6a72e51",
+      "stderr": "   Compiling subject_identity_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s\n",
+      "stdout": "",
+      "variant": "C-duplicated.rs"
+    },
+    {
+      "cargo_flags": [
+        "--lib"
+      ],
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/A-restored-default-lib.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture",
+      "env": {
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/artifacts/target-A-restored-default-lib",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "PATH_prefix": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin"
+        ],
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+      },
+      "exit_code": 0,
+      "label": "A-restored-default-lib",
+      "lock_sha256": "ce22be91bdb3077c47473098f3c8f68a0409b080ce41e86522536cfe7752c785",
+      "manifest_sha256": "61c3123835f89ae8c6ce2d198c6813e866ca7c4e06d0bd06393653529a24187c",
+      "output_exists": true,
+      "projection": {
+        "crate_name": "subject_identity_probe",
+        "files": [
+          {
+            "contents_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+            "crate_name": "subject_identity_probe",
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            }
+          }
+        ],
+        "functions": [
+          {
+            "all_attributes": [],
+            "id": 0,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::default_only",
+            "short_name": "default_only",
+            "source_text": "pub fn default_only() -> u32 { 12 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 8
+                },
+                "end": {
+                  "col": 35,
+                  "line": 8
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "default_only",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: macro-generated"
+              }
+            ],
+            "id": 1,
+            "local": true,
+            "markers": [
+              "proof-id: macro-generated"
+            ],
+            "name": "subject_identity_probe::generated",
+            "short_name": "generated",
+            "source_text": null,
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 8,
+                  "line": 35
+                },
+                "end": {
+                  "col": 40,
+                  "line": 35
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "generated",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: movable"
+              }
+            ],
+            "id": 2,
+            "local": true,
+            "markers": [
+              "proof-id: movable"
+            ],
+            "name": "subject_identity_probe::movable",
+            "short_name": "movable",
+            "source_text": "pub fn movable() -> u32 { 51 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 41
+                },
+                "end": {
+                  "col": 30,
+                  "line": 41
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "movable",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 3,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::neighbor",
+            "short_name": "neighbor",
+            "source_text": "pub fn neighbor() -> u32 { 52 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 43
+                },
+                "end": {
+                  "col": 31,
+                  "line": 43
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "neighbor",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: left-duplicate"
+              }
+            ],
+            "id": 4,
+            "local": true,
+            "markers": [
+              "proof-id: left-duplicate"
+            ],
+            "name": "subject_identity_probe::left::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 21 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 12
+                },
+                "end": {
+                  "col": 36,
+                  "line": 12
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "left",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: right-duplicate"
+              }
+            ],
+            "id": 5,
+            "local": true,
+            "markers": [
+              "proof-id: right-duplicate"
+            ],
+            "name": "subject_identity_probe::right::duplicate",
+            "short_name": "duplicate",
+            "source_text": "pub fn duplicate() -> u32 { 22 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 17
+                },
+                "end": {
+                  "col": 36,
+                  "line": 17
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "right",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "duplicate",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 6,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::Rule::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 22
+                },
+                "end": {
+                  "col": 37,
+                  "line": 22
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [],
+            "id": 7,
+            "local": true,
+            "markers": [],
+            "name": "subject_identity_probe::Rule::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32;",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 23
+                },
+                "end": {
+                  "col": 30,
+                  "line": 23
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "Rule",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-default"
+              }
+            ],
+            "id": 8,
+            "local": true,
+            "markers": [
+              "proof-id: trait-default"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::defaulted",
+            "short_name": "defaulted",
+            "source_text": "fn defaulted(&self) -> u32 { 31 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 0,
+                  "line": 27
+                },
+                "end": {
+                  "col": 1,
+                  "line": 30
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "defaulted",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "all_attributes": [
+              {
+                "DocComment": " proof-id: trait-impl"
+              }
+            ],
+            "id": 9,
+            "local": true,
+            "markers": [
+              "proof-id: trait-impl"
+            ],
+            "name": "subject_identity_probe::<impl>{\"Trait\": 0}::required",
+            "short_name": "required",
+            "source_text": "fn required(&self) -> u32 { 32 }",
+            "span": {
+              "data": {
+                "beg": {
+                  "col": 4,
+                  "line": 29
+                },
+                "end": {
+                  "col": 36,
+                  "line": 29
+                },
+                "file_id": 0
+              },
+              "generated_from_span": null
+            },
+            "structured_name": [
+              {
+                "Ident": [
+                  "subject_identity_probe",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Trait": 0
+                }
+              },
+              {
+                "Ident": [
+                  "required",
+                  0
+                ]
+              }
+            ]
+          }
+        ],
+        "has_errors": false,
+        "llbc_sha256": "44ef52fc98515c182270e4367c82c1a33abd2da2edfd38e68a8b118fee90727c",
+        "ordered_decls": [
+          {
+            "Fun": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 4
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 5
+            }
+          },
+          {
+            "TraitDecl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 6
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 7
+            }
+          },
+          {
+            "Type": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 9
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 8
+            }
+          },
+          {
+            "TraitImpl": {
+              "NonRec": 0
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 1
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 2
+            }
+          },
+          {
+            "Fun": {
+              "NonRec": 3
+            }
+          }
+        ]
+      },
+      "source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture/src/lib.rs",
+      "source_sha256": "2ff9c22c8e7256331b538113fc4a7f856313142dad50bf4ac053a0968dc20a28",
+      "stderr": "   Compiling subject_identity_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-charon-subject-identity-2026-09-29/support/fixture)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s\n",
+      "stdout": "",
+      "variant": "A.rs"
+    }
+  ]
+}

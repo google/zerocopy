@@ -1,0 +1,30 @@
+{
+  "status": "bounded observations passed",
+  "events": 242,
+  "transcript_sha256": "fd1bb5e7875d6ee01ae0f9509ff15e370cfe4f024fb6d5c708b6ad62d20acf51",
+  "probe_sha256": "b17723466f7ff64e8566cd1df1b861fa81b3c3b8893d365cd99a31703f6b859b",
+  "lean": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+  "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "source_sha256": {
+    "v1": "d4179d04ae71a78a8bada2efbdbfdc9231e3a007c6a8ddafb459123a19add2cd",
+    "v2": "b6b041f923fb685cc1696da078417334216eb6712fe5d40863bd330ba5442385",
+    "v3": "b6545ec5c3311b7fb30acebf912f6eb2f85ca0699155f5be72680e9c1192e79c",
+    "slow": "dcb81108cfbf1a2f3bd7417faced093b64cbfb8931e72ac50ef6862741bd5668",
+    "fast": "5c1ace8fa9f1830bf2c745b022403e9a681a5180f7eccd08fba43cfead4b6aba"
+  },
+  "historical_open_ms": 238.8,
+  "historical_source_bytes": 64,
+  "historical_workers": [
+    [
+      52140,
+      384614400
+    ],
+    [
+      52143,
+      383959040
+    ]
+  ],
+  "worker_crash_old_error": -32801,
+  "cancellation_error": -32800,
+  "stale_session_error": -32900
+}

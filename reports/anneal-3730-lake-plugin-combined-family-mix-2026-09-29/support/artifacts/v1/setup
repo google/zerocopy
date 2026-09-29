@@ -1,0 +1,5 @@
+name = "probe_app"
+plugins = ["@plugin_probe/+Plugin:dynlib"]
+[[require]]
+name = "plugin_probe"
+path = "../producer"

@@ -1,0 +1,53 @@
+{
+  "snapshot_utc": "2026-09-29T11:16:36Z",
+  "issue_3730_state": "closed",
+  "issue_3731_state": "open",
+  "issue_sha256": {
+    "3730_body": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+    "3730_comment": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+    "3731_body": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+    "3731_comment": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+  },
+  "investigation_rows": 159,
+  "investigation_statuses": {
+    "partial": 149,
+    "not-run": 5,
+    "complete": 2,
+    "conditional": 3
+  },
+  "crosswalk_rows": 174,
+  "crosswalk_statuses": {
+    "partial": 144,
+    "complete": 4,
+    "not-run": 22,
+    "conditional": 4
+  },
+  "complete_investigations": [
+    "I046",
+    "I049"
+  ],
+  "complete_suggestions": [
+    "C03",
+    "C04",
+    "C13",
+    "N11"
+  ],
+  "all_report_packages": 72,
+  "prior_accounted_packages": 70,
+  "new_package_count": 2,
+  "new_packages": [
+    "anneal-3730-last-good-model-after-rust-failure-2026-09-29",
+    "anneal-3730-scratch-tactic-cas-experiment-2026-09-29"
+  ],
+  "in_progress_out_of_snapshot": [
+    "R25 I023 signature/recovery",
+    "R26 I070 competing writers/crash injection"
+  ],
+  "new_inspected_file_count": 38,
+  "new_inspected_bytes": 109458,
+  "source_v7_investigation_sha256": "612d7398c5ec524ec7b92bac26712ef597acacb3a080fe1058e7992caca080d9",
+  "source_v7_crosswalk_sha256": "7dfd45e7a9dacc1298aac82036ebb3fc4f11f077920ab1012a6dc3ca5d038da1",
+  "r23_r24_completed": 2,
+  "remaining_locally_executable_suites": 2,
+  "gate_groups": 7
+}

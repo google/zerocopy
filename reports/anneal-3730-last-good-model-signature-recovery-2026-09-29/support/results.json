@@ -1,0 +1,459 @@
+{
+  "A": {
+    "generated": {
+      "Current.lean": {
+        "bytes": 20,
+        "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+      },
+      "Funs.lean": {
+        "bytes": 930,
+        "sha256": "06d7faa6d32cb168ac056376b1665cb6d706a0a17640165867b717307ef16992"
+      },
+      "Types.lean": {
+        "bytes": 533,
+        "sha256": "abead919837ca9551ee366be932586dd4384b0abcd095c491490d0a7009c5b18"
+      }
+    },
+    "initial_proof": {
+      "proof": "A-initial",
+      "proof_sha256": "f2051ac0472a68d70bafd387e745f0f0a524a19a0410e8803e9a4960f1716fda",
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "llbc_sha256": "f598fb22509761d98b877e8e6523bdc3fb6d4e0efb6874ad66dfd471c4819896",
+    "model_id": "b49b9b8be07077ad58c802aa5dfa45a571fce58b925237ba2b16924963972b7e",
+    "rust_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995",
+    "signature": {
+      "input": "Std.U32",
+      "line": "def inc (x : Std.U32) : Result Std.U32 := do",
+      "output": "Std.U32"
+    }
+  },
+  "B": {
+    "adapted": {
+      "proof": "B-adapted",
+      "proof_sha256": "c90175390e6678abf0c74be0088f20f6b2a92fa087db533c94cdd006109231f4",
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "current_model_proof_accepted": true,
+    "freshness": "current",
+    "generated": {
+      "Funs.lean": {
+        "bytes": 931,
+        "sha256": "650a5d3e38ee4299f13c7f24fd0eec8cb57629bcd46832c97477ac386e4b58f4"
+      },
+      "Recovery.lean": {
+        "bytes": 21,
+        "sha256": "398d3907d0346654e1b1570e2c6a0ad548b8c66f7ff20805228d53fb564eaf32"
+      },
+      "Types.lean": {
+        "bytes": 533,
+        "sha256": "abead919837ca9551ee366be932586dd4384b0abcd095c491490d0a7009c5b18"
+      }
+    },
+    "late_A": {
+      "actual_model_id": "b49b9b8be07077ad58c802aa5dfa45a571fce58b925237ba2b16924963972b7e",
+      "current_model_id": "bd2ccc1e90447da1a11ef55ec71258f35951d2a6153ac8e2d1f9255785d86fe4",
+      "current_verified": false,
+      "query": {
+        "proof": "A-provisional",
+        "proof_sha256": "27fd4b959e4904255dc0b6cbb86e03bbf84e9957c3d100d591021764d2f6cff6",
+        "rc": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    "llbc_sha256": "098fab5d0730ef4bd0cbbe8aa29a543d21eece93b6703253cb0cbda48fb0b14f",
+    "model_id": "bd2ccc1e90447da1a11ef55ec71258f35951d2a6153ac8e2d1f9255785d86fe4",
+    "old_assumptions": {
+      "proof": "B-old-assumptions",
+      "proof_sha256": "c224ff31ca03c49407081e1cf027d64e30cf34db4a0b58762139485c73342596",
+      "rc": 1,
+      "stderr": "",
+      "stdout": "Proof.lean:2:29: error: Application type mismatch: The argument\n  0#u32\nhas type\n  Aeneas.Std.UScalar Aeneas.Std.UScalarTy.U32\nbut is expected to have type\n  Aeneas.Std.U64\nin the application\n  recovery_probe.inc 0#u32\nProof.lean:2:41: error: Application type mismatch: The argument\n  1#u32\nhas type\n  Aeneas.Std.UScalar Aeneas.Std.UScalarTy.U32\nbut is expected to have type\n  Aeneas.Std.U64\nin the application\n  Aeneas.Std.Result.ok 1#u32\n"
+    },
+    "provisional_stopped_at": "publish-B-current-stop-provisional",
+    "rust_sha256": "7dfcff8f1ca6bb726ca6d07821cb6fff7c762ee48130ebac0569783df954cbd3",
+    "signature": {
+      "input": "Std.U64",
+      "line": "def inc (x : Std.U64) : Result Std.U64 := do",
+      "output": "Std.U64"
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/current.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "recovery_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work",
+      "label": "A:charon",
+      "ms": 364.0,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/generated-A",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work",
+      "label": "A:aeneas",
+      "ms": 209.1,
+      "rc": 0,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/generated-A/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/generated-A/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/generated-A/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.119890 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Current",
+      "label": "Current:compile:Current/Types",
+      "ms": 9685.6,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Current",
+      "label": "Current:compile:Current/Funs",
+      "ms": 1669.4,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Current",
+      "label": "Current:compile:Current",
+      "ms": 1587.7,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Current",
+      "label": "A:initial-proof",
+      "ms": 2774.4,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/current.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "recovery_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work",
+      "label": "failure:charon",
+      "ms": 180.1,
+      "rc": 2,
+      "stderr": "error: this file contains an unclosed delimiter\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/source.rs:3:16\n  |\n3 | pub fn broken(\n  |              -^\n  |              |\n  |              unclosed delimiter\n\nerror: aborting due to 1 previous error\n\nERROR Code failed to compile\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Current",
+      "label": "failure:last-good-proof",
+      "ms": 3240.4,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/recovery.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "recovery_probe",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work",
+      "label": "B:charon",
+      "ms": 221.7,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/generated-B",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/recovery.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work",
+      "label": "B:aeneas",
+      "ms": 246.2,
+      "rc": 0,
+      "stderr": "",
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/recovery.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/generated-B/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/generated-B/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/generated-B/Recovery.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.123590 seconds\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Recovery/Types.olean",
+        "Recovery/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Recovery",
+      "label": "Recovery:compile:Recovery/Types",
+      "ms": 1793.7,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Recovery/Funs.olean",
+        "Recovery/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Recovery",
+      "label": "Recovery:compile:Recovery/Funs",
+      "ms": 1888.8,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Recovery.olean",
+        "Recovery.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Recovery",
+      "label": "Recovery:compile:Recovery",
+      "ms": 1651.2,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Recovery",
+      "label": "B:old-assumptions",
+      "ms": 1679.2,
+      "rc": 1,
+      "stderr": "",
+      "stdout": "Proof.lean:2:29: error: Application type mismatch: The argument\n  0#u32\nhas type\n  Aeneas.Std.UScalar Aeneas.Std.UScalarTy.U32\nbut is expected to have type\n  Aeneas.Std.U64\nin the application\n  recovery_probe.inc 0#u32\nProof.lean:2:41: error: Application type mismatch: The argument\n  1#u32\nhas type\n  Aeneas.Std.UScalar Aeneas.Std.UScalarTy.U32\nbut is expected to have type\n  Aeneas.Std.U64\nin the application\n  Aeneas.Std.Result.ok 1#u32\n"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Recovery",
+      "label": "B:adapted-proof",
+      "ms": 1627.1,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-last-good-model-signature-recovery-2026-09-29/support/work/model-Current",
+      "label": "B:late-A-control",
+      "ms": 1692.8,
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "events": [
+    {
+      "model_id": "b49b9b8be07077ad58c802aa5dfa45a571fce58b925237ba2b16924963972b7e",
+      "name": "publish-A-current",
+      "proof_sha256": "f2051ac0472a68d70bafd387e745f0f0a524a19a0410e8803e9a4960f1716fda",
+      "rust_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995",
+      "seq": 0
+    },
+    {
+      "name": "current-rust-failed",
+      "retained_model_id": "b49b9b8be07077ad58c802aa5dfa45a571fce58b925237ba2b16924963972b7e",
+      "rust_sha256": "22945f4807b96e92db783c49f7a816ea5c4308a7c8c0c6fa2c835b0d2601b8c3",
+      "seq": 1
+    },
+    {
+      "current_verified": false,
+      "model_id": "b49b9b8be07077ad58c802aa5dfa45a571fce58b925237ba2b16924963972b7e",
+      "name": "old-model-query-provisional",
+      "proof_sha256": "27fd4b959e4904255dc0b6cbb86e03bbf84e9957c3d100d591021764d2f6cff6",
+      "requested_rust_sha256": "22945f4807b96e92db783c49f7a816ea5c4308a7c8c0c6fa2c835b0d2601b8c3",
+      "seq": 2
+    },
+    {
+      "model_id": "bd2ccc1e90447da1a11ef55ec71258f35951d2a6153ac8e2d1f9255785d86fe4",
+      "name": "publish-B-current-stop-provisional",
+      "prior_model_id": "b49b9b8be07077ad58c802aa5dfa45a571fce58b925237ba2b16924963972b7e",
+      "rust_sha256": "7dfcff8f1ca6bb726ca6d07821cb6fff7c762ee48130ebac0569783df954cbd3",
+      "seq": 3
+    },
+    {
+      "model_id": "bd2ccc1e90447da1a11ef55ec71258f35951d2a6153ac8e2d1f9255785d86fe4",
+      "name": "B-current-proof-accepted",
+      "proof_sha256": "c90175390e6678abf0c74be0088f20f6b2a92fa087db533c94cdd006109231f4",
+      "rust_sha256": "7dfcff8f1ca6bb726ca6d07821cb6fff7c762ee48130ebac0569783df954cbd3",
+      "seq": 4
+    },
+    {
+      "actual_model_id": "b49b9b8be07077ad58c802aa5dfa45a571fce58b925237ba2b16924963972b7e",
+      "current_model_id": "bd2ccc1e90447da1a11ef55ec71258f35951d2a6153ac8e2d1f9255785d86fe4",
+      "current_verified": false,
+      "name": "late-A-result-rejected-as-current",
+      "query_rc": 0,
+      "requested_rust_sha256": "7dfcff8f1ca6bb726ca6d07821cb6fff7c762ee48130ebac0569783df954cbd3",
+      "seq": 5
+    }
+  ],
+  "failure": {
+    "charon_rc": 2,
+    "policies": {
+      "last_good": {
+        "current_verified": false,
+        "feedback": "provisional: model A",
+        "freshness": "stale",
+        "model_id": "b49b9b8be07077ad58c802aa5dfa45a571fce58b925237ba2b16924963972b7e",
+        "model_rust_sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995",
+        "query": {
+          "proof": "A-provisional",
+          "proof_sha256": "27fd4b959e4904255dc0b6cbb86e03bbf84e9957c3d100d591021764d2f6cff6",
+          "rc": 0,
+          "stderr": "",
+          "stdout": ""
+        },
+        "query_performed": true,
+        "requested_rust_sha256": "22945f4807b96e92db783c49f7a816ea5c4308a7c8c0c6fa2c835b0d2601b8c3"
+      },
+      "stop": {
+        "current_verified": false,
+        "feedback": "unavailable: current Rust failed",
+        "query_performed": false,
+        "requested_rust_sha256": "22945f4807b96e92db783c49f7a816ea5c4308a7c8c0c6fa2c835b0d2601b8c3"
+      }
+    },
+    "retained_llbc_sha256": "f598fb22509761d98b877e8e6523bdc3fb6d4e0efb6874ad66dfd471c4819896",
+    "rust_sha256": "22945f4807b96e92db783c49f7a816ea5c4308a7c8c0c6fa2c835b0d2601b8c3"
+  },
+  "observed_at_utc": "2026-09-29T11:20:08Z",
+  "policy_origin": "experiment-side freshness/promotion; no Anneal implementation",
+  "proof_snapshots": {
+    "A-initial.lean": {
+      "bytes": 72,
+      "sha256": "f2051ac0472a68d70bafd387e745f0f0a524a19a0410e8803e9a4960f1716fda"
+    },
+    "A-provisional.lean": {
+      "bytes": 136,
+      "sha256": "27fd4b959e4904255dc0b6cbb86e03bbf84e9957c3d100d591021764d2f6cff6"
+    },
+    "B-adapted.lean": {
+      "bytes": 73,
+      "sha256": "c90175390e6678abf0c74be0088f20f6b2a92fa087db533c94cdd006109231f4"
+    },
+    "B-old-assumptions.lean": {
+      "bytes": 73,
+      "sha256": "c224ff31ca03c49407081e1cf027d64e30cf34db4a0b58762139485c73342596"
+    }
+  },
+  "schema": 1,
+  "source_snapshots": {
+    "A.rs": {
+      "bytes": 69,
+      "sha256": "77edeccf1d9ec7ac6e537e8f323113b7915abd2230a021c77afd19d311cb6995"
+    },
+    "B.rs": {
+      "bytes": 69,
+      "sha256": "7dfcff8f1ca6bb726ca6d07821cb6fff7c762ee48130ebac0569783df954cbd3"
+    },
+    "failed.rs": {
+      "bytes": 84,
+      "sha256": "22945f4807b96e92db783c49f7a816ea5c4308a7c8c0c6fa2c835b0d2601b8c3"
+    }
+  },
+  "tools": {
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  }
+}

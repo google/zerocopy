@@ -1,0 +1,690 @@
+{
+  "environment": {
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "max_concurrent_consumers": 2,
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "rss_guard_kib": 5500000,
+    "toolchain": "leanprover/lean4:v4.30.0-rc2"
+  },
+  "observations": {
+    "corruption": {
+      "after": {
+        "cache": {
+          "artifacts/19804e4afa920628.c": {
+            "bytes": 1529,
+            "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+          },
+          "artifacts/256fdbc46043cf30.ilean": {
+            "bytes": 809,
+            "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+          },
+          "artifacts/7b7a31f2adb2306a.olean": {
+            "bytes": 4896,
+            "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+          },
+          "outputs/probe_dep/566c416840dafb01.json": {
+            "bytes": 170,
+            "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+          }
+        },
+        "producer": {
+          ".lake/build/ir/Dep.c": {
+            "bytes": 1529,
+            "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+          },
+          ".lake/build/ir/Dep.c.hash": {
+            "bytes": 16,
+            "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+          },
+          ".lake/build/ir/Dep.setup.json": {
+            "bytes": 127,
+            "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+          },
+          ".lake/build/lib/lean/Dep.ilean": {
+            "bytes": 809,
+            "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+          },
+          ".lake/build/lib/lean/Dep.ilean.hash": {
+            "bytes": 16,
+            "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+          },
+          ".lake/build/lib/lean/Dep.olean": {
+            "bytes": 4896,
+            "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+          },
+          ".lake/build/lib/lean/Dep.olean.hash": {
+            "bytes": 16,
+            "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+          },
+          ".lake/build/lib/lean/Dep.trace": {
+            "bytes": 2145,
+            "sha256": "4ad96737b754e1ce7be9c97fc5c62311ec03dbbb33f1ea0b599800c695cb202c"
+          },
+          ".lake/config/probe_dep/lakefile.olean": {
+            "bytes": 96288,
+            "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+          },
+          ".lake/config/probe_dep/lakefile.olean.trace": {
+            "bytes": 182,
+            "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+          },
+          "Dep.lean": {
+            "bytes": 174,
+            "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+          },
+          "lakefile.lean": {
+            "bytes": 75,
+            "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+          },
+          "lean-toolchain": {
+            "bytes": 29,
+            "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+          }
+        }
+      },
+      "before": {
+        "cache": {
+          "artifacts/19804e4afa920628.c": {
+            "bytes": 1529,
+            "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+          },
+          "artifacts/256fdbc46043cf30.ilean": {
+            "bytes": 809,
+            "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+          },
+          "artifacts/7b7a31f2adb2306a.olean": {
+            "bytes": 4896,
+            "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+          },
+          "outputs/probe_dep/566c416840dafb01.json": {
+            "bytes": 8,
+            "sha256": "a97439d33ccc4254ff7556847815cba4751a64f6afef1b8c076fec5691210b65"
+          }
+        },
+        "producer": {
+          "Dep.lean": {
+            "bytes": 174,
+            "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+          },
+          "lakefile.lean": {
+            "bytes": 75,
+            "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+          },
+          "lean-toolchain": {
+            "bytes": 29,
+            "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+          }
+        }
+      },
+      "corrupt_sha256": "a97439d33ccc4254ff7556847815cba4751a64f6afef1b8c076fec5691210b65",
+      "mapping": "outputs/probe_dep/566c416840dafb01.json",
+      "prior_sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+    },
+    "pair_after_fetch": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "package_a": {
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 234,
+          "sha256": "c686196a90bd2919146ec3556b17675039d3cbb84f3a120f88e2ff88b3377a93"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      },
+      "package_b": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2065,
+          "sha256": "0bf2a93e3a9d58cb7d7cab835cf0d545984541fa4a67fa89160541f410d49929"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      }
+    },
+    "pair_after_survivor": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "maps": [
+        "outputs/probe_dep/566c416840dafb01.json"
+      ],
+      "markers": [
+        true,
+        true
+      ],
+      "package_a": {
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      },
+      "package_b": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2065,
+          "sha256": "0bf2a93e3a9d58cb7d7cab835cf0d545984541fa4a67fa89160541f410d49929"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      },
+      "peak_sampled": {
+        "processes": 4,
+        "rss_kib_sum": 3512256
+      }
+    },
+    "solo_after_kill": {
+      "cache": {},
+      "marker": true,
+      "peak_sampled": {
+        "processes": 2,
+        "rss_kib_sum": 1799328
+      },
+      "producer": {
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      }
+    },
+    "solo_after_retry": {
+      "cache": {
+        "artifacts/19804e4afa920628.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        "artifacts/256fdbc46043cf30.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        "artifacts/7b7a31f2adb2306a.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        "outputs/probe_dep/566c416840dafb01.json": {
+          "bytes": 170,
+          "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7"
+        }
+      },
+      "producer": {
+        ".lake/build/ir/Dep.c": {
+          "bytes": 1529,
+          "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303"
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "bytes": 16,
+          "sha256": "5e890e4ab7e22f23f1ac22beb42afde4954e42c6bc5e5035cd0583a88a8560f3"
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "bytes": 127,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "bytes": 809,
+          "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b"
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "bytes": 16,
+          "sha256": "41b300a3a9770d02bcf7847e6925be40f0fbb0ba40998def58bb25ffcff27ce8"
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "bytes": 4896,
+          "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85"
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "bytes": 16,
+          "sha256": "6fdebba4bc9d746417b949f511988e78b5b548e80ee6baca823e1d1e3cbfd936"
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "bytes": 2049,
+          "sha256": "6c6cfc2ab828796f733fd25d86701767b83b14014d518bfe189f312c3055097b"
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "bytes": 96288,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "bytes": 182,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+        },
+        "Dep.lean": {
+          "bytes": 174,
+          "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5"
+        },
+        "lakefile.lean": {
+          "bytes": 75,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+        },
+        "lean-toolchain": {
+          "bytes": 29,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+        }
+      }
+    }
+  },
+  "records": [
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-solo",
+      "cwd": "$WORK/solo/consumer",
+      "exit": 3,
+      "label": "solo-prime-no-build",
+      "seconds": 0.5006,
+      "stderr": "",
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "cache": "$WORK/cache-solo",
+      "cwd": "$WORK/solo/consumer",
+      "exit": -9,
+      "label": "solo-killed-writer",
+      "seconds": 0.9467,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-solo",
+      "cwd": "$WORK/solo/consumer",
+      "exit": 3,
+      "label": "solo-setup-after-kill",
+      "seconds": 0.4172,
+      "stderr": "\u2716 [3/4] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-solo",
+      "cwd": "$WORK/solo/consumer",
+      "exit": 0,
+      "label": "solo-retry-build",
+      "seconds": 0.9424,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (620ms)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-solo",
+      "cwd": "$WORK/solo/consumer",
+      "exit": 0,
+      "label": "solo-setup-after-retry",
+      "seconds": 0.4136,
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-solo/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-shared",
+      "cwd": "$WORK/pair-a/consumer",
+      "exit": 3,
+      "label": "pair-prime-a",
+      "seconds": 0.4783,
+      "stderr": "",
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-shared",
+      "cwd": "$WORK/pair-b/consumer",
+      "exit": 3,
+      "label": "pair-prime-b",
+      "seconds": 0.4847,
+      "stderr": "",
+      "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "cache": "$WORK/cache-shared",
+      "cwd": "$WORK/pair-a/consumer",
+      "exit": -9,
+      "label": "pair-killed-A",
+      "seconds": 2.7529,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cache": "$WORK/cache-shared",
+      "cwd": "$WORK/pair-b/consumer",
+      "exit": 0,
+      "label": "pair-survived-B",
+      "seconds": 2.7531,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Built Dep (2.3s)\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-shared",
+      "cwd": "$WORK/pair-a/consumer",
+      "exit": 0,
+      "label": "pair-A-no-build-fetch",
+      "seconds": 0.4141,
+      "stderr": "",
+      "stdout": "\u2714 [2/3] Fetched Dep\nAll targets up-to-date (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-shared",
+      "cwd": "$WORK/pair-a/consumer",
+      "exit": 0,
+      "label": "pair-A-setup",
+      "seconds": 0.4226,
+      "stderr": "\u2714 [3/4] Fetched Dep\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-shared/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/loader-pair-cache-direct-lean-loader/Check.lean"
+      ],
+      "cache": "$WORK/cache-shared",
+      "cwd": "$WORK/loader-pair-cache-direct-lean-loader",
+      "exit": 0,
+      "label": "pair-cache-direct-lean-loader",
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "seconds": 0.6095,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"$WORK/loader-pair-cache-direct-lean-loader/Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-corrupt",
+      "cwd": "$WORK/corrupt-consumer/consumer",
+      "exit": 3,
+      "label": "corrupt-map-no-build-setup",
+      "seconds": 0.4718,
+      "stderr": "\u2716 [3/4] Building Dep\nwarning: $WORK/cache-corrupt/outputs/probe_dep/566c416840dafb01.json: invalid JSON: offset 8: unexpected end of input\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cache": "$WORK/cache-corrupt",
+      "cwd": "$WORK/corrupt-consumer/consumer",
+      "exit": 0,
+      "label": "corrupt-map-retry-build",
+      "seconds": 0.9671,
+      "stderr": "",
+      "stdout": "\u26a0 [2/3] Built Dep (619ms)\nwarning: $WORK/cache-corrupt/outputs/probe_dep/566c416840dafb01.json: invalid JSON: offset 8: unexpected end of input\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lake",
+        "--keep-toolchain",
+        "--no-build",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cache": "$WORK/cache-corrupt",
+      "cwd": "$WORK/corrupt-consumer/consumer",
+      "exit": 0,
+      "label": "corrupt-map-setup-after-retry",
+      "seconds": 0.417,
+      "stderr": "",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/cache-corrupt/artifacts/7b7a31f2adb2306a.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "$TOOLCHAIN/bin/lean",
+        "--json",
+        "$WORK/loader-repaired-cache-direct-lean-loader/Check.lean"
+      ],
+      "cache": "$WORK/cache-corrupt",
+      "cwd": "$WORK/loader-repaired-cache-direct-lean-loader",
+      "exit": 0,
+      "label": "repaired-cache-direct-lean-loader",
+      "object_sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "seconds": 0.6093,
+      "stderr": "",
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"$WORK/loader-repaired-cache-direct-lean-loader/Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    }
+  ]
+}

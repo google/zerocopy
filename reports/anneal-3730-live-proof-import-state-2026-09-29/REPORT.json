@@ -1,0 +1,31 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "name": "Lean 4.30.0-rc2 macOS arm64 two-proof import fixture",
+      "identity": {
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "A0_source_sha256": "639fb8886e82c890666f471b23b5576942cd642e4f6009ee53eeeb2299ff761e",
+        "A0_olean_sha256": "a9e55ecd6b9847ed795703313da547bdb46f7e6d4dfa7c6de1d825888c9d8aef",
+        "A1_source_sha256": "3267955b15d7578459c148ea403618af826044e7b589f9d011fb426e5b9a7f48",
+        "A1_olean_sha256": "a901beed39bb578d291a65c258e9db339a24154b0ec427d2047810730339e28f"
+      }
+    },
+    {
+      "name": "Direct LSP, batch, and import-context control",
+      "identity": {
+        "probe_sha256": "28bf8756167fd13fe81de5030959a78f3a2fbe435d064cbb77c7344b0b20f802",
+        "verifier_sha256": "bbd32a426dfdeb6ad1f0baf5842731fb32b90226c162222ddaf66af97639f5ee",
+        "transcript_sha256": "4d38656b4e35a2f5cdb1f98d040ab1f8e18afb5076d8b27ca7d1e62fc5e283e4"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/live-proof-imports",
+    "lean/unsaved-upstream-buffer",
+    "lean/imported-artifact-generation",
+    "lean/lsp-worker-refresh",
+    "lean/import-context",
+    "anneal/cyclic-import-residual"
+  ]
+}

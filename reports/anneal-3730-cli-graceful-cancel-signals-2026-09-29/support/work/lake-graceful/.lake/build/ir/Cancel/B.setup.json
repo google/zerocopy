@@ -1,0 +1,9 @@
+{"plugins": [],
+ "package": "signal_probe",
+ "options": {},
+ "name": "Cancel.B",
+ "isModule": false,
+ "importArts":
+ {"Cancel.A":
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cli-graceful-cancel-signals-2026-09-29/support/work/lake-graceful/.lake/build/lib/lean/Cancel/A.olean"]},
+ "dynlibs": []}

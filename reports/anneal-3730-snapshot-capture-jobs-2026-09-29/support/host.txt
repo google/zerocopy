@@ -1,0 +1,11 @@
+Python 3.14.7
+ProductName:		macOS
+ProductVersion:		26.6.2
+BuildVersion:		25G83
+Darwin Macmini 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:12 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8103 arm64
+Filesystem   512-blocks      Used Available Capacity  Mounted on
+/dev/disk3s1  478724992 304333360 107053680    74%    /System/Volumes/Data
+/dev/disk3s3s1 on / (apfs, sealed, local, read-only, journaled)
+/dev/disk3s1 on /System/Volumes/Data (apfs, local, journaled, nobrowse, protect, root data)
+fb1a7cbdff9cdb7b66a0f36234756af52c4862508dc5010735d4263d5a1995da  support/probe.py
+37a0ecd080d333f93bfe900d9c7dab193608e478

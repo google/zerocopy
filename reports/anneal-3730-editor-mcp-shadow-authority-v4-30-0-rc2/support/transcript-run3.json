@@ -1,0 +1,2814 @@
+[
+  {
+    "seq": 0,
+    "ms": 27,
+    "kind": "subject",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "good_sha256": "5ebaa29ca1973943e3060e5a931928c2d906ae050a139518375f65aa217bb534",
+    "bad_sha256": "5c1ace8fa9f1830bf2c745b022403e9a681a5180f7eccd08fba43cfead4b6aba",
+    "other_sha256": "8f203ed0667e3a26b335b484fd03aea5245b449273e45af23574646afa91cda6"
+  },
+  {
+    "seq": 1,
+    "ms": 27,
+    "kind": "disk_start",
+    "shadow_sha256": "5c1ace8fa9f1830bf2c745b022403e9a681a5180f7eccd08fba43cfead4b6aba",
+    "other_sha256": "8f203ed0667e3a26b335b484fd03aea5245b449273e45af23574646afa91cda6"
+  },
+  {
+    "seq": 2,
+    "ms": 186,
+    "kind": "batch_shadow_bad",
+    "rc": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\n\u22a2 False\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Shadow.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\n\u22a2 False\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Shadow.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":24,\"line\":1},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 3,
+    "ms": 188,
+    "kind": "start",
+    "server": "initial",
+    "pid": 42753
+  },
+  {
+    "seq": 4,
+    "ms": 208,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 42750,
+        "rootUri": "file://$WORK",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 5,
+    "ms": 214,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "ms": 214,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 7,
+    "ms": 214,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo : True := by\n  trivial\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "ms": 214,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "#check nonexistentName\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "ms": 214,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 214,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 11,
+    "ms": 214,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 12,
+    "ms": 214,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "ms": 215,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 272,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 15,
+    "ms": 272,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Other.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 444,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 444,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 444,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 22,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `nonexistentName`",
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/Other.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 452,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 452,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 452,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 22,
+    "ms": 453,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 23,
+    "ms": 453,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Other.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 453,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 453,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 26,
+    "ms": 453,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 453,
+    "kind": "good_unsaved_goal",
+    "response": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "disk_sha256": "5c1ace8fa9f1830bf2c745b022403e9a681a5180f7eccd08fba43cfead4b6aba"
+  },
+  {
+    "seq": 28,
+    "ms": 453,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "theorem demo : False := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 453,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "ms": 665,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 665,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "ms": 665,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 False",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 False",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 665,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 665,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 665,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 False"
+        ],
+        "rendered": "```lean\n\u22a2 False\n```"
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "ms": 665,
+    "kind": "bad_unsaved_goal",
+    "response": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 False"
+        ],
+        "rendered": "```lean\n\u22a2 False\n```"
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 665,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "theorem demo : True := by\n  trivial\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 665,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 771,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 40,
+    "ms": 771,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 41,
+    "ms": 876,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 42,
+    "ms": 876,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "ms": 876,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "ms": 876,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 45,
+    "ms": 876,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 46,
+    "ms": 876,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 47,
+    "ms": 877,
+    "kind": "good_unsaved_again",
+    "response": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "disk_sha256": "5c1ace8fa9f1830bf2c745b022403e9a681a5180f7eccd08fba43cfead4b6aba"
+  },
+  {
+    "seq": 48,
+    "ms": 877,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 49,
+    "ms": 877,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 50,
+    "ms": 877,
+    "kind": "other_still_open_goal",
+    "response": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 51,
+    "ms": 877,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 52,
+    "ms": 877,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "languageId": "lean",
+          "version": 4,
+          "text": "theorem demo : False := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 53,
+    "ms": 877,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 54,
+    "ms": 877,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 55,
+    "ms": 878,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 56,
+    "ms": 937,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 57,
+    "ms": 1118,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 58,
+    "ms": 1118,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 59,
+    "ms": 1118,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 False",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 False",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 60,
+    "ms": 1119,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 1119,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 62,
+    "ms": 1119,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 False"
+        ],
+        "rendered": "```lean\n\u22a2 False\n```"
+      }
+    }
+  },
+  {
+    "seq": 63,
+    "ms": 1119,
+    "kind": "reopen_from_disk_goal",
+    "response": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 False"
+        ],
+        "rendered": "```lean\n\u22a2 False\n```"
+      }
+    }
+  },
+  {
+    "seq": 64,
+    "ms": 1119,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 65,
+    "ms": 1119,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "languageId": "lean",
+          "version": 5,
+          "text": "theorem demo : True := by\n  trivial\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 66,
+    "ms": 1119,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "ms": 1120,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 68,
+    "ms": 1120,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 69,
+    "ms": 1180,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 70,
+    "ms": 1301,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 71,
+    "ms": 1361,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 72,
+    "ms": 1361,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "ms": 1361,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "ms": 1361,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 75,
+    "ms": 1361,
+    "kind": "client",
+    "server": "initial",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 76,
+    "ms": 1361,
+    "kind": "server",
+    "server": "initial",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 77,
+    "ms": 1362,
+    "kind": "reopen_from_authoritative_unsaved_text",
+    "response": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "disk_sha256": "5c1ace8fa9f1830bf2c745b022403e9a681a5180f7eccd08fba43cfead4b6aba"
+  },
+  {
+    "seq": 78,
+    "ms": 1366,
+    "kind": "forced_watchdog_loss",
+    "pid": 42753,
+    "rc": -9
+  },
+  {
+    "seq": 79,
+    "ms": 1368,
+    "kind": "start",
+    "server": "replayed",
+    "pid": 42762
+  },
+  {
+    "seq": 80,
+    "ms": 1368,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 42750,
+        "rootUri": "file://$WORK",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 81,
+    "ms": 1392,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 82,
+    "ms": 1392,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 83,
+    "ms": 1392,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo : True := by\n  trivial\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 84,
+    "ms": 1392,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "#check nonexistentName\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 85,
+    "ms": 1392,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 86,
+    "ms": 1393,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 87,
+    "ms": 1393,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 88,
+    "ms": 1393,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "ms": 1394,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "ms": 1451,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 91,
+    "ms": 1451,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Other.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 92,
+    "ms": 1622,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 93,
+    "ms": 1622,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 94,
+    "ms": 1622,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 22,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `nonexistentName`",
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/Other.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 95,
+    "ms": 1631,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 96,
+    "ms": 1631,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 97,
+    "ms": 1631,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 98,
+    "ms": 1631,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 99,
+    "ms": 1631,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Other.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 100,
+    "ms": 1631,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 101,
+    "ms": 1631,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Shadow.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 102,
+    "ms": 1632,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 103,
+    "ms": 1632,
+    "kind": "replayed_shadow_goal",
+    "response": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "disk_sha256": "5c1ace8fa9f1830bf2c745b022403e9a681a5180f7eccd08fba43cfead4b6aba"
+  },
+  {
+    "seq": 104,
+    "ms": 1632,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Other.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 105,
+    "ms": 1632,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 106,
+    "ms": 1632,
+    "kind": "replayed_other_goal",
+    "response": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 107,
+    "ms": 1632,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Missing.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo : True := by\n  trivial\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 108,
+    "ms": 1632,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Missing.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 109,
+    "ms": 1632,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Missing.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 110,
+    "ms": 1690,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Missing.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 111,
+    "ms": 1871,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Missing.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 112,
+    "ms": 1871,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Missing.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 113,
+    "ms": 1871,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Missing.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "ms": 1871,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 115,
+    "ms": 1871,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Missing.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 116,
+    "ms": 1872,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "ms": 1872,
+    "kind": "missing_file_uri_unsaved_goal",
+    "response": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "disk_exists": false
+  },
+  {
+    "seq": 118,
+    "ms": 1872,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Missing.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 119,
+    "ms": 1872,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 120,
+    "ms": 1872,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Missing.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 121,
+    "ms": 1873,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Other.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "ms": 1873,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Shadow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 123,
+    "ms": 1880,
+    "kind": "server",
+    "server": "replayed",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 124,
+    "ms": 1880,
+    "kind": "client",
+    "server": "replayed",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 125,
+    "ms": 1882,
+    "kind": "exit",
+    "server": "replayed",
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 126,
+    "ms": 1883,
+    "kind": "start",
+    "server": "custom-uri",
+    "pid": 42769
+  },
+  {
+    "seq": 127,
+    "ms": 1883,
+    "kind": "client",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 42750,
+        "rootUri": "file://$WORK",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 128,
+    "ms": 1908,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 129,
+    "ms": 1908,
+    "kind": "client",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 130,
+    "ms": 1908,
+    "kind": "client",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "untitled:AnnealProof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo : True := by\n  trivial\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "ms": 1908,
+    "kind": "client",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "untitled:AnnealProof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 132,
+    "ms": 1908,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 133,
+    "ms": 1908,
+    "kind": "client",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 134,
+    "ms": 1909,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "untitled:AnnealProof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "ms": 1935,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "untitled:AnnealProof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 136,
+    "ms": 2145,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "untitled:AnnealProof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 137,
+    "ms": 2145,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "untitled:AnnealProof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "ms": 2146,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "untitled:AnnealProof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 139,
+    "ms": 2146,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 140,
+    "ms": 2146,
+    "kind": "client",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "untitled:AnnealProof.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "seq": 141,
+    "ms": 2146,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 142,
+    "ms": 2146,
+    "kind": "custom_uri_result",
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 143,
+    "ms": 2146,
+    "kind": "client",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 144,
+    "ms": 2146,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "untitled:AnnealProof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 145,
+    "ms": 2152,
+    "kind": "server",
+    "server": "custom-uri",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 146,
+    "ms": 2152,
+    "kind": "client",
+    "server": "custom-uri",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 147,
+    "ms": 2154,
+    "kind": "exit",
+    "server": "custom-uri",
+    "rc": 0,
+    "stderr": ""
+  }
+]

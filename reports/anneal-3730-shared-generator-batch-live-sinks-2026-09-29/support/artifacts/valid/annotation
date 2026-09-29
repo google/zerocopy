@@ -1,0 +1,2 @@
+theorem checked : depValue = 7 := by
+  decide

@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-09-29",
+  "subjects": [
+    {
+      "identity": {
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      },
+      "name": "Pinned Charon/Cargo/rustc macOS arm64"
+    },
+    {
+      "identity": {
+        "fixture_cargo_lock_sha256": "03e504f1142592aee78ac87ec13656bfad68cacc181255c5efb48ac9ad4b7ffa",
+        "probe_sha256": "dbfc239eb2d22faff886befaf203ef44363f441cf5c17e7a8915d825eafcd131",
+        "raw_results_sha256": "e8ec4b7d29fafefe706b087659e1c7cc9fe66d11c12ba8a176159656580e367a"
+      },
+      "name": "Offline Cargo closure fixture and executable probe"
+    }
+  ],
+  "topics": [
+    "anneal/rust-subject-identity",
+    "charon/cargo-extraction",
+    "charon/build-input-closure",
+    "anneal/compilation-unit-validation"
+  ]
+}
