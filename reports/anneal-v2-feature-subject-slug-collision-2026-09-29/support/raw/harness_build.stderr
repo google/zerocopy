@@ -1,0 +1,12 @@
+   Compiling version_check v0.9.5
+   Compiling typenum v1.20.0
+   Compiling libc v0.2.186
+   Compiling cfg-if v1.0.4
+   Compiling generic-array v0.14.7
+   Compiling cpufeatures v0.2.17
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling digest v0.10.7
+   Compiling sha2 v0.10.9
+   Compiling anneal-scanner-slug-probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/harness)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.21s

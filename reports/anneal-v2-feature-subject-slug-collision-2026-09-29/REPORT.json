@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "anneal/compilation-subject",
+    "anneal/llbc-locator",
+    "charon/feature-selection",
+    "research/issue-3731"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal V2 checked-in artifact slug helper",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal/src/scanner.rs",
+        "sha256": "6a347ef9b6b0afd624ace8794eec19fa2af9c5c6ceecd533b12bf52992f20567"
+      }
+    },
+    {
+      "name": "Offline two-feature Rust library fixture",
+      "identity": {
+        "source_sha256": "dc0e1e46ad779f1dce18619763473163f4a30c38971a68bf9ab3413d8a5ad5fa",
+        "manifest_sha256": "8a6d76f03342b43e1058f011572e64ae3f5b9c2265bb05dc540546a0718bd529"
+      }
+    },
+    {
+      "name": "Cached Charon executable",
+      "identity": {
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "version": "0.1.210"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

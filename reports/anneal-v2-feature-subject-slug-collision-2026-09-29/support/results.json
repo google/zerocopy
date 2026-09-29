@@ -1,0 +1,163 @@
+{
+  "commands": {
+    "charon_default": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/artifacts/default.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/fixture",
+      "exit_code": 0,
+      "stderr": "raw/charon_default.stderr",
+      "stdout": "raw/charon_default.stdout"
+    },
+    "charon_selected": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/artifacts/selected.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/fixture/Cargo.toml",
+        "--lib",
+        "--features",
+        "selected",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/fixture",
+      "exit_code": 0,
+      "stderr": "raw/charon_selected.stderr",
+      "stdout": "raw/charon_selected.stdout"
+    },
+    "fixture_lock": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "generate-lockfile",
+        "--offline"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/fixture",
+      "exit_code": 0,
+      "stderr": "raw/fixture_lock.stderr",
+      "stdout": "raw/fixture_lock.stdout"
+    },
+    "harness_build": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "build",
+        "--offline",
+        "--locked"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/harness",
+      "exit_code": 0,
+      "stderr": "raw/harness_build.stderr",
+      "stdout": "raw/harness_build.stdout"
+    },
+    "harness_lock": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "generate-lockfile",
+        "--offline"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/harness",
+      "exit_code": 0,
+      "stderr": "raw/harness_lock.stderr",
+      "stdout": "raw/harness_lock.stdout"
+    },
+    "slug": {
+      "argv": [
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/i020-work-g_j183mv/harness-target/debug/anneal-scanner-slug-probe",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/fixture/Cargo.toml"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i020-slug-probe/support/harness",
+      "exit_code": 0,
+      "stderr": "raw/slug.stderr",
+      "stdout": "raw/slug.stdout"
+    }
+  },
+  "environment": {
+    "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+    "CHARON": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+    "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+    "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup",
+    "RUST_BIN": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin",
+    "targets": "fresh per Charon case"
+  },
+  "fixture_lock_sha256": "15b58addf5869982e59fea4831aa9b217bffbe2b4e647aacb195674672d56d24",
+  "fixture_manifest_sha256": "8a6d76f03342b43e1058f011572e64ae3f5b9c2265bb05dc540546a0718bd529",
+  "fixture_source_sha256": "dc0e1e46ad779f1dce18619763473163f4a30c38971a68bf9ab3413d8a5ad5fa",
+  "harness_lock_sha256": "ab85f4a02573cfcabbf9af2b55650cfdcef62324b3442b6998d6109c709cdf36",
+  "llbc_sha256": {
+    "default": "a7866222ec870d56a3a252bbd8e4e922f3029429691d5ccff7f62acf97ab619f",
+    "selected": "f28f4e3815f4e67f010ef4d7fcabb80e23eb8de0c87f121bec1e06d0f43f2e22"
+  },
+  "projections": {
+    "default": {
+      "has_errors": false,
+      "local_bodies": [
+        {
+          "source_text": "pub fn model_value() -> u32 { 7 }",
+          "u32_scalar_literals": [
+            "7"
+          ]
+        }
+      ],
+      "local_function_count": 1,
+      "local_function_names": [
+        [
+          "unit_key_probe",
+          "model_value"
+        ]
+      ]
+    },
+    "selected": {
+      "has_errors": false,
+      "local_bodies": [
+        {
+          "source_text": "pub fn model_value() -> u32 { 11 }",
+          "u32_scalar_literals": [
+            "11"
+          ]
+        }
+      ],
+      "local_function_count": 1,
+      "local_function_names": [
+        [
+          "unit_key_probe",
+          "model_value"
+        ]
+      ]
+    }
+  },
+  "slug_rows": [
+    [
+      "default",
+      "UnitKeyProbeUnitKeyProbe2ddd03393e67b637",
+      "UnitKeyProbeUnitKeyProbe2ddd03393e67b637.llbc"
+    ],
+    [
+      "selected",
+      "UnitKeyProbeUnitKeyProbe2ddd03393e67b637",
+      "UnitKeyProbeUnitKeyProbe2ddd03393e67b637.llbc"
+    ]
+  ],
+  "source_commit": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_scanner_sha256": "6a347ef9b6b0afd624ace8794eec19fa2af9c5c6ceecd533b12bf52992f20567",
+  "tool_sha256": {
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  }
+}
