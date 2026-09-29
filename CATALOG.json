@@ -1495,6 +1495,35 @@
         "anneal/dependency-gates"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v18": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue_hashes": "support/live-issue-hashes.json",
+            "issue_snapshot": "support/issue-scope-snapshot.json",
+            "issues": "#3730 and #3731",
+            "reference_revision": "b1787210c0143a705f6bbbf2da3b2fba30cc5718",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy reference and issue scope"
+        },
+        {
+          "identity": {
+            "boundaries": "fixture-owned parser, projection, CAS and publication; pinned Charon/Aeneas and direct Lean server/batch",
+            "evidence": "support/new-package-review-v18.csv",
+            "package": "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2"
+          },
+          "name": "Disposable embedded proof and model change prototype"
+        }
+      ],
+      "topics": [
+        "anneal/coverage",
+        "anneal/interactive-architecture",
+        "anneal/embedded-proof-vertical",
+        "anneal/model-change-vertical"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -5434,6 +5463,56 @@
         "lean/language-server",
         "lean/batch-checking",
         "lean/claim-oracle"
+      ]
+    },
+    "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct server and batch checker"
+        },
+        {
+          "identity": {
+            "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "llbc_sha256": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "reference_commit": "b1787210c0143a705f6bbbf2da3b2fba30cc5718",
+            "source_sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db"
+          },
+          "name": "retained Charon/Aeneas generated golden_vertical model"
+        },
+        {
+          "identity": {
+            "captured_projection_sha256": "1b0f94d5b43f433d01e8cb764b1c1eeff7726c73003a6db43417dcb726fed415",
+            "model_generation_id": "b58c86aba81f7d2d08fd9d9edb1d2aaabd8beb2cf7d89eb2bd113a40d338bf74"
+          },
+          "name": "fixture-local Rust comment projection and CAS driver"
+        },
+        {
+          "identity": {
+            "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "funs_olean_sha256": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+            "llbc_sha256": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "source_sha256": "e1d8e8151a057cdbcef186bb31c374a561170815311e8bdafbe181845cd8ef88"
+          },
+          "name": "changed Charon/Aeneas generated golden_vertical model"
+        }
+      ],
+      "topics": [
+        "anneal/embedded-proof-vertical",
+        "anneal/interactive-architecture",
+        "charon/cargo-extraction",
+        "aeneas/lean-generation",
+        "lean/language-server",
+        "lean/batch-checking",
+        "anneal/model-change-vertical"
       ]
     },
     "anneal-archive-read-only-behavior-main-41f5b37": {

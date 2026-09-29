@@ -1,0 +1,73 @@
+{
+  "generated_sha256": {
+    "3730-crosswalk-final-v18.csv": "db3f657d3c9c61d80f9b54ad8559773c7548dec8013f3d28ff758759db3e9e8f",
+    "investigation-final-v18.csv": "eb47ecff55766e60e1c681bd081d29a9bdc0ed5c907d9bb003ab3460f9772c08",
+    "new-file-inventory-v18.csv": "ac479ef3c387b63f24a2302da668eae3a9a6fd75a5a99905d9a0e90449458f8e",
+    "new-package-review-v18.csv": "61be68f935ade8d01c888f40175588c5077fa35b05e20d1df55bdcaa775df4bb",
+    "unrun-conditional-inputs-v18.csv": "c7b77e18c232b747e11b3d2a6469123c9b803ebd7ad356fa27b2a7c67038a014"
+  },
+  "input_sha256": {
+    "audit-snapshot.json": "a447f6cf73e69bb6c50f1102d97154c5a185471253bfe507867548ec1c045e6d",
+    "issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "live-issue-hashes.json": "19f76a860357ce9c839f372feb9e472a455f401cc9a0c2553c477e799bc25cfa",
+    "resource-recheck.json": "2869353beaff10697f0f49b9f13378c0ccca30eb1babd9ac61733ca754b0e3e0",
+    "row-challenge-v18.json": "cdd90d16b5bf748465cf7234c266e2230c49a258d0225da983a3f8b93ca35e16"
+  },
+  "issue_3730_heading_count": 174,
+  "issue_3731_id_count": 159,
+  "issue_fetched_at_utc": "2026-09-29T17:36:55.111978+00:00",
+  "issue_hashes": {
+    "3730": {
+      "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+      "comments": [
+        {
+          "body_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+          "id": 5884380373,
+          "updated_at": "2026-09-29T05:39:32Z"
+        }
+      ],
+      "number": 3730,
+      "state": "closed",
+      "updated_at": "2026-09-29T05:40:03Z"
+    },
+    "3731": {
+      "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+      "comments": [
+        {
+          "body_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+          "id": 5884299718,
+          "updated_at": "2026-09-29T05:32:10Z"
+        }
+      ],
+      "number": 3731,
+      "state": "open",
+      "updated_at": "2026-09-29T05:39:11Z"
+    }
+  },
+  "new_complete_ids": [
+    "I137",
+    "I138"
+  ],
+  "new_distinct_cached_only_experiment_count": 0,
+  "new_package_file_count": 35,
+  "new_packages": [
+    "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2"
+  ],
+  "reference_commit": "b1787210c0143a705f6bbbf2da3b2fba30cc5718",
+  "row_challenge_count": 333,
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 4,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 161
+    }
+  },
+  "unrun_conditional_count": 13
+}

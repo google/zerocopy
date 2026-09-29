@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/coverage",
+    "anneal/interactive-architecture",
+    "anneal/embedded-proof-vertical",
+    "anneal/model-change-vertical"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy reference and issue scope",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "b1787210c0143a705f6bbbf2da3b2fba30cc5718",
+        "issues": "#3730 and #3731",
+        "issue_snapshot": "support/issue-scope-snapshot.json",
+        "issue_hashes": "support/live-issue-hashes.json"
+      }
+    },
+    {
+      "name": "Disposable embedded proof and model change prototype",
+      "identity": {
+        "package": "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2",
+        "evidence": "support/new-package-review-v18.csv",
+        "boundaries": "fixture-owned parser, projection, CAS and publication; pinned Charon/Aeneas and direct Lean server/batch"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

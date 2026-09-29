@@ -1,0 +1,1296 @@
+[
+  {
+    "seq": 0,
+    "ms": 231,
+    "kind": "context",
+    "generation_id": "b58c86aba81f7d2d08fd9d9edb1d2aaabd8beb2cf7d89eb2bd113a40d338bf74",
+    "source_base_sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db",
+    "unsaved_initial_host_sha256": "783312881a67fb1da2f574b862af2e144ae3188a0eb122793e84181164d5c870",
+    "initial_projection_sha256": "d7741e8c749593060b426484d69c7f949c9099f03097f5797b7449d293d695cf",
+    "model_files_sha256": {
+      "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+      "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+      "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+      "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+      "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+      "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+    },
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)"
+  },
+  {
+    "seq": 1,
+    "ms": 231,
+    "kind": "projection_initial",
+    "host_sha256": "783312881a67fb1da2f574b862af2e144ae3188a0eb122793e84181164d5c870",
+    "projected_sha256": "d7741e8c749593060b426484d69c7f949c9099f03097f5797b7449d293d695cf",
+    "spans": [
+      {
+        "host_start": 322,
+        "host_end": 384,
+        "projected_start": 15,
+        "projected_end": 77
+      },
+      {
+        "host_start": 395,
+        "host_end": 406,
+        "projected_start": 77,
+        "projected_end": 88
+      }
+    ],
+    "text": "import Current\ntheorem obl_inc : golden_vertical.inc 0#u32 = .ok 1#u32 := by\n  exact ?_\n"
+  },
+  {
+    "seq": 2,
+    "ms": 231,
+    "kind": "mapped_proof_patch",
+    "projected_byte_range": [
+      79,
+      87
+    ],
+    "host_byte_range": [
+      397,
+      405
+    ],
+    "expected_bytes": "exact ?_",
+    "replacement_bytes": "rfl"
+  },
+  {
+    "seq": 3,
+    "ms": 257,
+    "kind": "server_start",
+    "pid": 9162
+  },
+  {
+    "seq": 4,
+    "ms": 257,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 9160,
+        "rootUri": "file://$WORK/work",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 5,
+    "ms": 288,
+    "kind": "lsp_server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "ms": 288,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 7,
+    "ms": 288,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Current\ntheorem obl_inc : golden_vertical.inc 0#u32 = .ok 1#u32 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "ms": 288,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/work/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "ms": 289,
+    "kind": "lsp_server",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 289,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 11,
+    "ms": 290,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "ms": 391,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/work/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "ms": 531,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 531,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/work/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 15,
+    "ms": 848,
+    "kind": "lsp_server",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 1371,
+    "kind": "lsp_server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 1902,
+    "kind": "lsp_server",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 2419,
+    "kind": "lsp_server",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 2419,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": null
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 2432,
+    "kind": "lsp_server",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 2962,
+    "kind": "lsp_server",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 22,
+    "ms": 3492,
+    "kind": "lsp_server",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 23,
+    "ms": 4022,
+    "kind": "lsp_server",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 4493,
+    "kind": "lsp_server",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 4493,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "result": null
+    }
+  },
+  {
+    "seq": 26,
+    "ms": 4552,
+    "kind": "lsp_server",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 5082,
+    "kind": "lsp_server",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 28,
+    "ms": 5610,
+    "kind": "lsp_server",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 6594,
+    "kind": "lsp_server",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 30,
+    "ms": 6595,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "result": null
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 7480,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "ms": 7481,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 7512,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 7513,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 7513,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "ms": 7513,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 7525,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 59,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 59,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/work/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 7526,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 7526,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "ms": 7526,
+    "kind": "lsp_server",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 41,
+    "ms": 7526,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 42,
+    "ms": 7528,
+    "kind": "lsp_server",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32"
+        ],
+        "rendered": "```lean\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n```"
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "ms": 7528,
+    "kind": "initial_query",
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32"
+        ],
+        "rendered": "```lean\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n```"
+      }
+    },
+    "disk_shadow_sha256": "e7f9fe9b6d89e1da569bfc0e79ba87e3259e3e77b3b7c1d0bfc7b190b637959d"
+  },
+  {
+    "seq": 44,
+    "ms": 7528,
+    "kind": "host_patch_cas",
+    "accepted": true,
+    "expected_host_sha256": "783312881a67fb1da2f574b862af2e144ae3188a0eb122793e84181164d5c870",
+    "actual_host_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421",
+    "expected_version": 1,
+    "actual_version": 2,
+    "expected_projection_sha256": "d7741e8c749593060b426484d69c7f949c9099f03097f5797b7449d293d695cf",
+    "expected_generation_id": "b58c86aba81f7d2d08fd9d9edb1d2aaabd8beb2cf7d89eb2bd113a40d338bf74"
+  },
+  {
+    "seq": 45,
+    "ms": 7528,
+    "kind": "host_patch_cas",
+    "accepted": false,
+    "expected_host_sha256": "783312881a67fb1da2f574b862af2e144ae3188a0eb122793e84181164d5c870",
+    "actual_host_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421",
+    "expected_version": 1,
+    "actual_version": 2,
+    "expected_projection_sha256": "d7741e8c749593060b426484d69c7f949c9099f03097f5797b7449d293d695cf",
+    "expected_generation_id": "b58c86aba81f7d2d08fd9d9edb1d2aaabd8beb2cf7d89eb2bd113a40d338bf74"
+  },
+  {
+    "seq": 46,
+    "ms": 7528,
+    "kind": "host_patch_cas",
+    "accepted": false,
+    "expected_host_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421",
+    "actual_host_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421",
+    "expected_version": 2,
+    "actual_version": 2,
+    "expected_projection_sha256": "1b0f94d5b43f433d01e8cb764b1c1eeff7726c73003a6db43417dcb726fed415",
+    "expected_generation_id": "wrong-generation"
+  },
+  {
+    "seq": 47,
+    "ms": 7528,
+    "kind": "projection_edited",
+    "host_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421",
+    "projected_sha256": "1b0f94d5b43f433d01e8cb764b1c1eeff7726c73003a6db43417dcb726fed415",
+    "spans": [
+      {
+        "host_start": 322,
+        "host_end": 384,
+        "projected_start": 15,
+        "projected_end": 77
+      },
+      {
+        "host_start": 395,
+        "host_end": 401,
+        "projected_start": 77,
+        "projected_end": 83
+      }
+    ],
+    "text": "import Current\ntheorem obl_inc : golden_vertical.inc 0#u32 = .ok 1#u32 := by\n  rfl\n"
+  },
+  {
+    "seq": 48,
+    "ms": 7529,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Current\ntheorem obl_inc : golden_vertical.inc 0#u32 = .ok 1#u32 := by\n  rfl\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 49,
+    "ms": 7529,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/work/Proof.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 50,
+    "ms": 7740,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 51,
+    "ms": 7740,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 52,
+    "ms": 7740,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/work/Proof.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 53,
+    "ms": 7740,
+    "kind": "lsp_server",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 54,
+    "ms": 7740,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/work/Proof.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 55,
+    "ms": 7740,
+    "kind": "lsp_server",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 56,
+    "ms": 7740,
+    "kind": "edited_query",
+    "wait": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "disk_shadow_sha256": "e7f9fe9b6d89e1da569bfc0e79ba87e3259e3e77b3b7c1d0bfc7b190b637959d"
+  },
+  {
+    "seq": 57,
+    "ms": 7741,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 58,
+    "ms": 7741,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/work/Proof.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 59,
+    "ms": 7772,
+    "kind": "lsp_server",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 60,
+    "ms": 7773,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 7777,
+    "kind": "server_exit",
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 62,
+    "ms": 9419,
+    "kind": "command",
+    "label": "fresh-batch-captured",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "$WORK/work/Captured.lean"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 63,
+    "ms": 11127,
+    "kind": "command",
+    "label": "compile-captured",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "-o",
+      "$WORK/work/Captured.olean",
+      "$WORK/work/Captured.lean"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 64,
+    "ms": 12724,
+    "kind": "command",
+    "label": "fixed-proposition-and-axioms",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "$WORK/work/Oracle.lean"
+    ],
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$WORK/work/Oracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 65,
+    "ms": 12724,
+    "kind": "result",
+    "accepted": true,
+    "captured_sha256": "1b0f94d5b43f433d01e8cb764b1c1eeff7726c73003a6db43417dcb726fed415",
+    "captured_olean_sha256": "29979cc299be632effa80c5ac979eb4608a7bad23e35beea961845bad7184616",
+    "oracle_sha256": "8f8e34c060df8d13ba2277a403ea1c283eb3896c8b89f269e49089f9c60d7cd8",
+    "imported_model_olean_sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+    "host_disk_sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db",
+    "shadow_disk_sha256": "e7f9fe9b6d89e1da569bfc0e79ba87e3259e3e77b3b7c1d0bfc7b190b637959d",
+    "generation_id": "b58c86aba81f7d2d08fd9d9edb1d2aaabd8beb2cf7d89eb2bd113a40d338bf74"
+  }
+]

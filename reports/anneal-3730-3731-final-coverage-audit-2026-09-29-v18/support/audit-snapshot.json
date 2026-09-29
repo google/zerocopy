@@ -1,0 +1,12 @@
+{
+  "new_complete_investigation_ids": [
+    "I137",
+    "I138"
+  ],
+  "new_packages": [
+    "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2"
+  ],
+  "prior_audit_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v17",
+  "reference_commit": "b1787210c0143a705f6bbbf2da3b2fba30cc5718",
+  "scope_note": "New package is a disposable prototype. An in-progress I051 experiment is excluded from this snapshot."
+}

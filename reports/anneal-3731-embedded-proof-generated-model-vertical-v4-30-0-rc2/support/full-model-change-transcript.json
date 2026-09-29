@@ -1,0 +1,4417 @@
+[
+  {
+    "seq": 0,
+    "ms": 7,
+    "kind": "authority_cas",
+    "label": "select-old-host",
+    "accepted": true,
+    "expected_rev": 0,
+    "actual_rev": 1,
+    "expected_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421",
+    "actual_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421"
+  },
+  {
+    "seq": 1,
+    "ms": 8,
+    "kind": "publication",
+    "label": "old-A",
+    "accepted": true,
+    "candidate_rev": 1,
+    "candidate_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "current_host_rev": 1,
+    "selected_rev": 1,
+    "selected_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701"
+  },
+  {
+    "seq": 2,
+    "ms": 10,
+    "kind": "server_start",
+    "pid": 9752
+  },
+  {
+    "seq": 3,
+    "ms": 34,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 9751,
+        "rootUri": "file://$WORK/full-model-change/old",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 4,
+    "ms": 58,
+    "kind": "lsp_server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 5,
+    "ms": 58,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 6,
+    "ms": 58,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Current\ntheorem obl_inc : golden_vertical.inc 0#u32 = .ok 1#u32 := by\n  rfl\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 7,
+    "ms": 58,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "ms": 59,
+    "kind": "lsp_server",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "ms": 59,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 59,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 11,
+    "ms": 138,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "ms": 298,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "ms": 298,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 618,
+    "kind": "lsp_server",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 15,
+    "ms": 1148,
+    "kind": "lsp_server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 1678,
+    "kind": "lsp_server",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 2167,
+    "kind": "lsp_server",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 2167,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": null
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 2208,
+    "kind": "lsp_server",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 2738,
+    "kind": "lsp_server",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 3268,
+    "kind": "lsp_server",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 22,
+    "ms": 3794,
+    "kind": "lsp_server",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 23,
+    "ms": 4234,
+    "kind": "lsp_server",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 4235,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "result": null
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 4318,
+    "kind": "lsp_server",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 26,
+    "ms": 4849,
+    "kind": "lsp_server",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 5150,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "ms": 5150,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 5153,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "ms": 5153,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 5153,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "ms": 5153,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 5153,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 5153,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 5154,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "ms": 5154,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 5155,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 5155,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 5155,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "ms": 5155,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 41,
+    "ms": 5161,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 42,
+    "ms": 5162,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "ms": 5162,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "ms": 5163,
+    "kind": "lsp_server",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 45,
+    "ms": 5163,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 46,
+    "ms": 5163,
+    "kind": "lsp_server",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 47,
+    "ms": 5163,
+    "kind": "query_before",
+    "state": "selected-old",
+    "selected_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "host_rev": 1,
+    "result": {
+      "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+      "version": 1,
+      "wait": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    }
+  },
+  {
+    "seq": 48,
+    "ms": 7001,
+    "kind": "command",
+    "label": "OldCaptured:batch",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "$WORK/full-model-change/old/OldCaptured.lean"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 49,
+    "ms": 8785,
+    "kind": "command",
+    "label": "OldCaptured:compile",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "-o",
+      "$WORK/full-model-change/old/OldCaptured.olean",
+      "$WORK/full-model-change/old/OldCaptured.lean"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 50,
+    "ms": 10450,
+    "kind": "command",
+    "label": "OldCaptured:oracle",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "$WORK/full-model-change/old/OldCapturedOracle.lean"
+    ],
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$WORK/full-model-change/old/OldCapturedOracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 51,
+    "ms": 10451,
+    "kind": "fresh_old",
+    "proof_sha256": "1b0f94d5b43f433d01e8cb764b1c1eeff7726c73003a6db43417dcb726fed415",
+    "batch_rc": 0,
+    "compiled_olean_sha256": "1e8d9b7a5a6f43cb179450869c980283779b212876f85aeabcf2318454921d56",
+    "oracle_rc": 0,
+    "oracle_stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$WORK/full-model-change/old/OldCapturedOracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+    "selected_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701"
+  },
+  {
+    "seq": 52,
+    "ms": 10455,
+    "kind": "late_old_started",
+    "pid": 9767,
+    "revision": 1,
+    "generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "proof_sha256": "b6919258cf69778a1da0a8e8a90352c33acac2dee44eddc5edbb4f9d35a00abe"
+  },
+  {
+    "seq": 53,
+    "ms": 12239,
+    "kind": "late_old_gate_entered",
+    "pid": 9767
+  },
+  {
+    "seq": 54,
+    "ms": 12239,
+    "kind": "authority_cas",
+    "label": "old-to-failing-F",
+    "accepted": true,
+    "expected_rev": 1,
+    "actual_rev": 2,
+    "expected_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421",
+    "actual_sha256": "78f0c0f150fbaee12c7d2b82dd6a8d5b5846f226a88de6e0b3fd5268c04c0581"
+  },
+  {
+    "seq": 55,
+    "ms": 12337,
+    "kind": "command",
+    "label": "failed:lock",
+    "argv": [
+      "$TOOLS/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "generate-lockfile",
+      "--offline"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 56,
+    "ms": 12854,
+    "kind": "command",
+    "label": "failed:charon",
+    "argv": [
+      "$TOOLS/bin/charon",
+      "cargo",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "$WORK/full-model-change/failed/failed.llbc",
+      "--",
+      "--manifest-path",
+      "$WORK/full-model-change/failed/crate/Cargo.toml",
+      "--package",
+      "golden_vertical",
+      "--lib",
+      "--offline",
+      "--locked"
+    ],
+    "rc": 101,
+    "stdout": "",
+    "stderr": "   Compiling golden_vertical v0.1.0 ($WORK/full-model-change/failed/crate)\nerror: this file contains an unclosed delimiter\n  --> src/lib.rs:9:29\n   |\n 9 | pub fn unfinished( -> u32 {\n   |                  -        -^\n   |                  |        |\n   |                  |        unclosed delimiter\n   |                  unclosed delimiter\n\nERROR Code failed to compile\nerror: could not compile `golden_vertical` (lib) due to 1 previous error\n"
+  },
+  {
+    "seq": 57,
+    "ms": 12854,
+    "kind": "provisional_failure",
+    "host_rev": 2,
+    "host_sha256": "78f0c0f150fbaee12c7d2b82dd6a8d5b5846f226a88de6e0b3fd5268c04c0581",
+    "status": "failed-preparation",
+    "selected_last_good_rev": 1,
+    "selected_last_good_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "failed_charon_rc": 101
+  },
+  {
+    "seq": 58,
+    "ms": 12854,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 59,
+    "ms": 12854,
+    "kind": "lsp_server",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 60,
+    "ms": 12854,
+    "kind": "lsp_server",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 12854,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "result": null
+    }
+  },
+  {
+    "seq": 62,
+    "ms": 12854,
+    "kind": "lsp_server",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 63,
+    "ms": 12854,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "result": null
+    }
+  },
+  {
+    "seq": 64,
+    "ms": 12854,
+    "kind": "lsp_server",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 65,
+    "ms": 12854,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "result": null
+    }
+  },
+  {
+    "seq": 66,
+    "ms": 12854,
+    "kind": "lsp_server",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 67,
+    "ms": 12854,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "result": null
+    }
+  },
+  {
+    "seq": 68,
+    "ms": 12855,
+    "kind": "lsp_server",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 69,
+    "ms": 12855,
+    "kind": "query_during",
+    "state": "last-known-good-old; stale-for-current-host",
+    "selected_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "host_rev": 2,
+    "result": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 70,
+    "ms": 12855,
+    "kind": "authority_cas",
+    "label": "failing-F-to-new-B",
+    "accepted": true,
+    "expected_rev": 2,
+    "actual_rev": 3,
+    "expected_sha256": "78f0c0f150fbaee12c7d2b82dd6a8d5b5846f226a88de6e0b3fd5268c04c0581",
+    "actual_sha256": "6b458a461301af2c2b49d6283c993843afc77115f1d89c5063cef2df885dd217"
+  },
+  {
+    "seq": 71,
+    "ms": 13286,
+    "kind": "new_model_gate_entered",
+    "pid": 9782,
+    "host_rev": 3,
+    "selected_rev": 1,
+    "selected_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701"
+  },
+  {
+    "seq": 72,
+    "ms": 13286,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/old/LiveOld.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "ms": 13286,
+    "kind": "lsp_server",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "ms": 13286,
+    "kind": "query_during_new_preparation",
+    "state": "pending-new; old-selected-stale-for-current-host",
+    "host_rev": 3,
+    "selected_rev": 1,
+    "selected_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "child_alive": true,
+    "result": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 75,
+    "ms": 13287,
+    "kind": "new_model_gate_released",
+    "pid": 9782
+  },
+  {
+    "seq": 76,
+    "ms": 62255,
+    "kind": "real_new_model_pipeline",
+    "rc": 0,
+    "stdout": "{\"old_proof_rc\": 1, \"new_proof_rc\": 0, \"changed_funs_sha256\": \"f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 77,
+    "ms": 72291,
+    "kind": "command",
+    "label": "NewCaptured:batch",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "$WORK/full-model-change/new/NewCaptured.lean"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 78,
+    "ms": 79822,
+    "kind": "command",
+    "label": "NewCaptured:compile",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "-o",
+      "$WORK/full-model-change/new/NewCaptured.olean",
+      "$WORK/full-model-change/new/NewCaptured.lean"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 79,
+    "ms": 86535,
+    "kind": "command",
+    "label": "NewCaptured:oracle",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "$WORK/full-model-change/new/NewCapturedOracle.lean"
+    ],
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$WORK/full-model-change/new/NewCapturedOracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 80,
+    "ms": 95005,
+    "kind": "command",
+    "label": "OldOnNew:batch",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "$WORK/full-model-change/new/OldOnNew.lean"
+    ],
+    "rc": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 1#u32\\n\\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"$WORK/full-model-change/new/OldOnNew.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 81,
+    "ms": 105974,
+    "kind": "command",
+    "label": "NewOnOld:batch",
+    "argv": [
+      "$TOOLS/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "$WORK/full-model-change/old/NewOnOld.lean"
+    ],
+    "rc": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 2#u32\\n\\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"$WORK/full-model-change/old/NewOnOld.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 82,
+    "ms": 105975,
+    "kind": "fresh_comparison",
+    "old_under_old": {
+      "proof_sha256": "1b0f94d5b43f433d01e8cb764b1c1eeff7726c73003a6db43417dcb726fed415",
+      "batch_rc": 0,
+      "compiled_olean_sha256": "1e8d9b7a5a6f43cb179450869c980283779b212876f85aeabcf2318454921d56",
+      "oracle_rc": 0,
+      "oracle_stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$WORK/full-model-change/old/OldCapturedOracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    "new_under_new": {
+      "proof_sha256": "e968d9f442456dc7826ec549d499fa5010090d0de1afbb8239c5386bf45f3e18",
+      "batch_rc": 0,
+      "compiled_olean_sha256": "d375335119d8f81f7d2416bfd73ac63c2f284a171beb0711335d1ae5c45cb552",
+      "oracle_rc": 0,
+      "oracle_stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$WORK/full-model-change/new/NewCapturedOracle.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n"
+    },
+    "old_under_new": {
+      "proof_sha256": "1b0f94d5b43f433d01e8cb764b1c1eeff7726c73003a6db43417dcb726fed415",
+      "batch_rc": 1,
+      "oracle_rc": null
+    },
+    "new_under_old": {
+      "proof_sha256": "e968d9f442456dc7826ec549d499fa5010090d0de1afbb8239c5386bf45f3e18",
+      "batch_rc": 1,
+      "oracle_rc": null
+    },
+    "old_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "new_generation_id": "6ce1f7d8554de56a5fc54111069c22df0baeaa8a58a7026217d4460980aa5870"
+  },
+  {
+    "seq": 83,
+    "ms": 105976,
+    "kind": "publication",
+    "label": "new-B",
+    "accepted": true,
+    "candidate_rev": 3,
+    "candidate_generation_id": "6ce1f7d8554de56a5fc54111069c22df0baeaa8a58a7026217d4460980aa5870",
+    "current_host_rev": 3,
+    "selected_rev": 3,
+    "selected_generation_id": "6ce1f7d8554de56a5fc54111069c22df0baeaa8a58a7026217d4460980aa5870"
+  },
+  {
+    "seq": 84,
+    "ms": 105976,
+    "kind": "authority_cas",
+    "label": "stale-old-host-edit",
+    "accepted": false,
+    "expected_rev": 1,
+    "actual_rev": 3,
+    "expected_sha256": "64a14e2d2823d8f327ac4a6c60c5114ca69db745240a49f99459947b032cb421",
+    "actual_sha256": "6b458a461301af2c2b49d6283c993843afc77115f1d89c5063cef2df885dd217"
+  },
+  {
+    "seq": 85,
+    "ms": 105978,
+    "kind": "server_start",
+    "pid": 9924
+  },
+  {
+    "seq": 86,
+    "ms": 105978,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 9751,
+        "rootUri": "file://$WORK/full-model-change/new",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 87,
+    "ms": 106021,
+    "kind": "lsp_server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 88,
+    "ms": 106021,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 89,
+    "ms": 106022,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Current\ntheorem obl_inc : golden_vertical.inc 0#u32 = .ok 2#u32 := by\n  rfl\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "ms": 106022,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 91,
+    "ms": 106023,
+    "kind": "lsp_server",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 92,
+    "ms": 106023,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 93,
+    "ms": 106023,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 94,
+    "ms": 106120,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 95,
+    "ms": 106259,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 96,
+    "ms": 106259,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 97,
+    "ms": 106578,
+    "kind": "lsp_server",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 98,
+    "ms": 107104,
+    "kind": "lsp_server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 99,
+    "ms": 107634,
+    "kind": "lsp_server",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 100,
+    "ms": 108139,
+    "kind": "lsp_server",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 101,
+    "ms": 108139,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": null
+    }
+  },
+  {
+    "seq": 102,
+    "ms": 108164,
+    "kind": "lsp_server",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 103,
+    "ms": 108678,
+    "kind": "lsp_server",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 104,
+    "ms": 109200,
+    "kind": "lsp_server",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 105,
+    "ms": 109722,
+    "kind": "lsp_server",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 106,
+    "ms": 110233,
+    "kind": "lsp_server",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 107,
+    "ms": 110233,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "result": null
+    }
+  },
+  {
+    "seq": 108,
+    "ms": 110252,
+    "kind": "lsp_server",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 109,
+    "ms": 110772,
+    "kind": "lsp_server",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 110,
+    "ms": 111296,
+    "kind": "lsp_server",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 111,
+    "ms": 112317,
+    "kind": "lsp_server",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 112,
+    "ms": 112317,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "result": null
+    }
+  },
+  {
+    "seq": 113,
+    "ms": 114327,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "ms": 114332,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 115,
+    "ms": 114332,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 116,
+    "ms": 114332,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "ms": 114332,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "ms": 114332,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 119,
+    "ms": 114333,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 120,
+    "ms": 114333,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 121,
+    "ms": 114333,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "ms": 114334,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 123,
+    "ms": 114334,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 124,
+    "ms": 114335,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 125,
+    "ms": 114335,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 126,
+    "ms": 114354,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 127,
+    "ms": 114354,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 128,
+    "ms": 114354,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 129,
+    "ms": 114354,
+    "kind": "lsp_server",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 130,
+    "ms": 114355,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveNew.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "ms": 114355,
+    "kind": "lsp_server",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 132,
+    "ms": 114355,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Current\ntheorem obl_inc : golden_vertical.inc 0#u32 = .ok 1#u32 := by\n  rfl\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 133,
+    "ms": 114355,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 134,
+    "ms": 114355,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "ms": 114400,
+    "kind": "lsp_server",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 136,
+    "ms": 114400,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "result": null
+    }
+  },
+  {
+    "seq": 137,
+    "ms": 114474,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "ms": 114627,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 139,
+    "ms": 114627,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 140,
+    "ms": 114937,
+    "kind": "lsp_server",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 141,
+    "ms": 115457,
+    "kind": "lsp_server",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 142,
+    "ms": 115983,
+    "kind": "lsp_server",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 143,
+    "ms": 116491,
+    "kind": "lsp_server",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 144,
+    "ms": 116491,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "result": null
+    }
+  },
+  {
+    "seq": 145,
+    "ms": 116491,
+    "kind": "lsp_server",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 146,
+    "ms": 116491,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "result": null
+    }
+  },
+  {
+    "seq": 147,
+    "ms": 116506,
+    "kind": "lsp_server",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 148,
+    "ms": 117027,
+    "kind": "lsp_server",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 149,
+    "ms": 117557,
+    "kind": "lsp_server",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 150,
+    "ms": 118079,
+    "kind": "lsp_server",
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 151,
+    "ms": 118561,
+    "kind": "lsp_server",
+    "message": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 152,
+    "ms": 118561,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "result": null
+    }
+  },
+  {
+    "seq": 153,
+    "ms": 118568,
+    "kind": "lsp_server",
+    "message": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 154,
+    "ms": 118568,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "result": null
+    }
+  },
+  {
+    "seq": 155,
+    "ms": 118605,
+    "kind": "lsp_server",
+    "message": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 156,
+    "ms": 119133,
+    "kind": "lsp_server",
+    "message": {
+      "id": 26,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 157,
+    "ms": 119658,
+    "kind": "lsp_server",
+    "message": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 158,
+    "ms": 120653,
+    "kind": "lsp_server",
+    "message": {
+      "id": 28,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 159,
+    "ms": 120653,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "result": null
+    }
+  },
+  {
+    "seq": 160,
+    "ms": 120653,
+    "kind": "lsp_server",
+    "message": {
+      "id": 29,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 161,
+    "ms": 120653,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "result": null
+    }
+  },
+  {
+    "seq": 162,
+    "ms": 122743,
+    "kind": "lsp_server",
+    "message": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 163,
+    "ms": 122743,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "result": null
+    }
+  },
+  {
+    "seq": 164,
+    "ms": 122753,
+    "kind": "lsp_server",
+    "message": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 165,
+    "ms": 122753,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "result": null
+    }
+  },
+  {
+    "seq": 166,
+    "ms": 124823,
+    "kind": "lsp_server",
+    "message": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 167,
+    "ms": 124823,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "result": null
+    }
+  },
+  {
+    "seq": 168,
+    "ms": 124851,
+    "kind": "lsp_server",
+    "message": {
+      "id": 33,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 169,
+    "ms": 124851,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "result": null
+    }
+  },
+  {
+    "seq": 170,
+    "ms": 126912,
+    "kind": "lsp_server",
+    "message": {
+      "id": 34,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 171,
+    "ms": 126912,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "result": null
+    }
+  },
+  {
+    "seq": 172,
+    "ms": 126926,
+    "kind": "lsp_server",
+    "message": {
+      "id": 35,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 173,
+    "ms": 126926,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "result": null
+    }
+  },
+  {
+    "seq": 174,
+    "ms": 128982,
+    "kind": "lsp_server",
+    "message": {
+      "id": 36,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 175,
+    "ms": 128983,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "result": null
+    }
+  },
+  {
+    "seq": 176,
+    "ms": 131052,
+    "kind": "lsp_server",
+    "message": {
+      "id": 37,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 177,
+    "ms": 131052,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "result": null
+    }
+  },
+  {
+    "seq": 178,
+    "ms": 133141,
+    "kind": "lsp_server",
+    "message": {
+      "id": 38,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 179,
+    "ms": 133141,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "result": null
+    }
+  },
+  {
+    "seq": 180,
+    "ms": 135217,
+    "kind": "lsp_server",
+    "message": {
+      "id": 39,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 181,
+    "ms": 135218,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 39,
+      "result": null
+    }
+  },
+  {
+    "seq": 182,
+    "ms": 135621,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 183,
+    "ms": 135623,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 184,
+    "ms": 135646,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 185,
+    "ms": 135647,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 186,
+    "ms": 135647,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 187,
+    "ms": 135647,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 188,
+    "ms": 135647,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 189,
+    "ms": 135647,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 190,
+    "ms": 135652,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 191,
+    "ms": 135653,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 192,
+    "ms": 135653,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 193,
+    "ms": 135666,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "message": "Tactic `rfl` failed: The left-hand side\n  golden_vertical.inc 0#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 1#u32\n\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 194,
+    "ms": 135666,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 195,
+    "ms": 135666,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 196,
+    "ms": 135667,
+    "kind": "lsp_server",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 197,
+    "ms": 135667,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 198,
+    "ms": 135670,
+    "kind": "lsp_server",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32"
+        ],
+        "rendered": "```lean\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n```"
+      }
+    }
+  },
+  {
+    "seq": 199,
+    "ms": 135670,
+    "kind": "query_after",
+    "state": "selected-new",
+    "selected_generation_id": "6ce1f7d8554de56a5fc54111069c22df0baeaa8a58a7026217d4460980aa5870",
+    "host_rev": 3,
+    "fresh": {
+      "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+      "version": 1,
+      "wait": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    "old_proof_on_new": {
+      "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+      "version": 1,
+      "wait": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32"
+          ],
+          "rendered": "```lean\n⊢ golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n```"
+        }
+      }
+    }
+  },
+  {
+    "seq": 200,
+    "ms": 135671,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 201,
+    "ms": 135672,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/new/LiveNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 202,
+    "ms": 135672,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/new/LiveOldOnNew.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 203,
+    "ms": 135706,
+    "kind": "lsp_server",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 204,
+    "ms": 135706,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 205,
+    "ms": 135913,
+    "kind": "server_exit",
+    "rc": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 206,
+    "ms": 135917,
+    "kind": "late_old_gate_released",
+    "after_selected_rev": 3
+  },
+  {
+    "seq": 207,
+    "ms": 135976,
+    "kind": "late_old_finished",
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"'run_tac\\n  do\\n    IO.FS.writeFile \\\"gate.entered\\\" \\\"1\\\"\\n    while !(← (System.FilePath.mk \\\"gate.release\\\").pathExists) do\\n      IO.sleep 10' tactic does nothing\\n\\nNote: This linter can be disabled with `set_option linter.unusedTactic false`\",\"endPos\":{\"column\":17,\"line\":6},\"fileName\":\"$WORK/full-model-change/late-old/LateOld.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"linter.unusedTactic\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"warning\"}\n",
+    "stderr": "",
+    "old_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701"
+  },
+  {
+    "seq": 208,
+    "ms": 135976,
+    "kind": "publication",
+    "label": "late-old-A",
+    "accepted": false,
+    "candidate_rev": 1,
+    "candidate_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "current_host_rev": 3,
+    "selected_rev": 3,
+    "selected_generation_id": "6ce1f7d8554de56a5fc54111069c22df0baeaa8a58a7026217d4460980aa5870"
+  },
+  {
+    "seq": 209,
+    "ms": 135976,
+    "kind": "final_state",
+    "host_rev": 3,
+    "host_sha256": "6b458a461301af2c2b49d6283c993843afc77115f1d89c5063cef2df885dd217",
+    "selected_rev": 3,
+    "selected_generation_id": "6ce1f7d8554de56a5fc54111069c22df0baeaa8a58a7026217d4460980aa5870",
+    "selected_model_files_sha256": {
+      "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+      "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+      "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+      "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+      "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+      "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+    },
+    "old_generation_id": "e88402506cd3206d87d2ba2e06b6fccb868559d555bcf5e9d0e4325249a11701",
+    "failed_host_sha256": "78f0c0f150fbaee12c7d2b82dd6a8d5b5846f226a88de6e0b3fd5268c04c0581",
+    "new_generation_id": "6ce1f7d8554de56a5fc54111069c22df0baeaa8a58a7026217d4460980aa5870"
+  },
+  {
+    "seq": 210,
+    "ms": 135977,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 211,
+    "ms": 135977,
+    "kind": "lsp_server",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 212,
+    "ms": 135977,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "result": null
+    }
+  },
+  {
+    "seq": 213,
+    "ms": 135977,
+    "kind": "lsp_server",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 214,
+    "ms": 135977,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "result": null
+    }
+  },
+  {
+    "seq": 215,
+    "ms": 135977,
+    "kind": "lsp_server",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 216,
+    "ms": 135977,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "result": null
+    }
+  },
+  {
+    "seq": 217,
+    "ms": 135977,
+    "kind": "lsp_server",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 218,
+    "ms": 135977,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "result": null
+    }
+  },
+  {
+    "seq": 219,
+    "ms": 135978,
+    "kind": "lsp_server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/full-model-change/old/LiveOld.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 220,
+    "ms": 136013,
+    "kind": "lsp_server",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 221,
+    "ms": 136013,
+    "kind": "lsp_client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 222,
+    "ms": 136222,
+    "kind": "server_exit",
+    "rc": 0,
+    "stderr": ""
+  }
+]
