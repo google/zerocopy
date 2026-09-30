@@ -1,0 +1,1806 @@
+{
+  "artifacts": {
+    "inc0-baseline-A": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "5350dafb0af7cc4d7b30a67db243d85372c5fa300ced4ea992eea3bca4b6135b",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc0-baseline-B": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "32c09e7a5e3cacace77f7f0d8e3e54f0a8a9c78770943dfe4baee14505c00022",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc0-edited-A": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "e3886f9cc49d0baed88edc4b6decff5902e40f6e5be810406c4edebc9829b27a",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(2) }",
+          "source_text_sha256": "df96b91d3cc704e7f639f27d4d44aced8150a43fea2efa39e2aee189bf419851",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae"
+    },
+    "inc0-edited-B": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "5d2cf156df5d84ebabdf6b3964933133c2e637432701619b058e483d92e157e7",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc0-oracle-baseline": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "be15b8fb532ebeee252c08188341f76f3c0ec4d70482305e3cba3f43a7cff6ff",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc0-oracle-edited": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "35ed44bab715da520d6f19f995c1566bb01c5f93f53192df6b6e438fa13f54fc",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(2) }",
+          "source_text_sha256": "df96b91d3cc704e7f639f27d4d44aced8150a43fea2efa39e2aee189bf419851",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae"
+    },
+    "inc0-reverted-A": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "a05a10f01e5bebfb797169150fa491db01529ef38aa94ee6527efecd9be82dde",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc0-reverted-B": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "c6efc4dce83d15f4af4b445a203740c3d9b4f3b3808ad6cb4f9af85854b54888",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc1-baseline-A": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "d4c9709adf587cf55c56001ca19b29f623c96c72f4022e03d407ce8fccad4c0b",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc1-baseline-B": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "27d38bd5a2109fa0b5ac5b6a390194ef09f985974ac30090fbd83925cf8ff2dc",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc1-edited-A": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "fd13ac183381ed8966ed5118b52bab5ce5535ff51b0b1547e46a797314a8c2cb",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(2) }",
+          "source_text_sha256": "df96b91d3cc704e7f639f27d4d44aced8150a43fea2efa39e2aee189bf419851",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae"
+    },
+    "inc1-edited-B": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "fdf546cdefe20a16979664fda4a03eec87c2f0cc4e77b3df37f73aa64997fa69",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc1-oracle-baseline": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "331f1893ca72e291aefa1a3488660d45e2d406a41cb877a32419a73b23c89dac",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc1-oracle-edited": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "31c2c98258ec8a658f268ceb7609c850c1543bf8f61ba7b1f96462396f2aa12b",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(2) }",
+          "source_text_sha256": "df96b91d3cc704e7f639f27d4d44aced8150a43fea2efa39e2aee189bf419851",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae"
+    },
+    "inc1-reverted-A": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "2d4539cdec11e0d3af3ef894d303f5886fa4d0dc47c327a60a3d7002fa076f5d",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    },
+    "inc1-reverted-B": {
+      "excluded_generated_local_items": [
+        {
+          "category": "fun_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        },
+        {
+          "category": "global_decls",
+          "file_id": 1,
+          "name": "warm_probe::SNAPSHOT_VALUE",
+          "reason": "no independent retained generated Rust state for this file"
+        }
+      ],
+      "llbc_sha256": "dda6b3041bbf79ea70261074575d2abea481d2f80858fbb80c16061c5d37a739",
+      "local_ascii_items": [
+        {
+          "category": "fun_decls",
+          "def_id": 0,
+          "name": "warm_probe::step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }",
+          "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 4
+            },
+            "end": {
+              "col": 48,
+              "line": 4
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 1,
+          "name": "warm_probe::use_step",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }",
+          "source_text_sha256": "8feac732bdc0592c9c8e60dc77d399359bf7af26fa6a66579d909c9405418b59",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 5
+            },
+            "end": {
+              "col": 75,
+              "line": 5
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 2,
+          "name": "warm_probe::payload_len",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }",
+          "source_text_sha256": "0f50cceb7b766b748f8dd3d90ddd5247eb5a24d64e9ba367656fe2f6d5dc2c79",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 6
+            },
+            "end": {
+              "col": 67,
+              "line": 6
+            },
+            "file_id": 0
+          }
+        },
+        {
+          "category": "fun_decls",
+          "def_id": 3,
+          "name": "warm_probe::generated_value",
+          "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "source_text": "pub fn generated_value() -> u32 { SNAPSHOT_VALUE }",
+          "source_text_sha256": "16a556ce60f94ab6e95e51b6a60fb152c6011c200c84cdaeb711b6968dd20f7f",
+          "span": {
+            "beg": {
+              "col": 0,
+              "line": 7
+            },
+            "end": {
+              "col": 50,
+              "line": 7
+            },
+            "file_id": 0
+          }
+        }
+      ],
+      "source_state_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e"
+    }
+  },
+  "elapsed_seconds": 0.13205791707150638,
+  "limits": {
+    "max_rss_bytes": 67108864,
+    "max_seconds": 5.0,
+    "min_reclaimable_percent": 20.0
+  },
+  "negative_controls": {
+    "edited_A_step_differs_from_baseline": true,
+    "inclusive_end_detected": true,
+    "reverted_A_step_returns_to_baseline": true,
+    "shift_start_one_byte_detected": true,
+    "unchanged_B_step_remains_baseline": true
+  },
+  "peak_rss_bytes": 22396928,
+  "samples": [
+    {
+      "elapsed_seconds": 2.2792024537920952e-05,
+      "label": "preflight-before-input",
+      "max_rss_bytes": 21708800,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.875091552734375
+    },
+    {
+      "elapsed_seconds": 0.005914167035371065,
+      "label": "before-inc0-baseline-A",
+      "max_rss_bytes": 21774336,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.892066955566406
+    },
+    {
+      "elapsed_seconds": 0.0111695840023458,
+      "label": "after-inc0-baseline-A",
+      "max_rss_bytes": 22036480,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.88787078857422
+    },
+    {
+      "elapsed_seconds": 0.014954291982576251,
+      "label": "before-inc0-baseline-B",
+      "max_rss_bytes": 22052864,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.88481903076172
+    },
+    {
+      "elapsed_seconds": 0.019437750102952123,
+      "label": "after-inc0-baseline-B",
+      "max_rss_bytes": 22233088,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.882720947265625
+    },
+    {
+      "elapsed_seconds": 0.023165459046140313,
+      "label": "before-inc0-edited-A",
+      "max_rss_bytes": 22233088,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.88062286376953
+    },
+    {
+      "elapsed_seconds": 0.027346542105078697,
+      "label": "after-inc0-edited-A",
+      "max_rss_bytes": 22249472,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.889968872070312
+    },
+    {
+      "elapsed_seconds": 0.031057375017553568,
+      "label": "before-inc0-edited-B",
+      "max_rss_bytes": 22249472,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.88787078857422
+    },
+    {
+      "elapsed_seconds": 0.03524941694922745,
+      "label": "after-inc0-edited-B",
+      "max_rss_bytes": 22265856,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.885391235351562
+    },
+    {
+      "elapsed_seconds": 0.038766250014305115,
+      "label": "before-inc0-oracle-baseline",
+      "max_rss_bytes": 22265856,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.88329315185547
+    },
+    {
+      "elapsed_seconds": 0.04272441705688834,
+      "label": "after-inc0-oracle-baseline",
+      "max_rss_bytes": 22298624,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.881385803222656
+    },
+    {
+      "elapsed_seconds": 0.04617437510751188,
+      "label": "before-inc0-oracle-edited",
+      "max_rss_bytes": 22298624,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.87890625
+    },
+    {
+      "elapsed_seconds": 0.05012383405119181,
+      "label": "after-inc0-oracle-edited",
+      "max_rss_bytes": 22298624,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.876617431640625
+    },
+    {
+      "elapsed_seconds": 0.05367212509736419,
+      "label": "before-inc0-reverted-A",
+      "max_rss_bytes": 22298624,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.87451934814453
+    },
+    {
+      "elapsed_seconds": 0.057561208959668875,
+      "label": "after-inc0-reverted-A",
+      "max_rss_bytes": 22315008,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.872230529785156
+    },
+    {
+      "elapsed_seconds": 0.06106270896270871,
+      "label": "before-inc0-reverted-B",
+      "max_rss_bytes": 22315008,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.89397430419922
+    },
+    {
+      "elapsed_seconds": 0.06497791688889265,
+      "label": "after-inc0-reverted-B",
+      "max_rss_bytes": 22331392,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.891494750976562
+    },
+    {
+      "elapsed_seconds": 0.06846754206344485,
+      "label": "before-inc1-baseline-A",
+      "max_rss_bytes": 22331392,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.88939666748047
+    },
+    {
+      "elapsed_seconds": 0.07240554201416671,
+      "label": "after-inc1-baseline-A",
+      "max_rss_bytes": 22331392,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.88672637939453
+    },
+    {
+      "elapsed_seconds": 0.07592879189178348,
+      "label": "before-inc1-baseline-B",
+      "max_rss_bytes": 22331392,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.883865356445312
+    },
+    {
+      "elapsed_seconds": 0.07995437504723668,
+      "label": "after-inc1-baseline-B",
+      "max_rss_bytes": 22331392,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.881195068359375
+    },
+    {
+      "elapsed_seconds": 0.08341016690246761,
+      "label": "before-inc1-edited-A",
+      "max_rss_bytes": 22347776,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.878524780273438
+    },
+    {
+      "elapsed_seconds": 0.0873705840203911,
+      "label": "after-inc1-edited-A",
+      "max_rss_bytes": 22347776,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.8758544921875
+    },
+    {
+      "elapsed_seconds": 0.09091575001366436,
+      "label": "before-inc1-edited-B",
+      "max_rss_bytes": 22347776,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.87299346923828
+    },
+    {
+      "elapsed_seconds": 0.0948311670217663,
+      "label": "after-inc1-edited-B",
+      "max_rss_bytes": 22380544,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.882530212402344
+    },
+    {
+      "elapsed_seconds": 0.09829483390785754,
+      "label": "before-inc1-oracle-baseline",
+      "max_rss_bytes": 22380544,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.892257690429688
+    },
+    {
+      "elapsed_seconds": 0.10227654199115932,
+      "label": "after-inc1-oracle-baseline",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.890159606933594
+    },
+    {
+      "elapsed_seconds": 0.10632987506687641,
+      "label": "before-inc1-oracle-edited",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.887489318847656
+    },
+    {
+      "elapsed_seconds": 0.11033424991182983,
+      "label": "after-inc1-oracle-edited",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.885009765625
+    },
+    {
+      "elapsed_seconds": 0.11379129206761718,
+      "label": "before-inc1-reverted-A",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.882911682128906
+    },
+    {
+      "elapsed_seconds": 0.11764270905405283,
+      "label": "after-inc1-reverted-A",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.88043212890625
+    },
+    {
+      "elapsed_seconds": 0.121082124998793,
+      "label": "before-inc1-reverted-B",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.893020629882812
+    },
+    {
+      "elapsed_seconds": 0.1250649590510875,
+      "label": "after-inc1-reverted-B",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.890541076660156
+    },
+    {
+      "elapsed_seconds": 0.12859724997542799,
+      "label": "final-before-write",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.8880615234375
+    }
+  ],
+  "source_results_sha256": "e1f8ac94a2bda6f93ca21d11c8fae4c6030bd2f9a9ac5491d2e4b36f981e1d4a",
+  "source_state_sha256": {
+    "baseline": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+    "edited": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae"
+  },
+  "span_interpretation": {
+    "column_origin": "zero-based for the tested local ASCII lines",
+    "column_unit": "underdetermined: bytes, Unicode scalars and UTF-16 units coincide in this ASCII fixture",
+    "end": "exclusive for the tested local ASCII lines",
+    "line_numbering": "one-based for the tested local ASCII lines"
+  },
+  "status": "completed"
+}

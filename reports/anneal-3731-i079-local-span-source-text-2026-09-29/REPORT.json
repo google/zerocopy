@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "charon/cargo-extraction",
+    "charon/cache-invalidation"
+  ],
+  "subjects": [
+    {
+      "name": "Published I080 source edit/revert Charon corpus",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "974c035a2a32b8b873ad560b572eeda7a69679bb",
+        "source_report_sha256": "684b193a0d0362824df84d7dee42c7b58e35915405f412487552358cdcbbaeee",
+        "source_probe_sha256": "014de68845008f2238863e17077ae7f429b17a44634f2620c8f34086404e72ca",
+        "source_results_sha256": "e1f8ac94a2bda6f93ca21d11c8fae4c6030bd2f9a9ac5491d2e4b36f981e1d4a",
+        "baseline_source_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+        "edited_source_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae"
+      }
+    },
+    {
+      "name": "Offline ASCII-local LLBC item-span comparison",
+      "identity": {
+        "compare_sha256": "e82b9b9d4ff2334c1ad92578ecc945b704ed092bf1dc7c4bf708d7b0c7e49ef7",
+        "comparison_sha256": "c8a5f5b1c3e094f17cff42067f8ca118fb15ce2f8f0e7077d362042584eb4c7f",
+        "source_results_sha256": "e1f8ac94a2bda6f93ca21d11c8fae4c6030bd2f9a9ac5491d2e4b36f981e1d4a"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

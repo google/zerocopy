@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "artifact-identity/llbc",
+    "charon/cargo-extraction"
+  ],
+  "subjects": [
+    {
+      "name": "Published v41 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "974c035a2a32b8b873ad560b572eeda7a69679bb",
+        "row_challenge_sha256": "7ce65cad2ea669dd9832ca1271c4000b44327c26e92d14d2ab3545eaf7717ca5"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731 as retained in v41",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Retained I079 ASCII-local source-span comparison",
+      "identity": {
+        "source_report_sha256": "64bd5603348fa455d47e1e4bc49f81e5ce04e65a0ab9cc26b6d28792742803ea",
+        "compare_sha256": "e82b9b9d4ff2334c1ad92578ecc945b704ed092bf1dc7c4bf708d7b0c7e49ef7",
+        "comparison_sha256": "c8a5f5b1c3e094f17cff42067f8ca118fb15ce2f8f0e7077d362042584eb4c7f",
+        "source_results_sha256": "e1f8ac94a2bda6f93ca21d11c8fae4c6030bd2f9a9ac5491d2e4b36f981e1d4a",
+        "baseline_source_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+        "edited_source_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}
