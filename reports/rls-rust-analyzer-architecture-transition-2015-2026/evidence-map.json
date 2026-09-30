@@ -1,0 +1,76 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "report": "reports/rls-rust-analyzer-architecture-transition-2015-2026",
+  "question": "J009",
+  "sources": [
+    {
+      "id": "E1",
+      "kind": "normative-rfc",
+      "repository": "rust-lang/rfcs",
+      "revision": "82d48b36568286b93fc2ce55f89594024f421a3b",
+      "path": "text/1317-ide.md",
+      "supports": ["RLS intended to reuse rustc", "invalid/incomplete editor states were known requirements", "persistent-compiler invalidation and cancellation were known hard problems"]
+    },
+    {
+      "id": "E2",
+      "kind": "implementation-documentation",
+      "repository": "rust-lang/rls",
+      "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+      "path": "architecture.md",
+      "supports": ["compiler/save-analysis/index pipeline", "build scheduling and in-process compiler use", "crate-level analysis replacement"]
+    },
+    {
+      "id": "E3",
+      "kind": "project-documentation",
+      "repository": "rust-lang/rls",
+      "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+      "path": "README.md",
+      "supports": ["compiler data preferred for precision", "Racer fallback for completion and missing save-analysis"]
+    },
+    {
+      "id": "E4",
+      "kind": "normative-rfc",
+      "repository": "rust-lang/rfcs",
+      "revision": "b6fffdf18f8b867648de0d95657cc13a64cae4e2",
+      "path": "text/2912-rust-analyzer.md",
+      "supports": ["save-analysis latency limits", "on-demand architecture rationale", "accepted approximation/divergence cost", "library-ification plan", "reimplement-within-rustc alternative and sequencing rationale", "different batch/IDE host needs"]
+    },
+    {
+      "id": "E5",
+      "kind": "project-retrospective",
+      "date": "2020-04-20",
+      "url": "https://rust-analyzer.github.io/blog/2020/04/20/first-release.html",
+      "supports": ["persistent on-demand operational contrast", "early diagnostic limitation and separate cargo check path"]
+    },
+    {
+      "id": "E6",
+      "kind": "official-transition-announcement",
+      "date": "2022-07-01",
+      "url": "https://blog.rust-lang.org/2022/07/01/RLS-deprecation/",
+      "supports": ["RLS deprecation outcome", "official characterization of RLS interactive limitations"]
+    },
+    {
+      "id": "E7",
+      "kind": "current-implementation-documentation",
+      "repository": "rust-lang/rust-analyzer",
+      "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "path": "docs/book/src/contributing/architecture.md",
+      "supports": ["broken-code tolerant parser", "incremental query model", "narrow invalidation", "transactional changes and immutable snapshots", "cancellation", "partial availability during broken builds", "current rustc/Cargo integration"]
+    },
+    {
+      "id": "E8",
+      "kind": "maintainer-history",
+      "repository": "rust-lang/rust-analyzer",
+      "issue": "10765",
+      "opened": "2021-11-14",
+      "url": "https://github.com/rust-lang/rust-analyzer/issues/10765",
+      "supports": ["reported difficulty of parser sharing", "technical and organizational integration obstacles"]
+    }
+  ],
+  "derived_judgments": [
+    "Sharing the authoritative compiler is insufficient when its evaluation policy remains batch-shaped; semantic reuse and interactive evaluation policy are distinct architectural concerns.",
+    "A separate live engine is justified when it unlocks an end-to-end partial/cancellable/incremental interaction model materially earlier or more reliably than refactoring the authoritative batch engine.",
+    "The cost is semantic divergence, so authority must be explicit and common semantic logic or checkable artifacts should be shared where feasible.",
+    "For Anneal, the strongest analogy is a live advisory path over revisioned partial state plus an authoritative acceptance path over immutable identified inputs, conditional on the batch path not already meeting live requirements."
+  ]
+}

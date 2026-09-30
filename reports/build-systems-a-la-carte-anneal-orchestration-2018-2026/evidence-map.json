@@ -1,0 +1,66 @@
+{
+  "schema": "anneal-reference-support/evidence-map/v1",
+  "scope": "J034 Build Systems à la Carte as a design vocabulary",
+  "observed_at": "2026-09-30",
+  "claims": [
+    {
+      "id": "decomposition",
+      "claim": "Build-system design can separate task/dependency expressiveness, scheduling order, rebuilding policy, and persistent build information.",
+      "evidence": [
+        "Build Systems à la Carte, DOI 10.1145/3236774",
+        "Build systems à la carte: Theory and practice, DOI 10.1017/S0956796820000088",
+        "snowleopard/build@43b18b9a362d7d27b64679ea4122e4b8c5dfedd9 papers/jfp/1-intro.tex",
+        "snowleopard/build@43b18b9a362d7d27b64679ea4122e4b8c5dfedd9 papers/jfp/3-abstractions.tex",
+        "snowleopard/build@43b18b9a362d7d27b64679ea4122e4b8c5dfedd9 src/Build/System.hs"
+      ],
+      "role": "primary publication + source"
+    },
+    {
+      "id": "scheduler-tradeoff",
+      "claim": "Topological scheduling requires dependencies in advance; restarting and suspending schedulers support dynamic dependencies with distinct restart/suspension costs.",
+      "evidence": [
+        "snowleopard/build@43b18b9a362d7d27b64679ea4122e4b8c5dfedd9 papers/jfp/4-schedulers.tex blob 6e78793e8035fc21d1e3b237dea37f4ee5e8398c",
+        "snowleopard/build@43b18b9a362d7d27b64679ea4122e4b8c5dfedd9 src/Build/Scheduler.hs blob 57fc2578aef538e065e361223206439bec883851"
+      ],
+      "role": "primary publication source + executable model"
+    },
+    {
+      "id": "trace-strength",
+      "claim": "Dirty bits, verifying traces, constructive traces, and deep constructive traces encode progressively different reuse evidence and costs; deep constructive traces require determinism and lose early cutoff.",
+      "evidence": [
+        "snowleopard/build@43b18b9a362d7d27b64679ea4122e4b8c5dfedd9 papers/jfp/5-rebuilders.tex blob e08d004c04f3114b9213f509861cb4a824edc89a",
+        "snowleopard/build@43b18b9a362d7d27b64679ea4122e4b8c5dfedd9 src/Build/Rebuilder.hs blob 45233a9fb46ef7e3b7956cd61d2c7a8ce3ca5f15"
+      ],
+      "role": "primary publication source + executable model"
+    },
+    {
+      "id": "impurity-limit",
+      "claim": "The pure task model does not automatically account for untracked dependencies, nondeterminism, or volatility; sandboxing may reduce but need not eliminate untracked state.",
+      "evidence": [
+        "Build systems à la carte: Theory and practice, DOI 10.1017/S0956796820000088, section 8.3",
+        "snowleopard/build@43b18b9a362d7d27b64679ea4122e4b8c5dfedd9 papers/jfp/8-engineering.tex blob d4da065f2c762ad7046ac85df0aef3f744fb5ed5"
+      ],
+      "role": "primary publication"
+    },
+    {
+      "id": "anneal-coarse-boundary",
+      "claim": "Current Anneal evidence supports coarse explicit generation boundaries while several upstream systems retain their own internal freshness state; open document state is distinct from disk state.",
+      "evidence": [
+        "google/zerocopy reference@87bbe2425ed749ba4eff9e729ad6799313124cb2 reports/anneal-interactive-pipeline-invalidation-graph-main-41f5b37/REPORT.md blob 9695ae7ab3626273431f6715ee2b0c846e064496",
+        "google/zerocopy reference@87bbe2425ed749ba4eff9e729ad6799313124cb2 reports/anneal-3730-rust-input-snapshot-2026-09-29/REPORT.md blob 8d1ca9ff320e216be72abbca267c4372fcb8d0e1"
+      ],
+      "role": "existing bounded source/execution evidence"
+    },
+    {
+      "id": "anneal-publication-separate",
+      "claim": "Anneal acceptance/publication requires current identity, completeness, and freshness fences beyond ordinary build scheduling/rebuilding.",
+      "evidence": [
+        "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92 anneal/DESIGN.md blob 0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+        "google/zerocopy reference@87bbe2425ed749ba4eff9e729ad6799313124cb2 reports/anneal-3730-architecture-contracts-2026-09-29/REPORT.md blob d532b9fe321f547efe355a9044b707a06727ed65",
+        "google/zerocopy reference@87bbe2425ed749ba4eff9e729ad6799313124cb2 reports/anneal-3730-fault-model-2026-09-29/REPORT.md blob b11f3bab8082ebe52ca47a2d10eb9f44d6f0832c"
+      ],
+      "role": "design authority + bounded execution/model evidence + derived comparison"
+    }
+  ],
+  "derived_judgment": "Start with coarse explicit DAG orchestration and explicit generation/result authority. Add dynamic dependency tracking, constructive caching, or finer-grained query infrastructure only when the corresponding dependency visibility, identity/determinism assumptions, and measured workload justify them. This is derived analysis, not adopted Anneal policy."
+}

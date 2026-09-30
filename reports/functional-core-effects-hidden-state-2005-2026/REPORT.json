@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "architecture/effects",
+    "architecture/functional-core",
+    "architecture/ports-adapters",
+    "architecture/sans-io",
+    "build/hermeticity"
+  ],
+  "subjects": [
+    {
+      "name": "Hexagonal Architecture / Ports and Adapters original article",
+      "identity": {
+        "author": "Alistair Cockburn",
+        "date": "2005-09-04",
+        "report": "HaT Technical Report 2005.02",
+        "version": "0.9",
+        "url": "https://alistair.cockburn.us/hexagonal-architecture/"
+      }
+    },
+    {
+      "name": "Boundaries",
+      "identity": {
+        "author": "Gary Bernhardt",
+        "event": "SCNA 2012",
+        "url": "https://www.destroyallsoftware.com/talks/boundaries",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Network Protocols, sans I/O",
+      "identity": {
+        "repository": "brettcannon/sans-io",
+        "revision": "b4679927d555cb27d9960ae203c0ecd0d8209771"
+      }
+    },
+    {
+      "name": "Handlers of Algebraic Effects",
+      "identity": {
+        "doi": "10.1007/978-3-642-00590-9_7",
+        "publication": "ESOP 2009",
+        "year": "2009"
+      }
+    },
+    {
+      "name": "Koka: Programming with Row Polymorphic Effect Types",
+      "identity": {
+        "doi": "10.4204/EPTCS.153.8",
+        "publication": "EPTCS 153",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "Remote Execution API",
+      "identity": {
+        "repository": "bazelbuild/remote-apis",
+        "revision": "adbf4a27c86fbea4a37637a6cbcacef372406fe7"
+      }
+    },
+    {
+      "name": "Anneal principles and design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

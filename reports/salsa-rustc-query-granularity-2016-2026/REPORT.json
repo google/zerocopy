@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/incrementality",
+    "compilers/query-systems",
+    "rust/rustc",
+    "rust/salsa"
+  ],
+  "subjects": [
+    {
+      "name": "Salsa query framework",
+      "identity": {
+        "repository": "salsa-rs/salsa",
+        "revision": "a7f8c558555f179ca02f6bdf7397d1317f91aa43"
+      }
+    },
+    {
+      "name": "rustc developer guide query and incremental-compilation model",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85"
+      }
+    },
+    {
+      "name": "Anneal design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Aeneas incremental-translation feasibility reference evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "path": "reports/aeneas-incremental-translation-feasibility-nightly-2026-06-03/REPORT.md",
+        "blob": "966b5953644d8c9a766ae900e8b137616c501be8"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "systems/isolation",
+    "rust/language-based-isolation",
+    "rust/ffi",
+    "linux/rust",
+    "anneal/process-boundaries",
+    "anneal/trust-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "RedLeaf isolation architecture",
+      "identity": {
+        "publication": "RedLeaf: Isolation and Communication in a Safe Operating System, 14th USENIX Symposium on Operating Systems Design and Implementation (OSDI 20), pages 21-39",
+        "usenix-paper-id": "258949",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "RedLeaf paper-associated source corroboration",
+      "identity": {
+        "repository": "mars-research/redleaf",
+        "revision": "08753faee652495f55fc8cbb420e5123a183affc",
+        "branch-observed": "osdi20_camera_ready",
+        "commit-date": "2021-02-20"
+      }
+    },
+    {
+      "name": "Linux Rust abstraction and foreign-ownership boundary",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "551c722f40809618230001baccf219193e22fc5a"
+      }
+    },
+    {
+      "name": "Anneal design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

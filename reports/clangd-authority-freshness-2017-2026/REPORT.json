@@ -1,0 +1,68 @@
+{
+  "topics": [
+    "clangd/compilation-database",
+    "clangd/preambles",
+    "clangd/indexing",
+    "clangd/scheduling",
+    "clangd/diagnostics",
+    "anneal/interactive-authority",
+    "anneal/freshness"
+  ],
+  "subjects": [
+    {
+      "name": "clangd current implementation",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ded546ad82656ce6605ee2f2aa60c78dec70d95f"
+      }
+    },
+    {
+      "name": "clangd current design documentation",
+      "identity": {
+        "repository": "llvm/clangd-www",
+        "revision": "ae5866d4552e30a173b8e9c3cec872a82e4c0120"
+      }
+    },
+    {
+      "name": "clangd preamble storage tradeoff",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "e9eb7f0cb815641827fa3d031c38190c10900c14",
+        "differential": "D39843"
+      }
+    },
+    {
+      "name": "clangd background indexing thread-pool design",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "6675be87477395658f6d3859b028ab8dee81ba19",
+        "differential": "D53651"
+      }
+    },
+    {
+      "name": "clangd TUScheduler cancellation policy",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "a2b048bc4bdf9320249d0ff512fab6f16c2e6e47",
+        "differential": "D54746"
+      }
+    },
+    {
+      "name": "clangd update-invalidated request policy",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c627b120eb8b7add3f9cf893721335c367d9f037",
+        "differential": "D75602"
+      }
+    },
+    {
+      "name": "clangd asynchronous preamble indexing change and design discussion",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "a8ad413f0d18c07a4adaa0d547e0096874d809c5",
+        "differential": "D148088"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

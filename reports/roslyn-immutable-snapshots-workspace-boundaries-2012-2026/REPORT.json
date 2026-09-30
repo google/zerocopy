@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "roslyn",
+    "roslyn/workspaces",
+    "roslyn/immutability",
+    "roslyn/incrementality",
+    "roslyn/remote",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Roslyn current workspace, compilation, syntax, and remote-synchronization architecture",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b"
+      }
+    },
+    {
+      "name": "Roslyn overview as first imported into the public GitHub repository",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "4a74095f0e3598e514f3147479beee208c0ad7ed",
+        "path": "Roslyn-Overview.md"
+      }
+    },
+    {
+      "name": "Roslyn initial out-of-process workspace integration commit",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "c141605a972871644cc43f2caec597c88e9662db"
+      }
+    },
+    {
+      "name": "Eric Lippert's Roslyn red/green-tree design account",
+      "identity": {
+        "published": "2012-06-08",
+        "url": "https://ericlippert.com/2012/06/08/red-green-trees/"
+      }
+    },
+    {
+      "name": "Anneal design authority used for transfer analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

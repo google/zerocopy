@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "rust/language-based-isolation",
+    "rust/unsafe-boundaries",
+    "os/capabilities",
+    "os/resource-lifetimes",
+    "os/safe-policy-injection",
+    "verification/trusted-computing-base",
+    "anneal/execution-boundaries",
+    "anneal/publication"
+  ],
+  "subjects": [
+    {
+      "name": "Tock current kernel and capsule boundary",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb"
+      }
+    },
+    {
+      "name": "Tock: From Research to Securing 10 Million Computers",
+      "identity": {
+        "doi": "10.1145/3731569.3764828",
+        "publication": "SOSP 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Asterinas current OSTD/framekernel boundary",
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+      }
+    },
+    {
+      "name": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB",
+      "identity": {
+        "publication": "USENIX ATC 2025",
+        "isbn": "978-1-939133-48-9",
+        "pages": "307-323",
+        "year": "2025"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

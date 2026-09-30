@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/orchestration",
+    "build-systems",
+    "build-systems/incremental",
+    "build-systems/scheduling",
+    "build-systems/traces"
+  ],
+  "subjects": [
+    {
+      "name": "Build Systems à la Carte (ICFP 2018)",
+      "identity": {
+        "doi": "10.1145/3236774",
+        "publication": "Proceedings of the ACM on Programming Languages 2, ICFP, Article 79 (2018)"
+      }
+    },
+    {
+      "name": "Build systems à la carte: Theory and practice (JFP 2020)",
+      "identity": {
+        "doi": "10.1017/S0956796820000088",
+        "publication": "Journal of Functional Programming 30:e11 (2020)"
+      }
+    },
+    {
+      "name": "Build Systems à la Carte executable framework and maintained paper source",
+      "identity": {
+        "repository": "snowleopard/build",
+        "revision": "43b18b9a362d7d27b64679ea4122e4b8c5dfedd9"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

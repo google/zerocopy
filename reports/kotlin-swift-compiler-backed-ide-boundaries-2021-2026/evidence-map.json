@@ -1,0 +1,83 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "report_package": "kotlin-swift-compiler-backed-ide-boundaries-2021-2026",
+  "observed_at": "2026-09-30",
+  "claims": [
+    {
+      "claim": "Kotlin Analysis API compiler semantics are parameterized by platform-supplied module/project structure, so compiler reuse does not make the frontend authoritative for build context.",
+      "role": [
+        "source",
+        "documentation"
+      ],
+      "evidence": [
+        "JetBrains/kotlin@bce49f3701fb8dc461fb98240fdc7c3c81c592f2:analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/projectStructure/KaModule.kt",
+        "https://blog.jetbrains.com/kotlin/2023/02/k2-kotlin-2-0/"
+      ]
+    },
+    {
+      "claim": "Kotlin FIR/Analysis API obtains interactive value from lazy frontend resolution plus cached, explicitly invalidated session state rather than process persistence alone.",
+      "role": [
+        "source"
+      ],
+      "evidence": [
+        "JetBrains/kotlin@bce49f3701fb8dc461fb98240fdc7c3c81c592f2:analysis/analysis-api-fir/src/org/jetbrains/kotlin/analysis/api/fir/KaFirSessionProvider.kt",
+        "JetBrains/kotlin@bce49f3701fb8dc461fb98240fdc7c3c81c592f2:compiler/fir/checkers/module.md",
+        "JetBrains/kotlin@bce49f3701fb8dc461fb98240fdc7c3c81c592f2:analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/KaSession.kt"
+      ]
+    },
+    {
+      "claim": "Kotlin generated/plugin declarations can participate semantically inside resolution and carry their own invalidation/collision rules, which file-only orchestration cannot generally reconstruct.",
+      "role": [
+        "source"
+      ],
+      "evidence": [
+        "JetBrains/kotlin@bce49f3701fb8dc461fb98240fdc7c3c81c592f2:analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/resolve/extensions/KaResolveExtension.kt",
+        "JetBrains/kotlin@bce49f3701fb8dc461fb98240fdc7c3c81c592f2:analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/symbols/KaSymbol.kt"
+      ]
+    },
+    {
+      "claim": "SourceKit-LSP deliberately delegates build targets, source membership, compiler options, preparation, and build-change freshness to an external build server while using sourcekitd for Swift semantics.",
+      "role": [
+        "source",
+        "documentation"
+      ],
+      "evidence": [
+        "swiftlang/sourcekit-lsp@045c18e9e9ea35b896857b6cb982aa2373fb5816:Contributor Documentation/Implementing a BSP server.md",
+        "swiftlang/sourcekit-lsp@045c18e9e9ea35b896857b6cb982aa2373fb5816:README.md",
+        "https://www.swift.org/blog/swift-5.7-released/"
+      ]
+    },
+    {
+      "claim": "SourceKit owns snapshot-qualified reusable AST state, while the LSP layer separately owns failure recovery and process restart.",
+      "role": [
+        "source",
+        "documentation"
+      ],
+      "evidence": [
+        "swiftlang/swift@f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d:tools/SourceKit/lib/SwiftLang/SwiftASTManager.h",
+        "swiftlang/swift@f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d:test/SourceKit/CursorInfo/cursor_reuses_astcontext.swift",
+        "swiftlang/sourcekit-lsp@045c18e9e9ea35b896857b6cb982aa2373fb5816:Documentation/Configuration File.md",
+        "https://www.swift.org/blog/sourcekitd-stress-tester/"
+      ]
+    },
+    {
+      "claim": "For Anneal, build/environment/generated-artifact authority can remain orchestration-owned, while upstream services are justified when interaction requires semantic state only the upstream engine can safely maintain.",
+      "role": [
+        "derived"
+      ],
+      "evidence": [
+        "All Kotlin and Swift evidence above",
+        "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92:anneal/DESIGN.md",
+        "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92:anneal/PRINCIPLES.md"
+      ],
+      "reasoning": "Both ecosystems preserve an external project/build authority while placing lazy/reusable semantic state inside the compiler frontend. The split maps to Anneal's need for explicit verification identity: service-local caches can accelerate a named context without becoming authority for which context or result is accepted."
+    }
+  ],
+  "negative_evidence": [
+    "No execution or benchmark was performed.",
+    "No source establishes a universal performance threshold for daemonizing an analysis stage.",
+    "Kotlin plugin-generated semantics are not assumed to be generally materializable as source files.",
+    "SourceKit-LSP build-tool support is not generalized to every Swift/Xcode build integration.",
+    "Anneal implications are derived and conditional, not project policy."
+  ]
+}

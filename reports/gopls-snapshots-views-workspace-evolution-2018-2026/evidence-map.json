@@ -1,0 +1,181 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "report": "gopls-snapshots-views-workspace-evolution-2018-2026",
+  "entries": [
+    {
+      "id": "G-CURRENT",
+      "role": "implementation",
+      "identity": {
+        "repository": "golang/tools",
+        "revision": "98444708d405557b5ddd6179be1a6abc14150d5f"
+      },
+      "paths": {
+        "gopls/internal/cache/session.go": "476d4baaa0baa58328e0478b343ee59e308a7754",
+        "gopls/internal/cache/view.go": "d1f264f4d23578fe735d1c95aeadfe7df0d3d433",
+        "gopls/internal/cache/snapshot.go": "4ec7ca7d764c92d3cc2c27c42602dc959751992c",
+        "gopls/internal/cache/workspace.go": "6b2291e5bc9401f552c92eae3c8aefb213cf2c83",
+        "gopls/doc/workspace.md": "1e19fd3657b159a7eaeabc1bf3b56c59a5e5f024",
+        "gopls/doc/design/implementation.md": "887c02cd35c14edecdd1342d5664e3fb174f4bf8",
+        "gopls/doc/design/design.md": "8ef3c32023b23f72837112c479e46519d1f2d46b"
+      },
+      "supports": [
+        "Folder/View/Snapshot/cache separation",
+        "dynamic View selection from folders and open files",
+        "overlay ownership and propagation",
+        "View recomputation on build-defining changes",
+        "per-View Snapshot sequence identity",
+        "current default-build query semantics"
+      ]
+    },
+    {
+      "id": "G-V011",
+      "role": "historical-implementation",
+      "identity": {
+        "repository": "golang/tools",
+        "release": "gopls/v0.11.0",
+        "revision": "611cff71b9afeb81ae6eb16c5ce9376c051b1828"
+      },
+      "paths": {
+        "gopls/internal/lsp/cache/view.go": "500358c0e6006042167249ffb9d2b68bdea161a1",
+        "gopls/internal/lsp/cache/snapshot.go": "32967df48621634294964647c7d6490f56cf9660"
+      },
+      "supports": [
+        "pre-v0.12 View retained more mutable workspace state",
+        "historical whole-program-oriented cache structure"
+      ]
+    },
+    {
+      "id": "G-V012",
+      "role": "historical-implementation",
+      "identity": {
+        "repository": "golang/tools",
+        "release": "gopls/v0.12.0",
+        "revision": "236850463aea0b1949167349b44c37f97aefd9c5"
+      },
+      "paths": {
+        "gopls/internal/lsp/cache/view.go": "1dc13aaee8c9587676f09c29bd8b24867ac46529",
+        "gopls/internal/lsp/cache/snapshot.go": "de9524bf0ae5b4660ba92be053c7ed81e8b892bb"
+      },
+      "supports": [
+        "transition toward immutable workspace-defining View state",
+        "per-package persistent file-cache/index architecture"
+      ]
+    },
+    {
+      "id": "G-SCALING",
+      "role": "reported-outcome-and-rationale",
+      "identity": {
+        "title": "Scaling gopls for the growing Go ecosystem",
+        "authors": ["Robert Findley", "Alan Donovan"],
+        "published": "2023-09-08",
+        "url": "https://go.dev/blog/gopls-scalability"
+      },
+      "supports": [
+        "v0.12 separate-compilation rationale",
+        "persistent package summaries and indexes",
+        "fine-grained invalidation pruning",
+        "Go-team-reported approximately 75 percent average memory/startup savings across 28 repositories",
+        "multi-build workspace feasibility depended on memory reduction"
+      ],
+      "limit": "Performance outcomes are author-reported and were not reproduced by this report."
+    },
+    {
+      "id": "G-SUPERMODULE",
+      "role": "historical-design-alternative",
+      "identity": {
+        "repository": "golang/proposal",
+        "revision": "0be13090fdb0cbae0d71641bb676d924bc1c94de",
+        "path": "design/37720-gopls-workspaces.md",
+        "blob": "5929e7e7894b8d51afbf2aa8ef38d1b34121ab4b"
+      },
+      "supports": [
+        "synthetic super-module alternative",
+        "dependency-version ambiguity across projects",
+        "filesystem path can fail to encode navigation/build provenance",
+        "cost of forcing one dependency universe"
+      ]
+    },
+    {
+      "id": "G-57514",
+      "role": "maintainer-rationale",
+      "identity": {
+        "repository": "golang/go",
+        "issue": 57514,
+        "created": "2022-12-29",
+        "closed": "2023-10-13",
+        "url": "https://github.com/golang/go/issues/57514"
+      },
+      "supports": [
+        "workspace term conflated build root, diagnostic boundary, and memory optimization",
+        "preference to drive analysis/resource policy from actual open files rather than directory layout"
+      ]
+    },
+    {
+      "id": "G-57979",
+      "role": "maintainer-design-and-implementation-plan",
+      "identity": {
+        "repository": "golang/go",
+        "issue": 57979,
+        "created": "2023-01-24",
+        "closed": "2023-12-28",
+        "url": "https://github.com/golang/go/issues/57979"
+      },
+      "supports": [
+        "old one-View-per-folder model and its failures",
+        "decoupling Views from workspace folders",
+        "dynamic View set from folders and open files",
+        "multiple Views per folder and multiple folders per View",
+        "best-view incompleteness and desired multiplexing",
+        "immutable build-defining View state with mutable state moved to Snapshot"
+      ]
+    },
+    {
+      "id": "A-DESIGN",
+      "role": "anneal-normative-context",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/DESIGN.md",
+        "blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      },
+      "supports": [
+        "verification result needs precise identity and scope",
+        "success must not silently outrun evidence",
+        "atomic subject and build-matrix policy remain deliberate non-decisions"
+      ]
+    },
+    {
+      "id": "A-REFERENCE",
+      "role": "anneal-existing-evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "ebfeac694e945da0b52e09c6a185d857f982f4f3",
+        "catalog_blob": "c58b2a1f55159112261b31b80c8cd1e8304588be"
+      },
+      "supports": [
+        "Cargo unit identity is stronger than file/package/target identity",
+        "unchanged Rust file bytes do not imply unchanged compilation semantics",
+        "same physical path can denote different Cargo subjects",
+        "interactive pipeline needs cross-layer generation/provenance control"
+      ],
+      "packages": [
+        "cargo-compilation-subject-identity-2026-05-31",
+        "anneal-3730-rust-input-snapshot-2026-09-29",
+        "anneal-3730-saved-vs-private-rust-overlay-2026-09-29",
+        "anneal-3730-identity-state-mutation-model-2026-09-29",
+        "anneal-interactive-pipeline-invalidation-graph-main-41f5b37"
+      ]
+    },
+    {
+      "id": "DERIVED",
+      "role": "derived-analysis",
+      "supports": [
+        "Anneal should distinguish user-visible file, semantic proof context, temporal generation, and reusable computation",
+        "best-context heuristics may be useful for advisory queries but are insufficient authority for verification success",
+        "cross-context queries should preserve context labels rather than silently merge proof universes"
+      ],
+      "limit": "These are conditional judgments from the cited evidence, not adopted Anneal policy."
+    }
+  ]
+}

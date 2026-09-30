@@ -1,0 +1,66 @@
+{
+  "observed_at": "2026-09-30",
+  "question": "J042",
+  "sources": [
+    {
+      "id": "feldman-1979",
+      "kind": "primary-historical-publication",
+      "identity": "doi:10.1002/spe.4380090402",
+      "role": "original Make motivation and dependency/command model"
+    },
+    {
+      "id": "gnu-make-4.4.1-manual",
+      "kind": "official-documentation",
+      "identity": "GNU Make 4.4.1; release tarball MD5 c8469a3713cbbe04d955d4ae4be23eeb",
+      "url": "https://www.gnu.org/software/make/manual/make.html",
+      "role": "mature rule/recipe semantics, implicit rules, recursion, language and runtime facilities"
+    },
+    {
+      "id": "gnu-make-4.4.1-release",
+      "kind": "official-release-announcement",
+      "identity": "2023-02-26 GNU Make 4.4.1",
+      "url": "https://lists.gnu.org/archive/html/info-gnu/2023-02/msg00011.html",
+      "role": "release identity and checksum"
+    },
+    {
+      "id": "martin-ninja-2011",
+      "kind": "project-author-history",
+      "identity": "Evan Martin, 2011-02-06",
+      "url": "https://www.neugierig.org/software/chromium/notes/2011/02/ninja.html",
+      "role": "Chromium motivation, generated-Make predecessor, reported startup latency, deliberate low-feature design"
+    },
+    {
+      "id": "ninja-current-manual",
+      "kind": "repository-documentation",
+      "identity": "ninja-build/ninja@4e4df1e567eb3c1475a51af261cba2bfff60b4be doc/manual.asciidoc blob 81ecf7d388f899a1481df9f25ec1065710de679d",
+      "role": "current generator/executor split, non-goals, correctness/runtime mechanisms"
+    },
+    {
+      "id": "ninja-early-manual",
+      "kind": "repository-documentation-history",
+      "identity": "Chromium mirror revision a9071772ead9522d7ebb21048da08c8ea22cec21",
+      "url": "https://chromium.googlesource.com/external/martine/ninja/+/a9071772ead9522d7ebb21048da08c8ea22cec21/doc/manual.asciidoc",
+      "role": "early evidence that assembler/generator philosophy is historical rather than retrospective"
+    },
+    {
+      "id": "miller-recursive-make",
+      "kind": "engineering-analysis",
+      "identity": "Peter Miller, Recursive Make Considered Harmful",
+      "url": "https://accu.org/journals/overload/14/71/miller_2004/",
+      "role": "competing account of incomplete DAGs and complexity displaced into recursive decomposition"
+    },
+    {
+      "id": "anneal-principles-design",
+      "kind": "project-authority",
+      "identity": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92",
+      "role": "constraints on verification success, trust, source/model justification, and mechanism choice"
+    }
+  ],
+  "claim_roles": {
+    "upstream_intent": "Feldman publication; Martin 2011 note; Ninja manual philosophy",
+    "documented_mechanism": "GNU Make 4.4.1 manual; Ninja exact-revision manual",
+    "reported_outcome": "Martin's Chromium latency account; not reproduced",
+    "reviewer_interpretation": "Miller recursive-Make analysis",
+    "derived_anneal_judgment": "REPORT.md responsibility boundary and conditional recommendation"
+  }
+}

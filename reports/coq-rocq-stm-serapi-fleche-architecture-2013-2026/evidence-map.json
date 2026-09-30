@@ -1,0 +1,120 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "observed_at": "2026-09-30",
+  "claims": [
+    {
+      "claim": "Coq STM replaced a linear command-state history with an explicit DAG/state-transaction model that separates proof tasks and supports prioritized/out-of-order work.",
+      "evidence": ["E1"],
+      "kind": "primary-publication",
+      "strength": "direct mechanism description",
+      "boundary": "Reported design and results are by the system authors; Anneal applicability is derived separately."
+    },
+    {
+      "claim": "The 2015 authors report roughly 10x better reactivity on the Odd Order development and roughly 4x faster full checking on 12 cores.",
+      "evidence": ["E1"],
+      "kind": "reported-outcome",
+      "strength": "direct author-reported benchmark",
+      "boundary": "Not reproduced here and not generalized to Anneal."
+    },
+    {
+      "claim": "PIDE protocol connectivity could be demonstrated with Coq while full proof processing still required prover-side document-processing reform.",
+      "evidence": ["E2"],
+      "kind": "primary-negative-control",
+      "strength": "direct experiment conclusion",
+      "boundary": "The experiment's semantic payload was intentionally limited."
+    },
+    {
+      "claim": "SerAPI exposes Add/Exec/Cancel/Query over Coq document state and serializes internal Coq structures for machine clients.",
+      "evidence": ["E3", "E4"],
+      "kind": "source-and-project-documentation",
+      "strength": "direct interface definition",
+      "boundary": "Transport/API structure does not by itself imply immutable snapshot semantics."
+    },
+    {
+      "claim": "SerAPI parsing depends on the parent state and its Cancel operation inherits a documented hard STM limitation for non-executed document parts.",
+      "evidence": ["E3"],
+      "kind": "exact-source",
+      "strength": "direct protocol comments",
+      "boundary": "Pinned archived revision only."
+    },
+    {
+      "claim": "Current Rocq LSP is built on Flèche and supports incremental/continuous and on-demand checking, cache-aware recovery, interruptions, multiple workspaces, and a Petanque low-latency interface.",
+      "evidence": ["E5"],
+      "kind": "current-first-party-documentation",
+      "strength": "direct documented feature set",
+      "boundary": "Feature documentation is not an independent performance or correctness benchmark."
+    },
+    {
+      "claim": "Flèche documents explicitly carry version, contents, node states, completion status, an external workspace/files environment, and a root Rocq state; nodes retain full Rocq states.",
+      "evidence": ["E5"],
+      "kind": "exact-current-source",
+      "strength": "direct type definitions",
+      "boundary": "Internal representations may change after the pinned revision."
+    },
+    {
+      "claim": "Rocq LSP positional goal requests use VersionedTextDocumentIdentifier and may execute the document to the requested source position.",
+      "evidence": ["E5"],
+      "kind": "current-protocol-documentation",
+      "strength": "direct request/response contract",
+      "boundary": "A versioned request identity is useful only within the service's documented document/context semantics."
+    },
+    {
+      "claim": "Rocq LSP reads _RocqProject/_CoqProject and supports interactive recovery that may automatically admit unfinished proof fragments.",
+      "evidence": ["E5"],
+      "kind": "current-user-documentation",
+      "strength": "direct documented behavior",
+      "boundary": "Recovered interactive states are not interpreted as authoritative proof success."
+    },
+    {
+      "claim": "Anneal must keep verification identity/scope precise and must not turn missing evidence, unsupported semantics, or failed tools into ordinary verification success.",
+      "evidence": ["E6"],
+      "kind": "normative-project-source",
+      "strength": "direct current design contract",
+      "boundary": "The design contract deliberately does not decide component boundaries."
+    },
+    {
+      "claim": "Anneal should own external semantic-context identity and result acceptance while relying on fine-grained internal reuse only where the upstream component defines sufficient version/invalidation/dependency semantics.",
+      "evidence": ["E1", "E2", "E3", "E5", "E6"],
+      "kind": "derived-analysis",
+      "strength": "cross-source conditional judgment",
+      "boundary": "Recommendation, not adopted Anneal policy; coarser whole-input execution remains the fallback when upstream contracts are weak."
+    }
+  ],
+  "sources": {
+    "E1": {
+      "identity": "Barras, Tankink, Tassi, ITP 2015, arXiv:1506.05605, DOI 10.1007/978-3-319-22102-1_4",
+      "url": "https://arxiv.org/abs/1506.05605"
+    },
+    "E2": {
+      "identity": "Makarius Wenzel, PIDE as front-end technology for Coq, arXiv:1304.6626v1",
+      "url": "https://arxiv.org/abs/1304.6626"
+    },
+    "E3": {
+      "identity": "rocq-archive/coq-serapi@6196f9f572ef9dd3749b885cabce7a57406cedb9",
+      "files": {
+        "README.md": "85c5708fe72147f103c87e2316403697f4c51214",
+        "serapi/serapi_protocol.mli": "ed3ed38c409d0dc778709c7eeb73bd290f67c006"
+      }
+    },
+    "E4": {
+      "identity": "Emilio Jesús Gallego Arias, SerAPI: Machine-Friendly, Data-Centric Serialization for Coq, HAL hal-01384408 (2016)",
+      "url": "https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408"
+    },
+    "E5": {
+      "identity": "rocq-community/rocq-lsp@2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe",
+      "files": {
+        "README.md": "37b132ed9c7e15bb4e11205e110d592a1503a6b6",
+        "etc/doc/USER_MANUAL.md": "2b989fcf528d08ef3c58b115f45248d2cf4e0bcc",
+        "etc/doc/PROTOCOL.md": "30d2b18cefd1d2b6fdd3493b744426c29b482c57",
+        "fleche/doc.ml": "2cb236a36a17acf610c971308e8c9962b341e74f"
+      }
+    },
+    "E6": {
+      "identity": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92",
+      "files": {
+        "anneal/PRINCIPLES.md": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "anneal/DESIGN.md": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    }
+  }
+}

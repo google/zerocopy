@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "anneal/batch-live-contract",
+    "anneal/host-boundaries",
+    "anneal/snapshots",
+    "typescript/language-service",
+    "typescript/project-service",
+    "typescript/watch-build"
+  ],
+  "subjects": [
+    {
+      "name": "TypeScript 6.0.2 compiler and language-service architecture",
+      "identity": {
+        "repository": "microsoft/TypeScript",
+        "revision": "607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+        "version": "6.0.2"
+      }
+    },
+    {
+      "name": "TypeScript language-service design guide",
+      "identity": {
+        "repository": "microsoft/TypeScript-wiki",
+        "revision": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d",
+        "path": "Using-the-Language-Service-API.md"
+      }
+    },
+    {
+      "name": "TypeScript 7.0 native transition",
+      "identity": {
+        "release": "TypeScript 7.0",
+        "date": "2026-07-08",
+        "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/"
+      }
+    },
+    {
+      "name": "Anneal design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

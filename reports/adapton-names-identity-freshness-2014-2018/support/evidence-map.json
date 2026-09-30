@@ -1,0 +1,41 @@
+{
+  "scope": "J036",
+  "claims": [
+    {
+      "claim": "Adapton separates tracked invalidation from demand-driven repair and proves incremental results correspond to from-scratch evaluation under its modeled semantics.",
+      "role": "primary-literature",
+      "sources": ["doi:10.1145/2594291.2594324"]
+    },
+    {
+      "claim": "Nominal Adapton uses first-class names to control correspondence across runs; stable names permit reuse even when associated contents change, with dirtying/change propagation retaining responsibility for validity.",
+      "role": "primary-literature",
+      "sources": ["doi:10.1145/2814270.2814305", "arxiv:1503.07792v6"]
+    },
+    {
+      "claim": "Ambiguous name reuse is a correctness problem; Nominal Adapton dynamically detects it, while follow-up precise-name/Fungi work moves uniqueness obligations into type-and-effect systems.",
+      "role": "primary-literature-history",
+      "sources": ["arxiv:1503.07792v6", "arxiv:1610.00097", "arxiv:1808.07826v1"]
+    },
+    {
+      "claim": "Current selected Aeneas has declaration-local structure but constructs fresh whole-crate contexts and exposes no public cross-request edit/invalidation protocol.",
+      "role": "current-reference-evidence",
+      "sources": ["reports/aeneas-incremental-translation-feasibility-nightly-2026-06-03"]
+    },
+    {
+      "claim": "Anneal should separate logical subject identity, snapshot/generation identity, equality/fingerprints, and dependency/freshness evidence.",
+      "role": "derived-anneal-judgment",
+      "depends_on": ["nominal correspondence is distinct from repair", "Anneal success requires meaningful identity/scope", "external stages may have dependencies not captured by a stable subject ID"]
+    },
+    {
+      "claim": "Fine-grained dependency traces should be retained only when dependencies are conservatively observable and workload savings justify retention/invalidation complexity; otherwise recompute a coarse stage.",
+      "role": "derived-conditional-judgment",
+      "depends_on": ["Adapton workload-sensitive demand-driven reuse", "current Aeneas coarse invalidation evidence"]
+    }
+  ],
+  "non_claims": [
+    "No claim that Anneal should implement Adapton or Fungi.",
+    "No benchmark-derived threshold for dependency-graph retention.",
+    "No claim that content hashes cover hidden semantic inputs.",
+    "No claim that current Aeneas declaration IDs are stable or sufficient cache keys across snapshots."
+  ]
+}

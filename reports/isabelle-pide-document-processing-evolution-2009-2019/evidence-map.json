@@ -1,0 +1,130 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "report_package": "isabelle-pide-document-processing-evolution-2009-2019",
+  "observed_at": "2026-09-30",
+  "question": "J018",
+  "sources": [
+    {
+      "id": "pide-retrospective-2019",
+      "type": "primary-first-party-retrospective",
+      "title": "Interaction with Formal Mathematical Documents in Isabelle/PIDE",
+      "author": "Makarius Wenzel",
+      "identity": {
+        "arxiv": "1905.01735v1",
+        "doi": "10.48550/arXiv.1905.01735"
+      },
+      "url": "https://arxiv.org/html/1905.01735v1",
+      "material_sections": [
+        "1.1",
+        "1.2",
+        "2",
+        "2.1",
+        "2.3",
+        "2.4",
+        "3.1",
+        "3.2",
+        "3.3",
+        "4"
+      ],
+      "role": "historical chronology; mature document model; Naproche integration; semantic markup; filesystem/output discipline; retrospective successes, failures, and changes"
+    },
+    {
+      "id": "async-isabelle-2012",
+      "type": "primary-contemporary-design-account",
+      "title": "Asynchronous Proof Processing with Isabelle/Scala and Isabelle/jEdit",
+      "author": "Makarius Wenzel",
+      "identity": {
+        "doi": "10.1016/j.entcs.2012.06.009",
+        "published": "2012"
+      },
+      "url": "https://doi.org/10.1016/j.entcs.2012.06.009",
+      "role": "early persistent document versions, command identities, edit protocol, version history, and nonblocking editor/prover split"
+    },
+    {
+      "id": "isabelle-jedit-2012",
+      "type": "primary-contemporary-design-account",
+      "title": "Isabelle/jEdit --- a Prover IDE within the PIDE framework",
+      "author": "Makarius Wenzel",
+      "identity": {
+        "arxiv": "1207.3441v1",
+        "doi": "10.48550/arXiv.1207.3441"
+      },
+      "url": "https://arxiv.org/abs/1207.3441",
+      "role": "continuous checking, asynchronous protocol, multicore prover, semantic editor rendering"
+    },
+    {
+      "id": "repl-reform-2013",
+      "type": "primary-contemporary-architectural-account",
+      "title": "READ-EVAL-PRINT in Parallel and Asynchronous Proof-checking",
+      "author": "Makarius Wenzel",
+      "identity": {
+        "arxiv": "1307.1944v1",
+        "doi": "10.4204/EPTCS.118.4"
+      },
+      "url": "https://arxiv.org/abs/1307.1944",
+      "role": "REPL decomposition, document history, protocol interpreter, history collection, and READ/EVAL boundary evolution"
+    },
+    {
+      "id": "pide-coq-2013",
+      "type": "primary-contemporary-experiment-account",
+      "title": "PIDE as front-end technology for Coq",
+      "author": "Makarius Wenzel",
+      "identity": {
+        "arxiv": "1304.6626v1",
+        "doi": "10.48550/arXiv.1304.6626"
+      },
+      "url": "https://arxiv.org/abs/1304.6626",
+      "role": "negative/limiting evidence separating protocol connectivity from semantic proof-processing reform"
+    },
+    {
+      "id": "isabelle-jedit-manual-2022",
+      "type": "first-party-documentation",
+      "title": "Isabelle/jEdit manual source — Theory JEdit",
+      "identity": {
+        "release": "Isabelle2022"
+      },
+      "url": "https://isabelle.in.tum.de/website-Isabelle2022/dist/library/Doc/JEdit/JEdit.html",
+      "role": "later user-facing continuity of parallel/asynchronous document-oriented processing"
+    },
+    {
+      "id": "anneal-authority",
+      "type": "normative-project-source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      },
+      "paths": [
+        "anneal/PRINCIPLES.md",
+        "anneal/DESIGN.md"
+      ],
+      "role": "current Anneal promises and deliberate architectural non-decisions used to bound derived implications"
+    },
+    {
+      "id": "current-reference-overlap",
+      "type": "reference-corpus",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "basis_revision": "badec4d90493d883e5e6886f6695239fbfb7ac74"
+      },
+      "packages": [
+        "lsp-proof-assistant-architecture-2026-09-27",
+        "anneal-interactive-pipeline-invalidation-graph-main-41f5b37",
+        "lean-generated-file-interactive-workflows-v4-30-0-rc2"
+      ],
+      "role": "present LSP/Lean/Anneal context intentionally not duplicated by the historical J018 report"
+    }
+  ],
+  "claim_separation": {
+    "author_intent_and_retrospective": "Statements explicitly attributed to Wenzel or Isabelle documentation are treated as first-party accounts, not independent causal proof.",
+    "implemented_mechanism": "Mechanisms are reported only where contemporary or retrospective primary sources state them for the identified period.",
+    "reported_outcome": "Scaling, adoption, and project-outcome statements remain attributed to the source and are not independently reproduced.",
+    "derived_anneal_judgment": "Recommendations are explicitly labeled derived and remain subordinate to current Anneal design authority."
+  },
+  "unperformed_work": [
+    "No current Isabelle source audit.",
+    "No PIDE, Isabelle, Coq, Naproche, Charon, Aeneas, Lake, or Lean execution.",
+    "No performance or memory benchmark.",
+    "No claim that current Charon/Aeneas expose PIDE-like incremental APIs."
+  ]
+}

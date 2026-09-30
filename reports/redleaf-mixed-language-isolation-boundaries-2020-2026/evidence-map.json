@@ -1,0 +1,216 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "scope": "J007 RedLeaf and mixed-language isolation",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "redleaf-osdi20",
+      "role": [
+        "published-primary",
+        "architecture",
+        "fault-isolation",
+        "sharing",
+        "recovery",
+        "threat-model"
+      ],
+      "identity": {
+        "title": "RedLeaf: Isolation and Communication in a Safe Operating System",
+        "venue": "OSDI 2020",
+        "usenix_paper_id": "258949",
+        "pages": "21-39",
+        "url": "https://www.usenix.org/conference/osdi20/presentation/narayanan-vikram"
+      },
+      "limits": "Paper remains authoritative for publication-era claims. A paper-associated source branch was found separately, but the inspected immutable commit postdates OSDI 2020 and is source corroboration rather than an exact paper artifact."
+    },
+    {
+      "id": "redleaf-osdi20-associated-source",
+      "role": [
+        "source",
+        "paper-associated-corroboration",
+        "ownership-cleanup",
+        "proxy-unwind"
+      ],
+      "identity": {
+        "repository": "mars-research/redleaf",
+        "revision": "08753faee652495f55fc8cbb420e5123a183affc",
+        "branch_observed": "osdi20_camera_ready",
+        "commit_date": "2021-02-20"
+      },
+      "artifacts": [
+        {
+          "path": "lib/core/rref/src/rref.rs",
+          "blob": "187e9245408bf70b19cdd2f2bc178ac39568da8c",
+          "symbols": [
+            "RRef",
+            "RRef::move_to"
+          ]
+        },
+        {
+          "path": "lib/core/rref/src/traits.rs",
+          "blob": "1fd1dc9ffc7f4d85b224539e2cc10464d556938f",
+          "symbols": [
+            "RRefable"
+          ]
+        },
+        {
+          "path": "kernel/src/heap.rs",
+          "blob": "b643a13b29ee2e3fe52718cd7d871932c7e948ca",
+          "symbols": [
+            "alloc_heap",
+            "dealloc_heap",
+            "drop_domain"
+          ]
+        },
+        {
+          "path": "kernel/src/unwind.rs",
+          "blob": "f71d4d3cc02412353d44ae70c5f6aa9dee8587b3",
+          "symbols": [
+            "register_cont",
+            "unwind"
+          ]
+        },
+        {
+          "path": "lib/core/interfaces/proxy/src/lib.rs",
+          "blob": "98ea00b1b83b2fa966ced6b8e047b825ffd298af",
+          "symbols": [
+            "CreateProxy",
+            "Proxy"
+          ]
+        },
+        {
+          "path": "lib/core/interfaces/create/src/lib.rs",
+          "blob": "decd5dd72173f93a0e1f1c0a93c914edc5a25155"
+        },
+        {
+          "path": "lib/core/interfaces/usr/src/rpc.rs",
+          "blob": "9d8941864ced9d749ea31803ff727596e5a55518",
+          "symbols": [
+            "RpcResult",
+            "RpcError"
+          ]
+        }
+      ],
+      "limits": "The branch name is suggestive but mutable, and the inspected commit postdates the OSDI 2020 publication. These files corroborate mechanisms visible at this revision; they do not prove exact paper-artifact correspondence or runtime correctness. No build or execution was performed."
+    },
+    {
+      "id": "linux-rust-general-information",
+      "role": [
+        "documentation",
+        "safe-wrapper-boundary"
+      ],
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "551c722f40809618230001baccf219193e22fc5a",
+        "path": "Documentation/rust/general-information.rst",
+        "blob": "09234bed272c2897e0c5487f3005b61757209a6e"
+      }
+    },
+    {
+      "id": "linux-foreign-ownable",
+      "role": [
+        "source",
+        "foreign-ownership-protocol"
+      ],
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "551c722f40809618230001baccf219193e22fc5a",
+        "path": "rust/kernel/types.rs",
+        "blob": "132dd428c1f6918c5a7625a7cc4c27e0aeaa83fd",
+        "symbol": "ForeignOwnable"
+      }
+    },
+    {
+      "id": "linux-rust-interop",
+      "role": [
+        "source",
+        "ffi-boundary"
+      ],
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "551c722f40809618230001baccf219193e22fc5a",
+        "path": "rust/kernel/interop.rs",
+        "blob": "3b371d782a592f2e85749cc35503c20fa79fd23a"
+      }
+    },
+    {
+      "id": "linux-rust-coding-guidelines",
+      "role": [
+        "documentation",
+        "unsafe-contract-discipline"
+      ],
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "551c722f40809618230001baccf219193e22fc5a",
+        "path": "Documentation/rust/coding-guidelines.rst",
+        "blob": "3198be3a6d63fa555b3d6c12e222c7cc2cefd9ef"
+      }
+    },
+    {
+      "id": "linux-seccomp",
+      "role": [
+        "documentation",
+        "sandbox-limit"
+      ],
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "551c722f40809618230001baccf219193e22fc5a",
+        "path": "Documentation/userspace-api/seccomp_filter.rst",
+        "blob": "cff0fa7f3175e4d2482aafd0ad4ed3b7045a437a"
+      }
+    },
+    {
+      "id": "anneal-principles",
+      "role": [
+        "project-authority"
+      ],
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/PRINCIPLES.md",
+        "blob": "d5339a95254eae14ac201139d07d9d36d48a19fb"
+      }
+    },
+    {
+      "id": "anneal-design",
+      "role": [
+        "project-authority"
+      ],
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/DESIGN.md",
+        "blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    },
+    {
+      "id": "anneal-reference-adjacent",
+      "role": [
+        "existing-corpus-evidence"
+      ],
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "e1c4cf18da52136936eec8d6361607a9036adcb9"
+      },
+      "packages": [
+        "anneal-3730-cross-tool-stage-cancellation-cleanup-2026-09-29",
+        "anneal-3730-lean-pool-failure-isolation-2026-09-29",
+        "aeneas-library-process-architecture-nightly-2026-06-03",
+        "ffi-specification-trust-patterns-2019-2026"
+      ],
+      "report_blobs": {
+        "anneal-3730-cross-tool-stage-cancellation-cleanup-2026-09-29": "14e91986e6a25cc19f83929652613f8efa02ab44",
+        "anneal-3730-lean-pool-failure-isolation-2026-09-29": "d95b0ddc1607be1127efe17d329a44fc331dcb1d",
+        "aeneas-library-process-architecture-nightly-2026-06-03": "90a1fa6186050cca40b0546ed4e426ba974f059c",
+        "ffi-specification-trust-patterns-2019-2026": "5146996abe426e1680aa2f7120e3e5c78de4dba7"
+      }
+    }
+  ],
+  "judgment_dimensions": [
+    "memory-and-crash-containment",
+    "authority-confinement",
+    "ownership-and-cleanup",
+    "semantic-and-session-freshness",
+    "reentrancy",
+    "external-effect-recovery"
+  ]
+}

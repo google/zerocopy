@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/environment-preparation",
+    "anneal/publication",
+    "anneal/trust-boundaries",
+    "systems/rust-safety",
+    "systems/tcb"
+  ],
+  "subjects": [
+    {
+      "name": "Tock trusted-core, capsule, and process boundaries",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+        "book_repository": "tock/book",
+        "book_revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923",
+        "period": "2017-2026",
+        "sosp_2017_doi": "10.1145/3132747.3132786",
+        "sosp_2025_doi": "10.1145/3731569.3764828"
+      }
+    },
+    {
+      "name": "Asterinas 0.18.1 framekernel and OSTD boundary",
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+        "version": "0.18.1",
+        "usenix_atc_year": "2025",
+        "arxiv": "2506.03876"
+      }
+    },
+    {
+      "name": "Anneal redesign trust and abstraction constraints",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

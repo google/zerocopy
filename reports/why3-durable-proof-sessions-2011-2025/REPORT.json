@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "verification/proof-sessions",
+    "verification/proof-maintenance",
+    "verification/goal-identity",
+    "verification/replay",
+    "verification/tool-upgrades",
+    "anneal/durable-work"
+  ],
+  "subjects": [
+    {
+      "name": "Why3 proof-session persistence and replay",
+      "identity": {
+        "project": "Why3",
+        "release": "1.8.2",
+        "released": "2025-09-16",
+        "documentation": "Why3 1.8.2 manual and OCaml API"
+      }
+    },
+    {
+      "name": "Why3 proof-session evolution",
+      "identity": {
+        "project": "Why3",
+        "period": "0.70 (2011-07-06) through 1.8.2 (2025-09-16)",
+        "source": "Why3 1.8.2 CHANGES.md"
+      }
+    },
+    {
+      "name": "Preserving User Proofs Across Specification Changes",
+      "identity": {
+        "authors": "François Bobot; Jean-Christophe Filliâtre; Claude Marché; Guillaume Melquiond; Andrei Paskevich",
+        "venue": "VSTTE 2013",
+        "pages": "191-201",
+        "doi": "10.1007/978-3-642-54108-7_10",
+        "hal": "hal-00875395"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

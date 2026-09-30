@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "proof-assistants/document-processing",
+    "rocq/stm",
+    "rocq/serapi",
+    "rocq/fleche",
+    "rocq/lsp",
+    "interactive-verification/incrementality",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Coq State Transaction Machine and asynchronous document processing",
+      "identity": {
+        "publication": "Barras, Tankink, Tassi, Asynchronous Processing of Coq Documents: From the Kernel up to the User Interface",
+        "arxiv": "1506.05605",
+        "doi": "10.1007/978-3-319-22102-1_4",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "SerAPI document-control and serialization interface",
+      "identity": {
+        "repository": "rocq-archive/coq-serapi",
+        "revision": "6196f9f572ef9dd3749b885cabce7a57406cedb9"
+      }
+    },
+    {
+      "name": "Rocq LSP and Flèche document engine",
+      "identity": {
+        "repository": "rocq-community/rocq-lsp",
+        "revision": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"
+      }
+    },
+    {
+      "name": "Anneal design contract used for applicability analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md;anneal/DESIGN.md"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

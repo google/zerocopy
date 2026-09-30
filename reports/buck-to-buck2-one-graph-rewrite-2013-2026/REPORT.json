@@ -1,0 +1,58 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/incrementality",
+    "anneal/orchestration",
+    "build-systems/buck2",
+    "build-systems/incremental-computation",
+    "systems/architectural-rewrites"
+  ],
+  "subjects": [
+    {
+      "name": "Buck2 architecture and DICE",
+      "identity": {
+        "repository": "facebook/buck2",
+        "revision": "738e69a6c5f1efb6a015645228e7a19ee9b1d9c0",
+        "why-doc-blob": "6799f38df279cc03f1806b1d0d447fb19570bcfa",
+        "benefits-doc-blob": "296661b09239357fa870a55192dff6c5d54c25ca",
+        "dice-index-blob": "46897b9bd66a7bd055bbad8db7f363558347d4f0",
+        "modern-dice-doc-blob": "04a9950e2b077cdfdf91ca3e6e6ede68df508580"
+      }
+    },
+    {
+      "name": "Buck1 archived implementation",
+      "identity": {
+        "repository": "facebook/buck",
+        "revision": "9c7c421e49f4d92d67321f18c6d1cd90974c77c4",
+        "readme-blob": "59e9fda6c885670ebb3e0ce1b799ea8f9e97cf9c"
+      }
+    },
+    {
+      "name": "Buck2 public launch account",
+      "identity": {
+        "publisher": "Meta Engineering",
+        "published": "2023-04-06",
+        "url": "https://engineering.fb.com/2023/04/06/open-source/buck2-open-source-large-scale-build-system/"
+      }
+    },
+    {
+      "name": "Build Systems à la Carte",
+      "identity": {
+        "authors": "Andrey Mokhov; Neil Mitchell; Simon Peyton Jones",
+        "publication": "PACMPL 2 (ICFP), Article 79",
+        "year": "2018",
+        "doi": "10.1145/3236774"
+      }
+    },
+    {
+      "name": "Anneal design constraints",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "principles-blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "design-blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

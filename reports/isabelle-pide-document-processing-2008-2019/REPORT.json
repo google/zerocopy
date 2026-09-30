@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "isabelle",
+    "isabelle/pide",
+    "proof-assistant/interaction",
+    "incremental/document-processing",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Isabelle/jEdit — a Prover IDE within the PIDE framework",
+      "identity": {
+        "artifact": "arXiv:1207.3441v1",
+        "doi": "10.1007/978-3-642-31374-5_38"
+      }
+    },
+    {
+      "name": "READ-EVAL-PRINT in Parallel and Asynchronous Proof-checking",
+      "identity": {
+        "artifact": "arXiv:1307.1944v1",
+        "doi": "10.4204/EPTCS.118.4"
+      }
+    },
+    {
+      "name": "PIDE as front-end technology for Coq",
+      "identity": {
+        "artifact": "arXiv:1304.6626v1"
+      }
+    },
+    {
+      "name": "Interaction with Formal Mathematical Documents in Isabelle/PIDE",
+      "identity": {
+        "artifact": "arXiv:1905.01735v1"
+      }
+    },
+    {
+      "name": "From LCF to Isabelle/HOL",
+      "identity": {
+        "doi": "10.1007/s00165-019-00492-1"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

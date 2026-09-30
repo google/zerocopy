@@ -1,0 +1,118 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "rfc1317",
+      "kind": "accepted-rfc",
+      "repository": "rust-lang/rfcs",
+      "revision": "4e4c756e6df95167dda553251cc37a75a294f002",
+      "path": "text/1317-ide.md",
+      "url": "https://github.com/rust-lang/rfcs/blob/4e4c756e6df95167dda553251cc37a75a294f002/text/1317-ide.md",
+      "role": "Original RLS requirements, compiler-as-library architecture, database/work queue, lazy compilation and persistent-compiler alternatives"
+    },
+    {
+      "id": "rls-archived-architecture",
+      "kind": "source-documentation",
+      "repository": "rust-lang/rls",
+      "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+      "path": "architecture.md",
+      "url": "https://github.com/rust-lang/rls/blob/04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc/architecture.md",
+      "role": "Mature RLS save-analysis flow, build scheduling, Cargo orchestration, VFS and cross-crate analysis database"
+    },
+    {
+      "id": "rls-archived-readme",
+      "kind": "documentation",
+      "repository": "rust-lang/rls",
+      "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+      "path": "README.md",
+      "url": "https://github.com/rust-lang/rls/blob/04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc/README.md",
+      "role": "Compiler precision and Racer fallback, deprecation status, user-facing behavior"
+    },
+    {
+      "id": "ide-team-2019",
+      "kind": "project-team-history",
+      "date": "2019-12-04",
+      "url": "https://blog.rust-lang.org/inside-rust/2019/12/04/ide-future/",
+      "role": "Contemporaneous RLS versus rust-analyzer tradeoff, save-analysis limits, lazy query model, hybrid proposal, library-ification direction"
+    },
+    {
+      "id": "ra-first-release",
+      "kind": "project-author-history",
+      "date": "2020-04-20",
+      "url": "https://rust-analyzer.github.io/blog/2020/04/20/first-release.html",
+      "role": "First-release rationale, RLS comparison, persistent/on-demand architecture, then-current precision/startup/memory limitations"
+    },
+    {
+      "id": "rfc2912",
+      "kind": "accepted-rfc",
+      "repository": "rust-lang/rfcs",
+      "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+      "path": "text/2912-rust-analyzer.md",
+      "url": "https://github.com/rust-lang/rfcs/blob/ba27c4c027704c716fcc1f54be601939fdc29c57/text/2912-rust-analyzer.md",
+      "role": "Official transition rationale, semantic divergence drawbacks, rustc-reimplementation alternative, library-ification strategy"
+    },
+    {
+      "id": "ra-responsive-architectures",
+      "kind": "project-author-architecture-analysis",
+      "date": "2020-07-20",
+      "url": "https://rust-analyzer.github.io/blog/2020/07/20/three-architectures-for-responsive-ide.html",
+      "role": "Why Rust needs more than coarse laziness and the cost/rationale of fine-grained salsa incrementality"
+    },
+    {
+      "id": "ra-macros",
+      "kind": "project-author-architecture-analysis",
+      "date": "2021-11-21",
+      "url": "https://rust-analyzer.github.io/blog/2021/11/21/ides-and-macros.html",
+      "role": "Availability, process-isolation and determinism constraints for procedural macros in a persistent IDE"
+    },
+    {
+      "id": "ra-joins-rust",
+      "kind": "official-project-announcement",
+      "date": "2022-02-21",
+      "url": "https://blog.rust-lang.org/2022/02/21/rust-analyzer-joins-rust-org/",
+      "role": "Official project transition history and timeline from 2017 experiment to mature IDE"
+    },
+    {
+      "id": "rls-deprecation",
+      "kind": "official-project-announcement",
+      "date": "2022-07-01",
+      "url": "https://blog.rust-lang.org/2022/07/01/RLS-deprecation/",
+      "role": "Official retrospective that RLS architecture limited low-latency/high-quality interaction and rust-analyzer replaced it"
+    },
+    {
+      "id": "ra-current-architecture",
+      "kind": "source-documentation",
+      "repository": "rust-lang/rust-analyzer",
+      "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "path": "docs/book/src/contributing/architecture.md",
+      "url": "https://github.com/rust-lang/rust-analyzer/blob/03fcb77246f2568adb0e9b2fa60d19c6cc1686f4/docs/book/src/contributing/architecture.md",
+      "role": "Current explicit input model, error-tolerant syntax, salsa incrementality, IDE API boundary and cancellation semantics"
+    },
+    {
+      "id": "rustc-ra-sharing-current",
+      "kind": "compiler-documentation",
+      "repository": "rust-lang/rustc-dev-guide",
+      "revision": "0fb89036f8e46a80ee815ed99ff7d9dae9d172ae",
+      "path": "src/solve/sharing-crates-with-rust-analyzer.md",
+      "url": "https://github.com/rust-lang/rustc-dev-guide/blob/0fb89036f8e46a80ee815ed99ff7d9dae9d172ae/src/solve/sharing-crates-with-rust-analyzer.md",
+      "role": "Current shared rustc crates, abstract solver interfaces, distinct rustc/rust-analyzer interners and remaining duplication"
+    },
+    {
+      "id": "ra-salsa-2025",
+      "kind": "release-note",
+      "date": "2025-03-17",
+      "url": "https://rust-analyzer.github.io/thisweek/2025/03/17/changelog-277.html",
+      "role": "Evidence that incremental architecture continued evolving: newer salsa and incremental crate graph"
+    },
+    {
+      "id": "rls-1714",
+      "kind": "issue-report",
+      "repository": "rust-lang/rls",
+      "issue": "1714",
+      "date": "2021-01-25",
+      "url": "https://github.com/rust-lang/rls/issues/1714",
+      "role": "User report illustrating workspace rebuild granularity cost; not treated as a benchmark"
+    }
+  ]
+}

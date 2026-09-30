@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/trust-boundaries",
+    "rust/safe-abstractions",
+    "rust/unsafe-boundaries",
+    "systems/capabilities",
+    "systems/isolation",
+    "tock",
+    "asterinas"
+  ],
+  "subjects": [
+    {
+      "name": "Tock current kernel source",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73"
+      }
+    },
+    {
+      "name": "Tock current architecture and threat-model documentation",
+      "identity": {
+        "repository": "tock/book",
+        "revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923"
+      }
+    },
+    {
+      "name": "Tock SOSP 2017 architecture paper",
+      "identity": {
+        "doi": "10.1145/3132747.3132786",
+        "publication": "SOSP 2017"
+      }
+    },
+    {
+      "name": "Tock SOSP 2025 retrospective",
+      "identity": {
+        "doi": "10.1145/3731569.3764828",
+        "publication": "SOSP 2025"
+      }
+    },
+    {
+      "name": "Asterinas current source and architecture documentation",
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+      }
+    },
+    {
+      "name": "Asterinas USENIX ATC 2025 paper",
+      "identity": {
+        "publication": "2025 USENIX Annual Technical Conference",
+        "paper": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

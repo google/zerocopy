@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "incremental-computation/adapton",
+    "incremental-computation/names",
+    "incremental-computation/dependency-tracing",
+    "incremental-computation/freshness",
+    "anneal/identity",
+    "anneal/incremental"
+  ],
+  "subjects": [
+    {
+      "name": "Adapton: Composable, Demand-Driven Incremental Computation",
+      "identity": {
+        "doi": "10.1145/2594291.2594324",
+        "venue": "PLDI 2014"
+      }
+    },
+    {
+      "name": "Incremental Computation with Names",
+      "identity": {
+        "doi": "10.1145/2814270.2814305",
+        "arxiv": "1503.07792v6",
+        "venue": "OOPSLA 2015"
+      }
+    },
+    {
+      "name": "Refinement Types for Precisely Named Cache Locations",
+      "identity": {
+        "arxiv": "1610.00097"
+      }
+    },
+    {
+      "name": "Fungi: Typed Incremental Computation with Names",
+      "identity": {
+        "arxiv": "1808.07826v1"
+      }
+    },
+    {
+      "name": "Anneal design contract and current Aeneas incremental-translation evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,86 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "nix-lisa-2004",
+      "kind": "primary-historical-paper",
+      "identity": "Dolstra, de Jonge, Visser, Nix: A Safe and Policy-Free System for Software Deployment, LISA 2004",
+      "url": "https://www.usenix.org/conference/lisa-04/nix-safe-and-policy-free-system-software-deployment",
+      "supports": ["historical rationale", "safe dependency/coexistence goals", "unique component paths"]
+    },
+    {
+      "id": "nix-current",
+      "kind": "current-source-and-documentation",
+      "repository": "NixOS/nix",
+      "revision": "9bc9ab32a57504f068847af4f8013417476cb1ec",
+      "paths": [
+        "doc/manual/source/package-management/profiles.md",
+        "doc/manual/source/package-management/garbage-collection.md",
+        "doc/manual/source/package-management/garbage-collector-roots.md",
+        "doc/manual/source/store/derivation/index.md",
+        "doc/manual/source/store/derivation/outputs/input-address.md",
+        "doc/manual/source/store/derivation/outputs/content-address.md",
+        "doc/manual/source/store/resolution.md",
+        "src/nix/unix/store-roots-daemon.md"
+      ],
+      "supports": ["profile/generation selection", "GC roots", "runtime roots", "derivation versus output identity"]
+    },
+    {
+      "id": "nixos-current",
+      "kind": "current-source-and-documentation",
+      "repository": "NixOS/nixpkgs",
+      "revision": "6cb205c37b7c0c39b643163d1b7721b5f9bc0913",
+      "paths": [
+        "nixos/doc/manual/development/what-happens-during-a-system-switch.chapter.md",
+        "nixos/modules/system/activation/activation-script.nix"
+      ],
+      "supports": ["imperative activation", "live-state reconciliation", "current-system publication/root"]
+    },
+    {
+      "id": "guix-els-2013",
+      "kind": "primary-historical-paper",
+      "identity": "Ludovic Courtes, Functional Package Management with Guix, ELS 2013",
+      "arxiv": "1305.4584",
+      "supports": ["Guix architecture", "Nix deployment inheritance", "profiles", "rollback", "Scheme EDSL"]
+    },
+    {
+      "id": "guix-hpc-2015",
+      "kind": "primary-author-evaluation",
+      "identity": "Courtes and Wurmus, Reproducible and User-Controlled Software Environments in HPC with Guix, 2015",
+      "doi": "10.1007/978-3-319-27308-2_47",
+      "supports": ["reproducible environment motivation", "long-lived scientific environment use"]
+    },
+    {
+      "id": "guix-manual-current",
+      "kind": "current-documentation",
+      "identity": "GNU Guix Reference Manual, development version observed 2026-09-30",
+      "url": "https://guix.gnu.org/manual/devel/en/guix.pdf",
+      "supports": ["GC roots", "generation deletion", "system reconfigure/rollback"],
+      "limitation": "Direct PDF fetch returned HTTP 403 in this run; indexed manual passages were available, and screenshot rendering could not proceed because the failed fetch was not exposed as a PDF."
+    },
+    {
+      "id": "anneal-main",
+      "kind": "normative-context",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": ["anneal/PRINCIPLES.md", "anneal/DESIGN.md"],
+      "supports": ["fail-closed success semantics", "identity/scope requirement", "explicit trust", "non-decisions"]
+    },
+    {
+      "id": "anneal-relocation-reference",
+      "kind": "existing-execution-evidence",
+      "repository": "google/zerocopy",
+      "revision": "30b9d5749aed6049d949f4f582dd64c70088d07a",
+      "path": "reports/anneal-nix-toolchain-tree-relocation-aarch64-darwin-2026-09-27/REPORT.md",
+      "supports": ["artifact-copy identity", "negative evidence for store-independent runtime closure"]
+    }
+  ],
+  "derived_judgments": [
+    "Separate recipe/provenance identity from realized-universe identity.",
+    "Publish only validated immutable generations through a small mutable pointer.",
+    "Pin live consumers/results to a generation and keep lifetime roots or leases separate from current selection.",
+    "Treat executable configuration, plugins, host libraries, ambient inputs, and persistent processes as closure escapes unless captured or controlled.",
+    "Do not use GC reachability as a freshness or semantic-validity predicate."
+  ]
+}

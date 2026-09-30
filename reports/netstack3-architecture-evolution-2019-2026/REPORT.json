@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "architecture/history",
+    "anneal/architecture",
+    "fuchsia",
+    "netstack3",
+    "netstack3/bindings",
+    "netstack3/concurrency",
+    "netstack3/lifecycle",
+    "netstack3/static-typing"
+  ],
+  "subjects": [
+    {
+      "name": "Current Fuchsia Netstack3 architecture and design documentation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "c480400b0e6cb9a9b36384935639fb3e6566bd68"
+      }
+    },
+    {
+      "name": "Netstack3 UDP socket identity consolidation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "4ccfe9e3c10662b8dea3ccbf020553ebfa179ff3"
+      }
+    },
+    {
+      "name": "Netstack3 TCP handshake-status ownership migration",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "40ce8a08f2ffa1e9babc8e5b6aaa14cf486c0c6d"
+      }
+    },
+    {
+      "name": "Netstack3 multicast-forwarding state design",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "1e9fb101ed58968f5b4cf0b67a439f8cb0479b9d"
+      }
+    },
+    {
+      "name": "Netstack3 2026 resource-reference and socket-destruction implementation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "09c560576ca357ffc0853c6251048af2a61b1543"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

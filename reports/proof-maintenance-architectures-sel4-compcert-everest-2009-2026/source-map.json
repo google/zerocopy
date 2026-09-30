@@ -1,0 +1,188 @@
+{
+  "schema": "anneal-reference/support/source-map/v1",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "sel4-l4v-readme",
+      "role": [
+        "source",
+        "documentation"
+      ],
+      "repository": "seL4/l4v",
+      "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+      "path": "README.md",
+      "blob": "03421c4b7db4e9756efde5f46f19e60970fc7288",
+      "supports": [
+        "specification/refinement layering",
+        "generated specification workflow",
+        "proof-session structure"
+      ]
+    },
+    {
+      "id": "sel4-l4v-setup",
+      "role": [
+        "documentation"
+      ],
+      "repository": "seL4/l4v",
+      "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+      "path": "docs/setup.md",
+      "blob": "c20d7ba4fb16845977b4d205d725cb6c52a64eb9",
+      "supports": [
+        "repo-based configuration control",
+        "verification-manifest role"
+      ]
+    },
+    {
+      "id": "sel4-verification-manifest",
+      "role": [
+        "source",
+        "documentation"
+      ],
+      "repository": "seL4/verification-manifest",
+      "revision": "f1f7a4289585e9610733ea041c1849e46af9701b",
+      "path": "README.md",
+      "blob": "2b3f4a193bbb3012f9b7711f06bbb3dc2c98e352",
+      "supports": [
+        "tested exact revision sets",
+        "development/release manifest semantics"
+      ]
+    },
+    {
+      "id": "sel4-current-docs",
+      "role": [
+        "documentation"
+      ],
+      "urls": [
+        "https://docs.sel4.systems/projects/sel4/kernel-contribution.html",
+        "https://docs.sel4.systems/releases.html",
+        "https://sel4.systems/Verification/proofs.html",
+        "https://sel4.systems/About/FAQ.html"
+      ],
+      "supports": [
+        "continuous proof updates",
+        "release proof manifests",
+        "proof assumptions",
+        "configuration-specific coverage"
+      ]
+    },
+    {
+      "id": "compcert-core",
+      "role": [
+        "source"
+      ],
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "version": "3.18",
+      "files": {
+        "VERSION": "5fd2882f6f042e89ce617586ce5041f5762c1766",
+        "common/Smallstep.v": "cefab134fdce4f3ea2f970db49a99d987c05d3a1",
+        "driver/Compiler.v": "60fc74fec1411216425004f6d63567354e146e9c"
+      },
+      "supports": [
+        "pass simulation interface",
+        "generic composition",
+        "whole-compiler semantic-preservation structure"
+      ]
+    },
+    {
+      "id": "translation-validation-paper",
+      "role": [
+        "publication"
+      ],
+      "title": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
+      "authors": [
+        "Jean-Baptiste Tristan",
+        "Xavier Leroy"
+      ],
+      "venue": "POPL 2008",
+      "doi": "10.1145/1328438.1328444",
+      "supports": [
+        "unverified producer behind proved validator",
+        "reject-on-failure semantic boundary"
+      ]
+    },
+    {
+      "id": "hacl-readme",
+      "role": [
+        "source",
+        "documentation"
+      ],
+      "repository": "hacl-star/hacl-star",
+      "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f",
+      "path": "README.md",
+      "blob": "8815628e9cea88ca1cbb777e5f30cab98b66e012",
+      "supports": [
+        "Low* verified properties",
+        "generated C in dist",
+        "ValeCrypt and EverCrypt architecture",
+        "current-vs-2017 codebase boundary"
+      ]
+    },
+    {
+      "id": "karamel-docs",
+      "role": [
+        "source",
+        "documentation"
+      ],
+      "repository": "FStarLang/karamel",
+      "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53",
+      "files": {
+        "README.md": "3c0396bb78ad3b8c252da3a0518eba029b2e7cc9",
+        "DESIGN.md": "1c61b9572744fa0fbb8f602129ea15aadaac6a36"
+      },
+      "supports": [
+        "extraction pipeline",
+        "paper formalization scope",
+        "current implementation's unverified Low* invariant"
+      ]
+    },
+    {
+      "id": "everest-readme",
+      "role": [
+        "source",
+        "documentation"
+      ],
+      "repository": "project-everest/everest",
+      "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac",
+      "path": "README.md",
+      "blob": "ce627659804164d6250a5ec1397c403c14af4418",
+      "supports": [
+        "known-good revision orchestration",
+        "proof replay command",
+        "integration testing"
+      ]
+    },
+    {
+      "id": "everest-current-site",
+      "role": [
+        "documentation"
+      ],
+      "url": "https://project-everest.github.io/",
+      "supports": [
+        "blessed version sets",
+        "version-controlled generated C/ASM"
+      ]
+    },
+    {
+      "id": "hacl-modularity-paper",
+      "role": [
+        "publication",
+        "reported-outcome"
+      ],
+      "title": "Modularity, Code Specialization, and Zero-Cost Abstractions for Program Verification",
+      "authors": [
+        "Son Ho",
+        "Aymeric Fromherz",
+        "Jonathan Protzenko"
+      ],
+      "publication": "PACMPL 7 (ICFP 2023)",
+      "doi": "10.1145/3607844",
+      "locator": "https://www.microsoft.com/en-us/research/publication/modularity-code-specialization-and-zero-cost-abstractions-for-program-verification/",
+      "supports": [
+        "reported HACL* scaling",
+        "reported proof-engineer productivity",
+        "generic streaming proof reuse"
+      ]
+    }
+  ]
+}

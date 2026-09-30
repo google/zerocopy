@@ -1,0 +1,85 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "scope": "J030 Functional core, effects, and the location of hidden state",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "role": "ports-and-adapters-original-design-account",
+      "author": "Alistair Cockburn",
+      "identity": "HaT Technical Report 2005.02 v0.9, 2005-09-04",
+      "url": "https://alistair.cockburn.us/hexagonal-architecture/",
+      "supports": ["purpose-defined ports", "technology adapters", "test/runtime substitution", "inside/outside boundary"]
+    },
+    {
+      "role": "functional-core-boundaries-first-party-talk",
+      "author": "Gary Bernhardt",
+      "identity": "Boundaries, SCNA 2012",
+      "url": "https://www.destroyallsoftware.com/talks/boundaries",
+      "supports": ["simple values as subsystem boundaries", "functional-core/imperative-shell lineage"]
+    },
+    {
+      "role": "sans-io-design-guidance",
+      "repository": "brettcannon/sans-io",
+      "revision": "b4679927d555cb27d9960ae203c0ecd0d8209771",
+      "path": "how-to-sans-io.rst",
+      "blob": "afaddd4bb36c6268d1e77bcb6d9e618cd271478f",
+      "supports": ["no network I/O or async flow control in protocol core", "caller-driven bytes/events", "integration nucleus and reuse rationale"]
+    },
+    {
+      "role": "sans-io-concrete-project-and-unfavorable-case",
+      "repository": "python-hyper/h11",
+      "revision": "62c5068c971579d61fa1b55373390e12f25fd856",
+      "items": [
+        {"path": "README.rst", "blob": "5f2861600c543733424127ed0baa70e62c647373"},
+        {"path": "notes.org", "blob": "36fd741bdac7294c42a1bb41f25c93821a39fdb3"},
+        {"advisory": "GHSA-vqfr-h8mv-ghfj", "published": "2025-04-24"}
+      ],
+      "supports": ["bring-your-own-I/O implementation", "timeouts above low-level protocol state machine", "I/O separation does not prove parser correctness"]
+    },
+    {
+      "role": "effect-handler-literature",
+      "doi": "10.1007/978-3-642-00590-9_7",
+      "publication": "ESOP 2009",
+      "supports": ["effects as operations", "handlers as interpretations", "I/O/state/time/concurrency/nondeterminism examples"]
+    },
+    {
+      "role": "effect-type-literature",
+      "doi": "10.4204/EPTCS.153.8",
+      "publication": "EPTCS 153 (2014)",
+      "supports": ["potential side effects in type signatures", "row-polymorphic effect inference", "language-semantic effect guarantees"]
+    },
+    {
+      "role": "repeatable-subprocess-protocol",
+      "repository": "bazelbuild/remote-apis",
+      "revision": "adbf4a27c86fbea4a37637a6cbcacef372406fe7",
+      "items": [
+        {"path": "build/bazel/remote/execution/v2/remote_execution.proto", "blob": "8f83bc9351182a305e5f13ff8471dc28740640e5"},
+        {"path": "build/bazel/remote/execution/v2/platform.md", "blob": "56a11af92e96401fe41d5d945f2c33a7637461d4"}
+      ],
+      "supports": ["action input-root and command identity", "explicit environment/output/workdir", "timeout/cache identity", "residual implementation-defined worker environment", "PATH-rule historical change"]
+    },
+    {
+      "role": "current-anneal-design-authority",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": ["anneal/PRINCIPLES.md", "anneal/DESIGN.md"],
+      "supports": ["meaningful result identity", "justified Rust semantics", "behavior accounting", "explicit trust", "minimal sufficient mechanisms"]
+    },
+    {
+      "role": "existing-reference-execution-and-synthesis",
+      "repository": "google/zerocopy",
+      "reference_packages": [
+        {"package": "anneal-3730-rust-input-snapshot-2026-09-29", "report_blob": "8d1ca9ff320e216be72abbca267c4372fcb8d0e1"},
+        {"package": "anneal-3730-fault-model-2026-09-29", "report_blob": "b11f3bab8082ebe52ca47a2d10eb9f44d6f0832c"},
+        {"package": "anneal-3730-architecture-contracts-2026-09-29", "report_blob": "d532b9fe321f547efe355a9044b707a06727ed65"}
+      ],
+      "supports": ["Rust/Cargo ambient input counterexamples", "cancellation/ownership/publication counterexamples", "existing process-policy versus semantic-request distinction"]
+    }
+  ],
+  "derived_judgments": [
+    "A subprocess is function-like for reuse only relative to an explicit or trusted environment closure; value-shaped RPC arguments do not establish purity.",
+    "Anneal should classify effects by semantic input, execution policy, observation, and authority-changing state rather than placing every side effect in one undifferentiated shell.",
+    "Persistent workers are optimizations over an effect-control contract, not a semantic model by themselves.",
+    "A general effect system may strengthen in-process host APIs but cannot replace runtime mediation, isolation, or trust accounting for opaque foreign execution."
+  ]
+}

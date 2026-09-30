@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "incremental-computation",
+    "incremental-computation/from-scratch-consistency",
+    "self-adjusting-computation",
+    "self-adjusting-computation/change-propagation",
+    "anneal/incrementality",
+    "anneal/freshness"
+  ],
+  "subjects": [
+    {
+      "name": "Self-Adjusting Computation PhD thesis",
+      "identity": {
+        "institution": "Carnegie Mellon University",
+        "technical-report": "CMU-CS-05-129",
+        "year": "2005"
+      }
+    },
+    {
+      "name": "Adaptive Functional Programming",
+      "identity": {
+        "doi": "10.1145/1186632.1186634",
+        "publication": "ACM Transactions on Programming Languages and Systems 28(6)",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "Imperative Self-Adjusting Computation",
+      "identity": {
+        "doi": "10.1145/1328438.1328476",
+        "publication": "POPL 2008",
+        "technical-report": "University of Chicago TR-2007-18"
+      }
+    },
+    {
+      "name": "A Consistent Semantics of Self-Adjusting Computation",
+      "identity": {
+        "doi": "10.1017/S0956796813000099",
+        "publication": "Journal of Functional Programming 23(3)",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Anneal design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,70 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/obligations",
+    "anneal/verification",
+    "tooling/ide-feedback",
+    "verification/boogie",
+    "verification/intermediate-language",
+    "verification/viper"
+  ],
+  "subjects": [
+    {
+      "name": "Dafny verifier and Dafny-to-Boogie translation",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb",
+        "path": "Source/DafnyCore/Verifier/BoogieGenerator.cs"
+      }
+    },
+    {
+      "name": "Boogie intermediate verification language and verifier",
+      "identity": {
+        "repository": "boogie-org/boogie",
+        "revision": "fcecf73a49d11ad3ab16729abd03169e5ecfd938",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "Viper Silver error and result interface",
+      "identity": {
+        "repository": "viperproject/silver",
+        "revision": "da1c8993b66feb39976e3609e2580a4661137a0f",
+        "path": "src/main/scala/viper/silver/verifier/VerificationResult.scala"
+      }
+    },
+    {
+      "name": "Viper Silicon symbolic-execution backend",
+      "identity": {
+        "repository": "viperproject/silicon",
+        "revision": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "Viper Carbon verification-condition backend",
+      "identity": {
+        "repository": "viperproject/carbon",
+        "revision": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "ViperServer verification service boundary",
+      "identity": {
+        "repository": "viperproject/viperserver",
+        "revision": "4cc5bbbe18d4a83e4b398da3904ba9696256611b",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/DESIGN.md"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

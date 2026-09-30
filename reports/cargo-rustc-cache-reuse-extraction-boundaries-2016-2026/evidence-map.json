@@ -1,0 +1,69 @@
+{
+  "schema": "anneal-reference/j048-evidence-map/v1",
+  "issue": "google/zerocopy#3732 J048",
+  "observed_at": "2026-09-30",
+  "evidence": [
+    {
+      "role": "source",
+      "repository": "rust-lang/cargo",
+      "revision": "f3865b2a4d1acc5276f6b3c67d0e057f4dab3928",
+      "paths": [
+        "src/compiler/fingerprint/mod.rs",
+        "src/compiler/build_runner/compilation_files.rs",
+        "src/util/rustc.rs",
+        "doc/book/src/reference/config.md"
+      ],
+      "supports": "Cargo unit freshness, fingerprint inputs and limits, output identity, and wrapper behavior"
+    },
+    {
+      "role": "documentation-history",
+      "subject": "Cargo 1.50 and 1.79 changelog",
+      "dates": ["2021-02-11", "2024-06-13"],
+      "supports": "workspace-wrapper cache namespace introduction and later wrapper application to rustc probing"
+    },
+    {
+      "role": "documentation",
+      "repository": "rust-lang/rust",
+      "revision": "7d2cd0fbc092625ea371da704f15f80216d2220e",
+      "supports": "rustc red-green incremental reuse, stable query fingerprints, persistence, and hashing/collision costs"
+    },
+    {
+      "role": "documentation-history",
+      "subject": "Rust Blog: Incremental Compilation",
+      "date": "2016-09-08",
+      "supports": "historical rationale for caching intermediate compiler computations"
+    },
+    {
+      "role": "documentation",
+      "repository": "mozilla/sccache",
+      "revision": "54b6f72a5d3583e8ccb8b83d44e5d41400d8039c",
+      "paths": ["docs/Caching.md", "docs/Rust.md"],
+      "supports": "compiler-cache key inputs, supported outputs, rustc incremental incompatibility, and known dependency caveats"
+    },
+    {
+      "role": "source",
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "paths": ["charon/src/bin/charon/main.rs", "charon/src/bin/charon-driver/driver.rs"],
+      "supports": "Cargo piggy-back via RUSTC_WRAPPER and the selected-target compiler-callback extraction boundary"
+    },
+    {
+      "role": "normative-project-context",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": ["anneal/PRINCIPLES.md", "anneal/DESIGN.md"],
+      "supports": "precise verification identity, fail-closed evidence semantics, explicit trust, and minimally sufficient mechanisms"
+    },
+    {
+      "role": "adjacent-reference-evidence",
+      "repository": "google/zerocopy",
+      "branch": "reference",
+      "packages": [
+        "anneal-3730-rust-input-snapshot-2026-09-29",
+        "anneal-interactive-pipeline-invalidation-graph-main-41f5b37"
+      ],
+      "supports": "Cargo input-closure counterexamples and the existing explicit gap between build reuse and Charon semantic freshness"
+    }
+  ],
+  "derived_judgment": "Allow lower-layer build/compiler reuse, but require a first-class semantic extraction identity/receipt or first-class semantic cache entry before treating LLBC as current. Ordinary build freshness and compiler-cache hits are insufficient evidence for an out-of-band extraction side product."
+}

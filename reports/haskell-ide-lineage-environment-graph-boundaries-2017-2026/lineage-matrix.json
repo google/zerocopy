@@ -1,0 +1,68 @@
+{
+  "observed_at": "2026-09-30",
+  "purpose": "Compact mechanism comparison supporting REPORT.md; not a claim of exhaustive project history.",
+  "rows": [
+    {
+      "system": "Haskell IDE Engine",
+      "pinned_revision": "d84b84322ccac81bf4963983d55cc4e6e98ad418",
+      "semantic_state": "Mutable IdeState around ghc-mod/GHC session; per-file last-good TypecheckedModule cache",
+      "incremental_behavior": "Reload/typecheck on document change; cached module and plugin data invalidated on new successful module",
+      "unsaved_or_broken_input": "Mapped temporary files; can answer some queries from last successful module with position remapping",
+      "project_environment": "Project detection plus hie-bios/hie.yaml; binaries/installations tied to GHC versions",
+      "extension_boundary": "Plugins execute IdeM actions against cached compiler state",
+      "costs_visible_in_sources": [
+        "serialized plugin execution",
+        "cannot cancel already-running request",
+        "position remapping complexity",
+        "multi-GHC installation/configuration"
+      ]
+    },
+    {
+      "system": "ghcide",
+      "pinned_revision": "3ef4ef99c4b9cde867d29180c32586947df64b9e",
+      "semantic_state": "Rule/dependency graph over compiler-service computations",
+      "incremental_behavior": "Shake-style dependency-driven recomputation and diagnostics",
+      "unsaved_or_broken_input": "Editor buffers participate as inputs; architecture designed for interactive partial work",
+      "project_environment": "hie-bios supplies files, dependencies, extensions and GHC session flags",
+      "extension_boundary": "Compiler-service core plus separate plugins and LSP transport",
+      "costs_visible_in_sources": [
+        "must match project GHC",
+        "manual hie.yaml often needed for multi-component projects",
+        "cross-component loading edge cases"
+      ]
+    },
+    {
+      "system": "Haskell Language Server",
+      "pinned_revision": "187fcd4a685c220caabb72999565604b3287aff2",
+      "semantic_state": "ghcide compiler-service rules on purpose-built hls-graph",
+      "incremental_behavior": "Dynamic dependencies and reactive change tracking for minimal in-memory rebuilds",
+      "project_environment": "Continues to use hie-bios/project cradle boundary",
+      "extension_boundary": "End-user server plus plugin API/plugins around compiler-service core",
+      "historical_change": "Recombined ghcide core with HIE integration/plugin experience; later replaced Shake with hls-graph",
+      "costs_or_tradeoffs": [
+        "hls-graph drops persistence and general-purpose filesystem rules",
+        "project/compiler environment remains an external prerequisite"
+      ]
+    }
+  ],
+  "alternatives": [
+    {
+      "name": "fresh compiler per query",
+      "benefit": "simple freshness/authority story",
+      "cost": "repeats expensive semantic work and harms editor latency",
+      "anneal_use": "plausible for authoritative acceptance even if not for every live query"
+    },
+    {
+      "name": "general persistent incremental engine",
+      "benefit": "mature dependency and persistence machinery",
+      "cost": "generality and persistence semantics may exceed or mismatch the editor workload",
+      "anneal_use": "reasonable while dependency contract fits and measured cost is acceptable"
+    },
+    {
+      "name": "purpose-built in-memory graph",
+      "benefit": "can match live invalidation and scheduling needs closely",
+      "cost": "project owns correctness of invalidation, equality, cancellation and lifetime semantics",
+      "anneal_use": "justify by demonstrated workload/semantic need, not by HLS precedent alone"
+    }
+  ]
+}

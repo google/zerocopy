@@ -1,0 +1,101 @@
+{
+  "scope": "google/zerocopy#3732 J005",
+  "observed_at": "2026-09-30",
+  "claim_map": [
+    {
+      "claim": "Early Theseus treated state-spill freedom as a guiding architectural ideal and acknowledged that much of the 2017 design was incomplete.",
+      "evidence_role": ["published-research"],
+      "sources": [
+        {
+          "kind": "paper",
+          "identity": "PLOS 2017 DOI 10.1145/3144555.3144560",
+          "locator": "sections 1-3"
+        }
+      ]
+    },
+    {
+      "claim": "Mature Theseus uses client-owned resource objects, reference-counted sharing, explicit state roots for unavoidable state, and an ownership chain to retain code/data reachable from tasks.",
+      "evidence_role": ["published-research", "source"],
+      "sources": [
+        {
+          "kind": "paper",
+          "identity": "OSDI 2020 Theseus",
+          "locator": "sections 4.2-5.3 and 6.1"
+        },
+        {
+          "kind": "git",
+          "repository": "theseus-os/Theseus",
+          "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c",
+          "path": "book/src/subsystems/task_invariants.md",
+          "blob": "b624063b03f16fcd12b9ea43f9fec40a10922994"
+        },
+        {
+          "kind": "git",
+          "repository": "theseus-os/Theseus",
+          "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c",
+          "path": "kernel/crate_metadata/src/lib.rs",
+          "blob": "683bf27cc4588054f7ce5ecb1c5ab36070d0254c"
+        }
+      ]
+    },
+    {
+      "claim": "Live replacement is a staged publication protocol around ownership, not an ownership-only operation.",
+      "evidence_role": ["published-research", "source"],
+      "sources": [
+        {
+          "kind": "paper",
+          "identity": "OSDI 2020 Theseus",
+          "locator": "section 6.1 and Figure 2 discussion"
+        },
+        {
+          "kind": "git",
+          "repository": "theseus-os/Theseus",
+          "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c",
+          "path": "kernel/crate_swap/src/lib.rs",
+          "blob": "c9f943e87dd18fe7e951fc548d0cbec5b6ce3634"
+        },
+        {
+          "kind": "git",
+          "repository": "theseus-os/Theseus",
+          "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c",
+          "path": "applications/upd/src/lib.rs",
+          "blob": "562f6af8cc31311bcb194686b1e7bebf8105dba2"
+        }
+      ]
+    },
+    {
+      "claim": "Affine ownership does not prove that independently constructed representations denote disjoint resources; global uniqueness requires checked creation/bookkeeping plus a correct overlap specification.",
+      "evidence_role": ["published-research", "issue-history", "source-history"],
+      "sources": [
+        {
+          "kind": "paper",
+          "identity": "arXiv:2501.00248v1",
+          "locator": "sections 5.2-5.3"
+        },
+        {
+          "kind": "github-issue",
+          "repository": "theseus-os/Theseus",
+          "number": "451",
+          "url": "https://github.com/theseus-os/Theseus/issues/451"
+        },
+        {
+          "kind": "git",
+          "repository": "theseus-os/Theseus",
+          "revision": "5d62e567227e137db27c0c69728e732c5771c923",
+          "path": "kernel/frame_allocator/src/lib.rs"
+        }
+      ]
+    },
+    {
+      "claim": "For Anneal, separate local liveness/retention from global identity and current-generation authority.",
+      "evidence_role": ["derived"],
+      "derivation": "Theseus ownership safely retains representation/code lifetimes after a correct identity relation has been established, while its later correctness work shows ownership cannot itself establish resource uniqueness; its live-evolution path separately serializes namespace authority changes."
+    }
+  ],
+  "negative_space": [
+    "No fresh Theseus execution or benchmark.",
+    "No claim that the 2024 RepCreator implementation is merged in the pinned 2024-09-22 source head.",
+    "No recommendation of a specific Anneal content digest, distributed reference-count protocol, or Lean invalidation mechanism.",
+    "Issue #451 is independent corroboration; exact identity with the bug anecdote in arXiv:2501.00248v1 is a derived match, not an explicit paper citation."
+  ]
+}

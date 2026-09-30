@@ -1,0 +1,172 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "scope": "J011 TypeScript host-owned language world",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "typescript-language-service-guide",
+      "role": [
+        "first-party-design-documentation",
+        "historical-architecture"
+      ],
+      "identity": {
+        "repository": "microsoft/TypeScript-wiki",
+        "revision": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d",
+        "path": "Using-the-Language-Service-API.md",
+        "blob": "c3584b2b433dd304216e0affe3302a56a2ace681"
+      },
+      "supports": [
+        "on-demand-phase-separation",
+        "host-owned-file-state",
+        "script-snapshot-semantics",
+        "reference-resolution-boundary",
+        "document-registry-sharing"
+      ]
+    },
+    {
+      "id": "typescript-6.0.2-source",
+      "role": [
+        "immutable-source",
+        "mature-api"
+      ],
+      "identity": {
+        "repository": "microsoft/TypeScript",
+        "revision": "607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+        "version": "6.0.2"
+      },
+      "artifacts": [
+        {
+          "path": "src/services/types.ts",
+          "blob": "5329fe901b2403fad070e2fdb3b61212102e7c57",
+          "symbols": [
+            "IScriptSnapshot",
+            "LanguageServiceHost",
+            "LanguageService.getEmitOutput"
+          ]
+        },
+        {
+          "path": "src/services/services.ts",
+          "blob": "9885093ed618047cfebad26ac731032cd7071ab6",
+          "symbols": [
+            "createLanguageServiceSourceFile",
+            "updateLanguageServiceSourceFile"
+          ]
+        },
+        {
+          "path": "src/server/editorServices.ts",
+          "blob": "aa578c7ed0815f064b88eda052c7d8ac9029558f",
+          "symbols": [
+            "ProjectService",
+            "ProjectService.openClientFile"
+          ]
+        },
+        {
+          "path": "src/compiler/watchPublic.ts",
+          "blob": "4bcedabb7eb0f4d168a2f6b43a54cadd924a1eb5",
+          "symbols": [
+            "WatchHost",
+            "WatchCompilerHost",
+            "createWatchProgram"
+          ]
+        },
+        {
+          "path": "src/compiler/builder.ts",
+          "blob": "34adf6e49b7daa33c0b9d65bb3675cfde7a8b85b"
+        }
+      ],
+      "supports": [
+        "versioned-script-snapshots",
+        "host-input-contract",
+        "project-service-state",
+        "editor-buffer-over-disk",
+        "watch-build-state-machine",
+        "emit-artifact-boundary"
+      ]
+    },
+    {
+      "id": "typescript-native-port-announcement",
+      "role": [
+        "first-party-historical-intent",
+        "reported-performance"
+      ],
+      "identity": {
+        "title": "A 10x Faster TypeScript",
+        "date": "2025-03-11",
+        "url": "https://devblogs.microsoft.com/typescript/typescript-native-port/"
+      },
+      "limits": "Performance figures are author-reported and were not independently reproduced."
+    },
+    {
+      "id": "typescript-6-release",
+      "role": [
+        "first-party-release-history"
+      ],
+      "identity": {
+        "title": "Announcing TypeScript 6.0",
+        "date": "2026-03-23",
+        "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/"
+      }
+    },
+    {
+      "id": "typescript-7-release",
+      "role": [
+        "first-party-release-history",
+        "api-transition"
+      ],
+      "identity": {
+        "title": "Announcing TypeScript 7.0",
+        "date": "2026-07-08",
+        "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/"
+      },
+      "supports": [
+        "semantic-compatibility-goal",
+        "no-stable-programmatic-api-in-7.0",
+        "side-by-side-6.0-api",
+        "new-different-api-expected-in-7.1",
+        "embedded-language-limit"
+      ]
+    },
+    {
+      "id": "anneal-authority",
+      "role": [
+        "project-authority"
+      ],
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      },
+      "artifacts": [
+        {
+          "path": "anneal/PRINCIPLES.md",
+          "blob": "d5339a95254eae14ac201139d07d9d36d48a19fb"
+        },
+        {
+          "path": "anneal/DESIGN.md",
+          "blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+        }
+      ]
+    },
+    {
+      "id": "anneal-reference-adjacent",
+      "role": [
+        "existing-corpus-evidence"
+      ],
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_head": "e24b726c9f84d54957c034ac856e8dad83ea6a96"
+      },
+      "reports": {
+        "anneal-3730-architecture-contracts-2026-09-29": "d532b9fe321f547efe355a9044b707a06727ed65",
+        "anneal-3730-rust-input-snapshot-2026-09-29": "8d1ca9ff320e216be72abbca267c4372fcb8d0e1"
+      }
+    }
+  ],
+  "judgment_dimensions": [
+    "semantic-core-versus-host-authority",
+    "buffer-project-consistency",
+    "project-environment-consistency",
+    "batch-live-authority",
+    "generated-artifact-generation",
+    "upstream-api-stability"
+  ]
+}

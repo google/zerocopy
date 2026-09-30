@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/effects",
+    "anneal/subprocesses",
+    "programming-languages/effect-systems",
+    "software-architecture/functional-core",
+    "software-architecture/ports-and-adapters",
+    "software-architecture/sans-io"
+  ],
+  "subjects": [
+    {
+      "name": "Gary Bernhardt, Boundaries and Functional Core, Imperative Shell",
+      "identity": {
+        "event": "SCNA 2012",
+        "functional-core-published": "2012-07-12",
+        "url": "https://www.destroyallsoftware.com/talks/boundaries"
+      }
+    },
+    {
+      "name": "Alistair Cockburn, Hexagonal Architecture",
+      "identity": {
+        "date": "2005-09-04",
+        "report": "HaT Technical Report 2005.02",
+        "url": "https://alistair.cockburn.us/hexagonal-architecture"
+      }
+    },
+    {
+      "name": "Lucassen and Gifford, Polymorphic effect systems",
+      "identity": {
+        "doi": "10.1145/73560.73564",
+        "publication": "POPL 1988"
+      }
+    },
+    {
+      "name": "Plotkin and Pretnar, Handlers of Algebraic Effects",
+      "identity": {
+        "doi": "10.1007/978-3-642-00590-9_7",
+        "publication": "ESOP 2009"
+      }
+    },
+    {
+      "name": "python-hyper h11",
+      "identity": {
+        "repository": "python-hyper/h11",
+        "revision": "62c5068c971579d61fa1b55373390e12f25fd856"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "path": "anneal/DESIGN.md",
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,67 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/invalidation",
+    "anneal/watchers",
+    "kubernetes/controllers",
+    "kubernetes/watch-cache",
+    "linux/inotify",
+    "systems/reconciliation"
+  ],
+  "subjects": [
+    {
+      "name": "Kubernetes controller-runtime",
+      "identity": {
+        "repository": "kubernetes-sigs/controller-runtime",
+        "revision": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"
+      }
+    },
+    {
+      "name": "Kubernetes client-go Reflector",
+      "identity": {
+        "repository": "kubernetes/kubernetes",
+        "revision": "6d1d025050cb63ae5b8e53037aced205e6a28410"
+      }
+    },
+    {
+      "name": "Kubernetes WatchList KEP 3157",
+      "identity": {
+        "repository": "kubernetes/enhancements",
+        "revision": "914ed6950576832c8579899f092909d27623492e"
+      }
+    },
+    {
+      "name": "Kubernetes controller and API documentation",
+      "identity": {
+        "repository": "kubernetes/website",
+        "revision": "367a7a21bbef6b2d3c57d5fe113bee9bdb658889"
+      }
+    },
+    {
+      "name": "Linux inotify manual",
+      "identity": {
+        "project": "Linux man-pages",
+        "release": "6.19",
+        "release_date": "2026-02-14",
+        "page": "inotify(7)"
+      }
+    },
+    {
+      "name": "Anneal redesign",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Anneal direct save/format/watch-loop reference report",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "2cec790eeec883e83ac66dcfa021c51ad65ad4f1",
+        "package": "anneal-3730-editor-save-format-watch-loop-2026-09-29",
+        "report_blob": "ca2c4e0f92eb9432002b240a986073417a177b48"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

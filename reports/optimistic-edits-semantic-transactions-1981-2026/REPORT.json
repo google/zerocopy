@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "anneal/interactive",
+    "anneal/editing",
+    "anneal/concurrency",
+    "anneal/identity",
+    "concurrency/optimistic-control",
+    "software-merging/semantic-conflicts"
+  ],
+  "subjects": [
+    {
+      "name": "Kung-Robinson optimistic concurrency control",
+      "identity": {
+        "doi": "10.1145/319566.319567",
+        "publication": "ACM TODS 6(2), 1981"
+      }
+    },
+    {
+      "name": "Horwitz-Prins-Reps semantics-based program integration",
+      "identity": {
+        "doi": "10.1145/65979.65980",
+        "publication": "ACM TOPLAS 11(3), 1989"
+      }
+    },
+    {
+      "name": "HTTP conditional request semantics",
+      "identity": {
+        "rfc": "9110",
+        "published": "2022-06"
+      }
+    },
+    {
+      "name": "Git update-ref expected-old-value protocol",
+      "identity": {
+        "repository": "git/git",
+        "revision": "a018953688f1b10bddf91bff8747068f5f4746a4",
+        "path": "Documentation/git-update-ref.adoc"
+      }
+    },
+    {
+      "name": "Language Server Protocol 3.18 versioned text edits",
+      "identity": {
+        "repository": "microsoft/language-server-protocol",
+        "revision": "9a247101dc088557ae56adef8fecbdc86c9a93ca",
+        "specification": "3.18"
+      }
+    },
+    {
+      "name": "Anneal design constraints used for applicability",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

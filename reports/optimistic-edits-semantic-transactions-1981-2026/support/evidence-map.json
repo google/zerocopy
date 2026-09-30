@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "observed_at": "2026-09-30",
+  "claims": [
+    {
+      "claim": "Optimistic work can proceed speculatively, but mutation is admitted only after validation of the basis that could conflict with the transaction.",
+      "evidence": [
+        "Kung and Robinson, On Optimistic Methods for Concurrency Control, DOI 10.1145/319566.319567"
+      ],
+      "role": "primary-literature",
+      "limit": "The database read/write-set algorithm is not an Anneal implementation; omitted semantic dependencies are outside what such validation can establish."
+    },
+    {
+      "claim": "Concrete compare-before-mutate protocols can reject a stale expected representation/ref before making a state-changing update.",
+      "evidence": [
+        "RFC 9110 sections 13.1.1 and 13.2",
+        "git/git@a018953688f1b10bddf91bff8747068f5f4746a4 Documentation/git-update-ref.adoc blob 37a5019a8bc75e29f23decb8b1b70c28c9412771"
+      ],
+      "role": "normative",
+      "limit": "These protocols validate the object/token they name, not an unstated proposition, model, dependency closure, or authorization scope."
+    },
+    {
+      "claim": "LSP has an explicit text-layer optimistic guard: document versions identify changing text, and TextDocumentEdit can let the client check the version before applying edits.",
+      "evidence": [
+        "microsoft/language-server-protocol@9a247101dc088557ae56adef8fecbdc86c9a93ca _specifications/lsp/3.18/types/versionedTextDocumentIdentifier.md blob 2eef90f025383db3f0bfd1a33579333c796a5221",
+        "microsoft/language-server-protocol@9a247101dc088557ae56adef8fecbdc86c9a93ca _specifications/lsp/3.18/types/textDocumentEdit.md blob 433259b148f8ce8a6b09684174521954e786d574"
+      ],
+      "role": "normative",
+      "limit": "A text-document version does not by itself identify imported generated models, proof obligations, trusted assumptions, or application authorization."
+    },
+    {
+      "claim": "Textual integration does not establish semantic noninterference or behavior preservation.",
+      "evidence": [
+        "Horwitz, Prins, and Reps, Integrating Noninterfering Versions of Programs, DOI 10.1145/65979.65980"
+      ],
+      "role": "primary-literature",
+      "limit": "The paper's semantics-based integration algorithm is not transferred as a Rust/Lean merge algorithm; only the text-versus-semantics distinction is used."
+    },
+    {
+      "claim": "Anneal's existing bounded evidence contains same-content/different-causal-context and stale-coordinate cases.",
+      "evidence": [
+        "google/zerocopy refs/heads/reference reports/anneal-interactive-model-probes-2026-09-29/REPORT.md blob b8a3bcfe788a8c18b873caa540824b69d79c58f0"
+      ],
+      "role": "published-execution-and-model-evidence",
+      "limit": "Finite model and APFS controls do not prove a production Anneal protocol or a universal minimal identity tuple."
+    },
+    {
+      "claim": "A successful proof observation can belong to an old or mixed generated context rather than the current intended generation.",
+      "evidence": [
+        "google/zerocopy refs/heads/reference reports/anneal-3731-real-generation-publication-v4-30-0-rc2/REPORT.md blob 41015b04602e083e1266c2281d49918317d022d8"
+      ],
+      "role": "published-execution-evidence",
+      "limit": "The experiment is one retained real-artifact family and does not establish all possible mixed-generation Lean behavior."
+    },
+    {
+      "claim": "Anneal query-derived mutations should validate an operation-specific semantic basis and current write authority before mutation; textual rebase should create a candidate rather than inherit old semantic authority.",
+      "evidence": [
+        "All sources above",
+        "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92 anneal/PRINCIPLES.md blob d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92 anneal/DESIGN.md blob 0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      ],
+      "role": "derived",
+      "limit": "This is conditional architecture analysis, not adopted Anneal policy and not a claim that one exact identity tuple is minimal."
+    }
+  ]
+}

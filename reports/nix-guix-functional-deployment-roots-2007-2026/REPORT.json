@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "anneal/environment-preparation",
+    "anneal/lifetime",
+    "anneal/publication",
+    "anneal/trust-boundaries",
+    "guix/deployment",
+    "nix/deployment",
+    "nix/garbage-collection"
+  ],
+  "subjects": [
+    {
+      "name": "Nix 2.35.2 deployment and store model",
+      "identity": {
+        "manual-version": "2.35.2",
+        "profiles": "https://nix.dev/manual/nix/2.35/command-ref/files/profiles.html",
+        "garbage-collection": "https://nix.dev/manual/nix/2.35/command-ref/nix-store/gc.html",
+        "derivation-outputs": "https://nix.dev/manual/nix/2.35/store/derivation/outputs/index.html"
+      }
+    },
+    {
+      "name": "NixOS functional system configuration",
+      "identity": {
+        "authors": "Eelco Dolstra; Armijn Hemel",
+        "paper": "Purely Functional System Configuration Management",
+        "venue": "HotOS XI",
+        "year": "2007",
+        "url": "https://www.usenix.org/legacy/event/hotos07/tech/full_papers/dolstra/dolstra_html/"
+      }
+    },
+    {
+      "name": "GNU Guix functional package management",
+      "identity": {
+        "author": "Ludovic Courtès",
+        "paper": "Functional Package Management with Guix",
+        "arxiv": "1305.4584v1",
+        "venue": "European Lisp Symposium 2013",
+        "submitted": "2013-05-20"
+      }
+    },
+    {
+      "name": "GNU Guix stable release",
+      "identity": {
+        "release": "1.5.0",
+        "released": "2026-01-23",
+        "announcement": "https://lists.gnu.org/archive/html/info-gnu/2026-01/msg00004.html"
+      }
+    },
+    {
+      "name": "Anneal design constraints",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "principles-blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "design-blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    },
+    {
+      "name": "Anneal current Nix and archive reference evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference-revision": "30b9d5749aed6049d949f4f582dd64c70088d07a",
+        "catalog-blob": "5ecf20dfa8bbedeb898d1b9c251cbf6e2216e977",
+        "fixed-output-report-blob": "5f5142381dca9d2c38dbcde41c6d0f77d15b1f7a",
+        "relocation-report-blob": "262a141a145a2532745aaad71289896b5b3af1b2",
+        "archive-reproducibility-report-blob": "3bf9a589b81b0fdba5648b78a0b7a3dba842ecf9"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

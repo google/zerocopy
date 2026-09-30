@@ -1,0 +1,66 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "scope": "J040 persistent data structures and the space cost of snapshots",
+  "sources": [
+    {
+      "type": "primary-publication",
+      "identity": "Driscoll, Sarnak, Sleator, Tarjan 1989, DOI 10.1016/0022-0000(89)90034-2",
+      "locator": "https://www.cs.cmu.edu/~sleator/papers/making-data-structures-persistent.pdf",
+      "role": "definitions of persistence; fat-node/node-copying mechanisms; amortized update-space/time bounds under stated assumptions"
+    },
+    {
+      "type": "exact-primary-source",
+      "identity": "leanprover/lean4@3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "paths": [
+        "src/Lean/Data/PersistentArray.lean@516fb0ce50651c1ef39cccdca48663335dac7790",
+        "src/Lean/Data/PersistentHashMap.lean@f963f3a3f3cfc8c262e14bfcf56d21fc3a55442d",
+        "src/Init/ShareCommon.lean@4692b83a1939718e215918261cb5666e2ef9c88a",
+        "src/Lean/Util/ShareCommon.lean@d64141f8e6e026170f0fa4089e0cd2e43f9d47bb"
+      ],
+      "role": "32-way persistent collection mechanisms and explicit maximal-sharing/hash-cons state"
+    },
+    {
+      "type": "first-party-documentation",
+      "identity": "Lean reference documentation observed 2026-09-30",
+      "locators": [
+        "https://lean-lang.org/doc/reference/latest/Basic-Types/Reference-Counting/",
+        "https://lean-lang.org/doc/reference/latest/Basic-Types/Array/"
+      ],
+      "role": "reference counting and destructive-update-versus-copy behavior for unique/shared arrays"
+    },
+    {
+      "type": "first-party-documentation",
+      "identity": "OpenZFS documentation observed 2026-09-30",
+      "locators": [
+        "https://openzfs.github.io/openzfs-docs/Basic%20Concepts/Copy-on-write.html",
+        "https://openzfs.github.io/openzfs-docs/Basic%20Concepts/Datasets/Snapshots%20and%20Clones.html"
+      ],
+      "role": "copy-on-write path updates, initially cheap snapshots, divergence/pinned-block retention, holds and clone dependencies"
+    },
+    {
+      "type": "crate-documentation",
+      "identity": "typed-arena 2.0.2",
+      "locator": "https://docs.rs/typed-arena/2.0.2/typed_arena/",
+      "role": "whole-arena reclamation semantics and allocation/lifetime tradeoff"
+    },
+    {
+      "type": "public-implementation-documentation",
+      "identity": "OCaml fix HashCons, latest release 20250919",
+      "locator": "https://ocaml.org/p/fix/latest/doc/src/fix/HashCons.ml.html",
+      "role": "weak hash-cons table as practical canonicalization-with-reclamation mechanism"
+    },
+    {
+      "type": "anneal-normative-context",
+      "identity": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": [
+        "anneal/PRINCIPLES.md@d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "anneal/DESIGN.md@0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      ],
+      "role": "precise result identity/scope, evidence-bounded success, explicit trust, and minimally sufficient mechanisms"
+    }
+  ],
+  "derived_judgment": {
+    "status": "conditional analysis, not adopted Anneal policy",
+    "summary": "Use persistent logical structures for localized in-process state and cheap forks; keep retention bounded and explicit; choose arenas, content-addressed blobs, filesystem CoW, and hash-consing per boundary rather than as one global snapshot mechanism."
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "observed_at": "2026-09-30",
+  "question": "J008: Compatibility-constrained rewrites versus clean-slate design",
+  "sources": [
+    {
+      "id": "anneal-principles",
+      "role": "normative",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "path": "anneal/PRINCIPLES.md",
+      "supports": ["success meaning", "no fail-open", "Rust-oriented usability", "UB-freedom"]
+    },
+    {
+      "id": "anneal-design",
+      "role": "normative",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "path": "anneal/DESIGN.md",
+      "supports": ["durable semantic constraints", "explicit non-decisions about CLI/proof encoding/result schema/tool boundaries"]
+    },
+    {
+      "id": "anneal-current-readme",
+      "role": "documentation",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "path": "anneal/README.md",
+      "supports": ["current redesign authority", "V1 historical status"]
+    },
+    {
+      "id": "anneal-v1-main",
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "path": "anneal/v1/src/main.rs",
+      "supports": ["historical Verify/Setup/Expand/Generate CLI", "generated Lean inspection"]
+    },
+    {
+      "id": "anneal-v1-generate",
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "path": "anneal/v1/src/generate.rs",
+      "supports": ["Rust-to-Lean source mapping", "generated theorem naming", "generated Lean imports"]
+    },
+    {
+      "id": "zcore-current",
+      "role": "source+documentation",
+      "repository": "rcore-os/zCore",
+      "revision": "8de51f4ee053bcaaf435897febf648bcb4d45479",
+      "paths": ["README-arch.md", "docs/README_EN.md", "Cargo.toml", "loader/Cargo.toml", "linux-object/Cargo.toml", "kernel-hal/src/kernel_handler.rs", "zircon-syscall/src/lib.rs"],
+      "supports": ["Zircon compatibility target", "Linux compatibility extension", "official test oracles", "shared Rust object/HAL architecture", "libOS and bare-metal modes"]
+    },
+    {
+      "id": "rel4-current-snapshot",
+      "role": "source",
+      "repository": "rel4team/rel4_kernel",
+      "revision": "da74b45b69c89d9e6f43161006f3b586fda41107",
+      "paths": ["README.md", "build.py", "Cargo.toml", "src/deps.rs", "src/object/mod.rs", "src/cspace/mod.rs", "src/kernel/fastpath.rs"],
+      "supports": ["C baseline comparison", "seL4 test environment", "bidirectional C/Rust boundary", "temporary C-style compatibility module"]
+    },
+    {
+      "id": "rel4-project-report",
+      "role": "documentation",
+      "repository": "oscomp/first-prize-osf2024-StarryOS-yyds",
+      "revision": "9dc90edc02e78ae79e647e1d1a4200c7cdf85afe",
+      "path": "doc/2024_OSCOMP_final.md",
+      "supports": ["author rationale for incremental replacement", "FFI method", "planned removal of invasive compatibility code", "Rust refactoring beyond transliteration", "seL4 native test compatibility"],
+      "limitation": "project-authored account, not independent evaluation"
+    },
+    {
+      "id": "theseus-osdi20",
+      "role": "documentation",
+      "publication": "Theseus: an Experiment in Operating System Structure and State Management",
+      "venue": "OSDI 2020",
+      "url": "https://www.usenix.org/conference/osdi20/presentation/boos",
+      "supports": ["from-scratch choice", "cells and intralingual design", "four person-years / 38k Rust lines", "2020 maturity and POSIX limits"]
+    },
+    {
+      "id": "theseus-current",
+      "role": "source+documentation",
+      "repository": "theseus-os/Theseus",
+      "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c",
+      "path": "README.md",
+      "supports": ["continued clean-slate identity", "intralingual design goals", "not-yet-mature status"]
+    }
+  ],
+  "derived_judgments": [
+    {
+      "judgment": "External compatibility does not require internal architectural imitation.",
+      "basis": ["zcore-current", "rel4-current-snapshot", "rel4-project-report"]
+    },
+    {
+      "judgment": "Compatibility bridges are best treated as migration scaffolding unless explicitly adopted as stable interfaces.",
+      "basis": ["rel4-current-snapshot", "rel4-project-report"]
+    },
+    {
+      "judgment": "Clean-slate freedom can enable language-shaped architecture, but the evidence does not show it is faster or causally superior.",
+      "basis": ["theseus-osdi20", "theseus-current"]
+    },
+    {
+      "judgment": "Anneal should preserve current semantic promises while keeping V1 CLI/generated-proof shapes redesignable absent evidence of external adoption.",
+      "basis": ["anneal-principles", "anneal-design", "anneal-current-readme", "anneal-v1-main", "anneal-v1-generate", "zcore-current", "rel4-project-report", "theseus-osdi20"]
+    }
+  ]
+}

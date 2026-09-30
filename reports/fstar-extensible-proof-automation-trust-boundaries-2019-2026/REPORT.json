@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "anneal/extensibility",
+    "anneal/trust-model",
+    "proof-automation/tactics",
+    "proof-automation/certificates",
+    "verification/smt",
+    "verification/trusted-computing-base",
+    "research/issue-3732-j023"
+  ],
+  "subjects": [
+    {
+      "name": "F* and Meta-F* current tactic/SMT/native-plugin architecture",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+        "version_txt": "2026.09.27"
+      }
+    },
+    {
+      "name": "Meta-F*: Proof Automation with SMT, Tactics, and Metaprograms",
+      "identity": {
+        "publication": "ESOP 2019",
+        "doi": "10.1007/978-3-030-17184-1_2",
+        "first_online": "2019-04-06"
+      }
+    },
+    {
+      "name": "Lean tactic and trust behavior selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "SMTCoq proof-witness checking",
+      "identity": {
+        "repository": "smtcoq/smtcoq",
+        "revision": "3187cf12412a244859d7396e8088e6f9de0568d1"
+      }
+    },
+    {
+      "name": "Anneal principles and design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "rust/ide",
+    "rust/rls",
+    "rust/rust-analyzer",
+    "compiler/incremental-analysis",
+    "compiler/interactive-analysis",
+    "anneal/batch-live-separation"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Language Server (RLS) archived repository",
+      "identity": {
+        "repository": "rust-lang/rls",
+        "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+      }
+    },
+    {
+      "name": "rust-analyzer current architecture",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+      }
+    },
+    {
+      "name": "RFC 1317: Rust Language Server",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "82d48b36568286b93fc2ce55f89594024f421a3b",
+        "path": "text/1317-ide.md"
+      }
+    },
+    {
+      "name": "RFC 2912: Transition to rust-analyzer",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "b6fffdf18f8b867648de0d95657cc13a64cae4e2",
+        "path": "text/2912-rust-analyzer.md"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

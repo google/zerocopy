@@ -1,0 +1,42 @@
+{
+  "schema": "anneal-reference/judgment-matrix/v1",
+  "scope": "Derived Anneal judgments from J009",
+  "rows": [
+    {
+      "question": "Must batch verification and live interaction use one engine?",
+      "evidence": "RLS directly reused rustc but retained build-shaped refresh; rust-analyzer gained responsiveness with a distinct editor-oriented semantic engine; Rust later shared selected libraries rather than collapsing the front-ends.",
+      "judgment": "No. Require equivalent authority only for operations whose claims demand it; process/state-model identity is not itself a correctness property.",
+      "confidence": "high as architectural analogy; Anneal-specific mechanism remains undecided"
+    },
+    {
+      "question": "What must remain authoritative?",
+      "evidence": "rust-analyzer historically accepted approximate editor answers while rustc remained the language acceptance authority; RFC 2912 documented the distinction.",
+      "judgment": "Anneal verification success must remain bound to an exact accepted subject and checking boundary. Live goal/completion results may have a weaker contract if explicitly labeled and fenced.",
+      "confidence": "high given Anneal DESIGN.md success semantics"
+    },
+    {
+      "question": "How should live state be represented?",
+      "evidence": "Current rust-analyzer uses explicit inputs, mutable AnalysisHost state, immutable Analysis snapshots, revision-based cancellation, and an LSP-independent semantic API.",
+      "judgment": "Use explicit snapshot/generation identity and cancel/discard stale live results. Keep transport identity separate from semantic snapshot identity.",
+      "confidence": "medium-high; precise Anneal snapshot contents need separate design"
+    },
+    {
+      "question": "What should batch/live paths share?",
+      "evidence": "Current rustc/rust-analyzer share solver and other semantic crates through abstract interfaces while retaining distinct front-end contexts/interners.",
+      "judgment": "Share semantic libraries where their APIs can express both state models faithfully; do not force shared concrete caches or contexts merely to avoid duplication.",
+      "confidence": "high as a design option; component-by-component applicability to Anneal remains open"
+    },
+    {
+      "question": "How should external build/generation state be handled?",
+      "evidence": "RLS internalized Cargo/build orchestration; rust-analyzer instead consumes explicit semantic inputs supplied by a host.",
+      "judgment": "Either ownership can work, but Anneal must explicitly identify semantically relevant Charon/Aeneas/Lake/generated-artifact inputs. Moving them to a host does not remove the consistency obligation.",
+      "confidence": "high"
+    },
+    {
+      "question": "How should semantic divergence be controlled?",
+      "evidence": "RFC 2912 openly tracked precision gaps while library-ification reduced duplication over time.",
+      "judgment": "Document per-operation authority, maintain differential tests against the acceptance path, and prefer converging mature semantic components without blocking interactive experimentation on full convergence.",
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "observed_at": "2026-09-30",
+  "j_ids": ["J050"],
+  "sources": [
+    {
+      "kind": "primary-literature",
+      "identity": "Kung and Robinson, On Optimistic Methods for Concurrency Control, ACM TODS 6(2), 1981, DOI 10.1145/319566.319567",
+      "supports": ["read-validation-write phases", "restart after failed validation", "query output depends on validation"]
+    },
+    {
+      "kind": "primary-literature",
+      "identity": "Herlihy and Wing, Linearizability: A Correctness Condition for Concurrent Objects, ACM TOPLAS 12(3), 1990, DOI 10.1145/78969.78972",
+      "supports": ["operation-level real-time consistency", "linearizability locality"]
+    },
+    {
+      "kind": "primary-literature",
+      "identity": "Berenson et al., A Critique of ANSI SQL Isolation Levels, SIGMOD 1995 / MSR-TR-95-51, DOI 10.1145/223784.223785",
+      "supports": ["snapshot isolation start-time snapshot", "first-committer-wins", "write skew and non-serializability"]
+    },
+    {
+      "kind": "primary-implementation-paper",
+      "identity": "Ports and Grittner, Serializable Snapshot Isolation in PostgreSQL, PVLDB 5(12), 2012",
+      "supports": ["dangerous-structure detection", "false-positive aborts", "read-only safe snapshots", "shared-memory tracking cost"]
+    },
+    {
+      "kind": "anneal-design-authority",
+      "identity": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92 anneal/PRINCIPLES.md and anneal/DESIGN.md",
+      "supports": ["precise result identity and scope", "fail-closed evidence semantics", "mechanism remains a lower-level decision"]
+    },
+    {
+      "kind": "existing-anneal-execution-evidence",
+      "identity": "google/zerocopy reference@30b9d5749aed6049d949f4f582dd64c70088d07a reports/anneal-3731-real-generation-publication-v4-30-0-rc2",
+      "supports": ["mixed in-place multi-file generations", "old proof accepted during several mixed states", "staged complete-generation pointer publication"]
+    },
+    {
+      "kind": "existing-anneal-execution-evidence",
+      "identity": "google/zerocopy reference@30b9d5749aed6049d949f4f582dd64c70088d07a reports/anneal-interactive-model-probes-2026-09-29",
+      "supports": ["mixed read through mutable current pointer", "coherent read after pinning immutable generation", "content identity distinct from causal freshness"]
+    },
+    {
+      "kind": "existing-anneal-source-synthesis",
+      "identity": "google/zerocopy reference@30b9d5749aed6049d949f4f582dd64c70088d07a reports/lsp-proof-assistant-architecture-2026-09-27",
+      "supports": ["document snapshot ownership", "document version distinct from dependency/project generation", "cancellation is not rollback"]
+    }
+  ],
+  "derived_judgments": [
+    "Snapshot-valid and current-at-response are different query contracts.",
+    "Query-derived edits should validate the base semantic generation/dependencies atomically before application.",
+    "Concurrent authority-changing operations need a serializable or equivalently invariant-preserving admission rule when disjoint writes can violate a cross-resource invariant.",
+    "Per-file versions are sufficient only when they are proven to form one coherent admitted semantic snapshot.",
+    "Immutable generation manifests plus atomic selection and compare-and-swap can realize the needed guarantees without a database if all relevant authority transitions and dependencies are covered."
+  ],
+  "limits": [
+    "No new Anneal or database execution was performed.",
+    "The database literature is used comparatively; it does not prescribe an Anneal implementation.",
+    "The smallest complete Anneal semantic dependency closure remains operation-dependent and partly unresolved.",
+    "Existing Anneal generation probes are bounded execution evidence, not a proof of all filesystem or concurrency behavior."
+  ]
+}

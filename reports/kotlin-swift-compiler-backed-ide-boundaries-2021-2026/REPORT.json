@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "kotlin",
+    "kotlin/fir",
+    "kotlin/analysis-api",
+    "swift/sourcekit",
+    "swift/sourcekit-lsp",
+    "ide/compiler-services",
+    "incremental-analysis",
+    "build-configuration",
+    "generated-sources",
+    "anneal/interactive"
+  ],
+  "subjects": [
+    {
+      "name": "Kotlin compiler FIR and Analysis API",
+      "identity": {
+        "repository": "JetBrains/kotlin",
+        "revision": "bce49f3701fb8dc461fb98240fdc7c3c81c592f2"
+      }
+    },
+    {
+      "name": "Swift SourceKit-LSP",
+      "identity": {
+        "repository": "swiftlang/sourcekit-lsp",
+        "revision": "045c18e9e9ea35b896857b6cb982aa2373fb5816"
+      }
+    },
+    {
+      "name": "Swift compiler SourceKit",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d"
+      }
+    },
+    {
+      "name": "Anneal V2 design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

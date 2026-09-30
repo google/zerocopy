@@ -1,0 +1,54 @@
+{
+  "scope": "J054 reconciliation loops versus event-by-event synchronization",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "controller-runtime-level-based",
+      "identity": "kubernetes-sigs/controller-runtime@8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b",
+      "paths": ["pkg/reconcile/reconcile.go", "pkg/doc.go"],
+      "supports": ["level-based reconciliation", "events enqueue reconcile keys", "duplicate request batching/deduplication"]
+    },
+    {
+      "id": "kubernetes-reflector",
+      "identity": "kubernetes/kubernetes@6d1d025050cb63ae5b8e53037aced205e6a28410",
+      "path": "staging/src/k8s.io/client-go/tools/cache/reflector.go",
+      "supports": ["snapshot plus resource-version continuity", "expired/unavailable version recovery", "store replacement", "watch-list initial consistency"]
+    },
+    {
+      "id": "kubernetes-api-docs",
+      "identity": "kubernetes/website@367a7a21bbef6b2d3c57d5fe113bee9bdb658889",
+      "paths": ["content/en/docs/reference/using-api/api-concepts.md", "content/en/docs/concepts/architecture/controller.md"],
+      "supports": ["410 Gone recovery by cache clear plus relist", "desired versus current state control loops"]
+    },
+    {
+      "id": "watch-list-kep",
+      "identity": "kubernetes/enhancements@914ed6950576832c8579899f092909d27623492e",
+      "path": "keps/sig-api-machinery/3157-watch-list/README.md",
+      "supports": ["consistent streaming initial snapshot", "bookmark boundary", "fallback", "2022-to-v1.38 implementation history"]
+    },
+    {
+      "id": "linux-inotify",
+      "identity": "Linux man-pages 6.19 inotify(7), 2026-02-14",
+      "url": "https://www.man7.org/linux/man-pages/man7/inotify.7.html",
+      "supports": ["event coalescing", "queue overflow loses events", "recursive-watch race", "consistency checking and cache rebuild guidance"]
+    },
+    {
+      "id": "anneal-design",
+      "identity": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": ["anneal/PRINCIPLES.md", "anneal/DESIGN.md", "anneal/README.md", "anneal/src/main.rs"],
+      "supports": ["current design authority", "mechanism non-decisions", "current redesign status"]
+    },
+    {
+      "id": "anneal-watch-loop-probe",
+      "identity": "google/zerocopy reference@2cec790eeec883e83ac66dcfa021c51ad65ad4f1 package anneal-3730-editor-save-format-watch-loop-2026-09-29 REPORT.md blob ca2c4e0f92eb9432002b240a986073417a177b48",
+      "supports": ["editor-buffer versus disk divergence", "duplicate-trigger suppression in bounded harness", "private build failure/cancellation versus canonical artifact pointer", "reopen reconciliation"]
+    }
+  ],
+  "derived_judgments": [
+    "Use watcher/protocol events primarily as dirty-scope wakeups when current authoritative state can be reread.",
+    "A correct event-driven cache needs a detectable continuity boundary and a snapshot/rebuild repair path.",
+    "Coalesce invalidation hints, not authoritative mutations.",
+    "Keep writer authority/fencing separate from reconciliation.",
+    "Prefer a small local dirty-queue plus scoped rescan/publication protocol over a Kubernetes-like distributed control plane for Anneal's current single-user local problem."
+  ]
+}

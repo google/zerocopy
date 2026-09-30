@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/modularity",
+    "anneal/pipeline",
+    "software-architecture/information-hiding",
+    "software-architecture/modularity",
+    "software-architecture/pipes-and-filters"
+  ],
+  "subjects": [
+    {
+      "name": "Parnas information-hiding modularity",
+      "identity": {
+        "publication": "Communications of the ACM 15(12):1053-1058",
+        "doi": "10.1145/361598.361623",
+        "year": "1972"
+      }
+    },
+    {
+      "name": "Parnas extension and contraction design",
+      "identity": {
+        "publication": "IEEE Transactions on Software Engineering SE-5(2):128-138",
+        "doi": "10.1109/TSE.1979.234169",
+        "year": "1979"
+      }
+    },
+    {
+      "name": "Parnas-Clements-Weiss module guides",
+      "identity": {
+        "publication": "IEEE Transactions on Software Engineering SE-11(3):259-266",
+        "doi": "10.1109/TSE.1985.232209",
+        "year": "1985"
+      }
+    },
+    {
+      "name": "Garlan-Shaw software architecture styles",
+      "identity": {
+        "report": "CMU/SEI-94-TR-021",
+        "year": "1994"
+      }
+    },
+    {
+      "name": "Anneal current design and V2 source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

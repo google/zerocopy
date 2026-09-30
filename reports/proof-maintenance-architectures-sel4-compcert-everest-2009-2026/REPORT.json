@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "verification/proof-maintenance",
+    "verification/proof-engineering",
+    "verification/abstraction-boundaries",
+    "verification/generated-code",
+    "verified-systems/sel4",
+    "verified-systems/compcert",
+    "verified-systems/project-everest",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "seL4 L4.verified proof corpus",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+      }
+    },
+    {
+      "name": "seL4 verification manifest",
+      "identity": {
+        "repository": "seL4/verification-manifest",
+        "revision": "f1f7a4289585e9610733ea041c1849e46af9701b"
+      }
+    },
+    {
+      "name": "CompCert 3.18 semantic-preservation development",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "HACL* verified cryptographic library",
+      "identity": {
+        "repository": "hacl-star/hacl-star",
+        "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f"
+      }
+    },
+    {
+      "name": "KaRaMeL extraction compiler",
+      "identity": {
+        "repository": "FStarLang/karamel",
+        "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53"
+      }
+    },
+    {
+      "name": "Project Everest integration repository",
+      "identity": {
+        "repository": "project-everest/everest",
+        "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac"
+      }
+    },
+    {
+      "name": "Modularity, Code Specialization, and Zero-Cost Abstractions for Program Verification",
+      "identity": {
+        "doi": "10.1145/3607844",
+        "publication": "PACMPL 7 (ICFP 2023)"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

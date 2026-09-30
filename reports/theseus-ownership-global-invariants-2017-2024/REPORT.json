@@ -1,0 +1,51 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "systems/global-invariants",
+    "systems/live-evolution",
+    "systems/ownership",
+    "systems/state-spill",
+    "theseus",
+    "verification/intralingual-design"
+  ],
+  "subjects": [
+    {
+      "name": "Theseus early state-spill design",
+      "identity": {
+        "doi": "10.1145/3144555.3144560",
+        "publication": "PLOS 2017"
+      }
+    },
+    {
+      "name": "Theseus OSDI design and evaluation",
+      "identity": {
+        "publication": "OSDI 2020",
+        "title": "Theseus: an Experiment in Operating System Structure and State Management",
+        "url": "https://www.usenix.org/system/files/osdi20-boos.pdf"
+      }
+    },
+    {
+      "name": "Theseus lightweight correctness study",
+      "identity": {
+        "arxiv": "2501.00248v1",
+        "date": "2024-12-31",
+        "title": "Combining Type Checking and Formal Verification for Lightweight OS Correctness"
+      }
+    },
+    {
+      "name": "Theseus source tree",
+      "identity": {
+        "repository": "theseus-os/Theseus",
+        "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c"
+      }
+    },
+    {
+      "name": "Theseus duplicate-frame allocator repair",
+      "identity": {
+        "repository": "theseus-os/Theseus",
+        "revision": "5d62e567227e137db27c0c69728e732c5771c923"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

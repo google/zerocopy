@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "data-structures/persistence",
+    "data-structures/structural-sharing",
+    "data-structures/hash-consing",
+    "memory/arena-allocation",
+    "filesystem/copy-on-write",
+    "anneal/snapshots",
+    "anneal/generation-reclamation"
+  ],
+  "subjects": [
+    {
+      "name": "Making Data Structures Persistent",
+      "identity": {
+        "doi": "10.1016/0022-0000(89)90034-2",
+        "publication": "Journal of Computer and System Sciences 38(1)",
+        "year": "1989"
+      }
+    },
+    {
+      "name": "Lean 4 persistent collections and maximal-sharing machinery",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "OpenZFS copy-on-write snapshots",
+      "identity": {
+        "project": "OpenZFS",
+        "documentation": "Copy-on-Write; Snapshots, Clones and Bookmarks",
+        "observed": "2026-09-30"
+      }
+    },
+    {
+      "name": "typed_arena arena lifetime semantics",
+      "identity": {
+        "crate": "typed-arena",
+        "version": "2.0.2"
+      }
+    },
+    {
+      "name": "fix weak hash-consing implementation",
+      "identity": {
+        "package": "fix",
+        "release": "20250919"
+      }
+    },
+    {
+      "name": "Anneal design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

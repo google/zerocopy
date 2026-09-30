@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "anneal/incrementality",
+    "anneal/provenance",
+    "build/invalidation",
+    "incremental-computation/early-cutoff",
+    "verification/reuse"
+  ],
+  "subjects": [
+    {
+      "name": "rustc incremental-compilation design documentation",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85"
+      }
+    },
+    {
+      "name": "Jane Street Incremental",
+      "identity": {
+        "repository": "janestreet/incremental",
+        "revision": "98b5750ec3c006641351bfd858a89136a5dbc52c"
+      }
+    },
+    {
+      "name": "GHC recompilation checker",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "234bab081682018da7d04b22eee4b80f70381d07"
+      }
+    },
+    {
+      "name": "Anneal Charon/Aeneas relocation and comment provenance probe",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_commit": "a5ecd5bde3d2b33457b5a13b4b435d79515f4012",
+        "package": "anneal-3731-charon-relocation-comment-provenance-2026-09-29"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

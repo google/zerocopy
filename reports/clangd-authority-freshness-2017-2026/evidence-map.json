@@ -1,0 +1,108 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "issue": "google/zerocopy#3732",
+  "j_ids": [
+    "J012"
+  ],
+  "observed_at": "2026-09-30",
+  "subject_pins": {
+    "llvm_project": "ded546ad82656ce6605ee2f2aa60c78dec70d95f",
+    "clangd_www": "ae5866d4552e30a173b8e9c3cec872a82e4c0120"
+  },
+  "claims": [
+    {
+      "id": "C01",
+      "claim": "runWithAST binds a running read to the file version tracked when the request was scheduled; later edits can invalidate selected operations rather than relabel their result.",
+      "basis": "source",
+      "locator": "llvm/llvm-project@ded546ad82656ce6605ee2f2aa60c78dec70d95f clang-tools-extra/clangd/TUScheduler.h: runWithAST, ASTActionInvalidation"
+    },
+    {
+      "id": "C02",
+      "claim": "Preamble reads intentionally permit older preambles; code completion prioritizes latency and can use stale or absent preamble state.",
+      "basis": "source+documentation",
+      "locator": "llvm/llvm-project@ded546ad82656ce6605ee2f2aa60c78dec70d95f ClangdServer.cpp::codeComplete and TUScheduler.h::PreambleConsistency; llvm/clangd-www@ae5866d4552e30a173b8e9c3cec872a82e4c0120 design/threads.md"
+    },
+    {
+      "id": "C03",
+      "claim": "Compile-command identity changes parser semantics; fallback commands are explicitly unreliable and header commands can be inferred heuristically.",
+      "basis": "source+documentation",
+      "locator": "llvm/llvm-project@ded546ad82656ce6605ee2f2aa60c78dec70d95f GlobalCompilationDatabase.h; llvm/clangd-www@ae5866d4552e30a173b8e9c3cec872a82e4c0120 design/compile-commands.md"
+    },
+    {
+      "id": "C04",
+      "claim": "Diagnostics have operation-specific exact/eventual policy rather than one all-versions barrier.",
+      "basis": "source+documentation",
+      "locator": "llvm/llvm-project@ded546ad82656ce6605ee2f2aa60c78dec70d95f TUScheduler.h::WantDiagnostics; clangd-www protocol extension wantDiagnostics"
+    },
+    {
+      "id": "C05",
+      "claim": "Cross-file information is layered: dynamic open-file index data is combined with slower background/static/remote sources whose coverage and freshness differ.",
+      "basis": "source+documentation",
+      "locator": "llvm/llvm-project@ded546ad82656ce6605ee2f2aa60c78dec70d95f index/FileIndex.cpp,index/Background.cpp; llvm/clangd-www@ae5866d4552e30a173b8e9c3cec872a82e4c0120 design/indexing.md"
+    },
+    {
+      "id": "C06",
+      "claim": "2017 preamble-storage design explicitly traded memory against speed/storage and made in-memory use configurable rather than universally mandatory.",
+      "basis": "source-history+review-rationale",
+      "locator": "llvm/llvm-project@e9eb7f0cb815641827fa3d031c38190c10900c14; LLVM Phabricator D39843, especially 2017-11-09 through 2017-11-15 discussion"
+    },
+    {
+      "id": "C07",
+      "claim": "2018 background-index scheduling explicitly considered foreground interference and adopted lower-priority background work.",
+      "basis": "source-history+review-rationale",
+      "locator": "llvm/llvm-project@6675be87477395658f6d3859b028ab8dee81ba19; LLVM Phabricator D53651"
+    },
+    {
+      "id": "C08",
+      "claim": "2018 cancellation allowed obsolete reads and intermediate diagnostic updates to be elided.",
+      "basis": "source-history",
+      "locator": "llvm/llvm-project@a2b048bc4bdf9320249d0ff512fab6f16c2e6e47; LLVM Phabricator D54746"
+    },
+    {
+      "id": "C09",
+      "claim": "2020 update invalidation intentionally cancels selected editor-generated operations after later edits rather than forcing obsolete snapshot construction.",
+      "basis": "source-history",
+      "locator": "llvm/llvm-project@c627b120eb8b7add3f9cf893721335c367d9f037; LLVM Phabricator D75602"
+    },
+    {
+      "id": "C10",
+      "claim": "2023 asynchronous preamble indexing explicitly accepted temporary stale/partial index-fed results for latency, while preserving lifetime/scheduling safety.",
+      "basis": "source-history+review-rationale",
+      "locator": "llvm/llvm-project@a8ad413f0d18c07a4adaa0d547e0096874d809c5; LLVM Phabricator D148088"
+    },
+    {
+      "id": "D01",
+      "claim": "Anneal should model freshness and semantic-model authority independently and assign minimum authority per operation rather than one global ready bit.",
+      "basis": "derived",
+      "depends_on": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C08",
+        "C09",
+        "C10"
+      ]
+    },
+    {
+      "id": "D02",
+      "claim": "Anneal publication/proof acceptance needs exact source+model+environment identity and a publication fence, while navigation/completion-like features may use tagged stale/incomplete state.",
+      "basis": "derived",
+      "depends_on": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "D01"
+      ]
+    }
+  ],
+  "limitations": [
+    "No clangd binary was executed for this report.",
+    "Historical review performance numbers were not reproduced.",
+    "Review comments record participant rationale and interpretation, not independently verified causal outcomes.",
+    "Anneal applicability is derived analysis, not adopted product policy."
+  ]
+}

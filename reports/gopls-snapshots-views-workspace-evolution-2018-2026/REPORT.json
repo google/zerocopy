@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "gopls",
+    "gopls/workspaces",
+    "gopls/views",
+    "gopls/snapshots",
+    "gopls/invalidation",
+    "gopls/zero-config",
+    "language-servers",
+    "anneal/compilation-subjects",
+    "anneal/interactive-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "gopls current workspace, view, snapshot, and invalidation architecture",
+      "identity": {
+        "repository": "golang/tools",
+        "revision": "98444708d405557b5ddd6179be1a6abc14150d5f"
+      }
+    },
+    {
+      "name": "gopls pre-scalability architecture",
+      "identity": {
+        "repository": "golang/tools",
+        "release": "gopls/v0.11.0",
+        "revision": "611cff71b9afeb81ae6eb16c5ce9376c051b1828"
+      }
+    },
+    {
+      "name": "gopls separate-compilation transition",
+      "identity": {
+        "repository": "golang/tools",
+        "release": "gopls/v0.12.0",
+        "revision": "236850463aea0b1949167349b44c37f97aefd9c5"
+      }
+    },
+    {
+      "name": "gopls zero-config workspace release",
+      "identity": {
+        "repository": "golang/tools",
+        "release": "gopls/v0.15.0",
+        "revision": "50e6ff28fb47219a23c4d0ed12da704b94087f76"
+      }
+    },
+    {
+      "name": "Multi-project gopls workspace proposal",
+      "identity": {
+        "repository": "golang/proposal",
+        "revision": "0be13090fdb0cbae0d71641bb676d924bc1c94de",
+        "path": "design/37720-gopls-workspaces.md"
+      }
+    },
+    {
+      "name": "Anneal current design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/DESIGN.md"
+      }
+    },
+    {
+      "name": "Anneal reference evidence at analysis time",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "ebfeac694e945da0b52e09c6a185d857f982f4f3"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

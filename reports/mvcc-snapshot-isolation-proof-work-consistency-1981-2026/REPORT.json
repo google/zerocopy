@@ -1,0 +1,58 @@
+{
+  "topics": [
+    "anneal/interactive-consistency",
+    "concurrency/linearizability",
+    "concurrency/mvcc",
+    "concurrency/optimistic-validation",
+    "concurrency/serializability",
+    "concurrency/snapshot-isolation",
+    "proof-workspaces/snapshots"
+  ],
+  "subjects": [
+    {
+      "name": "Optimistic concurrency control",
+      "identity": {
+        "publication": "Kung and Robinson, On Optimistic Methods for Concurrency Control, ACM TODS 6(2), 1981",
+        "doi": "10.1145/319566.319567"
+      }
+    },
+    {
+      "name": "Linearizability",
+      "identity": {
+        "publication": "Herlihy and Wing, Linearizability: A Correctness Condition for Concurrent Objects, ACM TOPLAS 12(3), 1990",
+        "doi": "10.1145/78969.78972"
+      }
+    },
+    {
+      "name": "Snapshot isolation taxonomy",
+      "identity": {
+        "publication": "Berenson et al., A Critique of ANSI SQL Isolation Levels, SIGMOD 1995",
+        "doi": "10.1145/223784.223785",
+        "report": "Microsoft Research MSR-TR-95-51"
+      }
+    },
+    {
+      "name": "PostgreSQL Serializable Snapshot Isolation",
+      "identity": {
+        "publication": "Ports and Grittner, Serializable Snapshot Isolation in PostgreSQL, PVLDB 5(12), 2012"
+      }
+    },
+    {
+      "name": "Anneal design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md"
+      }
+    },
+    {
+      "name": "Anneal generation and interactive-state execution evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "30b9d5749aed6049d949f4f582dd64c70088d07a",
+        "packages": "anneal-3731-real-generation-publication-v4-30-0-rc2; anneal-interactive-model-probes-2026-09-29; lsp-proof-assistant-architecture-2026-09-27"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

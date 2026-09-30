@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/interactive-architecture",
+    "research/compiler-architecture",
+    "rust/ide",
+    "rust/rls",
+    "rust/rust-analyzer"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Language Server design and archived implementation",
+      "identity": {
+        "repository": "rust-lang/rls",
+        "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+        "architecture_blob": "a7bde5799d73cbaf7319dad2773fd58a89a978a8",
+        "rfc": "1317"
+      }
+    },
+    {
+      "name": "rust-analyzer adoption decision",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+        "rfc": "2912",
+        "rfc_blob": "9f5986eeacafbea1ad99c6cbc4c24d2eab278c99"
+      }
+    },
+    {
+      "name": "Current rust-analyzer architecture",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+        "architecture_blob": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c"
+      }
+    },
+    {
+      "name": "Anneal design authority used for applicability analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

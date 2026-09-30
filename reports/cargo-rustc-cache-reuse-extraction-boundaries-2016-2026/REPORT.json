@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "anneal/cache-reuse",
+    "anneal/extraction",
+    "anneal/freshness",
+    "cargo/fingerprints",
+    "rustc/incremental",
+    "sccache/compiler-cache"
+  ],
+  "subjects": [
+    {
+      "name": "Cargo",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "f3865b2a4d1acc5276f6b3c67d0e057f4dab3928"
+      }
+    },
+    {
+      "name": "Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "7d2cd0fbc092625ea371da704f15f80216d2220e"
+      }
+    },
+    {
+      "name": "sccache",
+      "identity": {
+        "repository": "mozilla/sccache",
+        "revision": "54b6f72a5d3583e8ccb8b83d44e5d41400d8039c"
+      }
+    },
+    {
+      "name": "Charon selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Anneal design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

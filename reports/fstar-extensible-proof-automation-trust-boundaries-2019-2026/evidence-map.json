@@ -1,0 +1,72 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "observed_at": "2026-09-30",
+  "question": "J023: F* and extensible provers: automation without changing the claim",
+  "claims": [
+    {
+      "claim": "Meta-F* exposes an abstract proof state and primitive goal transformations so user tactic code can search and transform goals without directly owning the proof-state representation.",
+      "role": "source + historical design",
+      "sources": [
+        "FStarLang/FStar@78bb239b54cc113be68fb1dc0cbdfeb19378766a:doc/book/PoP-in-FStar/book/part5/part5_meta.rst@aa5c1b8571621697654136829ff8d1550d0cfe4f",
+        "https://link.springer.com/chapter/10.1007/978-3-030-17184-1_2"
+      ]
+    },
+    {
+      "claim": "Tactic divergence can prevent verification from completing without itself establishing the pending proposition.",
+      "role": "source",
+      "sources": [
+        "FStarLang/FStar@78bb239b54cc113be68fb1dc0cbdfeb19378766a:doc/book/PoP-in-FStar/book/part5/part5_meta.rst@aa5c1b8571621697654136829ff8d1550d0cfe4f"
+      ]
+    },
+    {
+      "claim": "F* ordinary SMT discharge trusts the SMT encoding and Z3 correctness and may accept validity without constructing an explicit proof term.",
+      "role": "source",
+      "sources": [
+        "FStarLang/FStar@78bb239b54cc113be68fb1dc0cbdfeb19378766a:doc/book/PoP-in-FStar/book/part1/part1_prop_assertions.rst@c3061a5a126bd40856f912f6b771e6b75af74cb0"
+      ]
+    },
+    {
+      "claim": "Meta-F* supports native tactic compilation and dynamic loading for performance, while current F* retains that mechanism.",
+      "role": "historical design + source",
+      "sources": [
+        "https://www.microsoft.com/en-us/research/publication/meta-f-proof-automation-with-smt-tactics-and-metaprograms-3/",
+        "FStarLang/FStar@78bb239b54cc113be68fb1dc0cbdfeb19378766a:examples/native_tactics/README@f8f85265593325cc22dd4f9cec468346f82e7103",
+        "FStarLang/FStar@78bb239b54cc113be68fb1dc0cbdfeb19378766a:src/ml/FStarC_Tactics_Native.ml@352f61d9c41b0315467d934052875af0d55cd498"
+      ]
+    },
+    {
+      "claim": "At Anneal's selected Lean pin, ordinary tactic extensions produce material that remains subject to Lean's checking path, while admissions and explicit bypass/trusted execution mechanisms have distinct trust consequences.",
+      "role": "current Anneal reference evidence",
+      "sources": [
+        "google/zerocopy reference:reports/lean-tactic-extension-apis-v4-30-0-rc2",
+        "google/zerocopy reference:reports/lean-trust-admissions-v4-30-0-rc2"
+      ]
+    },
+    {
+      "claim": "SMTCoq provides a concrete certificate-checking alternative in which external solver witnesses are checked by a certified checker.",
+      "role": "source",
+      "sources": [
+        "smtcoq/smtcoq@3187cf12412a244859d7396e8088e6f9de0568d1",
+        "https://github.com/smtcoq/smtcoq"
+      ]
+    },
+    {
+      "claim": "Anneal should classify extension authority into proposal/search, checked transformation, and trust/claim extension rather than classifying extensions by implementation technology such as 'plugin' or 'tactic'.",
+      "role": "derived judgment",
+      "sources": [
+        "F* current tactic/SMT evidence above",
+        "google/zerocopy reference:reports/tcb-accounting-patterns-verification-systems-2026-09-27",
+        "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92:anneal/DESIGN.md"
+      ]
+    },
+    {
+      "claim": "Sandboxing and logical proof checking address different failure classes and should be accounted separately.",
+      "role": "derived judgment",
+      "sources": [
+        "F* native plugin evidence above",
+        "Lean tactic-extension evidence above",
+        "google/zerocopy reference:reports/tcb-accounting-patterns-verification-systems-2026-09-27"
+      ]
+    }
+  ]
+}

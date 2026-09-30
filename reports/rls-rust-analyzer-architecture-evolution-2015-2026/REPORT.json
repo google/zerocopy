@@ -1,0 +1,51 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "rust/ide-history",
+    "rust/rls",
+    "rust/rust-analyzer",
+    "rustc/library-ification",
+    "incremental-computation",
+    "language-server/semantic-divergence"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Language Server architecture at archived repository head",
+      "identity": {
+        "repository": "rust-lang/rls",
+        "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+      }
+    },
+    {
+      "name": "RFC 1317 Rust Language Server accepted text",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "4e4c756e6df95167dda553251cc37a75a294f002",
+        "rfc": "1317"
+      }
+    },
+    {
+      "name": "RFC 2912 rust-analyzer transition accepted text",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+        "rfc": "2912"
+      }
+    },
+    {
+      "name": "rust-analyzer current architecture",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+      }
+    },
+    {
+      "name": "rustc developer guide current rust-analyzer sharing account",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "0fb89036f8e46a80ee815ed99ff7d9dae9d172ae"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

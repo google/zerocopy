@@ -1,0 +1,122 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "scope": "J010 Roslyn immutable workspaces and their real cost",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "role": "historical-design-overview",
+      "repository": "dotnet/roslyn",
+      "revision": "4a74095f0e3598e514f3147479beee208c0ad7ed",
+      "path": "Roslyn-Overview.md",
+      "supports": [
+        "compiler invocation as immutable snapshot",
+        "syntax trees immutable/thread-safe with structural reuse",
+        "workspace mutable while Solution values remain immutable",
+        "explicit apply-back of changed solutions"
+      ]
+    },
+    {
+      "role": "historical-author-rationale",
+      "published": "2012-06-08",
+      "url": "https://ericlippert.com/2012/06/08/red-green-trees/",
+      "supports": [
+        "persistent green tree without parents/absolute positions",
+        "on-demand red facade",
+        "edit-local rebuilding rather than whole-tree copying"
+      ]
+    },
+    {
+      "role": "current-source-and-documentation",
+      "repository": "dotnet/roslyn",
+      "revision": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b",
+      "items": [
+        {
+          "path": "src/Compilers/Core/Portable/Compilation/Compilation.cs",
+          "symbol": "Compilation",
+          "supports": "semantic immutability coexists with on-demand realization/cache and delta reuse"
+        },
+        {
+          "path": "src/Workspaces/Core/Portable/Workspace/Solution/Solution.cs",
+          "symbol": "Solution",
+          "supports": "logically immutable solution contains mutable/lazy caches guarded by locks"
+        },
+        {
+          "path": "src/Workspaces/Core/Portable/Workspace/Solution/SolutionCompilationState.cs",
+          "symbol": "SolutionCompilationState",
+          "supports": "green non-semantic state is separate from semantic compilation trackers and lazy caches"
+        },
+        {
+          "path": "src/Workspaces/Core/Portable/Workspace/Workspace.cs",
+          "symbols": "Workspace; CurrentSolution; SetCurrentSolution*",
+          "supports": "mutable host authority serializes updates while exposing stable Solution snapshots"
+        },
+        {
+          "path": "docs/compilers/Design/Red-Green Trees.md",
+          "supports": "current red/green representation rationale and structural sharing"
+        },
+        {
+          "path": "docs/ide/api-designs/Out-of-Process Synchronization.md",
+          "supports": "typed Merkle/checksum synchronization, pinning, in-flight sharing, lifecycle"
+        },
+        {
+          "path": "src/Workspaces/Remote/ServiceHub/Host/RemoteWorkspace.cs",
+          "symbols": "RunWithSolutionAsync; in-flight solution acquisition",
+          "supports": "remote requests name a SolutionChecksum and pin/share exact snapshot computations"
+        },
+        {
+          "path": "src/Workspaces/Remote/ServiceHub/Host/SolutionAssetCache.cs",
+          "supports": "mutable checksum-keyed cache with recency and purge semantics"
+        },
+        {
+          "path": "src/Workspaces/Remote/ServiceHub/Host/RemoteWorkspaceManager.cs",
+          "supports": "current 30-second cleanup and one-minute purge defaults; current/in-flight snapshots pinned"
+        },
+        {
+          "path": "src/Features/Core/Portable/EditAndContinue/CommittedSolution.cs",
+          "symbol": "CommittedSolution",
+          "supports": "workspace snapshot can be stale versus actual build output; PDB/source checksums are used to detect correspondence"
+        },
+        {
+          "path": "src/Workspaces/Core/Portable/Workspace/Host/PersistentStorage/IPersistentStorageService.cs",
+          "supports": "arbitrary public persistence service is obsolete; persistence semantics are not part of Solution immutability"
+        },
+        {
+          "path": "src/Workspaces/Core/Portable/Storage/AbstractPersistentStorageService.cs",
+          "supports": "internal persistence remains mutable, lock-protected, recoverable external state"
+        }
+      ]
+    },
+    {
+      "role": "historical-oop-transition",
+      "repository": "dotnet/roslyn",
+      "revision": "c141605a972871644cc43f2caec597c88e9662db",
+      "message": "porting OOP to preview 4 branch",
+      "supports": [
+        "introduction of solution checksum and serialization",
+        "remote host client",
+        "RemoteWorkspace",
+        "ServiceHub component"
+      ]
+    },
+    {
+      "role": "anneal-design-authority-for-derived-judgment",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": [
+        "anneal/PRINCIPLES.md",
+        "anneal/DESIGN.md"
+      ],
+      "supports": [
+        "success requires precise identity/scope and may not exceed evidence",
+        "trust must remain explicit",
+        "prefer general minimally sufficient mechanisms",
+        "atomic verification subject remains undecided"
+      ]
+    }
+  ],
+  "limits": [
+    "No Roslyn performance benchmark or execution experiment was performed.",
+    "Source comments and design documents establish contracts and author intent, not independent outcome measurements.",
+    "Anneal implications are derived analysis and are not adopted design policy."
+  ]
+}

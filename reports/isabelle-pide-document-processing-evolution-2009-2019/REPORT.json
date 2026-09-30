@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "isabelle/pide",
+    "proof-assistant/document-processing",
+    "proof-assistant/asynchronous-interaction",
+    "proof-assistant/parallel-checking",
+    "proof-assistant/semantic-markup",
+    "anneal/orchestration"
+  ],
+  "subjects": [
+    {
+      "name": "Isabelle/PIDE retrospective document model",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "Interaction with Formal Mathematical Documents in Isabelle/PIDE",
+        "arxiv": "1905.01735v1",
+        "doi": "10.48550/arXiv.1905.01735"
+      }
+    },
+    {
+      "name": "Isabelle/jEdit PIDE architecture",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "Isabelle/jEdit --- a Prover IDE within the PIDE framework",
+        "arxiv": "1207.3441v1",
+        "doi": "10.48550/arXiv.1207.3441"
+      }
+    },
+    {
+      "name": "Asynchronous Isabelle document-processing architecture",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "Asynchronous Proof Processing with Isabelle/Scala and Isabelle/jEdit",
+        "doi": "10.1016/j.entcs.2012.06.009",
+        "published": "2012"
+      }
+    },
+    {
+      "name": "Reformed asynchronous READ-EVAL-PRINT architecture",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "READ-EVAL-PRINT in Parallel and Asynchronous Proof-checking",
+        "arxiv": "1307.1944v1",
+        "doi": "10.4204/EPTCS.118.4"
+      }
+    },
+    {
+      "name": "PIDE-to-Coq portability experiment",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "PIDE as front-end technology for Coq",
+        "arxiv": "1304.6626v1",
+        "doi": "10.48550/arXiv.1304.6626"
+      }
+    },
+    {
+      "name": "Anneal design authority used for applicability analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

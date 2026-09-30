@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/architecture",
+    "anneal/compatibility",
+    "rust/rewrites",
+    "operating-systems/rust"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal current redesign",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/"
+      }
+    },
+    {
+      "name": "Anneal historical V1 prototype",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/v1/"
+      }
+    },
+    {
+      "name": "zCore",
+      "identity": {
+        "repository": "rcore-os/zCore",
+        "revision": "8de51f4ee053bcaaf435897febf648bcb4d45479"
+      }
+    },
+    {
+      "name": "reL4 kernel incremental-rewrite snapshot",
+      "identity": {
+        "repository": "rel4team/rel4_kernel",
+        "revision": "da74b45b69c89d9e6f43161006f3b586fda41107"
+      }
+    },
+    {
+      "name": "reL4 2024 project report",
+      "identity": {
+        "repository": "oscomp/first-prize-osf2024-StarryOS-yyds",
+        "revision": "9dc90edc02e78ae79e647e1d1a4200c7cdf85afe",
+        "path": "doc/2024_OSCOMP_final.md"
+      }
+    },
+    {
+      "name": "Theseus OS",
+      "identity": {
+        "repository": "theseus-os/Theseus",
+        "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c"
+      }
+    },
+    {
+      "name": "Theseus OSDI 2020 paper",
+      "identity": {
+        "publication": "Theseus: an Experiment in Operating System Structure and State Management",
+        "venue": "OSDI 2020",
+        "url": "https://www.usenix.org/conference/osdi20/presentation/boos"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

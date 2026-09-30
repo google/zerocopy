@@ -1,0 +1,62 @@
+{
+  "observed_at": "2026-09-30",
+  "j_id": "J037",
+  "sources": {
+    "salsa": {
+      "repository": "salsa-rs/salsa",
+      "revision": "a7f8c558555f179ca02f6bdf7397d1317f91aa43",
+      "files": {
+        "README.md": "1e4afef11f4e66f16573457b220ec19d495fa742",
+        "book/src/reference/algorithm.md": "2b6d9e5357388e85302e81fa23ff281d62ae62de",
+        "book/src/tuning.md": "0353e2c3324806b346cd6b2d6db465b063c598c0",
+        "book/src/cycles.md": "436a716a074dac430ab979991c65cff5060c9f3f",
+        "book/src/plumbing/database_and_runtime.md": "eb70cab9b21f436133c72134901024c3dc040fb0"
+      },
+      "selected_history": [
+        "38a44eef879be5eca1ce94c09637b23b3a97a529",
+        "095d8b2b8115c3cf8bf31914dd9ea74648bb7cf9",
+        "201704c5d185187905d0d8c0a963acd5593b19fe",
+        "0946cbd6478cf2bddfc9ac65b3c254c1f1b1bf95",
+        "c3d88eb8671d09e1a175aa4d4b391a6242d2d123",
+        "c10e4ade12f6196bbda2a3bc76191eb4e176f25a",
+        "ff0a022a6a2e7e7929a6169f3815a1a67433613e"
+      ]
+    },
+    "rustc_dev_guide": {
+      "repository": "rust-lang/rustc-dev-guide",
+      "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85",
+      "files": {
+        "src/queries/incremental-compilation-in-detail.md": "9893edd54b950155da586843baa3319da15dcc4e",
+        "src/variance.md": "de259d38c3ec08e53dbe99127a8ee41cfa0f37c0"
+      }
+    },
+    "rust_history": [
+      {
+        "date": "2016-09-08",
+        "url": "https://blog.rust-lang.org/2016/09/08/incremental/"
+      },
+      {
+        "date": "2021-05-10",
+        "url": "https://blog.rust-lang.org/2021/05/10/Rust-1.52.1/"
+      }
+    ],
+    "anneal": {
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "files": {
+        "anneal/PRINCIPLES.md": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "anneal/DESIGN.md": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    },
+    "aeneas_reference": {
+      "repository": "google/zerocopy",
+      "path": "reports/aeneas-incremental-translation-feasibility-nightly-2026-06-03/REPORT.md",
+      "blob": "966b5953644d8c9a766ae900e8b137616c501be8"
+    }
+  },
+  "limitations": [
+    "No benchmark or compiler execution was performed.",
+    "rustc behavior is reconstructed mainly from first-party developer documentation rather than a full current source audit.",
+    "Aeneas applicability reuses an existing source-derived reference report rather than independently re-running its investigation."
+  ]
+}

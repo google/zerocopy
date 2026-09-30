@@ -1,5 +1,52 @@
 {
   "reports": {
+    "adapton-names-identity-freshness-2014-2018": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594324",
+            "venue": "PLDI 2014"
+          },
+          "name": "Adapton: Composable, Demand-Driven Incremental Computation"
+        },
+        {
+          "identity": {
+            "arxiv": "1503.07792v6",
+            "doi": "10.1145/2814270.2814305",
+            "venue": "OOPSLA 2015"
+          },
+          "name": "Incremental Computation with Names"
+        },
+        {
+          "identity": {
+            "arxiv": "1610.00097"
+          },
+          "name": "Refinement Types for Precisely Named Cache Locations"
+        },
+        {
+          "identity": {
+            "arxiv": "1808.07826v1"
+          },
+          "name": "Fungi: Typed Incremental Computation with Names"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract and current Aeneas incremental-translation evidence"
+        }
+      ],
+      "topics": [
+        "incremental-computation/adapton",
+        "incremental-computation/names",
+        "incremental-computation/dependency-tracing",
+        "incremental-computation/freshness",
+        "anneal/identity",
+        "anneal/incremental"
+      ]
+    },
     "adjacent-version-non-generalization-examples-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -10465,6 +10512,105 @@
         "cakeml"
       ]
     },
+    "buck-to-buck2-one-graph-rewrite-2013-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "benefits-doc-blob": "296661b09239357fa870a55192dff6c5d54c25ca",
+            "dice-index-blob": "46897b9bd66a7bd055bbad8db7f363558347d4f0",
+            "modern-dice-doc-blob": "04a9950e2b077cdfdf91ca3e6e6ede68df508580",
+            "repository": "facebook/buck2",
+            "revision": "738e69a6c5f1efb6a015645228e7a19ee9b1d9c0",
+            "why-doc-blob": "6799f38df279cc03f1806b1d0d447fb19570bcfa"
+          },
+          "name": "Buck2 architecture and DICE"
+        },
+        {
+          "identity": {
+            "readme-blob": "59e9fda6c885670ebb3e0ce1b799ea8f9e97cf9c",
+            "repository": "facebook/buck",
+            "revision": "9c7c421e49f4d92d67321f18c6d1cd90974c77c4"
+          },
+          "name": "Buck1 archived implementation"
+        },
+        {
+          "identity": {
+            "published": "2023-04-06",
+            "publisher": "Meta Engineering",
+            "url": "https://engineering.fb.com/2023/04/06/open-source/buck2-open-source-large-scale-build-system/"
+          },
+          "name": "Buck2 public launch account"
+        },
+        {
+          "identity": {
+            "authors": "Andrey Mokhov; Neil Mitchell; Simon Peyton Jones",
+            "doi": "10.1145/3236774",
+            "publication": "PACMPL 2 (ICFP), Article 79",
+            "year": "2018"
+          },
+          "name": "Build Systems \u00e0 la Carte"
+        },
+        {
+          "identity": {
+            "design-blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+            "principles-blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design constraints"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/incrementality",
+        "anneal/orchestration",
+        "build-systems/buck2",
+        "build-systems/incremental-computation",
+        "systems/architectural-rewrites"
+      ]
+    },
+    "build-systems-a-la-carte-anneal-orchestration-2018-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3236774",
+            "publication": "Proceedings of the ACM on Programming Languages 2, ICFP, Article 79 (2018)"
+          },
+          "name": "Build Systems \u00e0 la Carte (ICFP 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796820000088",
+            "publication": "Journal of Functional Programming 30:e11 (2020)"
+          },
+          "name": "Build systems \u00e0 la carte: Theory and practice (JFP 2020)"
+        },
+        {
+          "identity": {
+            "repository": "snowleopard/build",
+            "revision": "43b18b9a362d7d27b64679ea4122e4b8c5dfedd9"
+          },
+          "name": "Build Systems \u00e0 la Carte executable framework and maintained paper source"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/orchestration",
+        "build-systems",
+        "build-systems/incremental",
+        "build-systems/scheduling",
+        "build-systems/traces"
+      ]
+    },
     "cargo-compilation-subject-identity-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
@@ -10575,6 +10721,55 @@
         "rust/charon",
         "anneal/v1",
         "verification/coverage"
+      ]
+    },
+    "cargo-rustc-cache-reuse-extraction-boundaries-2016-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "f3865b2a4d1acc5276f6b3c67d0e057f4dab3928"
+          },
+          "name": "Cargo"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "7d2cd0fbc092625ea371da704f15f80216d2220e"
+          },
+          "name": "Rust compiler"
+        },
+        {
+          "identity": {
+            "repository": "mozilla/sccache",
+            "revision": "54b6f72a5d3583e8ccb8b83d44e5d41400d8039c"
+          },
+          "name": "sccache"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority"
+        }
+      ],
+      "topics": [
+        "anneal/cache-reuse",
+        "anneal/extraction",
+        "anneal/freshness",
+        "cargo/fingerprints",
+        "rustc/incremental",
+        "sccache/compiler-cache"
       ]
     },
     "cargo-unit-graphs-rustc-invocations-2026-05-31": {
@@ -11364,6 +11559,139 @@
         "anneal/generation-publication"
       ]
     },
+    "clangd-authority-freshness-2017-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "ded546ad82656ce6605ee2f2aa60c78dec70d95f"
+          },
+          "name": "clangd current implementation"
+        },
+        {
+          "identity": {
+            "repository": "llvm/clangd-www",
+            "revision": "ae5866d4552e30a173b8e9c3cec872a82e4c0120"
+          },
+          "name": "clangd current design documentation"
+        },
+        {
+          "identity": {
+            "differential": "D39843",
+            "repository": "llvm/llvm-project",
+            "revision": "e9eb7f0cb815641827fa3d031c38190c10900c14"
+          },
+          "name": "clangd preamble storage tradeoff"
+        },
+        {
+          "identity": {
+            "differential": "D53651",
+            "repository": "llvm/llvm-project",
+            "revision": "6675be87477395658f6d3859b028ab8dee81ba19"
+          },
+          "name": "clangd background indexing thread-pool design"
+        },
+        {
+          "identity": {
+            "differential": "D54746",
+            "repository": "llvm/llvm-project",
+            "revision": "a2b048bc4bdf9320249d0ff512fab6f16c2e6e47"
+          },
+          "name": "clangd TUScheduler cancellation policy"
+        },
+        {
+          "identity": {
+            "differential": "D75602",
+            "repository": "llvm/llvm-project",
+            "revision": "c627b120eb8b7add3f9cf893721335c367d9f037"
+          },
+          "name": "clangd update-invalidated request policy"
+        },
+        {
+          "identity": {
+            "differential": "D148088",
+            "repository": "llvm/llvm-project",
+            "revision": "a8ad413f0d18c07a4adaa0d547e0096874d809c5"
+          },
+          "name": "clangd asynchronous preamble indexing change and design discussion"
+        }
+      ],
+      "topics": [
+        "clangd/compilation-database",
+        "clangd/preambles",
+        "clangd/indexing",
+        "clangd/scheduling",
+        "clangd/diagnostics",
+        "anneal/interactive-authority",
+        "anneal/freshness"
+      ]
+    },
+    "compatibility-constrained-rewrites-zcore-rel4-theseus-anneal": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal current redesign"
+        },
+        {
+          "identity": {
+            "path": "anneal/v1/",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal historical V1 prototype"
+        },
+        {
+          "identity": {
+            "repository": "rcore-os/zCore",
+            "revision": "8de51f4ee053bcaaf435897febf648bcb4d45479"
+          },
+          "name": "zCore"
+        },
+        {
+          "identity": {
+            "repository": "rel4team/rel4_kernel",
+            "revision": "da74b45b69c89d9e6f43161006f3b586fda41107"
+          },
+          "name": "reL4 kernel incremental-rewrite snapshot"
+        },
+        {
+          "identity": {
+            "path": "doc/2024_OSCOMP_final.md",
+            "repository": "oscomp/first-prize-osf2024-StarryOS-yyds",
+            "revision": "9dc90edc02e78ae79e647e1d1a4200c7cdf85afe"
+          },
+          "name": "reL4 2024 project report"
+        },
+        {
+          "identity": {
+            "repository": "theseus-os/Theseus",
+            "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c"
+          },
+          "name": "Theseus OS"
+        },
+        {
+          "identity": {
+            "publication": "Theseus: an Experiment in Operating System Structure and State Management",
+            "url": "https://www.usenix.org/conference/osdi20/presentation/boos",
+            "venue": "OSDI 2020"
+          },
+          "name": "Theseus OSDI 2020 paper"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/architecture",
+        "anneal/compatibility",
+        "rust/rewrites",
+        "operating-systems/rust"
+      ]
+    },
     "concurrency-memory-model-verification-approaches-2013-2026": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -11416,6 +11744,51 @@
         "verification/model-checking",
         "rust/concurrency",
         "rust/atomics"
+      ]
+    },
+    "coq-rocq-stm-serapi-fleche-architecture-2013-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "1506.05605",
+            "doi": "10.1007/978-3-319-22102-1_4",
+            "publication": "Barras, Tankink, Tassi, Asynchronous Processing of Coq Documents: From the Kernel up to the User Interface",
+            "year": "2015"
+          },
+          "name": "Coq State Transaction Machine and asynchronous document processing"
+        },
+        {
+          "identity": {
+            "repository": "rocq-archive/coq-serapi",
+            "revision": "6196f9f572ef9dd3749b885cabce7a57406cedb9"
+          },
+          "name": "SerAPI document-control and serialization interface"
+        },
+        {
+          "identity": {
+            "repository": "rocq-community/rocq-lsp",
+            "revision": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"
+          },
+          "name": "Rocq LSP and Fl\u00e8che document engine"
+        },
+        {
+          "identity": {
+            "paths": "anneal/PRINCIPLES.md;anneal/DESIGN.md",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract used for applicability analysis"
+        }
+      ],
+      "topics": [
+        "proof-assistants/document-processing",
+        "rocq/stm",
+        "rocq/serapi",
+        "rocq/fleche",
+        "rocq/lsp",
+        "interactive-verification/incrementality",
+        "anneal/architecture"
       ]
     },
     "cross-tool-diagnostic-path-normalization-2026-09-27": {
@@ -11510,6 +11883,76 @@
         "lean/lsp"
       ]
     },
+    "dafny-boogie-viper-obligation-boundaries-2005-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "path": "Source/DafnyCore/Verifier/BoogieGenerator.cs",
+            "repository": "dafny-lang/dafny",
+            "revision": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb"
+          },
+          "name": "Dafny verifier and Dafny-to-Boogie translation"
+        },
+        {
+          "identity": {
+            "path": "README.md",
+            "repository": "boogie-org/boogie",
+            "revision": "fcecf73a49d11ad3ab16729abd03169e5ecfd938"
+          },
+          "name": "Boogie intermediate verification language and verifier"
+        },
+        {
+          "identity": {
+            "path": "src/main/scala/viper/silver/verifier/VerificationResult.scala",
+            "repository": "viperproject/silver",
+            "revision": "da1c8993b66feb39976e3609e2580a4661137a0f"
+          },
+          "name": "Viper Silver error and result interface"
+        },
+        {
+          "identity": {
+            "path": "README.md",
+            "repository": "viperproject/silicon",
+            "revision": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed"
+          },
+          "name": "Viper Silicon symbolic-execution backend"
+        },
+        {
+          "identity": {
+            "path": "README.md",
+            "repository": "viperproject/carbon",
+            "revision": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2"
+          },
+          "name": "Viper Carbon verification-condition backend"
+        },
+        {
+          "identity": {
+            "path": "README.md",
+            "repository": "viperproject/viperserver",
+            "revision": "4cc5bbbe18d4a83e4b398da3904ba9696256611b"
+          },
+          "name": "ViperServer verification service boundary"
+        },
+        {
+          "identity": {
+            "path": "anneal/DESIGN.md",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/obligations",
+        "anneal/verification",
+        "tooling/ide-feedback",
+        "verification/boogie",
+        "verification/intermediate-language",
+        "verification/viper"
+      ]
+    },
     "diagnostic-format-controls-nightly-2026-05-31-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -11554,6 +11997,54 @@
         "lean/json",
         "rustc/diagnostics",
         "rustc/json"
+      ]
+    },
+    "early-cutoff-equality-relations-2010-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85"
+          },
+          "name": "rustc incremental-compilation design documentation"
+        },
+        {
+          "identity": {
+            "repository": "janestreet/incremental",
+            "revision": "98b5750ec3c006641351bfd858a89136a5dbc52c"
+          },
+          "name": "Jane Street Incremental"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "234bab081682018da7d04b22eee4b80f70381d07"
+          },
+          "name": "GHC recompilation checker"
+        },
+        {
+          "identity": {
+            "package": "anneal-3731-charon-relocation-comment-provenance-2026-09-29",
+            "reference_commit": "a5ecd5bde3d2b33457b5a13b4b435d79515f4012",
+            "repository": "google/zerocopy"
+          },
+          "name": "Anneal Charon/Aeneas relocation and comment provenance probe"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract"
+        }
+      ],
+      "topics": [
+        "anneal/incrementality",
+        "anneal/provenance",
+        "build/invalidation",
+        "incremental-computation/early-cutoff",
+        "verification/reuse"
       ]
     },
     "end-to-end-source-correspondence-nightly-2026-06-03-v4-30-0-rc2": {
@@ -11809,6 +12300,186 @@
         "cakeml"
       ]
     },
+    "fstar-extensible-proof-automation-trust-boundaries-2019-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+            "version_txt": "2026.09.27"
+          },
+          "name": "F* and Meta-F* current tactic/SMT/native-plugin architecture"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-17184-1_2",
+            "first_online": "2019-04-06",
+            "publication": "ESOP 2019"
+          },
+          "name": "Meta-F*: Proof Automation with SMT, Tactics, and Metaprograms"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean tactic and trust behavior selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "smtcoq/smtcoq",
+            "revision": "3187cf12412a244859d7396e8088e6f9de0568d1"
+          },
+          "name": "SMTCoq proof-witness checking"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal principles and design contract"
+        }
+      ],
+      "topics": [
+        "anneal/extensibility",
+        "anneal/trust-model",
+        "proof-automation/tactics",
+        "proof-automation/certificates",
+        "verification/smt",
+        "verification/trusted-computing-base",
+        "research/issue-3732-j023"
+      ]
+    },
+    "functional-core-effect-boundaries-1988-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "event": "SCNA 2012",
+            "functional-core-published": "2012-07-12",
+            "url": "https://www.destroyallsoftware.com/talks/boundaries"
+          },
+          "name": "Gary Bernhardt, Boundaries and Functional Core, Imperative Shell"
+        },
+        {
+          "identity": {
+            "date": "2005-09-04",
+            "report": "HaT Technical Report 2005.02",
+            "url": "https://alistair.cockburn.us/hexagonal-architecture"
+          },
+          "name": "Alistair Cockburn, Hexagonal Architecture"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/73560.73564",
+            "publication": "POPL 1988"
+          },
+          "name": "Lucassen and Gifford, Polymorphic effect systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-00590-9_7",
+            "publication": "ESOP 2009"
+          },
+          "name": "Plotkin and Pretnar, Handlers of Algebraic Effects"
+        },
+        {
+          "identity": {
+            "repository": "python-hyper/h11",
+            "revision": "62c5068c971579d61fa1b55373390e12f25fd856"
+          },
+          "name": "python-hyper h11"
+        },
+        {
+          "identity": {
+            "path": "anneal/DESIGN.md",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/effects",
+        "anneal/subprocesses",
+        "programming-languages/effect-systems",
+        "software-architecture/functional-core",
+        "software-architecture/ports-and-adapters",
+        "software-architecture/sans-io"
+      ]
+    },
+    "functional-core-effects-hidden-state-2005-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "author": "Alistair Cockburn",
+            "date": "2005-09-04",
+            "report": "HaT Technical Report 2005.02",
+            "url": "https://alistair.cockburn.us/hexagonal-architecture/",
+            "version": "0.9"
+          },
+          "name": "Hexagonal Architecture / Ports and Adapters original article"
+        },
+        {
+          "identity": {
+            "author": "Gary Bernhardt",
+            "event": "SCNA 2012",
+            "url": "https://www.destroyallsoftware.com/talks/boundaries",
+            "year": "2012"
+          },
+          "name": "Boundaries"
+        },
+        {
+          "identity": {
+            "repository": "brettcannon/sans-io",
+            "revision": "b4679927d555cb27d9960ae203c0ecd0d8209771"
+          },
+          "name": "Network Protocols, sans I/O"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-00590-9_7",
+            "publication": "ESOP 2009",
+            "year": "2009"
+          },
+          "name": "Handlers of Algebraic Effects"
+        },
+        {
+          "identity": {
+            "doi": "10.4204/EPTCS.153.8",
+            "publication": "EPTCS 153",
+            "year": "2014"
+          },
+          "name": "Koka: Programming with Row Polymorphic Effect Types"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/remote-apis",
+            "revision": "adbf4a27c86fbea4a37637a6cbcacef372406fe7"
+          },
+          "name": "Remote Execution API"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal principles and design contract"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "architecture/effects",
+        "architecture/functional-core",
+        "architecture/ports-adapters",
+        "architecture/sans-io",
+        "build/hermeticity"
+      ]
+    },
     "generated-rust-visibility-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
@@ -11858,6 +12529,170 @@
         "anneal/coverage"
       ]
     },
+    "gopls-snapshots-views-workspace-evolution-2018-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "golang/tools",
+            "revision": "98444708d405557b5ddd6179be1a6abc14150d5f"
+          },
+          "name": "gopls current workspace, view, snapshot, and invalidation architecture"
+        },
+        {
+          "identity": {
+            "release": "gopls/v0.11.0",
+            "repository": "golang/tools",
+            "revision": "611cff71b9afeb81ae6eb16c5ce9376c051b1828"
+          },
+          "name": "gopls pre-scalability architecture"
+        },
+        {
+          "identity": {
+            "release": "gopls/v0.12.0",
+            "repository": "golang/tools",
+            "revision": "236850463aea0b1949167349b44c37f97aefd9c5"
+          },
+          "name": "gopls separate-compilation transition"
+        },
+        {
+          "identity": {
+            "release": "gopls/v0.15.0",
+            "repository": "golang/tools",
+            "revision": "50e6ff28fb47219a23c4d0ed12da704b94087f76"
+          },
+          "name": "gopls zero-config workspace release"
+        },
+        {
+          "identity": {
+            "path": "design/37720-gopls-workspaces.md",
+            "repository": "golang/proposal",
+            "revision": "0be13090fdb0cbae0d71641bb676d924bc1c94de"
+          },
+          "name": "Multi-project gopls workspace proposal"
+        },
+        {
+          "identity": {
+            "path": "anneal/DESIGN.md",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal current design contract"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "ebfeac694e945da0b52e09c6a185d857f982f4f3"
+          },
+          "name": "Anneal reference evidence at analysis time"
+        }
+      ],
+      "topics": [
+        "gopls",
+        "gopls/workspaces",
+        "gopls/views",
+        "gopls/snapshots",
+        "gopls/invalidation",
+        "gopls/zero-config",
+        "language-servers",
+        "anneal/compilation-subjects",
+        "anneal/interactive-architecture"
+      ]
+    },
+    "haskell-ide-lineage-environment-graph-boundaries-2017-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "haskell/haskell-ide-engine",
+            "revision": "d84b84322ccac81bf4963983d55cc4e6e98ad418"
+          },
+          "name": "Haskell IDE Engine archive"
+        },
+        {
+          "identity": {
+            "repository": "haskell/ghcide",
+            "revision": "3ef4ef99c4b9cde867d29180c32586947df64b9e"
+          },
+          "name": "ghcide archive"
+        },
+        {
+          "identity": {
+            "repository": "haskell/haskell-language-server",
+            "revision": "187fcd4a685c220caabb72999565604b3287aff2"
+          },
+          "name": "Haskell Language Server"
+        },
+        {
+          "identity": {
+            "repository": "haskell/hie-bios",
+            "revision": "32dd07707423ffabb34e44af68fcbd027b60ded2"
+          },
+          "name": "hie-bios"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/project-environment",
+        "haskell/ghc-api",
+        "haskell/hie-bios",
+        "haskell/hls",
+        "ide/incremental-analysis"
+      ]
+    },
+    "information-hiding-versus-pipeline-decomposition-1972-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/361598.361623",
+            "publication": "Communications of the ACM 15(12):1053-1058",
+            "year": "1972"
+          },
+          "name": "Parnas information-hiding modularity"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.1979.234169",
+            "publication": "IEEE Transactions on Software Engineering SE-5(2):128-138",
+            "year": "1979"
+          },
+          "name": "Parnas extension and contraction design"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.1985.232209",
+            "publication": "IEEE Transactions on Software Engineering SE-11(3):259-266",
+            "year": "1985"
+          },
+          "name": "Parnas-Clements-Weiss module guides"
+        },
+        {
+          "identity": {
+            "report": "CMU/SEI-94-TR-021",
+            "year": "1994"
+          },
+          "name": "Garlan-Shaw software architecture styles"
+        },
+        {
+          "identity": {
+            "path": "anneal",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal current design and V2 source"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/modularity",
+        "anneal/pipeline",
+        "software-architecture/information-hiding",
+        "software-architecture/modularity",
+        "software-architecture/pipes-and-filters"
+      ]
+    },
     "iris-concepts-for-rust-aeneas-separation-logic-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -11902,6 +12737,168 @@
         "iris/step-indexing",
         "rustbelt",
         "aeneas/separation-logic"
+      ]
+    },
+    "isabelle-pide-document-processing-2008-2019": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "arXiv:1207.3441v1",
+            "doi": "10.1007/978-3-642-31374-5_38"
+          },
+          "name": "Isabelle/jEdit \u2014 a Prover IDE within the PIDE framework"
+        },
+        {
+          "identity": {
+            "artifact": "arXiv:1307.1944v1",
+            "doi": "10.4204/EPTCS.118.4"
+          },
+          "name": "READ-EVAL-PRINT in Parallel and Asynchronous Proof-checking"
+        },
+        {
+          "identity": {
+            "artifact": "arXiv:1304.6626v1"
+          },
+          "name": "PIDE as front-end technology for Coq"
+        },
+        {
+          "identity": {
+            "artifact": "arXiv:1905.01735v1"
+          },
+          "name": "Interaction with Formal Mathematical Documents in Isabelle/PIDE"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00165-019-00492-1"
+          },
+          "name": "From LCF to Isabelle/HOL"
+        },
+        {
+          "identity": {
+            "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract"
+        }
+      ],
+      "topics": [
+        "isabelle",
+        "isabelle/pide",
+        "proof-assistant/interaction",
+        "incremental/document-processing",
+        "anneal/architecture"
+      ]
+    },
+    "isabelle-pide-document-processing-evolution-2009-2019": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "1905.01735v1",
+            "author": "Makarius Wenzel",
+            "doi": "10.48550/arXiv.1905.01735",
+            "publication": "Interaction with Formal Mathematical Documents in Isabelle/PIDE"
+          },
+          "name": "Isabelle/PIDE retrospective document model"
+        },
+        {
+          "identity": {
+            "arxiv": "1207.3441v1",
+            "author": "Makarius Wenzel",
+            "doi": "10.48550/arXiv.1207.3441",
+            "publication": "Isabelle/jEdit --- a Prover IDE within the PIDE framework"
+          },
+          "name": "Isabelle/jEdit PIDE architecture"
+        },
+        {
+          "identity": {
+            "author": "Makarius Wenzel",
+            "doi": "10.1016/j.entcs.2012.06.009",
+            "publication": "Asynchronous Proof Processing with Isabelle/Scala and Isabelle/jEdit",
+            "published": "2012"
+          },
+          "name": "Asynchronous Isabelle document-processing architecture"
+        },
+        {
+          "identity": {
+            "arxiv": "1307.1944v1",
+            "author": "Makarius Wenzel",
+            "doi": "10.4204/EPTCS.118.4",
+            "publication": "READ-EVAL-PRINT in Parallel and Asynchronous Proof-checking"
+          },
+          "name": "Reformed asynchronous READ-EVAL-PRINT architecture"
+        },
+        {
+          "identity": {
+            "arxiv": "1304.6626v1",
+            "author": "Makarius Wenzel",
+            "doi": "10.48550/arXiv.1304.6626",
+            "publication": "PIDE as front-end technology for Coq"
+          },
+          "name": "PIDE-to-Coq portability experiment"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority used for applicability analysis"
+        }
+      ],
+      "topics": [
+        "isabelle/pide",
+        "proof-assistant/document-processing",
+        "proof-assistant/asynchronous-interaction",
+        "proof-assistant/parallel-checking",
+        "proof-assistant/semantic-markup",
+        "anneal/orchestration"
+      ]
+    },
+    "kotlin-swift-compiler-backed-ide-boundaries-2021-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "JetBrains/kotlin",
+            "revision": "bce49f3701fb8dc461fb98240fdc7c3c81c592f2"
+          },
+          "name": "Kotlin compiler FIR and Analysis API"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/sourcekit-lsp",
+            "revision": "045c18e9e9ea35b896857b6cb982aa2373fb5816"
+          },
+          "name": "Swift SourceKit-LSP"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d"
+          },
+          "name": "Swift compiler SourceKit"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal V2 design contract"
+        }
+      ],
+      "topics": [
+        "kotlin",
+        "kotlin/fir",
+        "kotlin/analysis-api",
+        "swift/sourcekit",
+        "swift/sourcekit-lsp",
+        "ide/compiler-services",
+        "incremental-analysis",
+        "build-configuration",
+        "generated-sources",
+        "anneal/interactive"
       ]
     },
     "lake-artifact-cache-architecture-v4-30-0-rc2": {
@@ -13994,6 +14991,48 @@
         "lean/server"
       ]
     },
+    "make-ninja-narrow-build-tool-boundaries-1979-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1002/spe.4380090402",
+            "publication": "Software: Practice and Experience 9(4):255-265",
+            "year": "1979"
+          },
+          "name": "Make \u2014 a program for maintaining computer programs"
+        },
+        {
+          "identity": {
+            "release": "4.4.1",
+            "release-date": "2023-02-26",
+            "release-tarball-md5": "c8469a3713cbbe04d955d4ae4be23eeb"
+          },
+          "name": "GNU Make 4.4.1 manual and release"
+        },
+        {
+          "identity": {
+            "repository": "ninja-build/ninja",
+            "revision": "4e4df1e567eb3c1475a51af261cba2bfff60b4be"
+          },
+          "name": "Ninja build system"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/orchestration",
+        "build-systems/make",
+        "build-systems/ninja",
+        "research/build-history"
+      ]
+    },
     "mathlib-cache-artifact-format-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -14143,6 +15182,238 @@
         "proof-assistants"
       ]
     },
+    "mvcc-snapshot-isolation-proof-work-consistency-1981-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/319566.319567",
+            "publication": "Kung and Robinson, On Optimistic Methods for Concurrency Control, ACM TODS 6(2), 1981"
+          },
+          "name": "Optimistic concurrency control"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/78969.78972",
+            "publication": "Herlihy and Wing, Linearizability: A Correctness Condition for Concurrent Objects, ACM TOPLAS 12(3), 1990"
+          },
+          "name": "Linearizability"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/223784.223785",
+            "publication": "Berenson et al., A Critique of ANSI SQL Isolation Levels, SIGMOD 1995",
+            "report": "Microsoft Research MSR-TR-95-51"
+          },
+          "name": "Snapshot isolation taxonomy"
+        },
+        {
+          "identity": {
+            "publication": "Ports and Grittner, Serializable Snapshot Isolation in PostgreSQL, PVLDB 5(12), 2012"
+          },
+          "name": "PostgreSQL Serializable Snapshot Isolation"
+        },
+        {
+          "identity": {
+            "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority"
+        },
+        {
+          "identity": {
+            "packages": "anneal-3731-real-generation-publication-v4-30-0-rc2; anneal-interactive-model-probes-2026-09-29; lsp-proof-assistant-architecture-2026-09-27",
+            "reference_revision": "30b9d5749aed6049d949f4f582dd64c70088d07a",
+            "repository": "google/zerocopy"
+          },
+          "name": "Anneal generation and interactive-state execution evidence"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-consistency",
+        "concurrency/linearizability",
+        "concurrency/mvcc",
+        "concurrency/optimistic-validation",
+        "concurrency/serializability",
+        "concurrency/snapshot-isolation",
+        "proof-workspaces/snapshots"
+      ]
+    },
+    "netstack3-architecture-evolution-2019-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "fuchsia/fuchsia",
+            "revision": "c480400b0e6cb9a9b36384935639fb3e6566bd68"
+          },
+          "name": "Current Fuchsia Netstack3 architecture and design documentation"
+        },
+        {
+          "identity": {
+            "repository": "fuchsia/fuchsia",
+            "revision": "4ccfe9e3c10662b8dea3ccbf020553ebfa179ff3"
+          },
+          "name": "Netstack3 UDP socket identity consolidation"
+        },
+        {
+          "identity": {
+            "repository": "fuchsia/fuchsia",
+            "revision": "40ce8a08f2ffa1e9babc8e5b6aaa14cf486c0c6d"
+          },
+          "name": "Netstack3 TCP handshake-status ownership migration"
+        },
+        {
+          "identity": {
+            "repository": "fuchsia/fuchsia",
+            "revision": "1e9fb101ed58968f5b4cf0b67a439f8cb0479b9d"
+          },
+          "name": "Netstack3 multicast-forwarding state design"
+        },
+        {
+          "identity": {
+            "repository": "fuchsia/fuchsia",
+            "revision": "09c560576ca357ffc0853c6251048af2a61b1543"
+          },
+          "name": "Netstack3 2026 resource-reference and socket-destruction implementation"
+        }
+      ],
+      "topics": [
+        "architecture/history",
+        "anneal/architecture",
+        "fuchsia",
+        "netstack3",
+        "netstack3/bindings",
+        "netstack3/concurrency",
+        "netstack3/lifecycle",
+        "netstack3/static-typing"
+      ]
+    },
+    "nix-guix-functional-deployment-roots-2007-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "derivation-outputs": "https://nix.dev/manual/nix/2.35/store/derivation/outputs/index.html",
+            "garbage-collection": "https://nix.dev/manual/nix/2.35/command-ref/nix-store/gc.html",
+            "manual-version": "2.35.2",
+            "profiles": "https://nix.dev/manual/nix/2.35/command-ref/files/profiles.html"
+          },
+          "name": "Nix 2.35.2 deployment and store model"
+        },
+        {
+          "identity": {
+            "authors": "Eelco Dolstra; Armijn Hemel",
+            "paper": "Purely Functional System Configuration Management",
+            "url": "https://www.usenix.org/legacy/event/hotos07/tech/full_papers/dolstra/dolstra_html/",
+            "venue": "HotOS XI",
+            "year": "2007"
+          },
+          "name": "NixOS functional system configuration"
+        },
+        {
+          "identity": {
+            "arxiv": "1305.4584v1",
+            "author": "Ludovic Court\u00e8s",
+            "paper": "Functional Package Management with Guix",
+            "submitted": "2013-05-20",
+            "venue": "European Lisp Symposium 2013"
+          },
+          "name": "GNU Guix functional package management"
+        },
+        {
+          "identity": {
+            "announcement": "https://lists.gnu.org/archive/html/info-gnu/2026-01/msg00004.html",
+            "release": "1.5.0",
+            "released": "2026-01-23"
+          },
+          "name": "GNU Guix stable release"
+        },
+        {
+          "identity": {
+            "design-blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+            "principles-blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design constraints"
+        },
+        {
+          "identity": {
+            "archive-reproducibility-report-blob": "3bf9a589b81b0fdba5648b78a0b7a3dba842ecf9",
+            "catalog-blob": "5ecf20dfa8bbedeb898d1b9c251cbf6e2216e977",
+            "fixed-output-report-blob": "5f5142381dca9d2c38dbcde41c6d0f77d15b1f7a",
+            "reference-revision": "30b9d5749aed6049d949f4f582dd64c70088d07a",
+            "relocation-report-blob": "262a141a145a2532745aaad71289896b5b3af1b2",
+            "repository": "google/zerocopy"
+          },
+          "name": "Anneal current Nix and archive reference evidence"
+        }
+      ],
+      "topics": [
+        "anneal/environment-preparation",
+        "anneal/lifetime",
+        "anneal/publication",
+        "anneal/trust-boundaries",
+        "guix/deployment",
+        "nix/deployment",
+        "nix/garbage-collection"
+      ]
+    },
+    "nix-guix-immutable-closures-mutable-roots-2004-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "NixOS/nix",
+            "revision": "9bc9ab32a57504f068847af4f8013417476cb1ec"
+          },
+          "name": "Nix functional deployment architecture and current store/profile semantics"
+        },
+        {
+          "identity": {
+            "repository": "NixOS/nixpkgs",
+            "revision": "6cb205c37b7c0c39b643163d1b7721b5f9bc0913"
+          },
+          "name": "NixOS system switching and activation semantics"
+        },
+        {
+          "identity": {
+            "arxiv": "1305.4584",
+            "manual": "GNU Guix Reference Manual devel, observed 2026-09-30",
+            "paper": "Functional Package Management with Guix"
+          },
+          "name": "GNU Guix functional package management and current operational model"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal current design authority"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "30b9d5749aed6049d949f4f582dd64c70088d07a"
+          },
+          "name": "Anneal current reference corpus"
+        }
+      ],
+      "topics": [
+        "anneal/environment-preparation",
+        "anneal/generation-lifetime",
+        "anneal/publication",
+        "anneal/trust-boundaries",
+        "deployment/functional",
+        "guix/profiles",
+        "nix/derivations",
+        "nix/garbage-collection",
+        "nix/profiles"
+      ]
+    },
     "operational-semantics-versus-functional-translation-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -14178,6 +15449,187 @@
         "verification/simulation",
         "aeneas",
         "compcert"
+      ]
+    },
+    "optimistic-edits-semantic-transactions-1981-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/319566.319567",
+            "publication": "ACM TODS 6(2), 1981"
+          },
+          "name": "Kung-Robinson optimistic concurrency control"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/65979.65980",
+            "publication": "ACM TOPLAS 11(3), 1989"
+          },
+          "name": "Horwitz-Prins-Reps semantics-based program integration"
+        },
+        {
+          "identity": {
+            "published": "2022-06",
+            "rfc": "9110"
+          },
+          "name": "HTTP conditional request semantics"
+        },
+        {
+          "identity": {
+            "path": "Documentation/git-update-ref.adoc",
+            "repository": "git/git",
+            "revision": "a018953688f1b10bddf91bff8747068f5f4746a4"
+          },
+          "name": "Git update-ref expected-old-value protocol"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/language-server-protocol",
+            "revision": "9a247101dc088557ae56adef8fecbdc86c9a93ca",
+            "specification": "3.18"
+          },
+          "name": "Language Server Protocol 3.18 versioned text edits"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design constraints used for applicability"
+        }
+      ],
+      "topics": [
+        "anneal/interactive",
+        "anneal/editing",
+        "anneal/concurrency",
+        "anneal/identity",
+        "concurrency/optimistic-control",
+        "software-merging/semantic-conflicts"
+      ]
+    },
+    "persistent-data-structures-snapshot-space-costs-1989-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1016/0022-0000(89)90034-2",
+            "publication": "Journal of Computer and System Sciences 38(1)",
+            "year": "1989"
+          },
+          "name": "Making Data Structures Persistent"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 persistent collections and maximal-sharing machinery"
+        },
+        {
+          "identity": {
+            "documentation": "Copy-on-Write; Snapshots, Clones and Bookmarks",
+            "observed": "2026-09-30",
+            "project": "OpenZFS"
+          },
+          "name": "OpenZFS copy-on-write snapshots"
+        },
+        {
+          "identity": {
+            "crate": "typed-arena",
+            "version": "2.0.2"
+          },
+          "name": "typed_arena arena lifetime semantics"
+        },
+        {
+          "identity": {
+            "package": "fix",
+            "release": "20250919"
+          },
+          "name": "fix weak hash-consing implementation"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority"
+        }
+      ],
+      "topics": [
+        "data-structures/persistence",
+        "data-structures/structural-sharing",
+        "data-structures/hash-consing",
+        "memory/arena-allocation",
+        "filesystem/copy-on-write",
+        "anneal/snapshots",
+        "anneal/generation-reclamation"
+      ]
+    },
+    "proof-maintenance-architectures-sel4-compcert-everest-2009-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+          },
+          "name": "seL4 L4.verified proof corpus"
+        },
+        {
+          "identity": {
+            "repository": "seL4/verification-manifest",
+            "revision": "f1f7a4289585e9610733ea041c1849e46af9701b"
+          },
+          "name": "seL4 verification manifest"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 semantic-preservation development"
+        },
+        {
+          "identity": {
+            "repository": "hacl-star/hacl-star",
+            "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f"
+          },
+          "name": "HACL* verified cryptographic library"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/karamel",
+            "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53"
+          },
+          "name": "KaRaMeL extraction compiler"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/everest",
+            "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac"
+          },
+          "name": "Project Everest integration repository"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3607844",
+            "publication": "PACMPL 7 (ICFP 2023)"
+          },
+          "name": "Modularity, Code Specialization, and Zero-Cost Abstractions for Program Verification"
+        }
+      ],
+      "topics": [
+        "verification/proof-maintenance",
+        "verification/proof-engineering",
+        "verification/abstraction-boundaries",
+        "verification/generated-code",
+        "verified-systems/sel4",
+        "verified-systems/compcert",
+        "verified-systems/project-everest",
+        "anneal/architecture"
       ]
     },
     "proof-producing-versus-validating-translations-1997-2022": {
@@ -14258,6 +15710,117 @@
         "aeneas/termination"
       ]
     },
+    "reconciliation-event-hints-repair-loops-2005-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "kubernetes-sigs/controller-runtime",
+            "revision": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"
+          },
+          "name": "Kubernetes controller-runtime"
+        },
+        {
+          "identity": {
+            "repository": "kubernetes/kubernetes",
+            "revision": "6d1d025050cb63ae5b8e53037aced205e6a28410"
+          },
+          "name": "Kubernetes client-go Reflector"
+        },
+        {
+          "identity": {
+            "repository": "kubernetes/enhancements",
+            "revision": "914ed6950576832c8579899f092909d27623492e"
+          },
+          "name": "Kubernetes WatchList KEP 3157"
+        },
+        {
+          "identity": {
+            "repository": "kubernetes/website",
+            "revision": "367a7a21bbef6b2d3c57d5fe113bee9bdb658889"
+          },
+          "name": "Kubernetes controller and API documentation"
+        },
+        {
+          "identity": {
+            "page": "inotify(7)",
+            "project": "Linux man-pages",
+            "release": "6.19",
+            "release_date": "2026-02-14"
+          },
+          "name": "Linux inotify manual"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal redesign"
+        },
+        {
+          "identity": {
+            "package": "anneal-3730-editor-save-format-watch-loop-2026-09-29",
+            "report_blob": "ca2c4e0f92eb9432002b240a986073417a177b48",
+            "repository": "google/zerocopy",
+            "revision": "2cec790eeec883e83ac66dcfa021c51ad65ad4f1"
+          },
+          "name": "Anneal direct save/format/watch-loop reference report"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/invalidation",
+        "anneal/watchers",
+        "kubernetes/controllers",
+        "kubernetes/watch-cache",
+        "linux/inotify",
+        "systems/reconciliation"
+      ]
+    },
+    "redleaf-mixed-language-isolation-boundaries-2020-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "publication": "RedLeaf: Isolation and Communication in a Safe Operating System, 14th USENIX Symposium on Operating Systems Design and Implementation (OSDI 20), pages 21-39",
+            "usenix-paper-id": "258949",
+            "year": "2020"
+          },
+          "name": "RedLeaf isolation architecture"
+        },
+        {
+          "identity": {
+            "branch-observed": "osdi20_camera_ready",
+            "commit-date": "2021-02-20",
+            "repository": "mars-research/redleaf",
+            "revision": "08753faee652495f55fc8cbb420e5123a183affc"
+          },
+          "name": "RedLeaf paper-associated source corroboration"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "551c722f40809618230001baccf219193e22fc5a"
+          },
+          "name": "Linux Rust abstraction and foreign-ownership boundary"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority"
+        }
+      ],
+      "topics": [
+        "systems/isolation",
+        "rust/language-based-isolation",
+        "rust/ffi",
+        "linux/rust",
+        "anneal/process-boundaries",
+        "anneal/trust-boundaries"
+      ]
+    },
     "reference-report-evidence-negative-controls-2026-09-28": {
       "observed_at": "2026-09-28",
       "subjects": [
@@ -14288,6 +15851,198 @@
         "reference/evidence",
         "research/harness",
         "reproducibility"
+      ]
+    },
+    "rls-rust-analyzer-architecture-evolution-2015-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rls",
+            "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+          },
+          "name": "Rust Language Server architecture at archived repository head"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "4e4c756e6df95167dda553251cc37a75a294f002",
+            "rfc": "1317"
+          },
+          "name": "RFC 1317 Rust Language Server accepted text"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+            "rfc": "2912"
+          },
+          "name": "RFC 2912 rust-analyzer transition accepted text"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+          },
+          "name": "rust-analyzer current architecture"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "0fb89036f8e46a80ee815ed99ff7d9dae9d172ae"
+          },
+          "name": "rustc developer guide current rust-analyzer sharing account"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "rust/ide-history",
+        "rust/rls",
+        "rust/rust-analyzer",
+        "rustc/library-ification",
+        "incremental-computation",
+        "language-server/semantic-divergence"
+      ]
+    },
+    "rls-rust-analyzer-architecture-transition-2015-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rls",
+            "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+          },
+          "name": "Rust Language Server (RLS) archived repository"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+          },
+          "name": "rust-analyzer current architecture"
+        },
+        {
+          "identity": {
+            "path": "text/1317-ide.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "82d48b36568286b93fc2ce55f89594024f421a3b"
+          },
+          "name": "RFC 1317: Rust Language Server"
+        },
+        {
+          "identity": {
+            "path": "text/2912-rust-analyzer.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "b6fffdf18f8b867648de0d95657cc13a64cae4e2"
+          },
+          "name": "RFC 2912: Transition to rust-analyzer"
+        }
+      ],
+      "topics": [
+        "rust/ide",
+        "rust/rls",
+        "rust/rust-analyzer",
+        "compiler/incremental-analysis",
+        "compiler/interactive-analysis",
+        "anneal/batch-live-separation"
+      ]
+    },
+    "rls-to-rust-analyzer-editor-engine-history-2015-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "architecture_blob": "a7bde5799d73cbaf7319dad2773fd58a89a978a8",
+            "repository": "rust-lang/rls",
+            "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+            "rfc": "1317"
+          },
+          "name": "Rust Language Server design and archived implementation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+            "rfc": "2912",
+            "rfc_blob": "9f5986eeacafbea1ad99c6cbc4c24d2eab278c99"
+          },
+          "name": "rust-analyzer adoption decision"
+        },
+        {
+          "identity": {
+            "architecture_blob": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c",
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+          },
+          "name": "Current rust-analyzer architecture"
+        },
+        {
+          "identity": {
+            "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+            "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority used for applicability analysis"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/interactive-architecture",
+        "research/compiler-architecture",
+        "rust/ide",
+        "rust/rls",
+        "rust/rust-analyzer"
+      ]
+    },
+    "roslyn-immutable-snapshots-workspace-boundaries-2012-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "dotnet/roslyn",
+            "revision": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b"
+          },
+          "name": "Roslyn current workspace, compilation, syntax, and remote-synchronization architecture"
+        },
+        {
+          "identity": {
+            "path": "Roslyn-Overview.md",
+            "repository": "dotnet/roslyn",
+            "revision": "4a74095f0e3598e514f3147479beee208c0ad7ed"
+          },
+          "name": "Roslyn overview as first imported into the public GitHub repository"
+        },
+        {
+          "identity": {
+            "repository": "dotnet/roslyn",
+            "revision": "c141605a972871644cc43f2caec597c88e9662db"
+          },
+          "name": "Roslyn initial out-of-process workspace integration commit"
+        },
+        {
+          "identity": {
+            "published": "2012-06-08",
+            "url": "https://ericlippert.com/2012/06/08/red-green-trees/"
+          },
+          "name": "Eric Lippert's Roslyn red/green-tree design account"
+        },
+        {
+          "identity": {
+            "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority used for transfer analysis"
+        }
+      ],
+      "topics": [
+        "roslyn",
+        "roslyn/workspaces",
+        "roslyn/immutability",
+        "roslyn/incrementality",
+        "roslyn/remote",
+        "anneal/architecture"
       ]
     },
     "rust-aggregate-layout-nightly-2026-05-31": {
@@ -15803,6 +17558,99 @@
         "rustc/hir"
       ]
     },
+    "salsa-rustc-query-granularity-2016-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "salsa-rs/salsa",
+            "revision": "a7f8c558555f179ca02f6bdf7397d1317f91aa43"
+          },
+          "name": "Salsa query framework"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85"
+          },
+          "name": "rustc developer guide query and incremental-compilation model"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority"
+        },
+        {
+          "identity": {
+            "blob": "966b5953644d8c9a766ae900e8b137616c501be8",
+            "path": "reports/aeneas-incremental-translation-feasibility-nightly-2026-06-03/REPORT.md",
+            "repository": "google/zerocopy"
+          },
+          "name": "Aeneas incremental-translation feasibility reference evidence"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/incrementality",
+        "compilers/query-systems",
+        "rust/rustc",
+        "rust/salsa"
+      ]
+    },
+    "self-adjusting-computation-from-scratch-consistency-2005-2013": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "institution": "Carnegie Mellon University",
+            "technical-report": "CMU-CS-05-129",
+            "year": "2005"
+          },
+          "name": "Self-Adjusting Computation PhD thesis"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1186632.1186634",
+            "publication": "ACM Transactions on Programming Languages and Systems 28(6)",
+            "year": "2006"
+          },
+          "name": "Adaptive Functional Programming"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1328438.1328476",
+            "publication": "POPL 2008",
+            "technical-report": "University of Chicago TR-2007-18"
+          },
+          "name": "Imperative Self-Adjusting Computation"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796813000099",
+            "publication": "Journal of Functional Programming 23(3)",
+            "year": "2013"
+          },
+          "name": "A Consistent Semantics of Self-Adjusting Computation"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority"
+        }
+      ],
+      "topics": [
+        "incremental-computation",
+        "incremental-computation/from-scratch-consistency",
+        "self-adjusting-computation",
+        "self-adjusting-computation/change-propagation",
+        "anneal/incrementality",
+        "anneal/freshness"
+      ]
+    },
     "semantic-preservation-unsupported-opaque-operations-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -15882,6 +17730,204 @@
         "verification/translation-validation",
         "verification/end-to-end-assurance",
         "anneal/trust-model"
+      ]
+    },
+    "theseus-ownership-global-invariants-2017-2024": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3144555.3144560",
+            "publication": "PLOS 2017"
+          },
+          "name": "Theseus early state-spill design"
+        },
+        {
+          "identity": {
+            "publication": "OSDI 2020",
+            "title": "Theseus: an Experiment in Operating System Structure and State Management",
+            "url": "https://www.usenix.org/system/files/osdi20-boos.pdf"
+          },
+          "name": "Theseus OSDI design and evaluation"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.00248v1",
+            "date": "2024-12-31",
+            "title": "Combining Type Checking and Formal Verification for Lightweight OS Correctness"
+          },
+          "name": "Theseus lightweight correctness study"
+        },
+        {
+          "identity": {
+            "repository": "theseus-os/Theseus",
+            "revision": "1fbfe567075a65ed749b6680db1aeb538819c70c"
+          },
+          "name": "Theseus source tree"
+        },
+        {
+          "identity": {
+            "repository": "theseus-os/Theseus",
+            "revision": "5d62e567227e137db27c0c69728e732c5771c923"
+          },
+          "name": "Theseus duplicate-frame allocator repair"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "systems/global-invariants",
+        "systems/live-evolution",
+        "systems/ownership",
+        "systems/state-spill",
+        "theseus",
+        "verification/intralingual-design"
+      ]
+    },
+    "tock-asterinas-safe-interface-boundaries-2015-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb"
+          },
+          "name": "Tock current kernel and capsule boundary"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3731569.3764828",
+            "publication": "SOSP 2025",
+            "year": "2025"
+          },
+          "name": "Tock: From Research to Securing 10 Million Computers"
+        },
+        {
+          "identity": {
+            "repository": "asterinas/asterinas",
+            "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+          },
+          "name": "Asterinas current OSTD/framekernel boundary"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-939133-48-9",
+            "pages": "307-323",
+            "publication": "USENIX ATC 2025",
+            "year": "2025"
+          },
+          "name": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB"
+        }
+      ],
+      "topics": [
+        "rust/language-based-isolation",
+        "rust/unsafe-boundaries",
+        "os/capabilities",
+        "os/resource-lifetimes",
+        "os/safe-policy-injection",
+        "verification/trusted-computing-base",
+        "anneal/execution-boundaries",
+        "anneal/publication"
+      ]
+    },
+    "tock-asterinas-safe-interface-boundaries-2017-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73"
+          },
+          "name": "Tock current kernel source"
+        },
+        {
+          "identity": {
+            "repository": "tock/book",
+            "revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923"
+          },
+          "name": "Tock current architecture and threat-model documentation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3132747.3132786",
+            "publication": "SOSP 2017"
+          },
+          "name": "Tock SOSP 2017 architecture paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3731569.3764828",
+            "publication": "SOSP 2025"
+          },
+          "name": "Tock SOSP 2025 retrospective"
+        },
+        {
+          "identity": {
+            "repository": "asterinas/asterinas",
+            "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+          },
+          "name": "Asterinas current source and architecture documentation"
+        },
+        {
+          "identity": {
+            "paper": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB",
+            "publication": "2025 USENIX Annual Technical Conference"
+          },
+          "name": "Asterinas USENIX ATC 2025 paper"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/trust-boundaries",
+        "rust/safe-abstractions",
+        "rust/unsafe-boundaries",
+        "systems/capabilities",
+        "systems/isolation",
+        "tock",
+        "asterinas"
+      ]
+    },
+    "tock-asterinas-trusted-mechanism-boundaries-2017-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "book_repository": "tock/book",
+            "book_revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923",
+            "period": "2017-2026",
+            "repository": "tock/tock",
+            "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+            "sosp_2017_doi": "10.1145/3132747.3132786",
+            "sosp_2025_doi": "10.1145/3731569.3764828"
+          },
+          "name": "Tock trusted-core, capsule, and process boundaries"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.03876",
+            "repository": "asterinas/asterinas",
+            "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+            "usenix_atc_year": "2025",
+            "version": "0.18.1"
+          },
+          "name": "Asterinas 0.18.1 framekernel and OSTD boundary"
+        },
+        {
+          "identity": {
+            "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+            "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal redesign trust and abstraction constraints"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/environment-preparation",
+        "anneal/publication",
+        "anneal/trust-boundaries",
+        "systems/rust-safety",
+        "systems/tcb"
       ]
     },
     "toolchain-archive-semantic-equivalence-procedure-main-41f5b37": {
@@ -15965,6 +18011,50 @@
         "verification/validators"
       ]
     },
+    "typescript-host-owned-language-world-2014-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "microsoft/TypeScript",
+            "revision": "607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+            "version": "6.0.2"
+          },
+          "name": "TypeScript 6.0.2 compiler and language-service architecture"
+        },
+        {
+          "identity": {
+            "path": "Using-the-Language-Service-API.md",
+            "repository": "microsoft/TypeScript-wiki",
+            "revision": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d"
+          },
+          "name": "TypeScript language-service design guide"
+        },
+        {
+          "identity": {
+            "date": "2026-07-08",
+            "release": "TypeScript 7.0",
+            "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/"
+          },
+          "name": "TypeScript 7.0 native transition"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design authority"
+        }
+      ],
+      "topics": [
+        "anneal/batch-live-contract",
+        "anneal/host-boundaries",
+        "anneal/snapshots",
+        "typescript/language-service",
+        "typescript/project-service",
+        "typescript/watch-build"
+      ]
+    },
     "verification-nondeterminism-environmental-effects-2020-2026": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -16029,6 +18119,46 @@
         "compcert/simulation",
         "translation-validation/verified-validator",
         "verification/refinement"
+      ]
+    },
+    "why3-durable-proof-sessions-2011-2025": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "documentation": "Why3 1.8.2 manual and OCaml API",
+            "project": "Why3",
+            "release": "1.8.2",
+            "released": "2025-09-16"
+          },
+          "name": "Why3 proof-session persistence and replay"
+        },
+        {
+          "identity": {
+            "period": "0.70 (2011-07-06) through 1.8.2 (2025-09-16)",
+            "project": "Why3",
+            "source": "Why3 1.8.2 CHANGES.md"
+          },
+          "name": "Why3 proof-session evolution"
+        },
+        {
+          "identity": {
+            "authors": "Fran\u00e7ois Bobot; Jean-Christophe Filli\u00e2tre; Claude March\u00e9; Guillaume Melquiond; Andrei Paskevich",
+            "doi": "10.1007/978-3-642-54108-7_10",
+            "hal": "hal-00875395",
+            "pages": "191-201",
+            "venue": "VSTTE 2013"
+          },
+          "name": "Preserving User Proofs Across Specification Changes"
+        }
+      ],
+      "topics": [
+        "verification/proof-sessions",
+        "verification/proof-maintenance",
+        "verification/goal-identity",
+        "verification/replay",
+        "verification/tool-upgrades",
+        "anneal/durable-work"
       ]
     },
     "zerocopy-ffi-primitives-main-41f5b37": {

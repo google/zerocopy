@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "anneal/environment-preparation",
+    "anneal/generation-lifetime",
+    "anneal/publication",
+    "anneal/trust-boundaries",
+    "deployment/functional",
+    "guix/profiles",
+    "nix/derivations",
+    "nix/garbage-collection",
+    "nix/profiles"
+  ],
+  "subjects": [
+    {
+      "name": "Nix functional deployment architecture and current store/profile semantics",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "9bc9ab32a57504f068847af4f8013417476cb1ec"
+      }
+    },
+    {
+      "name": "NixOS system switching and activation semantics",
+      "identity": {
+        "repository": "NixOS/nixpkgs",
+        "revision": "6cb205c37b7c0c39b643163d1b7721b5f9bc0913"
+      }
+    },
+    {
+      "name": "GNU Guix functional package management and current operational model",
+      "identity": {
+        "paper": "Functional Package Management with Guix",
+        "arxiv": "1305.4584",
+        "manual": "GNU Guix Reference Manual devel, observed 2026-09-30"
+      }
+    },
+    {
+      "name": "Anneal current design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Anneal current reference corpus",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "30b9d5749aed6049d949f4f582dd64c70088d07a"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

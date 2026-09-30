@@ -1,0 +1,217 @@
+{
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "hie-architecture",
+      "role": [
+        "documentation",
+        "source"
+      ],
+      "repository": "haskell/haskell-ide-engine",
+      "revision": "d84b84322ccac81bf4963983d55cc4e6e98ad418",
+      "path": "docs/Architecture.md",
+      "blob_sha": "07457646fb7f1cc89686c765cf896c181646e498",
+      "url": "https://github.com/haskell/haskell-ide-engine/blob/d84b84322ccac81bf4963983d55cc4e6e98ad418/docs/Architecture.md",
+      "supports": [
+        "HIE threading and serialized IdeM requests",
+        "CachedModule last-good state",
+        "old/new position mappings",
+        "mapped-file unsaved buffers",
+        "plugin cache invalidation",
+        "pre-start cancellation limit"
+      ]
+    },
+    {
+      "id": "hie-readme",
+      "role": [
+        "documentation"
+      ],
+      "repository": "haskell/haskell-ide-engine",
+      "revision": "d84b84322ccac81bf4963983d55cc4e6e98ad418",
+      "path": "README.md",
+      "blob_sha": "03e4923eef3385de185599e0fac6a98f7265d14d",
+      "url": "https://github.com/haskell/haskell-ide-engine/blob/d84b84322ccac81bf4963983d55cc4e6e98ad418/README.md",
+      "supports": [
+        "historical-artifact status",
+        "universal-interface goal",
+        "multi-GHC installation surface",
+        "hie-bios project configuration"
+      ]
+    },
+    {
+      "id": "ghcide-readme",
+      "role": [
+        "documentation"
+      ],
+      "repository": "haskell/ghcide",
+      "revision": "3ef4ef99c4b9cde867d29180c32586947df64b9e",
+      "path": "README.md",
+      "blob_sha": "25b957a540f0279c383117af6821b5278d5df48f",
+      "url": "https://github.com/haskell/ghcide/blob/3ef4ef99c4b9cde867d29180c32586947df64b9e/README.md",
+      "supports": [
+        "component decomposition",
+        "multi-component limitations",
+        "same-GHC requirement",
+        "hie-bios dependency",
+        "HLS consolidation history",
+        "HIE ecosystem reuse",
+        "DAML origin"
+      ]
+    },
+    {
+      "id": "hie-bios-readme",
+      "role": [
+        "documentation"
+      ],
+      "repository": "haskell/hie-bios",
+      "revision": "32dd07707423ffabb34e44af68fcbd027b60ded2",
+      "path": "README.md",
+      "blob_sha": "81abf4cd7bb5c883b167fc0180a9bbfaafff36be",
+      "url": "https://github.com/haskell/hie-bios/blob/32dd07707423ffabb34e44af68fcbd027b60ded2/README.md",
+      "supports": [
+        "build-tool-owned environment principle",
+        "GHC flag/session interface",
+        "path-to-component multi-cradles",
+        "direct cradle drift warning"
+      ]
+    },
+    {
+      "id": "hls-readme",
+      "role": [
+        "documentation"
+      ],
+      "repository": "haskell/haskell-language-server",
+      "revision": "187fcd4a685c220caabb72999565604b3287aff2",
+      "path": "README.md",
+      "blob_sha": "8d856d0de144928350dac9e4a27e2b9afd224a1b",
+      "url": "https://github.com/haskell/haskell-language-server/blob/187fcd4a685c220caabb72999565604b3287aff2/README.md",
+      "supports": [
+        "current HLS identity as official Haskell LSP implementation"
+      ]
+    },
+    {
+      "id": "hls-graph-readme",
+      "role": [
+        "documentation"
+      ],
+      "repository": "haskell/haskell-language-server",
+      "revision": "187fcd4a685c220caabb72999565604b3287aff2",
+      "path": "hls-graph/README.md",
+      "blob_sha": "802b7b101690b205240f7df57538c62f7a535442",
+      "url": "https://github.com/haskell/haskell-language-server/blob/187fcd4a685c220caabb72999565604b3287aff2/hls-graph/README.md",
+      "supports": [
+        "Shake replacement",
+        "in-memory specialization",
+        "dynamic dependencies",
+        "reactive minimal rebuilds",
+        "persistence/general-purpose omissions",
+        "simplicity/performance rationale"
+      ]
+    },
+    {
+      "id": "hls-current-rules",
+      "role": [
+        "source"
+      ],
+      "repository": "haskell/haskell-language-server",
+      "revision": "187fcd4a685c220caabb72999565604b3287aff2",
+      "path": "ghcide/src/Development/IDE/Core/Rules.hs",
+      "url": "https://github.com/haskell/haskell-language-server/blob/187fcd4a685c220caabb72999565604b3287aff2/ghcide/src/Development/IDE/Core/Rules.hs",
+      "supports": [
+        "current rule-based compiler service",
+        "parse/module/dependency/typecheck rule composition"
+      ],
+      "blob_sha": "0ae7dfc029e3a5540b61fca5f77120037d00b010"
+    },
+    {
+      "id": "hls-cabal-project",
+      "role": [
+        "source"
+      ],
+      "repository": "haskell/haskell-language-server",
+      "revision": "187fcd4a685c220caabb72999565604b3287aff2",
+      "path": "cabal.project",
+      "url": "https://github.com/haskell/haskell-language-server/blob/187fcd4a685c220caabb72999565604b3287aff2/cabal.project",
+      "supports": [
+        "current component/package separation"
+      ],
+      "blob_sha": "fd110195cc431f3e12c2a1190cd07d266f399672"
+    },
+    {
+      "id": "shaking-up-ide",
+      "role": [
+        "documentation"
+      ],
+      "url": "https://4ta.uk/p/shaking-up-the-ide",
+      "author": "Neil Mitchell",
+      "period": "2019",
+      "supports": [
+        "contemporary Shake/IDE rationale",
+        "editor-buffer inputs and rule dependency model"
+      ],
+      "limitation": "Maintainer rationale; no immutable article revision recorded."
+    },
+    {
+      "id": "one-haskell-ide",
+      "role": [
+        "documentation"
+      ],
+      "url": "https://neilmitchell.blogspot.com/2020/01/one-haskell-ide-to-rule-them-all.html",
+      "author": "Neil Mitchell",
+      "published": "2020-01-27",
+      "supports": [
+        "HIE/ghcide consolidation rationale",
+        "complementary strengths",
+        "contributor-capacity account"
+      ],
+      "limitation": "Participant historical account, not independent causal evidence."
+    },
+    {
+      "id": "dont-use-ghcide-directly",
+      "role": [
+        "documentation"
+      ],
+      "url": "https://neilmitchell.blogspot.com/2020/09/",
+      "author": "Neil Mitchell",
+      "published": "2020-09-22",
+      "supports": [
+        "later recommendation to use HLS and reported combination of ghcide core with HIE-derived plugins/installer"
+      ],
+      "limitation": "Participant reported outcome; archive URL rather than immutable content hash."
+    }
+  ],
+  "derived_claims": [
+    {
+      "claim": "Build/project environment is a semantic input distinct from editor workspace state.",
+      "basis": [
+        "hie-bios-readme",
+        "ghcide-readme",
+        "hie-readme"
+      ]
+    },
+    {
+      "claim": "The dependency/invalidation abstraction survived an engine replacement from Shake to hls-graph.",
+      "basis": [
+        "ghcide-readme",
+        "hls-graph-readme",
+        "hls-current-rules"
+      ]
+    },
+    {
+      "claim": "HLS consolidation should not be attributed to one technical cause.",
+      "basis": [
+        "ghcide-readme",
+        "one-haskell-ide"
+      ]
+    },
+    {
+      "claim": "Anneal should separate live incremental advice from authoritative batch acceptance unless it independently establishes equivalence.",
+      "basis": [
+        "hie-architecture",
+        "hie-bios-readme",
+        "hls-graph-readme"
+      ],
+      "classification": "derived Anneal judgment, not upstream policy"
+    }
+  ]
+}

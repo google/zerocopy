@@ -1,0 +1,50 @@
+{
+  "scope": "#3732 J006 candidate-only salvage evidence",
+  "subjects": {
+    "tock_source": {
+      "repository": "tock/tock",
+      "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+      "files": {
+        "kernel/src/capabilities.rs": "dddcedda97d0e4010dc368182fff8d5181815eaa",
+        "capsules/core/src/lib.rs": "3528b00f039cb9f5142d2fd5d9e51a4b6bdbc4d5",
+        "kernel/src/grant.rs": "1d5cdd9788f923e17ef668ffb79acf06725794f5"
+      }
+    },
+    "tock_retrospective": {
+      "title": "Tock: From Research to Securing 10 Million Computers",
+      "publication": "SOSP 2025",
+      "doi": "10.1145/3731569.3764828",
+      "url": "https://tockos.org/assets/papers/2025-sosp-tock-decade.pdf"
+    },
+    "asterinas_source": {
+      "repository": "asterinas/asterinas",
+      "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+      "files": {
+        "kernel/src/lib.rs": "62268709b2bf43da148c61faf4e73e8b52605ee2",
+        "book/src/ostd/soundness/README.md": "114f4b15ef0cd77825fd607bb0d320b31bd2335e",
+        "book/src/ostd/soundness/what-soundness-means.md": "3be761f6c0f341c351302948f12d98154cfa70e0",
+        "book/src/ostd/soundness/sensitivity-classification.md": "87319a518492d7a853c0b1ba1132a637349e869a",
+        "book/src/ostd/soundness/safe-policy-injection.md": "1d9db11917f249374813862830882055d5aa854f"
+      }
+    },
+    "asterinas_paper": {
+      "title": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB",
+      "publication": "USENIX ATC 2025",
+      "isbn": "978-1-939133-48-9",
+      "pages": "307-323",
+      "url": "https://www.usenix.org/conference/atc25/presentation/peng-yuke"
+    }
+  },
+  "evidence_roles": {
+    "source": "current implementation and current source-controlled project documentation at exact revisions",
+    "documentation": "published papers and project-authored explanatory material",
+    "execution": "none",
+    "derived": "Anneal boundary classification and conditional architecture judgment"
+  },
+  "negative_space": [
+    "No claim that safe Rust implies functional correctness, availability, semantic freshness, or crash containment.",
+    "No end-to-end Anneal implementation or bypass audit was executed.",
+    "No claim that Asterinas/Tock code-count or benchmark results transfer numerically to Anneal.",
+    "No adoption of the derived architecture as Anneal project policy."
+  ]
+}

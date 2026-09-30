@@ -1,0 +1,57 @@
+{
+  "schema": "anneal-reference/j026-change-matrix/v1",
+  "j_id": "J026",
+  "basis_revision": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92",
+  "principle": "Choose module ownership around difficult or likely-changing design decisions; retain explicit dataflow separately. Hide replaceable mechanism, but export evidence whose change can alter verification meaning.",
+  "decisions": [
+    {
+      "family": "subject-source-authority",
+      "hide": ["cargo_metadata traversal", "path discovery", "locator construction"],
+      "export": ["semantic compilation subject", "build/config selectors affecting code", "captured source/annotation identity", "unsupported coverage"],
+      "current_evidence": ["anneal/src/resolve.rs", "anneal/src/scanner.rs"]
+    },
+    {
+      "family": "tool-integration",
+      "hide": ["CLI or library invocation mechanics", "temporary paths", "process reset details", "stderr parsing"],
+      "export": ["trusted tool/version/config identity", "input identity", "explicit success/failure", "complete output manifest", "semantically relevant limitations"],
+      "current_evidence": ["anneal-interactive-pipeline-invalidation-graph-main-41f5b37", "anneal-3730-architecture-contracts-2026-09-29"]
+    },
+    {
+      "family": "prepared-environment",
+      "hide": ["archive layout", "Lake manifest construction", "cache paths", "environment-variable mechanics"],
+      "export": ["imported environment identity", "toolchain identity", "trust-bearing dependencies", "preparation status"],
+      "current_evidence": ["anneal/src/setup.rs", "anneal-3730-architecture-contracts-2026-09-29"]
+    },
+    {
+      "family": "scheduling-execution",
+      "hide": ["one-shot vs persistent worker", "queue implementation", "cache placement", "parallelism policy"],
+      "export": ["request identity", "attempt/generation", "cancellation/failure semantics", "completion witness", "worker/incarnation when freshness depends on it"],
+      "current_evidence": ["anneal-3730-architecture-contracts-2026-09-29"]
+    },
+    {
+      "family": "artifact-identity-storage",
+      "hide": ["directory layout", "cache hierarchy", "serialization location", "temporary-file mechanics"],
+      "export": ["content/semantic identity", "producer identity", "completeness", "provenance", "immutability/currentness contract"],
+      "current_evidence": ["anneal/src/scanner.rs", "anneal-v1-end-to-end-pipeline-41f5b37"]
+    },
+    {
+      "family": "provenance-projection",
+      "hide": ["mapping tables", "format-specific span mechanics", "diagnostic-rendering implementation"],
+      "export": ["authored-source origin", "ambiguity/unmappable state", "transformation lineage", "source generation"],
+      "current_evidence": ["anneal-v1-end-to-end-pipeline-41f5b37", "anneal-3730-architecture-contracts-2026-09-29"]
+    },
+    {
+      "family": "acceptance-publication-authority",
+      "hide": ["internal check ordering", "storage mutation mechanism", "retry mechanics"],
+      "export": ["intended claim/obligation identity", "evidence identity", "allowed assumptions/TCB", "freshness generation/fence", "explicit rejection status"],
+      "current_evidence": ["anneal/DESIGN.md", "anneal-3730-architecture-contracts-2026-09-29"]
+    },
+    {
+      "family": "incremental-invalidation",
+      "hide": ["graph representation", "cache implementation", "dirty-propagation heuristic"],
+      "export": ["dependency/evidence closure", "reuse justification", "invalidation witness when accepted results rely on reused work"],
+      "current_evidence": ["anneal-interactive-pipeline-invalidation-graph-main-41f5b37"]
+    }
+  ],
+  "status": "derived-analysis-not-adopted-policy"
+}

@@ -1,0 +1,148 @@
+{
+  "schema": "anneal-reference/j039-evidence-map/v1",
+  "j_ids": [
+    "J039"
+  ],
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "rustc-guide",
+      "repository": "rust-lang/rustc-dev-guide",
+      "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85",
+      "files": [
+        {
+          "path": "src/queries/incremental-compilation.md",
+          "blob": "079a2b2e00a7f2dd088fab5a4d74541a53659ea1"
+        },
+        {
+          "path": "src/queries/incremental-compilation-in-detail.md",
+          "blob": "9893edd54b950155da586843baa3319da15dcc4e"
+        }
+      ],
+      "role": "first-party documentation",
+      "supports": [
+        "red-green result cutoff",
+        "stable fingerprints",
+        "projection firewalls",
+        "no_hash conservative invalidation",
+        "fingerprinting cost/collision caveat"
+      ]
+    },
+    {
+      "id": "rust-2016-blog",
+      "url": "https://blog.rust-lang.org/2016/09/08/incremental/",
+      "published": "2016-09-08",
+      "role": "first-party history",
+      "supports": [
+        "alpha incremental architecture",
+        "coarse dependency granularity as a known limitation",
+        "correctness-first conservative recomputation"
+      ]
+    },
+    {
+      "id": "janestreet-incremental",
+      "repository": "janestreet/incremental",
+      "revision": "98b5750ec3c006641351bfd858a89136a5dbc52c",
+      "files": [
+        {
+          "path": "src/incremental_intf.ml",
+          "blob": "eabce575943287f144a8f66cf342fd9db438a33e"
+        }
+      ],
+      "role": "source/documentation",
+      "supports": [
+        "configurable cutoff",
+        "physical-equality default",
+        "float-threshold example",
+        "propagation only when node value changes"
+      ]
+    },
+    {
+      "id": "janestreet-history",
+      "urls": [
+        "https://blog.janestreet.com/introducing-incremental/",
+        "https://blog.janestreet.com/self-adjusting-dom/"
+      ],
+      "published": [
+        "2015-07-18"
+      ],
+      "role": "first-party history/example",
+      "supports": [
+        "self-adjusting computation rationale",
+        "projection nodes as practical cutoff boundaries"
+      ]
+    },
+    {
+      "id": "ghc-recomp",
+      "repository": "ghc/ghc",
+      "revision": "234bab081682018da7d04b22eee4b80f70381d07",
+      "files": [
+        {
+          "path": "compiler/GHC/Iface/Recomp.hs",
+          "blob": "cbd1d392ccd3cee37a0c4dd7dc75ec6117a88dc8"
+        }
+      ],
+      "role": "source",
+      "supports": [
+        "own-source hash forces producer compilation",
+        "package ABI hash",
+        "home-module entity usage fingerprints",
+        "ABI defined by client-visible dependencies",
+        "coarse vs fine recompilation tradeoff"
+      ]
+    },
+    {
+      "id": "ghc-7-guide",
+      "url": "https://downloads.haskell.org/ghc/7.0-latest/docs/html/users_guide/separate-compilation.html",
+      "version": "GHC 7.0",
+      "role": "versioned first-party documentation",
+      "supports": [
+        "historical interface/per-declaration fingerprint recompilation avoidance"
+      ]
+    },
+    {
+      "id": "anneal-design",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "files": [
+        {
+          "path": "anneal/DESIGN.md",
+          "blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+        }
+      ],
+      "role": "design authority",
+      "supports": [
+        "success must identify subject/promise/trust",
+        "Rust-level claims require justified source-to-model semantics"
+      ]
+    },
+    {
+      "id": "anneal-provenance-probe",
+      "repository": "google/zerocopy",
+      "reference_commit": "a5ecd5bde3d2b33457b5a13b4b435d79515f4012",
+      "package": "anneal-3731-charon-relocation-comment-provenance-2026-09-29",
+      "files": [
+        {
+          "path": "REPORT.md",
+          "blob": "1c409aed27a7abe0b7e6feddb199167e95767dcc"
+        },
+        {
+          "path": "REPORT.json",
+          "blob": "05647fc13e52e758e43a37dffd92bdfd0bf91cf6"
+        }
+      ],
+      "role": "published execution evidence",
+      "supports": [
+        "source/provenance changes can coexist with equal generated semantic text in a bounded fixture",
+        "need to split model reuse from provenance refresh"
+      ]
+    }
+  ],
+  "limits": [
+    "No new compiler/prover executions in this J039 report.",
+    "The published Charon/Aeneas probe is a bounded fixture, not a general normalization theorem.",
+    "Hash equality inherits collision assumptions and projection completeness.",
+    "Equality is evaluated only after dependency closure; hidden/dynamic dependency discovery is J038.",
+    "Anneal implications are derived analysis, not adopted policy."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/orchestration",
+    "build-systems/make",
+    "build-systems/ninja",
+    "research/build-history"
+  ],
+  "subjects": [
+    {
+      "name": "Make — a program for maintaining computer programs",
+      "identity": {
+        "doi": "10.1002/spe.4380090402",
+        "publication": "Software: Practice and Experience 9(4):255-265",
+        "year": "1979"
+      }
+    },
+    {
+      "name": "GNU Make 4.4.1 manual and release",
+      "identity": {
+        "release": "4.4.1",
+        "release-date": "2023-02-26",
+        "release-tarball-md5": "c8469a3713cbbe04d955d4ae4be23eeb"
+      }
+    },
+    {
+      "name": "Ninja build system",
+      "identity": {
+        "repository": "ninja-build/ninja",
+        "revision": "4e4df1e567eb3c1475a51af261cba2bfff60b4be"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

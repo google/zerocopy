@@ -1,0 +1,178 @@
+{
+  "scope": "J030 functional core, effects, and the location of hidden state",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "bernhardt-boundaries",
+      "role": "historical-practitioner-design-account",
+      "identity": "Gary Bernhardt, Boundaries, SCNA 2012",
+      "locator": "https://www.destroyallsoftware.com/talks/boundaries",
+      "supports": [
+        "functional core / imperative shell motivation",
+        "simple values as component boundaries",
+        "separation as an engineering heuristic rather than an all-encompassing formal effect system"
+      ]
+    },
+    {
+      "id": "bernhardt-fcis",
+      "role": "historical-practitioner-design-account",
+      "identity": "Gary Bernhardt, Functional Core, Imperative Shell, 2012-07-12",
+      "locator": "https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell",
+      "supports": [
+        "functional core returns values while shell performs database/stdin/stdout/network effects",
+        "testing and control-flow rationale"
+      ]
+    },
+    {
+      "id": "cockburn-hexagonal",
+      "role": "historical-architecture-pattern",
+      "identity": "Alistair Cockburn, HaT Technical Report 2005.02, 2005-09-04",
+      "locator": "https://alistair.cockburn.us/hexagonal-architecture",
+      "supports": [
+        "inside/outside asymmetry",
+        "purpose-defined ports with technology-specific adapters",
+        "isolated operation/testing and substitutable external technologies",
+        "port granularity as a design choice"
+      ]
+    },
+    {
+      "id": "lucassen-gifford",
+      "role": "formal-programming-languages-literature",
+      "identity": "John M. Lucassen and David K. Gifford, Polymorphic effect systems, POPL 1988, DOI 10.1145/73560.73564",
+      "locator": "https://research.ibm.com/publications/polymorphic-effect-systems",
+      "supports": [
+        "effects as descriptions distinct from values/types",
+        "regions for where effects may occur",
+        "effect soundness as conservative static approximation",
+        "masking of unobservable effects"
+      ]
+    },
+    {
+      "id": "plotkin-pretnar",
+      "role": "formal-programming-languages-literature",
+      "identity": "Gordon Plotkin and Matija Pretnar, Handlers of Algebraic Effects, ESOP 2009, DOI 10.1007/978-3-642-00590-9_7",
+      "locator": "https://www.research.ed.ac.uk/en/publications/handlers-of-algebraic-effects/",
+      "supports": [
+        "effectful operations separated from handlers/interpreters",
+        "examples including nondeterminism, interactive I/O, concurrency, state, and time"
+      ]
+    },
+    {
+      "id": "benfield-new-hyper",
+      "role": "historical-sans-io-design-account",
+      "identity": "Cory Benfield, The New Hyper, 2015-10-15",
+      "locator": "https://lukasa.co.uk/2015/10/The_New_Hyper/",
+      "supports": [
+        "motivation for extracting protocol machinery from monolithic I/O stacks",
+        "in-memory reusable HTTP/2 core surrounded by runtime-specific I/O",
+        "explicit incompleteness of the core as a whole application"
+      ]
+    },
+    {
+      "id": "h11-current",
+      "role": "current-source-and-documentation",
+      "identity": "python-hyper/h11@62c5068c971579d61fa1b55373390e12f25fd856",
+      "paths": {
+        "README.rst": "5f2861600c543733424127ed0baa70e62c647373",
+        "h11/_connection.py": "e37d82a82a882c072cb938a90eb4486b51cdad99"
+      },
+      "supports": [
+        "bring-your-own-I/O API based on received bytes, protocol events, and bytes to send",
+        "absence of network I/O does not imply statelessness; Connection stores explicit in-memory protocol and buffering state"
+      ]
+    },
+    {
+      "id": "anneal-design",
+      "role": "current-project-design-authority",
+      "identity": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": [
+        "anneal/PRINCIPLES.md",
+        "anneal/DESIGN.md"
+      ],
+      "supports": [
+        "fail-closed success semantics",
+        "all promise-relevant effects must remain represented",
+        "trust must be explicit and shrinkable",
+        "prefer minimally sufficient mechanisms"
+      ]
+    },
+    {
+      "id": "anneal-rust-input-snapshot",
+      "role": "existing-execution-evidence",
+      "identity": "google/zerocopy@reference reports/anneal-3730-rust-input-snapshot-2026-09-29/REPORT.md blob 8d1ca9ff320e216be72abbca267c4372fcb8d0e1",
+      "supports": [
+        "source pathname or main-source bytes do not close Cargo/rustc inputs",
+        "source content identity and causal edit authority are different"
+      ]
+    },
+    {
+      "id": "anneal-cancellation",
+      "role": "existing-execution-and-model-evidence",
+      "identity": "google/zerocopy@reference reports/anneal-3730-cross-tool-stage-cancellation-cleanup-2026-09-29/REPORT.md blob 14e91986e6a25cc19f83929652613f8efa02ab44",
+      "supports": [
+        "cancelled tool processes may leave stage-specific partial filesystem state",
+        "retry and generation fencing are separate from sending a cancellation signal"
+      ]
+    },
+    {
+      "id": "anneal-prepared-environment",
+      "role": "existing-execution-evidence",
+      "identity": "google/zerocopy@reference reports/anneal-3730-lake-prepared-contract-2026-09-29/REPORT.md blob 02adb1a0c60642109951c6ab0b328d8f180c13f1",
+      "supports": [
+        "prepared immutable/read-only environment can narrow later effects for selected operations",
+        "operation-specific artifact requirements and cache acceptance remain distinct from proof integrity"
+      ]
+    },
+    {
+      "id": "anneal-ffi-trust-patterns",
+      "role": "existing-formal-methods-synthesis",
+      "identity": "google/zerocopy@reference reports/ffi-specification-trust-patterns-2019-2026/REPORT.md",
+      "supports": [
+        "external computation can be modeled as an explicit relation over state/results/events instead of as a pure mathematical function",
+        "implementation and environment adequacy are separate obligations"
+      ]
+    },
+    {
+      "id": "anneal-plugin-mappings",
+      "role": "existing-execution-evidence",
+      "identity": "google/zerocopy@reference reports/anneal-3731-i125-i154-native-plugin-mapped-workers-2026-09-30/REPORT.md blob 0d504ae7388111b56ac307ee657c1ba6ff746881",
+      "supports": [
+        "native plugin identity can persist in process mappings after a stable path points to different bytes",
+        "process/session lifetime is part of plugin-state accounting"
+      ]
+    },
+    {
+      "id": "anneal-fault-model",
+      "role": "existing-model-evidence",
+      "identity": "google/zerocopy@reference reports/anneal-3730-fault-model-2026-09-29/REPORT.md blob b11f3bab8082ebe52ca47a2d10eb9f44d6f0832c",
+      "supports": [
+        "successful completion is insufficient for current publication without source/generation/process/ownership/result-completeness fences",
+        "publication authority is a distinct effect from computation"
+      ]
+    }
+  ],
+  "derived_judgments": [
+    {
+      "id": "coarse-external-effect",
+      "claim": "Opaque compiler/prover subprocesses should normally appear to the Anneal core as explicit coarse-grained external effects rather than as falsely pure functions; the effect request and result must preserve every promise-relevant input, outcome, residual assumption, and publication fence.",
+      "basis": [
+        "lucassen-gifford",
+        "plotkin-pretnar",
+        "anneal-rust-input-snapshot",
+        "anneal-ffi-trust-patterns",
+        "anneal-design"
+      ]
+    },
+    {
+      "id": "hybrid-core-shell",
+      "claim": "A minimally sufficient Anneal split is likely an immutable/value-oriented planning and result-classification core plus a small explicit host-effect shell for environment preparation, external tool/plugin execution, cancellation, and publication; this is a conditional design judgment, not adopted policy.",
+      "basis": [
+        "bernhardt-boundaries",
+        "bernhardt-fcis",
+        "cockburn-hexagonal",
+        "h11-current",
+        "anneal-design"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/project-environment",
+    "haskell/ghc-api",
+    "haskell/hie-bios",
+    "haskell/hls",
+    "ide/incremental-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "Haskell IDE Engine archive",
+      "identity": {
+        "repository": "haskell/haskell-ide-engine",
+        "revision": "d84b84322ccac81bf4963983d55cc4e6e98ad418"
+      }
+    },
+    {
+      "name": "ghcide archive",
+      "identity": {
+        "repository": "haskell/ghcide",
+        "revision": "3ef4ef99c4b9cde867d29180c32586947df64b9e"
+      }
+    },
+    {
+      "name": "Haskell Language Server",
+      "identity": {
+        "repository": "haskell/haskell-language-server",
+        "revision": "187fcd4a685c220caabb72999565604b3287aff2"
+      }
+    },
+    {
+      "name": "hie-bios",
+      "identity": {
+        "repository": "haskell/hie-bios",
+        "revision": "32dd07707423ffabb34e44af68fcbd027b60ded2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}
