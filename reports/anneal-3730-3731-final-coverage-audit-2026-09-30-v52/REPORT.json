@@ -1,0 +1,34 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v51 coverage ledger",
+      "identity": {
+        "reference_commit": "badec4d90493d883e5e6886f6695239fbfb7ac74",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v51"
+      }
+    },
+    {
+      "name": "Lean 4.29 versus 4.30-rc2 Unicode LSP comparison",
+      "identity": {
+        "lean_429_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+        "lean_430_rc2_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "baseline_results_sha256": "a81a7fbbecc428f1cf4ce91eea2f03d49185a4a4b694ca3b0b48c6f46ea38469",
+        "results_sha256": "c9a890bacc174f34a4896d3b05bf5ba5ba6b54a8e16ec066e9fa19c999d036b5"
+      }
+    },
+    {
+      "name": "Inherited public #3730/#3731 issue snapshot",
+      "identity": {
+        "source_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v51",
+        "snapshot_sha256": "08de544674dc82f8b7753283b80dc92d315a25abafcc9b87985e952b90d43f3c"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/editor-integration",
+    "lean/lsp",
+    "research/coverage-audit"
+  ]
+}

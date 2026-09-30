@@ -1,0 +1,54 @@
+{
+  "bounded_context_ids": [
+    "B03",
+    "I025"
+  ],
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [
+    "I062"
+  ],
+  "changed_status_ids": [],
+  "direct_evidence_ids": [
+    "I062"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v52.csv": "c074c1697fb405bd7f6c24c66cd09f9409984c3ef6f1bcce3e9754cb0d49a42b",
+    "investigation-final-v52.csv": "abb2673bea188f3446cd14040868a6f73d48b7f7fe2da064000d37c984545762",
+    "row-challenge-v52.json": "40935e731db4bcc1ea32be1905d6a12ad6aa0d97c4f16f83f9a5b9f1af317514",
+    "source-package-inventory-v52.csv": "2ccda7705832ca93b3e985d72cf0ab1d4544c935892dcebf9781fe23de28e7f5"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v52.json": "08de544674dc82f8b7753283b80dc92d315a25abafcc9b87985e952b90d43f3c",
+    "v51/3730-crosswalk-final-v51.csv": "c12da4a04e6bff242a75714128d89e83182374fd0a2e9937240d04e8686dac10",
+    "v51/investigation-final-v51.csv": "9245814c7639b13078ef701e9849f588ac8109cb74fe4c2a9f455f30a9c16967",
+    "v51/row-challenge-v51.json": "d803e55c7c4625c02ad9764d93bf157fac9a05a533f292990544f68b6a4488bd"
+  },
+  "inventory_files": 33,
+  "investigation_count": 159,
+  "issue_snapshot_relation": "exact inherited v51 snapshot; no fresh fetch",
+  "reference_tip_at_start": "badec4d90493d883e5e6886f6695239fbfb7ac74",
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v51",
+    "anneal-3731-i062-lean429-version-diff-2026-09-30"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v51",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

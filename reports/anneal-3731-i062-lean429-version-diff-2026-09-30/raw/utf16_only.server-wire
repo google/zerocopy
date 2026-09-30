@@ -1,0 +1,31 @@
+Content-Length: 1519
+
+{"id":1,"jsonrpc":"2.0","result":{"capabilities":{"callHierarchyProvider":true,"codeActionProvider":{"codeActionKinds":["quickfix","refactor","source.organizeImports"],"resolveProvider":true,"workDoneProgress":false},"colorProvider":{"workDoneProgress":false},"completionProvider":{"resolveProvider":true,"triggerCharacters":["."]},"declarationProvider":true,"definitionProvider":true,"documentHighlightProvider":true,"documentSymbolProvider":true,"experimental":{"moduleHierarchyProvider":{},"rpcProvider":{"highlightMatchesProvider":{}}},"foldingRangeProvider":true,"hoverProvider":true,"inlayHintProvider":{"resolveProvider":false,"workDoneProgress":false},"referencesProvider":true,"renameProvider":{"prepareProvider":true},"semanticTokensProvider":{"full":true,"legend":{"tokenModifiers":["declaration","definition","readonly","static","deprecated","abstract","async","modification","documentation","defaultLibrary"],"tokenTypes":["keyword","variable","property","function","namespace","type","class","enum","interface","struct","typeParameter","parameter","enumMember","event","method","macro","modifier","comment","string","number","regexp","operator","decorator","leanSorryLike"]},"range":true},"signatureHelpProvider":{"triggerCharacters":[" "],"workDoneProgress":false},"textDocumentSync":{"change":2,"openClose":true,"save":{"includeText":true},"willSave":false,"willSaveWaitUntil":false},"typeDefinitionProvider":true,"workspaceSymbolProvider":true},"serverInfo":{"name":"Lean 4 Server","version":"0.3.0"}}}Content-Length: 267
+
+{"id":"register_lean_watcher","jsonrpc":"2.0","method":"client/registerCapability","params":{"registrations":[{"id":"lean_watcher","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":"**/*.lean"},{"globPattern":"**/*.ilean"}]}}]}}Content-Length: 371
+
+{"jsonrpc":"2.0","method":"$/lean/fileProgress","params":{"processing":[{"kind":1,"range":{"end":{"character":0,"line":1},"start":{"character":0,"line":0}}}],"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":1}}}Content-Length: 283
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":1}}Content-Length: 287
+
+{"jsonrpc":"2.0","method":"$/lean/fileProgress","params":{"processing":[],"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":1}}}Content-Length: 287
+
+{"jsonrpc":"2.0","method":"$/lean/fileProgress","params":{"processing":[],"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":1}}}Content-Length: 783
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[{"code":"lean.unknownIdentifier","fullRange":{"end":{"character":27,"line":0},"start":{"character":16,"line":0}},"message":"Unknown identifier `unknownName`","range":{"end":{"character":27,"line":0},"start":{"character":16,"line":0}},"severity":1,"source":"Lean 4"},{"fullRange":{"end":{"character":6,"line":0},"start":{"character":0,"line":0}},"message":"(\"😀é\", sorry) : String × ?m.2","range":{"end":{"character":6,"line":0},"start":{"character":0,"line":0}},"severity":3,"source":"Lean 4"}],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":1}}Content-Length: 36
+
+{"id":2,"jsonrpc":"2.0","result":{}}Content-Length: 287
+
+{"jsonrpc":"2.0","method":"$/lean/fileProgress","params":{"processing":[],"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":2}}}Content-Length: 287
+
+{"jsonrpc":"2.0","method":"$/lean/fileProgress","params":{"processing":[],"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":2}}}Content-Length: 519
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[{"fullRange":{"end":{"character":6,"line":0},"start":{"character":0,"line":0}},"message":"(\"😀é\", Nat.zero) : String × Nat","range":{"end":{"character":6,"line":0},"start":{"character":0,"line":0}},"severity":3,"source":"Lean 4"}],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":2}}Content-Length: 36
+
+{"id":3,"jsonrpc":"2.0","result":{}}Content-Length: 63
+
+{"id":0,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 283
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean","version":2}}Content-Length: 38
+
+{"id":4,"jsonrpc":"2.0","result":null}

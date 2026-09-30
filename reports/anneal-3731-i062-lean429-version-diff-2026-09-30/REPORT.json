@@ -1,0 +1,36 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Observed local Lean 4.29.0 executable",
+      "identity": {
+        "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+        "toolchain": "leanprover/lean4 v4.29.0",
+        "architecture": "aarch64-darwin"
+      }
+    },
+    {
+      "name": "Published Lean 4.30.0-rc2 comparison executable",
+      "identity": {
+        "baseline_lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "toolchain": "leanprover/lean4 v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Identical Unicode fixture, oracle and guarded version comparison",
+      "identity": {
+        "original_sha256": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+        "patched_sha256": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f",
+        "oracle_prelaunch_sha256": "7f7aac75610935a82f2382381ca0fbab519eaee9abb26767dcd90ab8cabe4cc7",
+        "baseline_results_sha256": "a81a7fbbecc428f1cf4ce91eea2f03d49185a4a4b694ca3b0b48c6f46ea38469",
+        "results_sha256": "c9a890bacc174f34a4896d3b05bf5ba5ba6b54a8e16ec066e9fa19c999d036b5"
+      }
+    }
+  ],
+  "topics": [
+    "lean/lsp",
+    "lean/position-encoding",
+    "anneal/editor-integration",
+    "experiments/version-boundary"
+  ]
+}

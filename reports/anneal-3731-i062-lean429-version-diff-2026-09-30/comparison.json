@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+  "baseline_lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "baseline_results_sha256": "a81a7fbbecc428f1cf4ce91eea2f03d49185a4a4b694ca3b0b48c6f46ea38469",
+  "oracle_prelaunch_sha256": "7f7aac75610935a82f2382381ca0fbab519eaee9abb26767dcd90ab8cabe4cc7",
+  "fixture_sha256": {
+    "original": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+    "patched": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f"
+  },
+  "coordinate_oracle": {
+    "begin": {
+      "unicode_scalars": 15,
+      "utf16_code_units": 16,
+      "utf8_bytes": 19
+    },
+    "end": {
+      "unicode_scalars": 26,
+      "utf16_code_units": 27,
+      "utf8_bytes": 30
+    }
+  },
+  "sessions": {
+    "utf8_only": {
+      "offered": [
+        "utf-8"
+      ],
+      "selected_position_encoding": null,
+      "initial_error_range": {
+        "end": {
+          "character": 27,
+          "line": 0
+        },
+        "start": {
+          "character": 16,
+          "line": 0
+        }
+      },
+      "after_error_messages": [
+        "unexpected end of input; expected ')'"
+      ],
+      "max_sampled_rss_kib": 197744,
+      "min_sampled_reclaimable_percent": 34.1024,
+      "min_sampled_free_disk_bytes": 18703355904,
+      "max_sampled_scratch_bytes": 9332,
+      "sample_count": 49,
+      "exit": 0
+    },
+    "utf16_only": {
+      "offered": [
+        "utf-16"
+      ],
+      "selected_position_encoding": null,
+      "initial_error_range": {
+        "end": {
+          "character": 27,
+          "line": 0
+        },
+        "start": {
+          "character": 16,
+          "line": 0
+        }
+      },
+      "after_error_messages": [],
+      "max_sampled_rss_kib": 120720,
+      "min_sampled_reclaimable_percent": 34.6121,
+      "min_sampled_free_disk_bytes": 18705031168,
+      "max_sampled_scratch_bytes": 16426,
+      "sample_count": 26,
+      "exit": 0
+    }
+  },
+  "batch": {
+    "original": {
+      "exit": 1,
+      "message_count": 2,
+      "v430_exit": 1,
+      "messages_equal_excluding_filename": true,
+      "max_sampled_rss_kib": 97408,
+      "min_sampled_reclaimable_percent": 35.3975,
+      "min_sampled_free_disk_bytes": 18704973824
+    },
+    "patched": {
+      "exit": 0,
+      "message_count": 1,
+      "v430_exit": 0,
+      "messages_equal_excluding_filename": true,
+      "max_sampled_rss_kib": 105920,
+      "min_sampled_reclaimable_percent": 35.5473,
+      "min_sampled_free_disk_bytes": 18704961536
+    }
+  },
+  "version_differences": {
+    "utf8_only": {
+      "capability_delta": {
+        "path": "/experimental/rpcProvider/rpcWireFormat",
+        "lean_429": null,
+        "lean_430_rc2": "v1"
+      },
+      "diagnostics_equal": true,
+      "wait_responses_equal": true,
+      "server_notification_counts": {
+        "lean_429": 21,
+        "lean_430_rc2": 20
+      }
+    },
+    "utf16_only": {
+      "capability_delta": {
+        "path": "/experimental/rpcProvider/rpcWireFormat",
+        "lean_429": null,
+        "lean_430_rc2": "v1"
+      },
+      "diagnostics_equal": true,
+      "wait_responses_equal": true,
+      "server_notification_counts": {
+        "lean_429": 15,
+        "lean_430_rc2": 15
+      }
+    }
+  },
+  "negative_controls": {
+    "utf8_offer_not_selection": true,
+    "utf8_ranged_edit_did_not_repair": true,
+    "utf16_ranged_edit_repaired": true
+  },
+  "cleanup": {
+    "work_exists": true,
+    "work_exists_after": false
+  }
+}

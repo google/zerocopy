@@ -1,0 +1,3529 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-09-30T07:33:49.912203+00:00",
+  "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+  "oracle_prelaunch_sha256": "7f7aac75610935a82f2382381ca0fbab519eaee9abb26767dcd90ab8cabe4cc7",
+  "fixture_sha256": {
+    "original": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+    "patched": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f"
+  },
+  "limits": {
+    "minimum_admission_reclaimable_percent": 30.0,
+    "minimum_live_reclaimable_percent": 20.0,
+    "minimum_free_disk_bytes": 10737418240,
+    "maximum_process_group_rss_kib": 1228800,
+    "maximum_scratch_bytes": 104857600,
+    "maximum_session_seconds": 30.0
+  },
+  "sessions": {
+    "utf8_only": {
+      "offered": [
+        "utf-8"
+      ],
+      "preflight": {
+        "elapsed_seconds": 0.0038,
+        "host": {
+          "estimated_reclaimable_percent": 36.5517,
+          "free_disk_bytes": 18709315584,
+          "page_size": 16384,
+          "pages": {
+            "free": 3771,
+            "inactive": 186059,
+            "speculative": 1806
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_bytes": 0
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "events": [
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0013,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+              "processId": 991,
+              "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only",
+              "capabilities": {
+                "general": {
+                  "positionEncodings": [
+                    "utf-8"
+                  ]
+                },
+                "textDocument": {
+                  "synchronization": {
+                    "didSave": false
+                  }
+                }
+              },
+              "initializationOptions": {
+                "hasWidgets": false,
+                "logCfg": {
+                  "logDir": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/logs"
+                }
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.0912,
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "result": {
+              "capabilities": {
+                "callHierarchyProvider": true,
+                "codeActionProvider": {
+                  "codeActionKinds": [
+                    "quickfix",
+                    "refactor",
+                    "source.organizeImports"
+                  ],
+                  "resolveProvider": true,
+                  "workDoneProgress": false
+                },
+                "colorProvider": {
+                  "workDoneProgress": false
+                },
+                "completionProvider": {
+                  "resolveProvider": true,
+                  "triggerCharacters": [
+                    "."
+                  ]
+                },
+                "declarationProvider": true,
+                "definitionProvider": true,
+                "documentHighlightProvider": true,
+                "documentSymbolProvider": true,
+                "experimental": {
+                  "moduleHierarchyProvider": {},
+                  "rpcProvider": {
+                    "highlightMatchesProvider": {}
+                  }
+                },
+                "foldingRangeProvider": true,
+                "hoverProvider": true,
+                "inlayHintProvider": {
+                  "resolveProvider": false,
+                  "workDoneProgress": false
+                },
+                "referencesProvider": true,
+                "renameProvider": {
+                  "prepareProvider": true
+                },
+                "semanticTokensProvider": {
+                  "full": true,
+                  "legend": {
+                    "tokenModifiers": [
+                      "declaration",
+                      "definition",
+                      "readonly",
+                      "static",
+                      "deprecated",
+                      "abstract",
+                      "async",
+                      "modification",
+                      "documentation",
+                      "defaultLibrary"
+                    ],
+                    "tokenTypes": [
+                      "keyword",
+                      "variable",
+                      "property",
+                      "function",
+                      "namespace",
+                      "type",
+                      "class",
+                      "enum",
+                      "interface",
+                      "struct",
+                      "typeParameter",
+                      "parameter",
+                      "enumMember",
+                      "event",
+                      "method",
+                      "macro",
+                      "modifier",
+                      "comment",
+                      "string",
+                      "number",
+                      "regexp",
+                      "operator",
+                      "decorator",
+                      "leanSorryLike"
+                    ]
+                  },
+                  "range": true
+                },
+                "signatureHelpProvider": {
+                  "triggerCharacters": [
+                    " "
+                  ],
+                  "workDoneProgress": false
+                },
+                "textDocumentSync": {
+                  "change": 2,
+                  "openClose": true,
+                  "save": {
+                    "includeText": true
+                  },
+                  "willSave": false,
+                  "willSaveWaitUntil": false
+                },
+                "typeDefinitionProvider": true,
+                "workspaceSymbolProvider": true
+              },
+              "serverInfo": {
+                "name": "Lean 4 Server",
+                "version": "0.3.0"
+              }
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0912,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "initialized",
+            "params": {}
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0913,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "languageId": "lean",
+                "version": 1,
+                "text": "#check (\"😀é\", unknownName)\n"
+              }
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0913,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 2,
+            "method": "textDocument/waitForDiagnostics",
+            "params": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.1252,
+          "message": {
+            "id": "register_lean_watcher",
+            "jsonrpc": "2.0",
+            "method": "client/registerCapability",
+            "params": {
+              "registrations": [
+                {
+                  "id": "lean_watcher",
+                  "method": "workspace/didChangeWatchedFiles",
+                  "registerOptions": {
+                    "watchers": [
+                      {
+                        "globPattern": "**/*.lean"
+                      },
+                      {
+                        "globPattern": "**/*.ilean"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.1252,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "register_lean_watcher",
+            "result": null
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.1413,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.2807,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.3476,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.3634,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.6661,
+          "message": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.1969,
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.5908,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 28,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.6248,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.6405,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "code": "lean.unknownIdentifier",
+                  "fullRange": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "message": "Unknown identifier `unknownName`",
+                  "range": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "severity": 1,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "message": "(\"😀é\", sorry) : String × ?m.2",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.6579,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.6736,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.6891,
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 1.6892,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didChange",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 2
+              },
+              "contentChanges": [
+                {
+                  "range": {
+                    "start": {
+                      "line": 0,
+                      "character": 19
+                    },
+                    "end": {
+                      "line": 0,
+                      "character": 30
+                    }
+                  },
+                  "text": "Nat.zero"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 1.6892,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "textDocument/waitForDiagnostics",
+            "params": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 2
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.722,
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.9164,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 2
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.9488,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+                "version": 2
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.9645,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 27,
+                      "line": 0
+                    }
+                  },
+                  "message": "unexpected end of input; expected ')'",
+                  "range": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 27,
+                      "line": 0
+                    }
+                  },
+                  "severity": 1,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 2
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.9802,
+          "message": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 1.9803,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 4,
+            "method": "shutdown",
+            "params": null
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 2.0133,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 2
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 2.029,
+          "message": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 2.0291,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exit",
+            "params": null
+          }
+        }
+      ],
+      "samples": [
+        {
+          "elapsed_seconds": 0.0055,
+          "host": {
+            "estimated_reclaimable_percent": 36.6047,
+            "free_disk_bytes": 18709303296,
+            "page_size": 16384,
+            "pages": {
+              "free": 3956,
+              "inactive": 186075,
+              "speculative": 1883
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 304,
+          "scratch_bytes": 32
+        },
+        {
+          "elapsed_seconds": 0.0797,
+          "host": {
+            "estimated_reclaimable_percent": 36.4004,
+            "free_disk_bytes": 18709303296,
+            "page_size": 16384,
+            "pages": {
+              "free": 3780,
+              "inactive": 184960,
+              "speculative": 2103
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 48832,
+          "scratch_bytes": 32
+        },
+        {
+          "elapsed_seconds": 0.0962,
+          "host": {
+            "estimated_reclaimable_percent": 36.3716,
+            "free_disk_bytes": 18709299200,
+            "page_size": 16384,
+            "pages": {
+              "free": 3628,
+              "inactive": 184957,
+              "speculative": 2107
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 50608,
+          "scratch_bytes": 1647
+        },
+        {
+          "elapsed_seconds": 0.1136,
+          "host": {
+            "estimated_reclaimable_percent": 36.4376,
+            "free_disk_bytes": 18708897792,
+            "page_size": 16384,
+            "pages": {
+              "free": 4050,
+              "inactive": 184881,
+              "speculative": 2107
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 50784,
+          "scratch_bytes": 1647
+        },
+        {
+          "elapsed_seconds": 0.1297,
+          "host": {
+            "estimated_reclaimable_percent": 36.375,
+            "free_disk_bytes": 18708332544,
+            "page_size": 16384,
+            "pages": {
+              "free": 3690,
+              "inactive": 184894,
+              "speculative": 2126
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 50912,
+          "scratch_bytes": 1798
+        },
+        {
+          "elapsed_seconds": 0.1458,
+          "host": {
+            "estimated_reclaimable_percent": 36.3785,
+            "free_disk_bytes": 18707714048,
+            "page_size": 16384,
+            "pages": {
+              "free": 3680,
+              "inactive": 184901,
+              "speculative": 2147
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 51088,
+          "scratch_bytes": 1798
+        },
+        {
+          "elapsed_seconds": 0.2231,
+          "host": {
+            "estimated_reclaimable_percent": 36.4378,
+            "free_disk_bytes": 18706255872,
+            "page_size": 16384,
+            "pages": {
+              "free": 3912,
+              "inactive": 184906,
+              "speculative": 2221
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 52576,
+          "scratch_bytes": 1798
+        },
+        {
+          "elapsed_seconds": 0.2688,
+          "host": {
+            "estimated_reclaimable_percent": 36.5313,
+            "free_disk_bytes": 18705051648,
+            "page_size": 16384,
+            "pages": {
+              "free": 4406,
+              "inactive": 184905,
+              "speculative": 2218
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 53232,
+          "scratch_bytes": 2175
+        },
+        {
+          "elapsed_seconds": 0.2856,
+          "host": {
+            "estimated_reclaimable_percent": 36.4948,
+            "free_disk_bytes": 18704158720,
+            "page_size": 16384,
+            "pages": {
+              "free": 4209,
+              "inactive": 184912,
+              "speculative": 2217
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 53536,
+          "scratch_bytes": 2175
+        },
+        {
+          "elapsed_seconds": 0.3359,
+          "host": {
+            "estimated_reclaimable_percent": 36.3451,
+            "free_disk_bytes": 18703556608,
+            "page_size": 16384,
+            "pages": {
+              "free": 4043,
+              "inactive": 184286,
+              "speculative": 2224
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 55632,
+          "scratch_bytes": 3017
+        },
+        {
+          "elapsed_seconds": 0.3521,
+          "host": {
+            "estimated_reclaimable_percent": 36.4082,
+            "free_disk_bytes": 18703556608,
+            "page_size": 16384,
+            "pages": {
+              "free": 4335,
+              "inactive": 184286,
+              "speculative": 2263
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 57472,
+          "scratch_bytes": 3017
+        },
+        {
+          "elapsed_seconds": 0.368,
+          "host": {
+            "estimated_reclaimable_percent": 36.3394,
+            "free_disk_bytes": 18703556608,
+            "page_size": 16384,
+            "pages": {
+              "free": 3943,
+              "inactive": 184286,
+              "speculative": 2294
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 59696,
+          "scratch_bytes": 3017
+        },
+        {
+          "elapsed_seconds": 0.4452,
+          "host": {
+            "estimated_reclaimable_percent": 36.2373,
+            "free_disk_bytes": 18703556608,
+            "page_size": 16384,
+            "pages": {
+              "free": 4033,
+              "inactive": 184285,
+              "speculative": 1670
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 68320,
+          "scratch_bytes": 3017
+        },
+        {
+          "elapsed_seconds": 0.5186,
+          "host": {
+            "estimated_reclaimable_percent": 36.2448,
+            "free_disk_bytes": 18703478784,
+            "page_size": 16384,
+            "pages": {
+              "free": 3921,
+              "inactive": 184302,
+              "speculative": 1804
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 74416,
+          "scratch_bytes": 3017
+        },
+        {
+          "elapsed_seconds": 0.5961,
+          "host": {
+            "estimated_reclaimable_percent": 36.2103,
+            "free_disk_bytes": 18703478784,
+            "page_size": 16384,
+            "pages": {
+              "free": 3682,
+              "inactive": 184251,
+              "speculative": 1913
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 79536,
+          "scratch_bytes": 3017
+        },
+        {
+          "elapsed_seconds": 0.6546,
+          "host": {
+            "estimated_reclaimable_percent": 35.8829,
+            "free_disk_bytes": 18703478784,
+            "page_size": 16384,
+            "pages": {
+              "free": 3894,
+              "inactive": 182192,
+              "speculative": 2044
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 84720,
+          "scratch_bytes": 3170
+        },
+        {
+          "elapsed_seconds": 0.6707,
+          "host": {
+            "estimated_reclaimable_percent": 35.8364,
+            "free_disk_bytes": 18703478784,
+            "page_size": 16384,
+            "pages": {
+              "free": 3624,
+              "inactive": 182192,
+              "speculative": 2070
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 85632,
+          "scratch_bytes": 3170
+        },
+        {
+          "elapsed_seconds": 0.7475,
+          "host": {
+            "estimated_reclaimable_percent": 35.4172,
+            "free_disk_bytes": 18703478784,
+            "page_size": 16384,
+            "pages": {
+              "free": 3736,
+              "inactive": 179707,
+              "speculative": 2245
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 93264,
+          "scratch_bytes": 3170
+        },
+        {
+          "elapsed_seconds": 0.8251,
+          "host": {
+            "estimated_reclaimable_percent": 34.9592,
+            "free_disk_bytes": 18703478784,
+            "page_size": 16384,
+            "pages": {
+              "free": 3672,
+              "inactive": 177159,
+              "speculative": 2456
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 99536,
+          "scratch_bytes": 3170
+        },
+        {
+          "elapsed_seconds": 0.9027,
+          "host": {
+            "estimated_reclaimable_percent": 34.3616,
+            "free_disk_bytes": 18703478784,
+            "page_size": 16384,
+            "pages": {
+              "free": 3762,
+              "inactive": 173894,
+              "speculative": 2498
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 107792,
+          "scratch_bytes": 3170
+        },
+        {
+          "elapsed_seconds": 0.9807,
+          "host": {
+            "estimated_reclaimable_percent": 34.3433,
+            "free_disk_bytes": 18703474688,
+            "page_size": 16384,
+            "pages": {
+              "free": 3939,
+              "inactive": 173333,
+              "speculative": 2786
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 112224,
+          "scratch_bytes": 3170
+        },
+        {
+          "elapsed_seconds": 1.0574,
+          "host": {
+            "estimated_reclaimable_percent": 34.2937,
+            "free_disk_bytes": 18703400960,
+            "page_size": 16384,
+            "pages": {
+              "free": 3593,
+              "inactive": 173181,
+              "speculative": 3024
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 117536,
+          "scratch_bytes": 3170
+        },
+        {
+          "elapsed_seconds": 1.134,
+          "host": {
+            "estimated_reclaimable_percent": 34.2886,
+            "free_disk_bytes": 18703400960,
+            "page_size": 16384,
+            "pages": {
+              "free": 3597,
+              "inactive": 172905,
+              "speculative": 3269
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 123200,
+          "scratch_bytes": 3170
+        },
+        {
+          "elapsed_seconds": 1.1852,
+          "host": {
+            "estimated_reclaimable_percent": 34.2955,
+            "free_disk_bytes": 18703376384,
+            "page_size": 16384,
+            "pages": {
+              "free": 4270,
+              "inactive": 172030,
+              "speculative": 3507
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 126640,
+          "scratch_bytes": 3323
+        },
+        {
+          "elapsed_seconds": 1.2016,
+          "host": {
+            "estimated_reclaimable_percent": 34.2703,
+            "free_disk_bytes": 18703376384,
+            "page_size": 16384,
+            "pages": {
+              "free": 3879,
+              "inactive": 172213,
+              "speculative": 3583
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 127808,
+          "scratch_bytes": 3323
+        },
+        {
+          "elapsed_seconds": 1.2793,
+          "host": {
+            "estimated_reclaimable_percent": 34.2958,
+            "free_disk_bytes": 18703376384,
+            "page_size": 16384,
+            "pages": {
+              "free": 4279,
+              "inactive": 171573,
+              "speculative": 3957
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 133792,
+          "scratch_bytes": 3323
+        },
+        {
+          "elapsed_seconds": 1.356,
+          "host": {
+            "estimated_reclaimable_percent": 34.2499,
+            "free_disk_bytes": 18703376384,
+            "page_size": 16384,
+            "pages": {
+              "free": 3909,
+              "inactive": 171368,
+              "speculative": 4291
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 140304,
+          "scratch_bytes": 3323
+        },
+        {
+          "elapsed_seconds": 1.4326,
+          "host": {
+            "estimated_reclaimable_percent": 34.1793,
+            "free_disk_bytes": 18703376384,
+            "page_size": 16384,
+            "pages": {
+              "free": 3512,
+              "inactive": 171300,
+              "speculative": 4386
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 145408,
+          "scratch_bytes": 3323
+        },
+        {
+          "elapsed_seconds": 1.5106,
+          "host": {
+            "estimated_reclaimable_percent": 34.1024,
+            "free_disk_bytes": 18703376384,
+            "page_size": 16384,
+            "pages": {
+              "free": 3617,
+              "inactive": 170448,
+              "speculative": 4730
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 152368,
+          "scratch_bytes": 3323
+        },
+        {
+          "elapsed_seconds": 1.5789,
+          "host": {
+            "estimated_reclaimable_percent": 34.145,
+            "free_disk_bytes": 18703372288,
+            "page_size": 16384,
+            "pages": {
+              "free": 3795,
+              "inactive": 170379,
+              "speculative": 4844
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 157888,
+          "scratch_bytes": 6190
+        },
+        {
+          "elapsed_seconds": 1.5955,
+          "host": {
+            "estimated_reclaimable_percent": 34.1261,
+            "free_disk_bytes": 18703372288,
+            "page_size": 16384,
+            "pages": {
+              "free": 3657,
+              "inactive": 170392,
+              "speculative": 4870
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 159056,
+          "scratch_bytes": 6190
+        },
+        {
+          "elapsed_seconds": 1.6127,
+          "host": {
+            "estimated_reclaimable_percent": 34.1541,
+            "free_disk_bytes": 18703372288,
+            "page_size": 16384,
+            "pages": {
+              "free": 3771,
+              "inactive": 170367,
+              "speculative": 4928
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 160960,
+          "scratch_bytes": 6190
+        },
+        {
+          "elapsed_seconds": 1.6292,
+          "host": {
+            "estimated_reclaimable_percent": 34.1452,
+            "free_disk_bytes": 18703372288,
+            "page_size": 16384,
+            "pages": {
+              "free": 3880,
+              "inactive": 170167,
+              "speculative": 4972
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 162496,
+          "scratch_bytes": 6190
+        },
+        {
+          "elapsed_seconds": 1.6449,
+          "host": {
+            "estimated_reclaimable_percent": 34.1255,
+            "free_disk_bytes": 18703372288,
+            "page_size": 16384,
+            "pages": {
+              "free": 3624,
+              "inactive": 170275,
+              "speculative": 5017
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 163776,
+          "scratch_bytes": 6190
+        },
+        {
+          "elapsed_seconds": 1.6623,
+          "host": {
+            "estimated_reclaimable_percent": 34.181,
+            "free_disk_bytes": 18703360000,
+            "page_size": 16384,
+            "pages": {
+              "free": 3931,
+              "inactive": 170213,
+              "speculative": 5063
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 165168,
+          "scratch_bytes": 6190
+        },
+        {
+          "elapsed_seconds": 1.6779,
+          "host": {
+            "estimated_reclaimable_percent": 34.1978,
+            "free_disk_bytes": 18703355904,
+            "page_size": 16384,
+            "pages": {
+              "free": 3987,
+              "inactive": 170204,
+              "speculative": 5104
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 166240,
+          "scratch_bytes": 6190
+        },
+        {
+          "elapsed_seconds": 1.6939,
+          "host": {
+            "estimated_reclaimable_percent": 34.1904,
+            "free_disk_bytes": 18703355904,
+            "page_size": 16384,
+            "pages": {
+              "free": 3897,
+              "inactive": 170219,
+              "speculative": 5140
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 167696,
+          "scratch_bytes": 7188
+        },
+        {
+          "elapsed_seconds": 1.7096,
+          "host": {
+            "estimated_reclaimable_percent": 34.1709,
+            "free_disk_bytes": 18703355904,
+            "page_size": 16384,
+            "pages": {
+              "free": 3674,
+              "inactive": 170285,
+              "speculative": 5195
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 169264,
+          "scratch_bytes": 7188
+        },
+        {
+          "elapsed_seconds": 1.7266,
+          "host": {
+            "estimated_reclaimable_percent": 34.1909,
+            "free_disk_bytes": 18703405056,
+            "page_size": 16384,
+            "pages": {
+              "free": 3939,
+              "inactive": 170086,
+              "speculative": 5234
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 170560,
+          "scratch_bytes": 7188
+        },
+        {
+          "elapsed_seconds": 1.8026,
+          "host": {
+            "estimated_reclaimable_percent": 34.1824,
+            "free_disk_bytes": 18705072128,
+            "page_size": 16384,
+            "pages": {
+              "free": 3878,
+              "inactive": 169918,
+              "speculative": 5418
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 177360,
+          "scratch_bytes": 7188
+        },
+        {
+          "elapsed_seconds": 1.8786,
+          "host": {
+            "estimated_reclaimable_percent": 34.1795,
+            "free_disk_bytes": 18705072128,
+            "page_size": 16384,
+            "pages": {
+              "free": 4166,
+              "inactive": 169395,
+              "speculative": 5638
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 185168,
+          "scratch_bytes": 7188
+        },
+        {
+          "elapsed_seconds": 1.905,
+          "host": {
+            "estimated_reclaimable_percent": 34.2089,
+            "free_disk_bytes": 18705063936,
+            "page_size": 16384,
+            "pages": {
+              "free": 4016,
+              "inactive": 169611,
+              "speculative": 5726
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 187600,
+          "scratch_bytes": 8692
+        },
+        {
+          "elapsed_seconds": 1.9211,
+          "host": {
+            "estimated_reclaimable_percent": 34.1984,
+            "free_disk_bytes": 18705063936,
+            "page_size": 16384,
+            "pages": {
+              "free": 3915,
+              "inactive": 169611,
+              "speculative": 5772
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 189168,
+          "scratch_bytes": 8692
+        },
+        {
+          "elapsed_seconds": 1.9369,
+          "host": {
+            "estimated_reclaimable_percent": 34.1707,
+            "free_disk_bytes": 18705063936,
+            "page_size": 16384,
+            "pages": {
+              "free": 3689,
+              "inactive": 169655,
+              "speculative": 5809
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 190960,
+          "scratch_bytes": 8692
+        },
+        {
+          "elapsed_seconds": 1.9533,
+          "host": {
+            "estimated_reclaimable_percent": 34.199,
+            "free_disk_bytes": 18705063936,
+            "page_size": 16384,
+            "pages": {
+              "free": 4114,
+              "inactive": 169468,
+              "speculative": 5719
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 192656,
+          "scratch_bytes": 8692
+        },
+        {
+          "elapsed_seconds": 1.969,
+          "host": {
+            "estimated_reclaimable_percent": 34.1854,
+            "free_disk_bytes": 18705063936,
+            "page_size": 16384,
+            "pages": {
+              "free": 4012,
+              "inactive": 169468,
+              "speculative": 5750
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 193952,
+          "scratch_bytes": 8692
+        },
+        {
+          "elapsed_seconds": 1.9855,
+          "host": {
+            "estimated_reclaimable_percent": 34.1837,
+            "free_disk_bytes": 18705063936,
+            "page_size": 16384,
+            "pages": {
+              "free": 3848,
+              "inactive": 169567,
+              "speculative": 5806
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 195632,
+          "scratch_bytes": 9332
+        },
+        {
+          "elapsed_seconds": 2.0021,
+          "host": {
+            "estimated_reclaimable_percent": 34.437,
+            "free_disk_bytes": 18705063936,
+            "page_size": 16384,
+            "pages": {
+              "free": 6608,
+              "inactive": 167987,
+              "speculative": 5954
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 196624,
+          "scratch_bytes": 9332
+        },
+        {
+          "elapsed_seconds": 2.0177,
+          "host": {
+            "estimated_reclaimable_percent": 34.4395,
+            "free_disk_bytes": 18705063936,
+            "page_size": 16384,
+            "pages": {
+              "free": 6509,
+              "inactive": 168064,
+              "speculative": 5989
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 197744,
+          "scratch_bytes": 9332
+        }
+      ],
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+        "--server"
+      ],
+      "environment": {
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_SERVER_LOG_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/logs"
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only",
+      "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+      "started_utc": "2026-09-30T07:33:49.949281+00:00",
+      "start_monotonic_ns": 2034941687932625,
+      "pid": 996,
+      "initialize": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {}
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      },
+      "before": {
+        "wait_response": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "publications": [
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "code": "lean.unknownIdentifier",
+                  "fullRange": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "message": "Unknown identifier `unknownName`",
+                  "range": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "severity": 1,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "message": "(\"😀é\", sorry) : String × ?m.2",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        ],
+        "last": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 27,
+                "line": 0
+              },
+              "start": {
+                "character": 16,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownName`",
+            "range": {
+              "end": {
+                "character": 27,
+                "line": 0
+              },
+              "start": {
+                "character": 16,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "(\"😀é\", sorry) : String × ?m.2",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "after": {
+        "wait_response": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "publications": [
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "code": "lean.unknownIdentifier",
+                  "fullRange": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "message": "Unknown identifier `unknownName`",
+                  "range": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "severity": 1,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "message": "(\"😀é\", sorry) : String × ?m.2",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 27,
+                      "line": 0
+                    }
+                  },
+                  "message": "unexpected end of input; expected ')'",
+                  "range": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 27,
+                      "line": 0
+                    }
+                  },
+                  "severity": 1,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean",
+              "version": 2
+            }
+          }
+        ],
+        "last": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 27,
+                "line": 0
+              },
+              "start": {
+                "character": 27,
+                "line": 0
+              }
+            },
+            "message": "unexpected end of input; expected ')'",
+            "range": {
+              "end": {
+                "character": 27,
+                "line": 0
+              },
+              "start": {
+                "character": 27,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "shutdown": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ended_utc": "2026-09-30T07:33:51.982971+00:00",
+      "end_monotonic_ns": 2034943721636708,
+      "exit": 0,
+      "wire_sha256": {
+        "client": "9091f98a5224e1b53d07a7982a872e481893ac586b2830d478775d56505f94e4",
+        "server": "b6b177085cad5704a7fd207ecfe2eea2d35e6eee2f29d78084b1b4faf7340674",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "postrun_process_group_rss_kib": 0
+    },
+    "utf16_only": {
+      "offered": [
+        "utf-16"
+      ],
+      "preflight": {
+        "elapsed_seconds": 0.0042,
+        "host": {
+          "estimated_reclaimable_percent": 35.4191,
+          "free_disk_bytes": 18705043456,
+          "page_size": 16384,
+          "pages": {
+            "free": 16480,
+            "inactive": 163182,
+            "speculative": 6036
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_bytes": 9332
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "events": [
+        {
+          "side": "client",
+          "elapsed_seconds": 0.001,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+              "processId": 991,
+              "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only",
+              "capabilities": {
+                "general": {
+                  "positionEncodings": [
+                    "utf-16"
+                  ]
+                },
+                "textDocument": {
+                  "synchronization": {
+                    "didSave": false
+                  }
+                }
+              },
+              "initializationOptions": {
+                "hasWidgets": false,
+                "logCfg": {
+                  "logDir": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/logs"
+                }
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.0445,
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "result": {
+              "capabilities": {
+                "callHierarchyProvider": true,
+                "codeActionProvider": {
+                  "codeActionKinds": [
+                    "quickfix",
+                    "refactor",
+                    "source.organizeImports"
+                  ],
+                  "resolveProvider": true,
+                  "workDoneProgress": false
+                },
+                "colorProvider": {
+                  "workDoneProgress": false
+                },
+                "completionProvider": {
+                  "resolveProvider": true,
+                  "triggerCharacters": [
+                    "."
+                  ]
+                },
+                "declarationProvider": true,
+                "definitionProvider": true,
+                "documentHighlightProvider": true,
+                "documentSymbolProvider": true,
+                "experimental": {
+                  "moduleHierarchyProvider": {},
+                  "rpcProvider": {
+                    "highlightMatchesProvider": {}
+                  }
+                },
+                "foldingRangeProvider": true,
+                "hoverProvider": true,
+                "inlayHintProvider": {
+                  "resolveProvider": false,
+                  "workDoneProgress": false
+                },
+                "referencesProvider": true,
+                "renameProvider": {
+                  "prepareProvider": true
+                },
+                "semanticTokensProvider": {
+                  "full": true,
+                  "legend": {
+                    "tokenModifiers": [
+                      "declaration",
+                      "definition",
+                      "readonly",
+                      "static",
+                      "deprecated",
+                      "abstract",
+                      "async",
+                      "modification",
+                      "documentation",
+                      "defaultLibrary"
+                    ],
+                    "tokenTypes": [
+                      "keyword",
+                      "variable",
+                      "property",
+                      "function",
+                      "namespace",
+                      "type",
+                      "class",
+                      "enum",
+                      "interface",
+                      "struct",
+                      "typeParameter",
+                      "parameter",
+                      "enumMember",
+                      "event",
+                      "method",
+                      "macro",
+                      "modifier",
+                      "comment",
+                      "string",
+                      "number",
+                      "regexp",
+                      "operator",
+                      "decorator",
+                      "leanSorryLike"
+                    ]
+                  },
+                  "range": true
+                },
+                "signatureHelpProvider": {
+                  "triggerCharacters": [
+                    " "
+                  ],
+                  "workDoneProgress": false
+                },
+                "textDocumentSync": {
+                  "change": 2,
+                  "openClose": true,
+                  "save": {
+                    "includeText": true
+                  },
+                  "willSave": false,
+                  "willSaveWaitUntil": false
+                },
+                "typeDefinitionProvider": true,
+                "workspaceSymbolProvider": true
+              },
+              "serverInfo": {
+                "name": "Lean 4 Server",
+                "version": "0.3.0"
+              }
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0445,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "initialized",
+            "params": {}
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0446,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+                "languageId": "lean",
+                "version": 1,
+                "text": "#check (\"😀é\", unknownName)\n"
+              }
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0446,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 2,
+            "method": "textDocument/waitForDiagnostics",
+            "params": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.0789,
+          "message": {
+            "id": "register_lean_watcher",
+            "jsonrpc": "2.0",
+            "method": "client/registerCapability",
+            "params": {
+              "registrations": [
+                {
+                  "id": "lean_watcher",
+                  "method": "workspace/didChangeWatchedFiles",
+                  "registerOptions": {
+                    "watchers": [
+                      {
+                        "globPattern": "**/*.lean"
+                      },
+                      {
+                        "globPattern": "**/*.ilean"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0789,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "register_lean_watcher",
+            "result": null
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.0959,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.1298,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.3135,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.329,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.3446,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "code": "lean.unknownIdentifier",
+                  "fullRange": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "message": "Unknown identifier `unknownName`",
+                  "range": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "severity": 1,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "message": "(\"😀é\", sorry) : String × ?m.2",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.36,
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.3601,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didChange",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+                "version": 2
+              },
+              "contentChanges": [
+                {
+                  "range": {
+                    "start": {
+                      "line": 0,
+                      "character": 16
+                    },
+                    "end": {
+                      "line": 0,
+                      "character": 27
+                    }
+                  },
+                  "text": "Nat.zero"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.3601,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "textDocument/waitForDiagnostics",
+            "params": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 2
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.5876,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+                "version": 2
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.6185,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+                "version": 2
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.634,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "message": "(\"😀é\", Nat.zero) : String × Nat",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 2
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.6495,
+          "message": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.6495,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 4,
+            "method": "shutdown",
+            "params": null
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.6663,
+          "message": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.697,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 2
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.7125,
+          "message": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.7125,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exit",
+            "params": null
+          }
+        }
+      ],
+      "samples": [
+        {
+          "elapsed_seconds": 0.005,
+          "host": {
+            "estimated_reclaimable_percent": 35.4076,
+            "free_disk_bytes": 18705039360,
+            "page_size": 16384,
+            "pages": {
+              "free": 16423,
+              "inactive": 163178,
+              "speculative": 6037
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 304,
+          "scratch_bytes": 9364
+        },
+        {
+          "elapsed_seconds": 0.0332,
+          "host": {
+            "estimated_reclaimable_percent": 35.3107,
+            "free_disk_bytes": 18705039360,
+            "page_size": 16384,
+            "pages": {
+              "free": 15658,
+              "inactive": 163408,
+              "speculative": 6064
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 49424,
+          "scratch_bytes": 9364
+        },
+        {
+          "elapsed_seconds": 0.0498,
+          "host": {
+            "estimated_reclaimable_percent": 35.3218,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 15599,
+              "inactive": 163525,
+              "speculative": 6064
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 52736,
+          "scratch_bytes": 10982
+        },
+        {
+          "elapsed_seconds": 0.0666,
+          "host": {
+            "estimated_reclaimable_percent": 35.2224,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 14944,
+              "inactive": 163654,
+              "speculative": 6069
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 54016,
+          "scratch_bytes": 10982
+        },
+        {
+          "elapsed_seconds": 0.0841,
+          "host": {
+            "estimated_reclaimable_percent": 35.1782,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 14187,
+              "inactive": 164198,
+              "speculative": 6050
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 56368,
+          "scratch_bytes": 11133
+        },
+        {
+          "elapsed_seconds": 0.1009,
+          "host": {
+            "estimated_reclaimable_percent": 35.1051,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 13704,
+              "inactive": 164349,
+              "speculative": 5999
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 58592,
+          "scratch_bytes": 11511
+        },
+        {
+          "elapsed_seconds": 0.1179,
+          "host": {
+            "estimated_reclaimable_percent": 35.2757,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 14129,
+              "inactive": 164853,
+              "speculative": 5964
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 60800,
+          "scratch_bytes": 11511
+        },
+        {
+          "elapsed_seconds": 0.1345,
+          "host": {
+            "estimated_reclaimable_percent": 35.3779,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 14091,
+              "inactive": 165463,
+              "speculative": 5928
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 61744,
+          "scratch_bytes": 11511
+        },
+        {
+          "elapsed_seconds": 0.2113,
+          "host": {
+            "estimated_reclaimable_percent": 35.2571,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 12271,
+              "inactive": 166785,
+              "speculative": 5793
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 71200,
+          "scratch_bytes": 11511
+        },
+        {
+          "elapsed_seconds": 0.2867,
+          "host": {
+            "estimated_reclaimable_percent": 35.0136,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 10986,
+              "inactive": 166928,
+              "speculative": 5658
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 78720,
+          "scratch_bytes": 13280
+        },
+        {
+          "elapsed_seconds": 0.3024,
+          "host": {
+            "estimated_reclaimable_percent": 35.0195,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 11015,
+              "inactive": 166961,
+              "speculative": 5627
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 80160,
+          "scratch_bytes": 13280
+        },
+        {
+          "elapsed_seconds": 0.3179,
+          "host": {
+            "estimated_reclaimable_percent": 34.9878,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 10849,
+              "inactive": 167001,
+              "speculative": 5587
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 81600,
+          "scratch_bytes": 13280
+        },
+        {
+          "elapsed_seconds": 0.3334,
+          "host": {
+            "estimated_reclaimable_percent": 34.9562,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 10682,
+              "inactive": 167045,
+              "speculative": 5544
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 83472,
+          "scratch_bytes": 13280
+        },
+        {
+          "elapsed_seconds": 0.3489,
+          "host": {
+            "estimated_reclaimable_percent": 34.9617,
+            "free_disk_bytes": 18705035264,
+            "page_size": 16384,
+            "pages": {
+              "free": 10708,
+              "inactive": 167082,
+              "speculative": 5510
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 84704,
+          "scratch_bytes": 13280
+        },
+        {
+          "elapsed_seconds": 0.3648,
+          "host": {
+            "estimated_reclaimable_percent": 34.9356,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 10489,
+              "inactive": 167192,
+              "speculative": 5482
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 86144,
+          "scratch_bytes": 14127
+        },
+        {
+          "elapsed_seconds": 0.4406,
+          "host": {
+            "estimated_reclaimable_percent": 34.811,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 9947,
+              "inactive": 167258,
+              "speculative": 5305
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 94832,
+          "scratch_bytes": 14127
+        },
+        {
+          "elapsed_seconds": 0.5108,
+          "host": {
+            "estimated_reclaimable_percent": 34.7315,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 9466,
+              "inactive": 167504,
+              "speculative": 5123
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 102544,
+          "scratch_bytes": 14127
+        },
+        {
+          "elapsed_seconds": 0.5764,
+          "host": {
+            "estimated_reclaimable_percent": 34.6788,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 8934,
+              "inactive": 167904,
+              "speculative": 4979
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 109680,
+          "scratch_bytes": 15632
+        },
+        {
+          "elapsed_seconds": 0.592,
+          "host": {
+            "estimated_reclaimable_percent": 34.6657,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 8832,
+              "inactive": 167968,
+              "speculative": 4948
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 111088,
+          "scratch_bytes": 15785
+        },
+        {
+          "elapsed_seconds": 0.6075,
+          "host": {
+            "estimated_reclaimable_percent": 34.6613,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 8800,
+              "inactive": 168009,
+              "speculative": 4916
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 112272,
+          "scratch_bytes": 15785
+        },
+        {
+          "elapsed_seconds": 0.6228,
+          "host": {
+            "estimated_reclaimable_percent": 34.6428,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 8703,
+              "inactive": 168047,
+              "speculative": 4878
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 113280,
+          "scratch_bytes": 15785
+        },
+        {
+          "elapsed_seconds": 0.6384,
+          "host": {
+            "estimated_reclaimable_percent": 34.6312,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 8538,
+              "inactive": 168194,
+              "speculative": 4835
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 115520,
+          "scratch_bytes": 15785
+        },
+        {
+          "elapsed_seconds": 0.6547,
+          "host": {
+            "estimated_reclaimable_percent": 34.6121,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 8438,
+              "inactive": 168235,
+              "speculative": 4794
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 116496,
+          "scratch_bytes": 16426
+        },
+        {
+          "elapsed_seconds": 0.6707,
+          "host": {
+            "estimated_reclaimable_percent": 35.066,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 11179,
+              "inactive": 167898,
+              "speculative": 4770
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 118064,
+          "scratch_bytes": 16426
+        },
+        {
+          "elapsed_seconds": 0.6861,
+          "host": {
+            "estimated_reclaimable_percent": 35.0603,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 11078,
+              "inactive": 168011,
+              "speculative": 4728
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 119152,
+          "scratch_bytes": 16426
+        },
+        {
+          "elapsed_seconds": 0.7014,
+          "host": {
+            "estimated_reclaimable_percent": 35.0412,
+            "free_disk_bytes": 18705031168,
+            "page_size": 16384,
+            "pages": {
+              "free": 10978,
+              "inactive": 168056,
+              "speculative": 4683
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 120720,
+          "scratch_bytes": 16426
+        }
+      ],
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+        "--server"
+      ],
+      "environment": {
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_SERVER_LOG_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/logs"
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only",
+      "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+      "started_utc": "2026-09-30T07:33:51.999131+00:00",
+      "start_monotonic_ns": 2034943737793958,
+      "pid": 1199,
+      "initialize": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {}
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      },
+      "before": {
+        "wait_response": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "publications": [
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "code": "lean.unknownIdentifier",
+                  "fullRange": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "message": "Unknown identifier `unknownName`",
+                  "range": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "severity": 1,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "message": "(\"😀é\", sorry) : String × ?m.2",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 1
+            }
+          }
+        ],
+        "last": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 27,
+                "line": 0
+              },
+              "start": {
+                "character": 16,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownName`",
+            "range": {
+              "end": {
+                "character": 27,
+                "line": 0
+              },
+              "start": {
+                "character": 16,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "(\"😀é\", sorry) : String × ?m.2",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "after": {
+        "wait_response": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "publications": [
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "code": "lean.unknownIdentifier",
+                  "fullRange": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "message": "Unknown identifier `unknownName`",
+                  "range": {
+                    "end": {
+                      "character": 27,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 16,
+                      "line": 0
+                    }
+                  },
+                  "severity": 1,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "message": "(\"😀é\", sorry) : String × ?m.2",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "message": "(\"😀é\", Nat.zero) : String × Nat",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 0
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf16_only/Encoding.lean",
+              "version": 2
+            }
+          }
+        ],
+        "last": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "(\"😀é\", Nat.zero) : String × Nat",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      "shutdown": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      },
+      "ended_utc": "2026-09-30T07:33:52.713158+00:00",
+      "end_monotonic_ns": 2034944451821541,
+      "exit": 0,
+      "wire_sha256": {
+        "client": "010b33b4ef04b5cfd06d7111086a0703b5efe21fceca2267a63d7c207d28835d",
+        "server": "f42b523d9b7194c3b7bf1dc94b27d9c9bbe8caf64900be66093368b0f9e46a10",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "postrun_process_group_rss_kib": 0
+    }
+  },
+  "batch": {
+    "original": {
+      "status": "completed",
+      "stop_reason": null,
+      "preflight": {
+        "elapsed_seconds": 0.0042,
+        "host": {
+          "estimated_reclaimable_percent": 35.8171,
+          "free_disk_bytes": 18705014784,
+          "page_size": 16384,
+          "pages": {
+            "free": 16161,
+            "inactive": 166938,
+            "speculative": 4686
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_bytes": 16426
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+        "--json",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/original.lean"
+      ],
+      "pid": 1309,
+      "exit": 1,
+      "samples": [
+        {
+          "elapsed_seconds": 0.0049,
+          "host": {
+            "estimated_reclaimable_percent": 35.8091,
+            "free_disk_bytes": 18705010688,
+            "page_size": 16384,
+            "pages": {
+              "free": 16123,
+              "inactive": 166933,
+              "speculative": 4687
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 304,
+          "scratch_bytes": 16458
+        },
+        {
+          "elapsed_seconds": 0.0809,
+          "host": {
+            "estimated_reclaimable_percent": 35.5614,
+            "free_disk_bytes": 18704973824,
+            "page_size": 16384,
+            "pages": {
+              "free": 14820,
+              "inactive": 166934,
+              "speculative": 4690
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 97408,
+          "scratch_bytes": 16458
+        },
+        {
+          "elapsed_seconds": 0.1575,
+          "host": {
+            "estimated_reclaimable_percent": 35.3975,
+            "free_disk_bytes": 18704973824,
+            "page_size": 16384,
+            "pages": {
+              "free": 13954,
+              "inactive": 166934,
+              "speculative": 4697
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 0,
+          "scratch_bytes": 16458
+        }
+      ],
+      "stdout_sha256": "c39b4a1771159042d3eab0bb35f38814de67b93a204d4e296509da9c30b74138",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "postrun_process_group_rss_kib": 0
+    },
+    "patched": {
+      "status": "completed",
+      "stop_reason": null,
+      "preflight": {
+        "elapsed_seconds": 0.0042,
+        "host": {
+          "estimated_reclaimable_percent": 35.6766,
+          "free_disk_bytes": 18704965632,
+          "page_size": 16384,
+          "pages": {
+            "free": 15412,
+            "inactive": 166934,
+            "speculative": 4702
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_bytes": 16458
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+        "--json",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/patched.lean"
+      ],
+      "pid": 1327,
+      "exit": 0,
+      "samples": [
+        {
+          "elapsed_seconds": 0.0049,
+          "host": {
+            "estimated_reclaimable_percent": 35.6783,
+            "free_disk_bytes": 18704961536,
+            "page_size": 16384,
+            "pages": {
+              "free": 15420,
+              "inactive": 166934,
+              "speculative": 4703
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 304,
+          "scratch_bytes": 16487
+        },
+        {
+          "elapsed_seconds": 0.081,
+          "host": {
+            "estimated_reclaimable_percent": 35.5473,
+            "free_disk_bytes": 18704961536,
+            "page_size": 16384,
+            "pages": {
+              "free": 14722,
+              "inactive": 166935,
+              "speculative": 4713
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 105920,
+          "scratch_bytes": 16487
+        },
+        {
+          "elapsed_seconds": 0.1573,
+          "host": {
+            "estimated_reclaimable_percent": 35.6611,
+            "free_disk_bytes": 18704961536,
+            "page_size": 16384,
+            "pages": {
+              "free": 15309,
+              "inactive": 166935,
+              "speculative": 4723
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 0,
+          "scratch_bytes": 16487
+        }
+      ],
+      "stdout_sha256": "135e91de73d08598035f0cd7f67dfa7121b1c9c2c432d25ece707d207b4fbead",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "postrun_process_group_rss_kib": 0
+    }
+  },
+  "status": "completed",
+  "stop_reason": null,
+  "preflight": {
+    "elapsed_seconds": 0.0056,
+    "host": {
+      "estimated_reclaimable_percent": 36.5541,
+      "free_disk_bytes": 18709319680,
+      "page_size": 16384,
+      "pages": {
+        "free": 3788,
+        "inactive": 186057,
+        "speculative": 1804
+      },
+      "physical_memory_bytes": 8589934592
+    },
+    "process_group_rss_kib": 0,
+    "scratch_bytes": 0
+  },
+  "postrun_host": {
+    "estimated_reclaimable_percent": 35.6737,
+    "free_disk_bytes": 18704957440,
+    "page_size": 16384,
+    "pages": {
+      "free": 15372,
+      "inactive": 166935,
+      "speculative": 4726
+    },
+    "physical_memory_bytes": 8589934592
+  },
+  "cleanup": {
+    "work_exists": true,
+    "work_exists_after": false
+  }
+}

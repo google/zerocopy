@@ -1,0 +1,19 @@
+Content-Length: 582
+
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"processId":991,"rootUri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only","capabilities":{"general":{"positionEncodings":["utf-8"]},"textDocument":{"synchronization":{"didSave":false}}},"initializationOptions":{"hasWidgets":false,"logCfg":{"logDir":"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/logs"}}}}Content-Length: 52
+
+{"jsonrpc":"2.0","method":"initialized","params":{}}Content-Length: 336
+
+{"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean","languageId":"lean","version":1,"text":"#check (\"😀é\", unknownName)\n"}}}Content-Length: 272
+
+{"jsonrpc":"2.0","id":2,"method":"textDocument/waitForDiagnostics","params":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean","version":1}}Content-Length: 60
+
+{"jsonrpc":"2.0","id":"register_lean_watcher","result":null}Content-Length: 388
+
+{"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean","version":2},"contentChanges":[{"range":{"start":{"line":0,"character":19},"end":{"line":0,"character":30}},"text":"Nat.zero"}]}}Content-Length: 272
+
+{"jsonrpc":"2.0","id":3,"method":"textDocument/waitForDiagnostics","params":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-lean429-version-oracle/anneal-3731-i062-lean429-version-diff-2026-09-30/work/utf8_only/Encoding.lean","version":2}}Content-Length: 58
+
+{"jsonrpc":"2.0","id":4,"method":"shutdown","params":null}Content-Length: 47
+
+{"jsonrpc":"2.0","method":"exit","params":null}
