@@ -12422,6 +12422,64 @@
         "verification/reuse"
       ]
     },
+    "editor-engines-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "e0cfc848df5d3bac60afe93fae903ba51d3d72ac"
+          },
+          "name": "Frozen reference corpus containing R383, R404, R513\u2013R515"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "ded546ad82656ce6605ee2f2aa60c78dec70d95f"
+          },
+          "name": "clangd original LLVM source"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "llvm/llvm-project",
+            "revision": "229b9b2f4e20840a8280174fa08385fd9e36844b"
+          },
+          "name": "clangd selected LLVM main source"
+        },
+        {
+          "identity": {
+            "repository": "golang/tools",
+            "revision": "98444708d405557b5ddd6179be1a6abc14150d5f"
+          },
+          "name": "gopls original tools source"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "golang/tools",
+            "revision": "134264d72fba423ca1ad358683cd3c32699b010e"
+          },
+          "name": "gopls selected tools master source"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+          },
+          "name": "rust-analyzer pinned and observed master source"
+        }
+      ],
+      "topics": [
+        "clangd",
+        "gopls",
+        "rust-analyzer",
+        "reference/version-review",
+        "anneal/interactive-architecture"
+      ]
+    },
     "end-to-end-source-correspondence-nightly-2026-06-03-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [

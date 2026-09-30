@@ -1,0 +1,12 @@
+{
+  "topics": ["clangd", "gopls", "rust-analyzer", "reference/version-review", "anneal/interactive-architecture"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R383, R404, R513–R515", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "e0cfc848df5d3bac60afe93fae903ba51d3d72ac"}},
+    {"name": "clangd original LLVM source", "identity": {"repository": "llvm/llvm-project", "revision": "ded546ad82656ce6605ee2f2aa60c78dec70d95f"}},
+    {"name": "clangd selected LLVM main source", "identity": {"repository": "llvm/llvm-project", "branch": "main", "revision": "229b9b2f4e20840a8280174fa08385fd9e36844b"}},
+    {"name": "gopls original tools source", "identity": {"repository": "golang/tools", "revision": "98444708d405557b5ddd6179be1a6abc14150d5f"}},
+    {"name": "gopls selected tools master source", "identity": {"repository": "golang/tools", "branch": "master", "revision": "134264d72fba423ca1ad358683cd3c32699b010e"}},
+    {"name": "rust-analyzer pinned and observed master source", "identity": {"repository": "rust-lang/rust-analyzer", "branch": "master", "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"}}
+  ],
+  "observed_at": "2026-09-30"
+}
