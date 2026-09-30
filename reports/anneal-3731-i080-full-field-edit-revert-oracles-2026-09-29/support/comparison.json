@@ -1,0 +1,1838 @@
+{
+  "artifact_sha256": {
+    "inc0-baseline-A": "5350dafb0af7cc4d7b30a67db243d85372c5fa300ced4ea992eea3bca4b6135b",
+    "inc0-baseline-B": "32c09e7a5e3cacace77f7f0d8e3e54f0a8a9c78770943dfe4baee14505c00022",
+    "inc0-edited-A": "e3886f9cc49d0baed88edc4b6decff5902e40f6e5be810406c4edebc9829b27a",
+    "inc0-edited-B": "5d2cf156df5d84ebabdf6b3964933133c2e637432701619b058e483d92e157e7",
+    "inc0-oracle-baseline": "be15b8fb532ebeee252c08188341f76f3c0ec4d70482305e3cba3f43a7cff6ff",
+    "inc0-oracle-edited": "35ed44bab715da520d6f19f995c1566bb01c5f93f53192df6b6e438fa13f54fc",
+    "inc0-reverted-A": "a05a10f01e5bebfb797169150fa491db01529ef38aa94ee6527efecd9be82dde",
+    "inc0-reverted-B": "c6efc4dce83d15f4af4b445a203740c3d9b4f3b3808ad6cb4f9af85854b54888",
+    "inc1-baseline-A": "d4c9709adf587cf55c56001ca19b29f623c96c72f4022e03d407ce8fccad4c0b",
+    "inc1-baseline-B": "27d38bd5a2109fa0b5ac5b6a390194ef09f985974ac30090fbd83925cf8ff2dc",
+    "inc1-edited-A": "fd13ac183381ed8966ed5118b52bab5ce5535ff51b0b1547e46a797314a8c2cb",
+    "inc1-edited-B": "fdf546cdefe20a16979664fda4a03eec87c2f0cc4e77b3df37f73aa64997fa69",
+    "inc1-oracle-baseline": "331f1893ca72e291aefa1a3488660d45e2d406a41cb877a32419a73b23c89dac",
+    "inc1-oracle-edited": "31c2c98258ec8a658f268ceb7609c850c1543bf8f61ba7b1f96462396f2aa12b",
+    "inc1-reverted-A": "2d4539cdec11e0d3af3ef894d303f5886fa4d0dc47c327a60a3d7002fa076f5d",
+    "inc1-reverted-B": "dda6b3041bbf79ea70261074575d2abea481d2f80858fbb80c16061c5d37a739"
+  },
+  "elapsed_seconds": 0.13824770785868168,
+  "limits": {
+    "max_rss_bytes": 67108864,
+    "max_seconds": 5.0,
+    "min_reclaimable_percent": 20.0
+  },
+  "negative_controls": [
+    {
+      "difference_count": 24,
+      "differences": [
+        {
+          "left": "#![allow(dead_code)]\ninclude!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));\n/// proof-id: A\npub fn step(x: u32) -> u32 { x.wrapping_add(2) }\npub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }\npub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }\npub fn generated_value() -> u32 { SNAPSHOT_VALUE }\n",
+          "path": "/translated/files/0/contents",
+          "right": "#![allow(dead_code)]\ninclude!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));\n/// proof-id: A\npub fn step(x: u32) -> u32 { x.wrapping_add(1) }\npub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }\npub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }\npub fn generated_value() -> u32 { SNAPSHOT_VALUE }\n"
+        },
+        {
+          "left": "2",
+          "path": "/translated/fun_decls/0/body/Structured/body/statements/2/kind/Call/args/1/Const/kind/Literal/Scalar/Unsigned/1",
+          "right": "1"
+        },
+        {
+          "left": "pub fn step(x: u32) -> u32 { x.wrapping_add(2) }",
+          "path": "/translated/fun_decls/0/item_meta/source_text",
+          "right": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-oracle-edited.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-oracle-baseline.llbc"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "inc0-oracle-edited",
+      "left_sha256": "35ed44bab715da520d6f19f995c1566bb01c5f93f53192df6b6e438fa13f54fc",
+      "right": "inc0-oracle-baseline",
+      "right_sha256": "be15b8fb532ebeee252c08188341f76f3c0ec4d70482305e3cba3f43a7cff6ff"
+    },
+    {
+      "difference_count": 20,
+      "differences": [
+        {
+          "left": "#![allow(dead_code)]\ninclude!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));\n/// proof-id: A\npub fn step(x: u32) -> u32 { x.wrapping_add(2) }\npub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }\npub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }\npub fn generated_value() -> u32 { SNAPSHOT_VALUE }\n",
+          "path": "/translated/files/0/contents",
+          "right": "#![allow(dead_code)]\ninclude!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));\n/// proof-id: A\npub fn step(x: u32) -> u32 { x.wrapping_add(1) }\npub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }\npub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }\npub fn generated_value() -> u32 { SNAPSHOT_VALUE }\n"
+        },
+        {
+          "left": "2",
+          "path": "/translated/fun_decls/0/body/Structured/body/statements/2/kind/Call/args/1/Const/kind/Literal/Scalar/Unsigned/1",
+          "right": "1"
+        },
+        {
+          "left": "pub fn step(x: u32) -> u32 { x.wrapping_add(2) }",
+          "path": "/translated/fun_decls/0/item_meta/source_text",
+          "right": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-oracle-edited.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-oracle-baseline.llbc"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 7
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "inc1-oracle-edited",
+      "left_sha256": "31c2c98258ec8a658f268ceb7609c850c1543bf8f61ba7b1f96462396f2aa12b",
+      "right": "inc1-oracle-baseline",
+      "right_sha256": "331f1893ca72e291aefa1a3488660d45e2d406a41cb877a32419a73b23c89dac"
+    }
+  ],
+  "pairs": [
+    {
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-baseline-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-oracle-baseline.llbc"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 3
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "inc0-baseline-A",
+      "left_sha256": "5350dafb0af7cc4d7b30a67db243d85372c5fa300ced4ea992eea3bca4b6135b",
+      "right": "inc0-oracle-baseline",
+      "right_sha256": "be15b8fb532ebeee252c08188341f76f3c0ec4d70482305e3cba3f43a7cff6ff"
+    },
+    {
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-baseline-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-oracle-baseline.llbc"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 1
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "inc0-baseline-B",
+      "left_sha256": "32c09e7a5e3cacace77f7f0d8e3e54f0a8a9c78770943dfe4baee14505c00022",
+      "right": "inc0-oracle-baseline",
+      "right_sha256": "be15b8fb532ebeee252c08188341f76f3c0ec4d70482305e3cba3f43a7cff6ff"
+    },
+    {
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-edited-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-oracle-edited.llbc"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/3/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Global",
+          "right": 0
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "payload_len"
+        }
+      ],
+      "left": "inc0-edited-A",
+      "left_sha256": "e3886f9cc49d0baed88edc4b6decff5902e40f6e5be810406c4edebc9829b27a",
+      "right": "inc0-oracle-edited",
+      "right_sha256": "35ed44bab715da520d6f19f995c1566bb01c5f93f53192df6b6e438fa13f54fc"
+    },
+    {
+      "difference_count": 17,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-edited-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-oracle-baseline.llbc"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/2/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "inc0-edited-B",
+      "left_sha256": "5d2cf156df5d84ebabdf6b3964933133c2e637432701619b058e483d92e157e7",
+      "right": "inc0-oracle-baseline",
+      "right_sha256": "be15b8fb532ebeee252c08188341f76f3c0ec4d70482305e3cba3f43a7cff6ff"
+    },
+    {
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-reverted-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-oracle-baseline.llbc"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "inc0-reverted-A",
+      "left_sha256": "a05a10f01e5bebfb797169150fa491db01529ef38aa94ee6527efecd9be82dde",
+      "right": "inc0-oracle-baseline",
+      "right_sha256": "be15b8fb532ebeee252c08188341f76f3c0ec4d70482305e3cba3f43a7cff6ff"
+    },
+    {
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc0/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-reverted-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc0-oracle-baseline.llbc"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 3
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "inc0-reverted-B",
+      "left_sha256": "c6efc4dce83d15f4af4b445a203740c3d9b4f3b3808ad6cb4f9af85854b54888",
+      "right": "inc0-oracle-baseline",
+      "right_sha256": "be15b8fb532ebeee252c08188341f76f3c0ec4d70482305e3cba3f43a7cff6ff"
+    },
+    {
+      "difference_count": 20,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-baseline-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-oracle-baseline.llbc"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 7
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "inc1-baseline-A",
+      "left_sha256": "d4c9709adf587cf55c56001ca19b29f623c96c72f4022e03d407ce8fccad4c0b",
+      "right": "inc1-oracle-baseline",
+      "right_sha256": "331f1893ca72e291aefa1a3488660d45e2d406a41cb877a32419a73b23c89dac"
+    },
+    {
+      "difference_count": 18,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-baseline-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-oracle-baseline.llbc"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "inc1-baseline-B",
+      "left_sha256": "27d38bd5a2109fa0b5ac5b6a390194ef09f985974ac30090fbd83925cf8ff2dc",
+      "right": "inc1-oracle-baseline",
+      "right_sha256": "331f1893ca72e291aefa1a3488660d45e2d406a41cb877a32419a73b23c89dac"
+    },
+    {
+      "difference_count": 20,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-edited-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-oracle-edited.llbc"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 0
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "inc1-edited-A",
+      "left_sha256": "fd13ac183381ed8966ed5118b52bab5ce5535ff51b0b1547e46a797314a8c2cb",
+      "right": "inc1-oracle-edited",
+      "right_sha256": "31c2c98258ec8a658f268ceb7609c850c1543bf8f61ba7b1f96462396f2aa12b"
+    },
+    {
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-edited-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-oracle-baseline.llbc"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 6
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "inc1-edited-B",
+      "left_sha256": "fdf546cdefe20a16979664fda4a03eec87c2f0cc4e77b3df37f73aa64997fa69",
+      "right": "inc1-oracle-baseline",
+      "right_sha256": "331f1893ca72e291aefa1a3488660d45e2d406a41cb877a32419a73b23c89dac"
+    },
+    {
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-reverted-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-oracle-baseline.llbc"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 2
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "inc1-reverted-A",
+      "left_sha256": "2d4539cdec11e0d3af3ef894d303f5886fa4d0dc47c327a60a3d7002fa076f5d",
+      "right": "inc1-oracle-baseline",
+      "right_sha256": "331f1893ca72e291aefa1a3488660d45e2d406a41cb877a32419a73b23c89dac"
+    },
+    {
+      "difference_count": 19,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-source-edit-cache/work/inc1/oracle-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-reverted-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-source-edit-revert-incremental-cache-2026-09-29/support/artifacts/inc1-oracle-baseline.llbc"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/5/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "inc1-reverted-B",
+      "left_sha256": "dda6b3041bbf79ea70261074575d2abea481d2f80858fbb80c16061c5d37a739",
+      "right": "inc1-oracle-baseline",
+      "right_sha256": "331f1893ca72e291aefa1a3488660d45e2d406a41cb877a32419a73b23c89dac"
+    }
+  ],
+  "peak_rss_bytes": 24739840,
+  "samples": [
+    {
+      "elapsed_seconds": 2.3124972358345985e-05,
+      "label": "preflight-before-input",
+      "max_rss_bytes": 21381120,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.568702697753906
+    },
+    {
+      "elapsed_seconds": 0.006565457908436656,
+      "label": "decoded-inc0-baseline-A",
+      "max_rss_bytes": 21643264,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.57709503173828
+    },
+    {
+      "elapsed_seconds": 0.010986749781295657,
+      "label": "decoded-inc0-baseline-B",
+      "max_rss_bytes": 21823488,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.572708129882812
+    },
+    {
+      "elapsed_seconds": 0.015243166824802756,
+      "label": "decoded-inc0-edited-A",
+      "max_rss_bytes": 22052864,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.56908416748047
+    },
+    {
+      "elapsed_seconds": 0.01950558298267424,
+      "label": "decoded-inc0-edited-B",
+      "max_rss_bytes": 22265856,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.565460205078125
+    },
+    {
+      "elapsed_seconds": 0.02357879187911749,
+      "label": "decoded-inc0-oracle-baseline",
+      "max_rss_bytes": 22413312,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.5616455078125
+    },
+    {
+      "elapsed_seconds": 0.02763066696934402,
+      "label": "decoded-inc0-oracle-edited",
+      "max_rss_bytes": 22642688,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.569847106933594
+    },
+    {
+      "elapsed_seconds": 0.03159649996086955,
+      "label": "decoded-inc0-reverted-A",
+      "max_rss_bytes": 22839296,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.56622314453125
+    },
+    {
+      "elapsed_seconds": 0.03559499979019165,
+      "label": "decoded-inc0-reverted-B",
+      "max_rss_bytes": 23035904,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.562026977539062
+    },
+    {
+      "elapsed_seconds": 0.039456291822716594,
+      "label": "decoded-inc1-baseline-A",
+      "max_rss_bytes": 23232512,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.55725860595703
+    },
+    {
+      "elapsed_seconds": 0.043324916856363416,
+      "label": "decoded-inc1-baseline-B",
+      "max_rss_bytes": 23396352,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.553634643554688
+    },
+    {
+      "elapsed_seconds": 0.04732458293437958,
+      "label": "decoded-inc1-edited-A",
+      "max_rss_bytes": 23609344,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.54161834716797
+    },
+    {
+      "elapsed_seconds": 0.05369733297266066,
+      "label": "decoded-inc1-edited-B",
+      "max_rss_bytes": 23805952,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.528839111328125
+    },
+    {
+      "elapsed_seconds": 0.058561916928738356,
+      "label": "decoded-inc1-oracle-baseline",
+      "max_rss_bytes": 24035328,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.525787353515625
+    },
+    {
+      "elapsed_seconds": 0.06260279193520546,
+      "label": "decoded-inc1-oracle-edited",
+      "max_rss_bytes": 24248320,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.535324096679688
+    },
+    {
+      "elapsed_seconds": 0.06662245793268085,
+      "label": "decoded-inc1-reverted-A",
+      "max_rss_bytes": 24428544,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.530746459960938
+    },
+    {
+      "elapsed_seconds": 0.07053695782087743,
+      "label": "decoded-inc1-reverted-B",
+      "max_rss_bytes": 24641536,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.526931762695312
+    },
+    {
+      "elapsed_seconds": 0.07507058279588819,
+      "label": "compared-inc0-baseline-A",
+      "max_rss_bytes": 24641536,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.53589630126953
+    },
+    {
+      "elapsed_seconds": 0.08005112479440868,
+      "label": "compared-inc0-baseline-B",
+      "max_rss_bytes": 24641536,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.532081604003906
+    },
+    {
+      "elapsed_seconds": 0.08463887497782707,
+      "label": "compared-inc0-edited-A",
+      "max_rss_bytes": 24641536,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.52941131591797
+    },
+    {
+      "elapsed_seconds": 0.08912308281287551,
+      "label": "compared-inc0-edited-B",
+      "max_rss_bytes": 24657920,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.54924774169922
+    },
+    {
+      "elapsed_seconds": 0.09366470784880221,
+      "label": "compared-inc0-reverted-A",
+      "max_rss_bytes": 24657920,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.545814514160156
+    },
+    {
+      "elapsed_seconds": 0.09812729177065194,
+      "label": "compared-inc0-reverted-B",
+      "max_rss_bytes": 24674304,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.54199981689453
+    },
+    {
+      "elapsed_seconds": 0.10317837493494153,
+      "label": "compared-inc1-baseline-A",
+      "max_rss_bytes": 24674304,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.51453399658203
+    },
+    {
+      "elapsed_seconds": 0.10778129193931818,
+      "label": "compared-inc1-baseline-B",
+      "max_rss_bytes": 24690688,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.511863708496094
+    },
+    {
+      "elapsed_seconds": 0.11228491691872478,
+      "label": "compared-inc1-edited-A",
+      "max_rss_bytes": 24690688,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.50823974609375
+    },
+    {
+      "elapsed_seconds": 0.11680116690695286,
+      "label": "compared-inc1-edited-B",
+      "max_rss_bytes": 24707072,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.516822814941406
+    },
+    {
+      "elapsed_seconds": 0.1212871668394655,
+      "label": "compared-inc1-reverted-A",
+      "max_rss_bytes": 24707072,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.525405883789062
+    },
+    {
+      "elapsed_seconds": 0.12573879188857973,
+      "label": "compared-inc1-reverted-B",
+      "max_rss_bytes": 24723456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.52178192138672
+    },
+    {
+      "elapsed_seconds": 0.1301267498638481,
+      "label": "negative-control-inc0",
+      "max_rss_bytes": 24723456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.518348693847656
+    },
+    {
+      "elapsed_seconds": 0.1346299578435719,
+      "label": "negative-control-inc1",
+      "max_rss_bytes": 24723456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 22.514915466308594
+    }
+  ],
+  "source_results_sha256": "e1f8ac94a2bda6f93ca21d11c8fae4c6030bd2f9a9ac5491d2e4b36f981e1d4a",
+  "status": "completed"
+}

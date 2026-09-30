@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "cargo/incremental",
+    "artifact-identity/llbc"
+  ],
+  "subjects": [
+    {
+      "name": "Published v37 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "44772095872665264473eddf7131eb897b1821f0",
+        "row_challenge_sha256": "4406778fa6289f5f13b48f1b860152fa9ff314577c65eaaed5497dfca00d6354"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731 as retained in v37",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Retained I080 sequential edit/revert full-field LLBC comparison",
+      "identity": {
+        "source_report_sha256": "c781bf1c2ab1d1d883be36694ad311a29eb7e4a9ec11c6b04d3a76256a848080",
+        "compare_sha256": "e70c139e1c4b9769b789ca67023bf1a523f89f118f5a68a199ff6565648bd804",
+        "comparison_sha256": "7fb668a000adbf5bd8d2a8534e40b1c0164aac1e7e9c9d71d797bd17a3977be7",
+        "source_results_sha256": "e1f8ac94a2bda6f93ca21d11c8fae4c6030bd2f9a9ac5491d2e4b36f981e1d4a"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}
