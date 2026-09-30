@@ -1,0 +1,220 @@
+{
+  "source_sha256": "b26ba311378fd7aeffcb4e82f2d38768e3577fa0df6b629cbdb602043655822c",
+  "llbc_sha256": "bb0358cb309641e07b5b5d6120a3f10a752a4951d363ce50f86d20ef9864dc0d",
+  "observations": [
+    {
+      "category": "fun_decls",
+      "name": "unicode_span_probe::after_emoji",
+      "line": 1,
+      "source_text": "pub fn after_emoji(x: u32) -> u32 { x + 1 }",
+      "observed": {
+        "beg": 30,
+        "end": 73
+      },
+      "predicted_begin": {
+        "utf8_bytes": 32,
+        "unicode_scalars": 29,
+        "utf16_code_units": 30,
+        "fixture_display_cells": 30
+      },
+      "predicted_end": {
+        "utf8_bytes": 75,
+        "unicode_scalars": 72,
+        "utf16_code_units": 73,
+        "fixture_display_cells": 73
+      },
+      "matched": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": true,
+        "fixture_display_cells": true
+      }
+    },
+    {
+      "category": "fun_decls",
+      "name": "unicode_span_probe::after_combining",
+      "line": 2,
+      "source_text": "pub fn after_combining(x: u32) -> u32 { x + 2 }",
+      "observed": {
+        "beg": 33,
+        "end": 80
+      },
+      "predicted_begin": {
+        "utf8_bytes": 35,
+        "unicode_scalars": 34,
+        "utf16_code_units": 34,
+        "fixture_display_cells": 33
+      },
+      "predicted_end": {
+        "utf8_bytes": 82,
+        "unicode_scalars": 81,
+        "utf16_code_units": 81,
+        "fixture_display_cells": 80
+      },
+      "matched": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": false,
+        "fixture_display_cells": true
+      }
+    },
+    {
+      "category": "fun_decls",
+      "name": "unicode_span_probe::unicode_body",
+      "line": 3,
+      "source_text": "pub fn unicode_body() -> usize { \"😀é\".len() }",
+      "observed": {
+        "beg": 0,
+        "end": 46
+      },
+      "predicted_begin": {
+        "utf8_bytes": 0,
+        "unicode_scalars": 0,
+        "utf16_code_units": 0,
+        "fixture_display_cells": 0
+      },
+      "predicted_end": {
+        "utf8_bytes": 50,
+        "unicode_scalars": 46,
+        "utf16_code_units": 47,
+        "fixture_display_cells": 46
+      },
+      "matched": {
+        "utf8_bytes": false,
+        "unicode_scalars": true,
+        "utf16_code_units": false,
+        "fixture_display_cells": true
+      }
+    },
+    {
+      "category": "fun_decls",
+      "name": "unicode_span_probe::EMOJI",
+      "line": 1,
+      "source_text": "pub const EMOJI: &str = \"😀\";",
+      "observed": {
+        "beg": 0,
+        "end": 29
+      },
+      "predicted_begin": {
+        "utf8_bytes": 0,
+        "unicode_scalars": 0,
+        "utf16_code_units": 0,
+        "fixture_display_cells": 0
+      },
+      "predicted_end": {
+        "utf8_bytes": 31,
+        "unicode_scalars": 28,
+        "utf16_code_units": 29,
+        "fixture_display_cells": 29
+      },
+      "matched": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": true,
+        "fixture_display_cells": true
+      }
+    },
+    {
+      "category": "fun_decls",
+      "name": "unicode_span_probe::COMBINING",
+      "line": 2,
+      "source_text": "pub const COMBINING: &str = \"é\";",
+      "observed": {
+        "beg": 0,
+        "end": 32
+      },
+      "predicted_begin": {
+        "utf8_bytes": 0,
+        "unicode_scalars": 0,
+        "utf16_code_units": 0,
+        "fixture_display_cells": 0
+      },
+      "predicted_end": {
+        "utf8_bytes": 34,
+        "unicode_scalars": 33,
+        "utf16_code_units": 33,
+        "fixture_display_cells": 32
+      },
+      "matched": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": false,
+        "fixture_display_cells": true
+      }
+    },
+    {
+      "category": "global_decls",
+      "name": "unicode_span_probe::EMOJI",
+      "line": 1,
+      "source_text": "pub const EMOJI: &str = \"😀\";",
+      "observed": {
+        "beg": 0,
+        "end": 29
+      },
+      "predicted_begin": {
+        "utf8_bytes": 0,
+        "unicode_scalars": 0,
+        "utf16_code_units": 0,
+        "fixture_display_cells": 0
+      },
+      "predicted_end": {
+        "utf8_bytes": 31,
+        "unicode_scalars": 28,
+        "utf16_code_units": 29,
+        "fixture_display_cells": 29
+      },
+      "matched": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": true,
+        "fixture_display_cells": true
+      }
+    },
+    {
+      "category": "global_decls",
+      "name": "unicode_span_probe::COMBINING",
+      "line": 2,
+      "source_text": "pub const COMBINING: &str = \"é\";",
+      "observed": {
+        "beg": 0,
+        "end": 32
+      },
+      "predicted_begin": {
+        "utf8_bytes": 0,
+        "unicode_scalars": 0,
+        "utf16_code_units": 0,
+        "fixture_display_cells": 0
+      },
+      "predicted_end": {
+        "utf8_bytes": 34,
+        "unicode_scalars": 33,
+        "utf16_code_units": 33,
+        "fixture_display_cells": 32
+      },
+      "matched": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": false,
+        "fixture_display_cells": true
+      }
+    }
+  ],
+  "excluded_nonlocal": [
+    {
+      "category": "fun_decls",
+      "name": "core::str::len",
+      "file_id": 1
+    }
+  ],
+  "mismatch_counts": {
+    "utf8_bytes": 7,
+    "unicode_scalars": 6,
+    "utf16_code_units": 4,
+    "fixture_display_cells": 0
+  },
+  "controls": {
+    "begin_plus_one_rejected": true,
+    "inclusive_end_rejected": true,
+    "changed_source_text_control": "not_run"
+  }
+}

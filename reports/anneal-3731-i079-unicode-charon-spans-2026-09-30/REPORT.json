@@ -1,0 +1,32 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "charon/cargo-extraction",
+    "charon/source-spans"
+  ],
+  "subjects": [
+    {
+      "name": "Installed pinned Charon executable on macOS arm64",
+      "identity": {
+        "artifact": "local Charon executable",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Pinned nightly Cargo and rustc",
+      "identity": {
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+        "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Retained three-line Rust Unicode fixture",
+      "identity": {
+        "src_lib_rs_sha256": "b26ba311378fd7aeffcb4e82f2d38768e3577fa0df6b629cbdb602043655822c"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

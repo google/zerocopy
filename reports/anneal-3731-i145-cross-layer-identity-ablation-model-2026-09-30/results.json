@@ -1,0 +1,1093 @@
+{
+  "constant_locators": {
+    "generated_path": "generated/Probe/",
+    "llbc_path": "out/Probe.llbc",
+    "module": "Probe.Funs",
+    "proof_uri": "file:///work/Proof.lean",
+    "source_path": "src/lib.rs"
+  },
+  "fields": [
+    "source_subject",
+    "source_bytes",
+    "source_revision",
+    "charon_config",
+    "llbc_bytes",
+    "aeneas_config",
+    "generated_tree",
+    "generated_generation",
+    "lake_environment",
+    "import_artifact",
+    "document_bytes",
+    "document_generation",
+    "worker_epoch",
+    "file_worker_epoch",
+    "rpc_session",
+    "rpc_request"
+  ],
+  "model": "I145 independent binary cross-stage axes v1",
+  "named_controls": {
+    "equal_outputs_distinct_histories": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": true,
+      "same_request_admission": false,
+      "same_strict_lineage": false,
+      "start_to_end": {
+        "charon_config": [
+          0,
+          1
+        ],
+        "generated_generation": [
+          0,
+          1
+        ],
+        "source_revision": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "charon_config": [
+            0,
+            1
+          ],
+          "generated_generation": [
+            0,
+            1
+          ],
+          "source_revision": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "file_worker_restart_reused_rpc_id": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": true,
+      "same_request_admission": false,
+      "same_strict_lineage": true,
+      "start_to_end": {
+        "file_worker_epoch": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "file_worker_epoch": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "rpc_session_reused_request_number": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": true,
+      "same_request_admission": false,
+      "same_strict_lineage": true,
+      "start_to_end": {
+        "rpc_session": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "rpc_session": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "same_bytes_new_document_generation": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": true,
+      "same_request_admission": false,
+      "same_strict_lineage": false,
+      "start_to_end": {
+        "document_generation": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "document_generation": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "same_locator_source_payload": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": true,
+      "same_request_admission": false,
+      "same_strict_lineage": false,
+      "start_to_end": {
+        "source_bytes": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "source_bytes": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "same_locator_source_revision": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": true,
+      "same_request_admission": false,
+      "same_strict_lineage": false,
+      "start_to_end": {
+        "source_revision": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "source_revision": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "source_A_B_A": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": true,
+      "same_request_admission": false,
+      "same_strict_lineage": false,
+      "start_to_end": {
+        "source_revision": [
+          0,
+          2
+        ]
+      },
+      "trace_deltas": [
+        {
+          "source_bytes": [
+            0,
+            1
+          ],
+          "source_revision": [
+            0,
+            1
+          ]
+        },
+        {
+          "source_bytes": [
+            1,
+            0
+          ],
+          "source_revision": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    "unchanged_proof_changed_import": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": false,
+      "same_request_admission": false,
+      "same_strict_lineage": false,
+      "start_to_end": {
+        "import_artifact": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "import_artifact": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "unchanged_proof_changed_lake_environment": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": false,
+      "same_request_admission": false,
+      "same_strict_lineage": false,
+      "start_to_end": {
+        "lake_environment": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "lake_environment": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "worker_restart_reused_rpc_id": {
+      "constant_locators": {
+        "generated_path": "generated/Probe/",
+        "llbc_path": "out/Probe.llbc",
+        "module": "Probe.Funs",
+        "proof_uri": "file:///work/Proof.lean",
+        "source_path": "src/lib.rs"
+      },
+      "same_elaboration_content": true,
+      "same_request_admission": false,
+      "same_strict_lineage": true,
+      "start_to_end": {
+        "worker_epoch": [
+          0,
+          1
+        ]
+      },
+      "trace_deltas": [
+        {
+          "worker_epoch": [
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  },
+  "policies": {
+    "current_request_admission": {
+      "ablations": {
+        "aeneas_config": {
+          "counterexample": {
+            "changed_fields": {
+              "aeneas_config": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "charon_config": {
+          "counterexample": {
+            "changed_fields": {
+              "charon_config": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "document_bytes": {
+          "counterexample": {
+            "changed_fields": {
+              "document_bytes": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "document_generation": {
+          "counterexample": {
+            "changed_fields": {
+              "document_generation": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "file_worker_epoch": {
+          "counterexample": {
+            "changed_fields": {
+              "file_worker_epoch": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "full": {
+          "counterexample": null,
+          "distinct_keys": 65536,
+          "sound_for_policy": true
+        },
+        "generated_generation": {
+          "counterexample": {
+            "changed_fields": {
+              "generated_generation": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "generated_tree": {
+          "counterexample": {
+            "changed_fields": {
+              "generated_tree": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "import_artifact": {
+          "counterexample": {
+            "changed_fields": {
+              "import_artifact": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "lake_environment": {
+          "counterexample": {
+            "changed_fields": {
+              "lake_environment": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "llbc_bytes": {
+          "counterexample": {
+            "changed_fields": {
+              "llbc_bytes": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "rpc_request": {
+          "counterexample": {
+            "changed_fields": {
+              "rpc_request": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "rpc_session": {
+          "counterexample": {
+            "changed_fields": {
+              "rpc_session": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "source_bytes": {
+          "counterexample": {
+            "changed_fields": {
+              "source_bytes": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "source_revision": {
+          "counterexample": {
+            "changed_fields": {
+              "source_revision": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "source_subject": {
+          "counterexample": {
+            "changed_fields": {
+              "source_subject": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        },
+        "worker_epoch": {
+          "counterexample": {
+            "changed_fields": {
+              "worker_epoch": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 32768,
+          "sound_for_policy": false
+        }
+      },
+      "oracle_fields": [
+        "source_subject",
+        "source_bytes",
+        "source_revision",
+        "charon_config",
+        "llbc_bytes",
+        "aeneas_config",
+        "generated_tree",
+        "generated_generation",
+        "lake_environment",
+        "import_artifact",
+        "document_bytes",
+        "document_generation",
+        "worker_epoch",
+        "file_worker_epoch",
+        "rpc_session",
+        "rpc_request"
+      ]
+    },
+    "elaboration_content": {
+      "ablations": {
+        "aeneas_config": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "charon_config": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "document_bytes": {
+          "counterexample": {
+            "changed_fields": {
+              "document_bytes": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 4,
+          "sound_for_policy": false
+        },
+        "document_generation": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "file_worker_epoch": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "full": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "generated_generation": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "generated_tree": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "import_artifact": {
+          "counterexample": {
+            "changed_fields": {
+              "import_artifact": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 4,
+          "sound_for_policy": false
+        },
+        "lake_environment": {
+          "counterexample": {
+            "changed_fields": {
+              "lake_environment": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 4,
+          "sound_for_policy": false
+        },
+        "llbc_bytes": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "rpc_request": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "rpc_session": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "source_bytes": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "source_revision": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "source_subject": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        },
+        "worker_epoch": {
+          "counterexample": null,
+          "distinct_keys": 8,
+          "sound_for_policy": true
+        }
+      },
+      "oracle_fields": [
+        "lake_environment",
+        "import_artifact",
+        "document_bytes"
+      ]
+    },
+    "strict_cross_stage_lineage": {
+      "ablations": {
+        "aeneas_config": {
+          "counterexample": {
+            "changed_fields": {
+              "aeneas_config": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "charon_config": {
+          "counterexample": {
+            "changed_fields": {
+              "charon_config": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "document_bytes": {
+          "counterexample": {
+            "changed_fields": {
+              "document_bytes": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "document_generation": {
+          "counterexample": {
+            "changed_fields": {
+              "document_generation": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "file_worker_epoch": {
+          "counterexample": null,
+          "distinct_keys": 4096,
+          "sound_for_policy": true
+        },
+        "full": {
+          "counterexample": null,
+          "distinct_keys": 4096,
+          "sound_for_policy": true
+        },
+        "generated_generation": {
+          "counterexample": {
+            "changed_fields": {
+              "generated_generation": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "generated_tree": {
+          "counterexample": {
+            "changed_fields": {
+              "generated_tree": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "import_artifact": {
+          "counterexample": {
+            "changed_fields": {
+              "import_artifact": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "lake_environment": {
+          "counterexample": {
+            "changed_fields": {
+              "lake_environment": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "llbc_bytes": {
+          "counterexample": {
+            "changed_fields": {
+              "llbc_bytes": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "rpc_request": {
+          "counterexample": null,
+          "distinct_keys": 4096,
+          "sound_for_policy": true
+        },
+        "rpc_session": {
+          "counterexample": null,
+          "distinct_keys": 4096,
+          "sound_for_policy": true
+        },
+        "source_bytes": {
+          "counterexample": {
+            "changed_fields": {
+              "source_bytes": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "source_revision": {
+          "counterexample": {
+            "changed_fields": {
+              "source_revision": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "source_subject": {
+          "counterexample": {
+            "changed_fields": {
+              "source_subject": [
+                0,
+                1
+              ]
+            },
+            "constant_locators": {
+              "generated_path": "generated/Probe/",
+              "llbc_path": "out/Probe.llbc",
+              "module": "Probe.Funs",
+              "proof_uri": "file:///work/Proof.lean",
+              "source_path": "src/lib.rs"
+            },
+            "key_equal": true
+          },
+          "distinct_keys": 2048,
+          "sound_for_policy": false
+        },
+        "worker_epoch": {
+          "counterexample": null,
+          "distinct_keys": 4096,
+          "sound_for_policy": true
+        }
+      },
+      "oracle_fields": [
+        "source_subject",
+        "source_bytes",
+        "source_revision",
+        "charon_config",
+        "llbc_bytes",
+        "aeneas_config",
+        "generated_tree",
+        "generated_generation",
+        "lake_environment",
+        "import_artifact",
+        "document_bytes",
+        "document_generation"
+      ]
+    }
+  },
+  "state_count": 65536,
+  "state_domain": "Cartesian product of 16 independent {0,1} fields; locators fixed"
+}

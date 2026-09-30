@@ -2827,6 +2827,59 @@
         "anneal/research-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v45": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "reference_revision": "d8a86362f68d2f84c6f1165e4fe3bffa35529ee2",
+            "repository": "google/zerocopy",
+            "row_challenge_sha256": "1b32e2bcbc8030c0011ef65075dc55f09f9f2291127c272afc271814e5ca83c0"
+          },
+          "name": "Published v44 coverage ledger"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Public issues 3730 and 3731 refreshed for v45"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "source_report_sha256": "408aa0cc32d9200d659ab5896bb5b4439a75ef53212368ca3c010382a40a9392"
+          },
+          "name": "Pinned nested Lake rich term-goal component report"
+        },
+        {
+          "identity": {
+            "charon_binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "source_report_sha256": "649cbfb3ef0638a0035984a925e7a393bc3a64c0e13234ad7292ee3779bd3212"
+          },
+          "name": "Pinned Charon Unicode local-span component report"
+        },
+        {
+          "identity": {
+            "artifact": "check.py",
+            "source_report_sha256": "1c9bad6e2aa190295f7c06d5c0239d0088c15182f63fe3ec0287ed17e3262258"
+          },
+          "name": "Bounded symbolic I145 identity-ablation model"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk",
+        "charon/source-spans",
+        "lake/server-preparation",
+        "lean/tactic-state"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7054,6 +7107,38 @@
         "charon/cache-invalidation"
       ]
     },
+    "anneal-3731-i079-unicode-charon-spans-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "local Charon executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Installed pinned Charon executable on macOS arm64"
+        },
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Pinned nightly Cargo and rustc"
+        },
+        {
+          "identity": {
+            "src_lib_rs_sha256": "b26ba311378fd7aeffcb4e82f2d38768e3577fa0df6b629cbdb602043655822c"
+          },
+          "name": "Retained three-line Rust Unicode fixture"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "charon/cargo-extraction",
+        "charon/source-spans"
+      ]
+    },
     "anneal-3731-i080-full-field-cancel-oracle-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7424,6 +7509,23 @@
         "lake/artifact-identity"
       ]
     },
+    "anneal-3731-i145-cross-layer-identity-ablation-model-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "check.py",
+            "sha256": "6b8118b2d6e0f29de4a7086b7803a22615514040dd5bdd080aebf714474f747d"
+          },
+          "name": "Finite cross-layer identity ablation model"
+        }
+      ],
+      "topics": [
+        "anneal/identity-model",
+        "anneal/freshness",
+        "anneal/interactive-proof"
+      ]
+    },
     "anneal-3731-i147-syntax-equivalent-rebuild-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7638,6 +7740,24 @@
       ]
     },
     "anneal-3731-lake-reflexive-term-goal-positions-v4-30-0-rc2": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake 4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-proof",
+        "lake/server-preparation",
+        "lean/tactic-state"
+      ]
+    },
+    "anneal-3731-lake-rich-term-goal-nested-2026-09-30": {
       "observed_at": "2026-09-30",
       "subjects": [
         {

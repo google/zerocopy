@@ -1,0 +1,80 @@
+{
+  "preflight": {
+    "free_memory_percent": 75,
+    "free_disk_bytes": 20586795008
+  },
+  "limits": {
+    "min_free_memory_percent": 30,
+    "min_free_disk_bytes": 10737418240,
+    "max_extra_rss_kib": 819200,
+    "max_scratch_bytes": 1073741824,
+    "timeout_seconds": 45
+  },
+  "versions": {
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "fixture_sha256": {
+    "Cargo.lock": "7ecedcedbc18675db493e2d1b43e292e029a1aa2d58eeafbc2cd8f79a4e9c2be",
+    "Cargo.toml": "b9acd0dafda9d9c61463f9608efd9c8c5a039cf193f54762bfc4931c9107b054",
+    "src/lib.rs": "b26ba311378fd7aeffcb4e82f2d38768e3577fa0df6b629cbdb602043655822c"
+  },
+  "command": [
+    "$TOOLS/bin/charon",
+    "cargo",
+    "--preset",
+    "aeneas",
+    "--dest-file",
+    "$PACKAGE/unicode.llbc",
+    "--",
+    "--manifest-path",
+    "$PACKAGE/work/Cargo.toml",
+    "--package",
+    "unicode_span_probe",
+    "--lib",
+    "--offline",
+    "--locked"
+  ],
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "RAYON_NUM_THREADS": "1",
+    "CARGO_NET_OFFLINE": "true"
+  },
+  "exit": 0,
+  "stopped": null,
+  "stdout": "",
+  "stderr": "   Compiling unicode_span_probe v0.1.0 ($PACKAGE/work)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s\n",
+  "elapsed_seconds": 0.255,
+  "samples": [
+    {
+      "elapsed_seconds": 0.0037,
+      "rss_kib": 512,
+      "scratch_bytes": 431,
+      "free_memory_percent": 75,
+      "free_disk_bytes": 20586782720
+    },
+    {
+      "elapsed_seconds": 0.0771,
+      "rss_kib": 21360,
+      "scratch_bytes": 431,
+      "free_memory_percent": 75,
+      "free_disk_bytes": 20586782720
+    },
+    {
+      "elapsed_seconds": 0.1502,
+      "rss_kib": 133856,
+      "scratch_bytes": 6271,
+      "free_memory_percent": 75,
+      "free_disk_bytes": 20586758144
+    }
+  ],
+  "peak_sampled_rss_kib": 133856,
+  "peak_sampled_scratch_bytes": 6271,
+  "final_scratch_bytes": 6271,
+  "output": {
+    "sha256": "bb0358cb309641e07b5b5d6120a3f10a752a4951d363ce50f86d20ef9864dc0d",
+    "bytes": 20024
+  }
+}

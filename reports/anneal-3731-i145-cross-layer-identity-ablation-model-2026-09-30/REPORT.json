@@ -1,0 +1,17 @@
+{
+  "topics": [
+    "anneal/identity-model",
+    "anneal/freshness",
+    "anneal/interactive-proof"
+  ],
+  "subjects": [
+    {
+      "name": "Finite cross-layer identity ablation model",
+      "identity": {
+        "artifact": "check.py",
+        "sha256": "6b8118b2d6e0f29de4a7086b7803a22615514040dd5bdd080aebf714474f747d"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,62 @@
+{
+  "bounded_context_ids": [
+    "A02",
+    "A08",
+    "D05"
+  ],
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [
+    "C02",
+    "I043",
+    "I079",
+    "I145"
+  ],
+  "changed_status_ids": [],
+  "direct_evidence_ids": [
+    "C02",
+    "I043",
+    "I079",
+    "I145"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v45.csv": "e31fe428e21ea0c8dfbd86f41473c3403118bb8393e7ac37d2404dd879dc6f6b",
+    "investigation-final-v45.csv": "1ec14bdf5c3f18b274b81ad168e0c7d6b4bccfb446ece3be7f694e53c9b81a8a",
+    "row-challenge-v45.json": "74948ac2e3847354b0db3b260a936c34150c5be55544502543cd9f472ea3a511",
+    "source-package-inventory-v45.csv": "36ecad4c7d73944192154a5e16bfb72534741ea3ba821daa7e7864183081da35"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v45.json": "96ba45d2e14b57ae3b767cf30ba5072290f22b47a0a37dbb3f30879d837e3295",
+    "v44/3730-crosswalk-final-v44.csv": "e1d0af6b4666296560a05ef55b080676cb662c2a42e405cbe9c2839022512cb5",
+    "v44/investigation-final-v44.csv": "7401867753f87d2fcc52bbd2be84bab5aefe4313fbf56cbc517bf847747f5bb2",
+    "v44/row-challenge-v44.json": "1b32e2bcbc8030c0011ef65075dc55f09f9f2291127c272afc271814e5ca83c0"
+  },
+  "inventory_files": 36,
+  "investigation_count": 159,
+  "reference_tip_at_start": "d8a86362f68d2f84c6f1165e4fe3bffa35529ee2",
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v44",
+    "anneal-3731-lake-rich-term-goal-nested-2026-09-30",
+    "anneal-3731-i079-unicode-charon-spans-2026-09-30",
+    "anneal-3731-i145-cross-layer-identity-ablation-model-2026-09-30"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v44",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}
