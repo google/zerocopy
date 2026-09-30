@@ -3327,6 +3327,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v59": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v58",
+            "reference_commit": "e24b726c9f84d54957c034ac856e8dad83ea6a96"
+          },
+          "name": "Published #3730/#3731 v58 coverage ledger"
+        },
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "oracle_prelaunch_sha256": "aada7e10b95d362927047ce76285a9f68a989668608bd8954de3f5abb830c667",
+            "results_sha256": "c7cec93268a3a84cda698d9f71b2ca093f554dcf9dd6c3e08e59d070e9516363",
+            "source_package": "anneal-3731-i044-many-ref-retention-release-2026-09-30"
+          },
+          "name": "Lean direct 32-reference RPC observation"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "6d273e275fadcbcbdbcc7d08711fe6fcbb7d7d32fa8dad058df531e68dd83b32",
+            "source": "public GitHub REST issue and comments endpoints"
+          },
+          "name": "Fresh public #3730/#3731 issue snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/rpc-reference-lifetime",
+        "lean/rpc",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7397,6 +7431,24 @@
         "anneal/editor-integration",
         "lean/lsp",
         "experiments/coordinate-bridge"
+      ]
+    },
+    "anneal-3731-i044-many-ref-retention-release-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct server many-reference RPC lifetime"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/rpc",
+        "lean/reference-lifetime"
       ]
     },
     "anneal-3731-i044-rpc-keepalive-positive-2026-09-30": {

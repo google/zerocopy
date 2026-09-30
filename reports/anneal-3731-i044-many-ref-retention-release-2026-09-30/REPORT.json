@@ -1,0 +1,14 @@
+{
+  "topics": ["lean/language-server", "lean/rpc", "lean/reference-lifetime"],
+  "subjects": [
+    {
+      "name": "Lean 4 direct server many-reference RPC lifetime",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.30.0-rc2",
+        "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}
