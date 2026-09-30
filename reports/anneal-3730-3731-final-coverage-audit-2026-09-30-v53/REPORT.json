@@ -1,0 +1,35 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v52 coverage ledger",
+      "identity": {
+        "reference_commit": "e1c4cf18da52136936eec8d6361607a9036adcb9",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v52"
+      }
+    },
+    {
+      "name": "Copied empty Rust doc line and version-2 Lean diagnostic evidence",
+      "identity": {
+        "source_package": "anneal-3731-i025-empty-owned-v2-bridge-2026-09-30",
+        "host_sha256": "9e32bf3e46146fb293ba1cf06a5817c73d5088ec41ea8193a2c10a635fb3508e",
+        "lean_v1_sha256": "28f76f64a2d7a9d1b28f7df403fdf4a69ecebdc7ecc887cdc8cdb5e2ffa9f5b9",
+        "lean_v2_sha256": "bcd5968dc5282d430a961ad40cfa1b84e244a1f3343e9942507f8639a73401c7",
+        "results_sha256": "99adb9571ff46b91c8813ff266cf79fe259dcc1b6248357683ce0e00697c0e72"
+      }
+    },
+    {
+      "name": "Inherited public #3730/#3731 issue snapshot",
+      "identity": {
+        "source_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v52",
+        "snapshot_sha256": "08de544674dc82f8b7753283b80dc92d315a25abafcc9b87985e952b90d43f3c"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/source-mapping",
+    "lean/lsp",
+    "research/coverage-audit"
+  ]
+}

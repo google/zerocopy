@@ -1,0 +1,2661 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-09-30T08:12:18.795060+00:00",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+  "oracle_prelaunch_sha256": "b63a7b0e6c53f69d89dbf204948c58c84f937fe706ddce039d96ea35b5090e16",
+  "fixture_sha256": {
+    "host": "9e32bf3e46146fb293ba1cf06a5817c73d5088ec41ea8193a2c10a635fb3508e",
+    "original": "28f76f64a2d7a9d1b28f7df403fdf4a69ecebdc7ecc887cdc8cdb5e2ffa9f5b9",
+    "patched": "bcd5968dc5282d430a961ad40cfa1b84e244a1f3343e9942507f8639a73401c7"
+  },
+  "limits": {
+    "minimum_admission_reclaimable_percent": 30.0,
+    "minimum_live_reclaimable_percent": 20.0,
+    "minimum_free_disk_bytes": 10737418240,
+    "maximum_lean_process_group_rss_kib": 1228800,
+    "maximum_rust_process_group_rss_kib": 524288,
+    "maximum_scratch_bytes": 104857600,
+    "maximum_session_seconds": 30.0
+  },
+  "sessions": {
+    "utf16": {
+      "offered": [
+        "utf-16"
+      ],
+      "preflight": {
+        "elapsed_seconds": 0.0042,
+        "host": {
+          "estimated_reclaimable_percent": 33.5562,
+          "free_disk_bytes": 18729603072,
+          "page_size": 16384,
+          "pages": {
+            "free": 4856,
+            "inactive": 169489,
+            "speculative": 1586
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_bytes": 2378
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "events": [
+        {
+          "side": "client",
+          "elapsed_seconds": 0.0015,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+              "processId": 2212,
+              "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16",
+              "capabilities": {
+                "general": {
+                  "positionEncodings": [
+                    "utf-16"
+                  ]
+                },
+                "textDocument": {
+                  "synchronization": {
+                    "didSave": false
+                  }
+                }
+              },
+              "initializationOptions": {
+                "hasWidgets": false,
+                "logCfg": {
+                  "logDir": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/logs"
+                }
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.2653,
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "result": {
+              "capabilities": {
+                "callHierarchyProvider": true,
+                "codeActionProvider": {
+                  "codeActionKinds": [
+                    "quickfix",
+                    "refactor",
+                    "source.organizeImports"
+                  ],
+                  "resolveProvider": true,
+                  "workDoneProgress": false
+                },
+                "colorProvider": {
+                  "workDoneProgress": false
+                },
+                "completionProvider": {
+                  "resolveProvider": true,
+                  "triggerCharacters": [
+                    "."
+                  ]
+                },
+                "declarationProvider": true,
+                "definitionProvider": true,
+                "documentHighlightProvider": true,
+                "documentSymbolProvider": true,
+                "experimental": {
+                  "moduleHierarchyProvider": {},
+                  "rpcProvider": {
+                    "highlightMatchesProvider": {},
+                    "rpcWireFormat": "v1"
+                  }
+                },
+                "foldingRangeProvider": true,
+                "hoverProvider": true,
+                "inlayHintProvider": {
+                  "resolveProvider": false,
+                  "workDoneProgress": false
+                },
+                "referencesProvider": true,
+                "renameProvider": {
+                  "prepareProvider": true
+                },
+                "semanticTokensProvider": {
+                  "full": true,
+                  "legend": {
+                    "tokenModifiers": [
+                      "declaration",
+                      "definition",
+                      "readonly",
+                      "static",
+                      "deprecated",
+                      "abstract",
+                      "async",
+                      "modification",
+                      "documentation",
+                      "defaultLibrary"
+                    ],
+                    "tokenTypes": [
+                      "keyword",
+                      "variable",
+                      "property",
+                      "function",
+                      "namespace",
+                      "type",
+                      "class",
+                      "enum",
+                      "interface",
+                      "struct",
+                      "typeParameter",
+                      "parameter",
+                      "enumMember",
+                      "event",
+                      "method",
+                      "macro",
+                      "modifier",
+                      "comment",
+                      "string",
+                      "number",
+                      "regexp",
+                      "operator",
+                      "decorator",
+                      "leanSorryLike"
+                    ]
+                  },
+                  "range": true
+                },
+                "signatureHelpProvider": {
+                  "triggerCharacters": [
+                    " "
+                  ],
+                  "workDoneProgress": false
+                },
+                "textDocumentSync": {
+                  "change": 2,
+                  "openClose": true,
+                  "save": {
+                    "includeText": true
+                  },
+                  "willSave": false,
+                  "willSaveWaitUntil": false
+                },
+                "typeDefinitionProvider": true,
+                "workspaceSymbolProvider": true
+              },
+              "serverInfo": {
+                "name": "Lean 4 Server",
+                "version": "0.3.0"
+              }
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.2654,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "initialized",
+            "params": {}
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.2654,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+                "languageId": "lean",
+                "version": 1,
+                "text": "import Lean\r\n\r\n#check \"🙂é\"\r\n\r\n"
+              }
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.2654,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 2,
+            "method": "textDocument/waitForDiagnostics",
+            "params": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.301,
+          "message": {
+            "id": "register_lean_watcher",
+            "jsonrpc": "2.0",
+            "method": "client/registerCapability",
+            "params": {
+              "registrations": [
+                {
+                  "id": "lean_watcher",
+                  "method": "workspace/didChangeWatchedFiles",
+                  "registerOptions": {
+                    "watchers": [
+                      {
+                        "globPattern": "**/*.lean"
+                      },
+                      {
+                        "globPattern": "**/*.ilean"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 0.3011,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "register_lean_watcher",
+            "result": null
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.3184,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.3878,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.5254,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.544,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 0.8359,
+          "message": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.3743,
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 1.8927,
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 1.8928,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didChange",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+                "version": 2
+              },
+              "contentChanges": [
+                {
+                  "range": {
+                    "start": {
+                      "line": 3,
+                      "character": 0
+                    },
+                    "end": {
+                      "line": 3,
+                      "character": 0
+                    }
+                  },
+                  "text": "#check (\"🙂é\", missingEmpty)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 1.8928,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "textDocument/waitForDiagnostics",
+            "params": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 2
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 2.1143,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+                "version": 2
+              }
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 2.1316,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 2
+            }
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 2.4085,
+          "message": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 2.4086,
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 4,
+            "method": "shutdown",
+            "params": null
+          }
+        },
+        {
+          "side": "server",
+          "elapsed_seconds": 2.4433,
+          "message": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "side": "client",
+          "elapsed_seconds": 2.4433,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exit",
+            "params": null
+          }
+        }
+      ],
+      "samples": [
+        {
+          "elapsed_seconds": 0.0057,
+          "host": {
+            "estimated_reclaimable_percent": 33.4726,
+            "free_disk_bytes": 18729582592,
+            "page_size": 16384,
+            "pages": {
+              "free": 4167,
+              "inactive": 169649,
+              "speculative": 1677
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 32,
+          "scratch_bytes": 2413
+        },
+        {
+          "elapsed_seconds": 0.0823,
+          "host": {
+            "estimated_reclaimable_percent": 33.4961,
+            "free_disk_bytes": 18729582592,
+            "page_size": 16384,
+            "pages": {
+              "free": 4001,
+              "inactive": 169672,
+              "speculative": 1943
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 16784,
+          "scratch_bytes": 2413
+        },
+        {
+          "elapsed_seconds": 0.1593,
+          "host": {
+            "estimated_reclaimable_percent": 33.4152,
+            "free_disk_bytes": 18729582592,
+            "page_size": 16384,
+            "pages": {
+              "free": 3600,
+              "inactive": 169640,
+              "speculative": 1952
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 32048,
+          "scratch_bytes": 2413
+        },
+        {
+          "elapsed_seconds": 0.2371,
+          "host": {
+            "estimated_reclaimable_percent": 33.4282,
+            "free_disk_bytes": 18729582592,
+            "page_size": 16384,
+            "pages": {
+              "free": 3862,
+              "inactive": 169382,
+              "speculative": 2016
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 44448,
+          "scratch_bytes": 2413
+        },
+        {
+          "elapsed_seconds": 0.2535,
+          "host": {
+            "estimated_reclaimable_percent": 33.3994,
+            "free_disk_bytes": 18729582592,
+            "page_size": 16384,
+            "pages": {
+              "free": 3701,
+              "inactive": 169385,
+              "speculative": 2023
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 46736,
+          "scratch_bytes": 2413
+        },
+        {
+          "elapsed_seconds": 0.2704,
+          "host": {
+            "estimated_reclaimable_percent": 33.3719,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3901,
+              "inactive": 169038,
+              "speculative": 2026
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 48320,
+          "scratch_bytes": 3879
+        },
+        {
+          "elapsed_seconds": 0.2885,
+          "host": {
+            "estimated_reclaimable_percent": 33.3851,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 4006,
+              "inactive": 168999,
+              "speculative": 2029
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 48752,
+          "scratch_bytes": 3879
+        },
+        {
+          "elapsed_seconds": 0.3055,
+          "host": {
+            "estimated_reclaimable_percent": 33.3675,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3656,
+              "inactive": 169261,
+              "speculative": 2025
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 49056,
+          "scratch_bytes": 4030
+        },
+        {
+          "elapsed_seconds": 0.3229,
+          "host": {
+            "estimated_reclaimable_percent": 33.3843,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3959,
+              "inactive": 168989,
+              "speculative": 2082
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 49408,
+          "scratch_bytes": 4030
+        },
+        {
+          "elapsed_seconds": 0.3758,
+          "host": {
+            "estimated_reclaimable_percent": 33.4002,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 4082,
+              "inactive": 168912,
+              "speculative": 2119
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 50912,
+          "scratch_bytes": 4354
+        },
+        {
+          "elapsed_seconds": 0.3925,
+          "host": {
+            "estimated_reclaimable_percent": 33.3813,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3906,
+              "inactive": 168977,
+              "speculative": 2131
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 51536,
+          "scratch_bytes": 4354
+        },
+        {
+          "elapsed_seconds": 0.4697,
+          "host": {
+            "estimated_reclaimable_percent": 33.2649,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3469,
+              "inactive": 168673,
+              "speculative": 2262
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 58688,
+          "scratch_bytes": 4354
+        },
+        {
+          "elapsed_seconds": 0.5124,
+          "host": {
+            "estimated_reclaimable_percent": 33.2449,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3687,
+              "inactive": 168217,
+              "speculative": 2395
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 65392,
+          "scratch_bytes": 5090
+        },
+        {
+          "elapsed_seconds": 0.5309,
+          "host": {
+            "estimated_reclaimable_percent": 33.2394,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3593,
+              "inactive": 168248,
+              "speculative": 2429
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 65936,
+          "scratch_bytes": 5090
+        },
+        {
+          "elapsed_seconds": 0.5487,
+          "host": {
+            "estimated_reclaimable_percent": 33.242,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3837,
+              "inactive": 167974,
+              "speculative": 2473
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 66304,
+          "scratch_bytes": 5090
+        },
+        {
+          "elapsed_seconds": 0.6272,
+          "host": {
+            "estimated_reclaimable_percent": 33.2006,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3735,
+              "inactive": 167688,
+              "speculative": 2644
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 74848,
+          "scratch_bytes": 5090
+        },
+        {
+          "elapsed_seconds": 0.6967,
+          "host": {
+            "estimated_reclaimable_percent": 33.1278,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3389,
+              "inactive": 167495,
+              "speculative": 2801
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 78032,
+          "scratch_bytes": 5090
+        },
+        {
+          "elapsed_seconds": 0.7762,
+          "host": {
+            "estimated_reclaimable_percent": 33.1261,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3946,
+              "inactive": 166739,
+              "speculative": 2991
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 83728,
+          "scratch_bytes": 5090
+        },
+        {
+          "elapsed_seconds": 0.8238,
+          "host": {
+            "estimated_reclaimable_percent": 33.1463,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 4004,
+              "inactive": 166673,
+              "speculative": 3105
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 88464,
+          "scratch_bytes": 5243
+        },
+        {
+          "elapsed_seconds": 0.8404,
+          "host": {
+            "estimated_reclaimable_percent": 33.127,
+            "free_disk_bytes": 18729578496,
+            "page_size": 16384,
+            "pages": {
+              "free": 3715,
+              "inactive": 166831,
+              "speculative": 3135
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 89296,
+          "scratch_bytes": 5243
+        },
+        {
+          "elapsed_seconds": 0.9185,
+          "host": {
+            "estimated_reclaimable_percent": 33.054,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3762,
+              "inactive": 166235,
+              "speculative": 3301
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 95952,
+          "scratch_bytes": 5243
+        },
+        {
+          "elapsed_seconds": 0.9991,
+          "host": {
+            "estimated_reclaimable_percent": 33.0437,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3886,
+              "inactive": 165857,
+              "speculative": 3501
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 106960,
+          "scratch_bytes": 5243
+        },
+        {
+          "elapsed_seconds": 1.0776,
+          "host": {
+            "estimated_reclaimable_percent": 33.0154,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3832,
+              "inactive": 165618,
+              "speculative": 3646
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 110608,
+          "scratch_bytes": 5243
+        },
+        {
+          "elapsed_seconds": 1.1557,
+          "host": {
+            "estimated_reclaimable_percent": 32.9559,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3862,
+              "inactive": 165102,
+              "speculative": 3820
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 116208,
+          "scratch_bytes": 5243
+        },
+        {
+          "elapsed_seconds": 1.2351,
+          "host": {
+            "estimated_reclaimable_percent": 32.8791,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3704,
+              "inactive": 163309,
+              "speculative": 5368
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 121600,
+          "scratch_bytes": 5243
+        },
+        {
+          "elapsed_seconds": 1.3155,
+          "host": {
+            "estimated_reclaimable_percent": 32.7698,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3741,
+              "inactive": 162514,
+              "speculative": 5553
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 127968,
+          "scratch_bytes": 5243
+        },
+        {
+          "elapsed_seconds": 1.3543,
+          "host": {
+            "estimated_reclaimable_percent": 32.7122,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3460,
+              "inactive": 162370,
+              "speculative": 5676
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 130880,
+          "scratch_bytes": 5396
+        },
+        {
+          "elapsed_seconds": 1.38,
+          "host": {
+            "estimated_reclaimable_percent": 32.6637,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3424,
+              "inactive": 162097,
+              "speculative": 5731
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 132560,
+          "scratch_bytes": 5396
+        },
+        {
+          "elapsed_seconds": 1.459,
+          "host": {
+            "estimated_reclaimable_percent": 32.6471,
+            "free_disk_bytes": 18729574400,
+            "page_size": 16384,
+            "pages": {
+              "free": 3777,
+              "inactive": 159202,
+              "speculative": 8186
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 138880,
+          "scratch_bytes": 5396
+        },
+        {
+          "elapsed_seconds": 1.5398,
+          "host": {
+            "estimated_reclaimable_percent": 32.547,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 3633,
+              "inactive": 157885,
+              "speculative": 9122
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 145600,
+          "scratch_bytes": 5396
+        },
+        {
+          "elapsed_seconds": 1.6176,
+          "host": {
+            "estimated_reclaimable_percent": 32.539,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 4056,
+              "inactive": 156448,
+              "speculative": 10094
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 151664,
+          "scratch_bytes": 5396
+        },
+        {
+          "elapsed_seconds": 1.695,
+          "host": {
+            "estimated_reclaimable_percent": 32.432,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 3786,
+              "inactive": 154810,
+              "speculative": 11441
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 158240,
+          "scratch_bytes": 5396
+        },
+        {
+          "elapsed_seconds": 1.7654,
+          "host": {
+            "estimated_reclaimable_percent": 32.3936,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 3743,
+              "inactive": 154036,
+              "speculative": 12057
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 164288,
+          "scratch_bytes": 5396
+        },
+        {
+          "elapsed_seconds": 1.8434,
+          "host": {
+            "estimated_reclaimable_percent": 32.3277,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 3668,
+              "inactive": 153530,
+              "speculative": 12292
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 169904,
+          "scratch_bytes": 5396
+        },
+        {
+          "elapsed_seconds": 1.8749,
+          "host": {
+            "estimated_reclaimable_percent": 32.3376,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 3674,
+              "inactive": 153502,
+              "speculative": 12366
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 172704,
+          "scratch_bytes": 5549
+        },
+        {
+          "elapsed_seconds": 1.8984,
+          "host": {
+            "estimated_reclaimable_percent": 32.2821,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 3459,
+              "inactive": 153383,
+              "speculative": 12409
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 174736,
+          "scratch_bytes": 6312
+        },
+        {
+          "elapsed_seconds": 1.9754,
+          "host": {
+            "estimated_reclaimable_percent": 32.2567,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 3675,
+              "inactive": 152722,
+              "speculative": 12721
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 182432,
+          "scratch_bytes": 6312
+        },
+        {
+          "elapsed_seconds": 2.0536,
+          "host": {
+            "estimated_reclaimable_percent": 32.2969,
+            "free_disk_bytes": 18729570304,
+            "page_size": 16384,
+            "pages": {
+              "free": 4025,
+              "inactive": 152374,
+              "speculative": 12930
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 189808,
+          "scratch_bytes": 6312
+        },
+        {
+          "elapsed_seconds": 2.101,
+          "host": {
+            "estimated_reclaimable_percent": 32.2508,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 3759,
+              "inactive": 152270,
+              "speculative": 13058
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 194480,
+          "scratch_bytes": 7048
+        },
+        {
+          "elapsed_seconds": 2.1191,
+          "host": {
+            "estimated_reclaimable_percent": 32.2718,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 3822,
+              "inactive": 152250,
+              "speculative": 13125
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 196432,
+          "scratch_bytes": 7048
+        },
+        {
+          "elapsed_seconds": 2.1365,
+          "host": {
+            "estimated_reclaimable_percent": 32.2517,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 3610,
+              "inactive": 152321,
+              "speculative": 13161
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 197264,
+          "scratch_bytes": 7048
+        },
+        {
+          "elapsed_seconds": 2.2135,
+          "host": {
+            "estimated_reclaimable_percent": 32.2609,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 3842,
+              "inactive": 151965,
+              "speculative": 13333
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 203392,
+          "scratch_bytes": 7048
+        },
+        {
+          "elapsed_seconds": 2.2912,
+          "host": {
+            "estimated_reclaimable_percent": 32.2029,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 3517,
+              "inactive": 151786,
+              "speculative": 13533
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 210672,
+          "scratch_bytes": 7048
+        },
+        {
+          "elapsed_seconds": 2.3681,
+          "host": {
+            "estimated_reclaimable_percent": 32.2321,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 4015,
+              "inactive": 151234,
+              "speculative": 13740
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 210656,
+          "scratch_bytes": 7048
+        },
+        {
+          "elapsed_seconds": 2.3963,
+          "host": {
+            "estimated_reclaimable_percent": 32.2109,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 4456,
+              "inactive": 150624,
+              "speculative": 13798
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 211024,
+          "scratch_bytes": 7359
+        },
+        {
+          "elapsed_seconds": 2.4138,
+          "host": {
+            "estimated_reclaimable_percent": 32.2834,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 4631,
+              "inactive": 150729,
+              "speculative": 13898
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 212736,
+          "scratch_bytes": 8453
+        },
+        {
+          "elapsed_seconds": 2.4315,
+          "host": {
+            "estimated_reclaimable_percent": 32.4953,
+            "free_disk_bytes": 18729566208,
+            "page_size": 16384,
+            "pages": {
+              "free": 6616,
+              "inactive": 149781,
+              "speculative": 13972
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 213952,
+          "scratch_bytes": 8582
+        }
+      ],
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--server"
+      ],
+      "environment": {
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_SERVER_LOG_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/logs"
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16",
+      "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+      "started_utc": "2026-09-30T08:12:19.183304+00:00",
+      "start_monotonic_ns": 2037250911067333,
+      "pid": 2236,
+      "initialize": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      },
+      "before": {
+        "wait_response": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        "publications": [
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 1
+            }
+          }
+        ],
+        "last": []
+      },
+      "after": {
+        "wait_response": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "method": "workspace/semanticTokens/refresh"
+        },
+        "publications": [
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean",
+              "version": 2
+            }
+          }
+        ],
+        "last": []
+      },
+      "disk_sha256_after_v2": "28f76f64a2d7a9d1b28f7df403fdf4a69ecebdc7ecc887cdc8cdb5e2ffa9f5b9",
+      "shutdown": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      },
+      "ended_utc": "2026-09-30T08:12:21.631156+00:00",
+      "end_monotonic_ns": 2037253358919375,
+      "exit": 0,
+      "wire_sha256": {
+        "client": "e344fd237468bcc30ebc27b2a23c7ba7b486a476450cef3387625c6f8c2ce580",
+        "server": "13deb375218e7aba1d2f0ccb088faaf91fd2e9671231645a45ba8838dba4fa9f",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "postrun_process_group_rss_kib": 0
+    }
+  },
+  "batch": {
+    "original": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/original.lean"
+      ],
+      "preflight": {
+        "elapsed_seconds": 0.004,
+        "host": {
+          "estimated_reclaimable_percent": 33.5709,
+          "free_disk_bytes": 18729549824,
+          "page_size": 16384,
+          "pages": {
+            "free": 17559,
+            "inactive": 144375,
+            "speculative": 14074
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_bytes": 8617
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "samples": [
+        {
+          "elapsed_seconds": 0.0048,
+          "host": {
+            "estimated_reclaimable_percent": 33.5634,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 17519,
+              "inactive": 144375,
+              "speculative": 14075
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 2784,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.081,
+          "host": {
+            "estimated_reclaimable_percent": 33.8827,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 16931,
+              "inactive": 146638,
+              "speculative": 14074
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 96864,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.1473,
+          "host": {
+            "estimated_reclaimable_percent": 34.3498,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 16824,
+              "inactive": 149236,
+              "speculative": 14032
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 156896,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.2232,
+          "host": {
+            "estimated_reclaimable_percent": 34.8661,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 16584,
+              "inactive": 152250,
+              "speculative": 13965
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 227760,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.2993,
+          "host": {
+            "estimated_reclaimable_percent": 34.5953,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 14088,
+              "inactive": 153150,
+              "speculative": 14141
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 363728,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.376,
+          "host": {
+            "estimated_reclaimable_percent": 34.144,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 11191,
+              "inactive": 153150,
+              "speculative": 14672
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 401536,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.4522,
+          "host": {
+            "estimated_reclaimable_percent": 33.7286,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 8598,
+              "inactive": 153150,
+              "speculative": 15087
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 435280,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.5283,
+          "host": {
+            "estimated_reclaimable_percent": 33.4272,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 6669,
+              "inactive": 153150,
+              "speculative": 15436
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 462288,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.6048,
+          "host": {
+            "estimated_reclaimable_percent": 33.0963,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 4421,
+              "inactive": 153150,
+              "speculative": 15949
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 489216,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.6825,
+          "host": {
+            "estimated_reclaimable_percent": 32.9273,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 3912,
+              "inactive": 153042,
+              "speculative": 15680
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 511680,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.7599,
+          "host": {
+            "estimated_reclaimable_percent": 32.5733,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 4325,
+              "inactive": 150900,
+              "speculative": 15553
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 534656,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.8415,
+          "host": {
+            "estimated_reclaimable_percent": 32.1896,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 4161,
+              "inactive": 148919,
+              "speculative": 15686
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 557568,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.9178,
+          "host": {
+            "estimated_reclaimable_percent": 32.1619,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 4161,
+              "inactive": 149168,
+              "speculative": 15292
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 577776,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 0.9942,
+          "host": {
+            "estimated_reclaimable_percent": 32.1188,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 4222,
+              "inactive": 149039,
+              "speculative": 15134
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 594144,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.0664,
+          "host": {
+            "estimated_reclaimable_percent": 32.0427,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 3690,
+              "inactive": 149134,
+              "speculative": 15172
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 612384,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.1472,
+          "host": {
+            "estimated_reclaimable_percent": 31.9603,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 4234,
+              "inactive": 148090,
+              "speculative": 15240
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 628928,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.2339,
+          "host": {
+            "estimated_reclaimable_percent": 31.6114,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 3956,
+              "inactive": 146465,
+              "speculative": 15314
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 644976,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.3107,
+          "host": {
+            "estimated_reclaimable_percent": 31.4365,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 3857,
+              "inactive": 145526,
+              "speculative": 15435
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 660864,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.3874,
+          "host": {
+            "estimated_reclaimable_percent": 31.4341,
+            "free_disk_bytes": 18729549824,
+            "page_size": 16384,
+            "pages": {
+              "free": 3706,
+              "inactive": 146645,
+              "speculative": 14454
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 677904,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.4656,
+          "host": {
+            "estimated_reclaimable_percent": 31.3816,
+            "free_disk_bytes": 18729512960,
+            "page_size": 16384,
+            "pages": {
+              "free": 3903,
+              "inactive": 146169,
+              "speculative": 14458
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 697792,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.5464,
+          "host": {
+            "estimated_reclaimable_percent": 31.2262,
+            "free_disk_bytes": 18729512960,
+            "page_size": 16384,
+            "pages": {
+              "free": 3776,
+              "inactive": 145329,
+              "speculative": 14610
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 724832,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.6332,
+          "host": {
+            "estimated_reclaimable_percent": 31.1901,
+            "free_disk_bytes": 18729512960,
+            "page_size": 16384,
+            "pages": {
+              "free": 4522,
+              "inactive": 144303,
+              "speculative": 14701
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 746176,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.7157,
+          "host": {
+            "estimated_reclaimable_percent": 31.1872,
+            "free_disk_bytes": 18729512960,
+            "page_size": 16384,
+            "pages": {
+              "free": 4544,
+              "inactive": 144157,
+              "speculative": 14810
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 765472,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.797,
+          "host": {
+            "estimated_reclaimable_percent": 31.0665,
+            "free_disk_bytes": 18729512960,
+            "page_size": 16384,
+            "pages": {
+              "free": 4115,
+              "inactive": 143884,
+              "speculative": 14879
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 782016,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.874,
+          "host": {
+            "estimated_reclaimable_percent": 31.0024,
+            "free_disk_bytes": 18729512960,
+            "page_size": 16384,
+            "pages": {
+              "free": 4125,
+              "inactive": 143501,
+              "speculative": 14916
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 799840,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 1.9419,
+          "host": {
+            "estimated_reclaimable_percent": 30.917,
+            "free_disk_bytes": 18729512960,
+            "page_size": 16384,
+            "pages": {
+              "free": 3849,
+              "inactive": 143313,
+              "speculative": 14932
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 814208,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.021,
+          "host": {
+            "estimated_reclaimable_percent": 30.794,
+            "free_disk_bytes": 18729512960,
+            "page_size": 16384,
+            "pages": {
+              "free": 3789,
+              "inactive": 142661,
+              "speculative": 14999
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 833824,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.0975,
+          "host": {
+            "estimated_reclaimable_percent": 30.7878,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3951,
+              "inactive": 142878,
+              "speculative": 14588
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 845600,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.1736,
+          "host": {
+            "estimated_reclaimable_percent": 30.7816,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3816,
+              "inactive": 143449,
+              "speculative": 14119
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 856064,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.2499,
+          "host": {
+            "estimated_reclaimable_percent": 30.7829,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3885,
+              "inactive": 144254,
+              "speculative": 13252
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 867136,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.3261,
+          "host": {
+            "estimated_reclaimable_percent": 30.7848,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3950,
+              "inactive": 145039,
+              "speculative": 12412
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 877712,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.4024,
+          "host": {
+            "estimated_reclaimable_percent": 30.7734,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3680,
+              "inactive": 145669,
+              "speculative": 11992
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 888880,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.4794,
+          "host": {
+            "estimated_reclaimable_percent": 30.7827,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3825,
+              "inactive": 146485,
+              "speculative": 11080
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 899936,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.5557,
+          "host": {
+            "estimated_reclaimable_percent": 30.7592,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3590,
+              "inactive": 147064,
+              "speculative": 10613
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 911056,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.6332,
+          "host": {
+            "estimated_reclaimable_percent": 30.7634,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 4091,
+              "inactive": 146878,
+              "speculative": 10320
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 921216,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.7092,
+          "host": {
+            "estimated_reclaimable_percent": 30.7318,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 4031,
+              "inactive": 146625,
+              "speculative": 10467
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 931888,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.7855,
+          "host": {
+            "estimated_reclaimable_percent": 30.6694,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 4110,
+              "inactive": 146116,
+              "speculative": 10570
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 942032,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.8633,
+          "host": {
+            "estimated_reclaimable_percent": 30.6356,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3984,
+              "inactive": 145979,
+              "speculative": 10656
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 952704,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 2.9396,
+          "host": {
+            "estimated_reclaimable_percent": 30.5714,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3823,
+              "inactive": 145737,
+              "speculative": 10722
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 966608,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.0196,
+          "host": {
+            "estimated_reclaimable_percent": 30.4331,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3679,
+              "inactive": 145162,
+              "speculative": 10716
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1000784,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.0984,
+          "host": {
+            "estimated_reclaimable_percent": 30.419,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3809,
+              "inactive": 144887,
+              "speculative": 10787
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1014112,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.1758,
+          "host": {
+            "estimated_reclaimable_percent": 30.3297,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3471,
+              "inactive": 144650,
+              "speculative": 10894
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1027136,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.252,
+          "host": {
+            "estimated_reclaimable_percent": 30.3314,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3987,
+              "inactive": 143903,
+              "speculative": 11134
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1042368,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.3284,
+          "host": {
+            "estimated_reclaimable_percent": 30.2908,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 4142,
+              "inactive": 143300,
+              "speculative": 11369
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1056704,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.4048,
+          "host": {
+            "estimated_reclaimable_percent": 30.2164,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 4237,
+              "inactive": 142669,
+              "speculative": 11515
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1070176,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.4813,
+          "host": {
+            "estimated_reclaimable_percent": 30.1926,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 4500,
+              "inactive": 142038,
+              "speculative": 11758
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1082688,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.5634,
+          "host": {
+            "estimated_reclaimable_percent": 30.0552,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 4240,
+              "inactive": 139978,
+              "speculative": 13358
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1097408,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.6408,
+          "host": {
+            "estimated_reclaimable_percent": 30.0161,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 4073,
+              "inactive": 138617,
+              "speculative": 14681
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1113344,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.7174,
+          "host": {
+            "estimated_reclaimable_percent": 29.9913,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3950,
+              "inactive": 139390,
+              "speculative": 13901
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1132576,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.7939,
+          "host": {
+            "estimated_reclaimable_percent": 29.9818,
+            "free_disk_bytes": 18729492480,
+            "page_size": 16384,
+            "pages": {
+              "free": 3821,
+              "inactive": 140573,
+              "speculative": 12797
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1152912,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.8715,
+          "host": {
+            "estimated_reclaimable_percent": 29.9915,
+            "free_disk_bytes": 18729332736,
+            "page_size": 16384,
+            "pages": {
+              "free": 3844,
+              "inactive": 141694,
+              "speculative": 11704
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1169936,
+          "scratch_bytes": 8617
+        },
+        {
+          "elapsed_seconds": 3.9494,
+          "host": {
+            "estimated_reclaimable_percent": 30.7772,
+            "free_disk_bytes": 18729484288,
+            "page_size": 16384,
+            "pages": {
+              "free": 11298,
+              "inactive": 137842,
+              "speculative": 12221
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 0,
+          "scratch_bytes": 8617
+        }
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work",
+      "started_utc": "2026-09-30T08:12:21.647065+00:00",
+      "pid": 2387,
+      "exit": 0,
+      "ended_utc": "2026-09-30T08:12:25.609973+00:00",
+      "stdout_sha256": "ec9737d3f47ffca4a7923125b586ef0acbb47a3cc923f3d853cbf0c26c8b15a4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "postrun_group_rss_kib": 0
+    },
+    "patched": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/patched.lean"
+      ],
+      "preflight": {
+        "elapsed_seconds": 0.0044,
+        "host": {
+          "estimated_reclaimable_percent": 30.7129,
+          "free_disk_bytes": 18729472000,
+          "page_size": 16384,
+          "pages": {
+            "free": 10833,
+            "inactive": 137964,
+            "speculative": 12227
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_bytes": 8684
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "samples": [
+        {
+          "elapsed_seconds": 0.005,
+          "host": {
+            "estimated_reclaimable_percent": 30.6913,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 10602,
+              "inactive": 138074,
+              "speculative": 12235
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 2736,
+          "scratch_bytes": 8684
+        },
+        {
+          "elapsed_seconds": 0.0811,
+          "host": {
+            "estimated_reclaimable_percent": 30.6311,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 10025,
+              "inactive": 138878,
+              "speculative": 11692
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 93440,
+          "scratch_bytes": 8684
+        },
+        {
+          "elapsed_seconds": 0.1488,
+          "host": {
+            "estimated_reclaimable_percent": 30.6217,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 9974,
+              "inactive": 138878,
+              "speculative": 11694
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 151472,
+          "scratch_bytes": 8684
+        },
+        {
+          "elapsed_seconds": 0.2249,
+          "host": {
+            "estimated_reclaimable_percent": 30.5901,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 9628,
+              "inactive": 139050,
+              "speculative": 11702
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 217488,
+          "scratch_bytes": 8684
+        },
+        {
+          "elapsed_seconds": 0.3017,
+          "host": {
+            "estimated_reclaimable_percent": 30.3753,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 7980,
+              "inactive": 139569,
+              "speculative": 11705
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 612256,
+          "scratch_bytes": 8684
+        },
+        {
+          "elapsed_seconds": 0.3796,
+          "host": {
+            "estimated_reclaimable_percent": 30.2158,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 6461,
+              "inactive": 140250,
+              "speculative": 11707
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 995488,
+          "scratch_bytes": 8684
+        },
+        {
+          "elapsed_seconds": 0.4573,
+          "host": {
+            "estimated_reclaimable_percent": 30.0238,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 4634,
+              "inactive": 141069,
+              "speculative": 11708
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1045200,
+          "scratch_bytes": 8684
+        },
+        {
+          "elapsed_seconds": 0.5339,
+          "host": {
+            "estimated_reclaimable_percent": 29.9974,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 3675,
+              "inactive": 141954,
+              "speculative": 11644
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 1150400,
+          "scratch_bytes": 8684
+        },
+        {
+          "elapsed_seconds": 0.611,
+          "host": {
+            "estimated_reclaimable_percent": 30.155,
+            "free_disk_bytes": 18729472000,
+            "page_size": 16384,
+            "pages": {
+              "free": 4902,
+              "inactive": 142504,
+              "speculative": 10693
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": 0,
+          "scratch_bytes": 8684
+        }
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work",
+      "started_utc": "2026-09-30T08:12:25.627013+00:00",
+      "pid": 2549,
+      "exit": 1,
+      "ended_utc": "2026-09-30T08:12:26.249830+00:00",
+      "stdout_sha256": "5ad0b934bb58c110c388ace0fb5cd872907107917231ec6d0701cfd0c2476916",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "postrun_group_rss_kib": 0
+    }
+  },
+  "rust": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "--crate-type=lib",
+      "--edition=2021",
+      "--crate-name=i025_empty_bridge",
+      "--emit=metadata",
+      "Host.rs"
+    ],
+    "preflight": {
+      "elapsed_seconds": 0.0037,
+      "host": {
+        "estimated_reclaimable_percent": 33.4291,
+        "free_disk_bytes": 18729619456,
+        "page_size": 16384,
+        "pages": {
+          "free": 3883,
+          "inactive": 170288,
+          "speculative": 1094
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 0,
+      "scratch_bytes": 79
+    },
+    "status": "completed",
+    "stop_reason": null,
+    "samples": [
+      {
+        "elapsed_seconds": 0.0045,
+        "host": {
+          "estimated_reclaimable_percent": 33.4255,
+          "free_disk_bytes": 18729619456,
+          "page_size": 16384,
+          "pages": {
+            "free": 3864,
+            "inactive": 170289,
+            "speculative": 1093
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 32,
+        "scratch_bytes": 79
+      },
+      {
+        "elapsed_seconds": 0.081,
+        "host": {
+          "estimated_reclaimable_percent": 33.4375,
+          "free_disk_bytes": 18729619456,
+          "page_size": 16384,
+          "pages": {
+            "free": 3970,
+            "inactive": 170091,
+            "speculative": 1248
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 17520,
+        "scratch_bytes": 79
+      },
+      {
+        "elapsed_seconds": 0.1573,
+        "host": {
+          "estimated_reclaimable_percent": 33.4423,
+          "free_disk_bytes": 18729619456,
+          "page_size": 16384,
+          "pages": {
+            "free": 3866,
+            "inactive": 170070,
+            "speculative": 1398
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 36512,
+        "scratch_bytes": 79
+      },
+      {
+        "elapsed_seconds": 0.2338,
+        "host": {
+          "estimated_reclaimable_percent": 33.4528,
+          "free_disk_bytes": 18729619456,
+          "page_size": 16384,
+          "pages": {
+            "free": 3882,
+            "inactive": 170011,
+            "speculative": 1496
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 54240,
+        "scratch_bytes": 79
+      },
+      {
+        "elapsed_seconds": 0.3115,
+        "host": {
+          "estimated_reclaimable_percent": 33.5573,
+          "free_disk_bytes": 18729603072,
+          "page_size": 16384,
+          "pages": {
+            "free": 4864,
+            "inactive": 169489,
+            "speculative": 1584
+          },
+          "physical_memory_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_bytes": 2378
+      }
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work",
+    "started_utc": "2026-09-30T08:12:18.805169+00:00",
+    "pid": 2217,
+    "exit": 0,
+    "ended_utc": "2026-09-30T08:12:19.130304+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "postrun_group_rss_kib": 0
+  },
+  "status": "completed",
+  "stop_reason": null,
+  "preflight": {
+    "elapsed_seconds": 0.0056,
+    "host": {
+      "estimated_reclaimable_percent": 33.4301,
+      "free_disk_bytes": 18729627648,
+      "page_size": 16384,
+      "pages": {
+        "free": 3900,
+        "inactive": 170280,
+        "speculative": 1090
+      },
+      "physical_memory_bytes": 8589934592
+    },
+    "process_group_rss_kib": 0,
+    "scratch_bytes": 0
+  },
+  "postrun_host": {
+    "estimated_reclaimable_percent": 30.7697,
+    "free_disk_bytes": 18729467904,
+    "page_size": 16384,
+    "pages": {
+      "free": 11396,
+      "inactive": 139228,
+      "speculative": 10698
+    },
+    "physical_memory_bytes": 8589934592
+  },
+  "cleanup": {
+    "work_exists": true,
+    "work_exists_after": false
+  }
+}

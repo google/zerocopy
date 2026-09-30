@@ -1,0 +1,39 @@
+{
+  "status": "pass",
+  "host_empty_byte": 58,
+  "projected_empty_byte": 33,
+  "lsp_error_range": {
+    "start": {
+      "line": 3,
+      "character": 16
+    },
+    "end": {
+      "line": 3,
+      "character": 28
+    }
+  },
+  "batch_error": {
+    "pos": {
+      "column": 15,
+      "line": 4
+    },
+    "endPos": {
+      "column": 27,
+      "line": 4
+    }
+  },
+  "negative_controls": {
+    "synthetic_header": true,
+    "synthetic_blank_line": true,
+    "crlf_interior": true,
+    "wrong_document_version": true,
+    "utf16_surrogate_interior": true
+  },
+  "first_attempt": "excluded_protocol_harness_fault",
+  "peaks_kib": {
+    "rust": 6432,
+    "server": 149104,
+    "original": 1150672,
+    "patched": 1155872
+  }
+}

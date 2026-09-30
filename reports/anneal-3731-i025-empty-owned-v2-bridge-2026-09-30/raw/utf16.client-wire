@@ -1,0 +1,23 @@
+Content-Length: 476
+
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"processId":2598,"rootUri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16","capabilities":{"general":{"positionEncodings":["utf-16"]},"textDocument":{"synchronization":{"didSave":false}}},"initializationOptions":{"hasWidgets":false,"logCfg":{"logDir":"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/logs"}}}}Content-Length: 52
+
+{"jsonrpc":"2.0","method":"initialized","params":{}}Content-Length: 293
+
+{"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean","languageId":"lean","version":1,"text":"import Lean\r\n\r\n#check \"🙂é\"\r\n\r\n"}}}Content-Length: 219
+
+{"jsonrpc":"2.0","id":2,"method":"textDocument/waitForDiagnostics","params":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean","version":1}}Content-Length: 60
+
+{"jsonrpc":"2.0","id":"register_lean_watcher","result":null}Content-Length: 38
+
+{"jsonrpc":"2.0","id":0,"result":null}Content-Length: 359
+
+{"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean","version":2},"contentChanges":[{"range":{"start":{"line":3,"character":0},"end":{"line":3,"character":0}},"text":"#check (\"🙂é\", missingEmpty)"}]}}Content-Length: 219
+
+{"jsonrpc":"2.0","id":3,"method":"textDocument/waitForDiagnostics","params":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i025-empty-owned-v2-bridge/work/utf16/Projected.lean","version":2}}Content-Length: 58
+
+{"jsonrpc":"2.0","id":4,"method":"shutdown","params":null}Content-Length: 38
+
+{"jsonrpc":"2.0","id":1,"result":null}Content-Length: 47
+
+{"jsonrpc":"2.0","method":"exit","params":null}

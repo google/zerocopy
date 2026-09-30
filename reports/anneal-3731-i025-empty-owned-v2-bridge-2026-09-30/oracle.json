@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "bridge": "hand-authored exact byte copy; not Anneal",
+  "sha256": {
+    "Host.rs": "9e32bf3e46146fb293ba1cf06a5817c73d5088ec41ea8193a2c10a635fb3508e",
+    "ProjectedV1.lean": "28f76f64a2d7a9d1b28f7df403fdf4a69ecebdc7ecc887cdc8cdb5e2ffa9f5b9",
+    "ProjectedV2.lean": "bcd5968dc5282d430a961ad40cfa1b84e244a1f3343e9942507f8639a73401c7"
+  },
+  "prefix_hex": "2f2f2f7c20",
+  "header_hex": "696d706f7274204c65616e0d0a0d0a",
+  "first_payload_hex": "23636865636b2022f09f998265cc8122",
+  "insert_hex": "23636865636b202822f09f998265cc81222c206d697373696e67456d70747929",
+  "owned_segments": [
+    {
+      "kind": "copied_nonempty",
+      "host_start": 35,
+      "host_end": 51,
+      "projected_start": 15,
+      "projected_end": 31
+    },
+    {
+      "kind": "owned_empty_line",
+      "host_start": 58,
+      "host_end": 58,
+      "projected_start": 33,
+      "projected_end": 33
+    }
+  ],
+  "points": {
+    "host_first_end": {
+      "byte_offset": 51,
+      "line": 1,
+      "byte_column": 21,
+      "scalar_column": 17,
+      "utf16_column": 18
+    },
+    "projected_first_end": {
+      "byte_offset": 31,
+      "line": 2,
+      "byte_column": 16,
+      "scalar_column": 12,
+      "utf16_column": 13
+    },
+    "host_empty_insertion": {
+      "byte_offset": 58,
+      "line": 2,
+      "byte_column": 5,
+      "scalar_column": 5,
+      "utf16_column": 5
+    },
+    "projected_empty_insertion": {
+      "byte_offset": 33,
+      "line": 3,
+      "byte_column": 0,
+      "scalar_column": 0,
+      "utf16_column": 0
+    },
+    "v2_token_start": {
+      "byte_offset": 52,
+      "line": 3,
+      "byte_column": 19,
+      "scalar_column": 15,
+      "utf16_column": 16
+    },
+    "v2_token_end": {
+      "byte_offset": 64,
+      "line": 3,
+      "byte_column": 31,
+      "scalar_column": 27,
+      "utf16_column": 28
+    }
+  },
+  "edit": {
+    "version_from": 1,
+    "version_to": 2,
+    "range": {
+      "start": {
+        "line": 3,
+        "character": 0
+      },
+      "end": {
+        "line": 3,
+        "character": 0
+      }
+    },
+    "text": "#check (\"🙂é\", missingEmpty)"
+  },
+  "negative_controls": [
+    "synthetic_header",
+    "synthetic_blank_line",
+    "crlf_interior",
+    "wrong_document_version",
+    "utf16_surrogate_interior"
+  ]
+}

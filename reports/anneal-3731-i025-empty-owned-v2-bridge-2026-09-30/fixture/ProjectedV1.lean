@@ -1,0 +1,4 @@
+import Lean
+
+#check "🙂é"
+
