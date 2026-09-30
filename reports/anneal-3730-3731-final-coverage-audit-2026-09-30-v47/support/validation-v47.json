@@ -1,0 +1,55 @@
+{
+  "bounded_context_ids": [
+    "D07"
+  ],
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [
+    "I020",
+    "I076"
+  ],
+  "changed_status_ids": [],
+  "direct_evidence_ids": [
+    "I020",
+    "I076"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v47.csv": "0113c6119011baf5caa0b0251acd560c81232fd5aa4e7e3e7948668a6632eaf4",
+    "investigation-final-v47.csv": "0121cf9d0e6da8499c3ecf8b71681f80490ce75743f439bf79c567f3661e3e1c",
+    "row-challenge-v47.json": "fc7a523bdf582883a726de9db55365de55707b4d8ddbf7e3d3ba978e10babe4b",
+    "source-package-inventory-v47.csv": "f9f7e44a1d7d83b56788cb0f7e933bb8e312f2a1675acc964683894b2bad7a59"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v47.json": "08de544674dc82f8b7753283b80dc92d315a25abafcc9b87985e952b90d43f3c",
+    "v46/3730-crosswalk-final-v46.csv": "f0454fb39b2d45edce15d9e322200e6425b72ef3893a2f2994b898de616a0761",
+    "v46/investigation-final-v46.csv": "5f8a33dea309732ff04c3e23089c697e4c336e4ab9ad6dff7eb3d5ac426c53d2",
+    "v46/row-challenge-v46.json": "3f5461ce5f554037b58d20d11d72428e479b1f60006c1d86732824bdc7f4d498"
+  },
+  "inventory_files": 37,
+  "investigation_count": 159,
+  "issue_snapshot_relation": "exact inherited v46 snapshot; no fresh fetch",
+  "reference_tip_at_start": "24eb9c0b5896c54d24884755f68dfe5b8b077d20",
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v46",
+    "anneal-3731-i076-sequential-shared-destination-2026-09-30"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v46",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

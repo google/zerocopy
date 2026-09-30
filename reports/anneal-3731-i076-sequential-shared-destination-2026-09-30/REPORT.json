@@ -1,0 +1,31 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Observed local Charon/Cargo/rustc binaries",
+      "identity": {
+        "charon_version": "0.1.210",
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+        "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Dependency-free profile/cfg Rust fixture and sequential probe",
+      "identity": {
+        "fixture_source_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d",
+        "acquisition_probe_sha256": "6d9c4bea7a643638d54d75f19cfd665fb0b02a781aa6db08738003588a0e6bab",
+        "replay_probe_sha256": "c9d88dbcbf5cc490857fc32871ada3d782cfbe40e7ffc3a7e8b6f77c8e3e84e3",
+        "results_sha256": "02774561d268e4e483a5cf05892e3dd4917fad39bf4a2ec7c5295b6d618358d3"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/compilation-subject-identity",
+    "charon/cargo-extraction",
+    "experiments/artifact-destination",
+    "experiments/admission"
+  ]
+}

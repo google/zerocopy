@@ -2919,6 +2919,39 @@
         "lean/server-lifecycle"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v47": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v46",
+            "reference_commit": "24eb9c0b5896c54d24884755f68dfe5b8b077d20"
+          },
+          "name": "Published #3730/#3731 v46 coverage ledger"
+        },
+        {
+          "identity": {
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "fixture_source_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d",
+            "results_sha256": "02774561d268e4e483a5cf05892e3dd4917fad39bf4a2ec7c5295b6d618358d3"
+          },
+          "name": "Sequential Charon profile/cfg shared-destination evidence"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "08de544674dc82f8b7753283b80dc92d315a25abafcc9b87985e952b90d43f3c",
+            "source_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v46"
+          },
+          "name": "Inherited public #3730/#3731 issue snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/compilation-subject-identity",
+        "charon/cargo-extraction",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7114,6 +7147,37 @@
         "charon/cargo-extraction",
         "charon/output-publication",
         "anneal/rust-subject-identity"
+      ]
+    },
+    "anneal-3731-i076-sequential-shared-destination-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "charon_version": "0.1.210",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Observed local Charon/Cargo/rustc binaries"
+        },
+        {
+          "identity": {
+            "acquisition_probe_sha256": "6d9c4bea7a643638d54d75f19cfd665fb0b02a781aa6db08738003588a0e6bab",
+            "fixture_source_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d",
+            "replay_probe_sha256": "c9d88dbcbf5cc490857fc32871ada3d782cfbe40e7ffc3a7e8b6f77c8e3e84e3",
+            "results_sha256": "02774561d268e4e483a5cf05892e3dd4917fad39bf4a2ec7c5295b6d618358d3"
+          },
+          "name": "Dependency-free profile/cfg Rust fixture and sequential probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/compilation-subject-identity",
+        "charon/cargo-extraction",
+        "experiments/artifact-destination",
+        "experiments/admission"
       ]
     },
     "anneal-3731-i079-local-span-source-text-2026-09-29": {
