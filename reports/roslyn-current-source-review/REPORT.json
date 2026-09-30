@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "roslyn/version-review",
+    "roslyn/workspaces",
+    "roslyn/immutability",
+    "roslyn/remote",
+    "reference/cohort-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Frozen reference corpus containing R516",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "aff25887303a095aeb6f4344af8f601fb42c9cca"
+      }
+    },
+    {
+      "name": "R516 old Roslyn source",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b"
+      }
+    },
+    {
+      "name": "Roslyn current main source",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "branch": "main",
+        "revision": "36d26c5466e4d25940657ccb8d5b9557ccaf7be1"
+      }
+    },
+    {
+      "name": "Roslyn Workspaces.Common 5.9.0 stable package source",
+      "identity": {
+        "package": "Microsoft.CodeAnalysis.Workspaces.Common",
+        "version": "5.9.0",
+        "repository": "dotnet/roslyn",
+        "revision": "35d9211b841e7613c1d2f8f5af6d628ace696c4c"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

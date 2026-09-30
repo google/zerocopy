@@ -1,0 +1,249 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "aff25887303a095aeb6f4344af8f601fb42c9cca",
+  "baseline_count": 581,
+  "current_count": 591,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188"
+    },
+    {
+      "report_json": "reports/nix-guix-2352-source-review/REPORT.json",
+      "report_md": "reports/nix-guix-2352-source-review/REPORT.md",
+      "json_sha256": "991f95e73e14d678c49f6f21a45856f9b6987aa47d57b983f65fafb907708e4d",
+      "md_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68"
+    },
+    {
+      "report_json": "reports/typescript-602-to-702-source-review/REPORT.json",
+      "report_md": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "json_sha256": "44532136e82a83946ba595de4d30103c41bb3d1c2e532236417507a5c80143a7",
+      "md_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785"
+    }
+  ],
+  "inventory_id": "R516",
+  "cohort": "Roslyn source 7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b",
+  "title": "Roslyn immutable snapshots: what they simplify, and what they leave mutable",
+  "report_md": "reports/roslyn-immutable-snapshots-workspace-boundaries-2012-2026/REPORT.md",
+  "report_json": "reports/roslyn-immutable-snapshots-workspace-boundaries-2012-2026/REPORT.json",
+  "claim_locator": {
+    "heading": "## Summary",
+    "line": 5
+  },
+  "inventory_claim_excerpt_exact_or_normalized": "Roslyn's useful architectural unit is not an immutable process or an immutable IDE. It is an immutable semantic snapshot embedded in a mutable host.",
+  "first_claim_paragraph_exact": "Roslyn's useful architectural unit is not an immutable process or an immutable IDE. It is an immutable *semantic snapshot* embedded in a mutable host.",
+  "full_summary_exact": "Roslyn's useful architectural unit is not an immutable process or an immutable IDE. It is an immutable *semantic snapshot* embedded in a mutable host.\n\nThe original Roslyn API design made syntax trees, compilations, and solution models stable values. A consumer can retain one such value and know that later edits will not change what that value means. Structural sharing and lazy realization make this practical: a new snapshot can reuse most old representation, while semantic work and caches are populated on demand. The mutable `Workspace` remains responsible for tracking which snapshot is current, serializing host-driven updates, applying edits, raising events, and supplying host services.\n\nThe later out-of-process architecture makes the boundary even sharper. A `Solution` object cannot simply be treated as shared state across processes. Roslyn assigns a checksum to a solution state, synchronizes changed subtrees through a typed Merkle structure, pins snapshots while requests use them, retains hot assets in mutable caches, and purges old data. These mechanisms are part of the cost of preserving snapshot semantics across a process boundary. They are not evidence that the whole system became immutable.\n\nA second limit is more important for Anneal: an internally coherent snapshot is not automatically the right snapshot of the external world. Roslyn's Edit-and-Continue code explicitly handles cases where the design-time workspace snapshot differs from the source that produced the running binary, because the build and workspace lack a reliable synchronization edge. It checks PDB/source checksums and tracks out-of-sync state rather than treating snapshot immutability as freshness proof.\n\nFor Anneal, the transferable rule is therefore conditional: use immutable, identity-bearing snapshots for the inputs whose stable meaning a verification operation needs, and keep mutable ownership, cache lifetime, process state, editor state, and publication outside that value. The smallest likely useful snapshot is a versioned verification-input/environment description plus identities of the artifacts that determine the result, not a universal clone of every subsystem. Cross-process use should carry explicit content/version identity and lifetime. None of this makes one snapshot the authority for whether upstream source, build outputs, tool configuration, or published results are current; those relationships need explicit synchronization and validation.\n\nBasis: historical design account + current documentation + current source + historical source change + derived Anneal comparison.",
+  "frozen_md_sha256": "7a5109278efcdfaa790f993844dde111a76e6ee20359ce989578edec0f4792dc",
+  "frozen_json_sha256": "fa36cf238802e0494dec724338216b07fa0f42217cac91737014faed260a4c97",
+  "frozen_subjects_exact": [
+    {
+      "name": "Roslyn current workspace, compilation, syntax, and remote-synchronization architecture",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b"
+      }
+    },
+    {
+      "name": "Roslyn overview as first imported into the public GitHub repository",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "4a74095f0e3598e514f3147479beee208c0ad7ed",
+        "path": "Roslyn-Overview.md"
+      }
+    },
+    {
+      "name": "Roslyn initial out-of-process workspace integration commit",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "c141605a972871644cc43f2caec597c88e9662db"
+      }
+    },
+    {
+      "name": "Eric Lippert's Roslyn red/green-tree design account",
+      "identity": {
+        "published": "2012-06-08",
+        "url": "https://ericlippert.com/2012/06/08/red-green-trees/"
+      }
+    },
+    {
+      "name": "Anneal design authority used for transfer analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md"
+      }
+    }
+  ],
+  "old_source_blob_sha1_mentions": [],
+  "old_source_commit": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b",
+  "current_main_commit": "36d26c5466e4d25940657ccb8d5b9557ccaf7be1",
+  "current_main_compare_sha256": "f4ba8e985ec3d8d100345d8fba17ed81567b24b69edd26c4d1178189d19ef9e3",
+  "stable_workspaces_package": {
+    "package": "Microsoft.CodeAnalysis.Workspaces.Common",
+    "version": "5.9.0",
+    "source_commit": "35d9211b841e7613c1d2f8f5af6d628ace696c4c",
+    "source_relation_to_old": "diverged_from_old_main_line"
+  },
+  "clauses": [
+    {
+      "id": "semantic_snapshot",
+      "mapped_paths": [
+        "docs/wiki/Roslyn-Overview.md",
+        "src/Compilers/Core/Portable/Compilation/Compilation.cs",
+        "src/Workspaces/Core/Portable/Workspace/Workspace.cs"
+      ],
+      "old_urls": [
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/docs/wiki/Roslyn-Overview.md",
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Compilers/Core/Portable/Compilation/Compilation.cs",
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Core/Portable/Workspace/Workspace.cs"
+      ],
+      "current_main_urls": [
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/docs/wiki/Roslyn-Overview.md",
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Compilers/Core/Portable/Compilation/Compilation.cs",
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Core/Portable/Workspace/Workspace.cs"
+      ],
+      "source_result": "unchanged_git_tree_paths_in_verified_ancestor_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "id": "sharing_lazy_caches",
+      "mapped_paths": [
+        "docs/compilers/Design/Red-Green Trees.md",
+        "src/Workspaces/Core/Portable/Workspace/Solution/Solution.cs",
+        "src/Workspaces/Core/Portable/Workspace/Solution/SolutionCompilationState.cs"
+      ],
+      "old_urls": [
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/docs/compilers/Design/Red-Green Trees.md",
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Core/Portable/Workspace/Solution/Solution.cs",
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Core/Portable/Workspace/Solution/SolutionCompilationState.cs"
+      ],
+      "current_main_urls": [
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/docs/compilers/Design/Red-Green Trees.md",
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Core/Portable/Workspace/Solution/Solution.cs",
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Core/Portable/Workspace/Solution/SolutionCompilationState.cs"
+      ],
+      "source_result": "unchanged_git_tree_paths_in_verified_ancestor_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "id": "mutable_workspace",
+      "mapped_paths": [
+        "src/Workspaces/Core/Portable/Workspace/Workspace.cs"
+      ],
+      "old_urls": [
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Core/Portable/Workspace/Workspace.cs"
+      ],
+      "current_main_urls": [
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Core/Portable/Workspace/Workspace.cs"
+      ],
+      "source_result": "unchanged_git_tree_paths_in_verified_ancestor_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "id": "remote_identity_lifetime",
+      "mapped_paths": [
+        "docs/ide/api-designs/Out-of-Process Synchronization.md",
+        "src/Workspaces/Remote/ServiceHub/Host/RemoteWorkspace.cs",
+        "src/Workspaces/Remote/ServiceHub/Host/SolutionAssetCache.cs",
+        "src/Workspaces/Remote/ServiceHub/Host/RemoteWorkspaceManager.cs"
+      ],
+      "old_urls": [
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/docs/ide/api-designs/Out-of-Process Synchronization.md",
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Remote/ServiceHub/Host/RemoteWorkspace.cs",
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Remote/ServiceHub/Host/SolutionAssetCache.cs",
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Remote/ServiceHub/Host/RemoteWorkspaceManager.cs"
+      ],
+      "current_main_urls": [
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/docs/ide/api-designs/Out-of-Process Synchronization.md",
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Remote/ServiceHub/Host/RemoteWorkspace.cs",
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Remote/ServiceHub/Host/SolutionAssetCache.cs",
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Remote/ServiceHub/Host/RemoteWorkspaceManager.cs"
+      ],
+      "source_result": "unchanged_git_tree_paths_in_verified_ancestor_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "id": "build_workspace_mismatch",
+      "mapped_paths": [
+        "src/Features/Core/Portable/EditAndContinue/CommittedSolution.cs"
+      ],
+      "old_urls": [
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Features/Core/Portable/EditAndContinue/CommittedSolution.cs"
+      ],
+      "current_main_urls": [
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Features/Core/Portable/EditAndContinue/CommittedSolution.cs"
+      ],
+      "source_result": "unchanged_git_tree_paths_in_verified_ancestor_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "id": "host_services_persistence",
+      "mapped_paths": [
+        "src/Workspaces/Core/Portable/Workspace/Host/PersistentStorage/IPersistentStorageService.cs",
+        "src/Workspaces/Core/Portable/Storage/AbstractPersistentStorageService.cs"
+      ],
+      "old_urls": [
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Core/Portable/Workspace/Host/PersistentStorage/IPersistentStorageService.cs",
+        "https://github.com/dotnet/roslyn/blob/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b/src/Workspaces/Core/Portable/Storage/AbstractPersistentStorageService.cs"
+      ],
+      "current_main_urls": [
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Core/Portable/Workspace/Host/PersistentStorage/IPersistentStorageService.cs",
+        "https://github.com/dotnet/roslyn/blob/36d26c5466e4d25940657ccb8d5b9557ccaf7be1/src/Workspaces/Core/Portable/Storage/AbstractPersistentStorageService.cs"
+      ],
+      "source_result": "unchanged_git_tree_paths_in_verified_ancestor_range",
+      "runtime_result": "unexecuted_in_this_review"
+    }
+  ],
+  "source_result": "no_observable_drift_in_mapped_paths_on_main",
+  "current_runtime_result": "unexecuted_in_this_review",
+  "anneal_product_result": "unassessed",
+  "old_source_snapshot_sha256": null,
+  "new_source_snapshot_sha256": null,
+  "stable_compare_sha256": "738c0da6610d76be0db4d45005a030843eb5a2ff0187a09a987100ea3cfe5d02"
+}
