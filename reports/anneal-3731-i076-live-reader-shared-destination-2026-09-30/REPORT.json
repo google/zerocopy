@@ -1,0 +1,14 @@
+{
+  "topics": ["anneal/charon", "charon/concurrent-writers", "charon/output-collision"],
+  "subjects": [{
+    "name": "Charon 0.1.210 shared-destination release/cfg writers",
+    "identity": {
+      "repository": "aeneasverif/charon",
+      "version": "0.1.210",
+      "charon_binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cargo_binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "rustc_binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+    }
+  }],
+  "observed_at": "2026-09-30"
+}

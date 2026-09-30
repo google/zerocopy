@@ -1,0 +1,3974 @@
+{
+  "control_models": {
+    "cfg_alt": {
+      "selected_literals": {
+        "unit_key_probe::config_value": [
+          "29"
+        ],
+        "unit_key_probe::profile_value": [
+          "7"
+        ]
+      },
+      "sha256": "3460774c7dba8a7ff1760f4e6285067e8c5d71a8a63522865aef3765675fd06c"
+    },
+    "release": {
+      "selected_literals": {
+        "unit_key_probe::config_value": [
+          "23"
+        ],
+        "unit_key_probe::profile_value": [
+          "11"
+        ]
+      },
+      "sha256": "89a6ce7259eaf018a97e63c0e4833ac2cf521f50b9cd048e8728d065e53cb42d"
+    }
+  },
+  "initial_preflight": {
+    "combined_rss_kib": 0,
+    "elapsed_seconds": 0.0176,
+    "host": {
+      "estimated_reclaimable_percent": 30.5992,
+      "free_disk_bytes": 18625306624,
+      "page_size": 16384,
+      "pages": {
+        "free": 3847,
+        "inactive": 152176,
+        "speculative": 4405
+      },
+      "physical_memory_bytes": 8589934592
+    },
+    "process_group_rss_kib": {},
+    "scratch_kib": 0
+  },
+  "input_sha256": {
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "control_cfg_alt": "3460774c7dba8a7ff1760f4e6285067e8c5d71a8a63522865aef3765675fd06c",
+    "control_release": "89a6ce7259eaf018a97e63c0e4833ac2cf521f50b9cd048e8728d065e53cb42d",
+    "fixture_source": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "limits": {
+    "maximum_combined_process_group_rss_kib": 262144,
+    "maximum_scratch_kib": 102400,
+    "minimum_admission_reclaimable_percent": 25.0,
+    "minimum_free_disk_bytes": 10737418240,
+    "minimum_live_reclaimable_percent": 20.0,
+    "pair_timeout_seconds": 15.0
+  },
+  "observed_utc": "2026-09-30T15:11:38.862467+00:00",
+  "pairs": [
+    {
+      "collection_intervals_overlap": true,
+      "final_destination": {
+        "bytes": 5520,
+        "parse_error": "JSONDecodeError('Extra data: line 1 column 5519 (char 5518)')",
+        "parseable": false,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/artifacts/release-first-final.llbc",
+        "sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099"
+      },
+      "initial_destination_absent": true,
+      "launch_order": [
+        "release",
+        "cfg_alt"
+      ],
+      "name": "release-first",
+      "postrun_process_group_rss_kib": {
+        "16163": 0,
+        "16165": 0
+      },
+      "run": {
+        "commands": [
+          {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+              "cargo",
+              "--preset",
+              "aeneas",
+              "--dest-file",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/shared.llbc",
+              "--",
+              "--manifest-path",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/fixture/Cargo.toml",
+              "--lib",
+              "--release",
+              "--offline",
+              "--locked",
+              "-v",
+              "-j",
+              "1"
+            ],
+            "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/fixture",
+            "driver_lines": [
+              "     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name unit_key_probe --edition=2024 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"selected\"))' -C metadata=32554c91c2bca749 -C extra-filename=-f34b0ce1afbb343d --out-dir /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/release-target/aarch64-apple-darwin/release/deps --target aarch64-apple-darwin -C strip=debuginfo -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/release-target/aarch64-apple-darwin/release/deps -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/release-target/release/deps --verbose`"
+            ],
+            "end_monotonic_ns": 2062411350819541,
+            "ended_utc": "2026-09-30T15:11:39.472882+00:00",
+            "environment": {
+              "CARGO_BUILD_JOBS": "1",
+              "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+              "CARGO_INCREMENTAL": "0",
+              "CARGO_NET_OFFLINE": "true",
+              "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+              "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false",
+              "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/release-target",
+              "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+              "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:",
+              "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+              "RAYON_NUM_THREADS": "1",
+              "RUSTFLAGS": null,
+              "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+            },
+            "exit": 0,
+            "label": "release-first-release",
+            "pid": 16163,
+            "preflight": {
+              "combined_rss_kib": 0,
+              "elapsed_seconds": 0.0154,
+              "host": {
+                "estimated_reclaimable_percent": 30.6007,
+                "free_disk_bytes": 18625294336,
+                "page_size": 16384,
+                "pages": {
+                  "free": 3854,
+                  "inactive": 152176,
+                  "speculative": 4406
+                },
+                "physical_memory_bytes": 8589934592
+              },
+              "process_group_rss_kib": {},
+              "scratch_kib": 0
+            },
+            "start_monotonic_ns": 2062410760870666,
+            "started_utc": "2026-09-30T15:11:38.882943+00:00",
+            "stderr_bytes": 1295,
+            "stderr_sha256": "a9748e415b6d3d5e3ed6524a45c094d2dcba7b504c8dcf108a073d76324de03c",
+            "stdout_bytes": 0,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+              "cargo",
+              "--preset",
+              "aeneas",
+              "--dest-file",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/shared.llbc",
+              "--",
+              "--manifest-path",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/fixture/Cargo.toml",
+              "--lib",
+              "--offline",
+              "--locked",
+              "-v",
+              "-j",
+              "1"
+            ],
+            "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/fixture",
+            "driver_lines": [
+              "     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name unit_key_probe --edition=2024 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"selected\"))' -C metadata=9b1d964ddbf436d2 -C extra-filename=-6ada25f6acd98fa8 --out-dir /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/cfg_alt-target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/cfg_alt-target/aarch64-apple-darwin/debug/deps -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/cfg_alt-target/debug/deps --cfg probe_alt --verbose`"
+            ],
+            "end_monotonic_ns": 2062411351186625,
+            "ended_utc": "2026-09-30T15:11:39.473260+00:00",
+            "environment": {
+              "CARGO_BUILD_JOBS": "1",
+              "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+              "CARGO_INCREMENTAL": "0",
+              "CARGO_NET_OFFLINE": "true",
+              "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+              "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false",
+              "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/release-first/cfg_alt-target",
+              "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+              "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:",
+              "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+              "RAYON_NUM_THREADS": "1",
+              "RUSTFLAGS": "--cfg probe_alt",
+              "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+            },
+            "exit": 0,
+            "label": "release-first-cfg_alt",
+            "pid": 16165,
+            "preflight": {
+              "combined_rss_kib": 0,
+              "elapsed_seconds": 0.0154,
+              "host": {
+                "estimated_reclaimable_percent": 30.6007,
+                "free_disk_bytes": 18625294336,
+                "page_size": 16384,
+                "pages": {
+                  "free": 3854,
+                  "inactive": 152176,
+                  "speculative": 4406
+                },
+                "physical_memory_bytes": 8589934592
+              },
+              "process_group_rss_kib": {},
+              "scratch_kib": 0
+            },
+            "start_monotonic_ns": 2062410802190166,
+            "started_utc": "2026-09-30T15:11:38.924232+00:00",
+            "stderr_bytes": 1376,
+            "stderr_sha256": "833a1a01bcc9b5ae2662d3be17d6dd5bc951e2c3c3c679a9c7aee1627ba5c8fa",
+            "stdout_bytes": 0,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "elapsed_seconds": 0.5909,
+        "guard_reason": null,
+        "preflight": {
+          "combined_rss_kib": 0,
+          "elapsed_seconds": 0.0154,
+          "host": {
+            "estimated_reclaimable_percent": 30.6007,
+            "free_disk_bytes": 18625294336,
+            "page_size": 16384,
+            "pages": {
+              "free": 3854,
+              "inactive": 152176,
+              "speculative": 4406
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": {},
+          "scratch_kib": 0
+        },
+        "reader_errors": [],
+        "reader_interval_first_ns": 2062410760807625,
+        "reader_interval_last_ns": 2062411350475541,
+        "reader_observations": [
+          {
+            "elapsed_seconds": 0.000857,
+            "monotonic_ns": 2062410760807625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.002444,
+            "monotonic_ns": 2062410763109916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.003962,
+            "monotonic_ns": 2062410764636583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.005475,
+            "monotonic_ns": 2062410766151833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.006988,
+            "monotonic_ns": 2062410767665041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.008501,
+            "monotonic_ns": 2062410769177791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.010015,
+            "monotonic_ns": 2062410770691583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.011535,
+            "monotonic_ns": 2062410772204791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.013052,
+            "monotonic_ns": 2062410773723875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.014568,
+            "monotonic_ns": 2062410775241125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.016085,
+            "monotonic_ns": 2062410776757000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.017602,
+            "monotonic_ns": 2062410778275708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.019118,
+            "monotonic_ns": 2062410779791041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.020637,
+            "monotonic_ns": 2062410781309583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.022154,
+            "monotonic_ns": 2062410782826583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.023669,
+            "monotonic_ns": 2062410784342541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.025189,
+            "monotonic_ns": 2062410785859500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.026711,
+            "monotonic_ns": 2062410787381333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.02823,
+            "monotonic_ns": 2062410788901166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.029743,
+            "monotonic_ns": 2062410790418791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.031259,
+            "monotonic_ns": 2062410791931458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.032775,
+            "monotonic_ns": 2062410793448416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.034293,
+            "monotonic_ns": 2062410794964875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.035804,
+            "monotonic_ns": 2062410796480833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.037322,
+            "monotonic_ns": 2062410797993833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.038835,
+            "monotonic_ns": 2062410799511833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.040347,
+            "monotonic_ns": 2062410801024041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.042416,
+            "monotonic_ns": 2062410803030666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.044014,
+            "monotonic_ns": 2062410804664250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.045638,
+            "monotonic_ns": 2062410806256875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.047913,
+            "monotonic_ns": 2062410808530458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.049501,
+            "monotonic_ns": 2062410810139916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.05104,
+            "monotonic_ns": 2062410811705750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.052567,
+            "monotonic_ns": 2062410813235000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.0541,
+            "monotonic_ns": 2062410814767000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.055628,
+            "monotonic_ns": 2062410816293083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.057147,
+            "monotonic_ns": 2062410817818041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.058664,
+            "monotonic_ns": 2062410819339083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.060367,
+            "monotonic_ns": 2062410821004916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.061941,
+            "monotonic_ns": 2062410822601791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.06348,
+            "monotonic_ns": 2062410824144583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.064993,
+            "monotonic_ns": 2062410825669625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.066504,
+            "monotonic_ns": 2062410827181458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.068016,
+            "monotonic_ns": 2062410828693625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.069526,
+            "monotonic_ns": 2062410830203750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.071072,
+            "monotonic_ns": 2062410831742625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.072593,
+            "monotonic_ns": 2062410833264541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.074103,
+            "monotonic_ns": 2062410834780625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.075611,
+            "monotonic_ns": 2062410836289750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.077122,
+            "monotonic_ns": 2062410837800333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.079012,
+            "monotonic_ns": 2062410839636083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.080576,
+            "monotonic_ns": 2062410841216916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.08215,
+            "monotonic_ns": 2062410842808333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.083825,
+            "monotonic_ns": 2062410844487333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.085345,
+            "monotonic_ns": 2062410846021291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.086861,
+            "monotonic_ns": 2062410847539208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.088374,
+            "monotonic_ns": 2062410849048541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.089887,
+            "monotonic_ns": 2062410850562791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.091396,
+            "monotonic_ns": 2062410852074250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.092915,
+            "monotonic_ns": 2062410853586750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.094431,
+            "monotonic_ns": 2062410855106333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.096153,
+            "monotonic_ns": 2062410856775916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.097713,
+            "monotonic_ns": 2062410858366541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.099231,
+            "monotonic_ns": 2062410859902416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.100745,
+            "monotonic_ns": 2062410861421750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.102255,
+            "monotonic_ns": 2062410862933750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.103766,
+            "monotonic_ns": 2062410864444833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.105274,
+            "monotonic_ns": 2062410865952583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.106781,
+            "monotonic_ns": 2062410867460333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.108289,
+            "monotonic_ns": 2062410868968041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.109797,
+            "monotonic_ns": 2062410870475458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.111303,
+            "monotonic_ns": 2062410871982500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.112812,
+            "monotonic_ns": 2062410873491208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.114381,
+            "monotonic_ns": 2062410875039625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.116273,
+            "monotonic_ns": 2062410876897625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.118344,
+            "monotonic_ns": 2062410878981750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.11989,
+            "monotonic_ns": 2062410880559208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.121411,
+            "monotonic_ns": 2062410882087083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.122925,
+            "monotonic_ns": 2062410883601291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.124438,
+            "monotonic_ns": 2062410885116000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.125953,
+            "monotonic_ns": 2062410886630375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.127468,
+            "monotonic_ns": 2062410888143125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.128981,
+            "monotonic_ns": 2062410889658500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.130607,
+            "monotonic_ns": 2062410891283750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.132177,
+            "monotonic_ns": 2062410892836750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.133705,
+            "monotonic_ns": 2062410894375291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.135215,
+            "monotonic_ns": 2062410895892833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.136728,
+            "monotonic_ns": 2062410897405000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.138265,
+            "monotonic_ns": 2062410898940250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.139778,
+            "monotonic_ns": 2062410900454125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.141289,
+            "monotonic_ns": 2062410901967000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.1428,
+            "monotonic_ns": 2062410903476916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.14431,
+            "monotonic_ns": 2062410904987708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.146139,
+            "monotonic_ns": 2062410906766083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.148358,
+            "monotonic_ns": 2062410908346166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.150502,
+            "monotonic_ns": 2062410911132291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.152059,
+            "monotonic_ns": 2062410912714333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.153572,
+            "monotonic_ns": 2062410914248625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.155081,
+            "monotonic_ns": 2062410915759708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.156593,
+            "monotonic_ns": 2062410917271250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.158108,
+            "monotonic_ns": 2062410918780583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.159648,
+            "monotonic_ns": 2062410920315166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.161157,
+            "monotonic_ns": 2062410921835750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.16269,
+            "monotonic_ns": 2062410923348958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.164262,
+            "monotonic_ns": 2062410924918041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.16579,
+            "monotonic_ns": 2062410926461166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.167307,
+            "monotonic_ns": 2062410927979708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.168824,
+            "monotonic_ns": 2062410929496875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.170339,
+            "monotonic_ns": 2062410931016083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.171857,
+            "monotonic_ns": 2062410932532458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.173368,
+            "monotonic_ns": 2062410934045416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.174881,
+            "monotonic_ns": 2062410935557583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.176418,
+            "monotonic_ns": 2062410937087041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.177971,
+            "monotonic_ns": 2062410938609333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.17955,
+            "monotonic_ns": 2062410940204541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.181285,
+            "monotonic_ns": 2062410941867458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.183046,
+            "monotonic_ns": 2062410943674125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.184633,
+            "monotonic_ns": 2062410945270333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.186171,
+            "monotonic_ns": 2062410946838375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.187703,
+            "monotonic_ns": 2062410948368750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.189229,
+            "monotonic_ns": 2062410949898666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.190765,
+            "monotonic_ns": 2062410951431000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.192287,
+            "monotonic_ns": 2062410952958125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.193836,
+            "monotonic_ns": 2062410954494125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.195358,
+            "monotonic_ns": 2062410956028875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.196987,
+            "monotonic_ns": 2062410957613583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.198566,
+            "monotonic_ns": 2062410959207083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.200094,
+            "monotonic_ns": 2062410960760958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.201613,
+            "monotonic_ns": 2062410962284916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.203137,
+            "monotonic_ns": 2062410963810041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.204654,
+            "monotonic_ns": 2062410965327791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.206169,
+            "monotonic_ns": 2062410966843125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.207688,
+            "monotonic_ns": 2062410968361875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.209204,
+            "monotonic_ns": 2062410969880541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.21079,
+            "monotonic_ns": 2062410971442500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.21278,
+            "monotonic_ns": 2062410973373750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.214382,
+            "monotonic_ns": 2062410975049375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.216193,
+            "monotonic_ns": 2062410976652333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.217787,
+            "monotonic_ns": 2062410978425833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.219317,
+            "monotonic_ns": 2062410979982875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.220846,
+            "monotonic_ns": 2062410981514083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.222378,
+            "monotonic_ns": 2062410983049500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.223896,
+            "monotonic_ns": 2062410984569125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.225414,
+            "monotonic_ns": 2062410986086875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.226939,
+            "monotonic_ns": 2062410987607708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.22855,
+            "monotonic_ns": 2062410989217000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.230177,
+            "monotonic_ns": 2062410990821666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.231714,
+            "monotonic_ns": 2062410992380666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.233233,
+            "monotonic_ns": 2062410993907000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.234782,
+            "monotonic_ns": 2062410995453708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.236306,
+            "monotonic_ns": 2062410996976125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.237824,
+            "monotonic_ns": 2062410998496958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.239353,
+            "monotonic_ns": 2062411000031125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.240863,
+            "monotonic_ns": 2062411001540583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.24221,
+            "monotonic_ns": 2062411002881916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.243724,
+            "monotonic_ns": 2062411004401916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.245235,
+            "monotonic_ns": 2062411005913000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.247192,
+            "monotonic_ns": 2062411007816333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.248735,
+            "monotonic_ns": 2062411009409458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.250303,
+            "monotonic_ns": 2062411010965333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.251969,
+            "monotonic_ns": 2062411012560333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.253527,
+            "monotonic_ns": 2062411014179958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.255041,
+            "monotonic_ns": 2062411015717916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.256554,
+            "monotonic_ns": 2062411017232708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.258067,
+            "monotonic_ns": 2062411018743458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.259576,
+            "monotonic_ns": 2062411020253750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.261085,
+            "monotonic_ns": 2062411021763083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.262597,
+            "monotonic_ns": 2062411023275166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.264388,
+            "monotonic_ns": 2062411025011666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.265943,
+            "monotonic_ns": 2062411026602500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.267471,
+            "monotonic_ns": 2062411028138083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.268981,
+            "monotonic_ns": 2062411029658750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.270493,
+            "monotonic_ns": 2062411031170375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.272008,
+            "monotonic_ns": 2062411032685000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.273521,
+            "monotonic_ns": 2062411034197000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.275037,
+            "monotonic_ns": 2062411035712916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.276563,
+            "monotonic_ns": 2062411037230791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.27808,
+            "monotonic_ns": 2062411038752583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.279606,
+            "monotonic_ns": 2062411040273250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.281122,
+            "monotonic_ns": 2062411041795458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.282693,
+            "monotonic_ns": 2062411043347125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.284187,
+            "monotonic_ns": 2062411044807500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.286207,
+            "monotonic_ns": 2062411046836500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.287822,
+            "monotonic_ns": 2062411048468958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.289358,
+            "monotonic_ns": 2062411050028375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.290897,
+            "monotonic_ns": 2062411051561708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.292444,
+            "monotonic_ns": 2062411053110958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.29399,
+            "monotonic_ns": 2062411054653958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.295541,
+            "monotonic_ns": 2062411056189833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.297075,
+            "monotonic_ns": 2062411057742125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.298822,
+            "monotonic_ns": 2062411059453416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.300403,
+            "monotonic_ns": 2062411061055791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.301945,
+            "monotonic_ns": 2062411062610166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.303464,
+            "monotonic_ns": 2062411064136791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.30498,
+            "monotonic_ns": 2062411065653333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.306495,
+            "monotonic_ns": 2062411067168916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.308011,
+            "monotonic_ns": 2062411068687916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.309527,
+            "monotonic_ns": 2062411070203875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.311052,
+            "monotonic_ns": 2062411071719833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.312572,
+            "monotonic_ns": 2062411073243916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.314093,
+            "monotonic_ns": 2062411074760833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.315621,
+            "monotonic_ns": 2062411076293000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.317276,
+            "monotonic_ns": 2062411077929458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.319081,
+            "monotonic_ns": 2062411079701791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.320954,
+            "monotonic_ns": 2062411081582916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.322544,
+            "monotonic_ns": 2062411083193666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.324069,
+            "monotonic_ns": 2062411084739583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.325592,
+            "monotonic_ns": 2062411086260875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.327108,
+            "monotonic_ns": 2062411087784333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.328624,
+            "monotonic_ns": 2062411089300541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.330142,
+            "monotonic_ns": 2062411090815083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.331671,
+            "monotonic_ns": 2062411092337416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.333491,
+            "monotonic_ns": 2062411094113375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.335075,
+            "monotonic_ns": 2062411095716708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.336605,
+            "monotonic_ns": 2062411097273500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.338124,
+            "monotonic_ns": 2062411098795500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.339641,
+            "monotonic_ns": 2062411100314250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.341161,
+            "monotonic_ns": 2062411101834541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.342681,
+            "monotonic_ns": 2062411103354583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.3442,
+            "monotonic_ns": 2062411104874250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.345715,
+            "monotonic_ns": 2062411106391916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.347231,
+            "monotonic_ns": 2062411107907916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.348756,
+            "monotonic_ns": 2062411109429583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.350272,
+            "monotonic_ns": 2062411110947583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.351887,
+            "monotonic_ns": 2062411112533875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.353613,
+            "monotonic_ns": 2062411114227958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.355595,
+            "monotonic_ns": 2062411116214500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.357162,
+            "monotonic_ns": 2062411117817125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.358691,
+            "monotonic_ns": 2062411119357458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.360212,
+            "monotonic_ns": 2062411120884916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.361731,
+            "monotonic_ns": 2062411122402416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.363244,
+            "monotonic_ns": 2062411123921291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.364762,
+            "monotonic_ns": 2062411125437541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.366296,
+            "monotonic_ns": 2062411126966000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.368118,
+            "monotonic_ns": 2062411128747625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.369725,
+            "monotonic_ns": 2062411130364833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.371251,
+            "monotonic_ns": 2062411131921041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.37277,
+            "monotonic_ns": 2062411133442916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.374313,
+            "monotonic_ns": 2062411134982125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.375861,
+            "monotonic_ns": 2062411136532458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.377416,
+            "monotonic_ns": 2062411138083500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.378942,
+            "monotonic_ns": 2062411139610666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.380467,
+            "monotonic_ns": 2062411141135708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.381984,
+            "monotonic_ns": 2062411142661125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.383503,
+            "monotonic_ns": 2062411144178333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.385825,
+            "monotonic_ns": 2062411146427916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.387385,
+            "monotonic_ns": 2062411148050875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.389054,
+            "monotonic_ns": 2062411149697583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.390682,
+            "monotonic_ns": 2062411151315083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.392277,
+            "monotonic_ns": 2062411152927750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.393804,
+            "monotonic_ns": 2062411154470875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.39532,
+            "monotonic_ns": 2062411155995458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.396839,
+            "monotonic_ns": 2062411157510250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.398377,
+            "monotonic_ns": 2062411159044958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.399906,
+            "monotonic_ns": 2062411160573333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.401431,
+            "monotonic_ns": 2062411162099833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.40368,
+            "monotonic_ns": 2062411164289791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.405269,
+            "monotonic_ns": 2062411165904208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.406795,
+            "monotonic_ns": 2062411167464583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.408344,
+            "monotonic_ns": 2062411169011958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.409871,
+            "monotonic_ns": 2062411170538250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.411407,
+            "monotonic_ns": 2062411172069791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.412946,
+            "monotonic_ns": 2062411173606916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.414493,
+            "monotonic_ns": 2062411175154666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.416031,
+            "monotonic_ns": 2062411176694875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.417558,
+            "monotonic_ns": 2062411178227125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.419094,
+            "monotonic_ns": 2062411179757750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.420636,
+            "monotonic_ns": 2062411181297791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.422294,
+            "monotonic_ns": 2062411182837416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.423905,
+            "monotonic_ns": 2062411184563666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.426376,
+            "monotonic_ns": 2062411186972791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.428016,
+            "monotonic_ns": 2062411188638958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.429957,
+            "monotonic_ns": 2062411190430291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.431581,
+            "monotonic_ns": 2062411192228208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.433295,
+            "monotonic_ns": 2062411193832250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.434932,
+            "monotonic_ns": 2062411195538416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.436534,
+            "monotonic_ns": 2062411197158416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.43808,
+            "monotonic_ns": 2062411198742208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.439611,
+            "monotonic_ns": 2062411200279625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.441186,
+            "monotonic_ns": 2062411201828750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.442716,
+            "monotonic_ns": 2062411203381583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.444297,
+            "monotonic_ns": 2062411204968833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.445904,
+            "monotonic_ns": 2062411206556458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.447477,
+            "monotonic_ns": 2062411208122750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.449016,
+            "monotonic_ns": 2062411209678916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.450547,
+            "monotonic_ns": 2062411211213083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.452072,
+            "monotonic_ns": 2062411212742916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.453598,
+            "monotonic_ns": 2062411214266750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.45512,
+            "monotonic_ns": 2062411215789750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.456639,
+            "monotonic_ns": 2062411217310875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.458166,
+            "monotonic_ns": 2062411218831416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.459687,
+            "monotonic_ns": 2062411220358625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.461215,
+            "monotonic_ns": 2062411221879125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.462734,
+            "monotonic_ns": 2062411223407750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.46442,
+            "monotonic_ns": 2062411225059666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.466813,
+            "monotonic_ns": 2062411227299333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.469249,
+            "monotonic_ns": 2062411229859125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.470933,
+            "monotonic_ns": 2062411231473291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.472557,
+            "monotonic_ns": 2062411233165958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.474187,
+            "monotonic_ns": 2062411234782333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.475724,
+            "monotonic_ns": 2062411236388958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.477258,
+            "monotonic_ns": 2062411237920458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.478795,
+            "monotonic_ns": 2062411239464000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.480311,
+            "monotonic_ns": 2062411240986375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.481824,
+            "monotonic_ns": 2062411242500458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.483482,
+            "monotonic_ns": 2062411244136041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.485046,
+            "monotonic_ns": 2062411245698125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.486581,
+            "monotonic_ns": 2062411247246041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.488112,
+            "monotonic_ns": 2062411248779791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.489646,
+            "monotonic_ns": 2062411250312750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.491163,
+            "monotonic_ns": 2062411251839166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.492674,
+            "monotonic_ns": 2062411253351125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.494183,
+            "monotonic_ns": 2062411254860708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.495695,
+            "monotonic_ns": 2062411256371875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.497211,
+            "monotonic_ns": 2062411257886958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.498739,
+            "monotonic_ns": 2062411259403750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.500264,
+            "monotonic_ns": 2062411260931750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.501956,
+            "monotonic_ns": 2062411262537583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.503501,
+            "monotonic_ns": 2062411264173500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.50509,
+            "monotonic_ns": 2062411265743250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.506711,
+            "monotonic_ns": 2062411267339708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.508266,
+            "monotonic_ns": 2062411268925916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.509783,
+            "monotonic_ns": 2062411270460125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.511294,
+            "monotonic_ns": 2062411271971583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.512804,
+            "monotonic_ns": 2062411273481333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.514321,
+            "monotonic_ns": 2062411274994416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.515841,
+            "monotonic_ns": 2062411276511958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.517353,
+            "monotonic_ns": 2062411278029416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.518889,
+            "monotonic_ns": 2062411279558291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.520494,
+            "monotonic_ns": 2062411281151875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.522027,
+            "monotonic_ns": 2062411282694375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.523545,
+            "monotonic_ns": 2062411284217333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.525056,
+            "monotonic_ns": 2062411285734291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.526565,
+            "monotonic_ns": 2062411287243291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.528088,
+            "monotonic_ns": 2062411288759916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.52961,
+            "monotonic_ns": 2062411290280000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.531123,
+            "monotonic_ns": 2062411291800416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.532637,
+            "monotonic_ns": 2062411293314583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.534153,
+            "monotonic_ns": 2062411294824500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.535667,
+            "monotonic_ns": 2062411296340041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.537176,
+            "monotonic_ns": 2062411297853625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.538784,
+            "monotonic_ns": 2062411299446750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.540714,
+            "monotonic_ns": 2062411301340541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.542813,
+            "monotonic_ns": 2062411303437375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.544375,
+            "monotonic_ns": 2062411305034750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.545892,
+            "monotonic_ns": 2062411306568958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.547414,
+            "monotonic_ns": 2062411308087708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.548932,
+            "monotonic_ns": 2062411309608875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.550443,
+            "monotonic_ns": 2062411311120500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.551963,
+            "monotonic_ns": 2062411312635958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.553472,
+            "monotonic_ns": 2062411314150208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.555658,
+            "monotonic_ns": 2062411316283958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.55723,
+            "monotonic_ns": 2062411317875541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.558749,
+            "monotonic_ns": 2062411319422333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.560266,
+            "monotonic_ns": 2062411320943333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.561776,
+            "monotonic_ns": 2062411322453958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.563284,
+            "monotonic_ns": 2062411323962375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.564791,
+            "monotonic_ns": 2062411325470000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.566297,
+            "monotonic_ns": 2062411326975958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.567805,
+            "monotonic_ns": 2062411328483625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.569349,
+            "monotonic_ns": 2062411329992000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.570923,
+            "monotonic_ns": 2062411331583250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.57251,
+            "monotonic_ns": 2062411333162708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.574145,
+            "monotonic_ns": 2062411334774583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.575704,
+            "monotonic_ns": 2062411336358541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.577222,
+            "monotonic_ns": 2062411337898000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.578737,
+            "monotonic_ns": 2062411339412083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.580254,
+            "monotonic_ns": 2062411340927208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.581766,
+            "monotonic_ns": 2062411342443125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.58329,
+            "monotonic_ns": 2062411343959625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.584973,
+            "first_inode": 25724831,
+            "first_sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099",
+            "first_size": 5520,
+            "monotonic_ns": 2062411345484125,
+            "second_inode": 25724831,
+            "second_sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099",
+            "second_size": 5520,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.586606,
+            "first_inode": 25724831,
+            "first_sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099",
+            "first_size": 5520,
+            "monotonic_ns": 2062411347197625,
+            "second_inode": 25724831,
+            "second_sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099",
+            "second_size": 5520,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.588269,
+            "first_inode": 25724831,
+            "first_sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099",
+            "first_size": 5520,
+            "monotonic_ns": 2062411348847333,
+            "second_inode": 25724831,
+            "second_sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099",
+            "second_size": 5520,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.589862,
+            "first_inode": 25724831,
+            "first_sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099",
+            "first_size": 5520,
+            "monotonic_ns": 2062411350475541,
+            "second_inode": 25724831,
+            "second_sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099",
+            "second_size": 5520,
+            "state": "read"
+          }
+        ],
+        "reader_truncated": false,
+        "samples": [
+          {
+            "combined_rss_kib": 8880,
+            "elapsed_seconds": 0.0603,
+            "host": {
+              "estimated_reclaimable_percent": 30.4771,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 4094,
+                "inactive": 152294,
+                "speculative": 3400
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 3968,
+              "16165": 4912
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 34880,
+            "elapsed_seconds": 0.0952,
+            "host": {
+              "estimated_reclaimable_percent": 30.4138,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 3896,
+                "inactive": 153209,
+                "speculative": 2351
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 17504,
+              "16165": 17376
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 50288,
+            "elapsed_seconds": 0.1306,
+            "host": {
+              "estimated_reclaimable_percent": 30.3778,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 3715,
+                "inactive": 153626,
+                "speculative": 1926
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 25248,
+              "16165": 25040
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 65376,
+            "elapsed_seconds": 0.163,
+            "host": {
+              "estimated_reclaimable_percent": 30.411,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 3844,
+                "inactive": 154119,
+                "speculative": 1478
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 32768,
+              "16165": 32608
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 19888,
+            "elapsed_seconds": 0.1961,
+            "host": {
+              "estimated_reclaimable_percent": 30.5216,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 4790,
+                "inactive": 154180,
+                "speculative": 1051
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 9968,
+              "16165": 9920
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 43248,
+            "elapsed_seconds": 0.2285,
+            "host": {
+              "estimated_reclaimable_percent": 30.3524,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 3489,
+                "inactive": 154555,
+                "speculative": 1090
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 21312,
+              "16165": 21936
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 110592,
+            "elapsed_seconds": 0.2635,
+            "host": {
+              "estimated_reclaimable_percent": 30.4266,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 4065,
+                "inactive": 154750,
+                "speculative": 708
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 55136,
+              "16165": 55456
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 47040,
+            "elapsed_seconds": 0.2987,
+            "host": {
+              "estimated_reclaimable_percent": 30.5017,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 4692,
+                "inactive": 154506,
+                "speculative": 719
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 23472,
+              "16165": 23568
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 45968,
+            "elapsed_seconds": 0.3326,
+            "host": {
+              "estimated_reclaimable_percent": 30.5229,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 4675,
+                "inactive": 154623,
+                "speculative": 730
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 23840,
+              "16165": 22128
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 48496,
+            "elapsed_seconds": 0.3672,
+            "host": {
+              "estimated_reclaimable_percent": 30.5098,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 4620,
+                "inactive": 154609,
+                "speculative": 730
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 23872,
+              "16165": 24624
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 49456,
+            "elapsed_seconds": 0.4027,
+            "host": {
+              "estimated_reclaimable_percent": 30.3942,
+              "free_disk_bytes": 18625294336,
+              "page_size": 16384,
+              "pages": {
+                "free": 3851,
+                "inactive": 154772,
+                "speculative": 730
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 24704,
+              "16165": 24752
+            },
+            "scratch_kib": 0
+          },
+          {
+            "combined_rss_kib": 118992,
+            "elapsed_seconds": 0.4443,
+            "host": {
+              "estimated_reclaimable_percent": 30.4228,
+              "free_disk_bytes": 18625126400,
+              "page_size": 16384,
+              "pages": {
+                "free": 4037,
+                "inactive": 154524,
+                "speculative": 942
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 59728,
+              "16165": 59264
+            },
+            "scratch_kib": 24
+          },
+          {
+            "combined_rss_kib": 209792,
+            "elapsed_seconds": 0.4822,
+            "host": {
+              "estimated_reclaimable_percent": 30.3698,
+              "free_disk_bytes": 18625122304,
+              "page_size": 16384,
+              "pages": {
+                "free": 3652,
+                "inactive": 154514,
+                "speculative": 1059
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 104944,
+              "16165": 104848
+            },
+            "scratch_kib": 24
+          },
+          {
+            "combined_rss_kib": 222800,
+            "elapsed_seconds": 0.5192,
+            "host": {
+              "estimated_reclaimable_percent": 30.3844,
+              "free_disk_bytes": 18625122304,
+              "page_size": 16384,
+              "pages": {
+                "free": 3655,
+                "inactive": 154585,
+                "speculative": 1062
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 111456,
+              "16165": 111344
+            },
+            "scratch_kib": 24
+          },
+          {
+            "combined_rss_kib": 240432,
+            "elapsed_seconds": 0.5548,
+            "host": {
+              "estimated_reclaimable_percent": 30.4291,
+              "free_disk_bytes": 18625122304,
+              "page_size": 16384,
+              "pages": {
+                "free": 3887,
+                "inactive": 154464,
+                "speculative": 1185
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 120288,
+              "16165": 120144
+            },
+            "scratch_kib": 24
+          },
+          {
+            "combined_rss_kib": 254656,
+            "elapsed_seconds": 0.5868,
+            "host": {
+              "estimated_reclaimable_percent": 30.3978,
+              "free_disk_bytes": 18625122304,
+              "page_size": 16384,
+              "pages": {
+                "free": 3684,
+                "inactive": 154399,
+                "speculative": 1289
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16163": 127424,
+              "16165": 127232
+            },
+            "scratch_kib": 64
+          }
+        ],
+        "snapshot_files": [
+          {
+            "bytes": 5520,
+            "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/artifacts/release-first-observed-a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099.llbc",
+            "sha256": "a3142ee67648b21c8b1703c3ee135bdff03d97116ff1413806332c239473b099"
+          }
+        ]
+      },
+      "stagger_seconds": 0.03
+    },
+    {
+      "collection_intervals_overlap": true,
+      "final_destination": {
+        "bytes": 5516,
+        "decoded": {
+          "bytes": 5516,
+          "crate_name": "unit_key_probe",
+          "dest_file": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/shared.llbc",
+          "files": [
+            {
+              "contents_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d",
+              "name": {
+                "Local": "src/lib.rs"
+              }
+            }
+          ],
+          "has_errors": false,
+          "local_bodies": {
+            "unit_key_probe::config_value": {
+              "sha256": "31388b2838e0010bd5d9de7a28121675049d9e37870bf73d59180e34898e2af8",
+              "u32_literals": [
+                "23"
+              ]
+            },
+            "unit_key_probe::profile_value": {
+              "sha256": "4aa641c6e3d9a247e85fccea7dfc0d49d99cfc4b77feb4ade97e1a8c2c5d79db",
+              "u32_literals": [
+                "11"
+              ]
+            }
+          },
+          "sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a"
+        },
+        "parseable": true,
+        "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/artifacts/cfg-first-final.llbc",
+        "sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a"
+      },
+      "initial_destination_absent": true,
+      "launch_order": [
+        "cfg_alt",
+        "release"
+      ],
+      "name": "cfg-first",
+      "postrun_process_group_rss_kib": {
+        "16255": 0,
+        "16258": 0
+      },
+      "run": {
+        "commands": [
+          {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+              "cargo",
+              "--preset",
+              "aeneas",
+              "--dest-file",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/shared.llbc",
+              "--",
+              "--manifest-path",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/fixture/Cargo.toml",
+              "--lib",
+              "--offline",
+              "--locked",
+              "-v",
+              "-j",
+              "1"
+            ],
+            "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/fixture",
+            "driver_lines": [
+              "     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name unit_key_probe --edition=2024 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"selected\"))' -C metadata=9b1d964ddbf436d2 -C extra-filename=-6ada25f6acd98fa8 --out-dir /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/cfg_alt-target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/cfg_alt-target/aarch64-apple-darwin/debug/deps -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/cfg_alt-target/debug/deps --cfg probe_alt --verbose`"
+            ],
+            "end_monotonic_ns": 2062411656014541,
+            "ended_utc": "2026-09-30T15:11:39.778069+00:00",
+            "environment": {
+              "CARGO_BUILD_JOBS": "1",
+              "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+              "CARGO_INCREMENTAL": "0",
+              "CARGO_NET_OFFLINE": "true",
+              "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+              "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false",
+              "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/cfg_alt-target",
+              "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+              "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:",
+              "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+              "RAYON_NUM_THREADS": "1",
+              "RUSTFLAGS": "--cfg probe_alt",
+              "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+            },
+            "exit": 0,
+            "label": "cfg-first-cfg_alt",
+            "pid": 16255,
+            "preflight": {
+              "combined_rss_kib": 0,
+              "elapsed_seconds": 0.0159,
+              "host": {
+                "estimated_reclaimable_percent": 31.2572,
+                "free_disk_bytes": 18624917504,
+                "page_size": 16384,
+                "pages": {
+                  "free": 9677,
+                  "inactive": 152879,
+                  "speculative": 1322
+                },
+                "physical_memory_bytes": 8589934592
+              },
+              "process_group_rss_kib": {},
+              "scratch_kib": 64
+            },
+            "start_monotonic_ns": 2062411384532583,
+            "started_utc": "2026-09-30T15:11:39.506601+00:00",
+            "stderr_bytes": 1208,
+            "stderr_sha256": "8146ec677157f8d97af6006d537ac30ea00182592e93d1479c6c7536c89c03ad",
+            "stdout_bytes": 0,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+              "cargo",
+              "--preset",
+              "aeneas",
+              "--dest-file",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/shared.llbc",
+              "--",
+              "--manifest-path",
+              "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/fixture/Cargo.toml",
+              "--lib",
+              "--release",
+              "--offline",
+              "--locked",
+              "-v",
+              "-j",
+              "1"
+            ],
+            "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/fixture",
+            "driver_lines": [
+              "     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name unit_key_probe --edition=2024 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values(\"selected\"))' -C metadata=32554c91c2bca749 -C extra-filename=-f34b0ce1afbb343d --out-dir /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/release-target/aarch64-apple-darwin/release/deps --target aarch64-apple-darwin -C strip=debuginfo -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/release-target/aarch64-apple-darwin/release/deps -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/release-target/release/deps --verbose`"
+            ],
+            "end_monotonic_ns": 2062411656417208,
+            "ended_utc": "2026-09-30T15:11:39.778489+00:00",
+            "environment": {
+              "CARGO_BUILD_JOBS": "1",
+              "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+              "CARGO_INCREMENTAL": "0",
+              "CARGO_NET_OFFLINE": "true",
+              "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+              "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false",
+              "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/work/cfg-first/release-target",
+              "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+              "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:",
+              "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+              "RAYON_NUM_THREADS": "1",
+              "RUSTFLAGS": null,
+              "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+            },
+            "exit": 0,
+            "label": "cfg-first-release",
+            "pid": 16258,
+            "preflight": {
+              "combined_rss_kib": 0,
+              "elapsed_seconds": 0.0159,
+              "host": {
+                "estimated_reclaimable_percent": 31.2572,
+                "free_disk_bytes": 18624917504,
+                "page_size": 16384,
+                "pages": {
+                  "free": 9677,
+                  "inactive": 152879,
+                  "speculative": 1322
+                },
+                "physical_memory_bytes": 8589934592
+              },
+              "process_group_rss_kib": {},
+              "scratch_kib": 64
+            },
+            "start_monotonic_ns": 2062411419575916,
+            "started_utc": "2026-09-30T15:11:39.541638+00:00",
+            "stderr_bytes": 1179,
+            "stderr_sha256": "1de75d1c4984d61fd00ef47edd2c62f7d8157f4b1958fed699c935f504cdbc4d",
+            "stdout_bytes": 0,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "elapsed_seconds": 0.2726,
+        "guard_reason": null,
+        "preflight": {
+          "combined_rss_kib": 0,
+          "elapsed_seconds": 0.0159,
+          "host": {
+            "estimated_reclaimable_percent": 31.2572,
+            "free_disk_bytes": 18624917504,
+            "page_size": 16384,
+            "pages": {
+              "free": 9677,
+              "inactive": 152879,
+              "speculative": 1322
+            },
+            "physical_memory_bytes": 8589934592
+          },
+          "process_group_rss_kib": {},
+          "scratch_kib": 64
+        },
+        "reader_errors": [],
+        "reader_interval_first_ns": 2062411384454708,
+        "reader_interval_last_ns": 2062411656233625,
+        "reader_observations": [
+          {
+            "elapsed_seconds": 0.000127,
+            "monotonic_ns": 2062411384454708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.001716,
+            "monotonic_ns": 2062411386041208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.003254,
+            "monotonic_ns": 2062411387588375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.004769,
+            "monotonic_ns": 2062411389110833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.006286,
+            "monotonic_ns": 2062411390627541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.007805,
+            "monotonic_ns": 2062411392147125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.009322,
+            "monotonic_ns": 2062411393661625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.010841,
+            "monotonic_ns": 2062411395182500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.01236,
+            "monotonic_ns": 2062411396701250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.013878,
+            "monotonic_ns": 2062411398219875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.015396,
+            "monotonic_ns": 2062411399738500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.016914,
+            "monotonic_ns": 2062411401259291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.018431,
+            "monotonic_ns": 2062411402774708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.019946,
+            "monotonic_ns": 2062411404289625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.021467,
+            "monotonic_ns": 2062411405803083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.022992,
+            "monotonic_ns": 2062411407325833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.024512,
+            "monotonic_ns": 2062411408851375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.026029,
+            "monotonic_ns": 2062411410369541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.027546,
+            "monotonic_ns": 2062411411887291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.029061,
+            "monotonic_ns": 2062411413405291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.030581,
+            "monotonic_ns": 2062411414912083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.032101,
+            "monotonic_ns": 2062411416439791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.033624,
+            "monotonic_ns": 2062411417960583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.035151,
+            "monotonic_ns": 2062411419489458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.037212,
+            "monotonic_ns": 2062411421493791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.039659,
+            "monotonic_ns": 2062411423932083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.041864,
+            "monotonic_ns": 2062411426153750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.043442,
+            "monotonic_ns": 2062411427758500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.044973,
+            "monotonic_ns": 2062411429309833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.046495,
+            "monotonic_ns": 2062411430833000,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.048032,
+            "monotonic_ns": 2062411432362625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.049561,
+            "monotonic_ns": 2062411433897583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.051082,
+            "monotonic_ns": 2062411435422625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.052618,
+            "monotonic_ns": 2062411436953083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.054363,
+            "monotonic_ns": 2062411438694500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.055964,
+            "monotonic_ns": 2062411440282708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.057511,
+            "monotonic_ns": 2062411441842500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.05906,
+            "monotonic_ns": 2062411443387375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.060613,
+            "monotonic_ns": 2062411444950291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.062135,
+            "monotonic_ns": 2062411446472125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.063652,
+            "monotonic_ns": 2062411447992833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.065174,
+            "monotonic_ns": 2062411449513333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.066694,
+            "monotonic_ns": 2062411451033458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.068233,
+            "monotonic_ns": 2062411452560666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.069856,
+            "monotonic_ns": 2062411454158625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.071686,
+            "monotonic_ns": 2062411455968833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.07391,
+            "monotonic_ns": 2062411458190458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.075514,
+            "monotonic_ns": 2062411459820916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.077045,
+            "monotonic_ns": 2062411461380916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.078581,
+            "monotonic_ns": 2062411462913916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.080116,
+            "monotonic_ns": 2062411464453041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.081636,
+            "monotonic_ns": 2062411465975625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.083154,
+            "monotonic_ns": 2062411467494125,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.084669,
+            "monotonic_ns": 2062411469011541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.086246,
+            "monotonic_ns": 2062411470579375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.087863,
+            "monotonic_ns": 2062411472181708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.08941,
+            "monotonic_ns": 2062411473739666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.090958,
+            "monotonic_ns": 2062411475288666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.092515,
+            "monotonic_ns": 2062411476847041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.09404,
+            "monotonic_ns": 2062411478377875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.095562,
+            "monotonic_ns": 2062411479899708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.097085,
+            "monotonic_ns": 2062411481422708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.098634,
+            "monotonic_ns": 2062411482970750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.10015,
+            "monotonic_ns": 2062411484491166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.101667,
+            "monotonic_ns": 2062411486007500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.103186,
+            "monotonic_ns": 2062411487530500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.104709,
+            "monotonic_ns": 2062411489051708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.106328,
+            "monotonic_ns": 2062411490647458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.108303,
+            "monotonic_ns": 2062411492585333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.109914,
+            "monotonic_ns": 2062411494249833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.111513,
+            "monotonic_ns": 2062411495825500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.113064,
+            "monotonic_ns": 2062411497397666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.114604,
+            "monotonic_ns": 2062411498937708,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.116139,
+            "monotonic_ns": 2062411500476208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.117658,
+            "monotonic_ns": 2062411501998375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.119176,
+            "monotonic_ns": 2062411503516833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.120697,
+            "monotonic_ns": 2062411505037375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.122221,
+            "monotonic_ns": 2062411506561791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.123946,
+            "monotonic_ns": 2062411508245250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.125537,
+            "monotonic_ns": 2062411509844541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.127075,
+            "monotonic_ns": 2062411511408791,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.128597,
+            "monotonic_ns": 2062411512938750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.13013,
+            "monotonic_ns": 2062411514460458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.131661,
+            "monotonic_ns": 2062411515996291,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.133206,
+            "monotonic_ns": 2062411517540375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.134774,
+            "monotonic_ns": 2062411519106083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.1363,
+            "monotonic_ns": 2062411520636500,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.138699,
+            "monotonic_ns": 2062411522162250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.140865,
+            "monotonic_ns": 2062411525149625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.142771,
+            "monotonic_ns": 2062411527071958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.144341,
+            "monotonic_ns": 2062411528667208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.145882,
+            "monotonic_ns": 2062411530215625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.14741,
+            "monotonic_ns": 2062411531745375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.148942,
+            "monotonic_ns": 2062411533279541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.150479,
+            "monotonic_ns": 2062411534808541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.152092,
+            "monotonic_ns": 2062411536368333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.153663,
+            "monotonic_ns": 2062411537987833,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.155225,
+            "monotonic_ns": 2062411539551750,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.156769,
+            "monotonic_ns": 2062411541086166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.158326,
+            "monotonic_ns": 2062411542650041,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.159874,
+            "monotonic_ns": 2062411544205375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.161421,
+            "monotonic_ns": 2062411545745333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.162962,
+            "monotonic_ns": 2062411547291916,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.164501,
+            "monotonic_ns": 2062411548831166,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.166046,
+            "monotonic_ns": 2062411550371541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.167578,
+            "monotonic_ns": 2062411551911875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.169103,
+            "monotonic_ns": 2062411553439083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.171663,
+            "monotonic_ns": 2062411554970416,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.173428,
+            "monotonic_ns": 2062411557650958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.175047,
+            "monotonic_ns": 2062411559354666,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.178703,
+            "monotonic_ns": 2062411562994458,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.180322,
+            "monotonic_ns": 2062411564613541,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.182879,
+            "monotonic_ns": 2062411567197625,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.184428,
+            "monotonic_ns": 2062411568755375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.18561,
+            "monotonic_ns": 2062411569938875,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.187218,
+            "monotonic_ns": 2062411571511583,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.188773,
+            "monotonic_ns": 2062411573094375,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.190332,
+            "monotonic_ns": 2062411574665208,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.191974,
+            "monotonic_ns": 2062411576309958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.193682,
+            "monotonic_ns": 2062411577941250,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.195332,
+            "monotonic_ns": 2062411579607083,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.196907,
+            "monotonic_ns": 2062411581225333,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "elapsed_seconds": 0.198488,
+            "monotonic_ns": 2062411582809958,
+            "state": "absent_or_disappeared"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.200253,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411584447625,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.20193,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411586150750,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.203573,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411587811458,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.205185,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411589450916,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.206773,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411591056208,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.208351,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411592639416,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.209938,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411594222416,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.212358,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411596416875,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.215065,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411598452250,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.217767,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411601106750,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.219498,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411603728500,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.221148,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411605387958,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.222749,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411607024166,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.22478,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411608646791,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.226445,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411610666083,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.228077,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411612325250,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.229715,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411613962500,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.231694,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411615837583,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.233716,
+            "first_inode": 25724874,
+            "first_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "first_size": 5514,
+            "monotonic_ns": 2062411617913958,
+            "second_inode": 25724874,
+            "second_sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932",
+            "second_size": 5514,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.235405,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411619591958,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.236988,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411621272541,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.238553,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411622852458,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.240134,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411624418500,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.241704,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411626001750,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.243303,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411627593833,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.244879,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411629166750,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.246457,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411630747666,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.248034,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411632322750,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.249605,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411633898166,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.251343,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411635535541,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.253677,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411637832875,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.25567,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411639871000,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.257312,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411641562333,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.258927,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411643199583,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.260486,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411644767916,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.262055,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411646352208,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.263623,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411647920208,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.265188,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411649486750,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.266749,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411651052666,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.268663,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411652810208,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.270344,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411654591541,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          },
+          {
+            "double_read_equal": true,
+            "elapsed_seconds": 0.271949,
+            "first_inode": 25724874,
+            "first_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "first_size": 5516,
+            "monotonic_ns": 2062411656233625,
+            "second_inode": 25724874,
+            "second_sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a",
+            "second_size": 5516,
+            "state": "read"
+          }
+        ],
+        "reader_truncated": false,
+        "samples": [
+          {
+            "combined_rss_kib": 24896,
+            "elapsed_seconds": 0.0543,
+            "host": {
+              "estimated_reclaimable_percent": 31.1802,
+              "free_disk_bytes": 18624909312,
+              "page_size": 16384,
+              "pages": {
+                "free": 9263,
+                "inactive": 152878,
+                "speculative": 1333
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16255": 20864,
+              "16258": 4032
+            },
+            "scratch_kib": 64
+          },
+          {
+            "combined_rss_kib": 44416,
+            "elapsed_seconds": 0.0862,
+            "host": {
+              "estimated_reclaimable_percent": 31.0509,
+              "free_disk_bytes": 18624909312,
+              "page_size": 16384,
+              "pages": {
+                "free": 8585,
+                "inactive": 152878,
+                "speculative": 1333
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16255": 21760,
+              "16258": 22656
+            },
+            "scratch_kib": 64
+          },
+          {
+            "combined_rss_kib": 46592,
+            "elapsed_seconds": 0.1231,
+            "host": {
+              "estimated_reclaimable_percent": 30.9793,
+              "free_disk_bytes": 18624909312,
+              "page_size": 16384,
+              "pages": {
+                "free": 8210,
+                "inactive": 152878,
+                "speculative": 1333
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16255": 24176,
+              "16258": 22416
+            },
+            "scratch_kib": 64
+          },
+          {
+            "combined_rss_kib": 55536,
+            "elapsed_seconds": 0.1555,
+            "host": {
+              "estimated_reclaimable_percent": 31.1136,
+              "free_disk_bytes": 18624909312,
+              "page_size": 16384,
+              "pages": {
+                "free": 8914,
+                "inactive": 152878,
+                "speculative": 1333
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16255": 28864,
+              "16258": 26672
+            },
+            "scratch_kib": 76
+          },
+          {
+            "combined_rss_kib": 128144,
+            "elapsed_seconds": 0.1919,
+            "host": {
+              "estimated_reclaimable_percent": 30.9872,
+              "free_disk_bytes": 18624888832,
+              "page_size": 16384,
+              "pages": {
+                "free": 8248,
+                "inactive": 152880,
+                "speculative": 1334
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16255": 103840,
+              "16258": 24304
+            },
+            "scratch_kib": 76
+          },
+          {
+            "combined_rss_kib": 43712,
+            "elapsed_seconds": 0.2306,
+            "host": {
+              "estimated_reclaimable_percent": 30.9668,
+              "free_disk_bytes": 18624839680,
+              "page_size": 16384,
+              "pages": {
+                "free": 8128,
+                "inactive": 152884,
+                "speculative": 1343
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16255": 0,
+              "16258": 43712
+            },
+            "scratch_kib": 112
+          },
+          {
+            "combined_rss_kib": 0,
+            "elapsed_seconds": 0.2676,
+            "host": {
+              "estimated_reclaimable_percent": 31.0522,
+              "free_disk_bytes": 18624823296,
+              "page_size": 16384,
+              "pages": {
+                "free": 8570,
+                "inactive": 152882,
+                "speculative": 1351
+              },
+              "physical_memory_bytes": 8589934592
+            },
+            "process_group_rss_kib": {
+              "16255": 0,
+              "16258": 0
+            },
+            "scratch_kib": 128
+          }
+        ],
+        "snapshot_files": [
+          {
+            "bytes": 5516,
+            "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/artifacts/cfg-first-observed-15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a.llbc",
+            "sha256": "15757df7f92055ccb8b41b7c7bcc806dd83de8b566f4719ec15f13c4b01d062a"
+          },
+          {
+            "bytes": 5514,
+            "path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-live-reader-collision/artifacts/cfg-first-observed-4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932.llbc",
+            "sha256": "4183b22754037b1ccc355d7f498ed09e3aed036740ada3140928f5ef91f48932"
+          }
+        ]
+      },
+      "stagger_seconds": 0.03
+    }
+  ],
+  "postrun_host": {
+    "estimated_reclaimable_percent": 30.9031,
+    "free_disk_bytes": 18624712704,
+    "page_size": 16384,
+    "pages": {
+      "free": 7778,
+      "inactive": 152885,
+      "speculative": 1358
+    },
+    "physical_memory_bytes": 8589934592
+  },
+  "schema": 1,
+  "scratch_kib": 128,
+  "source_reports": [
+    "anneal-3731-i076-sequential-shared-destination-2026-09-30",
+    "anneal-3731-i076-concurrent-shared-destination-2026-09-30"
+  ],
+  "status": "completed"
+}

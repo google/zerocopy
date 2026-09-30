@@ -1,0 +1,34 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v63 coverage ledger",
+      "identity": {
+        "reference_commit": "6318115869e612a771ffceb26f10d7bd3a15f257",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v63"
+      }
+    },
+    {
+      "name": "Charon staggered shared-destination reader observation",
+      "identity": {
+        "source_package": "anneal-3731-i076-live-reader-shared-destination-2026-09-30",
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "results_sha256": "86a764a35dd78f9bd63f98c810cec2ba688f0bd3b89bcf567f85cf7850b71340",
+        "checker_sha256": "a05e8b06320e677f2ef3bcacb617257855d6f58b8e12f74d17ab035d05684202"
+      }
+    },
+    {
+      "name": "Fresh public #3730/#3731 issue snapshot",
+      "identity": {
+        "snapshot_sha256": "f664b72ace3d135be170f2f1f6f91ab22fb9703464c3a98e2e49184b6f328401",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/issue-3730-3731",
+    "charon/output-collision",
+    "charon/concurrent-writers",
+    "research/coverage-audit"
+  ]
+}

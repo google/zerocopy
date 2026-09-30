@@ -1,0 +1,7 @@
+# #3730/#3731 coverage audit v64: staggered Charon shared-path readers
+
+This audit inherits all 333 rows, including 159 consolidated investigations and 174 #3730 suggestions, from published v63 at `6318115869e612a771ffceb26f10d7bd3a15f257`. A fresh public GitHub REST read found #3730 closed and #3731 open, with issue bodies, comments, and update timestamps unchanged from v63. The exact snapshot is [live-issue-snapshot-v64.json](support/live-issue-snapshot-v64.json).
+
+The [new Charon reader/collision report](../anneal-3731-i076-live-reader-shared-destination-2026-09-30/REPORT.md) runs two staggered release/cfg pairs against one initially absent LLBC path per pair. All four pinned Charon requests exited 0. In release-first order, the final 5,520-byte file was a complete cfg-model JSON prefix with the literal `e}` suffix, so strict LLBC JSON parsing failed. In cfg-first order, the poller sampled complete cfg then release models and the release model remained final. The report does not infer syscall/write order, atomicity or Anneal publisher behavior.
+
+Exactly **I020 and I076** receive appended direct residuals. **D07**, whose crosswalk destinations are I009/I020/I076, gains bounded context with its residual unchanged. No status, gate or prerequisite changes. The generated ledger, crosswalk, row challenge, source inventory, validation hashes, replay script and offline checker are under [support/](support/).

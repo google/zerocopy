@@ -3497,6 +3497,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v64": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v63",
+            "reference_commit": "6318115869e612a771ffceb26f10d7bd3a15f257"
+          },
+          "name": "Published #3730/#3731 v63 coverage ledger"
+        },
+        {
+          "identity": {
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "checker_sha256": "a05e8b06320e677f2ef3bcacb617257855d6f58b8e12f74d17ab035d05684202",
+            "results_sha256": "86a764a35dd78f9bd63f98c810cec2ba688f0bd3b89bcf567f85cf7850b71340",
+            "source_package": "anneal-3731-i076-live-reader-shared-destination-2026-09-30"
+          },
+          "name": "Charon staggered shared-destination reader observation"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "f664b72ace3d135be170f2f1f6f91ab22fb9703464c3a98e2e49184b6f328401",
+            "source": "public GitHub REST issue and comments endpoints"
+          },
+          "name": "Fresh public #3730/#3731 issue snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "charon/output-collision",
+        "charon/concurrent-writers",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7893,6 +7927,26 @@
         "charon/cargo-extraction",
         "experiments/artifact-destination",
         "experiments/concurrency"
+      ]
+    },
+    "anneal-3731-i076-live-reader-shared-destination-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "cargo_binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon_binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "repository": "aeneasverif/charon",
+            "rustc_binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "version": "0.1.210"
+          },
+          "name": "Charon 0.1.210 shared-destination release/cfg writers"
+        }
+      ],
+      "topics": [
+        "anneal/charon",
+        "charon/concurrent-writers",
+        "charon/output-collision"
       ]
     },
     "anneal-3731-i076-sequential-shared-destination-2026-09-30": {
