@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v59 coverage ledger",
+      "identity": {
+        "reference_commit": "2cec790eeec883e83ac66dcfa021c51ad65ad4f1",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v59"
+      }
+    },
+    {
+      "name": "Lean direct stepwise document-version observation",
+      "identity": {
+        "source_package": "anneal-3731-i112-stepwise-lsp-versions-2026-09-30",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "results_sha256": "78ea3cc14a7675d866d2af0da242a4f32093f6f2c453c8c3f9e7750826e062f9",
+        "oracle_prelaunch_sha256": "bc5b7a0af6afffc603de296ce562154e50f4bffb6de9ec5951bb8caa082eb5be"
+      }
+    },
+    {
+      "name": "Fresh public #3730/#3731 issue snapshot",
+      "identity": {
+        "snapshot_sha256": "9ce4ddf0d96e30205d256b94b4407039b5dead14f9cc0296fa5b3c7fa406e28e",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "topics": ["anneal/issue-3730-3731", "anneal/lsp-version-order", "lean/lsp", "research/coverage-audit"]
+}

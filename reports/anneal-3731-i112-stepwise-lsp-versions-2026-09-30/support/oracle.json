@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "variants": [
+    {
+      "label": "open-v1",
+      "version": 1,
+      "numeral": 1,
+      "marker": "missing_v1",
+      "source": "theorem marker : 1 = 1 := by\n  exact ?_\n#check missing_v1\n",
+      "source_sha256": "976f64febc49d1f8a3c8ea7125f3d2f2ccc8f932457b75842b7d70c3506a0209"
+    },
+    {
+      "label": "change-v2",
+      "version": 2,
+      "numeral": 2,
+      "marker": "missing_v2",
+      "source": "theorem marker : 2 = 2 := by\n  exact ?_\n#check missing_v2\n",
+      "source_sha256": "fcd06d3f3447c5e48a9f350618621fda23107b750fbdc68b4f833841cfa10db3"
+    },
+    {
+      "label": "skip-v4",
+      "version": 4,
+      "numeral": 4,
+      "marker": "missing_v4",
+      "source": "theorem marker : 4 = 4 := by\n  exact ?_\n#check missing_v4\n",
+      "source_sha256": "06478c651dbb16b0d1fb5e64e2a21b4da446ae2bf8260036a9437beae48281ea"
+    },
+    {
+      "label": "duplicate-v4",
+      "version": 4,
+      "numeral": 40,
+      "marker": "missing_v4dup",
+      "source": "theorem marker : 40 = 40 := by\n  exact ?_\n#check missing_v4dup\n",
+      "source_sha256": "755a512a9284fb2fabde668c7553c2a8a09502e8fde19d3e35eee3c1afa266d0"
+    },
+    {
+      "label": "stale-v3",
+      "version": 3,
+      "numeral": 3,
+      "marker": "missing_v3",
+      "source": "theorem marker : 3 = 3 := by\n  exact ?_\n#check missing_v3\n",
+      "source_sha256": "72aace2e08753b211ccfec302f1215f62307a9c7f1fc8af3676e7e3dae152fca"
+    },
+    {
+      "label": "final-v5",
+      "version": 5,
+      "numeral": 5,
+      "marker": "missing_v5",
+      "source": "theorem marker : 5 = 5 := by\n  exact ?_\n#check missing_v5\n",
+      "source_sha256": "b3e01c9eae20180f66be4f59d7737b6bfa0c1d714c7e14361cbb7fa3eb1576c4"
+    }
+  ],
+  "goal_position": {
+    "line": 1,
+    "character": 8
+  },
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "harness_sha256": "9d5d5c7e3d85e8679e1ee04f9f8df485d163be3bd0eebaa0ffadaf27f7dc50a7",
+  "diagnostic_marker_wait_seconds": 2.0,
+  "server_max_seconds": 30.0,
+  "batch_timeout_seconds": 10.0,
+  "malformed_sequence": [
+    "open-v1",
+    "change-v2",
+    "skip-v4",
+    "duplicate-v4",
+    "stale-v3",
+    "final-v5"
+  ],
+  "monotonic_sequence": [
+    "open-v1",
+    "change-v2",
+    "stale-v3",
+    "skip-v4",
+    "final-v5"
+  ],
+  "post_final_quiet_seconds": 1.5
+}
