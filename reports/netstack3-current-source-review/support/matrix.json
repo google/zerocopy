@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "4774f2e455d1b70a6321b760deeb6caae0e6f920",
+  "baseline_count": 581,
+  "current_count": 593,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f"
+    },
+    {
+      "report_json": "reports/fstar-20260927-current-source-review/REPORT.json",
+      "report_md": "reports/fstar-20260927-current-source-review/REPORT.md",
+      "json_sha256": "a462a846213aa9d5b7da25e91c90aa335dc994b4b7af0c03995bb7a7f4a7f4d8",
+      "md_sha256": "80e3114611101e2208d28a898945b73a5920135ac1e8505cac1d4deb3aceef62"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188"
+    },
+    {
+      "report_json": "reports/nix-guix-2352-source-review/REPORT.json",
+      "report_md": "reports/nix-guix-2352-source-review/REPORT.md",
+      "json_sha256": "991f95e73e14d678c49f6f21a45856f9b6987aa47d57b983f65fafb907708e4d",
+      "md_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b"
+    },
+    {
+      "report_json": "reports/roslyn-current-source-review/REPORT.json",
+      "report_md": "reports/roslyn-current-source-review/REPORT.md",
+      "json_sha256": "fab1d4cf7cc79374da45d79ff0fe0b406fc4a60bf82ae49cf1d010a867b96f3d",
+      "md_sha256": "2dc8c283c7c1ecaf13a13c507896110c63e81dffc6a21d93bc2942a79ecd2564"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68"
+    },
+    {
+      "report_json": "reports/typescript-602-to-702-source-review/REPORT.json",
+      "report_md": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "json_sha256": "44532136e82a83946ba595de4d30103c41bb3d1c2e532236417507a5c80143a7",
+      "md_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785"
+    }
+  ],
+  "inventory_id": "R501",
+  "cohort": "Fuchsia Netstack3 source c480400b0e6cb9a9b36384935639fb3e6566bd68",
+  "title": "Netstack3 architecture evolution: boundaries, lifecycle, static state, and concurrency",
+  "report_json": "reports/netstack3-architecture-evolution-2019-2026/REPORT.json",
+  "report_md": "reports/netstack3-architecture-evolution-2019-2026/REPORT.md",
+  "frozen_json_sha256": "3f400a024b3edaeae3bffa652dfaec3f934030e0dd038da3569a8c1d1ac56ea5",
+  "frozen_md_sha256": "a77943ab37ac1394c30fff32c76959f15aeab06d669b8a08c691594ba2cbae0b",
+  "frozen_subjects_exact": [
+    {
+      "name": "Current Fuchsia Netstack3 architecture and design documentation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "c480400b0e6cb9a9b36384935639fb3e6566bd68"
+      }
+    },
+    {
+      "name": "Netstack3 UDP socket identity consolidation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "4ccfe9e3c10662b8dea3ccbf020553ebfa179ff3"
+      }
+    },
+    {
+      "name": "Netstack3 TCP handshake-status ownership migration",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "40ce8a08f2ffa1e9babc8e5b6aaa14cf486c0c6d"
+      }
+    },
+    {
+      "name": "Netstack3 multicast-forwarding state design",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "1e9fb101ed58968f5b4cf0b67a439f8cb0479b9d"
+      }
+    },
+    {
+      "name": "Netstack3 2026 resource-reference and socket-destruction implementation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "09c560576ca357ffc0853c6251048af2a61b1543"
+      }
+    }
+  ],
+  "claim_locator": {
+    "heading": "## Summary",
+    "line": 5
+  },
+  "inventory_claim_excerpt_exact_or_normalized": "Netstack3's history supports a narrower architectural lesson than either \"make invalid states unrepresentable\" or \"put every subsystem behind an asynchronous service.\" Four choices survived substantial change:",
+  "first_claim_paragraph_exact": "Netstack3's history supports a narrower architectural lesson than either \"make\ninvalid states unrepresentable\" or \"put every subsystem behind an asynchronous\nservice.\" Four choices survived substantial change:",
+  "full_summary_exact": "Netstack3's history supports a narrower architectural lesson than either \"make\ninvalid states unrepresentable\" or \"put every subsystem behind an asynchronous\nservice.\" Four choices survived substantial change:\n\n1. protocol semantics and platform integration remain separated even though the\n   original single core crate became a collection of core crates and the exact\n   context traits changed;\n2. identity, operational eligibility, and object lifetime are treated as\n   different concerns, with strong/weak references, destruction markers, and\n   deferred removal where a name can outlive permission to start new work;\n3. static types are used aggressively for stable local invariants, but Netstack3\n   has deliberately collapsed typestate-like socket identities when stateful\n   identities had to survive transitions across APIs; and\n4. authority over shared protocol state is serialized at specific lock/critical\n   sections while computation, bindings work, and state projection can proceed\n   concurrently. Netstack3 did not replace ordinary core calls with actors at\n   every layer.\n\nThose conclusions matter to Anneal only conditionally. Anneal can preserve a\nsemantic boundary between verification state and orchestration without binding\nthat boundary to one crate, trait hierarchy, process, or RPC interface. It can\nalso distinguish a stable workspace or generation identity from a liveness\nhandle and from permission to publish new work. Types are most valuable for\ndurable invariants such as validated identities and capability classes; mutable\nlifecycle states are better represented dynamically when callers need one stable\nidentity across transitions. Finally, Anneal has evidence for serializing\nauthority-changing transitions—publishing a generation, moving the current\npointer, retiring a prepared environment—without serializing all proof and build\ncomputation or requiring mailbox semantics between every stage.\n\nThe history does **not** show that these are universal rules. Networking has\nhard real-time ordering, teardown, packet-flow, and watcher requirements that\nAnneal does not share. Netstack3 also paid real costs for trait indirection,\npublic-path churn, lock ordering, reference-counted lifetime machinery, and\ndynamic error states. The transferable lesson is to preserve semantic ownership\nand explicit lifecycle/ordering contracts while allowing the mechanism that\nimplements them to change.\n\nThis report provides judgment-driven coverage for google/zerocopy issue #3732\nquestions J001-J004.",
+  "four_summary_clauses": [
+    {
+      "number": 1,
+      "exact_excerpt": "1. protocol semantics and platform integration remain separated even though the\n   original single core crate became a collection of core crates and the exact\n   context traits changed;",
+      "source_result": "no_architectural_drift_established",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 2,
+      "exact_excerpt": "2. identity, operational eligibility, and object lifetime are treated as\n   different concerns, with strong/weak references, destruction markers, and\n   deferred removal where a name can outlive permission to start new work;",
+      "source_result": "no_architectural_drift_established",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 3,
+      "exact_excerpt": "3. static types are used aggressively for stable local invariants, but Netstack3\n   has deliberately collapsed typestate-like socket identities when stateful\n   identities had to survive transitions across APIs; and",
+      "source_result": "no_architectural_drift_established",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 4,
+      "exact_excerpt": "4. authority over shared protocol state is serialized at specific lock/critical\n   sections while computation, bindings work, and state projection can proceed\n   concurrently. Netstack3 did not replace ordinary core calls with actors at\n   every layer.",
+      "source_result": "no_architectural_drift_established",
+      "runtime_result": "unexecuted_in_this_review"
+    }
+  ],
+  "old_source_commit": "c480400b0e6cb9a9b36384935639fb3e6566bd68",
+  "selected_observed_main_commit": "955de750a2aae45faa99e02e29715b794dd3b544",
+  "source_evidence_sha256": "c8295ba84f8e492ee15e08fe7427e31d9d3f3b7e434dfa4edc02821d034956a4",
+  "source_result": "three_changed_netstack3_blobs_narrow_claim_adjacent_no_architectural_conclusion",
+  "current_runtime_result": "unexecuted_in_this_review",
+  "anneal_product_result": "unassessed",
+  "old_source_snapshot_sha256": null,
+  "new_source_snapshot_sha256": null
+}

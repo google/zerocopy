@@ -1,0 +1,10 @@
+{
+  "topics": ["fuchsia", "netstack3", "reference/version-review", "anneal/architecture"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R501", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "4774f2e455d1b70a6321b760deeb6caae0e6f920"}},
+    {"name": "R501 pinned Fuchsia Netstack3 source", "identity": {"repository": "fuchsia/fuchsia", "revision": "c480400b0e6cb9a9b36384935639fb3e6566bd68"}},
+    {"name": "Selected observed Fuchsia main source snapshot", "identity": {"repository": "fuchsia/fuchsia", "branch": "main", "revision": "955de750a2aae45faa99e02e29715b794dd3b544"}},
+    {"name": "Netstack3 metadata-splitting source change", "identity": {"repository": "fuchsia/fuchsia", "revision": "76ab45a89c9f0ccc6e0bef3867a9ffcc775f8e10"}}
+  ],
+  "observed_at": "2026-09-30"
+}
