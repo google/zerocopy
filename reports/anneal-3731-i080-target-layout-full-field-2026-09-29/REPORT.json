@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "cargo/incremental",
+    "charon/cargo-extraction",
+    "artifact-identity/llbc"
+  ],
+  "subjects": [
+    {
+      "name": "Retained I080 private/shared incremental cold/warm LLBC matrix",
+      "identity": {
+        "source_report": "anneal-3731-i080-incremental-target-layout-matrix-2026-09-29",
+        "source_report_sha256": "07ebaa3cb0d2177d4c088caf9cbcff6973bc4cb7ca932cc91e07a97d25e59d44",
+        "source_results_sha256": "040f6e477a358b602af87298fbc8517cd5269e8803d4ede7e70762ae31d58828",
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "Python full-field target-layout matrix comparison",
+      "identity": {
+        "compare_sha256": "867d5f0f2d568d6f7b1a69057df48c90757ea482ceb34852eba668508cd5eae7",
+        "comparison_sha256": "4d4396890b7a05eaad9684ccaf76067cf6f0ba1e74bd8d48caf109dd75dd4c02",
+        "source_results_sha256": "040f6e477a358b602af87298fbc8517cd5269e8803d4ede7e70762ae31d58828"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

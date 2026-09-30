@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "artifact-identity/llbc",
+    "charon/cargo-extraction"
+  ],
+  "subjects": [
+    {
+      "name": "Published v39 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "bc6753abb676164cf355af600d7abfecd6c3f59f",
+        "row_challenge_sha256": "a23709b9fa94a770b1e130996d006f3b5372eba751e847dabe379c914ea2888f"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731 as retained in v39",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Retained I080 target-layout full-field LLBC comparison",
+      "identity": {
+        "source_report_sha256": "ab5216cf770b870b3a1596e4fcdf2e4980e0e614173a08109d19290e3fab5271",
+        "compare_sha256": "867d5f0f2d568d6f7b1a69057df48c90757ea482ceb34852eba668508cd5eae7",
+        "comparison_sha256": "4d4396890b7a05eaad9684ccaf76067cf6f0ba1e74bd8d48caf109dd75dd4c02",
+        "source_results_sha256": "040f6e477a358b602af87298fbc8517cd5269e8803d4ede7e70762ae31d58828"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

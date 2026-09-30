@@ -1,0 +1,3335 @@
+{
+  "artifact_sha256": {
+    "private-inc0/cold-A.llbc": "c335d815af8fcf53ca49c87f6a0a23a734bf8559a445991e0caf3efe590dffaa",
+    "private-inc0/cold-B.llbc": "178be6fb48f3db905d472fe0167e90a1f31324ce785ef4a682305189da5a9d28",
+    "private-inc0/warm-A.llbc": "eb757d6a9863e8b1e711b778c3a5df79dac0cdc95042d8fe6614afe41d227a6e",
+    "private-inc0/warm-B.llbc": "d3bc133d8563d07b3409ec1715b1c340b871b4eb2f70c370f6a3e9a6c0cf4f6b",
+    "private-inc1/cold-A.llbc": "bc1870346c246a0611b2784cbe54d1ee337680c1911e545eaf7f39a8650d3984",
+    "private-inc1/cold-B.llbc": "7343a05a3ed6b24d4072db0ec659b44e89e45eff71ef169495337ea219e59e3b",
+    "private-inc1/warm-A.llbc": "04610f1b19d117af87e541c76f03d198f59d422ec2792b9cac891699195db20a",
+    "private-inc1/warm-B.llbc": "e73f793d164c396f032b7d4d31b48fd47bb45aabe37663362df415f17ab8a1a4",
+    "shared_-inc0/cold-A.llbc": "6628fca5571b3172be624a95e1059c51f0c4dbe6d2c3cf4591626046b19b2429",
+    "shared_-inc0/cold-B.llbc": "ffff0098e5ea5acffbc384c08b17b2952214a4347957a9142ffbe7684137ad15",
+    "shared_-inc0/warm-A.llbc": "2227d7cae9e6b4af856eb86962db8ef84d0bc765d1af67a41c53399c52f579e9",
+    "shared_-inc0/warm-B.llbc": "308bb29597caeb2e1547d2ef94196c0f4553f52fe26212eeeeaec20dfdff8c20",
+    "shared_-inc1/cold-A.llbc": "a88dfb98becaa9e70bf636697a33c35889bf26c8b395aa92ffd1d41ad841f1da",
+    "shared_-inc1/cold-B.llbc": "2d44c92491f531c398300c61fd08b72ab3b2b3d3b6f84bd7d3fde30cbc2399ac",
+    "shared_-inc1/warm-A.llbc": "6a9a3d7c7841d90ea6f2e903dc8e88b3d3b43705ff8af8260ea7a6838d0fa421",
+    "shared_-inc1/warm-B.llbc": "9a99c08c64759bd84f09b2349b01b3ac50f598b23499ac09fc13d36679c92b11"
+  },
+  "elapsed_seconds": 0.20166854211129248,
+  "limits": {
+    "max_rss_bytes": 67108864,
+    "max_seconds": 5.0,
+    "min_reclaimable_percent": 20.0
+  },
+  "pairs": [
+    {
+      "axis": "warm_vs_cold",
+      "difference_count": 19,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/warm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/cold-A.llbc"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/2/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "wrapping_add"
+        }
+      ],
+      "left": "private-inc0/warm-A.llbc",
+      "left_sha256": "eb757d6a9863e8b1e711b778c3a5df79dac0cdc95042d8fe6614afe41d227a6e",
+      "right": "private-inc0/cold-A.llbc",
+      "right_sha256": "c335d815af8fcf53ca49c87f6a0a23a734bf8559a445991e0caf3efe590dffaa",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "warm_vs_cold",
+      "difference_count": 19,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/warm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/cold-B.llbc"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Global",
+          "right": 0
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/6/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "payload_len"
+        }
+      ],
+      "left": "private-inc0/warm-B.llbc",
+      "left_sha256": "d3bc133d8563d07b3409ec1715b1c340b871b4eb2f70c370f6a3e9a6c0cf4f6b",
+      "right": "private-inc0/cold-B.llbc",
+      "right_sha256": "178be6fb48f3db905d472fe0167e90a1f31324ce785ef4a682305189da5a9d28",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "warm_vs_cold",
+      "difference_count": 21,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/warm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/cold-A.llbc"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/4/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Global",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "private-inc1/warm-A.llbc",
+      "left_sha256": "04610f1b19d117af87e541c76f03d198f59d422ec2792b9cac891699195db20a",
+      "right": "private-inc1/cold-A.llbc",
+      "right_sha256": "bc1870346c246a0611b2784cbe54d1ee337680c1911e545eaf7f39a8650d3984",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "warm_vs_cold",
+      "difference_count": 19,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/warm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/cold-B.llbc"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/3/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Global",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 0
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "delta"
+        }
+      ],
+      "left": "private-inc1/warm-B.llbc",
+      "left_sha256": "e73f793d164c396f032b7d4d31b48fd47bb45aabe37663362df415f17ab8a1a4",
+      "right": "private-inc1/cold-B.llbc",
+      "right_sha256": "7343a05a3ed6b24d4072db0ec659b44e89e45eff71ef169495337ea219e59e3b",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "warm_vs_cold",
+      "difference_count": 16,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/warm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/cold-A.llbc"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 6
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/2/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Global",
+          "right": 0
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "use_step"
+        }
+      ],
+      "left": "shared_-inc0/warm-A.llbc",
+      "left_sha256": "2227d7cae9e6b4af856eb86962db8ef84d0bc765d1af67a41c53399c52f579e9",
+      "right": "shared_-inc0/cold-A.llbc",
+      "right_sha256": "6628fca5571b3172be624a95e1059c51f0c4dbe6d2c3cf4591626046b19b2429",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "warm_vs_cold",
+      "difference_count": 21,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/warm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/cold-B.llbc"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 3
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/2/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Global",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "shared_-inc0/warm-B.llbc",
+      "left_sha256": "308bb29597caeb2e1547d2ef94196c0f4553f52fe26212eeeeaec20dfdff8c20",
+      "right": "shared_-inc0/cold-B.llbc",
+      "right_sha256": "ffff0098e5ea5acffbc384c08b17b2952214a4347957a9142ffbe7684137ad15",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "warm_vs_cold",
+      "difference_count": 19,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/warm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/cold-A.llbc"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 2
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "delta"
+        }
+      ],
+      "left": "shared_-inc1/warm-A.llbc",
+      "left_sha256": "6a9a3d7c7841d90ea6f2e903dc8e88b3d3b43705ff8af8260ea7a6838d0fa421",
+      "right": "shared_-inc1/cold-A.llbc",
+      "right_sha256": "a88dfb98becaa9e70bf636697a33c35889bf26c8b395aa92ffd1d41ad841f1da",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "warm_vs_cold",
+      "difference_count": 20,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/warm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/cold-B.llbc"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "generated_value"
+        }
+      ],
+      "left": "shared_-inc1/warm-B.llbc",
+      "left_sha256": "9a99c08c64759bd84f09b2349b01b3ac50f598b23499ac09fc13d36679c92b11",
+      "right": "shared_-inc1/cold-B.llbc",
+      "right_sha256": "2d44c92491f531c398300c61fd08b72ab3b2b3d3b6f84bd7d3fde30cbc2399ac",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "shared_vs_private",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/cold-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/cold-A.llbc"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/2/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "wrapping_add"
+        }
+      ],
+      "left": "shared_-inc0/cold-A.llbc",
+      "left_sha256": "6628fca5571b3172be624a95e1059c51f0c4dbe6d2c3cf4591626046b19b2429",
+      "right": "private-inc0/cold-A.llbc",
+      "right_sha256": "c335d815af8fcf53ca49c87f6a0a23a734bf8559a445991e0caf3efe590dffaa",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "shared_vs_private",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/cold-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/cold-B.llbc"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/0/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Global",
+          "right": 0
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 3
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/2/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "payload_len"
+        }
+      ],
+      "left": "shared_-inc0/cold-B.llbc",
+      "left_sha256": "ffff0098e5ea5acffbc384c08b17b2952214a4347957a9142ffbe7684137ad15",
+      "right": "private-inc0/cold-B.llbc",
+      "right_sha256": "178be6fb48f3db905d472fe0167e90a1f31324ce785ef4a682305189da5a9d28",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "shared_vs_private",
+      "difference_count": 21,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/warm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/warm-A.llbc"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/2/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Global",
+          "right": 0
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "shared_-inc0/warm-A.llbc",
+      "left_sha256": "2227d7cae9e6b4af856eb86962db8ef84d0bc765d1af67a41c53399c52f579e9",
+      "right": "private-inc0/warm-A.llbc",
+      "right_sha256": "eb757d6a9863e8b1e711b778c3a5df79dac0cdc95042d8fe6614afe41d227a6e",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "shared_vs_private",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/warm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/warm-B.llbc"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "wrapping_add"
+        }
+      ],
+      "left": "shared_-inc0/warm-B.llbc",
+      "left_sha256": "308bb29597caeb2e1547d2ef94196c0f4553f52fe26212eeeeaec20dfdff8c20",
+      "right": "private-inc0/warm-B.llbc",
+      "right_sha256": "d3bc133d8563d07b3409ec1715b1c340b871b4eb2f70c370f6a3e9a6c0cf4f6b",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "shared_vs_private",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/cold-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/cold-A.llbc"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 6
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/4/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Global",
+          "right": 0
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "shared_-inc1/cold-A.llbc",
+      "left_sha256": "a88dfb98becaa9e70bf636697a33c35889bf26c8b395aa92ffd1d41ad841f1da",
+      "right": "private-inc1/cold-A.llbc",
+      "right_sha256": "bc1870346c246a0611b2784cbe54d1ee337680c1911e545eaf7f39a8650d3984",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "shared_vs_private",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/cold-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/cold-B.llbc"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/3/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Global",
+          "right": 0
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/6/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "delta"
+        }
+      ],
+      "left": "shared_-inc1/cold-B.llbc",
+      "left_sha256": "2d44c92491f531c398300c61fd08b72ab3b2b3d3b6f84bd7d3fde30cbc2399ac",
+      "right": "private-inc1/cold-B.llbc",
+      "right_sha256": "7343a05a3ed6b24d4072db0ec659b44e89e45eff71ef169495337ea219e59e3b",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "shared_vs_private",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/warm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/warm-A.llbc"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/0/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Global",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "use_step"
+        }
+      ],
+      "left": "shared_-inc1/warm-A.llbc",
+      "left_sha256": "6a9a3d7c7841d90ea6f2e903dc8e88b3d3b43705ff8af8260ea7a6838d0fa421",
+      "right": "private-inc1/warm-A.llbc",
+      "right_sha256": "04610f1b19d117af87e541c76f03d198f59d422ec2792b9cac891699195db20a",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "shared_vs_private",
+      "difference_count": 14,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/warm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/warm-B.llbc"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "payload_len"
+        }
+      ],
+      "left": "shared_-inc1/warm-B.llbc",
+      "left_sha256": "9a99c08c64759bd84f09b2349b01b3ac50f598b23499ac09fc13d36679c92b11",
+      "right": "private-inc1/warm-B.llbc",
+      "right_sha256": "e73f793d164c396f032b7d4d31b48fd47bb45aabe37663362df415f17ab8a1a4",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "inc1_vs_inc0",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/cold-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/cold-A.llbc"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 3
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "wrapping_add"
+        }
+      ],
+      "left": "private-inc1/cold-A.llbc",
+      "left_sha256": "bc1870346c246a0611b2784cbe54d1ee337680c1911e545eaf7f39a8650d3984",
+      "right": "private-inc0/cold-A.llbc",
+      "right_sha256": "c335d815af8fcf53ca49c87f6a0a23a734bf8559a445991e0caf3efe590dffaa",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "inc1_vs_inc0",
+      "difference_count": 16,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/cold-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/cold-B.llbc"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/0/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Global",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 1
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "payload_len"
+        }
+      ],
+      "left": "private-inc1/cold-B.llbc",
+      "left_sha256": "7343a05a3ed6b24d4072db0ec659b44e89e45eff71ef169495337ea219e59e3b",
+      "right": "private-inc0/cold-B.llbc",
+      "right_sha256": "178be6fb48f3db905d472fe0167e90a1f31324ce785ef4a682305189da5a9d28",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "inc1_vs_inc0",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/warm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/warm-A.llbc"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 7
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/2/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Global",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "private-inc1/warm-A.llbc",
+      "left_sha256": "04610f1b19d117af87e541c76f03d198f59d422ec2792b9cac891699195db20a",
+      "right": "private-inc0/warm-A.llbc",
+      "right_sha256": "eb757d6a9863e8b1e711b778c3a5df79dac0cdc95042d8fe6614afe41d227a6e",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "inc1_vs_inc0",
+      "difference_count": 17,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/warm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/warm-B.llbc"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "wrapping_add"
+        }
+      ],
+      "left": "private-inc1/warm-B.llbc",
+      "left_sha256": "e73f793d164c396f032b7d4d31b48fd47bb45aabe37663362df415f17ab8a1a4",
+      "right": "private-inc0/warm-B.llbc",
+      "right_sha256": "d3bc133d8563d07b3409ec1715b1c340b871b4eb2f70c370f6a3e9a6c0cf4f6b",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "inc1_vs_inc0",
+      "difference_count": 21,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/cold-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/cold-A.llbc"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 6
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/2/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Global",
+          "right": 0
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "use_step"
+        }
+      ],
+      "left": "shared_-inc1/cold-A.llbc",
+      "left_sha256": "a88dfb98becaa9e70bf636697a33c35889bf26c8b395aa92ffd1d41ad841f1da",
+      "right": "shared_-inc0/cold-A.llbc",
+      "right_sha256": "6628fca5571b3172be624a95e1059c51f0c4dbe6d2c3cf4591626046b19b2429",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "inc1_vs_inc0",
+      "difference_count": 18,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/cold-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/cold-B.llbc"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/2/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/2/key/Global",
+          "right": 0
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 6
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/6/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "len"
+        }
+      ],
+      "left": "shared_-inc1/cold-B.llbc",
+      "left_sha256": "2d44c92491f531c398300c61fd08b72ab3b2b3d3b6f84bd7d3fde30cbc2399ac",
+      "right": "shared_-inc0/cold-B.llbc",
+      "right_sha256": "ffff0098e5ea5acffbc384c08b17b2952214a4347957a9142ffbe7684137ad15",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "inc1_vs_inc0",
+      "difference_count": 20,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/warm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/warm-A.llbc"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/1/key/Global",
+          "right": 0
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 0
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "delta"
+        }
+      ],
+      "left": "shared_-inc1/warm-A.llbc",
+      "left_sha256": "6a9a3d7c7841d90ea6f2e903dc8e88b3d3b43705ff8af8260ea7a6838d0fa421",
+      "right": "shared_-inc0/warm-A.llbc",
+      "right_sha256": "2227d7cae9e6b4af856eb86962db8ef84d0bc765d1af67a41c53399c52f579e9",
+      "short_names_keyed_maps_equal": true
+    },
+    {
+      "axis": "inc1_vs_inc0",
+      "difference_count": 22,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target/aarch64-apple-darwin/debug/build/warm_probe-d80074f5a3181685/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/warm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/warm-B.llbc"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/0/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/0/key/Global",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "wrapping_add"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 2
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "left": "shared_-inc1/warm-B.llbc",
+      "left_sha256": "9a99c08c64759bd84f09b2349b01b3ac50f598b23499ac09fc13d36679c92b11",
+      "right": "shared_-inc0/warm-B.llbc",
+      "right_sha256": "308bb29597caeb2e1547d2ef94196c0f4553f52fe26212eeeeaec20dfdff8c20",
+      "short_names_keyed_maps_equal": true
+    }
+  ],
+  "peak_rss_bytes": 25968640,
+  "samples": [
+    {
+      "elapsed_seconds": 2.6042107492685318e-05,
+      "label": "preflight-before-input",
+      "max_rss_bytes": 22003712,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.36699676513672
+    },
+    {
+      "elapsed_seconds": 0.008430832996964455,
+      "label": "decoded-private-inc0/cold-A.llbc",
+      "max_rss_bytes": 22216704,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.357078552246094
+    },
+    {
+      "elapsed_seconds": 0.012511958135291934,
+      "label": "decoded-private-inc0/cold-B.llbc",
+      "max_rss_bytes": 22413312,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.355361938476562
+    },
+    {
+      "elapsed_seconds": 0.016647125128656626,
+      "label": "decoded-private-inc0/warm-A.llbc",
+      "max_rss_bytes": 22642688,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.340103149414062
+    },
+    {
+      "elapsed_seconds": 0.020970416953787208,
+      "label": "decoded-private-inc0/warm-B.llbc",
+      "max_rss_bytes": 22855680,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.340293884277344
+    },
+    {
+      "elapsed_seconds": 0.025267207995057106,
+      "label": "decoded-private-inc1/cold-A.llbc",
+      "max_rss_bytes": 23068672,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.33838653564453
+    },
+    {
+      "elapsed_seconds": 0.029213791945949197,
+      "label": "decoded-private-inc1/cold-B.llbc",
+      "max_rss_bytes": 23265280,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.32465362548828
+    },
+    {
+      "elapsed_seconds": 0.03320383303798735,
+      "label": "decoded-private-inc1/warm-A.llbc",
+      "max_rss_bytes": 23445504,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.3214111328125
+    },
+    {
+      "elapsed_seconds": 0.0370702079962939,
+      "label": "decoded-private-inc1/warm-B.llbc",
+      "max_rss_bytes": 23642112,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.33380889892578
+    },
+    {
+      "elapsed_seconds": 0.04132966697216034,
+      "label": "decoded-shared_-inc0/cold-A.llbc",
+      "max_rss_bytes": 23855104,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.319503784179688
+    },
+    {
+      "elapsed_seconds": 0.04530450003221631,
+      "label": "decoded-shared_-inc0/cold-B.llbc",
+      "max_rss_bytes": 24035328,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.317787170410156
+    },
+    {
+      "elapsed_seconds": 0.050600333139300346,
+      "label": "decoded-shared_-inc0/warm-A.llbc",
+      "max_rss_bytes": 24215552,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.31855010986328
+    },
+    {
+      "elapsed_seconds": 0.05494904215447605,
+      "label": "decoded-shared_-inc0/warm-B.llbc",
+      "max_rss_bytes": 24444928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.332664489746094
+    },
+    {
+      "elapsed_seconds": 0.05910625006072223,
+      "label": "decoded-shared_-inc1/cold-A.llbc",
+      "max_rss_bytes": 24641536,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.329803466796875
+    },
+    {
+      "elapsed_seconds": 0.06302254204638302,
+      "label": "decoded-shared_-inc1/cold-B.llbc",
+      "max_rss_bytes": 24838144,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.327896118164062
+    },
+    {
+      "elapsed_seconds": 0.06688004196621478,
+      "label": "decoded-shared_-inc1/warm-A.llbc",
+      "max_rss_bytes": 25034752,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.325035095214844
+    },
+    {
+      "elapsed_seconds": 0.07069066702388227,
+      "label": "decoded-shared_-inc1/warm-B.llbc",
+      "max_rss_bytes": 25231360,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.32427215576172
+    },
+    {
+      "elapsed_seconds": 0.07518775016069412,
+      "label": "compared-warm_vs_cold-private-inc0/warm-A.llbc",
+      "max_rss_bytes": 25264128,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.310348510742188
+    },
+    {
+      "elapsed_seconds": 0.07963958312757313,
+      "label": "compared-warm_vs_cold-private-inc0/warm-B.llbc",
+      "max_rss_bytes": 25280512,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.308250427246094
+    },
+    {
+      "elapsed_seconds": 0.084682583110407,
+      "label": "compared-warm_vs_cold-private-inc1/warm-A.llbc",
+      "max_rss_bytes": 25296896,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.310348510742188
+    },
+    {
+      "elapsed_seconds": 0.09051862498745322,
+      "label": "compared-warm_vs_cold-private-inc1/warm-B.llbc",
+      "max_rss_bytes": 25296896,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.297378540039062
+    },
+    {
+      "elapsed_seconds": 0.09504725015722215,
+      "label": "compared-warm_vs_cold-shared_-inc0/warm-A.llbc",
+      "max_rss_bytes": 25296896,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.32122039794922
+    },
+    {
+      "elapsed_seconds": 0.09958095801994205,
+      "label": "compared-warm_vs_cold-shared_-inc0/warm-B.llbc",
+      "max_rss_bytes": 25313280,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.305389404296875
+    },
+    {
+      "elapsed_seconds": 0.10470416699536145,
+      "label": "compared-warm_vs_cold-shared_-inc1/warm-A.llbc",
+      "max_rss_bytes": 25313280,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.306915283203125
+    },
+    {
+      "elapsed_seconds": 0.10934629198163748,
+      "label": "compared-warm_vs_cold-shared_-inc1/warm-B.llbc",
+      "max_rss_bytes": 25329664,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.317214965820312
+    },
+    {
+      "elapsed_seconds": 0.11389570799656212,
+      "label": "compared-shared_vs_private-shared_-inc0/cold-A.llbc",
+      "max_rss_bytes": 25329664,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.31549835205078
+    },
+    {
+      "elapsed_seconds": 0.11882720794528723,
+      "label": "compared-shared_vs_private-shared_-inc0/cold-B.llbc",
+      "max_rss_bytes": 25329664,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.31511688232422
+    },
+    {
+      "elapsed_seconds": 0.12362916697748005,
+      "label": "compared-shared_vs_private-shared_-inc0/warm-A.llbc",
+      "max_rss_bytes": 25346048,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.313209533691406
+    },
+    {
+      "elapsed_seconds": 0.12816524994559586,
+      "label": "compared-shared_vs_private-shared_-inc0/warm-B.llbc",
+      "max_rss_bytes": 25346048,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.311111450195312
+    },
+    {
+      "elapsed_seconds": 0.1326652921270579,
+      "label": "compared-shared_vs_private-shared_-inc1/cold-A.llbc",
+      "max_rss_bytes": 25346048,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.30939483642578
+    },
+    {
+      "elapsed_seconds": 0.13714016694575548,
+      "label": "compared-shared_vs_private-shared_-inc1/cold-B.llbc",
+      "max_rss_bytes": 25362432,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.309776306152344
+    },
+    {
+      "elapsed_seconds": 0.14186466694809496,
+      "label": "compared-shared_vs_private-shared_-inc1/warm-A.llbc",
+      "max_rss_bytes": 25378816,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.308250427246094
+    },
+    {
+      "elapsed_seconds": 0.1463975419756025,
+      "label": "compared-shared_vs_private-shared_-inc1/warm-B.llbc",
+      "max_rss_bytes": 25378816,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.318931579589844
+    },
+    {
+      "elapsed_seconds": 0.15083537506870925,
+      "label": "compared-inc1_vs_inc0-private-inc1/cold-A.llbc",
+      "max_rss_bytes": 25378816,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.316070556640625
+    },
+    {
+      "elapsed_seconds": 0.15557133313268423,
+      "label": "compared-inc1_vs_inc0-private-inc1/cold-B.llbc",
+      "max_rss_bytes": 25378816,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.303672790527344
+    },
+    {
+      "elapsed_seconds": 0.16013908316381276,
+      "label": "compared-inc1_vs_inc0-private-inc1/warm-A.llbc",
+      "max_rss_bytes": 25378816,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.30329132080078
+    },
+    {
+      "elapsed_seconds": 0.16463725012727082,
+      "label": "compared-inc1_vs_inc0-private-inc1/warm-B.llbc",
+      "max_rss_bytes": 25395200,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.300621032714844
+    },
+    {
+      "elapsed_seconds": 0.16912129195407033,
+      "label": "compared-inc1_vs_inc0-shared_-inc1/cold-A.llbc",
+      "max_rss_bytes": 25395200,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.29871368408203
+    },
+    {
+      "elapsed_seconds": 0.17361804214306176,
+      "label": "compared-inc1_vs_inc0-shared_-inc1/cold-B.llbc",
+      "max_rss_bytes": 25411584,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.29852294921875
+    },
+    {
+      "elapsed_seconds": 0.17813345813192427,
+      "label": "compared-inc1_vs_inc0-shared_-inc1/warm-A.llbc",
+      "max_rss_bytes": 25411584,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.309776306152344
+    },
+    {
+      "elapsed_seconds": 0.18252845807000995,
+      "label": "compared-inc1_vs_inc0-shared_-inc1/warm-B.llbc",
+      "max_rss_bytes": 25427968,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.30748748779297
+    },
+    {
+      "elapsed_seconds": 0.18772154208272696,
+      "label": "synthetic-control-crate_name",
+      "max_rss_bytes": 25673728,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.307296752929688
+    },
+    {
+      "elapsed_seconds": 0.19295812514610589,
+      "label": "synthetic-control-function_body",
+      "max_rss_bytes": 25968640,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.296424865722656
+    },
+    {
+      "elapsed_seconds": 0.1980436670128256,
+      "label": "synthetic-control-short_names_order",
+      "max_rss_bytes": 25968640,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 26.29528045654297
+    }
+  ],
+  "source_results_sha256": "040f6e477a358b602af87298fbc8517cd5269e8803d4ede7e70762ae31d58828",
+  "status": "completed",
+  "synthetic_negative_controls": [
+    {
+      "difference_count": 1,
+      "differences": [
+        {
+          "left": "warm_probe",
+          "path": "/translated/crate_name",
+          "right": "synthetic_other_crate"
+        }
+      ],
+      "kind": "crate_name"
+    },
+    {
+      "difference_count": 1,
+      "differences": [
+        {
+          "left": {
+            "Structured": {
+              "body": {
+                "span": {
+                  "data": {
+                    "beg": {
+                      "col": 29,
+                      "line": 4
+                    },
+                    "end": {
+                      "col": 48,
+                      "line": 4
+                    },
+                    "file_id": 0
+                  },
+                  "generated_from_span": null
+                },
+                "statements": [
+                  {
+                    "comments_before": [],
+                    "id": 0,
+                    "kind": {
+                      "StorageLive": 2
+                    },
+                    "span": {
+                      "data": {
+                        "beg": {
+                          "col": 29,
+                          "line": 4
+                        },
+                        "end": {
+                          "col": 30,
+                          "line": 4
+                        },
+                        "file_id": 0
+                      },
+                      "generated_from_span": null
+                    }
+                  },
+                  {
+                    "comments_before": [],
+                    "id": 1,
+                    "kind": {
+                      "Assign": [
+                        {
+                          "kind": {
+                            "Local": 2
+                          },
+                          "ty": {
+                            "Deduplicated": 241
+                          }
+                        },
+                        {
+                          "Use": [
+                            {
+                              "Copy": {
+                                "kind": {
+                                  "Local": 1
+                                },
+                                "ty": {
+                                  "Deduplicated": 241
+                                }
+                              }
+                            },
+                            "Yes"
+                          ]
+                        }
+                      ]
+                    },
+                    "span": {
+                      "data": {
+                        "beg": {
+                          "col": 29,
+                          "line": 4
+                        },
+                        "end": {
+                          "col": 30,
+                          "line": 4
+                        },
+                        "file_id": 0
+                      },
+                      "generated_from_span": null
+                    }
+                  },
+                  {
+                    "comments_before": [],
+                    "id": 2,
+                    "kind": {
+                      "Call": {
+                        "args": [
+                          {
+                            "Move": {
+                              "kind": {
+                                "Local": 2
+                              },
+                              "ty": {
+                                "Deduplicated": 241
+                              }
+                            }
+                          },
+                          {
+                            "Const": {
+                              "kind": {
+                                "Literal": {
+                                  "Scalar": {
+                                    "Unsigned": [
+                                      "U32",
+                                      "1"
+                                    ]
+                                  }
+                                }
+                              },
+                              "ty": {
+                                "Deduplicated": 241
+                              }
+                            }
+                          }
+                        ],
+                        "dest": {
+                          "kind": {
+                            "Local": 0
+                          },
+                          "ty": {
+                            "Deduplicated": 241
+                          }
+                        },
+                        "func": {
+                          "Regular": {
+                            "generics": {
+                              "const_generics": [],
+                              "regions": [],
+                              "trait_refs": [],
+                              "types": []
+                            },
+                            "kind": {
+                              "Fun": {
+                                "Regular": 5
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "span": {
+                      "data": {
+                        "beg": {
+                          "col": 29,
+                          "line": 4
+                        },
+                        "end": {
+                          "col": 46,
+                          "line": 4
+                        },
+                        "file_id": 0
+                      },
+                      "generated_from_span": null
+                    }
+                  },
+                  {
+                    "comments_before": [],
+                    "id": 3,
+                    "kind": {
+                      "StorageDead": 2
+                    },
+                    "span": {
+                      "data": {
+                        "beg": {
+                          "col": 45,
+                          "line": 4
+                        },
+                        "end": {
+                          "col": 46,
+                          "line": 4
+                        },
+                        "file_id": 0
+                      },
+                      "generated_from_span": null
+                    }
+                  },
+                  {
+                    "comments_before": [],
+                    "id": 4,
+                    "kind": "Return",
+                    "span": {
+                      "data": {
+                        "beg": {
+                          "col": 48,
+                          "line": 4
+                        },
+                        "end": {
+                          "col": 48,
+                          "line": 4
+                        },
+                        "file_id": 0
+                      },
+                      "generated_from_span": null
+                    }
+                  }
+                ]
+              },
+              "bound_body_regions": 0,
+              "comments": [],
+              "locals": {
+                "arg_count": 1,
+                "locals": [
+                  {
+                    "index": 0,
+                    "name": null,
+                    "span": {
+                      "data": {
+                        "beg": {
+                          "col": 23,
+                          "line": 4
+                        },
+                        "end": {
+                          "col": 26,
+                          "line": 4
+                        },
+                        "file_id": 0
+                      },
+                      "generated_from_span": null
+                    },
+                    "ty": {
+                      "Deduplicated": 241
+                    }
+                  },
+                  {
+                    "index": 1,
+                    "name": "x",
+                    "span": {
+                      "data": {
+                        "beg": {
+                          "col": 12,
+                          "line": 4
+                        },
+                        "end": {
+                          "col": 13,
+                          "line": 4
+                        },
+                        "file_id": 0
+                      },
+                      "generated_from_span": null
+                    },
+                    "ty": {
+                      "Deduplicated": 241
+                    }
+                  },
+                  {
+                    "index": 2,
+                    "name": null,
+                    "span": {
+                      "data": {
+                        "beg": {
+                          "col": 29,
+                          "line": 4
+                        },
+                        "end": {
+                          "col": 30,
+                          "line": 4
+                        },
+                        "file_id": 0
+                      },
+                      "generated_from_span": null
+                    },
+                    "ty": {
+                      "Deduplicated": 241
+                    }
+                  }
+                ]
+              },
+              "span": {
+                "data": {
+                  "beg": {
+                    "col": 0,
+                    "line": 4
+                  },
+                  "end": {
+                    "col": 48,
+                    "line": 4
+                  },
+                  "file_id": 0
+                },
+                "generated_from_span": null
+              }
+            }
+          },
+          "path": "/translated/fun_decls/0/body",
+          "right": "synthetic_changed_body"
+        }
+      ],
+      "kind": "function_body"
+    },
+    {
+      "difference_count": 4,
+      "differences": [
+        {
+          "left": 0,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "step"
+        }
+      ],
+      "kind": "short_names_order"
+    }
+  ]
+}
