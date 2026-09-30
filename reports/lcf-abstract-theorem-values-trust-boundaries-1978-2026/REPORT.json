@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "anneal/acceptance",
+    "anneal/provenance",
+    "anneal/trust",
+    "proof-assistants/lcf",
+    "proof-assistants/small-kernel",
+    "verification/artifact-identity"
+  ],
+  "subjects": [
+    {
+      "name": "A Metalanguage for Interactive Proof in LCF",
+      "identity": {
+        "doi": "10.1145/512760.512773",
+        "venue": "POPL 1978"
+      }
+    },
+    {
+      "name": "Edinburgh LCF: A Mechanised Logic of Computation",
+      "identity": {
+        "doi": "10.1007/3-540-09724-4",
+        "series": "Lecture Notes in Computer Science 78"
+      }
+    },
+    {
+      "name": "LCF: A Way of Doing Proofs with a Machine",
+      "identity": {
+        "doi": "10.1007/3-540-09526-8_11",
+        "venue": "MFCS 1979"
+      }
+    },
+    {
+      "name": "Logic and Computation: Interactive Proof with Cambridge LCF",
+      "identity": {
+        "chapter_doi": "10.1017/CBO9780511526602.008",
+        "year": "1987"
+      }
+    },
+    {
+      "name": "Anneal design contract and reference-corpus artifact evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

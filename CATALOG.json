@@ -13717,6 +13717,54 @@
         "lake/concurrency"
       ]
     },
+    "lcf-abstract-theorem-values-trust-boundaries-1978-2026": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/512760.512773",
+            "venue": "POPL 1978"
+          },
+          "name": "A Metalanguage for Interactive Proof in LCF"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-09724-4",
+            "series": "Lecture Notes in Computer Science 78"
+          },
+          "name": "Edinburgh LCF: A Mechanised Logic of Computation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-09526-8_11",
+            "venue": "MFCS 1979"
+          },
+          "name": "LCF: A Way of Doing Proofs with a Machine"
+        },
+        {
+          "identity": {
+            "chapter_doi": "10.1017/CBO9780511526602.008",
+            "year": "1987"
+          },
+          "name": "Logic and Computation: Interactive Proof with Cambridge LCF"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "Anneal design contract and reference-corpus artifact evidence"
+        }
+      ],
+      "topics": [
+        "anneal/acceptance",
+        "anneal/provenance",
+        "anneal/trust",
+        "proof-assistants/lcf",
+        "proof-assistants/small-kernel",
+        "verification/artifact-identity"
+      ]
+    },
     "lean-430-rc2-linux-aarch64-leantar-anomaly": {
       "observed_at": "2026-09-27",
       "subjects": [
