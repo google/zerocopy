@@ -1,0 +1,7 @@
+{
+  "dafny-boogie-viper-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["dafny-boogie-viper-obligation-boundaries-2005-2026"],
+    "reason": "R389 freezes this exact v67 obligation-boundary analog. All six observed official default branches and claim-mapped blobs equal its original pins, so their forward source ranges are zero. Separate release tags are older or divergent and do not provide a forward claim recheck. No verifier, backend, solver, service, or Anneal executable ran; this is source-identity context only."
+  }
+}
