@@ -1,0 +1,534 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "6c0988948cb2098a7c2d11ff89bd20322d562eaa",
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "baseline_count": 581,
+  "current_count": 588,
+  "cohort": "Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison)",
+  "prior_source_commits": {
+    "v4.29.0": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+    "v4.30.0-rc2": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+  },
+  "target_source_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+  "rows": [
+    {
+      "inventory_id": "R182",
+      "inventory_cohort": "Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison)",
+      "title": "Clean/prepared and batch/live equivalence at cached Lean 4.29 and 4.30-rc2 pins",
+      "report_md": "reports/anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29/REPORT.md",
+      "report_json": "reports/anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29/REPORT.json",
+      "frozen_md_sha256": "75cc09a5d1852e43e45cb69a49c24fb6b6e3574e4602a8061a84873548a368be",
+      "frozen_json_sha256": "8b3c38ba72377ca217fc64b79228fc9ffb90f2737d2ea7537872dd476345b596",
+      "frozen_subjects_exact": [
+        {
+          "name": "Lean and Lake v4.29.0",
+          "identity": {
+            "upstream_commit": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "lean_binary_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "lake_binary_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b"
+          }
+        },
+        {
+          "name": "Lean and Lake v4.30.0-rc2",
+          "identity": {
+            "upstream_commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+          }
+        },
+        {
+          "name": "google/zerocopy issue #3731",
+          "identity": {
+            "repository": "google/zerocopy",
+            "issue": "3731",
+            "scope_extension_comment_sha256": "2451c7f38f864676a5aa23b16d4eb25ba18f768318829fd68715f9b384c1f533"
+          }
+        }
+      ],
+      "direct_old_lean_subjects_exact": [
+        {
+          "name": "Lean and Lake v4.29.0",
+          "identity": {
+            "upstream_commit": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "lean_binary_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "lake_binary_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b"
+          }
+        },
+        {
+          "name": "Lean and Lake v4.30.0-rc2",
+          "identity": {
+            "upstream_commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+          }
+        }
+      ],
+      "direct_old_source_commits": [
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740"
+      ],
+      "old_commit_mentions_in_report": {
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740": 0,
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc": 0
+      },
+      "claim_excerpt_exact": "A tiny two-file Lean/Lake package was run separately with cached **Lean 4.29.0** and **Lean 4.30.0-rc2** on arm64 macOS. In each version, a clean built tree and an exact copied prepared tree agreed: fresh direct and `lake env` batch checks exited 0, evaluated `depValue` as 7, printed that the theorem has no axioms, and direct, `lake env lean --server`, and `lake serve` live queries returned **no goals** with the same informational diagnostics. `lake --no-cache --no-build setup-file` succeeded for both trees. The checked source/OLean/ILean/trace inventories of the prepared tree were unchanged after those reads. This establishes a small within-version equivalence cell, not a general prepared-environment contract.",
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "prior_comparison_role": "historical_evidence",
+      "prior_comparison_caveat": "the prior 4.29→4.30 comparison remains confined to its original fixture and binary pins",
+      "target": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "lake_source_same_repository": true
+      },
+      "rechecked_source_clause": null,
+      "full_claim_at_target": "unresolved",
+      "current_runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed",
+      "old_source_snapshot_sha256": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R196",
+      "inventory_cohort": "Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison)",
+      "title": "Transitive import, option, macro, plugin, and RPC lifecycle matrix",
+      "report_md": "reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/REPORT.md",
+      "report_json": "reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/REPORT.json",
+      "frozen_md_sha256": "0bff5986f511faf4fec14941f14f92957082e96f935c08dae93228aabd8a485f",
+      "frozen_json_sha256": "c6f50de7ae9015c532f5a9e5380e0d5130b4eb3e54d3989047aa9d32fac88c59",
+      "frozen_subjects_exact": [
+        {
+          "name": "Lean 4 and Lake 4.29.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0",
+            "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "lake_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b"
+          }
+        },
+        {
+          "name": "Lean 4 and Lake 4.30.0-rc2",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+          }
+        },
+        {
+          "name": "Transitive import and RPC fixture",
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "54d4478ab58cbb5665e19d41ef632c0a1ae79094f6dae6b0bfa32a71b2c1117e"
+          }
+        }
+      ],
+      "direct_old_lean_subjects_exact": [
+        {
+          "name": "Lean 4 and Lake 4.29.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0",
+            "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "lake_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b"
+          }
+        },
+        {
+          "name": "Lean 4 and Lake 4.30.0-rc2",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+          }
+        }
+      ],
+      "direct_old_source_commits": [
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740"
+      ],
+      "old_commit_mentions_in_report": {
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740": 1,
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc": 1
+      },
+      "claim_excerpt_exact": "Against cached Lean/Lake 4.29.0 and 4.30.0-rc2, one tiny Lake project showed the same qualitative split. An already open proof worker kept evaluating a transitive import as 7, reported Lake option `pp.universes=false`, and completed an imported `probe_tac` macro after its upstream module, Lake option, and native plugin binary changed. A newly opened proof file saw value 9, option `true`, and a remaining `⊢ True` macro goal. Its failed `rfl` left `⊢ Eq.{1} transitive 7`; the old file still returned `no goals` at that exact tactic end **after** the new file and both `Base.olean` and `Mid.olean` had refreshed on disk. A separate fresh server saw the new state too. The plugin initializer marker switched from v1 to v2 on new-worker creation.",
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "prior_comparison_role": "historical_evidence",
+      "prior_comparison_caveat": "the prior 4.29→4.30 comparison remains confined to its original fixture and binary pins",
+      "target": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "lake_source_same_repository": true
+      },
+      "rechecked_source_clause": null,
+      "full_claim_at_target": "unresolved",
+      "current_runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed",
+      "old_source_snapshot_sha256": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R255",
+      "inventory_cohort": "Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison)",
+      "title": "Lean 4.29 versus 4.30-rc2 Unicode LSP encoding-offer boundary",
+      "report_md": "reports/anneal-3731-i062-lean429-version-diff-2026-09-30/REPORT.md",
+      "report_json": "reports/anneal-3731-i062-lean429-version-diff-2026-09-30/REPORT.json",
+      "frozen_md_sha256": "3c00adaffb6053186eaf6469fa16d4d716a83f2c178b58572017f2a9589c0e2c",
+      "frozen_json_sha256": "92c4aac11d6371e5f8702b479692053a3f3612373307f611d63fe7faf1a42e6a",
+      "frozen_subjects_exact": [
+        {
+          "name": "Observed local Lean 4.29.0 executable",
+          "identity": {
+            "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "toolchain": "leanprover/lean4 v4.29.0",
+            "architecture": "aarch64-darwin"
+          }
+        },
+        {
+          "name": "Published Lean 4.30.0-rc2 comparison executable",
+          "identity": {
+            "baseline_lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "toolchain": "leanprover/lean4 v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Identical Unicode fixture, oracle and guarded version comparison",
+          "identity": {
+            "original_sha256": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+            "patched_sha256": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f",
+            "oracle_prelaunch_sha256": "7f7aac75610935a82f2382381ca0fbab519eaee9abb26767dcd90ab8cabe4cc7",
+            "baseline_results_sha256": "a81a7fbbecc428f1cf4ce91eea2f03d49185a4a4b694ca3b0b48c6f46ea38469",
+            "results_sha256": "c9a890bacc174f34a4896d3b05bf5ba5ba6b54a8e16ec066e9fa19c999d036b5"
+          }
+        }
+      ],
+      "direct_old_lean_subjects_exact": [
+        {
+          "name": "Observed local Lean 4.29.0 executable",
+          "identity": {
+            "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "toolchain": "leanprover/lean4 v4.29.0",
+            "architecture": "aarch64-darwin"
+          }
+        },
+        {
+          "name": "Published Lean 4.30.0-rc2 comparison executable",
+          "identity": {
+            "baseline_lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "toolchain": "leanprover/lean4 v4.30.0-rc2"
+          }
+        }
+      ],
+      "direct_old_source_commits": [],
+      "old_commit_mentions_in_report": {
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740": 0,
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc": 0
+      },
+      "claim_excerpt_exact": "The exact Unicode fixture and coordinate oracle from the [Lean 4.30.0-rc2 UTF-8-only/UTF-16-only report](../anneal-3731-i062-utf8-only-unicode-lsp-2026-09-30/REPORT.md) were replayed once under locally installed **Lean 4.29.0**, with two sequential direct server sessions and two fresh batch checks. The **diagnostic ranges, incremental-edit outcomes, wait responses and batch JSON messages were the same** at the two pins in this one fixture. Both servers omitted an explicit `positionEncoding`, both emitted the initial error at UTF-16 characters **16–27** despite one UTF-8-only offer, the UTF-8-counted edit led to an unexpected-end error, and the UTF-16-counted edit cleared it. Original/patched batch exits were 1/0 at both pins.",
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "prior_comparison_role": "historical_evidence",
+      "prior_comparison_caveat": "the prior 4.29→4.30 comparison remains confined to its original fixture and binary pins",
+      "target": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "lake_source_same_repository": true
+      },
+      "rechecked_source_clause": null,
+      "full_claim_at_target": "unresolved",
+      "current_runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed",
+      "old_source_snapshot_sha256": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R447",
+      "inventory_cohort": "Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison)",
+      "title": "Lean compilation determinism and version diff",
+      "report_md": "reports/lean-compilation-reproducibility-cross-version-v4-29-v4-30/REPORT.md",
+      "report_json": "reports/lean-compilation-reproducibility-cross-version-v4-29-v4-30/REPORT.json",
+      "frozen_md_sha256": "6734079581bf197b868b54c5cbf2676d7cd76454ec203859d26ed744e6078c5b",
+      "frozen_json_sha256": "3cf12730f47e37127cbb519b083f1f5930955180614eda932e1cb601c35e6522",
+      "frozen_subjects_exact": [
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0"
+          }
+        },
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "direct_old_lean_subjects_exact": [
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0"
+          }
+        },
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "direct_old_source_commits": [
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740"
+      ],
+      "old_commit_mentions_in_report": {
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740": 1,
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc": 1
+      },
+      "claim_excerpt_exact": "Two small-project builds per Lean version produced byte-identical repeated clean artifacts and repeated fetched-cache artifacts. The cache-fetched path omitted project-local `.olean` files, so batch imports failed until local artifacts were materialized. The LSP comparison found a version-specific advertised RPC capability.",
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "prior_comparison_role": "historical_evidence",
+      "prior_comparison_caveat": "the prior 4.29→4.30 comparison remains confined to its original fixture and binary pins",
+      "target": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "lake_source_same_repository": true
+      },
+      "rechecked_source_clause": null,
+      "full_claim_at_target": "unresolved",
+      "current_runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed",
+      "old_source_snapshot_sha256": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R456",
+      "inventory_cohort": "Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison)",
+      "title": "Imported-generation refresh behavior across Lean 4.29 and 4.30-rc2",
+      "report_md": "reports/lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.md",
+      "report_json": "reports/lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.json",
+      "frozen_md_sha256": "a754514da9d7c689efa5d12bf4f681cb407437d1a76cfde003bea7781d8729cf",
+      "frozen_json_sha256": "7d8ab285d43bc8b777085624375fe7efbed90f6332ffaa85bbb58e8934c818d3",
+      "frozen_subjects_exact": [
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0",
+            "local_executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+            "executable_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37"
+          }
+        },
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2",
+            "local_executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          }
+        },
+        {
+          "name": "Lean direct server fixture",
+          "identity": {
+            "launch_mode": "lean --server with LEAN_PATH",
+            "v429_probe_sha256": "d269f82a96279482f4e0fc82f3bf1434fcd2dd0b86e8414cfa3e5a6193334717",
+            "v430_probe_sha256": "d269f82a96279482f4e0fc82f3bf1434fcd2dd0b86e8414cfa3e5a6193334717"
+          }
+        }
+      ],
+      "direct_old_lean_subjects_exact": [
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0",
+            "local_executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+            "executable_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37"
+          }
+        },
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2",
+            "local_executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          }
+        }
+      ],
+      "direct_old_source_commits": [
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740"
+      ],
+      "old_commit_mentions_in_report": {
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740": 1,
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc": 1
+      },
+      "claim_excerpt_exact": "The direct `lean --server` imported-generation probe produced the same old/new-document contrast under Lean 4.29.0 and Lean 4.30.0-rc2: an already-open proof document continued to report “no goals” after its imported `.olean` changed; a newly opened or closed/reopened document in the same server process reported the remaining goal; fresh batch Lean failed on the same proof text. In both versions, a second old-document query after the new document was ready and a further 0.5-second delay still returned “no goals.”",
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "prior_comparison_role": "historical_evidence",
+      "prior_comparison_caveat": "the prior 4.29→4.30 comparison remains confined to its original fixture and binary pins",
+      "target": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "lake_source_same_repository": true
+      },
+      "rechecked_source_clause": null,
+      "full_claim_at_target": "unresolved",
+      "current_runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed",
+      "old_source_snapshot_sha256": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R462",
+      "inventory_cohort": "Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison)",
+      "title": "Lean goal replies can arrive after a newer version has completed",
+      "report_md": "reports/lean-lsp-cross-version-goal-completion-v4-30-0-rc2/REPORT.md",
+      "report_json": "reports/lean-lsp-cross-version-goal-completion-v4-30-0-rc2/REPORT.json",
+      "frozen_md_sha256": "3ea61f60be21676483f1c8392950929be9424ef992b3a055f43f2fb212cda69e",
+      "frozen_json_sha256": "0183ecfb4f2f4956859dc33b705cf1e0e97093840c8bea4496275b4b1845527b",
+      "frozen_subjects_exact": [
+        {
+          "name": "Lean 4 language server and batch checker",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2",
+            "lean-binary-sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          }
+        }
+      ],
+      "direct_old_lean_subjects_exact": [
+        {
+          "name": "Lean 4 language server and batch checker",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2",
+            "lean-binary-sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          }
+        }
+      ],
+      "direct_old_source_commits": [
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+      ],
+      "old_commit_mentions_in_report": {
+        "98dc76e3c0a9b856c9b98726b713fb04fab16740": 0,
+        "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc": 6
+      },
+      "claim_excerpt_exact": "`waitForDiagnostics` explicitly allows a document version greater than or equal to the requested number, and its handler accepts `p.version ≤ doc.meta.version`.",
+      "claim_locator": {
+        "heading": "### The current goal completed before the older goal reply",
+        "line": 29
+      },
+      "prior_comparison_role": "rechecked_source_claim",
+      "prior_comparison_caveat": "R462 directly identifies only 4.30.0-rc2; it is not a 4.29→4.30 execution comparison",
+      "target": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "lake_source_same_repository": true
+      },
+      "rechecked_source_clause": "waitForDiagnostics uses requested-version <= current-document-version and PlainGoalParams remains unversioned TextDocumentPositionParams",
+      "full_claim_at_target": "unresolved",
+      "current_runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed",
+      "old_source_snapshot_sha256": null,
+      "new_source_snapshot_sha256": null
+    }
+  ],
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c",
+      "excluded_reason": "post-inventory package; not directly in the exact six-row prior-comparison cohort"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d",
+      "excluded_reason": "post-inventory package; not directly in the exact six-row prior-comparison cohort"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520",
+      "excluded_reason": "post-inventory package; not directly in the exact six-row prior-comparison cohort"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37",
+      "excluded_reason": "post-inventory package; not directly in the exact six-row prior-comparison cohort"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f",
+      "excluded_reason": "post-inventory package; not directly in the exact six-row prior-comparison cohort"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188",
+      "excluded_reason": "post-inventory package; not directly in the exact six-row prior-comparison cohort"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68",
+      "excluded_reason": "post-inventory package; not directly in the exact six-row prior-comparison cohort"
+    }
+  ]
+}

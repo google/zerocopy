@@ -1,0 +1,7 @@
+inventory_id,cohort,report_md,report_json
+R182,Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison),reports/anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29/REPORT.md,reports/anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29/REPORT.json
+R196,Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison),reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/REPORT.md,reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/REPORT.json
+R255,Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison),reports/anneal-3731-i062-lean429-version-diff-2026-09-30/REPORT.md,reports/anneal-3731-i062-lean429-version-diff-2026-09-30/REPORT.json
+R447,Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison),reports/lean-compilation-reproducibility-cross-version-v4-29-v4-30/REPORT.md,reports/lean-compilation-reproducibility-cross-version-v4-29-v4-30/REPORT.json
+R456,Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison),reports/lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.md,reports/lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.json
+R462,Lean/Lake v4.29.0 versus v4.30.0-rc2 (prior comparison),reports/lean-lsp-cross-version-goal-completion-v4-30-0-rc2/REPORT.md,reports/lean-lsp-cross-version-goal-completion-v4-30-0-rc2/REPORT.json
