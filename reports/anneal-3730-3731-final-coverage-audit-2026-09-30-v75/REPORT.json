@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/architecture",
+    "research/coverage-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Published v74 ledger and exact frozen reference parent",
+      "identity": {
+        "reference_parent": "b78cc3c330fb54d8bce1b769e33fe785c2df3b10",
+        "v74_published_commit": "ca4e34659fadfb1ad24084db833adae9ffd8eb05",
+        "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+        "parent_catalog_sha256": "e8bf2cf5eb75ae34b28ab1f6769b0c91d2e192aa088cf70bdddaca2465b6851c"
+      }
+    },
+    {
+      "name": "One post-v74 Salsa/rustc current-source review",
+      "identity": {
+        "source_inventory_sha256": "c128b4f8cc3be8b18aec7a08daf091f7285d3da232f88e73ee6e98c88c468f24",
+        "source_map_sha256": "942c3af1bcf7fe0b5d471133b9934f396ff9dbff4182b5578d1ff306d21f42a7",
+        "package_count": "1"
+      }
+    },
+    {
+      "name": "Inherited public #3730/#3731 issue snapshot from v65",
+      "identity": {
+        "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+        "source": "prior published local snapshot; no new issue fetch"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,74 @@
+{
+  "catalog_at_parent_sha256": "e8bf2cf5eb75ae34b28ab1f6769b0c91d2e192aa088cf70bdddaca2465b6851c",
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [],
+  "changed_status_ids": [],
+  "context_investigation_ids": [
+    "I005",
+    "I015",
+    "I056",
+    "I159"
+  ],
+  "context_suggestion_ids": [
+    "C10",
+    "K08",
+    "N01",
+    "N02",
+    "N03",
+    "N04",
+    "N05",
+    "N06",
+    "N07",
+    "N08",
+    "N09",
+    "N10",
+    "N11",
+    "N12"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v75.csv": "9174372c380168a3e381d01017a2baf392d2a95df6746eef7cae4a33c59629ff",
+    "investigation-final-v75.csv": "ce8157ecb13bfaa91d9d4ffe2c69d1760f0336a998f96b394b4c86f73b5069b3",
+    "live-issue-snapshot-v75.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v75.json": "2bfdd12ed879576f1fc2a31e5b6cb8fefdc7f5d48d59969c977570e0b9e58664",
+    "source-package-inventory-v75.csv": "c128b4f8cc3be8b18aec7a08daf091f7285d3da232f88e73ee6e98c88c468f24"
+  },
+  "input_sha256": {
+    "v74/3730-crosswalk-final-v74.csv": "ca59f1da61bde7e98ff132aa4986d61a366ae471f92279855315d021a90a2a00",
+    "v74/investigation-final-v74.csv": "186fb3a7377f44aa9785237d02b20fa33dcf3a757e2a067805daba17de3500a4",
+    "v74/live-issue-snapshot-v74.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "v74/row-challenge-v74.json": "1acf02014210fa16b5a702623bf5753502c2731c3c085410956391214e6087b5",
+    "v74/validation-v74.json": "9fb6ef67783a0120b911c73ffc8bb40fc47790b63d63af256bfc048f29e53eb6"
+  },
+  "inventory_files": 39,
+  "inventory_only_packages": [],
+  "investigation_count": 159,
+  "new_report_packages": [
+    "salsa-rustc-current-source-review"
+  ],
+  "reference_tip_at_start": "b78cc3c330fb54d8bce1b769e33fe785c2df3b10",
+  "row_count": 333,
+  "source_map_sha256": "942c3af1bcf7fe0b5d471133b9934f396ff9dbff4182b5578d1ff306d21f42a7",
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v74",
+  "source_review_context_packages": [
+    "salsa-rustc-current-source-review"
+  ],
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345,
+  "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+  "v74_published_commit": "ca4e34659fadfb1ad24084db833adae9ffd8eb05"
+}

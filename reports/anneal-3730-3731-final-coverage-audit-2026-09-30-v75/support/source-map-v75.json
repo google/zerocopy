@@ -1,0 +1,7 @@
+{
+  "salsa-rustc-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["salsa-rustc-query-granularity-2016-2026"],
+    "reason": "R566 freezes this exact v67 Salsa/rustc query-granularity analog. The newer Salsa source changes the documented cycle_initial tracked-struct constraint and adjacent implementation, while most cited Salsa blobs and two rustc developer-guide blobs stay unchanged. The review did not inspect current rustc compiler implementation or execute Salsa, rustc, tests, or Anneal. This supports source context only for the inherited IDs."
+  }
+}
