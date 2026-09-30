@@ -1,0 +1,1104 @@
+{
+  "admissions": [
+    {
+      "disk_free": 18499575808,
+      "label": "prebuild-a",
+      "memory_fraction": 0.3086681365966797
+    },
+    {
+      "disk_free": 18499035136,
+      "label": "prebuild-b",
+      "memory_fraction": 0.2560997009277344
+    }
+  ],
+  "cases": {},
+  "error": "RuntimeError('prebuild-b:fresh_admission_denied')",
+  "final_disk_free": 18499035136,
+  "final_memory_fraction": 0.25610923767089844,
+  "fixture": {
+    "consumer/Generated.lean": {
+      "sha256": "fbfe2ea9973fa9315b042b048857eaf53996385eecd6c772feac60e2b0cfa7eb",
+      "size": 82
+    },
+    "consumer/lake-manifest.json": {
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "size": 372
+    },
+    "consumer/lakefile.lean": {
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+      "size": 123
+    },
+    "consumer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29
+    },
+    "golden-cache/artifacts/19804e4afa920628.c": {
+      "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303",
+      "size": 1529
+    },
+    "golden-cache/artifacts/256fdbc46043cf30.ilean": {
+      "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b",
+      "size": 809
+    },
+    "golden-cache/artifacts/7b7a31f2adb2306a.olean": {
+      "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "size": 4896
+    },
+    "golden-cache/outputs/probe_dep/566c416840dafb01.json": {
+      "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7",
+      "size": 170
+    },
+    "producer/Dep.lean": {
+      "sha256": "49e20978743ac47d142f6e7e354d0550a1df63dec5ebc8931529d4d424543fd5",
+      "size": 174
+    },
+    "producer/lakefile.lean": {
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "size": 75
+    },
+    "producer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29
+    }
+  },
+  "golden": {
+    "artifacts/19804e4afa920628.c": {
+      "sha256": "51142d2cf0d5d9d30e17c366608d281d43cd6c81b6803b9b2b00f49cc96e5303",
+      "size": 1529
+    },
+    "artifacts/256fdbc46043cf30.ilean": {
+      "sha256": "b2d56227bea04f3be699767ab6f9b9d89bec0bb80f43e5138b269a9679ab5e0b",
+      "size": 809
+    },
+    "artifacts/7b7a31f2adb2306a.olean": {
+      "sha256": "4d2519d8006d6b63510989fa471021ac046867c69ec94aa8e11212bc8468da85",
+      "size": 4896
+    },
+    "outputs/probe_dep/566c416840dafb01.json": {
+      "sha256": "4374ce75e3040a0287f0da02104f90620d0b53e417a218b68ab5e7c4cd21f4e7",
+      "size": 170
+    }
+  },
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "runs": [
+    {
+      "abort": null,
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-ansi",
+        "build",
+        "Dep"
+      ],
+      "cache": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i102-same-key-interruption-recovery-20260930/work/local-cache",
+      "cache_after": {},
+      "cache_before": {},
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i102-same-key-interruption-recovery-20260930/work/a/consumer",
+      "elapsed": 7.1935,
+      "env_overrides": {
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i102-same-key-interruption-recovery-20260930/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_CACHE_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i102-same-key-interruption-recovery-20260930/work/local-cache",
+        "LAKE_NO_NET": "1",
+        "LEAN_PATH": null,
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i102-same-key-interruption-recovery-20260930/work/xdg"
+      },
+      "exit": 0,
+      "label": "prebuild-a",
+      "limit": null,
+      "resource_samples": [
+        {
+          "disk_free": 18499571712,
+          "elapsed": 0.0254,
+          "group_rss_kib": 32,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 32
+            }
+          ],
+          "memory_fraction": 0.3084239959716797
+        },
+        {
+          "disk_free": 18499506176,
+          "elapsed": 0.145,
+          "group_rss_kib": 18560,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 18560
+            }
+          ],
+          "memory_fraction": 0.30496788024902344
+        },
+        {
+          "disk_free": 18499497984,
+          "elapsed": 0.267,
+          "group_rss_kib": 42144,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 42144
+            }
+          ],
+          "memory_fraction": 0.3047142028808594
+        },
+        {
+          "disk_free": 18499473408,
+          "elapsed": 0.3848,
+          "group_rss_kib": 58992,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 58992
+            }
+          ],
+          "memory_fraction": 0.3042411804199219
+        },
+        {
+          "disk_free": 18499473408,
+          "elapsed": 0.5052,
+          "group_rss_kib": 73424,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 73424
+            }
+          ],
+          "memory_fraction": 0.30393218994140625
+        },
+        {
+          "disk_free": 18499457024,
+          "elapsed": 0.627,
+          "group_rss_kib": 88384,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 88384
+            }
+          ],
+          "memory_fraction": 0.3027973175048828
+        },
+        {
+          "disk_free": 18499457024,
+          "elapsed": 0.7493,
+          "group_rss_kib": 104304,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 104304
+            }
+          ],
+          "memory_fraction": 0.301666259765625
+        },
+        {
+          "disk_free": 18499457024,
+          "elapsed": 0.8712,
+          "group_rss_kib": 116736,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 116736
+            }
+          ],
+          "memory_fraction": 0.3006267547607422
+        },
+        {
+          "disk_free": 18499457024,
+          "elapsed": 0.9925,
+          "group_rss_kib": 132096,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 132096
+            }
+          ],
+          "memory_fraction": 0.30029296875
+        },
+        {
+          "disk_free": 18499452928,
+          "elapsed": 1.1159,
+          "group_rss_kib": 145920,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 145920
+            }
+          ],
+          "memory_fraction": 0.2982635498046875
+        },
+        {
+          "disk_free": 18499452928,
+          "elapsed": 1.2461,
+          "group_rss_kib": 163344,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 163344
+            }
+          ],
+          "memory_fraction": 0.2935161590576172
+        },
+        {
+          "disk_free": 18499444736,
+          "elapsed": 1.3734,
+          "group_rss_kib": 195248,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 195248
+            }
+          ],
+          "memory_fraction": 0.2903861999511719
+        },
+        {
+          "disk_free": 18499444736,
+          "elapsed": 1.4994,
+          "group_rss_kib": 233872,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 233872
+            }
+          ],
+          "memory_fraction": 0.2906475067138672
+        },
+        {
+          "disk_free": 18499424256,
+          "elapsed": 1.6286,
+          "group_rss_kib": 275952,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 275952
+            }
+          ],
+          "memory_fraction": 0.2889118194580078
+        },
+        {
+          "disk_free": 18499387392,
+          "elapsed": 1.7529,
+          "group_rss_kib": 312256,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 312256
+            }
+          ],
+          "memory_fraction": 0.2877311706542969
+        },
+        {
+          "disk_free": 18499387392,
+          "elapsed": 1.8775,
+          "group_rss_kib": 345792,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 345792
+            }
+          ],
+          "memory_fraction": 0.286865234375
+        },
+        {
+          "disk_free": 18499371008,
+          "elapsed": 2.0025,
+          "group_rss_kib": 378560,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 378560
+            }
+          ],
+          "memory_fraction": 0.28677940368652344
+        },
+        {
+          "disk_free": 18499371008,
+          "elapsed": 2.1216,
+          "group_rss_kib": 409936,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 409936
+            }
+          ],
+          "memory_fraction": 0.28645896911621094
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 2.2444,
+          "group_rss_kib": 438752,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 438752
+            }
+          ],
+          "memory_fraction": 0.2858562469482422
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 2.3666,
+          "group_rss_kib": 466240,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 466240
+            }
+          ],
+          "memory_fraction": 0.28513526916503906
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 2.4913,
+          "group_rss_kib": 493824,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 493824
+            }
+          ],
+          "memory_fraction": 0.2841930389404297
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 2.6135,
+          "group_rss_kib": 511216,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 511216
+            }
+          ],
+          "memory_fraction": 0.28342247009277344
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 2.7347,
+          "group_rss_kib": 528432,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 528432
+            }
+          ],
+          "memory_fraction": 0.2830524444580078
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 2.8561,
+          "group_rss_kib": 545088,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 545088
+            }
+          ],
+          "memory_fraction": 0.2819328308105469
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 2.9819,
+          "group_rss_kib": 570016,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 570016
+            }
+          ],
+          "memory_fraction": 0.2811622619628906
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 3.1024,
+          "group_rss_kib": 596512,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 596512
+            }
+          ],
+          "memory_fraction": 0.280059814453125
+        },
+        {
+          "disk_free": 18499354624,
+          "elapsed": 3.2359,
+          "group_rss_kib": 633312,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 633312
+            }
+          ],
+          "memory_fraction": 0.2774639129638672
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 3.3557,
+          "group_rss_kib": 659888,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 659888
+            }
+          ],
+          "memory_fraction": 0.2761383056640625
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 3.4825,
+          "group_rss_kib": 749824,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661568
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 88256
+            }
+          ],
+          "memory_fraction": 0.27219390869140625
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 3.6039,
+          "group_rss_kib": 788608,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 127024
+            }
+          ],
+          "memory_fraction": 0.27087974548339844
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 3.7254,
+          "group_rss_kib": 816720,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 155136
+            }
+          ],
+          "memory_fraction": 0.26904869079589844
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 3.8478,
+          "group_rss_kib": 830736,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 169152
+            }
+          ],
+          "memory_fraction": 0.26741981506347656
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 3.9699,
+          "group_rss_kib": 845328,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 183744
+            }
+          ],
+          "memory_fraction": 0.2666473388671875
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 4.092,
+          "group_rss_kib": 862816,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 201232
+            }
+          ],
+          "memory_fraction": 0.2656269073486328
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 4.2175,
+          "group_rss_kib": 877984,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 216400
+            }
+          ],
+          "memory_fraction": 0.2644500732421875
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 4.3452,
+          "group_rss_kib": 893648,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 232064
+            }
+          ],
+          "memory_fraction": 0.2635059356689453
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 4.4676,
+          "group_rss_kib": 918288,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 256704
+            }
+          ],
+          "memory_fraction": 0.26224708557128906
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 4.5937,
+          "group_rss_kib": 947280,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 285696
+            }
+          ],
+          "memory_fraction": 0.2620353698730469
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 4.7182,
+          "group_rss_kib": 1220592,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 559008
+            }
+          ],
+          "memory_fraction": 0.2604198455810547
+        },
+        {
+          "disk_free": 18499137536,
+          "elapsed": 4.8426,
+          "group_rss_kib": 1298192,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 636608
+            }
+          ],
+          "memory_fraction": 0.2578086853027344
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 4.9645,
+          "group_rss_kib": 1324176,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661168
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 663008
+            }
+          ],
+          "memory_fraction": 0.2562236785888672
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 5.0855,
+          "group_rss_kib": 1351232,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661168
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 690064
+            }
+          ],
+          "memory_fraction": 0.25510215759277344
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 5.2146,
+          "group_rss_kib": 1392912,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 661168
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 731744
+            }
+          ],
+          "memory_fraction": 0.2538490295410156
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 5.3397,
+          "group_rss_kib": 1418672,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 655856
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 762816
+            }
+          ],
+          "memory_fraction": 0.25145530700683594
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 5.4662,
+          "group_rss_kib": 1439040,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 648128
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 790912
+            }
+          ],
+          "memory_fraction": 0.25005149841308594
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 5.5904,
+          "group_rss_kib": 1464816,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 645904
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 818912
+            }
+          ],
+          "memory_fraction": 0.24993324279785156
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 5.7115,
+          "group_rss_kib": 1534288,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 892688
+            }
+          ],
+          "memory_fraction": 0.24879074096679688
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 5.8364,
+          "group_rss_kib": 1549776,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 908176
+            }
+          ],
+          "memory_fraction": 0.2479877471923828
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 5.9626,
+          "group_rss_kib": 1566448,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 924848
+            }
+          ],
+          "memory_fraction": 0.2474994659423828
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 6.0832,
+          "group_rss_kib": 1581184,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 939584
+            }
+          ],
+          "memory_fraction": 0.24665260314941406
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 6.2276,
+          "group_rss_kib": 1601664,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 960064
+            }
+          ],
+          "memory_fraction": 0.24410057067871094
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 6.3496,
+          "group_rss_kib": 1656144,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 1014544
+            }
+          ],
+          "memory_fraction": 0.24334716796875
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 6.4716,
+          "group_rss_kib": 1693664,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 1052064
+            }
+          ],
+          "memory_fraction": 0.2433032989501953
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 6.5939,
+          "group_rss_kib": 1716352,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 1074752
+            }
+          ],
+          "memory_fraction": 0.242889404296875
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 6.7157,
+          "group_rss_kib": 1739840,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 1098240
+            }
+          ],
+          "memory_fraction": 0.242156982421875
+        },
+        {
+          "disk_free": 18499117056,
+          "elapsed": 6.8404,
+          "group_rss_kib": 1776064,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 1134464
+            }
+          ],
+          "memory_fraction": 0.24116897583007812
+        },
+        {
+          "disk_free": 18499092480,
+          "elapsed": 6.9677,
+          "group_rss_kib": 1813424,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641600
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 29842,
+              "ppid": 29748,
+              "rss_kib": 1171824
+            }
+          ],
+          "memory_fraction": 0.2407093048095703
+        },
+        {
+          "disk_free": 18499076096,
+          "elapsed": 7.0975,
+          "group_rss_kib": 641856,
+          "members": [
+            {
+              "comm": "(lake)",
+              "pid": 29748,
+              "ppid": 29745,
+              "rss_kib": 641856
+            }
+          ],
+          "memory_fraction": 0.2570991516113281
+        }
+      ],
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "9fa012834f1922992a29bd22bc113dd5e8d64cba71f70e56787f0ffbff24950c"
+    }
+  ],
+  "schema": 1,
+  "status": "stopped"
+}
