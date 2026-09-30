@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "fstar/version-review",
+    "fstar/tactics",
+    "fstar/smt-trust",
+    "fstar/native-plugins",
+    "reference/cohort-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Frozen reference corpus containing R400",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "6b1af799ae4ed60744e98137033ab66e1d3b68a5"
+      }
+    },
+    {
+      "name": "F* R400 pinned and current master source",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "branch": "master",
+        "revision": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+        "version_txt": "2026.09.27"
+      }
+    },
+    {
+      "name": "F* latest tagged release",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "tag": "v2026.09.27",
+        "annotated-tag-object": "48268f3522ec8da089bbeb5f4e1674d50280a9c7",
+        "peeled-revision": "7deb38a27c86990664c6b41e4b6093597acdebd4"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}
