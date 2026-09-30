@@ -18539,6 +18539,72 @@
         "verification/intralingual-design"
       ]
     },
+    "tock-asterinas-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "327cce209828e92daba9e2be8a3f93232e35810c"
+          },
+          "name": "Frozen reference corpus containing R571\u2013R573"
+        },
+        {
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb"
+          },
+          "name": "Tock R571/R573 old source"
+        },
+        {
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73"
+          },
+          "name": "Tock R572 old source"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "tock/tock",
+            "revision": "842498efca186bba0071ed3d072fddd2dec3312e"
+          },
+          "name": "Tock observed master source"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "asterinas/asterinas",
+            "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+          },
+          "name": "Asterinas R571/R572/R573 pinned and observed main source"
+        },
+        {
+          "identity": {
+            "repository": "asterinas/asterinas",
+            "revision": "d924a9635a66c7c3bb43e563eaafa2c61d6ee9d5",
+            "tag": "v0.18.1"
+          },
+          "name": "Asterinas v0.18.1 release source"
+        },
+        {
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "9554639b17501a9f5940cef7a1770a0823e790c3",
+            "tag": "release-2.2"
+          },
+          "name": "Tock release-2.2 source"
+        }
+      ],
+      "topics": [
+        "tock",
+        "asterinas",
+        "reference/version-review",
+        "rust/safe-abstractions",
+        "anneal/trust-boundaries"
+      ]
+    },
     "tock-asterinas-safe-interface-boundaries-2015-2026": {
       "observed_at": "2026-09-30",
       "subjects": [

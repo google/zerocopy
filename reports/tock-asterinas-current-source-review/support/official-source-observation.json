@@ -1,0 +1,468 @@
+{
+  "observed_at": "2026-09-30",
+  "repositories": [
+    {
+      "repository": "tock/tock",
+      "raw_ls_remote": "842498efca186bba0071ed3d072fddd2dec3312e\tHEAD\n842498efca186bba0071ed3d072fddd2dec3312e\trefs/heads/master\n7248eead44d2c6b1bcb639aea0532370b364a7d2\trefs/tags/release-2.2\n9554639b17501a9f5940cef7a1770a0823e790c3\trefs/tags/release-2.2^{}\n",
+      "refs": {
+        "HEAD": "842498efca186bba0071ed3d072fddd2dec3312e",
+        "refs/heads/master": "842498efca186bba0071ed3d072fddd2dec3312e",
+        "refs/tags/release-2.2": "7248eead44d2c6b1bcb639aea0532370b364a7d2",
+        "refs/tags/release-2.2^{}": "9554639b17501a9f5940cef7a1770a0823e790c3"
+      },
+      "official_default_branch": "master",
+      "current_default_commit": "842498efca186bba0071ed3d072fddd2dec3312e",
+      "latest_release": {
+        "tag": "release-2.2",
+        "published_at": "2025-01-06T16:42:24Z",
+        "tag_object_type": "tag",
+        "tag_object_sha": "7248eead44d2c6b1bcb639aea0532370b364a7d2",
+        "peeled_type": "commit",
+        "peeled_commit": "9554639b17501a9f5940cef7a1770a0823e790c3",
+        "relation_to_first_pin": {
+          "status": "diverged",
+          "ahead_by": 2639,
+          "behind_by": 12
+        }
+      },
+      "pins": [
+        {
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "compare_status": "ahead",
+          "ahead_by": 23,
+          "behind_by": 0,
+          "total_commits": 23,
+          "changed_files": [
+            {
+              "path": "arch/riscv/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "c2afc4285f912c52f8308b38180d3b236a56ca0f",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "boards/components/src/debug_writer.rs",
+              "status": "modified",
+              "new_blob_sha": "02cce67854e4825aec40b1ff538e7aaa09dc2f4d",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/configurations/microbit_v2/microbit_v2-test-dynamic-app-load/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "3d5241e4e2b57d9cf434f289e89f697528f14111",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/configurations/nrf52840dk/nrf52840dk-test-dynamic-app-load/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "de3250707a10ea1431f9e94671136d128b44c9c5",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/configurations/nrf52840dk/nrf52840dk-test-kernel/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "de3250707a10ea1431f9e94671136d128b44c9c5",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/esp32-c3-devkitM-1/Makefile",
+              "status": "modified",
+              "new_blob_sha": "b62b8dfa0b81ba41bed6f68119a8b838debbc499",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/microbit_v2/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "3d5241e4e2b57d9cf434f289e89f697528f14111",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52840_dongle/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "fa0a5fb10a144a99e2cc9dfbb7920ceb7b4c1dee",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52840dk/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "e8de85dcbb2ea27191108768117194b2af417604",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52_components/src/startup.rs",
+              "status": "modified",
+              "new_blob_sha": "f1a65bba4a05f51800a3612f4d7165a814803f34",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52dk/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "129c888a25ea5d859fb633144324f13d560d1936",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52dk/src/tests/uart.rs",
+              "status": "modified",
+              "new_blob_sha": "cd2667fb7ad76dfac18a57e7ed21dc550f707919",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/particle_boron/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "1f9c067a30ddf67a36731bf46fa0604e655b0c29",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/wm1110dev/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "619c4bb5cb2afefaf4fe95c9f081758c31a3b567",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52/src/chip.rs",
+              "status": "modified",
+              "new_blob_sha": "462ca4fd9ce922b02919dc60b89142fd69c6ffe4",
+              "changes": 6,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "459941bd078aa05b2df41569d398c1244b675150",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52/src/uart.rs",
+              "status": "modified",
+              "new_blob_sha": "f189143e9c1dc1eb6338fb9adac8df91271a28f3",
+              "changes": 870,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52/src/uart_legacy.rs",
+              "status": "removed",
+              "changes": 250,
+              "patch": null,
+              "old_blob_sha": "114ea8f656ace5063c0e9a5f8c11107a9e89b65c"
+            },
+            {
+              "path": "chips/nrf52/src/uarte.rs",
+              "status": "added",
+              "new_blob_sha": "4b2c5b74ff270896b62f2cdf80333dffeb0ab5d7",
+              "changes": 828,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52832/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "74f0045ea26bb08d190dc55f003560eb67cd1a08",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52833/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "c77e821ec765f0061b72a3de8eb75d6d14d1ea51",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52840/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "b1d2cd89abfbfea817542463818c1188792e2533",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "doc/CodeReview.md",
+              "status": "modified",
+              "new_blob_sha": "1db890649adc51543bcf964ff2aeae75747343ff",
+              "changes": 140,
+              "patch": null
+            },
+            {
+              "path": "doc/wg/cryptography/notes/cryptography-notes-2026-9-1.md",
+              "status": "added",
+              "new_blob_sha": "185ddec2798ef3721a07095dbca91712ab06bc1a",
+              "changes": 56,
+              "patch": null
+            },
+            {
+              "path": "doc/wg/cryptography/notes/cryptography-notes-2026-9-22.md",
+              "status": "added",
+              "new_blob_sha": "fd9ea20a35e22bde1b4fd72820c752dddfb66012",
+              "changes": 59,
+              "patch": null
+            },
+            {
+              "path": "doc/wg/cryptography/notes/cryptography-notes-2026-9-8.md",
+              "status": "added",
+              "new_blob_sha": "06b715f3d36a00bf4216c5e6cd9f31b690b21f97",
+              "changes": 47,
+              "patch": null
+            },
+            {
+              "path": "kernel/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "84a9f806ac8028253799ed85c45b65a867ee1faa",
+              "changes": 3,
+              "patch": "@@ -92,6 +92,9 @@\n // `clippy::missing_safety_doc`: Our goal is to apply this in all of Tock,\n // but as of September 2026 we are starting with the kernel crate.\n #![deny(clippy::missing_safety_doc)]\n+// `clippy::undocumented_unsafe_blocks`: Our goal is to apply this in all of\n+// Tock, but as of September 2026 we are starting with the kernel crate.\n+#![deny(clippy::undocumented_unsafe_blocks)]\n #![warn(unreachable_pub)]\n #![no_std]\n "
+            },
+            {
+              "path": "kernel/src/process_loading.rs",
+              "status": "modified",
+              "new_blob_sha": "661a16622457fa3002c7a62a581d87fa0f8415d4",
+              "changes": 6,
+              "patch": "@@ -389,6 +389,12 @@ fn load_process<C: Chip, D: ProcessStandardDebug>(\n     // Try to create a process object from that app slice. If we don't\n     // get a process and we didn't get a loading error (aka we got to\n     // this point), then the app is a disabled process or just padding.\n+    //\n+    // SAFETY: We must not allow `app_memory` to be used anywhere as it could\n+    // alias memory allocated for the process. We only use `app_memory` to call\n+    // this function, and then we only use the returned `unused_memory` pointer\n+    // afterwards, ensuring the same memory cannot be given to the newly created\n+    // process and anything else.\n     let (process_option, unused_memory) = unsafe {\n         ProcessStandard::<C, D>::create(\n             kernel,"
+            }
+          ]
+        },
+        {
+          "old_commit": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+          "compare_status": "ahead",
+          "ahead_by": 21,
+          "behind_by": 0,
+          "total_commits": 21,
+          "changed_files": [
+            {
+              "path": "arch/riscv/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "c2afc4285f912c52f8308b38180d3b236a56ca0f",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "boards/components/src/debug_writer.rs",
+              "status": "modified",
+              "new_blob_sha": "02cce67854e4825aec40b1ff538e7aaa09dc2f4d",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/configurations/microbit_v2/microbit_v2-test-dynamic-app-load/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "3d5241e4e2b57d9cf434f289e89f697528f14111",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/configurations/nrf52840dk/nrf52840dk-test-dynamic-app-load/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "de3250707a10ea1431f9e94671136d128b44c9c5",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/configurations/nrf52840dk/nrf52840dk-test-kernel/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "de3250707a10ea1431f9e94671136d128b44c9c5",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/esp32-c3-devkitM-1/Makefile",
+              "status": "modified",
+              "new_blob_sha": "b62b8dfa0b81ba41bed6f68119a8b838debbc499",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/microbit_v2/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "3d5241e4e2b57d9cf434f289e89f697528f14111",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52840_dongle/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "fa0a5fb10a144a99e2cc9dfbb7920ceb7b4c1dee",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52840dk/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "e8de85dcbb2ea27191108768117194b2af417604",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52_components/src/startup.rs",
+              "status": "modified",
+              "new_blob_sha": "f1a65bba4a05f51800a3612f4d7165a814803f34",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52dk/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "129c888a25ea5d859fb633144324f13d560d1936",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "boards/nordic/nrf52dk/src/tests/uart.rs",
+              "status": "modified",
+              "new_blob_sha": "cd2667fb7ad76dfac18a57e7ed21dc550f707919",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/particle_boron/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "1f9c067a30ddf67a36731bf46fa0604e655b0c29",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "boards/wm1110dev/src/io.rs",
+              "status": "modified",
+              "new_blob_sha": "619c4bb5cb2afefaf4fe95c9f081758c31a3b567",
+              "changes": 4,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52/src/chip.rs",
+              "status": "modified",
+              "new_blob_sha": "462ca4fd9ce922b02919dc60b89142fd69c6ffe4",
+              "changes": 6,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "459941bd078aa05b2df41569d398c1244b675150",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52/src/uart.rs",
+              "status": "modified",
+              "new_blob_sha": "f189143e9c1dc1eb6338fb9adac8df91271a28f3",
+              "changes": 870,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52/src/uart_legacy.rs",
+              "status": "removed",
+              "changes": 250,
+              "patch": null,
+              "old_blob_sha": "114ea8f656ace5063c0e9a5f8c11107a9e89b65c"
+            },
+            {
+              "path": "chips/nrf52/src/uarte.rs",
+              "status": "added",
+              "new_blob_sha": "4b2c5b74ff270896b62f2cdf80333dffeb0ab5d7",
+              "changes": 828,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52832/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "74f0045ea26bb08d190dc55f003560eb67cd1a08",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52833/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "c77e821ec765f0061b72a3de8eb75d6d14d1ea51",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "chips/nrf52840/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "b1d2cd89abfbfea817542463818c1188792e2533",
+              "changes": 2,
+              "patch": null
+            },
+            {
+              "path": "doc/CodeReview.md",
+              "status": "modified",
+              "new_blob_sha": "1db890649adc51543bcf964ff2aeae75747343ff",
+              "changes": 140,
+              "patch": null
+            },
+            {
+              "path": "kernel/src/lib.rs",
+              "status": "modified",
+              "new_blob_sha": "84a9f806ac8028253799ed85c45b65a867ee1faa",
+              "changes": 3,
+              "patch": "@@ -92,6 +92,9 @@\n // `clippy::missing_safety_doc`: Our goal is to apply this in all of Tock,\n // but as of September 2026 we are starting with the kernel crate.\n #![deny(clippy::missing_safety_doc)]\n+// `clippy::undocumented_unsafe_blocks`: Our goal is to apply this in all of\n+// Tock, but as of September 2026 we are starting with the kernel crate.\n+#![deny(clippy::undocumented_unsafe_blocks)]\n #![warn(unreachable_pub)]\n #![no_std]\n "
+            },
+            {
+              "path": "kernel/src/process_loading.rs",
+              "status": "modified",
+              "new_blob_sha": "661a16622457fa3002c7a62a581d87fa0f8415d4",
+              "changes": 6,
+              "patch": "@@ -389,6 +389,12 @@ fn load_process<C: Chip, D: ProcessStandardDebug>(\n     // Try to create a process object from that app slice. If we don't\n     // get a process and we didn't get a loading error (aka we got to\n     // this point), then the app is a disabled process or just padding.\n+    //\n+    // SAFETY: We must not allow `app_memory` to be used anywhere as it could\n+    // alias memory allocated for the process. We only use `app_memory` to call\n+    // this function, and then we only use the returned `unused_memory` pointer\n+    // afterwards, ensuring the same memory cannot be given to the newly created\n+    // process and anything else.\n     let (process_option, unused_memory) = unsafe {\n         ProcessStandard::<C, D>::create(\n             kernel,"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "asterinas/asterinas",
+      "raw_ls_remote": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44\tHEAD\na5238eb6a965a4616ce07a48f5dfbc8042c4cd44\trefs/heads/main\nd924a9635a66c7c3bb43e563eaafa2c61d6ee9d5\trefs/tags/v0.18.1\n",
+      "refs": {
+        "HEAD": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+        "refs/heads/main": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+        "refs/tags/v0.18.1": "d924a9635a66c7c3bb43e563eaafa2c61d6ee9d5"
+      },
+      "official_default_branch": "main",
+      "current_default_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+      "latest_release": {
+        "tag": "v0.18.1",
+        "published_at": "2026-08-18T15:10:29Z",
+        "tag_object_type": "commit",
+        "tag_object_sha": "d924a9635a66c7c3bb43e563eaafa2c61d6ee9d5",
+        "peeled_type": "commit",
+        "peeled_commit": "d924a9635a66c7c3bb43e563eaafa2c61d6ee9d5",
+        "relation_to_first_pin": {
+          "status": "ahead",
+          "ahead_by": 268,
+          "behind_by": 0
+        }
+      },
+      "pins": [
+        {
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "compare_status": "identical",
+          "ahead_by": 0,
+          "behind_by": 0,
+          "total_commits": 0,
+          "changed_files": []
+        }
+      ]
+    }
+  ],
+  "pin_relationship": {
+    "repository": "tock/tock",
+    "old": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+    "new": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+    "status": "ahead",
+    "ahead_by": 2,
+    "behind_by": 0,
+    "changed_paths": [
+      "doc/wg/cryptography/notes/cryptography-notes-2026-9-1.md",
+      "doc/wg/cryptography/notes/cryptography-notes-2026-9-22.md",
+      "doc/wg/cryptography/notes/cryptography-notes-2026-9-8.md"
+    ]
+  }
+}

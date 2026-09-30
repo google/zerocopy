@@ -1,0 +1,13 @@
+{
+  "topics": ["tock", "asterinas", "reference/version-review", "rust/safe-abstractions", "anneal/trust-boundaries"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R571–R573", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "327cce209828e92daba9e2be8a3f93232e35810c"}},
+    {"name": "Tock R571/R573 old source", "identity": {"repository": "tock/tock", "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb"}},
+    {"name": "Tock R572 old source", "identity": {"repository": "tock/tock", "revision": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73"}},
+    {"name": "Tock observed master source", "identity": {"repository": "tock/tock", "branch": "master", "revision": "842498efca186bba0071ed3d072fddd2dec3312e"}},
+    {"name": "Asterinas R571/R572/R573 pinned and observed main source", "identity": {"repository": "asterinas/asterinas", "branch": "main", "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"}},
+    {"name": "Asterinas v0.18.1 release source", "identity": {"repository": "asterinas/asterinas", "tag": "v0.18.1", "revision": "d924a9635a66c7c3bb43e563eaafa2c61d6ee9d5"}},
+    {"name": "Tock release-2.2 source", "identity": {"repository": "tock/tock", "tag": "release-2.2", "revision": "9554639b17501a9f5940cef7a1770a0823e790c3"}}
+  ],
+  "observed_at": "2026-09-30"
+}
