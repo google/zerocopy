@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "lean/version-review",
+    "lake/version-review",
+    "lake/config-cache",
+    "lake/artifact-cache",
+    "reference/cohort-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Lean and Lake original cohort source",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Lean and Lake newer source review target",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Mathlib original paired source for three cohort reports",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Mathlib newer paired source target for three cohort reports",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}
