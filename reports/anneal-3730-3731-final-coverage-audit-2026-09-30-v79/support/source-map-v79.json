@@ -1,0 +1,14 @@
+{
+  "mathlib-430rc2-to-4341-cache-source-review": {
+    "classification": "version_source_review_unmapped",
+    "predecessors": [],
+    "frozen_report_ids": ["R495", "R496", "R497", "R498"],
+    "frozen_report_paths": [
+      "reports/mathlib-cache-artifact-format-v4-30-0-rc2/REPORT.md",
+      "reports/mathlib-dependency-closure-pruning-v4-30-0-rc2/REPORT.md",
+      "reports/mathlib-lake-exe-cache-protocol-v4-30-0-rc2/REPORT.md",
+      "reports/mathlib-release-cache-upgrade-checklist-v4-30-0-rc2/REPORT.md"
+    ],
+    "reason": "The frozen 581-row inventory and this package's frozen-cohort.csv identify exactly R495–R498; R492–R494 belong to other cohorts. None of the four Mathlib report packages appears in v67's published #3731 source/spec ID map. The new report compares Mathlib/Lean v4.30.0-rc2 to v4.34.1 source only, with no cache/Lake/pruning/Anneal runtime. It is inventoried without new I or suggestion context links."
+  }
+}

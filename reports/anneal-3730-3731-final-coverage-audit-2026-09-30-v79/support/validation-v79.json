@@ -1,0 +1,54 @@
+{
+  "catalog_at_parent_sha256": "ae942634901cabaa68caa6e84afd8598359129d2f88b120e8a1c9f627aa40835",
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [],
+  "changed_status_ids": [],
+  "context_investigation_ids": [],
+  "context_suggestion_ids": [],
+  "generated_sha256": {
+    "3730-crosswalk-final-v79.csv": "1e521c24955d3f2ff386d83ed9be19127723514287f43489b7ead5150f9b582f",
+    "investigation-final-v79.csv": "a664db77193fb4c786b27a3d4e0a620354b0e69614a09d4c50a1bc9d390ea45f",
+    "live-issue-snapshot-v79.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v79.json": "04ecb705296d828160b4c0f255d23065c2bc83bbfab235f3c1d37cc42cef6a77",
+    "source-package-inventory-v79.csv": "96cea3fc09ffbc88c2b55447df4443597a7df687b9f5a9942a9eec0df41b9b72"
+  },
+  "input_sha256": {
+    "v78/3730-crosswalk-final-v78.csv": "a350538763a61f95ca2cd223c924459d7ac5b0f563d56c2a985435bd4006e6e1",
+    "v78/investigation-final-v78.csv": "7814927a8ef081cd6d0701b9e5b02b0c0a4ee056faae776ca63ec780935a458d",
+    "v78/live-issue-snapshot-v78.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "v78/row-challenge-v78.json": "eee057523512218adb700369c72bf42b073913334775511a20a3c66041952ca0",
+    "v78/validation-v78.json": "613686738f9d6b2ba8020b860e92cb60c27681289b54988647729ec449a463c3"
+  },
+  "inventory_files": 43,
+  "inventory_only_packages": [
+    "mathlib-430rc2-to-4341-cache-source-review"
+  ],
+  "investigation_count": 159,
+  "new_report_packages": [
+    "mathlib-430rc2-to-4341-cache-source-review"
+  ],
+  "reference_tip_at_start": "037531430436ec7d21966544e72ac7d7c60b1c24",
+  "row_count": 333,
+  "source_map_sha256": "8cebc1a3b6c738729723bcd4e452e6bd8d2f684156a6524e1ad8d2dea67b3334",
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v78",
+  "source_review_context_packages": [],
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345,
+  "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+  "v78_published_commit": "2ab4fa557cc4d42351aaec1d89d3e8e7801911b5"
+}
