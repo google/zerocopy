@@ -1,0 +1,11 @@
+{
+  "topics": ["mathlib/cache", "lean/toolchain", "anneal/pruning", "reference/version-review"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing Mathlib rows R495-R498", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "2ab4fa557cc4d42351aaec1d89d3e8e7801911b5"}},
+    {"name": "Mathlib original matched tag", "identity": {"repository": "leanprover-community/mathlib4", "tag": "v4.30.0-rc2", "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"}},
+    {"name": "Mathlib selected matched tag", "identity": {"repository": "leanprover-community/mathlib4", "tag": "v4.34.1", "revision": "d13f23b723b8a846827a245b89c10fc7d3f11612"}},
+    {"name": "Lean original matched tag", "identity": {"repository": "leanprover/lean4", "tag": "v4.30.0-rc2", "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"}},
+    {"name": "Lean selected matched tag", "identity": {"repository": "leanprover/lean4", "tag": "v4.34.1", "revision": "5045d0056413266e57c625dcd7c365b10e377c52"}}
+  ],
+  "observed_at": "2026-09-30"
+}

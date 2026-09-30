@@ -1,0 +1,35 @@
+# Mathlib v4.30.0-rc2 to v4.34.1 cache-source review
+
+## Summary
+
+The four direct Mathlib version-inventory rows are **R495–R498**, not R492–R495: R492–R494 identify other cohorts. The [matrix](support/matrix.json) freezes the exact four Mathlib report paths, Summary excerpts, source maps, and parent corpus at `2ab4fa557cc4d42351aaec1d89d3e8e7801911b5`. This is a bounded source comparison to the matched official Mathlib and Lean `v4.34.1` tags. No cache operation, Lake build, pruning run, or Anneal product was executed at the newer pair.
+
+The official [Mathlib old and new tags](support/mathlib-tag-refs.txt) resolve to `5450b53e5ddc75d46418fabb605edbf36bd0beb6` and `d13f23b723b8a846827a245b89c10fc7d3f11612`. The official [Lean old and new tags](support/lean-tag-refs.txt) resolve to `3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc` and `5045d0056413266e57c625dcd7c365b10e377c52`. Mathlib's new [`lean-toolchain`](https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/lean-toolchain) selects `leanprover/lean4:v4.34.1`. The Mathlib tags have a 3,951-commit forward relation; the Lean tags are divergent (1,008 ahead, 13 behind in the old-to-new comparison). Both GitHub compare file lists hit the 300-file cap, so this review relies on direct old/new claim-file bytes and does not claim repository-wide change coverage.
+
+## R495: archive contents
+
+The old R495 per-module `.ltar` naming remains in the source: [`Cache/Lean.lean`](https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/Lean.lean#L28) has the same Git blob at both tags, and current [`Cache/IO.lean`](https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/IO.lean#L316) still builds one archive path from each module hash. The `LTAR`/`LTR2`/`LTR3` magic and eight-byte Lake dependency hash read are still present in that changed file near line 426.
+
+`mkBuildPaths` retains the old required outputs but adds **optional** `.ir.sig` and `.ir.sig.hash` entries near line 344. R495's old optional-output list is therefore incomplete for v4.34.1. The source still requires the listed `.trace`, `.olean`, `.olean.hash`, `.ilean`, `.ilean.hash`, generated `.c`, and `.c.hash` inputs before packing. This is an inspected source-list result; no archive was packed or unpacked here.
+
+## R496: dependency-closure pruning
+
+The exact Lean [`Module/Syntax.lean`](https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Parser/Module/Syntax.lean) blob cited for import syntax is unchanged. [`Module.lean`](https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Parser/Module.lean) changed, but the observed diff adds `withPosition` to the top-level command parser near line 127, outside the cited import-header extraction near lines 84–112. This supports narrow source continuity for R496's inspected import grammar. It does not rerun Anneal's pinned pruning script against v4.34.1 Mathlib sources, new traces, or generated consumers; pruning completeness at the newer pair remains unresolved.
+
+## R497: cache key and download protocol
+
+[`Cache/Hashing.lean`](https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/Hashing.lean#L95) still mixes the Mathlib project files and a root generation into the custom module hash, but [`Cache/IO.lean`](https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/IO.lean#L150) changes `rootHashGeneration` from 4 to 5. The old per-module key values and downloaded archive names cannot be projected onto the new tag from the old report. The archive's internal Lake hash remains a separate layer from the custom filename hash.
+
+The [`Cache/Main.lean` dispatch](https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/Main.lean#L289) still maps `get-` to `get` with decompression disabled, while `get` and `get!` remain command names. The surrounding protocol changed materially: `Main.lean` adds `--scope`, `--unsafe`, and cache-container selection; [`Cache/Requests.lean`](https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/Requests.lean#L298) defines a trust-ordered read URL chain and retains downstream toolchain/manifest checks near lines 965–1046. [`Cache/IO.lean`](https://github.com/leanprover-community/mathlib4/blob/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/IO.lean#L69) adds a process tag for shared-cache temporary names, and `Requests.lean` uses that suffix before rename. The old fixed URL and untagged `<hash>.ltar.part` download description cannot be carried forward as the complete v4.34.1 read protocol. No network retrieval or concurrency outcome was executed in this review.
+
+## R498: matched upgrade inputs
+
+Mathlib v4.34.1's `lean-toolchain`, `lakefile.lean`, and `lake-manifest.json` all have different blobs from v4.30.0-rc2. The new toolchain selects Lean v4.34.1, giving an official matched source pair. R498's original Aeneas `nightly-2026.06.03` manifest and toolchain, and Anneal's pinned consumption code, remain at their own old identities in the frozen report. This source review does not modify those pins or show that a direct Mathlib-only upgrade would work. The checklist's requirement to reconcile the whole dependency and cache contract still applies as a recommendation, not an executed upgrade result.
+
+## Evidence and limits
+
+The [official-source observation](support/official-source-observation.json) records all eleven directly inspected old/new files, commit-pinned URLs, Git blob SHA-1, content SHA-256, byte sizes, and selected current line locators. The old values are checked against R495/R496/R497/R498 source maps and report evidence. The source snapshots are preserved under [`support/snapshots/`](support/snapshots/). The frozen 581-row inventory reconciles to 617 report packages at the parent, including all 36 added paths and hashes. No v4.35.0-rc3 comparison was needed to classify these specific v4.34.1 source deltas.
+
+`runtime_result` is `unexecuted_in_this_review`; `anneal_product_result` is `unassessed`. No issue/suggestion crosswalk row or audit gate is changed here. Exact I/suggestion mappings require the v67 map and a separate post-publication audit. The [offline checker](support/check_matrix.py) verifies corpus and claim bytes, tag identities, paired toolchain, direct blob snapshots, and source-finding locators. It cannot establish actual cache compatibility, pruning safety, artifact validity, or runtime readiness.
+
+Run `python3 reports/mathlib-430rc2-to-4341-cache-source-review/support/check_matrix.py` from a checkout with the frozen corpus commits. Prompt/setup refinement: ask for the precise four report paths and inventory IDs together, freeze the matched Mathlib/Lean tag pair, then evaluate each cache layer and its source locator separately before proposing a build or product change.

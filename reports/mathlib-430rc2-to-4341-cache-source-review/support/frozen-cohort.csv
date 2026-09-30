@@ -1,0 +1,5 @@
+inventory_id,cohort,report_json,report_md
+R495,mathlib4 v4.30.0-rc2 + matching Lean/Lake,reports/mathlib-cache-artifact-format-v4-30-0-rc2/REPORT.json,reports/mathlib-cache-artifact-format-v4-30-0-rc2/REPORT.md
+R496,mathlib4 v4.30.0-rc2 + matching Lean/Lake,reports/mathlib-dependency-closure-pruning-v4-30-0-rc2/REPORT.json,reports/mathlib-dependency-closure-pruning-v4-30-0-rc2/REPORT.md
+R497,mathlib4 v4.30.0-rc2 + matching Lean/Lake,reports/mathlib-lake-exe-cache-protocol-v4-30-0-rc2/REPORT.json,reports/mathlib-lake-exe-cache-protocol-v4-30-0-rc2/REPORT.md
+R498,mathlib4 v4.30.0-rc2 + matching Lean/Lake,reports/mathlib-release-cache-upgrade-checklist-v4-30-0-rc2/REPORT.json,reports/mathlib-release-cache-upgrade-checklist-v4-30-0-rc2/REPORT.md

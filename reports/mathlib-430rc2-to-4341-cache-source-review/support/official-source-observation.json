@@ -1,0 +1,371 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-09-30",
+  "repositories": [
+    {
+      "key": "mathlib",
+      "repository": "leanprover-community/mathlib4",
+      "old_tag": "v4.30.0-rc2",
+      "old_commit": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "new_tag": "v4.34.1",
+      "new_commit": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+      "raw_tag_refs_path": "mathlib-tag-refs.txt",
+      "raw_tag_refs_sha256": "38d5f82b6d76b3d36abcb378e57d041769981371a8a17b8ceb3ad176b84cc4fd",
+      "tag_refs": {
+        "refs/tags/v4.30.0-rc2": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+        "refs/tags/v4.34.1": "d13f23b723b8a846827a245b89c10fc7d3f11612"
+      },
+      "compare": {
+        "status": "ahead",
+        "ahead_by": 3951,
+        "behind_by": 0,
+        "total_commits": 3951,
+        "returned_file_count": 300,
+        "returned_commit_count": 250,
+        "file_list_complete": false
+      },
+      "mapped_files": [
+        {
+          "path": "Cache/Lean.lean",
+          "old_blob_sha1": "0934e22f2dc396411106b008016fba4569cf741d",
+          "new_blob_sha1": "0934e22f2dc396411106b008016fba4569cf741d",
+          "old_content_sha256": "c89aa848e695a7cad04ae66f517f5c1ccc6f1035062efa376115ce1b8eb46e8d",
+          "new_content_sha256": "c89aa848e695a7cad04ae66f517f5c1ccc6f1035062efa376115ce1b8eb46e8d",
+          "old_size": 2935,
+          "new_size": 2935,
+          "old_snapshot_path": "snapshots/mathlib/old/Cache/Lean.lean",
+          "new_snapshot_path": "snapshots/mathlib/new/Cache/Lean.lean",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/Cache/Lean.lean",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/Lean.lean",
+          "current_source_locators": {
+            "asLTar": [
+              28
+            ]
+          }
+        },
+        {
+          "path": "Cache/IO.lean",
+          "old_blob_sha1": "872ffe7ce8c608f6769e3e3cc5bb5dac8f9b001a",
+          "new_blob_sha1": "888035b399fe71628837ec9acb77cb6d5367dd65",
+          "old_content_sha256": "a3fa92bfb1c1257c3322306fa8b425a28cf420687ea885e6bf90563f4fac6408",
+          "new_content_sha256": "b4a0c1385a46e82e71ad1f7c29cee1eb9a9007161a29720b910fd7a1bb5ce494",
+          "old_size": 24112,
+          "new_size": 27999,
+          "old_snapshot_path": "snapshots/mathlib/old/Cache/IO.lean",
+          "new_snapshot_path": "snapshots/mathlib/new/Cache/IO.lean",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/Cache/IO.lean",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/IO.lean",
+          "current_source_locators": {
+            "def PROCTAG": [],
+            "def PARTSUFFIX": [
+              99
+            ],
+            "def rootHashGeneration": [
+              150
+            ],
+            "def mkBuildPaths": [
+              316
+            ],
+            "def packCache": [
+              367
+            ],
+            "def needsDecompression": [
+              446
+            ],
+            "def unpackCache": [
+              503
+            ],
+            "ir.sig": [
+              347,
+              348
+            ]
+          }
+        },
+        {
+          "path": "Cache/Main.lean",
+          "old_blob_sha1": "12f69c07522f61db89318bc8331b5eb395b45377",
+          "new_blob_sha1": "32f45203142e084c9969f8e61cdb75db2cd35a3a",
+          "old_content_sha256": "4aa88c756ebac55e78d0726b79704c2861b3085137016a8c11d85710bd2591aa",
+          "new_content_sha256": "e7d3c1e5e83675bdeeaea08bab6d11d4b388897235dbc4b5f20621daa5559251",
+          "old_size": 7532,
+          "new_size": 14631,
+          "old_snapshot_path": "snapshots/mathlib/old/Cache/Main.lean",
+          "new_snapshot_path": "snapshots/mathlib/new/Cache/Main.lean",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/Cache/Main.lean",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/Main.lean",
+          "current_source_locators": {
+            "\"get-\" :: args": [
+              289
+            ],
+            "--scope=REF": [
+              54,
+              231
+            ],
+            "--unsafe": [
+              61,
+              66,
+              67,
+              146,
+              148,
+              153,
+              157,
+              161
+            ]
+          }
+        },
+        {
+          "path": "Cache/README.md",
+          "old_blob_sha1": "2c25714653f41c9c378849abb8d59f92145fd9b3",
+          "new_blob_sha1": "b1a62a6e463fa0b79c153bf8bb1c317d7587d9b3",
+          "old_content_sha256": "ae3ef84f253db15c3ed2c9c31addcc22f823e45c45a63c40c3dfe56bc0c59783",
+          "new_content_sha256": "beb0f72aba7e2f9abada00603ba2768be0be5c4672cffa772576b028aec599e1",
+          "old_size": 9592,
+          "new_size": 15914,
+          "old_snapshot_path": "snapshots/mathlib/old/Cache/README.md",
+          "new_snapshot_path": "snapshots/mathlib/new/Cache/README.md",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/Cache/README.md",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/README.md",
+          "current_source_locators": {}
+        },
+        {
+          "path": "Cache/Hashing.lean",
+          "old_blob_sha1": "418e884d1262cd8655ceddccf0e3c5894f742e46",
+          "new_blob_sha1": "2da5f5b57fa25f0f56323da445d4ba9d579c21ff",
+          "old_content_sha256": "ff055315fdd39801121892aea6eb1b52e44c47aebbaadbc3a668e9ea4da8006e",
+          "new_content_sha256": "d38ae8d111ce0407b36d1a633f4fac5fd4b0fa065cf7dc8bfe9a69ad416398eb",
+          "old_size": 6561,
+          "new_size": 6567,
+          "old_snapshot_path": "snapshots/mathlib/old/Cache/Hashing.lean",
+          "new_snapshot_path": "snapshots/mathlib/new/Cache/Hashing.lean",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/Cache/Hashing.lean",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/Hashing.lean",
+          "current_source_locators": {
+            "def getRootHash": [
+              95
+            ],
+            "def getHash": [
+              114,
+              162
+            ]
+          }
+        },
+        {
+          "path": "Cache/Requests.lean",
+          "old_blob_sha1": "2f59d1ec95d8f04574c74b869afd4473acf60406",
+          "new_blob_sha1": "b1bccf23b6211eb834b69b0220b8949534ec8f48",
+          "old_content_sha256": "83ac9351e4a813334217d2eafc440efda72851d7e78e69dc1d35d3503d09e37b",
+          "new_content_sha256": "bf2fc8f305b34526862798e3bc5a5ee88e412fe7f5e22b742b285359d4844764",
+          "old_size": 41550,
+          "new_size": 56409,
+          "old_snapshot_path": "snapshots/mathlib/old/Cache/Requests.lean",
+          "new_snapshot_path": "snapshots/mathlib/new/Cache/Requests.lean",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/Cache/Requests.lean",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/Cache/Requests.lean",
+          "current_source_locators": {
+            "def checkForToolchainMismatch": [
+              967
+            ],
+            "def checkForManifestMismatch": [
+              1003
+            ],
+            "def getFiles": [
+              1046
+            ],
+            "MATHLIB_CACHE_GET_URL": [
+              298,
+              312,
+              363
+            ],
+            "PARTSUFFIX": [
+              433,
+              437,
+              526,
+              544,
+              688,
+              689,
+              752
+            ]
+          }
+        },
+        {
+          "path": "lakefile.lean",
+          "old_blob_sha1": "2615d72c0aa5e414234eac5f7ade10f4f3890916",
+          "new_blob_sha1": "6fcf25bc966618668c5690c79cf6e10a2c5635f3",
+          "old_content_sha256": "ca14e3adf52486b7984e870495e0fa312007e65d80dac66980b842c546fdd37c",
+          "new_content_sha256": "274e720ccc7dbabeb9fbf362290dc7e5ed2c5175fbade0ef20cc19b1331affaf",
+          "old_size": 6188,
+          "new_size": 8192,
+          "old_snapshot_path": "snapshots/mathlib/old/lakefile.lean",
+          "new_snapshot_path": "snapshots/mathlib/new/lakefile.lean",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/lakefile.lean",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/lakefile.lean",
+          "current_source_locators": {}
+        },
+        {
+          "path": "lake-manifest.json",
+          "old_blob_sha1": "86b358344ea45a46d99dc19ac861011583e6d6e5",
+          "new_blob_sha1": "de612f43de68d2b64dc65f74fc9b37d1f9d20898",
+          "old_content_sha256": "71f9e393a23807b33a5369e8f45888debe0cb79e872188b8dfbe308175e6d90c",
+          "new_content_sha256": "8f67b2cf24143ac091cdb425e886c2164b2fc2d6fbccd6db9454b697f9541a67",
+          "old_size": 2836,
+          "new_size": 2811,
+          "old_snapshot_path": "snapshots/mathlib/old/lake-manifest.json",
+          "new_snapshot_path": "snapshots/mathlib/new/lake-manifest.json",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/lake-manifest.json",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/lake-manifest.json",
+          "current_source_locators": {}
+        },
+        {
+          "path": "lean-toolchain",
+          "old_blob_sha1": "6c7e31fffe3e03be3e0d7021acd9cd848e44db26",
+          "new_blob_sha1": "ba8ebf2dbaf6a668cd2a0e086186d6d569b69ff5",
+          "old_content_sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "new_content_sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+          "old_size": 29,
+          "new_size": 25,
+          "old_snapshot_path": "snapshots/mathlib/old/lean-toolchain",
+          "new_snapshot_path": "snapshots/mathlib/new/lean-toolchain",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/5450b53e5ddc75d46418fabb605edbf36bd0beb6/lean-toolchain",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/d13f23b723b8a846827a245b89c10fc7d3f11612/lean-toolchain",
+          "current_source_locators": {
+            "leanprover/lean4:v4.34.1": [
+              1
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "lean",
+      "repository": "leanprover/lean4",
+      "old_tag": "v4.30.0-rc2",
+      "old_commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "new_tag": "v4.34.1",
+      "new_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "raw_tag_refs_path": "lean-tag-refs.txt",
+      "raw_tag_refs_sha256": "dd950bf4a81258cb44dc8fb61709e2903c8c3ede767e0d0d89cc7aa287dac47c",
+      "tag_refs": {
+        "refs/tags/v4.30.0-rc2": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "refs/tags/v4.34.1": "5045d0056413266e57c625dcd7c365b10e377c52"
+      },
+      "compare": {
+        "status": "diverged",
+        "ahead_by": 1008,
+        "behind_by": 13,
+        "total_commits": 1008,
+        "returned_file_count": 300,
+        "returned_commit_count": 250,
+        "file_list_complete": false
+      },
+      "mapped_files": [
+        {
+          "path": "src/Lean/Parser/Module/Syntax.lean",
+          "old_blob_sha1": "1fd6c0af6d7e204bbfd1c0e97fa80c818bf6f97c",
+          "new_blob_sha1": "1fd6c0af6d7e204bbfd1c0e97fa80c818bf6f97c",
+          "old_content_sha256": "95fceb73fa2c26f1266bc02859b68c0f6a725577a8529060c8f4982930271669",
+          "new_content_sha256": "95fceb73fa2c26f1266bc02859b68c0f6a725577a8529060c8f4982930271669",
+          "old_size": 1368,
+          "new_size": 1368,
+          "old_snapshot_path": "snapshots/lean/old/src/Lean/Parser/Module/Syntax.lean",
+          "new_snapshot_path": "snapshots/lean/new/src/Lean/Parser/Module/Syntax.lean",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Parser/Module/Syntax.lean",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Parser/Module/Syntax.lean",
+          "current_source_locators": {
+            "def import": [],
+            "import": [
+              9,
+              22,
+              23,
+              28
+            ]
+          }
+        },
+        {
+          "path": "src/Lean/Parser/Module.lean",
+          "old_blob_sha1": "024a5c10df494caccca4bb908e7bcc32df2530ca",
+          "new_blob_sha1": "4986a2e01eb04b16d0c35f85e49cc846677b67e8",
+          "old_content_sha256": "3b92418d71deceb8d08f521c086e3d734d835e7218b5db394ba7b6aa54a96f86",
+          "new_content_sha256": "e6e18dc8a1679132639b0b07b30234583eac29e1b4b636a9a6f54343466637b3",
+          "old_size": 8998,
+          "new_size": 9192,
+          "old_snapshot_path": "snapshots/lean/old/src/Lean/Parser/Module.lean",
+          "new_snapshot_path": "snapshots/lean/new/src/Lean/Parser/Module.lean",
+          "old_raw_url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Parser/Module.lean",
+          "new_raw_url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Parser/Module.lean",
+          "current_source_locators": {
+            "def topLevelCommandParserFn": [
+              129
+            ],
+            "partial def parseCommand": [
+              135
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "source_findings": [
+    {
+      "claim": "R495 archive naming",
+      "status": "source_continuity",
+      "files": [
+        "Cache/Lean.lean"
+      ],
+      "detail": "UInt64.asLTar source blob unchanged; one hash-named .ltar path remains in Cache/IO.lean"
+    },
+    {
+      "claim": "R495 payload membership",
+      "status": "source_delta",
+      "files": [
+        "Cache/IO.lean"
+      ],
+      "detail": "mkBuildPaths retains old required paths and adds optional .ir.sig and .ir.sig.hash"
+    },
+    {
+      "claim": "R495/R497 archive header",
+      "status": "source_continuity_in_changed_file",
+      "files": [
+        "Cache/IO.lean"
+      ],
+      "detail": "LTAR/LTR2/LTR3 plus 8-byte depHash read remains in current source"
+    },
+    {
+      "claim": "R497 cache key",
+      "status": "source_delta",
+      "files": [
+        "Cache/IO.lean",
+        "Cache/Hashing.lean"
+      ],
+      "detail": "rootHashGeneration changes 4 to 5; getRootHash still mixes lakefile, lean-toolchain, lake-manifest and generation"
+    },
+    {
+      "claim": "R497 CLI and transport",
+      "status": "source_delta",
+      "files": [
+        "Cache/Main.lean",
+        "Cache/Requests.lean",
+        "Cache/IO.lean"
+      ],
+      "detail": "get/get!/get- remain, but scoped trust/container routing and process-tagged temporary filenames are added; old transport URL and .ltar.part description cannot be projected wholesale"
+    },
+    {
+      "claim": "R498 matched toolchain",
+      "status": "source_delta",
+      "files": [
+        "lean-toolchain",
+        "lakefile.lean",
+        "lake-manifest.json"
+      ],
+      "detail": "Mathlib v4.34.1 toolchain selects Lean v4.34.1; package graph and build file blobs differ; Aeneas/Anneal old pins are not upgraded here"
+    },
+    {
+      "claim": "R496 Lean import parser",
+      "status": "source_continuity_in_mapped_syntax",
+      "files": [
+        "src/Lean/Parser/Module/Syntax.lean",
+        "src/Lean/Parser/Module.lean"
+      ],
+      "detail": "Syntax.lean unchanged; Module.lean adds withPosition to top-level command parser outside inspected import-header extraction"
+    }
+  ]
+}
