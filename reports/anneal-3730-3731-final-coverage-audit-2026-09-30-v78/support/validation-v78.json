@@ -1,0 +1,72 @@
+{
+  "catalog_at_parent_sha256": "19b52e84e6e4e242a6546c97772c53b6f0978b223b82c0ed32827140c4392022",
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [],
+  "changed_status_ids": [],
+  "context_investigation_ids": [
+    "I007",
+    "I159"
+  ],
+  "context_suggestion_ids": [
+    "H09",
+    "L04",
+    "N01",
+    "N02",
+    "N03",
+    "N04",
+    "N05",
+    "N06",
+    "N07",
+    "N08",
+    "N09",
+    "N10",
+    "N11",
+    "N12"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v78.csv": "a350538763a61f95ca2cd223c924459d7ac5b0f563d56c2a985435bd4006e6e1",
+    "investigation-final-v78.csv": "7814927a8ef081cd6d0701b9e5b02b0c0a4ee056faae776ca63ec780935a458d",
+    "live-issue-snapshot-v78.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v78.json": "eee057523512218adb700369c72bf42b073913334775511a20a3c66041952ca0",
+    "source-package-inventory-v78.csv": "37c56fc97fa744bd42453f67c529f42c2df711a9186476f5df8a11e1acd03f64"
+  },
+  "input_sha256": {
+    "v77/3730-crosswalk-final-v77.csv": "58c59681f7b8d5ce0c53d99d938da8f99db7c2dafd38b758c17a8736b3865312",
+    "v77/investigation-final-v77.csv": "648103ac85d40b933c98ea17bd010b482ffb168780ab22f09b8d8dea9f769a78",
+    "v77/live-issue-snapshot-v77.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "v77/row-challenge-v77.json": "9d1db449529a49e9cd59733735ada3d9c7a50a7c1f83ac039f4614aa8c946307",
+    "v77/validation-v77.json": "76ecbaaef55214fbd844fe8df882ffcb1ae24c0c602604515d53786876f7f2a1"
+  },
+  "inventory_files": 38,
+  "inventory_only_packages": [],
+  "investigation_count": 159,
+  "new_report_packages": [
+    "redleaf-linux-current-source-review"
+  ],
+  "reference_tip_at_start": "bdc6c4706d89a710b2ff8925de2eb26b7f97c55d",
+  "row_count": 333,
+  "source_map_sha256": "e4810c1dad0ee3e56a4ac52c9d18658350d4b162e9c67f047a5502766cc605be",
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v77",
+  "source_review_context_packages": [
+    "redleaf-linux-current-source-review"
+  ],
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345,
+  "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+  "v77_published_commit": "d8ebe60bc920363d4e43d95713e7e6a2de5363d7"
+}

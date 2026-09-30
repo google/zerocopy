@@ -1,0 +1,10 @@
+{
+  "redleaf-linux-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["redleaf-mixed-language-isolation-boundaries-2020-2026"],
+    "mapped_report_ids": ["R511"],
+    "mapped_investigation_ids": ["I007", "I159"],
+    "explicitly_unmapped_investigation_ids": ["I092"],
+    "reason": "R511 freezes the exact RedLeaf mixed-language-isolation analog in v67's source/spec synthesis, whose published ID map names I007 and I159 only. I092 has no matching v67 entry and is a distinct server/manifest investigation. The Linux default-branch pin is unchanged; RedLeaf's default master diverges from the paper-associated branch and is not a proven forward successor. No Linux, RedLeaf, or Anneal runtime was executed, so this is source context only."
+  }
+}
