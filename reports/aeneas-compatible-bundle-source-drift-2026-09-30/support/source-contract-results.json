@@ -1,0 +1,27 @@
+{
+  "status": "passed_source_only",
+  "source_contract_checks": {
+    "aeneas_emit_json_cli_added": true,
+    "aeneas_translation_json_source_added": true,
+    "aeneas_lean_module_default_added": true,
+    "aeneas_cli_still_file_oriented_in_source": true,
+    "aeneas_charon_pin_changed": true,
+    "aeneas_lean_pin_changed": true,
+    "paired_charon_rust_pin_changed": true,
+    "separate_june3_charon_not_confused_with_pair": true,
+    "charon_started_from_source_field_added": true
+  },
+  "snapshot_count": 15,
+  "matrix_rows": 169,
+  "normalized_claim_excerpts_verified": 169,
+  "frozen_git_source_verified": true,
+  "selection_basis": {
+    "metadata_or_cohort": 150,
+    "title_or_summary_only": 19
+  },
+  "changed_paths": {
+    "aeneas": 536,
+    "charon": 992
+  },
+  "runtime_executed": false
+}

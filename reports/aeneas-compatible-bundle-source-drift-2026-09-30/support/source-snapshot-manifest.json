@@ -1,0 +1,154 @@
+{
+  "snapshots": [
+    {
+      "system": "aeneas",
+      "era": "old",
+      "commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "upstream_path": "src/Main.ml",
+      "saved_path": "source-snapshots/aeneas/old/src/Main.ml",
+      "git_blob_sha1": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+      "sha256": "cc429adb3fe329aa66f28679f032ed67e2dac041e60f9e7608888957330418bd",
+      "byte_count": 30602
+    },
+    {
+      "system": "aeneas",
+      "era": "old",
+      "commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "upstream_path": "src/Config.ml",
+      "saved_path": "source-snapshots/aeneas/old/src/Config.ml",
+      "git_blob_sha1": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "sha256": "46e71dae78770b131692e29696b8f088f5a373ce7431254180f6700fcdb125f4",
+      "byte_count": 21044
+    },
+    {
+      "system": "aeneas",
+      "era": "old",
+      "commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "upstream_path": "charon-pin",
+      "saved_path": "source-snapshots/aeneas/old/charon-pin",
+      "git_blob_sha1": "06dbe0dbf1d5b7f1e6f2a21889ab6bf770e89de6",
+      "sha256": "5c344d9f8b00923cb14433cec6ce90f912cd1ddaf51982e254aab93e1652e18f",
+      "byte_count": 154
+    },
+    {
+      "system": "aeneas",
+      "era": "old",
+      "commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "upstream_path": "backends/lean/lean-toolchain",
+      "saved_path": "source-snapshots/aeneas/old/backends/lean/lean-toolchain",
+      "git_blob_sha1": "6c7e31fffe3e03be3e0d7021acd9cd848e44db26",
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "byte_count": 29
+    },
+    {
+      "system": "aeneas",
+      "era": "new",
+      "commit": "0855ce1b8ed3958512b6c19de6bf3035b7acb552",
+      "upstream_path": "src/Main.ml",
+      "saved_path": "source-snapshots/aeneas/new/src/Main.ml",
+      "git_blob_sha1": "3ba4be5805e6d394efab73e774eccac3f1cf6839",
+      "sha256": "41e7556907d3a134efc33c777035958d56bf1e30f1e988bed2a6dec8cba37def",
+      "byte_count": 32093
+    },
+    {
+      "system": "aeneas",
+      "era": "new",
+      "commit": "0855ce1b8ed3958512b6c19de6bf3035b7acb552",
+      "upstream_path": "src/Config.ml",
+      "saved_path": "source-snapshots/aeneas/new/src/Config.ml",
+      "git_blob_sha1": "6ac7f87ac268041a0c92cdcf47b3540c919a8da5",
+      "sha256": "80b344482b2439303185a458440d2241aaada699d04fb57b14fa8bbaa5002a54",
+      "byte_count": 22472
+    },
+    {
+      "system": "aeneas",
+      "era": "new",
+      "commit": "0855ce1b8ed3958512b6c19de6bf3035b7acb552",
+      "upstream_path": "src/EmitJson.ml",
+      "saved_path": "source-snapshots/aeneas/new/src/EmitJson.ml",
+      "git_blob_sha1": "38cee5905009220fc919691f29f1a7c5e8aafe56",
+      "sha256": "1584d25df7b90e11e0f63b73bf410f5ade812953eb5bd0d8aa677eaaa4396812",
+      "byte_count": 12235
+    },
+    {
+      "system": "aeneas",
+      "era": "new",
+      "commit": "0855ce1b8ed3958512b6c19de6bf3035b7acb552",
+      "upstream_path": "documentation/emit-json.md",
+      "saved_path": "source-snapshots/aeneas/new/documentation/emit-json.md",
+      "git_blob_sha1": "b5d33300c53dca2f9bb107d7f401980a3475b5a7",
+      "sha256": "f25c2864d933f45e37f5cdcbc0fff7f16d46ddcbe870b5da863da83c54ac2a00",
+      "byte_count": 3278
+    },
+    {
+      "system": "aeneas",
+      "era": "new",
+      "commit": "0855ce1b8ed3958512b6c19de6bf3035b7acb552",
+      "upstream_path": "charon-pin",
+      "saved_path": "source-snapshots/aeneas/new/charon-pin",
+      "git_blob_sha1": "d264cdda0bc0dde25315757f50b7dc1719210c41",
+      "sha256": "64bdf822aa7c91bac2d90c8d99a0179e60bc17889bcd4a7b046e92a02068728b",
+      "byte_count": 154
+    },
+    {
+      "system": "aeneas",
+      "era": "new",
+      "commit": "0855ce1b8ed3958512b6c19de6bf3035b7acb552",
+      "upstream_path": "backends/lean/lean-toolchain",
+      "saved_path": "source-snapshots/aeneas/new/backends/lean/lean-toolchain",
+      "git_blob_sha1": "18640c8b066b182147f324d3aefd8ee48ee45238",
+      "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+      "byte_count": 25
+    },
+    {
+      "system": "charon",
+      "era": "old",
+      "commit": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "upstream_path": "charon/src/ast/meta.rs",
+      "saved_path": "source-snapshots/charon/old/charon/src/ast/meta.rs",
+      "git_blob_sha1": "7a80a92ea1b3f3eaff1758554001e32019473237",
+      "sha256": "ca1d9eb0b8317e33f9b08a909bfc3a992563a6d1929419ff7f767229b2c80065",
+      "byte_count": 9254
+    },
+    {
+      "system": "charon",
+      "era": "old",
+      "commit": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "upstream_path": "charon/rust-toolchain",
+      "saved_path": "source-snapshots/charon/old/charon/rust-toolchain",
+      "git_blob_sha1": "3c98116ae62afb83263fa1654037badaf569e1c1",
+      "sha256": "3dfc34f0ed7e8ec71362953a5998ad785064be2005979e997053d07424e209ce",
+      "byte_count": 315
+    },
+    {
+      "system": "charon",
+      "era": "new",
+      "commit": "e435e5f341863a49a7e85d2fee9988bc0c687c82",
+      "upstream_path": "charon/src/ast/meta.rs",
+      "saved_path": "source-snapshots/charon/new/charon/src/ast/meta.rs",
+      "git_blob_sha1": "a81b6bcc5b8de7e4397c93645541675dd25c7911",
+      "sha256": "53c9f55908a63a1372cfe774eacd8e91078c25234fabfac5c158fe9375ecdfd9",
+      "byte_count": 4536
+    },
+    {
+      "system": "charon",
+      "era": "new",
+      "commit": "e435e5f341863a49a7e85d2fee9988bc0c687c82",
+      "upstream_path": "charon/rust-toolchain",
+      "saved_path": "source-snapshots/charon/new/charon/rust-toolchain",
+      "git_blob_sha1": "e71f64d93e30c15c7ad9644124a493fa240cb9a7",
+      "sha256": "60d242314032dfb524f52d9c31397a64dcf6697cdb20a08c29c004fef4059306",
+      "byte_count": 369
+    },
+    {
+      "system": "charon",
+      "era": "separate-june3",
+      "commit": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+      "upstream_path": "charon/rust-toolchain",
+      "saved_path": "source-snapshots/charon/separate-june3/charon/rust-toolchain",
+      "git_blob_sha1": "3760bb48e9650e0c5d57c27a4ee5d5d358e59a3e",
+      "sha256": "02066349b99efabbc82605c0927aa653d8de726f961287482c280fd2e03549a0",
+      "byte_count": 315
+    }
+  ]
+}
