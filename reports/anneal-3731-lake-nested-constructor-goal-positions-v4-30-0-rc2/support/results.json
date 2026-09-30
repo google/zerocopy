@@ -1,0 +1,5452 @@
+{
+  "preflight": {
+    "disk_free_bytes": 24636727296,
+    "memory_free_percent": 25.74
+  },
+  "resources": {
+    "peak_process_group_rss_kib": 808208,
+    "samples": 27,
+    "elapsed_seconds": 5.79
+  },
+  "tools": {
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "source": {
+    "Dep.lean": "def depValue : Nat := 7\n",
+    "Proof.lean": "import Dep\n\ntheorem nested (h : depValue = 7) : (depValue = 7) ∧ True := by\n  constructor\n  · have hz : depValue = 7 := by\n      exact h\n    exact hz\n  · trivial\n#print axioms nested\n#eval depValue\n",
+    "variants": {
+      "nested": "import Dep\n\ntheorem nested (h : depValue = 7) : (depValue = 7) ∧ True := by\n  constructor\n  · have hz : depValue = 7 := by\n      exact h\n    exact hz\n  · trivial\n#print axioms nested\n#eval depValue\n"
+    },
+    "sha256": {
+      "Dep.lean": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "Proof.lean": "e1d44d975ce6c8c1c5a0ddb29732a59dcf02a50cb97756f1d60d7e013eb3e1a1"
+    }
+  },
+  "artifacts": {
+    "Dep.olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+    "Proof.olean": "c3ab6aea81224fff917d54840f7565b4ea43ff515a0d0a73f5fc4949c206918f"
+  },
+  "build": {
+    "label": "build",
+    "args": [
+      "-v",
+      "build",
+      "Proof"
+    ],
+    "exit": 0,
+    "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran position_probe:extraDep\n✔ [2/5] Ran probe_dep:extraDep\nℹ [3/5] Built Dep (194ms)\ntrace: .> LEAN_PATH=$WORK/dep/.lake/build/lib/lean:$WORK/project/.lake/build/lib/lean $TOOLCHAIN/bin/lean $WORK/dep/Dep.lean -o $WORK/dep/.lake/build/lib/lean/Dep.olean -i $WORK/dep/.lake/build/lib/lean/Dep.ilean -c $WORK/dep/.lake/build/ir/Dep.c --setup $WORK/dep/.lake/build/ir/Dep.setup.json --json\nℹ [4/5] Built Proof (191ms)\ntrace: .> LEAN_PATH=$WORK/dep/.lake/build/lib/lean:$WORK/project/.lake/build/lib/lean $TOOLCHAIN/bin/lean $WORK/project/Proof.lean -o $WORK/project/.lake/build/lib/lean/Proof.olean -i $WORK/project/.lake/build/lib/lean/Proof.ilean -c $WORK/project/.lake/build/ir/Proof.c --setup $WORK/project/.lake/build/ir/Proof.setup.json --json\ninfo: Proof.lean:9:0: 'nested' does not depend on any axioms\ninfo: Proof.lean:10:0: 7\n✔ [5/5] Ran position_probe/Proof:default\nBuild completed successfully (5 jobs).\n",
+    "stderr": ""
+  },
+  "batches": {
+    "nested": {
+      "label": "batch-nested",
+      "args": [
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Batch-nested.lean"
+      ],
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'nested' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":9},\"fileName\":\"Batch-nested.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":9},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":10},\"fileName\":\"Batch-nested.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":10},\"severity\":\"information\"}\n",
+      "stderr": ""
+    }
+  },
+  "setup": {
+    "label": "setup",
+    "args": [
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "exit": 0,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/dep/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Proof\",\"options\":{},\"package\":\"position_probe\",\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  "waits": {
+    "nested": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  "connect": {
+    "id": 12,
+    "jsonrpc": "2.0",
+    "result": {
+      "sessionId": "16269548475898747536"
+    }
+  },
+  "positions": {
+    "before_constructor": [
+      3,
+      2
+    ],
+    "after_constructor": [
+      3,
+      13
+    ],
+    "first_bullet": [
+      4,
+      2
+    ],
+    "have_start": [
+      4,
+      4
+    ],
+    "inner_by": [
+      4,
+      30
+    ],
+    "inner_exact_start": [
+      5,
+      6
+    ],
+    "inner_exact_end": [
+      5,
+      13
+    ],
+    "outer_exact_start": [
+      6,
+      4
+    ],
+    "outer_exact_end": [
+      6,
+      12
+    ],
+    "second_bullet": [
+      7,
+      2
+    ],
+    "trivial_start": [
+      7,
+      4
+    ],
+    "trivial_end": [
+      7,
+      11
+    ],
+    "eof": [
+      10,
+      0
+    ]
+  },
+  "live": {
+    "nested": {
+      "before_constructor": {
+        "position": {
+          "line": 3,
+          "character": 2
+        },
+        "plain": {
+          "id": 13,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "h : depValue = 7\n⊢ depValue = 7 ∧ True"
+            ],
+            "rendered": "```lean\nh : depValue = 7\n⊢ depValue = 7 ∧ True\n```"
+          }
+        },
+        "rich": {
+          "id": 14,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "8"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "0"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "1"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "2"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isInserted": false,
+                "mvarId": "_uniq.56.3",
+                "type": {
+                  "tag": [
+                    {
+                      "diffStatus": "willChange",
+                      "info": {
+                        "p": "3"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "4"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "append": [
+                                {
+                                  "tag": [
+                                    {
+                                      "info": {
+                                        "p": "5"
+                                      },
+                                      "subexprPos": "/0/1/0/1"
+                                    },
+                                    {
+                                      "text": "depValue"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "text": " = "
+                                },
+                                {
+                                  "tag": [
+                                    {
+                                      "info": {
+                                        "p": "6"
+                                      },
+                                      "subexprPos": "/0/1/1"
+                                    },
+                                    {
+                                      "text": "7"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "text": " ∧ "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "7"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "True"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "after_constructor": {
+        "position": {
+          "line": 3,
+          "character": 13
+        },
+        "plain": {
+          "id": 15,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "case left\nh : depValue = 7\n⊢ depValue = 7",
+              "case right\nh : depValue = 7\n⊢ True"
+            ],
+            "rendered": "```lean\ncase left\nh : depValue = 7\n⊢ depValue = 7\n```\n---\n```lean\ncase right\nh : depValue = 7\n⊢ True\n```"
+          }
+        },
+        "rich": {
+          "id": 16,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "15"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "9"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "10"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "11"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isInserted": false,
+                "mvarId": "_uniq.56.10",
+                "type": {
+                  "tag": [
+                    {
+                      "diffStatus": "wasChanged",
+                      "info": {
+                        "p": "12"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "13"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "depValue"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "14"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "userName": "left"
+              },
+              {
+                "ctx": {
+                  "p": "20"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "16"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "17"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "18"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isInserted": false,
+                "mvarId": "_uniq.56.11",
+                "type": {
+                  "tag": [
+                    {
+                      "diffStatus": "wasChanged",
+                      "info": {
+                        "p": "19"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "True"
+                    }
+                  ]
+                },
+                "userName": "right"
+              }
+            ]
+          }
+        }
+      },
+      "first_bullet": {
+        "position": {
+          "line": 4,
+          "character": 2
+        },
+        "plain": {
+          "id": 17,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "case left\nh : depValue = 7\n⊢ depValue = 7",
+              "case right\nh : depValue = 7\n⊢ True"
+            ],
+            "rendered": "```lean\ncase left\nh : depValue = 7\n⊢ depValue = 7\n```\n---\n```lean\ncase right\nh : depValue = 7\n⊢ True\n```"
+          }
+        },
+        "rich": {
+          "id": 18,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "27"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "21"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "22"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "23"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "mvarId": "_uniq.56.10",
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "24"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "25"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "depValue"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "26"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "userName": "left"
+              },
+              {
+                "ctx": {
+                  "p": "32"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "28"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "29"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "30"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isRemoved": true,
+                "mvarId": "_uniq.56.11",
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "31"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "True"
+                    }
+                  ]
+                },
+                "userName": "right"
+              }
+            ]
+          }
+        }
+      },
+      "have_start": {
+        "position": {
+          "line": 4,
+          "character": 4
+        },
+        "plain": {
+          "id": 19,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "case left\nh : depValue = 7\n⊢ depValue = 7"
+            ],
+            "rendered": "```lean\ncase left\nh : depValue = 7\n⊢ depValue = 7\n```"
+          }
+        },
+        "rich": {
+          "id": 20,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "39"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "33"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "34"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "35"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isInserted": false,
+                "mvarId": "_uniq.56.10",
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "36"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "37"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "depValue"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "38"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "userName": "left"
+              }
+            ]
+          }
+        }
+      },
+      "inner_by": {
+        "position": {
+          "line": 4,
+          "character": 30
+        },
+        "plain": {
+          "id": 21,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "h : depValue = 7\n⊢ depValue = 7"
+            ],
+            "rendered": "```lean\nh : depValue = 7\n⊢ depValue = 7\n```"
+          }
+        },
+        "rich": {
+          "id": 22,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "46"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "40"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "41"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "42"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isRemoved": true,
+                "mvarId": "_uniq.56.40",
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "43"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "44"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "depValue"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "45"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "inner_exact_start": {
+        "position": {
+          "line": 5,
+          "character": 6
+        },
+        "plain": {
+          "id": 23,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "h : depValue = 7\n⊢ depValue = 7"
+            ],
+            "rendered": "```lean\nh : depValue = 7\n⊢ depValue = 7\n```"
+          }
+        },
+        "rich": {
+          "id": 24,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "53"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "47"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "48"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "49"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isRemoved": true,
+                "mvarId": "_uniq.56.40",
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "50"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "51"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "depValue"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "52"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "inner_exact_end": {
+        "position": {
+          "line": 5,
+          "character": 13
+        },
+        "plain": {
+          "id": 25,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [],
+            "rendered": "no goals"
+          }
+        },
+        "rich": {
+          "id": 26,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": []
+          }
+        }
+      },
+      "outer_exact_start": {
+        "position": {
+          "line": 6,
+          "character": 4
+        },
+        "plain": {
+          "id": 27,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "case left\nh hz : depValue = 7\n⊢ depValue = 7"
+            ],
+            "rendered": "```lean\ncase left\nh hz : depValue = 7\n⊢ depValue = 7\n```"
+          }
+        },
+        "rich": {
+          "id": 28,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "60"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2",
+                      "_uniq.56.41"
+                    ],
+                    "names": [
+                      "h",
+                      "hz"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "54"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "55"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "56"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isRemoved": true,
+                "mvarId": "_uniq.56.42",
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "57"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "append": [
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "58"
+                              },
+                              "subexprPos": "/0/1"
+                            },
+                            {
+                              "text": "depValue"
+                            }
+                          ]
+                        },
+                        {
+                          "text": " = "
+                        },
+                        {
+                          "tag": [
+                            {
+                              "info": {
+                                "p": "59"
+                              },
+                              "subexprPos": "/1"
+                            },
+                            {
+                              "text": "7"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "userName": "left"
+              }
+            ]
+          }
+        }
+      },
+      "outer_exact_end": {
+        "position": {
+          "line": 6,
+          "character": 12
+        },
+        "plain": {
+          "id": 29,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [],
+            "rendered": "no goals"
+          }
+        },
+        "rich": {
+          "id": 30,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": []
+          }
+        }
+      },
+      "second_bullet": {
+        "position": {
+          "line": 7,
+          "character": 2
+        },
+        "plain": {
+          "id": 31,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "case right\nh : depValue = 7\n⊢ True"
+            ],
+            "rendered": "```lean\ncase right\nh : depValue = 7\n⊢ True\n```"
+          }
+        },
+        "rich": {
+          "id": 32,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "65"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "61"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "62"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "63"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "mvarId": "_uniq.56.11",
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "64"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "True"
+                    }
+                  ]
+                },
+                "userName": "right"
+              }
+            ]
+          }
+        }
+      },
+      "trivial_start": {
+        "position": {
+          "line": 7,
+          "character": 4
+        },
+        "plain": {
+          "id": 33,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "case right\nh : depValue = 7\n⊢ True"
+            ],
+            "rendered": "```lean\ncase right\nh : depValue = 7\n⊢ True\n```"
+          }
+        },
+        "rich": {
+          "id": 34,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              {
+                "ctx": {
+                  "p": "70"
+                },
+                "goalPrefix": "⊢ ",
+                "hyps": [
+                  {
+                    "fvarIds": [
+                      "_uniq.56.2"
+                    ],
+                    "names": [
+                      "h"
+                    ],
+                    "type": {
+                      "tag": [
+                        {
+                          "info": {
+                            "p": "66"
+                          },
+                          "subexprPos": "/"
+                        },
+                        {
+                          "append": [
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "67"
+                                  },
+                                  "subexprPos": "/0/1"
+                                },
+                                {
+                                  "text": "depValue"
+                                }
+                              ]
+                            },
+                            {
+                              "text": " = "
+                            },
+                            {
+                              "tag": [
+                                {
+                                  "info": {
+                                    "p": "68"
+                                  },
+                                  "subexprPos": "/1"
+                                },
+                                {
+                                  "text": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isRemoved": true,
+                "mvarId": "_uniq.56.11",
+                "type": {
+                  "tag": [
+                    {
+                      "info": {
+                        "p": "69"
+                      },
+                      "subexprPos": "/"
+                    },
+                    {
+                      "text": "True"
+                    }
+                  ]
+                },
+                "userName": "right"
+              }
+            ]
+          }
+        }
+      },
+      "trivial_end": {
+        "position": {
+          "line": 7,
+          "character": 11
+        },
+        "plain": {
+          "id": 35,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [],
+            "rendered": "no goals"
+          }
+        },
+        "rich": {
+          "id": 36,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": []
+          }
+        }
+      },
+      "eof": {
+        "position": {
+          "line": 10,
+          "character": 0
+        },
+        "plain": {
+          "id": 37,
+          "jsonrpc": "2.0",
+          "result": null
+        },
+        "rich": {
+          "id": 38,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      }
+    }
+  },
+  "diagnostics": {
+    "nested": [
+      [],
+      [],
+      [],
+      [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 8
+            },
+            "start": {
+              "character": 0,
+              "line": 8
+            }
+          },
+          "message": "'nested' does not depend on any axioms",
+          "range": {
+            "end": {
+              "character": 6,
+              "line": 8
+            },
+            "start": {
+              "character": 0,
+              "line": 8
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ],
+      [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 8
+            },
+            "start": {
+              "character": 0,
+              "line": 8
+            }
+          },
+          "message": "'nested' does not depend on any axioms",
+          "range": {
+            "end": {
+              "character": 6,
+              "line": 8
+            },
+            "start": {
+              "character": 0,
+              "line": 8
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 9
+            },
+            "start": {
+              "character": 0,
+              "line": 9
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 9
+            },
+            "start": {
+              "character": 0,
+              "line": 9
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        }
+      ]
+    ]
+  },
+  "stop": {
+    "exit": 0,
+    "stderr": ""
+  },
+  "events": [
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 86640,
+          "rootUri": "$WORK_URI/project",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Dep\n\ntheorem nested (h : depValue = 7) : (depValue = 7) ∧ True := by\n  constructor\n  · have hz : depValue = 7 := by\n      exact h\n    exact hz\n  · trivial\n#print axioms nested\n#eval depValue\n"
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "$WORK_URI/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "$WORK_URI/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "$WORK_URI/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "result": null
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 13,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 12,
+                  "line": 6
+                },
+                "start": {
+                  "character": 2,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 7
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 13,
+                  "line": 5
+                },
+                "start": {
+                  "character": 4,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 12,
+                  "line": 6
+                },
+                "start": {
+                  "character": 4,
+                  "line": 6
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 7
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 13,
+                  "line": 5
+                },
+                "start": {
+                  "character": 4,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 12,
+                  "line": 6
+                },
+                "start": {
+                  "character": 4,
+                  "line": 6
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 7
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 13,
+                  "line": 5
+                },
+                "start": {
+                  "character": 4,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 12,
+                  "line": 6
+                },
+                "start": {
+                  "character": 4,
+                  "line": 6
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 7
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 12,
+                  "line": 6
+                },
+                "start": {
+                  "character": 4,
+                  "line": 6
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 2,
+                  "line": 7
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 4,
+                  "line": 7
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 7
+                },
+                "start": {
+                  "character": 4,
+                  "line": 7
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 20,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "$WORK_URI/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              },
+              "message": "'nested' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 14,
+                  "line": 9
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 10
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 14,
+                  "line": 9
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 10
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 9
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 10
+                },
+                "start": {
+                  "character": 0,
+                  "line": 10
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              },
+              "message": "'nested' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 8
+                },
+                "start": {
+                  "character": 0,
+                  "line": 8
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 9
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 9
+                },
+                "start": {
+                  "character": 0,
+                  "line": 9
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "$WORK_URI/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "method": "$/lean/rpc/connect",
+        "params": {
+          "uri": "$WORK_URI/project/Proof.lean"
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "sessionId": "16269548475898747536"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 3,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : depValue = 7\n⊢ depValue = 7 ∧ True"
+          ],
+          "rendered": "```lean\nh : depValue = 7\n⊢ depValue = 7 ∧ True\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 3,
+            "character": 2
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 3,
+              "character": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "8"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "1"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "2"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isInserted": false,
+              "mvarId": "_uniq.56.3",
+              "type": {
+                "tag": [
+                  {
+                    "diffStatus": "willChange",
+                    "info": {
+                      "p": "3"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "4"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "5"
+                                    },
+                                    "subexprPos": "/0/1/0/1"
+                                  },
+                                  {
+                                    "text": "depValue"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "6"
+                                    },
+                                    "subexprPos": "/0/1/1"
+                                  },
+                                  {
+                                    "text": "7"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "text": " ∧ "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "7"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "True"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 3,
+            "character": 13
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "case left\nh : depValue = 7\n⊢ depValue = 7",
+            "case right\nh : depValue = 7\n⊢ True"
+          ],
+          "rendered": "```lean\ncase left\nh : depValue = 7\n⊢ depValue = 7\n```\n---\n```lean\ncase right\nh : depValue = 7\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 3,
+            "character": 13
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 3,
+              "character": 13
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "15"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "9"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "10"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "11"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isInserted": false,
+              "mvarId": "_uniq.56.10",
+              "type": {
+                "tag": [
+                  {
+                    "diffStatus": "wasChanged",
+                    "info": {
+                      "p": "12"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "13"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "text": "depValue"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "14"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "userName": "left"
+            },
+            {
+              "ctx": {
+                "p": "20"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "16"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "17"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "18"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isInserted": false,
+              "mvarId": "_uniq.56.11",
+              "type": {
+                "tag": [
+                  {
+                    "diffStatus": "wasChanged",
+                    "info": {
+                      "p": "19"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "text": "True"
+                  }
+                ]
+              },
+              "userName": "right"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 4,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 17,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "case left\nh : depValue = 7\n⊢ depValue = 7",
+            "case right\nh : depValue = 7\n⊢ True"
+          ],
+          "rendered": "```lean\ncase left\nh : depValue = 7\n⊢ depValue = 7\n```\n---\n```lean\ncase right\nh : depValue = 7\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 18,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 4,
+            "character": 2
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 4,
+              "character": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "27"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "21"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "22"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "23"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.56.10",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "24"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "25"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "text": "depValue"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "26"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "userName": "left"
+            },
+            {
+              "ctx": {
+                "p": "32"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "28"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "29"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "30"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isRemoved": true,
+              "mvarId": "_uniq.56.11",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "31"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "text": "True"
+                  }
+                ]
+              },
+              "userName": "right"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 19,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 4,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 19,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "case left\nh : depValue = 7\n⊢ depValue = 7"
+          ],
+          "rendered": "```lean\ncase left\nh : depValue = 7\n⊢ depValue = 7\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 20,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 4,
+            "character": 4
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 4,
+              "character": 4
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 20,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "39"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "33"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "34"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "35"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isInserted": false,
+              "mvarId": "_uniq.56.10",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "36"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "37"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "text": "depValue"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "38"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "userName": "left"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 21,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 4,
+            "character": 30
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 21,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : depValue = 7\n⊢ depValue = 7"
+          ],
+          "rendered": "```lean\nh : depValue = 7\n⊢ depValue = 7\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 22,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 4,
+            "character": 30
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 4,
+              "character": 30
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 22,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "46"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "40"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "41"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "42"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isRemoved": true,
+              "mvarId": "_uniq.56.40",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "43"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "44"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "text": "depValue"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "45"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 23,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 5,
+            "character": 6
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 23,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : depValue = 7\n⊢ depValue = 7"
+          ],
+          "rendered": "```lean\nh : depValue = 7\n⊢ depValue = 7\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 24,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 5,
+            "character": 6
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 5,
+              "character": 6
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 24,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "53"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "47"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "48"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "49"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isRemoved": true,
+              "mvarId": "_uniq.56.40",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "50"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "51"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "text": "depValue"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "52"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 25,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 5,
+            "character": 13
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 25,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 26,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 5,
+            "character": 13
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 5,
+              "character": 13
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 26,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": []
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 27,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 6,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 27,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "case left\nh hz : depValue = 7\n⊢ depValue = 7"
+          ],
+          "rendered": "```lean\ncase left\nh hz : depValue = 7\n⊢ depValue = 7\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 28,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 6,
+            "character": 4
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 6,
+              "character": 4
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 28,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "60"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2",
+                    "_uniq.56.41"
+                  ],
+                  "names": [
+                    "h",
+                    "hz"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "54"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "55"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "56"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isRemoved": true,
+              "mvarId": "_uniq.56.42",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "57"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "58"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "text": "depValue"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "59"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "userName": "left"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 29,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 6,
+            "character": 12
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 29,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 30,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 6,
+            "character": 12
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 6,
+              "character": 12
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 30,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": []
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 31,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 7,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 31,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "case right\nh : depValue = 7\n⊢ True"
+          ],
+          "rendered": "```lean\ncase right\nh : depValue = 7\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 32,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 7,
+            "character": 2
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 7,
+              "character": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 32,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "65"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "61"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "62"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "63"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.56.11",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "64"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "text": "True"
+                  }
+                ]
+              },
+              "userName": "right"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 33,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 7,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 33,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "case right\nh : depValue = 7\n⊢ True"
+          ],
+          "rendered": "```lean\ncase right\nh : depValue = 7\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 34,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 7,
+            "character": 4
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 7,
+              "character": 4
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 34,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "70"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.56.2"
+                  ],
+                  "names": [
+                    "h"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "66"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "67"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "depValue"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "68"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "7"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "isRemoved": true,
+              "mvarId": "_uniq.56.11",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "69"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "text": "True"
+                  }
+                ]
+              },
+              "userName": "right"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 35,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 7,
+            "character": 11
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 35,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 36,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 7,
+            "character": 11
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 7,
+              "character": 11
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 36,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": []
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 37,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 10,
+            "character": 0
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 37,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 38,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "$WORK_URI/project/Proof.lean",
+            "version": 1
+          },
+          "position": {
+            "line": 10,
+            "character": 0
+          },
+          "sessionId": "16269548475898747536",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "$WORK_URI/project/Proof.lean",
+              "version": 1
+            },
+            "position": {
+              "line": 10,
+              "character": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 38,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "$WORK_URI/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    }
+  ]
+}

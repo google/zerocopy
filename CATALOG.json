@@ -2604,6 +2604,47 @@
         "charon/cargo-extraction"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v43": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "reference_revision": "29ea19d9dccef4f046d0b53eed0e8dc20b9c9ae7",
+            "repository": "google/zerocopy",
+            "row_challenge_sha256": "ef8779ed218dbe7f8a77c278e0960ccb2e1ed3d59d6c3b02f732b291cbcc6db4"
+          },
+          "name": "Published v42 coverage ledger"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Public issues 3730 and 3731 as retained in v42"
+        },
+        {
+          "identity": {
+            "probe_sha256": "1ef7547483edd5cf5830a62f1275c7fd356ad8fd50e76d5484a7f235a3f9dc43",
+            "repository": "leanprover/lean4",
+            "results_sha256": "821402691c13066d19146d766eae67666c2ce3c018e208aa5e640d80bbefa881",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "source_report_sha256": "9ecc7b9387bed19d113a99ba576cdf74ec6daa240445522eb03ceab200d6e69f",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Pinned nested Lake tactic-position report"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk",
+        "lake/server-preparation",
+        "lean/tactic-state"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v5": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7535,6 +7576,24 @@
         "anneal/lake-preparation",
         "lake/manifest",
         "lake/resource-gate"
+      ]
+    },
+    "anneal-3731-lake-nested-constructor-goal-positions-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake 4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-proof",
+        "lake/server-preparation",
+        "lean/tactic-state"
       ]
     },
     "anneal-3731-lake-unsaved-macro-error-positions-v4-30-0-rc2": {
