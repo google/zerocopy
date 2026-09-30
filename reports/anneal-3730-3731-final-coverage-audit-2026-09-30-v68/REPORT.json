@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/architecture",
+    "research/coverage-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Published v67 ledger and exact frozen reference parent",
+      "identity": {
+        "reference_parent": "9148ef08a73a546d6b214a48bc92ffbdb2f3e3d0",
+        "v67_published_commit": "36676e26578f0662fed4fac97f291058e61b2574",
+        "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+        "parent_catalog_sha256": "f27284fb36dfa2b6a2e5c75c48c18c9d10ca6199d0e5f0b9799d6d965801eb6c"
+      }
+    },
+    {
+      "name": "Twelve post-v67 report packages and bounded newer-source scope",
+      "identity": {
+        "source_inventory_sha256": "a900f15956edb8598ccae00c54132642abba648f93ae668278eab405c36ef3fa",
+        "source_map_sha256": "e5ab98307a66cec9f2ab95aa5d9c87834b1e04cc4a71f6c22b8d40a4812bafb7",
+        "package_count": "12"
+      }
+    },
+    {
+      "name": "Inherited public #3730/#3731 issue snapshot from v65",
+      "identity": {
+        "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+        "source": "prior published local snapshot; no new issue fetch"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}
