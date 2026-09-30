@@ -1,0 +1,9 @@
+{
+  "topics": ["build-systems/ninja", "reference/version-review", "anneal/architecture"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R494", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "48b8693b47bb3e33ada4fe6fbb437adad40bbb7e"}},
+    {"name": "Ninja pinned and observed master source", "identity": {"repository": "ninja-build/ninja", "branch": "master", "revision": "4e4df1e567eb3c1475a51af261cba2bfff60b4be"}},
+    {"name": "Ninja latest official release v1.13.2 source", "identity": {"repository": "ninja-build/ninja", "tag": "v1.13.2", "revision": "3441b633c2fe2c494e958780ba0f4227b1327634"}}
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,43 @@
+{
+  "observed_at": "2026-09-30",
+  "repository": "ninja-build/ninja",
+  "raw_ls_remote": "4e4df1e567eb3c1475a51af261cba2bfff60b4be\tHEAD\n4e4df1e567eb3c1475a51af261cba2bfff60b4be\trefs/heads/master\n3441b633c2fe2c494e958780ba0f4227b1327634\trefs/tags/v1.13.2\n",
+  "refs": {
+    "HEAD": "4e4df1e567eb3c1475a51af261cba2bfff60b4be",
+    "refs/heads/master": "4e4df1e567eb3c1475a51af261cba2bfff60b4be",
+    "refs/tags/v1.13.2": "3441b633c2fe2c494e958780ba0f4227b1327634"
+  },
+  "official_default_branch": "master",
+  "old_pinned_commit": "4e4df1e567eb3c1475a51af261cba2bfff60b4be",
+  "default_branch_commit": "4e4df1e567eb3c1475a51af261cba2bfff60b4be",
+  "commit_parent_ids": [
+    "c8b233e8053c03d2fd57389035b47d36e98e69a8",
+    "8a1b0c95d887243a1018a5a845c68d4cce1901bf"
+  ],
+  "commit_tree_id": "21aeebaada341bc0ac7f3d6663463a10daf47b31",
+  "commit_committer_date": "2026-09-24T21:02:35Z",
+  "forward_commit_count": 0,
+  "changed_paths": [],
+  "latest_official_release": {
+    "tag": "v1.13.2",
+    "tag_commit": "3441b633c2fe2c494e958780ba0f4227b1327634",
+    "published_at": "2025-11-20T16:51:20Z",
+    "tag_object_type": "commit",
+    "source_relation_to_pin": {
+      "status": "diverged",
+      "ahead_by": 196,
+      "behind_by": 60,
+      "total_commits": 196
+    },
+    "manual_blob_sha": "a9b97ee92b67d5d3a246d2e06e94bf44ff70b0c5",
+    "tag_ref_object_sha": "3441b633c2fe2c494e958780ba0f4227b1327634"
+  },
+  "claim_source": {
+    "path": "doc/manual.asciidoc",
+    "old_evidence_map_identity": "ninja-build/ninja@4e4df1e567eb3c1475a51af261cba2bfff60b4be doc/manual.asciidoc blob 81ecf7d388f899a1481df9f25ec1065710de679d",
+    "current_blob_sha": "81ecf7d388f899a1481df9f25ec1065710de679d",
+    "current_type": "file",
+    "current_size": 56568,
+    "commit_pinned_url": "https://github.com/ninja-build/ninja/blob/4e4df1e567eb3c1475a51af261cba2bfff60b4be/doc/manual.asciidoc"
+  }
+}

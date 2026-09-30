@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "48b8693b47bb3e33ada4fe6fbb437adad40bbb7e",
+  "baseline_count": 581,
+  "current_count": 596,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.md",
+      "json_sha256": "21a96ce39b4681d3e6b6e426f51bf2eacf9aa434d142b128654be618abdeb086",
+      "md_sha256": "94a758764628ac63b8da6cddb01e8b68806d0f095b734fd69929da2f87a2c342"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f"
+    },
+    {
+      "report_json": "reports/fstar-20260927-current-source-review/REPORT.json",
+      "report_md": "reports/fstar-20260927-current-source-review/REPORT.md",
+      "json_sha256": "a462a846213aa9d5b7da25e91c90aa335dc994b4b7af0c03995bb7a7f4a7f4d8",
+      "md_sha256": "80e3114611101e2208d28a898945b73a5920135ac1e8505cac1d4deb3aceef62"
+    },
+    {
+      "report_json": "reports/haskell-hls-hie-bios-current-source-review/REPORT.json",
+      "report_md": "reports/haskell-hls-hie-bios-current-source-review/REPORT.md",
+      "json_sha256": "35a6762ee7dec7ccc16fd9b7dca9c01fa2047889b62dc35441d2ef497942f33f",
+      "md_sha256": "96c3036954c1c8fad677c4096b1fd177496eb369d9ac83f51fc1787204d5e325"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188"
+    },
+    {
+      "report_json": "reports/netstack3-current-source-review/REPORT.json",
+      "report_md": "reports/netstack3-current-source-review/REPORT.md",
+      "json_sha256": "52b2e22a22dfa151525046827ee20f9ad0ce133970815c4df86e91c840c4d8d1",
+      "md_sha256": "9cc1252705b231bc31bc7437a88a7e018781581af49e5d8584eeeabbc669ee1e"
+    },
+    {
+      "report_json": "reports/nix-guix-2352-source-review/REPORT.json",
+      "report_md": "reports/nix-guix-2352-source-review/REPORT.md",
+      "json_sha256": "991f95e73e14d678c49f6f21a45856f9b6987aa47d57b983f65fafb907708e4d",
+      "md_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b"
+    },
+    {
+      "report_json": "reports/roslyn-current-source-review/REPORT.json",
+      "report_md": "reports/roslyn-current-source-review/REPORT.md",
+      "json_sha256": "fab1d4cf7cc79374da45d79ff0fe0b406fc4a60bf82ae49cf1d010a867b96f3d",
+      "md_sha256": "2dc8c283c7c1ecaf13a13c507896110c63e81dffc6a21d93bc2942a79ecd2564"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68"
+    },
+    {
+      "report_json": "reports/typescript-602-to-702-source-review/REPORT.json",
+      "report_md": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "json_sha256": "44532136e82a83946ba595de4d30103c41bb3d1c2e532236417507a5c80143a7",
+      "md_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785"
+    }
+  ],
+  "inventory_id": "R494",
+  "cohort": "Ninja source 4e4df1e567eb3c1475a51af261cba2bfff60b4be",
+  "title": "Make and Ninja: narrow execution, displaced policy, and the boundary around a verifier",
+  "report_json": "reports/make-ninja-narrow-build-tool-boundaries-1979-2026/REPORT.json",
+  "report_md": "reports/make-ninja-narrow-build-tool-boundaries-1979-2026/REPORT.md",
+  "evidence_map_path": "reports/make-ninja-narrow-build-tool-boundaries-1979-2026/evidence-map.json",
+  "frozen_json_sha256": "bcd4f10df91d9d54e67cd32cc92a2e46c3729446ec2f01e4a4c587c7d7e7277c",
+  "frozen_md_sha256": "21d1a9b9f828ad2ddd9f1b4f31e089a9ef0e9821ef444ffc83ba92a786a195f2",
+  "frozen_evidence_map_sha256": "cdef7ca082dc3e3a624752085ee94c14e788a5ed6adda76b1bd9957aadb7ef47",
+  "frozen_subjects_exact": [
+    {
+      "name": "Make — a program for maintaining computer programs",
+      "identity": {
+        "doi": "10.1002/spe.4380090402",
+        "publication": "Software: Practice and Experience 9(4):255-265",
+        "year": "1979"
+      }
+    },
+    {
+      "name": "GNU Make 4.4.1 manual and release",
+      "identity": {
+        "release": "4.4.1",
+        "release-date": "2023-02-26",
+        "release-tarball-md5": "c8469a3713cbbe04d955d4ae4be23eeb"
+      }
+    },
+    {
+      "name": "Ninja build system",
+      "identity": {
+        "repository": "ninja-build/ninja",
+        "revision": "4e4df1e567eb3c1475a51af261cba2bfff60b4be"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    }
+  ],
+  "claim_locator": {
+    "heading": "## Summary",
+    "line": 5
+  },
+  "inventory_claim_excerpt_exact_or_normalized": "Make and Ninja support the same broad architectural lesson for Anneal only at a high level: a small execution engine can be valuable when it receives an explicit dependency plan and leaves domain policy elsewhere. They reach that point by different routes, and flattening them into one \"small build tool\" pattern would hide the useful distinction.",
+  "full_summary_exact": "Make and Ninja support the same broad architectural lesson for Anneal only at a high level: a small execution engine can be valuable when it receives an explicit dependency plan and leaves domain policy elsewhere. They reach that point by different routes, and flattening them into one \"small build tool\" pattern would hide the useful distinction.\n\nThe original Make model is a dependency graph plus recipes. Make decides *when* a target needs work and invokes a user-supplied recipe; it does not understand what that recipe means. GNU Make later accumulated a substantial human-authored language—variables, functions, implicit rules, includes, recursion, shell expansion, and many compatibility features—so its narrowness is semantic rather than syntactic. The engine remains largely ignorant of the commands' domain semantics, but configuration, graph construction, policy, and execution can all be interleaved in one Makefile language.\n\nNinja made a more radical split. Its documented design deliberately removes most policy and build-time decision making from the executor. A generator such as GN or CMake computes a concrete build graph; Ninja consumes that graph quickly. That split was motivated by Chromium's edit-build latency after generated non-recursive Makefiles still took about ten seconds before compilation began. The important historical qualification is that Ninja did not stay a featureless timestamp walker. It added executor-level mechanisms when correctness or resource control required them: command-line change tracking, compiler-discovered dependencies, dependency logs, `restat`, pools, dynamic dependencies, validations, and later GNU jobserver participation. The stable dividing line is therefore not \"all decisions outside the executor.\" It is closer to \"project policy outside; execution facts that determine correctness, freshness, or safe scheduling inside or through a narrow protocol.\"\n\nFor Anneal, the defensible conditional judgment is similar. A stable batch verification command can remain the authoritative checked boundary while a richer host or daemon owns discovery, watching, project configuration, interactive feedback, and plan construction. But a narrow verifier may not delegate away the meaning of verification success. Exact source/model/environment/tool identity, trusted assumptions, unsupported behavior, the evidence required for the claimed promise, and the authority to publish a result must either be checked at the narrow boundary or explicitly enter the result's trust basis. An all-in-one daemon is justified when persistent state materially improves interactive latency or enables useful incremental work that a batch path cannot provide economically; even then, a reproducible plan/result boundary is valuable for revalidation and publication.\n\nThis is a derived architecture judgment, not adopted Anneal policy. The source histories show mechanisms and tradeoffs; they do not demonstrate that a Make-like, Ninja-like, or daemon-centered split is universally optimal.",
+  "clauses": [
+    {
+      "number": 1,
+      "exact_excerpt": "Make and Ninja support the same broad architectural lesson for Anneal only at a high level: a small execution engine can be valuable when it receives an explicit dependency plan and leaves domain policy elsewhere. They reach that point by different routes, and flattening them into one \"small build tool\" pattern would hide the useful distinction.",
+      "evidence_map_ids": [
+        "ninja-current-manual",
+        "gnu-make-4.4.1-manual"
+      ],
+      "ninja_source_result": "pinned_master_commit_unchanged_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 2,
+      "exact_excerpt": "The original Make model is a dependency graph plus recipes. Make decides *when* a target needs work and invokes a user-supplied recipe; it does not understand what that recipe means. GNU Make later accumulated a substantial human-authored language—variables, functions, implicit rules, includes, recursion, shell expansion, and many compatibility features—so its narrowness is semantic rather than syntactic. The engine remains largely ignorant of the commands' domain semantics, but configuration, graph construction, policy, and execution can all be interleaved in one Makefile language.",
+      "evidence_map_ids": [
+        "feldman-1979",
+        "gnu-make-4.4.1-manual"
+      ],
+      "ninja_source_result": "pinned_master_commit_unchanged_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 3,
+      "exact_excerpt": "Ninja made a more radical split. Its documented design deliberately removes most policy and build-time decision making from the executor. A generator such as GN or CMake computes a concrete build graph; Ninja consumes that graph quickly. That split was motivated by Chromium's edit-build latency after generated non-recursive Makefiles still took about ten seconds before compilation began. The important historical qualification is that Ninja did not stay a featureless timestamp walker. It added executor-level mechanisms when correctness or resource control required them: command-line change tracking, compiler-discovered dependencies, dependency logs, `restat`, pools, dynamic dependencies, validations, and later GNU jobserver participation. The stable dividing line is therefore not \"all decisions outside the executor.\" It is closer to \"project policy outside; execution facts that determine correctness, freshness, or safe scheduling inside or through a narrow protocol.\"",
+      "evidence_map_ids": [
+        "ninja-current-manual",
+        "martin-ninja-2011"
+      ],
+      "ninja_source_result": "pinned_master_commit_unchanged_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 4,
+      "exact_excerpt": "For Anneal, the defensible conditional judgment is similar. A stable batch verification command can remain the authoritative checked boundary while a richer host or daemon owns discovery, watching, project configuration, interactive feedback, and plan construction. But a narrow verifier may not delegate away the meaning of verification success. Exact source/model/environment/tool identity, trusted assumptions, unsupported behavior, the evidence required for the claimed promise, and the authority to publish a result must either be checked at the narrow boundary or explicitly enter the result's trust basis. An all-in-one daemon is justified when persistent state materially improves interactive latency or enables useful incremental work that a batch path cannot provide economically; even then, a reproducible plan/result boundary is valuable for revalidation and publication.",
+      "evidence_map_ids": [
+        "ninja-current-manual",
+        "anneal-principles-design"
+      ],
+      "ninja_source_result": "pinned_master_commit_unchanged_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 5,
+      "exact_excerpt": "This is a derived architecture judgment, not adopted Anneal policy. The source histories show mechanisms and tradeoffs; they do not demonstrate that a Make-like, Ninja-like, or daemon-centered split is universally optimal.",
+      "evidence_map_ids": [
+        "ninja-current-manual",
+        "anneal-principles-design"
+      ],
+      "ninja_source_result": "pinned_master_commit_unchanged_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    }
+  ],
+  "ninja_old_and_current_master_commit": "4e4df1e567eb3c1475a51af261cba2bfff60b4be",
+  "official_observation_sha256": "35f1f20d23a2b3c525e5c01be23b63734c51f54e216ef99e273870e3699ac441",
+  "source_result": "master_same_pinned_commit_no_forward_source_comparison_latest_release_diverged",
+  "current_runtime_result": "unexecuted_in_this_review",
+  "anneal_product_result": "unassessed",
+  "raw_source_snapshot_sha256": null
+}

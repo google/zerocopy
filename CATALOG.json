@@ -15880,6 +15880,40 @@
         "anneal/architecture"
       ]
     },
+    "ninja-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "48b8693b47bb3e33ada4fe6fbb437adad40bbb7e"
+          },
+          "name": "Frozen reference corpus containing R494"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "ninja-build/ninja",
+            "revision": "4e4df1e567eb3c1475a51af261cba2bfff60b4be"
+          },
+          "name": "Ninja pinned and observed master source"
+        },
+        {
+          "identity": {
+            "repository": "ninja-build/ninja",
+            "revision": "3441b633c2fe2c494e958780ba0f4227b1327634",
+            "tag": "v1.13.2"
+          },
+          "name": "Ninja latest official release v1.13.2 source"
+        }
+      ],
+      "topics": [
+        "build-systems/ninja",
+        "reference/version-review",
+        "anneal/architecture"
+      ]
+    },
     "nix-guix-2352-source-review": {
       "observed_at": "2026-09-30",
       "subjects": [
