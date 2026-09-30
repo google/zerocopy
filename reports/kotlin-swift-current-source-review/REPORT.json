@@ -1,0 +1,12 @@
+{
+  "topics": ["kotlin/fir", "kotlin/analysis-api", "swift/sourcekit", "swift/sourcekit-lsp", "reference/version-review", "anneal/interactive"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R410", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "0acbffd307e1d4288d784055f9883dd9fa5fd3b9"}},
+    {"name": "Kotlin FIR and Analysis API original source", "identity": {"repository": "JetBrains/kotlin", "revision": "bce49f3701fb8dc461fb98240fdc7c3c81c592f2"}},
+    {"name": "Kotlin selected master source", "identity": {"repository": "JetBrains/kotlin", "branch": "master", "revision": "79b33f2836ef88425c100924bb8d29bcdf52bf48"}},
+    {"name": "Swift SourceKit-LSP pinned and observed main", "identity": {"repository": "swiftlang/sourcekit-lsp", "branch": "main", "revision": "045c18e9e9ea35b896857b6cb982aa2373fb5816"}},
+    {"name": "Swift compiler SourceKit original source", "identity": {"repository": "swiftlang/swift", "revision": "f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d"}},
+    {"name": "Swift compiler selected main source", "identity": {"repository": "swiftlang/swift", "branch": "main", "revision": "0fcad6fb60755587d39a758761b219bf433cf9dc"}}
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -13441,6 +13441,65 @@
         "anneal/interactive"
       ]
     },
+    "kotlin-swift-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "0acbffd307e1d4288d784055f9883dd9fa5fd3b9"
+          },
+          "name": "Frozen reference corpus containing R410"
+        },
+        {
+          "identity": {
+            "repository": "JetBrains/kotlin",
+            "revision": "bce49f3701fb8dc461fb98240fdc7c3c81c592f2"
+          },
+          "name": "Kotlin FIR and Analysis API original source"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "JetBrains/kotlin",
+            "revision": "79b33f2836ef88425c100924bb8d29bcdf52bf48"
+          },
+          "name": "Kotlin selected master source"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "swiftlang/sourcekit-lsp",
+            "revision": "045c18e9e9ea35b896857b6cb982aa2373fb5816"
+          },
+          "name": "Swift SourceKit-LSP pinned and observed main"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d"
+          },
+          "name": "Swift compiler SourceKit original source"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "swiftlang/swift",
+            "revision": "0fcad6fb60755587d39a758761b219bf433cf9dc"
+          },
+          "name": "Swift compiler selected main source"
+        }
+      ],
+      "topics": [
+        "kotlin/fir",
+        "kotlin/analysis-api",
+        "swift/sourcekit",
+        "swift/sourcekit-lsp",
+        "reference/version-review",
+        "anneal/interactive"
+      ]
+    },
     "lake-artifact-cache-architecture-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [

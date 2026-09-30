@@ -1,0 +1,2 @@
+inventory_id,cohort,report_json,report_md
+R410,Kotlin FIR bce49f37 + Swift SourceKit-LSP 045c18e9 / compiler f63674ca,reports/kotlin-swift-compiler-backed-ide-boundaries-2021-2026/REPORT.json,reports/kotlin-swift-compiler-backed-ide-boundaries-2021-2026/REPORT.md

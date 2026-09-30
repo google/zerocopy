@@ -1,0 +1,1500 @@
+{
+  "observed_at": "2026-09-30",
+  "repositories": [
+    {
+      "repository": "JetBrains/kotlin",
+      "old_commit": "bce49f3701fb8dc461fb98240fdc7c3c81c592f2",
+      "selected_current_commit": "79b33f2836ef88425c100924bb8d29bcdf52bf48",
+      "branch": "master",
+      "raw_ls_remote": "79b33f2836ef88425c100924bb8d29bcdf52bf48\tHEAD\n79b33f2836ef88425c100924bb8d29bcdf52bf48\trefs/heads/master\n",
+      "refs": {
+        "HEAD": "79b33f2836ef88425c100924bb8d29bcdf52bf48",
+        "refs/heads/master": "79b33f2836ef88425c100924bb8d29bcdf52bf48"
+      },
+      "compare": {
+        "status": "ahead",
+        "ahead_by": 106,
+        "behind_by": 0,
+        "total_commits": 106,
+        "returned_file_count": 300,
+        "file_list_complete": false,
+        "changed_files": null
+      },
+      "mapped_files": [
+        {
+          "path": "analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/projectStructure/KaModule.kt",
+          "old": {
+            "git_blob_sha1": "7a1767a01daf49bee2658dabe3cd2c1416f453f1",
+            "content_sha256": "5ca6a6a5261e69d653ba173ea914e3d5959ead5f8186306683d2cb516114ae7a",
+            "size": 21281,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/bce49f3701fb8dc461fb98240fdc7c3c81c592f2/analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/projectStructure/KaModule.kt"
+          },
+          "new": {
+            "git_blob_sha1": "7a1767a01daf49bee2658dabe3cd2c1416f453f1",
+            "content_sha256": "5ca6a6a5261e69d653ba173ea914e3d5959ead5f8186306683d2cb516114ae7a",
+            "size": 21281,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/79b33f2836ef88425c100924bb8d29bcdf52bf48/analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/projectStructure/KaModule.kt"
+          },
+          "claim_indices": [
+            1
+          ]
+        },
+        {
+          "path": "analysis/analysis-api-fir/src/org/jetbrains/kotlin/analysis/api/fir/KaFirSessionProvider.kt",
+          "old": {
+            "git_blob_sha1": "ae75a47df5658adee7efbee37e3dd2c7ed00ae52",
+            "content_sha256": "abe705f6f4310faa289a0ef8cc2f547827986ec67edabfc216821b9d3a8028c6",
+            "size": 14690,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/bce49f3701fb8dc461fb98240fdc7c3c81c592f2/analysis/analysis-api-fir/src/org/jetbrains/kotlin/analysis/api/fir/KaFirSessionProvider.kt"
+          },
+          "new": {
+            "git_blob_sha1": "ae75a47df5658adee7efbee37e3dd2c7ed00ae52",
+            "content_sha256": "abe705f6f4310faa289a0ef8cc2f547827986ec67edabfc216821b9d3a8028c6",
+            "size": 14690,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/79b33f2836ef88425c100924bb8d29bcdf52bf48/analysis/analysis-api-fir/src/org/jetbrains/kotlin/analysis/api/fir/KaFirSessionProvider.kt"
+          },
+          "claim_indices": [
+            2
+          ]
+        },
+        {
+          "path": "compiler/fir/checkers/module.md",
+          "old": {
+            "git_blob_sha1": "140e92c591ffef50f5473fda3bc6d9572605db59",
+            "content_sha256": "a5252da55b8849d4c7aabcad06592121b2dc41f17a6a38ceacf3c770a9b867a1",
+            "size": 16634,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/bce49f3701fb8dc461fb98240fdc7c3c81c592f2/compiler/fir/checkers/module.md"
+          },
+          "new": {
+            "git_blob_sha1": "140e92c591ffef50f5473fda3bc6d9572605db59",
+            "content_sha256": "a5252da55b8849d4c7aabcad06592121b2dc41f17a6a38ceacf3c770a9b867a1",
+            "size": 16634,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/79b33f2836ef88425c100924bb8d29bcdf52bf48/compiler/fir/checkers/module.md"
+          },
+          "claim_indices": [
+            2
+          ]
+        },
+        {
+          "path": "analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/KaSession.kt",
+          "old": {
+            "git_blob_sha1": "c38c37e34bbe98f56471d3edd5604a8fe6703786",
+            "content_sha256": "c17cf60ae15710656760fe3e44c48eb5c0ed6f8ba5e0123fd3b4ad9770693771",
+            "size": 10664,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/bce49f3701fb8dc461fb98240fdc7c3c81c592f2/analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/KaSession.kt"
+          },
+          "new": {
+            "git_blob_sha1": "c38c37e34bbe98f56471d3edd5604a8fe6703786",
+            "content_sha256": "c17cf60ae15710656760fe3e44c48eb5c0ed6f8ba5e0123fd3b4ad9770693771",
+            "size": 10664,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/79b33f2836ef88425c100924bb8d29bcdf52bf48/analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/KaSession.kt"
+          },
+          "claim_indices": [
+            2
+          ]
+        },
+        {
+          "path": "analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/resolve/extensions/KaResolveExtension.kt",
+          "old": {
+            "git_blob_sha1": "127745dceaf54e7444081601509e9842eabc3a1f",
+            "content_sha256": "6831d6052495ce697fc9b90154ffa48c57a87d8bd4ab136911c6b218e115669c",
+            "size": 5380,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/bce49f3701fb8dc461fb98240fdc7c3c81c592f2/analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/resolve/extensions/KaResolveExtension.kt"
+          },
+          "new": {
+            "git_blob_sha1": "127745dceaf54e7444081601509e9842eabc3a1f",
+            "content_sha256": "6831d6052495ce697fc9b90154ffa48c57a87d8bd4ab136911c6b218e115669c",
+            "size": 5380,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/79b33f2836ef88425c100924bb8d29bcdf52bf48/analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/resolve/extensions/KaResolveExtension.kt"
+          },
+          "claim_indices": [
+            3
+          ]
+        },
+        {
+          "path": "analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/symbols/KaSymbol.kt",
+          "old": {
+            "git_blob_sha1": "d3b195c8054791fc972501a951fea87bdb979493",
+            "content_sha256": "d18350ecc0b570b36056c325473db08a3465c60a9e5ea1bfc9dd034a15119432",
+            "size": 12658,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/bce49f3701fb8dc461fb98240fdc7c3c81c592f2/analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/symbols/KaSymbol.kt"
+          },
+          "new": {
+            "git_blob_sha1": "d3b195c8054791fc972501a951fea87bdb979493",
+            "content_sha256": "d18350ecc0b570b36056c325473db08a3465c60a9e5ea1bfc9dd034a15119432",
+            "size": 12658,
+            "url": "https://raw.githubusercontent.com/JetBrains/kotlin/79b33f2836ef88425c100924bb8d29bcdf52bf48/analysis/analysis-api/src/org/jetbrains/kotlin/analysis/api/symbols/KaSymbol.kt"
+          },
+          "claim_indices": [
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "swiftlang/sourcekit-lsp",
+      "old_commit": "045c18e9e9ea35b896857b6cb982aa2373fb5816",
+      "selected_current_commit": "045c18e9e9ea35b896857b6cb982aa2373fb5816",
+      "branch": "main",
+      "raw_ls_remote": "045c18e9e9ea35b896857b6cb982aa2373fb5816\tHEAD\n045c18e9e9ea35b896857b6cb982aa2373fb5816\trefs/heads/main\n",
+      "refs": {
+        "HEAD": "045c18e9e9ea35b896857b6cb982aa2373fb5816",
+        "refs/heads/main": "045c18e9e9ea35b896857b6cb982aa2373fb5816"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "returned_file_count": 0,
+        "file_list_complete": true,
+        "changed_files": []
+      },
+      "mapped_files": [
+        {
+          "path": "Contributor Documentation/Implementing a BSP server.md",
+          "old": {
+            "git_blob_sha1": "ed0b0982726391abfd3b783bd6e7244d0b72d1a0",
+            "content_sha256": "7031399fd1e3b6e4a744db560e5d2a1d8bd79d7ffef95b79d998e8cb32245954",
+            "size": 3399,
+            "url": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/045c18e9e9ea35b896857b6cb982aa2373fb5816/Contributor%20Documentation/Implementing%20a%20BSP%20server.md"
+          },
+          "new": {
+            "git_blob_sha1": "ed0b0982726391abfd3b783bd6e7244d0b72d1a0",
+            "content_sha256": "7031399fd1e3b6e4a744db560e5d2a1d8bd79d7ffef95b79d998e8cb32245954",
+            "size": 3399,
+            "url": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/045c18e9e9ea35b896857b6cb982aa2373fb5816/Contributor%20Documentation/Implementing%20a%20BSP%20server.md"
+          },
+          "claim_indices": [
+            4
+          ]
+        },
+        {
+          "path": "README.md",
+          "old": {
+            "git_blob_sha1": "0185d7ba399916796618ea92ee7863e331155a74",
+            "content_sha256": "17cbd208a77a43f29f5a6f869a7007506fdc100e935e5cff488b38d2b922a440",
+            "size": 2351,
+            "url": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/045c18e9e9ea35b896857b6cb982aa2373fb5816/README.md"
+          },
+          "new": {
+            "git_blob_sha1": "0185d7ba399916796618ea92ee7863e331155a74",
+            "content_sha256": "17cbd208a77a43f29f5a6f869a7007506fdc100e935e5cff488b38d2b922a440",
+            "size": 2351,
+            "url": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/045c18e9e9ea35b896857b6cb982aa2373fb5816/README.md"
+          },
+          "claim_indices": [
+            4
+          ]
+        },
+        {
+          "path": "Documentation/Configuration File.md",
+          "old": {
+            "git_blob_sha1": "dcd686fc145afdf11acff65a272ddb4f11c1706d",
+            "content_sha256": "f321a7161985647b16c0ca334d8b4357a51c8602c247825c8bbddb5093a48173",
+            "size": 9333,
+            "url": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/045c18e9e9ea35b896857b6cb982aa2373fb5816/Documentation/Configuration%20File.md"
+          },
+          "new": {
+            "git_blob_sha1": "dcd686fc145afdf11acff65a272ddb4f11c1706d",
+            "content_sha256": "f321a7161985647b16c0ca334d8b4357a51c8602c247825c8bbddb5093a48173",
+            "size": 9333,
+            "url": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/045c18e9e9ea35b896857b6cb982aa2373fb5816/Documentation/Configuration%20File.md"
+          },
+          "claim_indices": [
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "swiftlang/swift",
+      "old_commit": "f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d",
+      "selected_current_commit": "0fcad6fb60755587d39a758761b219bf433cf9dc",
+      "branch": "main",
+      "raw_ls_remote": "0fcad6fb60755587d39a758761b219bf433cf9dc\tHEAD\n0fcad6fb60755587d39a758761b219bf433cf9dc\trefs/heads/main\n",
+      "refs": {
+        "HEAD": "0fcad6fb60755587d39a758761b219bf433cf9dc",
+        "refs/heads/main": "0fcad6fb60755587d39a758761b219bf433cf9dc"
+      },
+      "compare": {
+        "status": "ahead",
+        "ahead_by": 36,
+        "behind_by": 0,
+        "total_commits": 36,
+        "returned_file_count": 246,
+        "file_list_complete": true,
+        "changed_files": [
+          {
+            "path": "CMakeLists.txt",
+            "status": "modified",
+            "blob_sha": "b6ce3287d0e83efa910105a792238ac4f0962dcb"
+          },
+          {
+            "path": "Runtimes/Supplemental/StringProcessing/_StringProcessing/CMakeLists.txt",
+            "status": "modified",
+            "blob_sha": "56914d90bdbe9539b81336e100326455e973260c"
+          },
+          {
+            "path": "SwiftCompilerSources/CMakeLists.txt",
+            "status": "modified",
+            "blob_sha": "0b444cf4d8e48c93151cc55235684b52d68f2397"
+          },
+          {
+            "path": "SwiftCompilerSources/Sources/Optimizer/Utilities/LifetimeDependenceUtils.swift",
+            "status": "modified",
+            "blob_sha": "4c0c55740c4464f533dc6dab25e1ea928e422c6e"
+          },
+          {
+            "path": "SwiftCompilerSources/Sources/SIL/ApplySite.swift",
+            "status": "modified",
+            "blob_sha": "ffebf8d8d081d2d209ae1ac6ba8828bace19f437"
+          },
+          {
+            "path": "SwiftCompilerSources/Sources/SIL/FunctionConvention.swift",
+            "status": "modified",
+            "blob_sha": "1603e687bb6a0984d71e0dad01ae50671d3cc2a8"
+          },
+          {
+            "path": "cmake/modules/AddPureSwift.cmake",
+            "status": "modified",
+            "blob_sha": "b87a99bc8f5c27e4bb9263cea350415787440ad8"
+          },
+          {
+            "path": "include/swift/ABI/MetadataValues.h",
+            "status": "modified",
+            "blob_sha": "c61b8832ce96da539666b6a68b5a8f277227f6ca"
+          },
+          {
+            "path": "include/swift/AST/ASTContext.h",
+            "status": "modified",
+            "blob_sha": "ce7e89c42dce91a915ae6bfc47e1435356795531"
+          },
+          {
+            "path": "include/swift/AST/ASTNode.h",
+            "status": "modified",
+            "blob_sha": "932d89162de3091bae19fb6e303de9d810e57249"
+          },
+          {
+            "path": "include/swift/AST/AnyFunctionRef.h",
+            "status": "modified",
+            "blob_sha": "81ee3168f15f74e1fe95da223d0877c98749becc"
+          },
+          {
+            "path": "include/swift/AST/AutoDiff.h",
+            "status": "modified",
+            "blob_sha": "5b023df9dc5a1e8ca6161def4257e75fc0669b13"
+          },
+          {
+            "path": "include/swift/AST/AvailabilityDomain.h",
+            "status": "modified",
+            "blob_sha": "e6218b1f9dc4292a10c2486acc9335815aad7fee"
+          },
+          {
+            "path": "include/swift/AST/DependencyCollector.h",
+            "status": "modified",
+            "blob_sha": "4149dd312cdf16e01f4e3312f822531437ff95a9"
+          },
+          {
+            "path": "include/swift/AST/DiagnosticsSema.def",
+            "status": "modified",
+            "blob_sha": "309c37a6a512abf1d4f1afd874720e3bc5abad6b"
+          },
+          {
+            "path": "include/swift/AST/GenericSignature.h",
+            "status": "modified",
+            "blob_sha": "375c957eb6a8aff70e9e5da6d91561263d0ca849"
+          },
+          {
+            "path": "include/swift/AST/Identifier.h",
+            "status": "modified",
+            "blob_sha": "5de8cc04f42b4d7fc58af2af7fdbdd554f7c146a"
+          },
+          {
+            "path": "include/swift/AST/Import.h",
+            "status": "modified",
+            "blob_sha": "68b2887a55ce680aa3a44a15e4f89755199243e8"
+          },
+          {
+            "path": "include/swift/AST/KnownProtocols.h",
+            "status": "modified",
+            "blob_sha": "59cf66836e1a52fe4b5e15ee60ec0d117f840eca"
+          },
+          {
+            "path": "include/swift/AST/LayoutConstraint.h",
+            "status": "modified",
+            "blob_sha": "d4056665419fab2089c7f1741591cc3739428575"
+          },
+          {
+            "path": "include/swift/AST/ModuleLoader.h",
+            "status": "modified",
+            "blob_sha": "c6c5d1bccbd946759ae1778e4ce2dcc102029802"
+          },
+          {
+            "path": "include/swift/AST/ProtocolAssociations.h",
+            "status": "modified",
+            "blob_sha": "6bdb0444dbab70ff1c7795d01e3dd45220c7c901"
+          },
+          {
+            "path": "include/swift/AST/SourceFile.h",
+            "status": "modified",
+            "blob_sha": "873c832cad1e53988b5d1c599c2f3823f7314ac2"
+          },
+          {
+            "path": "include/swift/AST/SubstitutionMap.h",
+            "status": "modified",
+            "blob_sha": "ad3ecf685f42ed1939c8151c9d6c9ea6eb5322d2"
+          },
+          {
+            "path": "include/swift/AST/Type.h",
+            "status": "modified",
+            "blob_sha": "dd63e5a45623004dcb17426db61f40d351a4f499"
+          },
+          {
+            "path": "include/swift/AST/TypeExpansionContext.h",
+            "status": "modified",
+            "blob_sha": "2a847d955c7a145e96785d77ae601122adea7407"
+          },
+          {
+            "path": "include/swift/AST/Types.h",
+            "status": "modified",
+            "blob_sha": "0aa3b0ce88609a951e2f2ad2951081adecfe96bb"
+          },
+          {
+            "path": "include/swift/Basic/Located.h",
+            "status": "modified",
+            "blob_sha": "8a98e4b17e00de297f9f66ede846dec028399772"
+          },
+          {
+            "path": "include/swift/Basic/SourceLoc.h",
+            "status": "modified",
+            "blob_sha": "1da346784ca5d1b0762d4e134dd65ae6a49df39d"
+          },
+          {
+            "path": "include/swift/IDE/CompletionLookup.h",
+            "status": "modified",
+            "blob_sha": "2ee767423af9096f7385fa79ac48ecba1ce50ec1"
+          },
+          {
+            "path": "include/swift/IRGen/GenericRequirement.h",
+            "status": "modified",
+            "blob_sha": "b87d6ef0013afe3f753d00664654d0c723c6258b"
+          },
+          {
+            "path": "include/swift/Runtime/ConcurrencyDebug.h",
+            "status": "modified",
+            "blob_sha": "4477e36c3812fb2c0431cbf72494a8ce3da30e04"
+          },
+          {
+            "path": "include/swift/Runtime/Concurrent.h",
+            "status": "modified",
+            "blob_sha": "767390f5d031c394674e4d812b77afb74c95905a"
+          },
+          {
+            "path": "include/swift/Runtime/Config.h",
+            "status": "modified",
+            "blob_sha": "0c35b091d8ccc6c41454213035ba645dcd6529ab"
+          },
+          {
+            "path": "include/swift/Runtime/SignedPointerUnion.h",
+            "status": "added",
+            "blob_sha": "29cc5524d35e9b6c117870dc2612f52ea2957ae7"
+          },
+          {
+            "path": "include/swift/SIL/ApplySite.h",
+            "status": "modified",
+            "blob_sha": "898bba03255ebf580bf3e982742ebf23da34b993"
+          },
+          {
+            "path": "include/swift/SIL/MemAccessUtils.h",
+            "status": "modified",
+            "blob_sha": "9e77e60b0d4b4854e9a9bcf1249ad3e247610fe6"
+          },
+          {
+            "path": "include/swift/SIL/Projection.h",
+            "status": "modified",
+            "blob_sha": "0aa4ed85eff2977fbe0a6951e0f7688b9be7a6bf"
+          },
+          {
+            "path": "include/swift/SIL/SILBasicBlock.h",
+            "status": "modified",
+            "blob_sha": "154038caf4c4786d772a4c9fb7baefd709bf7c5e"
+          },
+          {
+            "path": "include/swift/SIL/SILDeclRef.h",
+            "status": "modified",
+            "blob_sha": "916b432da2e17393ee32c135899b45615b261293"
+          },
+          {
+            "path": "include/swift/SIL/SILProfiler.h",
+            "status": "modified",
+            "blob_sha": "ef30bc62c669894ddf8660ae1b851c713e06e11f"
+          },
+          {
+            "path": "include/swift/SIL/SILRemarkStreamer.h",
+            "status": "modified",
+            "blob_sha": "aacf83689e30b4c006ee868d21f547613ff21f15"
+          },
+          {
+            "path": "include/swift/SIL/SILType.h",
+            "status": "modified",
+            "blob_sha": "c510b9ac4f65ecc71b755323b8f03025e9c2bc14"
+          },
+          {
+            "path": "include/swift/SIL/SILValue.h",
+            "status": "modified",
+            "blob_sha": "543f6e1d9885b1ebf37974f8e42c3a765fb1c55c"
+          },
+          {
+            "path": "include/swift/SIL/TypeLowering.h",
+            "status": "modified",
+            "blob_sha": "0382bfeddffea903404fe0cff6f96a48157cd47e"
+          },
+          {
+            "path": "include/swift/SILOptimizer/Analysis/AccessStorageAnalysis.h",
+            "status": "modified",
+            "blob_sha": "fb80e2d1e7825d7f9d07eeb52e0be4bd6269d1e9"
+          },
+          {
+            "path": "include/swift/SILOptimizer/Analysis/LoopRegionAnalysis.h",
+            "status": "modified",
+            "blob_sha": "9312a8cc4e5c1c09263a0aa56481a7d2be85870d"
+          },
+          {
+            "path": "include/swift/SILOptimizer/Utils/PartitionUtils.h",
+            "status": "modified",
+            "blob_sha": "01ddbdb57ad60cad5fad01c1f2e386a150666574"
+          },
+          {
+            "path": "include/swift/Sema/CSBindings.h",
+            "status": "modified",
+            "blob_sha": "0ec593803fdaa6dd2288976d6c5696f88df0627a"
+          },
+          {
+            "path": "lib/AST/ASTContext.cpp",
+            "status": "modified",
+            "blob_sha": "d4ff2d5453e0808950a38b049a6852739cd9a2d8"
+          },
+          {
+            "path": "lib/AST/ASTVerifier.cpp",
+            "status": "modified",
+            "blob_sha": "35d7a3152b81873ae2630ee89e3ab027790483f7"
+          },
+          {
+            "path": "lib/AST/Builtins.cpp",
+            "status": "modified",
+            "blob_sha": "81780d442fb097afa350af8a75cbc35b5b13822e"
+          },
+          {
+            "path": "lib/AST/ClangTypeConverter.cpp",
+            "status": "modified",
+            "blob_sha": "680496f4b666af93f142be143f22315204003a1a"
+          },
+          {
+            "path": "lib/AST/Module.cpp",
+            "status": "modified",
+            "blob_sha": "d0aa8edb1e4d71b2fe481e3cdd268fd8559b5334"
+          },
+          {
+            "path": "lib/AST/RequirementMachine/Symbol.h",
+            "status": "modified",
+            "blob_sha": "ab631b6253244bcaf02237bb74bc4e32b7b5e12b"
+          },
+          {
+            "path": "lib/AST/RequirementMachine/Term.h",
+            "status": "modified",
+            "blob_sha": "2c06b4989d0c2133f4e75c3b52d6460cd46fc367"
+          },
+          {
+            "path": "lib/Basic/Cache.cpp",
+            "status": "modified",
+            "blob_sha": "c7fd742da693c98602abe2567e654d2cff8e0a65"
+          },
+          {
+            "path": "lib/ClangImporter/ClangAdapter.cpp",
+            "status": "modified",
+            "blob_sha": "cc06003effea970b35f4f616c46a4de8244cb9df"
+          },
+          {
+            "path": "lib/ClangImporter/ClangAnalysis.cpp",
+            "status": "modified",
+            "blob_sha": "b181d22a6beaba5428c4e1236531367f792137dc"
+          },
+          {
+            "path": "lib/ClangImporter/ClangImporter.cpp",
+            "status": "modified",
+            "blob_sha": "04e91b40d5f686401ebb0b2f11ab6688f634bb82"
+          },
+          {
+            "path": "lib/ClangImporter/ImportName.h",
+            "status": "modified",
+            "blob_sha": "45225847fc93125c2a703760f91b4a020950e7ab"
+          },
+          {
+            "path": "lib/ClangImporter/ImportType.cpp",
+            "status": "modified",
+            "blob_sha": "1c9cf93fb004f1d5ca871ca75bf7a3f8579e9583"
+          },
+          {
+            "path": "lib/ClangImporter/ImporterImpl.h",
+            "status": "modified",
+            "blob_sha": "735934b8d80c4abe1049e752d1c06dbc3b17f573"
+          },
+          {
+            "path": "lib/ClangImporter/SwiftLookupTable.h",
+            "status": "modified",
+            "blob_sha": "79d24a49c937c707768430417571644467125c91"
+          },
+          {
+            "path": "lib/DependencyScan/DependencyScanJSON.cpp",
+            "status": "modified",
+            "blob_sha": "d5933c29e66392e220794bf9709293c8b3d568e4"
+          },
+          {
+            "path": "lib/Frontend/DependencyVerifier.cpp",
+            "status": "modified",
+            "blob_sha": "78a4595b2fa1857c3777ba2a636331a2e683ae63"
+          },
+          {
+            "path": "lib/FrontendTool/FrontendTool.cpp",
+            "status": "modified",
+            "blob_sha": "61e51a62048083e982c1f41d91d415865c4dc0f9"
+          },
+          {
+            "path": "lib/IDE/Formatting.cpp",
+            "status": "modified",
+            "blob_sha": "8e54cbe9df0c9ac11a84c09beb53b51e6c97d265"
+          },
+          {
+            "path": "lib/IRGen/Address.h",
+            "status": "modified",
+            "blob_sha": "de397ca457ff32c7f76380fdb23fbe47bb92fbce"
+          },
+          {
+            "path": "lib/IRGen/DebugTypeInfo.h",
+            "status": "modified",
+            "blob_sha": "a9e0599249fc00253de191b539c2a7739660ca54"
+          },
+          {
+            "path": "lib/IRGen/GenCall.cpp",
+            "status": "modified",
+            "blob_sha": "79b5cdcf42eaeec2a43bf69d4438f87a6e155bfb"
+          },
+          {
+            "path": "lib/IRGen/GenHeap.cpp",
+            "status": "modified",
+            "blob_sha": "187b259ec681814b0a3cac8df6f536f2e2ddd7d8"
+          },
+          {
+            "path": "lib/IRGen/IRGenSIL.cpp",
+            "status": "modified",
+            "blob_sha": "e51deea499783ac8dbee61462dac15a082aa3fef"
+          },
+          {
+            "path": "lib/IRGen/LocalTypeDataKind.h",
+            "status": "modified",
+            "blob_sha": "b97901665f8316ce5681e4219d236a8dea9719f7"
+          },
+          {
+            "path": "lib/Macros/Sources/SwiftMacros/CMakeLists.txt",
+            "status": "modified",
+            "blob_sha": "1f975e8ace2b6b7bfa1266308ae7bcde19f4e389"
+          },
+          {
+            "path": "lib/Macros/Sources/SwiftMacros/DerivedConformances/DeriveRawRepresentable.swift",
+            "status": "added",
+            "blob_sha": "14067439f8a309a09f43da74c61ad749b7ede00d"
+          },
+          {
+            "path": "lib/Macros/Sources/SwiftMacros/SwiftifyImportMacro.swift",
+            "status": "modified",
+            "blob_sha": "331ecf2047d1ac57bf8bae2d8fdeb36c94e94690"
+          },
+          {
+            "path": "lib/Macros/Sources/SwiftMacros/TypeInfoParser.swift",
+            "status": "modified",
+            "blob_sha": "92a90cb9b0f2f14601288fc7233db615d20d8e64"
+          },
+          {
+            "path": "lib/PrintAsClang/DeclAndTypePrinter.cpp",
+            "status": "modified",
+            "blob_sha": "6cf7976dcf0e4b67d4b85f3e12bce46bbce10129"
+          },
+          {
+            "path": "lib/SIL/IR/Bridging.cpp",
+            "status": "modified",
+            "blob_sha": "f8b62d9950a666cbec2aae74bfa9c644a78217e5"
+          },
+          {
+            "path": "lib/SIL/IR/OperandOwnership.cpp",
+            "status": "modified",
+            "blob_sha": "a17fde14a17abc6face404f6c90c8935ee7a73ce"
+          },
+          {
+            "path": "lib/SIL/Verifier/SILVerifier.cpp",
+            "status": "modified",
+            "blob_sha": "29ea636ce04c6a509d7627cd55be66d2c464e59f"
+          },
+          {
+            "path": "lib/SILOptimizer/Mandatory/DiagnosticHelpers.h",
+            "status": "modified",
+            "blob_sha": "56d81fc1fb3c7b03d19fa07e143c12be45ca9f93"
+          },
+          {
+            "path": "lib/SILOptimizer/Mandatory/MoveOnlyObjectCheckerUtils.cpp",
+            "status": "modified",
+            "blob_sha": "c5a668c619af538fece66cda6442c8521bcb52bb"
+          },
+          {
+            "path": "lib/SILOptimizer/Mandatory/SendNonSendable.cpp",
+            "status": "modified",
+            "blob_sha": "fd213873c99e9ecbf6aec1cdfde5d1e5804a733f"
+          },
+          {
+            "path": "lib/SILOptimizer/Utils/OSSACanonicalizeOwned.cpp",
+            "status": "modified",
+            "blob_sha": "965d66388446b77f4683a27a6ca0c7bff480b45d"
+          },
+          {
+            "path": "lib/SILOptimizer/Utils/SILInliner.cpp",
+            "status": "modified",
+            "blob_sha": "dc2a7b04572b4fa60ecafc64652644e012a26391"
+          },
+          {
+            "path": "lib/Sema/CSSolver.cpp",
+            "status": "modified",
+            "blob_sha": "778ae5bb8bcdd26a7697a26ffe823cd998db8989"
+          },
+          {
+            "path": "lib/Sema/CSStep.cpp",
+            "status": "modified",
+            "blob_sha": "c59061d66030cf2992ee22ba00c654fd6e15e2fa"
+          },
+          {
+            "path": "lib/Sema/DerivedConformance/DerivedConformance.cpp",
+            "status": "modified",
+            "blob_sha": "36ca7145cae79968a153782366afe25da09d6fc8"
+          },
+          {
+            "path": "lib/Sema/DerivedConformance/DerivedConformanceRawRepresentable.cpp",
+            "status": "modified",
+            "blob_sha": "9982c853f911956914eaa8d1828b528f037149be"
+          },
+          {
+            "path": "lib/Sema/ImportResolution.cpp",
+            "status": "modified",
+            "blob_sha": "9db44fcd1a2bdf7eb2f7d1c0054af34a89222b4f"
+          },
+          {
+            "path": "lib/Sema/TypeCheckAttr.cpp",
+            "status": "modified",
+            "blob_sha": "6d372dde93ccf6a6b47a66eb4758497d30120627"
+          },
+          {
+            "path": "lib/SymbolGraphGen/Edge.h",
+            "status": "modified",
+            "blob_sha": "52fe7953e695cbbc91cd5f6774f87519c6d47ad3"
+          },
+          {
+            "path": "lib/SymbolGraphGen/Symbol.h",
+            "status": "modified",
+            "blob_sha": "837c7706203b3574bf29fef45bc777e3cfe33264"
+          },
+          {
+            "path": "stdlib/public/EmbeddedPlatform/EmbeddedPlatformSingleThreaded.swift",
+            "status": "modified",
+            "blob_sha": "232b69e0f2e897e2bd2a8be57d9e26679a868cac"
+          },
+          {
+            "path": "stdlib/public/runtime/ProtocolConformance.cpp",
+            "status": "modified",
+            "blob_sha": "8c935ef334fcdccc41a77f1ea7bd43d22a6d12a2"
+          },
+          {
+            "path": "test/Availability/availability_derived_conformances_macros.swift",
+            "status": "added",
+            "blob_sha": "624e0128a6ca3c5e2027a6722a351fa7ca69312c"
+          },
+          {
+            "path": "test/DebugInfo/linetable-cleanup-block-start.swift",
+            "status": "added",
+            "blob_sha": "b36593b3575ae3a38276fdb02528e697103360a7"
+          },
+          {
+            "path": "test/Frontend/DiagnosticVerifier/clang-attribute.swift",
+            "status": "modified",
+            "blob_sha": "ce664405025749871d7b8892e0574947656eada2"
+          },
+          {
+            "path": "test/IRGen/closure.swift",
+            "status": "modified",
+            "blob_sha": "415c2d9e41647c20a7fe7fcfe993c7ad0764c8dc"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/availability.swift",
+            "status": "modified",
+            "blob_sha": "5c4ea70670fd68593aac7f082650496460612ba3"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/bridging-header-from-module.swift",
+            "status": "modified",
+            "blob_sha": "ffc4dada6fae427eb29c432a1db05c59df4d1ac2"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/bridging-header-import-once.swift",
+            "status": "modified",
+            "blob_sha": "3d66d6af8749172e5521eb0ffeb6d6b3838f59cd"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/bridging-header-including-module.swift",
+            "status": "modified",
+            "blob_sha": "f9ee2931b7e3c9863f703232f43e9f0624e127de"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/bridging-header-nontrivial.swift",
+            "status": "modified",
+            "blob_sha": "6fc1c3aa1f5a241439b57891fcda11991fdfb3b0"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/bridging-header.swift",
+            "status": "modified",
+            "blob_sha": "80d2932f04ce3b43813396fe1c1042e1434fd788"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/clang-includes-no-swift.swift",
+            "status": "modified",
+            "blob_sha": "795afe4983cabe0d478cf79d54c31f0379ae93ea"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/clang-includes-noexport.swift",
+            "status": "modified",
+            "blob_sha": "f29ee51f0bae6a285f81c275de4a65c6c0ac376c"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/clang-includes.swift",
+            "status": "modified",
+            "blob_sha": "bcd80019e91310809ab342c6a6167692f134a056"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/comments.swift",
+            "status": "modified",
+            "blob_sha": "117b2146b2830561e31210a01c1ccc4116d1ccce"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/conflicting-opaqueness.swift",
+            "status": "modified",
+            "blob_sha": "f215b13e155d80e326186cda66b05905688632d7"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by-legacy.swift",
+            "status": "modified",
+            "blob_sha": "1e00e388155483a0a7ecd0d46a81d14cc326f6a3"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by-lifetimebound-legacy.swift",
+            "status": "modified",
+            "blob_sha": "7c3860134295989be12acae56d1247c0f2855ef6"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by-lifetimebound.swift",
+            "status": "modified",
+            "blob_sha": "bb7477408fc99445b56007ca9a2681e93babae50"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by-noescape-legacy.swift",
+            "status": "modified",
+            "blob_sha": "b55a4b079a008c9faa2147c73ca5f080134623e2"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by-noescape.swift",
+            "status": "modified",
+            "blob_sha": "067b8e7a5da9cc5715b9ffe101963fc9be42e1ff"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by-or-null-lifetimebound.swift",
+            "status": "modified",
+            "blob_sha": "fb0afdd6fe20623aa181774ed94699684d60f4a0"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by-or-null-noescape.swift",
+            "status": "modified",
+            "blob_sha": "b2e72623c291ccf5353f004b383a852bd3ee5ad7"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by-or-null.swift",
+            "status": "modified",
+            "blob_sha": "8ac007242e7f936e0a5b70b4d772d2e21af934e8"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/counted-by.swift",
+            "status": "modified",
+            "blob_sha": "2691d651170c9c23fc00a90be9c54a8e09bb38d7"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/import-as-instance-method.swift",
+            "status": "modified",
+            "blob_sha": "d7dc340f3cd4209406af6f6b7f998d1461213fa8"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/memcpy.swift",
+            "status": "modified",
+            "blob_sha": "072a3e1ee95302056feb234e3c74f874697fbf42"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by-legacy.swift",
+            "status": "modified",
+            "blob_sha": "a14645aa006b37af146a1b7f3863ca16a27313a9"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by-lifetimebound-legacy.swift",
+            "status": "modified",
+            "blob_sha": "e6e9d1eadabf0c0ff9f5b9c38e03098d47997aa5"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by-lifetimebound.swift",
+            "status": "modified",
+            "blob_sha": "737abdcb3ebb535eb4a03792033feb8b389a56c0"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by-noescape-legacy.swift",
+            "status": "modified",
+            "blob_sha": "a15be868025696326eda9429619ec43642a7a3f7"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by-noescape.swift",
+            "status": "modified",
+            "blob_sha": "0bcc82c317cdfdd29346cdf4efd0684bed52f149"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by-or-null-lifetimebound.swift",
+            "status": "modified",
+            "blob_sha": "c8f25600d8ba5d22a473813bfba61da7914dcb22"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by-or-null-noescape.swift",
+            "status": "modified",
+            "blob_sha": "af9c0ef16f7f37299dc493a451435be0c537417a"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by-or-null.swift",
+            "status": "modified",
+            "blob_sha": "d509f28c9e91b1218d383cc29eb959f5d7444386"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/sized-by.swift",
+            "status": "modified",
+            "blob_sha": "c73029d6913bf0cbd8ab11e579ea310c3dc84f3d"
+          },
+          {
+            "path": "test/Interop/C/swiftify-import/typedef-bounds-attr.swift",
+            "status": "modified",
+            "blob_sha": "cbcec88473b53d159c42e8078ad189b948eacd98"
+          },
+          {
+            "path": "test/Interop/Cxx/class/method/Inputs/always-unsafe-projections.h",
+            "status": "modified",
+            "blob_sha": "f33b11b686faa0a25f9986bd2c35a7dc693be1a1"
+          },
+          {
+            "path": "test/Interop/Cxx/class/method/unsafe-projections-always-unsafe.swift",
+            "status": "modified",
+            "blob_sha": "0320208c93d2aabe9dc6fc17ea2ed1aafc8ee7e5"
+          },
+          {
+            "path": "test/Interop/Cxx/class/method/unsafe-projections.swift",
+            "status": "modified",
+            "blob_sha": "19260291382613349de08631f91ac8c516e9995c"
+          },
+          {
+            "path": "test/Interop/Cxx/cxx-impl/Inputs/methods-execution.swift",
+            "status": "modified",
+            "blob_sha": "6df200750c72315e998e5505709ada0054f43230"
+          },
+          {
+            "path": "test/Interop/Cxx/cxx-impl/Inputs/methods.h",
+            "status": "modified",
+            "blob_sha": "e41c5c11bef4add0a4cbb71c089154bec31f1fc1"
+          },
+          {
+            "path": "test/Interop/Cxx/cxx-impl/methods-execution.cpp",
+            "status": "modified",
+            "blob_sha": "3af50ca17b38433e56f62d6b80259af87bb09206"
+          },
+          {
+            "path": "test/Interop/Cxx/cxx-impl/methods-irgen.swift",
+            "status": "modified",
+            "blob_sha": "0cc5b4bf0c116da0cc8d8a5dfb73c33e6b592c48"
+          },
+          {
+            "path": "test/Interop/Cxx/cxx-impl/methods-silgen.swift",
+            "status": "modified",
+            "blob_sha": "785186f53b34376ab89be633fbf631c8584c2092"
+          },
+          {
+            "path": "test/Interop/Cxx/stdlib/Inputs/std-span.h",
+            "status": "modified",
+            "blob_sha": "a5b4c444a45c20e38347cb399fa0aabcefce2c14"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/clang-includes-no-cxx.swift",
+            "status": "modified",
+            "blob_sha": "05c117887c6597d7172fd672381aa1f9593df4c6"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/counted-by-in-namespace.swift",
+            "status": "modified",
+            "blob_sha": "fef782e2ff36964ff73ce462449737f82f0f02ea"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/counted-by-method.swift",
+            "status": "modified",
+            "blob_sha": "19d51f636a9fe4789e2d5cd00dbec3b24edd46ba"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/counted-by-virtual-method-in-reference-type.swift",
+            "status": "modified",
+            "blob_sha": "3c999a4017342f219e24aa2939fba44d83aece99"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/import-as-instance-method.swift",
+            "status": "modified",
+            "blob_sha": "48aa115e14552122677957e41b8fcf82dec97840"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/no-safe-wrapper-attr.swift",
+            "status": "modified",
+            "blob_sha": "79ecd1dea63c075578279c6ddc53a11dc1e9f627"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/parameter-type-from-namespace.swift",
+            "status": "modified",
+            "blob_sha": "904275d1ecf49918d52be8aa7228baa3326dfb6c"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/span-in-ctor.swift",
+            "status": "modified",
+            "blob_sha": "cd321db5328e8fd96413c6b79de568083bbb14a2"
+          },
+          {
+            "path": "test/Interop/Cxx/swiftify-import/std-span-template-arg.swift",
+            "status": "modified",
+            "blob_sha": "45d50433c3ba4437ae5f90ecbe20e3ffbe2fdee6"
+          },
+          {
+            "path": "test/Interop/ObjC/swiftify-import/counted-by-in-class-noescape.swift",
+            "status": "modified",
+            "blob_sha": "abaa500b058154b5df08e2fad1215f89a666b180"
+          },
+          {
+            "path": "test/Interop/ObjC/swiftify-import/counted-by-in-class.swift",
+            "status": "modified",
+            "blob_sha": "5ae6545847d66d466252c61f4d0aee49c9836414"
+          },
+          {
+            "path": "test/Interop/ObjC/swiftify-import/objc-no-swiftify.swift",
+            "status": "modified",
+            "blob_sha": "e93cd98c624237fde95ac14cdb3cc43c21a9417d"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Anonymous.swift",
+            "status": "modified",
+            "blob_sha": "95c172573f2804b7adbce447f0dabf29a14ba58e"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/ConstantCount-legacy.swift",
+            "status": "modified",
+            "blob_sha": "42b59681bc4d35776832d41f1fa67676656acfe3"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/ConstantCount.swift",
+            "status": "modified",
+            "blob_sha": "5b3c57683e0839d314530758fe2b62c326221c44"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/CountExpr.swift",
+            "status": "modified",
+            "blob_sha": "4ae750b6b96acd0c4ad15778b73737ebef432a0d"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/MultipleParams.swift",
+            "status": "modified",
+            "blob_sha": "d5518a1ed1eeff58319e42a289e0a1a6d6e0fe13"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Mutable.swift",
+            "status": "modified",
+            "blob_sha": "c69657cbc27ed0fffe7939cc8c6e1715cb3ab7f7"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/MutableSpan.swift",
+            "status": "modified",
+            "blob_sha": "dd93b76531f5ef6f950f1b7f32a9d0a8b1befff7"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/NamedParams.swift",
+            "status": "modified",
+            "blob_sha": "ade190cececc25088f8ea1a2ab9ad4e6df087dbb"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Nullable-legacy.swift",
+            "status": "modified",
+            "blob_sha": "de519be018956a94de93c3b8f079c2a17e295a14"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Nullable.swift",
+            "status": "modified",
+            "blob_sha": "114d17a611340f2a10eddb631ed62343eca4af96"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/PointerReturn.swift",
+            "status": "modified",
+            "blob_sha": "564d3898cdc32fbd37a0590fa9f89a61a1c134ff"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Protocol.swift",
+            "status": "modified",
+            "blob_sha": "6ff547f61d649647d15abac3c9eb45023627f3a2"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/QualifiedTypes.swift",
+            "status": "modified",
+            "blob_sha": "6b4568a37701b77c71af0706304843eef69e2670"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Return.swift",
+            "status": "modified",
+            "blob_sha": "5ea4bbde3d7bc5949a91aea4e6e2a1c2683d8268"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/SharedCount.swift",
+            "status": "modified",
+            "blob_sha": "8c557fb0aac4db1884bdf25fd67a0d460b29975e"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/SimpleCount.swift",
+            "status": "modified",
+            "blob_sha": "3f83c4576511bcc476421ce2d63214080ef1b87d"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/SimpleSpan.swift",
+            "status": "modified",
+            "blob_sha": "f49019d6edd072a189dc86ad969b5e4be3be3f73"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/SimpleSpanWithReturn.swift",
+            "status": "modified",
+            "blob_sha": "107b17c5aad480fe4b888463ee4642d1e33bb55c"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/SpanAndUnsafeBuffer.swift",
+            "status": "modified",
+            "blob_sha": "9d0a6053cdf69c636fd0d3adf133ef979b4bfbf9"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/UnrelatedNonescapableReturn.swift",
+            "status": "modified",
+            "blob_sha": "568c0d36312f2fff6bccd0f3124f55de74b18a8b"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Unwrapped.swift",
+            "status": "modified",
+            "blob_sha": "9f355e95c9bfc24f45b64c2c431e85883acdea4f"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Whitespace-legacy.swift",
+            "status": "modified",
+            "blob_sha": "faf2937761d1fbf5cfc3a810c3d1d3474ad3164b"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedBy/Whitespace.swift",
+            "status": "modified",
+            "blob_sha": "9d4f96441a1e705d173081fb80bdecaba2f9fe75"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/Anonymous.swift",
+            "status": "modified",
+            "blob_sha": "4354db75a3699607d4307315a7929da55023fd8d"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/ConstantCount.swift",
+            "status": "modified",
+            "blob_sha": "8b5794b6ce1a5eb4bdca86640bf9ad903fe07ad8"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/CountExpr.swift",
+            "status": "modified",
+            "blob_sha": "0537a0a9312ed77f4afdd93fe33dc70e810ca12d"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/MultipleParams.swift",
+            "status": "modified",
+            "blob_sha": "c1c97039832921228508b3d831c82b5c6d457c0e"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/Mutable.swift",
+            "status": "modified",
+            "blob_sha": "f3abfb538e0d5ff87c97a5e55c2ce0236b26377f"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/MutableSpan.swift",
+            "status": "modified",
+            "blob_sha": "15b6e69414c512570d373dc0588c497195c6e820"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/NamedParams.swift",
+            "status": "modified",
+            "blob_sha": "7b970011d5e526b43fbf9240bb9462739c0bb7dd"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/Nullable.swift",
+            "status": "modified",
+            "blob_sha": "47b5a4cc3e2642beedbd5ad1cf790c63e5336dcd"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/PointerReturn.swift",
+            "status": "modified",
+            "blob_sha": "3de35ae710d53bf8f84c2dc85550c3f3d80d4267"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/Protocol.swift",
+            "status": "modified",
+            "blob_sha": "e45d19d35894d93af145ee0643c039ff0eec66e0"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/QualifiedTypes.swift",
+            "status": "modified",
+            "blob_sha": "0a4beb3494a7333281d85ca087b75474ff4931e5"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/Return.swift",
+            "status": "modified",
+            "blob_sha": "854f8e87a8312d236c5c206860844b03f7ea19e6"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/SharedCount.swift",
+            "status": "modified",
+            "blob_sha": "cc58c35b3319cb54f9fbd63b90716927bf2bfd49"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/SharedCountMixedNullable.swift",
+            "status": "modified",
+            "blob_sha": "cdfd3d1fa9bbe6dc3f6064ee5f77c7bb23250cfe"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/SimpleCount.swift",
+            "status": "modified",
+            "blob_sha": "d8bbb90b8a0ab22087af58443b4d47c4744e8809"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/SimpleSpan.swift",
+            "status": "modified",
+            "blob_sha": "c679a23ced0a63320862e0961627c0001db58094"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/SimpleSpanWithReturn.swift",
+            "status": "modified",
+            "blob_sha": "f3e8462964b2389495599323bf790c55d7f18cd0"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/SpanAndUnsafeBuffer.swift",
+            "status": "modified",
+            "blob_sha": "b573895b1604ca50ea77b4c34f01d1f9cdf888b9"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/UnrelatedNonescapableReturn.swift",
+            "status": "modified",
+            "blob_sha": "3cd8094cb435600cf9ba50effc8ecdd62d8aa6c7"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/Unwrapped.swift",
+            "status": "modified",
+            "blob_sha": "959e528de9f11e829db084bbdc6c9c51b9bd702c"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CountedByOrNull/Whitespace.swift",
+            "status": "modified",
+            "blob_sha": "b3e04dcbe6d86ed89af74fb5f42bbee239cd8035"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CxxSpan/LifetimeboundSpan.swift",
+            "status": "modified",
+            "blob_sha": "b77930f77edf4ba5419a7e3da2a1efb7ab6ad1f1"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/CxxSpan/NoEscapeSpan.swift",
+            "status": "modified",
+            "blob_sha": "6032457bc2a59ff4782edad3739edc6153ebcfd9"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/MacroErrors/UnexpectedCountType.swift",
+            "status": "modified",
+            "blob_sha": "127d327ad62f7899a5719d84b4f629b9140c763a"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/MultipleParams.swift",
+            "status": "modified",
+            "blob_sha": "bebe52766c0ae6d4923ac78903a30fc757cb21ab"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/Mutable.swift",
+            "status": "modified",
+            "blob_sha": "c16215daae384c2514b31c1f9e473361d40cc974"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/MutableRawSpan.swift",
+            "status": "modified",
+            "blob_sha": "dd586a0cd60355e1b9121e51d8d0b5b838f00806"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/Nullable-legacy.swift",
+            "status": "modified",
+            "blob_sha": "1fdb0190ee1ec752320ed0c240ac4ec1257b3fb7"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/Nullable.swift",
+            "status": "modified",
+            "blob_sha": "407f597f44e73e2eea70231dca8d3cbd94c5ad99"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/Opaque-legacy.swift",
+            "status": "modified",
+            "blob_sha": "81e208ed5fbbc50805dd7dda3fa46a8ff91994cb"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/Opaque.swift",
+            "status": "modified",
+            "blob_sha": "53a66fdcbd0678aeed2ad462ff456a889c0da387"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/OpaqueReturn-legacy.swift",
+            "status": "modified",
+            "blob_sha": "d9cb65fe809ad35288667158985dae58b0f173df"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/OpaqueReturn.swift",
+            "status": "modified",
+            "blob_sha": "3172ec3afd3c1c813ba4d5bea18b70f58d537147"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/PointerReturn.swift",
+            "status": "modified",
+            "blob_sha": "b8837f89d56a201d6030ef164e9af9d4c6839294"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/Return.swift",
+            "status": "modified",
+            "blob_sha": "797417b5efb43f741deccb1190f0daf6f4f377de"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/SharedCount.swift",
+            "status": "modified",
+            "blob_sha": "69591820759fc72945ef5c6a9e913eccc80962b3"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/SimpleRawSpan.swift",
+            "status": "modified",
+            "blob_sha": "e07c15dd8c6f6374035381019dc278f6df7b8141"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/SimpleRawSpanWithReturn.swift",
+            "status": "modified",
+            "blob_sha": "cf5612fa78a4abc3d849d6fa708ac6542b27fc9a"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/SimpleSize.swift",
+            "status": "modified",
+            "blob_sha": "b9d696cb8b0ade432d204b482ed5df3d1de72d25"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/SizeExpr.swift",
+            "status": "modified",
+            "blob_sha": "f5681605a01949c3b735f1634d716f5cc8393e66"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/TypedPointer.swift",
+            "status": "modified",
+            "blob_sha": "8939a679c6068257590bfef01ebcaadbc882663d"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedBy/Unwrapped.swift",
+            "status": "modified",
+            "blob_sha": "edac7ae8c82a0f6a9fb42f3c77fcc57fa69bc259"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/MultipleParams.swift",
+            "status": "modified",
+            "blob_sha": "de692b4a2001b4caa171d64d7850a02503afe253"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/Mutable.swift",
+            "status": "modified",
+            "blob_sha": "43018eca388d6f3e89849932ae13ea1eca7cbd0d"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/MutableRawSpan.swift",
+            "status": "modified",
+            "blob_sha": "3dcd533d4ebc754d7c335fa8058a43368a9bb7b5"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/Nullable.swift",
+            "status": "modified",
+            "blob_sha": "033fefb6fa2b9271597c4c6fc5e06d7f882d44df"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/Opaque.swift",
+            "status": "modified",
+            "blob_sha": "8481267e4565d929249253cc75834261d0e35401"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/OpaqueReturn.swift",
+            "status": "modified",
+            "blob_sha": "c533ed99f395b1922d20bda1576155dccae01052"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/PointerReturn.swift",
+            "status": "modified",
+            "blob_sha": "e94d9458cc6d1cd4f9774c78e6648a71bf12ce16"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/Return.swift",
+            "status": "modified",
+            "blob_sha": "da648ebe9fbefff5145618e26cc523bf7dd248e0"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/SharedCount.swift",
+            "status": "modified",
+            "blob_sha": "c21fd8535b7d1d97f525c30c1ce408df1d867ba2"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/SharedCountMixedNullable.swift",
+            "status": "modified",
+            "blob_sha": "eaf7aee7a5cf214108b903c38d0a1120e5fbd2ef"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/SimpleRawSpan.swift",
+            "status": "modified",
+            "blob_sha": "87a403ca8b946e2d2f9b2620bdb956a861b0b896"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/SimpleRawSpanWithReturn.swift",
+            "status": "modified",
+            "blob_sha": "89dfa0bf53f5a956ea0dade838e6f9d5d4e49498"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/SimpleSize.swift",
+            "status": "modified",
+            "blob_sha": "64a34e21b26644fe6583e76ce0029b2f1b82421c"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/SizeExpr.swift",
+            "status": "modified",
+            "blob_sha": "b09ec97c8e29a01b73da4a3c9b4ce9fa1386ae68"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/TypedPointer.swift",
+            "status": "modified",
+            "blob_sha": "ed80e60800e18ad5bdfbc8ae36233a72008d9da2"
+          },
+          {
+            "path": "test/Macros/SwiftifyImport/SizedByOrNull/Unwrapped.swift",
+            "status": "modified",
+            "blob_sha": "14b0259376456c8120d414d0cc76df6583a77fc3"
+          },
+          {
+            "path": "test/PrintAsObjC/extension-of-invalid-type.swift",
+            "status": "added",
+            "blob_sha": "75f7e5ebce474f94ce34239611bbe854f86d957b"
+          },
+          {
+            "path": "test/SILGen/objc_bool_bridging_without_objectivec.swift",
+            "status": "added",
+            "blob_sha": "88a6d378269f9baa7f2726875601ac3812b29610"
+          },
+          {
+            "path": "test/SILOptimizer/lifetime_dependence/lifetime_dependence_borrow_accessor.swift",
+            "status": "modified",
+            "blob_sha": "e3df4e9c80c2cb0f36ef640fd290a376053a4b6a"
+          },
+          {
+            "path": "test/SILOptimizer/lifetime_dependence/lifetime_dependence_borrow_accessor_address.sil",
+            "status": "added",
+            "blob_sha": "5f551868fc0660045305443492e5c470b2b74e9a"
+          },
+          {
+            "path": "test/Sema/enum_raw_representable_explicit.swift",
+            "status": "modified",
+            "blob_sha": "a420ccabf43db14a552601dc28a345b62569e0d5"
+          },
+          {
+            "path": "test/SourceKit/CursorInfo/cursor_doc_comment_from_clang_safe_wrapper.swift",
+            "status": "modified",
+            "blob_sha": "efdb361014bb006611b06e7db0419663d2de64cc"
+          },
+          {
+            "path": "test/SourceKit/Macros/clang-overload-cursor-info.swift",
+            "status": "modified",
+            "blob_sha": "7655e4fd401be208929d6dd0752ff4b65e57a1b5"
+          },
+          {
+            "path": "test/decl/enum/derived_rawrepresentable.swift",
+            "status": "added",
+            "blob_sha": "8423dfab221aa8b865d44259226a8a7ac5adb7c5"
+          },
+          {
+            "path": "test/decl/enum/derived_rawrepresentable_macros_expansion.swift",
+            "status": "added",
+            "blob_sha": "67c52165e7c6a7c569285449cc6558759b8e604a"
+          },
+          {
+            "path": "test/embedded/embedded-platform-single-threaded-tls.swift",
+            "status": "modified",
+            "blob_sha": "78bfa27459e25729b36531de42ab415beff04841"
+          },
+          {
+            "path": "test/embedded/safe-interop-wrapper.swift",
+            "status": "modified",
+            "blob_sha": "822a0309be780d55aaab85568c6acd720f8254f4"
+          }
+        ]
+      },
+      "mapped_files": [
+        {
+          "path": "tools/SourceKit/lib/SwiftLang/SwiftASTManager.h",
+          "old": {
+            "git_blob_sha1": "10a883a32c1a0ee04345ddc2ed3eca150304d95b",
+            "content_sha256": "cd883ebb48288af93113ef850cb8c3acacb339013760163b67f68b716e2741b1",
+            "size": 14451,
+            "url": "https://raw.githubusercontent.com/swiftlang/swift/f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d/tools/SourceKit/lib/SwiftLang/SwiftASTManager.h"
+          },
+          "new": {
+            "git_blob_sha1": "10a883a32c1a0ee04345ddc2ed3eca150304d95b",
+            "content_sha256": "cd883ebb48288af93113ef850cb8c3acacb339013760163b67f68b716e2741b1",
+            "size": 14451,
+            "url": "https://raw.githubusercontent.com/swiftlang/swift/0fcad6fb60755587d39a758761b219bf433cf9dc/tools/SourceKit/lib/SwiftLang/SwiftASTManager.h"
+          },
+          "claim_indices": [
+            5
+          ]
+        },
+        {
+          "path": "test/SourceKit/CursorInfo/cursor_reuses_astcontext.swift",
+          "old": {
+            "git_blob_sha1": "7ce686d160eabbaaf855941f5dfd7b9080430036",
+            "content_sha256": "19fb924b81924cc76d0887bcf76b4bb08937532e42e0ef348d8d999cc670266f",
+            "size": 1025,
+            "url": "https://raw.githubusercontent.com/swiftlang/swift/f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d/test/SourceKit/CursorInfo/cursor_reuses_astcontext.swift"
+          },
+          "new": {
+            "git_blob_sha1": "7ce686d160eabbaaf855941f5dfd7b9080430036",
+            "content_sha256": "19fb924b81924cc76d0887bcf76b4bb08937532e42e0ef348d8d999cc670266f",
+            "size": 1025,
+            "url": "https://raw.githubusercontent.com/swiftlang/swift/0fcad6fb60755587d39a758761b219bf433cf9dc/test/SourceKit/CursorInfo/cursor_reuses_astcontext.swift"
+          },
+          "claim_indices": [
+            5
+          ]
+        }
+      ]
+    }
+  ]
+}
