@@ -3154,6 +3154,41 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v54": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v53",
+            "reference_commit": "6b0acaee13124bc17bef31c764693836a93ff25a"
+          },
+          "name": "Published #3730/#3731 v53 coverage ledger"
+        },
+        {
+          "identity": {
+            "alias_llbc_sha256": "1b856001a5eeda4b86a4f74fcc0ede06d6e917581435910fa9156055916bc724",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "copy_llbc_sha256": "603a8931af4c51a6c9a9a8ffdaca9db56d66572a74536b4926288e48780449a9",
+            "results_sha256": "2acbcbea3a2b8b52315d86fd990ac1a59dd2216c1a3d3e9170547e9b1a10a61a",
+            "source_package": "anneal-3731-i079-symlink-module-identity-2026-09-30"
+          },
+          "name": "Matched Charon symlink-alias and physical-copy LLBC observations"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "edde2123a541a51eba065324642a6c409a2949ca419ca7eddfe2dc7964c7fcc2",
+            "source": "public GitHub REST issue and comments endpoints"
+          },
+          "name": "Fresh public #3730/#3731 issue snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/source-identity",
+        "charon/llbc",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7607,6 +7642,42 @@
         "anneal/interactive-architecture",
         "charon/cargo-extraction",
         "charon/cache-invalidation"
+      ]
+    },
+    "anneal-3731-i079-symlink-module-identity-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "architecture": "aarch64-darwin",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Observed local Charon 0.1.210 executable"
+        },
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Observed nightly Rust/Cargo executables"
+        },
+        {
+          "identity": {
+            "oracle_prelaunch_sha256": "0244d27b7f13388a66092f0472f2a82d414e6a3930c118c67744879ed161e1e9",
+            "results_sha256": "2acbcbea3a2b8b52315d86fd990ac1a59dd2216c1a3d3e9170547e9b1a10a61a",
+            "root_source_sha256": "491a614d6596dcbc48c999f468f706908df0e635e848feb11faae77a06a77a2e",
+            "shared_source_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14"
+          },
+          "name": "Matched symlink-alias and physical-copy Rust module fixture"
+        }
+      ],
+      "topics": [
+        "anneal/source-identity",
+        "rust/module-resolution",
+        "charon/llbc",
+        "experiments/filesystem-alias"
       ]
     },
     "anneal-3731-i079-unicode-charon-spans-2026-09-30": {

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "fixture_sha256": {
+    "Cargo.toml": "71768036984639f218aae193c67a52aa65b13096f95137532aeef9b63aa2161c",
+    "Cargo.lock": "331f67bda2917e55937356ed2dd003619250fb41824ab3b9394e999754311219",
+    "src/lib.rs": "491a614d6596dcbc48c999f468f706908df0e635e848feb11faae77a06a77a2e",
+    "src/shared.rs": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14"
+  },
+  "alias_target": "../shared.rs",
+  "module_relative_paths": [
+    "src/left/common.rs",
+    "src/right/common.rs"
+  ],
+  "expected_logical_names": [
+    "symlink_module_probe::left::step",
+    "symlink_module_probe::right::step"
+  ],
+  "shared_source_hex": "70756220666e207374657028783a2075333229202d3e20753332207b0a202020206c6574206e6f7465203d2022f09f998265cc81223b0a20202020782e7772617070696e675f616464286e6f74652e6c656e282920617320753332290a7d0a",
+  "hypotheses": {
+    "lexical_path_distinct": "two Local file-table entries and distinct item file IDs",
+    "canonical_file_coalesced": "one Local file-table entry and one shared item file ID"
+  }
+}

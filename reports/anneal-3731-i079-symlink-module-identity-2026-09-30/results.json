@@ -1,0 +1,1046 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-09-30T09:00:55.168429+00:00",
+  "status": "completed",
+  "stop_reason": null,
+  "oracle_prelaunch_sha256": "0244d27b7f13388a66092f0472f2a82d414e6a3930c118c67744879ed161e1e9",
+  "binary_sha256": {
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "limits": {
+    "minimum_start_reclaimable_percent": 30.0,
+    "minimum_live_reclaimable_percent": 20.0,
+    "minimum_disk_bytes": 10737418240,
+    "maximum_process_group_rss_kib": 524288,
+    "maximum_scratch_kib": 102400,
+    "timeout_seconds": 15.0
+  },
+  "layouts": {
+    "alias": {
+      "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/alias",
+      "entries": [
+        {
+          "relative_path": "src/left/common.rs",
+          "is_symlink": true,
+          "link_text": "../shared.rs",
+          "source_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14",
+          "lstat_inode": 25712685,
+          "target_dev": 16777229,
+          "target_inode": 25712683,
+          "shared_dev": 16777229,
+          "shared_inode": 25712683,
+          "resolved_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/alias/src/shared.rs"
+        },
+        {
+          "relative_path": "src/right/common.rs",
+          "is_symlink": true,
+          "link_text": "../shared.rs",
+          "source_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14",
+          "lstat_inode": 25712687,
+          "target_dev": 16777229,
+          "target_inode": 25712683,
+          "shared_dev": 16777229,
+          "shared_inode": 25712683,
+          "resolved_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/alias/src/shared.rs"
+        }
+      ],
+      "shared_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14"
+    },
+    "copy": {
+      "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/copy",
+      "entries": [
+        {
+          "relative_path": "src/left/common.rs",
+          "is_symlink": false,
+          "link_text": null,
+          "source_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14",
+          "lstat_inode": 25712695,
+          "target_dev": 16777229,
+          "target_inode": 25712695,
+          "shared_dev": 16777229,
+          "shared_inode": 25712693,
+          "resolved_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/copy/src/left/common.rs"
+        },
+        {
+          "relative_path": "src/right/common.rs",
+          "is_symlink": false,
+          "link_text": null,
+          "source_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14",
+          "lstat_inode": 25712697,
+          "target_dev": 16777229,
+          "target_inode": 25712697,
+          "shared_dev": 16777229,
+          "shared_inode": 25712693,
+          "resolved_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/copy/src/right/common.rs"
+        }
+      ],
+      "shared_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14"
+    }
+  },
+  "runs": {
+    "alias": {
+      "preflight": {
+        "elapsed_seconds": 0.0039,
+        "host": {
+          "estimated_reclaimable_percent": 32.1884,
+          "free_disk_bytes": 18861289472,
+          "page_size": 16384,
+          "pages": {
+            "free": 3830,
+            "inactive": 164114,
+            "speculative": 816
+          },
+          "physical_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_kib": 40
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/artifacts/alias.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/alias/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/alias",
+      "environment": {
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup",
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "RAYON_NUM_THREADS": "1",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/target-alias",
+        "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:"
+      },
+      "started_utc": "2026-09-30T09:00:55.185186+00:00",
+      "samples": [
+        {
+          "elapsed_seconds": 0.0051,
+          "host": {
+            "estimated_reclaimable_percent": 32.1882,
+            "free_disk_bytes": 18861281280,
+            "page_size": 16384,
+            "pages": {
+              "free": 3832,
+              "inactive": 164107,
+              "speculative": 820
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 144,
+          "scratch_kib": 40
+        },
+        {
+          "elapsed_seconds": 0.087,
+          "host": {
+            "estimated_reclaimable_percent": 32.1527,
+            "free_disk_bytes": 18861281280,
+            "page_size": 16384,
+            "pages": {
+              "free": 3801,
+              "inactive": 163826,
+              "speculative": 946
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 19264,
+          "scratch_kib": 40
+        },
+        {
+          "elapsed_seconds": 0.1671,
+          "host": {
+            "estimated_reclaimable_percent": 32.2245,
+            "free_disk_bytes": 18861281280,
+            "page_size": 16384,
+            "pages": {
+              "free": 4345,
+              "inactive": 163506,
+              "speculative": 1098
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 9440,
+          "scratch_kib": 40
+        },
+        {
+          "elapsed_seconds": 0.2492,
+          "host": {
+            "estimated_reclaimable_percent": 32.1112,
+            "free_disk_bytes": 18861244416,
+            "page_size": 16384,
+            "pages": {
+              "free": 3851,
+              "inactive": 163345,
+              "speculative": 1159
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 58752,
+          "scratch_kib": 40
+        },
+        {
+          "elapsed_seconds": 0.3297,
+          "host": {
+            "estimated_reclaimable_percent": 32.0705,
+            "free_disk_bytes": 18860912640,
+            "page_size": 16384,
+            "pages": {
+              "free": 3882,
+              "inactive": 162133,
+              "speculative": 2127
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 35072,
+          "scratch_kib": 52
+        },
+        {
+          "elapsed_seconds": 0.4126,
+          "host": {
+            "estimated_reclaimable_percent": 32.041,
+            "free_disk_bytes": 18861211648,
+            "page_size": 16384,
+            "pages": {
+              "free": 3952,
+              "inactive": 161439,
+              "speculative": 2596
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 108848,
+          "scratch_kib": 52
+        },
+        {
+          "elapsed_seconds": 0.4929,
+          "host": {
+            "estimated_reclaimable_percent": 31.8718,
+            "free_disk_bytes": 18861211648,
+            "page_size": 16384,
+            "pages": {
+              "free": 3755,
+              "inactive": 160529,
+              "speculative": 2816
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 125440,
+          "scratch_kib": 52
+        },
+        {
+          "elapsed_seconds": 0.5717,
+          "host": {
+            "estimated_reclaimable_percent": 32.1684,
+            "free_disk_bytes": 18861162496,
+            "page_size": 16384,
+            "pages": {
+              "free": 6660,
+              "inactive": 158917,
+              "speculative": 3078
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 0,
+          "scratch_kib": 68
+        }
+      ],
+      "pid": 3920,
+      "exit": 0,
+      "ended_utc": "2026-09-30T09:00:55.771781+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "250a5c7753f4a1c709023a4aba1b986094bf0d1ab14f78f7319c821197168076",
+      "postrun_group_rss_kib": 0,
+      "dest_exists": true,
+      "decoded": {
+        "sha256": "1b856001a5eeda4b86a4f74fcc0ede06d6e917581435910fa9156055916bc724",
+        "bytes": 24853,
+        "has_errors": false,
+        "crate_name": "symlink_module_probe",
+        "dest_file": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/artifacts/alias.llbc",
+        "files": [
+          {
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            },
+            "crate_name": "symlink_module_probe",
+            "contents": "#[path = \"left/common.rs\"]\npub mod left;\n#[path = \"right/common.rs\"]\npub mod right;\n\npub fn combine(x: u32) -> u32 {\n    left::step(x).wrapping_add(right::step(x))\n}\n",
+            "contents_sha256": "491a614d6596dcbc48c999f468f706908df0e635e848feb11faae77a06a77a2e"
+          },
+          {
+            "id": 1,
+            "name": {
+              "Local": "src/left/common.rs"
+            },
+            "crate_name": "symlink_module_probe",
+            "contents": "pub fn step(x: u32) -> u32 {\n    let note = \"🙂é\";\n    x.wrapping_add(note.len() as u32)\n}\n",
+            "contents_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14"
+          },
+          {
+            "id": 2,
+            "name": {
+              "Local": "src/right/common.rs"
+            },
+            "crate_name": "symlink_module_probe",
+            "contents": "pub fn step(x: u32) -> u32 {\n    let note = \"🙂é\";\n    x.wrapping_add(note.len() as u32)\n}\n",
+            "contents_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14"
+          },
+          {
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            },
+            "crate_name": "core",
+            "contents": null,
+            "contents_sha256": null
+          },
+          {
+            "id": 4,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            },
+            "crate_name": "core",
+            "contents": null,
+            "contents_sha256": null
+          },
+          {
+            "id": 5,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            },
+            "crate_name": "core",
+            "contents": null,
+            "contents_sha256": null
+          },
+          {
+            "id": 6,
+            "name": {
+              "Local": "/rustc/library/core/src/str/mod.rs"
+            },
+            "crate_name": "core",
+            "contents": null,
+            "contents_sha256": null
+          }
+        ],
+        "local_items": [
+          {
+            "kind": "function",
+            "def_id": 0,
+            "name": "symlink_module_probe::combine",
+            "file_id": 0,
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 6,
+                  "col": 0
+                },
+                "end": {
+                  "line": 8,
+                  "col": 1
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn combine(x: u32) -> u32 {\n    left::step(x).wrapping_add(right::step(x))\n}"
+          },
+          {
+            "kind": "function",
+            "def_id": 1,
+            "name": "symlink_module_probe::left::step",
+            "file_id": 1,
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 1,
+                  "col": 0
+                },
+                "end": {
+                  "line": 4,
+                  "col": 1
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn step(x: u32) -> u32 {\n    let note = \"🙂é\";\n    x.wrapping_add(note.len() as u32)\n}"
+          },
+          {
+            "kind": "function",
+            "def_id": 2,
+            "name": "symlink_module_probe::right::step",
+            "file_id": 2,
+            "span": {
+              "data": {
+                "file_id": 2,
+                "beg": {
+                  "line": 1,
+                  "col": 0
+                },
+                "end": {
+                  "line": 4,
+                  "col": 1
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn step(x: u32) -> u32 {\n    let note = \"🙂é\";\n    x.wrapping_add(note.len() as u32)\n}"
+          }
+        ],
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "value": [
+              {
+                "Ident": [
+                  "symlink_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "combine",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "value": [
+              {
+                "Ident": [
+                  "symlink_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "left",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "step",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 2
+            },
+            "value": [
+              {
+                "Ident": [
+                  "symlink_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "right",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "step",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 3
+            },
+            "value": [
+              {
+                "Ident": [
+                  "core",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "num",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Ty": {
+                    "params": {
+                      "regions": [],
+                      "types": [],
+                      "const_generics": [],
+                      "trait_clauses": [],
+                      "regions_outlive": [],
+                      "types_outlive": [],
+                      "trait_type_constraints": []
+                    },
+                    "skip_binder": {
+                      "HashConsedValue": [
+                        240,
+                        {
+                          "Literal": {
+                            "UInt": "U32"
+                          }
+                        }
+                      ]
+                    },
+                    "kind": "InherentImplBlock"
+                  }
+                }
+              },
+              {
+                "Ident": [
+                  "wrapping_add",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 4
+            },
+            "value": [
+              {
+                "Ident": [
+                  "core",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "str",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Ty": {
+                    "params": {
+                      "regions": [],
+                      "types": [],
+                      "const_generics": [],
+                      "trait_clauses": [],
+                      "regions_outlive": [],
+                      "types_outlive": [],
+                      "trait_type_constraints": []
+                    },
+                    "skip_binder": {
+                      "HashConsedValue": [
+                        435,
+                        {
+                          "Adt": {
+                            "id": {
+                              "Builtin": "Str"
+                            },
+                            "generics": {
+                              "regions": [],
+                              "types": [],
+                              "const_generics": [],
+                              "trait_refs": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "kind": "InherentImplBlock"
+                  }
+                }
+              },
+              {
+                "Ident": [
+                  "len",
+                  0
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "copy": {
+      "preflight": {
+        "elapsed_seconds": 0.004,
+        "host": {
+          "estimated_reclaimable_percent": 32.2096,
+          "free_disk_bytes": 18861117440,
+          "page_size": 16384,
+          "pages": {
+            "free": 6734,
+            "inactive": 159025,
+            "speculative": 3112
+          },
+          "physical_bytes": 8589934592
+        },
+        "process_group_rss_kib": 0,
+        "scratch_kib": 68
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/artifacts/copy.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/copy/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/copy",
+      "environment": {
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup",
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "RAYON_NUM_THREADS": "1",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/work/target-copy",
+        "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:"
+      },
+      "started_utc": "2026-09-30T09:00:55.790798+00:00",
+      "samples": [
+        {
+          "elapsed_seconds": 0.005,
+          "host": {
+            "estimated_reclaimable_percent": 32.1949,
+            "free_disk_bytes": 18861117440,
+            "page_size": 16384,
+            "pages": {
+              "free": 6653,
+              "inactive": 159029,
+              "speculative": 3112
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 4192,
+          "scratch_kib": 68
+        },
+        {
+          "elapsed_seconds": 0.0844,
+          "host": {
+            "estimated_reclaimable_percent": 32.1354,
+            "free_disk_bytes": 18861113344,
+            "page_size": 16384,
+            "pages": {
+              "free": 6177,
+              "inactive": 159170,
+              "speculative": 3135
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 31152,
+          "scratch_kib": 68
+        },
+        {
+          "elapsed_seconds": 0.1647,
+          "host": {
+            "estimated_reclaimable_percent": 32.2359,
+            "free_disk_bytes": 18861031424,
+            "page_size": 16384,
+            "pages": {
+              "free": 7005,
+              "inactive": 158807,
+              "speculative": 3197
+            },
+            "physical_bytes": 8589934592
+          },
+          "process_group_rss_kib": 0,
+          "scratch_kib": 96
+        }
+      ],
+      "pid": 3971,
+      "exit": 0,
+      "ended_utc": "2026-09-30T09:00:55.972021+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "7838c2da4196b06fbd47bce4c5b9b0f542d73a74d847ecaf1f25803abab51d67",
+      "postrun_group_rss_kib": 0,
+      "dest_exists": true,
+      "decoded": {
+        "sha256": "603a8931af4c51a6c9a9a8ffdaca9db56d66572a74536b4926288e48780449a9",
+        "bytes": 24852,
+        "has_errors": false,
+        "crate_name": "symlink_module_probe",
+        "dest_file": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-symlink-module-identity/artifacts/copy.llbc",
+        "files": [
+          {
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            },
+            "crate_name": "symlink_module_probe",
+            "contents": "#[path = \"left/common.rs\"]\npub mod left;\n#[path = \"right/common.rs\"]\npub mod right;\n\npub fn combine(x: u32) -> u32 {\n    left::step(x).wrapping_add(right::step(x))\n}\n",
+            "contents_sha256": "491a614d6596dcbc48c999f468f706908df0e635e848feb11faae77a06a77a2e"
+          },
+          {
+            "id": 1,
+            "name": {
+              "Local": "src/left/common.rs"
+            },
+            "crate_name": "symlink_module_probe",
+            "contents": "pub fn step(x: u32) -> u32 {\n    let note = \"🙂é\";\n    x.wrapping_add(note.len() as u32)\n}\n",
+            "contents_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14"
+          },
+          {
+            "id": 2,
+            "name": {
+              "Local": "src/right/common.rs"
+            },
+            "crate_name": "symlink_module_probe",
+            "contents": "pub fn step(x: u32) -> u32 {\n    let note = \"🙂é\";\n    x.wrapping_add(note.len() as u32)\n}\n",
+            "contents_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14"
+          },
+          {
+            "id": 3,
+            "name": {
+              "Local": "/rustc/library/core/src/num/uint_macros.rs"
+            },
+            "crate_name": "core",
+            "contents": null,
+            "contents_sha256": null
+          },
+          {
+            "id": 4,
+            "name": {
+              "Local": "/rustc/library/core/src/num/mod.rs"
+            },
+            "crate_name": "core",
+            "contents": null,
+            "contents_sha256": null
+          },
+          {
+            "id": 5,
+            "name": {
+              "Local": "/rustc/library/core/src/lib.rs"
+            },
+            "crate_name": "core",
+            "contents": null,
+            "contents_sha256": null
+          },
+          {
+            "id": 6,
+            "name": {
+              "Local": "/rustc/library/core/src/str/mod.rs"
+            },
+            "crate_name": "core",
+            "contents": null,
+            "contents_sha256": null
+          }
+        ],
+        "local_items": [
+          {
+            "kind": "function",
+            "def_id": 0,
+            "name": "symlink_module_probe::combine",
+            "file_id": 0,
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 6,
+                  "col": 0
+                },
+                "end": {
+                  "line": 8,
+                  "col": 1
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn combine(x: u32) -> u32 {\n    left::step(x).wrapping_add(right::step(x))\n}"
+          },
+          {
+            "kind": "function",
+            "def_id": 1,
+            "name": "symlink_module_probe::left::step",
+            "file_id": 1,
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 1,
+                  "col": 0
+                },
+                "end": {
+                  "line": 4,
+                  "col": 1
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn step(x: u32) -> u32 {\n    let note = \"🙂é\";\n    x.wrapping_add(note.len() as u32)\n}"
+          },
+          {
+            "kind": "function",
+            "def_id": 2,
+            "name": "symlink_module_probe::right::step",
+            "file_id": 2,
+            "span": {
+              "data": {
+                "file_id": 2,
+                "beg": {
+                  "line": 1,
+                  "col": 0
+                },
+                "end": {
+                  "line": 4,
+                  "col": 1
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn step(x: u32) -> u32 {\n    let note = \"🙂é\";\n    x.wrapping_add(note.len() as u32)\n}"
+          }
+        ],
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "value": [
+              {
+                "Ident": [
+                  "symlink_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "combine",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "value": [
+              {
+                "Ident": [
+                  "symlink_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "left",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "step",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 2
+            },
+            "value": [
+              {
+                "Ident": [
+                  "symlink_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "right",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "step",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 3
+            },
+            "value": [
+              {
+                "Ident": [
+                  "core",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "num",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Ty": {
+                    "params": {
+                      "regions": [],
+                      "types": [],
+                      "const_generics": [],
+                      "trait_clauses": [],
+                      "regions_outlive": [],
+                      "types_outlive": [],
+                      "trait_type_constraints": []
+                    },
+                    "skip_binder": {
+                      "HashConsedValue": [
+                        240,
+                        {
+                          "Literal": {
+                            "UInt": "U32"
+                          }
+                        }
+                      ]
+                    },
+                    "kind": "InherentImplBlock"
+                  }
+                }
+              },
+              {
+                "Ident": [
+                  "wrapping_add",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 4
+            },
+            "value": [
+              {
+                "Ident": [
+                  "core",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "str",
+                  0
+                ]
+              },
+              {
+                "Impl": {
+                  "Ty": {
+                    "params": {
+                      "regions": [],
+                      "types": [],
+                      "const_generics": [],
+                      "trait_clauses": [],
+                      "regions_outlive": [],
+                      "types_outlive": [],
+                      "trait_type_constraints": []
+                    },
+                    "skip_binder": {
+                      "HashConsedValue": [
+                        435,
+                        {
+                          "Adt": {
+                            "id": {
+                              "Builtin": "Str"
+                            },
+                            "generics": {
+                              "regions": [],
+                              "types": [],
+                              "const_generics": [],
+                              "trait_refs": []
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "kind": "InherentImplBlock"
+                  }
+                }
+              },
+              {
+                "Ident": [
+                  "len",
+                  0
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "initial_preflight": {
+    "elapsed_seconds": 0.0059,
+    "host": {
+      "estimated_reclaimable_percent": 32.2016,
+      "free_disk_bytes": 18861342720,
+      "page_size": 16384,
+      "pages": {
+        "free": 3912,
+        "inactive": 164106,
+        "speculative": 811
+      },
+      "physical_bytes": 8589934592
+    },
+    "process_group_rss_kib": 0,
+    "scratch_kib": 0
+  },
+  "postrun_host": {
+    "estimated_reclaimable_percent": 32.2409,
+    "free_disk_bytes": 18861023232,
+    "page_size": 16384,
+    "pages": {
+      "free": 7019,
+      "inactive": 158803,
+      "speculative": 3213
+    },
+    "physical_bytes": 8589934592
+  },
+  "cleanup": {
+    "work_exists_after": false
+  }
+}

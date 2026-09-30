@@ -1,0 +1,36 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Observed local Charon 0.1.210 executable",
+      "identity": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "version": "0.1.210",
+        "architecture": "aarch64-darwin"
+      }
+    },
+    {
+      "name": "Observed nightly Rust/Cargo executables",
+      "identity": {
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Matched symlink-alias and physical-copy Rust module fixture",
+      "identity": {
+        "root_source_sha256": "491a614d6596dcbc48c999f468f706908df0e635e848feb11faae77a06a77a2e",
+        "shared_source_sha256": "8865d4672ee3a15e03a3de9c80d62296553f38bb8178fe93ab3c3c6189368d14",
+        "oracle_prelaunch_sha256": "0244d27b7f13388a66092f0472f2a82d414e6a3930c118c67744879ed161e1e9",
+        "results_sha256": "2acbcbea3a2b8b52315d86fd990ac1a59dd2216c1a3d3e9170547e9b1a10a61a"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/source-identity",
+    "rust/module-resolution",
+    "charon/llbc",
+    "experiments/filesystem-alias"
+  ]
+}

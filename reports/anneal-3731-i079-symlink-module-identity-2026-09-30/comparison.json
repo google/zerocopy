@@ -1,0 +1,36 @@
+{
+  "status": "pass",
+  "same_inode_aliases": true,
+  "distinct_inode_copies": true,
+  "alias_local_file_ids": [
+    0,
+    1,
+    2
+  ],
+  "copy_local_file_ids": [
+    0,
+    1,
+    2
+  ],
+  "item_file_ids": {
+    "symlink_module_probe::left::step": 1,
+    "symlink_module_probe::right::step": 2
+  },
+  "decoded_difference_paths": [
+    "/translated/options/dest_file",
+    "/translated/short_names/0/key/Fun",
+    "/translated/short_names/0/value/0/Ident/0",
+    "/translated/short_names/1/key/Fun",
+    "/translated/short_names/1/value/0/Ident/0",
+    "/translated/short_names/2/key/Fun",
+    "/translated/short_names/2/value/0/Ident/0"
+  ],
+  "negative_controls": [
+    "duplicate_file_path",
+    "wrong_right_item_file_id"
+  ],
+  "sampled_peak_rss_kib": {
+    "alias": 125440,
+    "copy": 31152
+  }
+}
