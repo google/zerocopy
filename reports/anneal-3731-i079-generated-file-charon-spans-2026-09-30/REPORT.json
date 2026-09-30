@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Observed local Charon/Cargo/rustc binaries",
+      "identity": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+        "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Generated Rust template, copied source and guarded Charon probe",
+      "identity": {
+        "template_sha256": "d0ee5a2c97d8a1797c31955136c6f5dbf62cde9cdc4f88f7a5cf5f551ba2d0c8",
+        "generated_source_sha256": "d0ee5a2c97d8a1797c31955136c6f5dbf62cde9cdc4f88f7a5cf5f551ba2d0c8",
+        "build_rs_sha256": "64400cefdde17eae6f67ccdbc10937f4b2cecf3fff4a24adb5420c302ac16c34",
+        "probe_sha256": "b0ca1ec67c5821389c46ee37228d7838314a5d377ea3a65e103411ecaf721e78",
+        "results_sha256": "fdda99e59dbce0694d1ef7ea8815577503d4e3e0f990ea8925117b8aec5bf242"
+      }
+    }
+  ],
+  "topics": [
+    "charon/llbc",
+    "charon/source-spans",
+    "anneal/source-provenance",
+    "experiments/generated-source"
+  ]
+}

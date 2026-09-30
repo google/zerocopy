@@ -1,0 +1,33 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v48 coverage ledger",
+      "identity": {
+        "reference_commit": "ff9f5253bd129da0ab4b20e05103ac56993eac0d",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v48"
+      }
+    },
+    {
+      "name": "Generated-file Charon item-span evidence",
+      "identity": {
+        "generated_source_sha256": "d0ee5a2c97d8a1797c31955136c6f5dbf62cde9cdc4f88f7a5cf5f551ba2d0c8",
+        "llbc_sha256": "c8c27d0ac205205ed34d0f7a7efd30efa12750455cd7281025bf2174fac0ae16",
+        "results_sha256": "fdda99e59dbce0694d1ef7ea8815577503d4e3e0f990ea8925117b8aec5bf242"
+      }
+    },
+    {
+      "name": "Inherited public #3730/#3731 issue snapshot",
+      "identity": {
+        "source_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v48",
+        "snapshot_sha256": "08de544674dc82f8b7753283b80dc92d315a25abafcc9b87985e952b90d43f3c"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/source-provenance",
+    "charon/cargo-extraction",
+    "research/coverage-audit"
+  ]
+}
