@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-09-30",
+  "linux": {
+    "repository": "torvalds/linux",
+    "pinned_commit": "551c722f40809618230001baccf219193e22fc5a",
+    "selected_current_commit": "551c722f40809618230001baccf219193e22fc5a",
+    "default_branch": "master",
+    "raw_ref_sha256": "8c1859ff25a7d0345e89096c2232344496e9f415a63c3a7f8afc9d03e903aa32",
+    "refs": {
+      "HEAD": "551c722f40809618230001baccf219193e22fc5a",
+      "refs/heads/master": "551c722f40809618230001baccf219193e22fc5a"
+    },
+    "compare": {
+      "status": "identical",
+      "ahead_by": 0,
+      "behind_by": 0,
+      "total_commits": 0,
+      "changed_paths": []
+    },
+    "mapped_files": [
+      {
+        "source_id": "linux-rust-general-information",
+        "path": "Documentation/rust/general-information.rst",
+        "old_blob_sha1": "09234bed272c2897e0c5487f3005b61757209a6e",
+        "new_blob_sha1": "09234bed272c2897e0c5487f3005b61757209a6e",
+        "content_sha256": "0ad7824820d8068add49795db965b075802cd455576424aa6f0435a897c6b5a6",
+        "size": 6085,
+        "snapshot_path": "snapshots/linux/Documentation/rust/general-information.rst",
+        "raw_url": "https://raw.githubusercontent.com/torvalds/linux/551c722f40809618230001baccf219193e22fc5a/Documentation/rust/general-information.rst"
+      },
+      {
+        "source_id": "linux-foreign-ownable",
+        "path": "rust/kernel/types.rs",
+        "old_blob_sha1": "132dd428c1f6918c5a7625a7cc4c27e0aeaa83fd",
+        "new_blob_sha1": "132dd428c1f6918c5a7625a7cc4c27e0aeaa83fd",
+        "content_sha256": "61979fe66c1611939c18705201cc95a295f021c71867ba98f549d8f576d7071e",
+        "size": 16002,
+        "snapshot_path": "snapshots/linux/rust/kernel/types.rs",
+        "raw_url": "https://raw.githubusercontent.com/torvalds/linux/551c722f40809618230001baccf219193e22fc5a/rust/kernel/types.rs"
+      },
+      {
+        "source_id": "linux-rust-interop",
+        "path": "rust/kernel/interop.rs",
+        "old_blob_sha1": "3b371d782a592f2e85749cc35503c20fa79fd23a",
+        "new_blob_sha1": "3b371d782a592f2e85749cc35503c20fa79fd23a",
+        "content_sha256": "091a4ba5836dc407c1ba9e26c1b2995815987279c99fd12773dddbaaa6bb913d",
+        "size": 295,
+        "snapshot_path": "snapshots/linux/rust/kernel/interop.rs",
+        "raw_url": "https://raw.githubusercontent.com/torvalds/linux/551c722f40809618230001baccf219193e22fc5a/rust/kernel/interop.rs"
+      },
+      {
+        "source_id": "linux-rust-coding-guidelines",
+        "path": "Documentation/rust/coding-guidelines.rst",
+        "old_blob_sha1": "3198be3a6d63fa555b3d6c12e222c7cc2cefd9ef",
+        "new_blob_sha1": "3198be3a6d63fa555b3d6c12e222c7cc2cefd9ef",
+        "content_sha256": "07e04261a2402fdf19ad46a1fe285ba579dab7adb1b9351dc678f4487d939343",
+        "size": 15347,
+        "snapshot_path": "snapshots/linux/Documentation/rust/coding-guidelines.rst",
+        "raw_url": "https://raw.githubusercontent.com/torvalds/linux/551c722f40809618230001baccf219193e22fc5a/Documentation/rust/coding-guidelines.rst"
+      },
+      {
+        "source_id": "linux-seccomp",
+        "path": "Documentation/userspace-api/seccomp_filter.rst",
+        "old_blob_sha1": "cff0fa7f3175e4d2482aafd0ad4ed3b7045a437a",
+        "new_blob_sha1": "cff0fa7f3175e4d2482aafd0ad4ed3b7045a437a",
+        "content_sha256": "cd51ec8cf62f5029614e8c14d43d52ce1b69efbdb73e1f8c7d1c93d646b06ad7",
+        "size": 16587,
+        "snapshot_path": "snapshots/linux/Documentation/userspace-api/seccomp_filter.rst",
+        "raw_url": "https://raw.githubusercontent.com/torvalds/linux/551c722f40809618230001baccf219193e22fc5a/Documentation/userspace-api/seccomp_filter.rst"
+      }
+    ],
+    "github_release_endpoint": {
+      "status": "not_found",
+      "http_status": 404
+    },
+    "kernel_org_latest_stable": {
+      "version": "7.2.8",
+      "source_snapshot_sha256": "18f564a196a05a48f4a90cb9ef6fc8ad5e467fb116605bf1172309a3e8b85344"
+    },
+    "mainline_tag": {
+      "tag": "v7.3-rc5",
+      "tag_ref_object_sha": "5a956dde5526a634dca7ccad27c051ebcc306089",
+      "peeled_commit": "72d3fcf802c45d00b300f25b848a93c3a2bd7c7e",
+      "raw_ref_sha256": "38ba96cea7b1ed66f187a945324b763c0b1a105c0b7ce6c30a454e0f1196d29a",
+      "relation_to_pinned": {
+        "status": "ahead",
+        "ahead_by": 37,
+        "behind_by": 0
+      }
+    }
+  },
+  "redleaf": {
+    "repository": "mars-research/redleaf",
+    "paper_associated_commit": "08753faee652495f55fc8cbb420e5123a183affc",
+    "observed_default_commit": "7194295d1968c8013ae6b3d104a9192f03516449",
+    "raw_ref_sha256": "dce2dd6ceaa005ea6f7da7055aed8abda6f5276464d96afb5b4c67bdc9f539ff",
+    "refs": {
+      "HEAD": "7194295d1968c8013ae6b3d104a9192f03516449",
+      "refs/heads/master": "7194295d1968c8013ae6b3d104a9192f03516449",
+      "refs/heads/osdi20_camera_ready": "08753faee652495f55fc8cbb420e5123a183affc"
+    },
+    "compare": {
+      "status": "diverged",
+      "ahead_by": 314,
+      "behind_by": 1,
+      "total_commits": 314,
+      "returned_file_count": 300,
+      "file_list_complete": false,
+      "mapped_paths_in_returned_file_list": [
+        "kernel/src/heap.rs",
+        "kernel/src/unwind.rs",
+        "lib/core/interfaces/create/src/lib.rs",
+        "lib/core/interfaces/proxy/src/lib.rs",
+        "lib/core/rref/src/traits.rs"
+      ]
+    },
+    "mapped_files": [
+      {
+        "path": "lib/core/rref/src/rref.rs",
+        "old_blob_sha1": "187e9245408bf70b19cdd2f2bc178ac39568da8c",
+        "old_content_sha256": "85823c85a7b5973357b2f123ee7365a6ca0d6b2618868c9567a48a65a8322514",
+        "old_size": 5054,
+        "old_snapshot_path": "snapshots/redleaf/old/lib/core/rref/src/rref.rs",
+        "old_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/08753faee652495f55fc8cbb420e5123a183affc/lib/core/rref/src/rref.rs",
+        "new_status": "missing",
+        "new_http_status": 404,
+        "new_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/7194295d1968c8013ae6b3d104a9192f03516449/lib/core/rref/src/rref.rs"
+      },
+      {
+        "path": "lib/core/rref/src/traits.rs",
+        "old_blob_sha1": "1fd1dc9ffc7f4d85b224539e2cc10464d556938f",
+        "old_content_sha256": "63967762ec6b67a87733656d296e20d6aa930119d017da09a7900bad2558c02d",
+        "old_size": 2080,
+        "old_snapshot_path": "snapshots/redleaf/old/lib/core/rref/src/traits.rs",
+        "old_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/08753faee652495f55fc8cbb420e5123a183affc/lib/core/rref/src/traits.rs",
+        "new_status": "missing",
+        "new_http_status": 404,
+        "new_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/7194295d1968c8013ae6b3d104a9192f03516449/lib/core/rref/src/traits.rs"
+      },
+      {
+        "path": "kernel/src/heap.rs",
+        "old_blob_sha1": "b643a13b29ee2e3fe52718cd7d871932c7e948ca",
+        "old_content_sha256": "85ea5781efd7ce0b29a9a998d250fe2021efd2f66117c51b19e49a3cea535284",
+        "old_size": 3169,
+        "old_snapshot_path": "snapshots/redleaf/old/kernel/src/heap.rs",
+        "old_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/08753faee652495f55fc8cbb420e5123a183affc/kernel/src/heap.rs",
+        "new_status": "present",
+        "new_blob_sha1": "38958e6ed0c820d4367c10806e450dba156d3ee1",
+        "new_content_sha256": "8dbd208b74f4beec7439c6346b33023fab06de3b6b1d8b47a1d092769d5abf95",
+        "new_size": 3401,
+        "new_snapshot_path": "snapshots/redleaf/current-master/kernel/src/heap.rs",
+        "new_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/7194295d1968c8013ae6b3d104a9192f03516449/kernel/src/heap.rs"
+      },
+      {
+        "path": "kernel/src/unwind.rs",
+        "old_blob_sha1": "f71d4d3cc02412353d44ae70c5f6aa9dee8587b3",
+        "old_content_sha256": "73cc5ed014283cf6db252039740fbd5d617bba61a61e9d0c51fe076828842578",
+        "old_size": 3644,
+        "old_snapshot_path": "snapshots/redleaf/old/kernel/src/unwind.rs",
+        "old_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/08753faee652495f55fc8cbb420e5123a183affc/kernel/src/unwind.rs",
+        "new_status": "present",
+        "new_blob_sha1": "c66b92cbc612ca0308c28df64ae78d26f59f828c",
+        "new_content_sha256": "5dcc135cc07e86700363e61d496fa26b5e42813999bfc8f37456fa3ffed825fb",
+        "new_size": 2884,
+        "new_snapshot_path": "snapshots/redleaf/current-master/kernel/src/unwind.rs",
+        "new_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/7194295d1968c8013ae6b3d104a9192f03516449/kernel/src/unwind.rs"
+      },
+      {
+        "path": "lib/core/interfaces/proxy/src/lib.rs",
+        "old_blob_sha1": "98ea00b1b83b2fa966ced6b8e047b825ffd298af",
+        "old_content_sha256": "d19c8b0bf9e539a832721a66d8730bb316413c5179e4bc706cd1d8628f6ba51d",
+        "old_size": 3543,
+        "old_snapshot_path": "snapshots/redleaf/old/lib/core/interfaces/proxy/src/lib.rs",
+        "old_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/08753faee652495f55fc8cbb420e5123a183affc/lib/core/interfaces/proxy/src/lib.rs",
+        "new_status": "missing",
+        "new_http_status": 404,
+        "new_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/7194295d1968c8013ae6b3d104a9192f03516449/lib/core/interfaces/proxy/src/lib.rs"
+      },
+      {
+        "path": "lib/core/interfaces/create/src/lib.rs",
+        "old_blob_sha1": "decd5dd72173f93a0e1f1c0a93c914edc5a25155",
+        "old_content_sha256": "bdaeb9b837bd5259fbd512c1e37db5f3b525fbd16f76587c3982016489d0f36c",
+        "old_size": 4169,
+        "old_snapshot_path": "snapshots/redleaf/old/lib/core/interfaces/create/src/lib.rs",
+        "old_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/08753faee652495f55fc8cbb420e5123a183affc/lib/core/interfaces/create/src/lib.rs",
+        "new_status": "missing",
+        "new_http_status": 404,
+        "new_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/7194295d1968c8013ae6b3d104a9192f03516449/lib/core/interfaces/create/src/lib.rs"
+      },
+      {
+        "path": "lib/core/interfaces/usr/src/rpc.rs",
+        "old_blob_sha1": "9d8941864ced9d749ea31803ff727596e5a55518",
+        "old_content_sha256": "36b2d693b0b5c191d8ed3c8742b2b937eb924b528850c94a5cce0027b9961127",
+        "old_size": 591,
+        "old_snapshot_path": "snapshots/redleaf/old/lib/core/interfaces/usr/src/rpc.rs",
+        "old_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/08753faee652495f55fc8cbb420e5123a183affc/lib/core/interfaces/usr/src/rpc.rs",
+        "new_status": "missing",
+        "new_http_status": 404,
+        "new_raw_url": "https://raw.githubusercontent.com/mars-research/redleaf/7194295d1968c8013ae6b3d104a9192f03516449/lib/core/interfaces/usr/src/rpc.rs"
+      }
+    ],
+    "github_release_endpoint": {
+      "status": "found_non_matching",
+      "tag_name": "bcache_v2",
+      "published_at": "2020-05-07T18:54:58Z",
+      "raw_snapshot_sha256": "240d72a5a0fbc38306312e5e0d1a5930d9350d442d4a94e43849cee3bf23e882"
+    }
+  }
+}

@@ -17038,6 +17038,57 @@
         "systems/reconciliation"
       ]
     },
+    "redleaf-linux-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "d8ebe60bc920363d4e43d95713e7e6a2de5363d7"
+          },
+          "name": "Frozen reference corpus containing R511"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "torvalds/linux",
+            "revision": "551c722f40809618230001baccf219193e22fc5a"
+          },
+          "name": "Linux Rust pinned and observed master source"
+        },
+        {
+          "identity": {
+            "branch": "osdi20_camera_ready",
+            "repository": "mars-research/redleaf",
+            "revision": "08753faee652495f55fc8cbb420e5123a183affc"
+          },
+          "name": "RedLeaf paper-associated branch source"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "mars-research/redleaf",
+            "revision": "7194295d1968c8013ae6b3d104a9192f03516449"
+          },
+          "name": "RedLeaf observed divergent master source"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "72d3fcf802c45d00b300f25b848a93c3a2bd7c7e",
+            "tag": "v7.3-rc5"
+          },
+          "name": "Linux mainline v7.3-rc5 tag"
+        }
+      ],
+      "topics": [
+        "systems/isolation",
+        "rust/linux",
+        "reference/version-review",
+        "anneal/architecture"
+      ]
+    },
     "redleaf-mixed-language-isolation-boundaries-2020-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
