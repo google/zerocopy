@@ -1,0 +1,8 @@
+[package]
+name = "cfg_attr_module_probe"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+alternate = []

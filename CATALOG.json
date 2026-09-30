@@ -3224,6 +3224,41 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v56": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v55",
+            "reference_commit": "1018438e175202747f052dc1c0734d331b656f01"
+          },
+          "name": "Published #3730/#3731 v55 coverage ledger"
+        },
+        {
+          "identity": {
+            "alternate_llbc_sha256": "f63c540636eef0caaf351a63db9569507b3d3e20d3015dd64c7e3d44a19e569c",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "default_llbc_sha256": "6afd8dc318bc9282887dc2b890c5b06a0ea0a9bb0b2284fd4dfa2236beba7498",
+            "results_sha256": "979dc2b0f410e8829f676299887a9cfab56341c361836359d666bf8c38f81405",
+            "source_package": "anneal-3731-i079-cfg-attr-module-2026-09-30"
+          },
+          "name": "Corrected conditional Charon module-source observations"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "a2f5f61de2f08a72d2e7026088942aabba551f6183753538c336fe5800cebcd1",
+            "source": "public GitHub REST issue and comments endpoints"
+          },
+          "name": "Fresh public #3730/#3731 issue snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/source-identity",
+        "charon/llbc",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7587,6 +7622,42 @@
         "charon/cargo-extraction",
         "experiments/artifact-destination",
         "experiments/admission"
+      ]
+    },
+    "anneal-3731-i079-cfg-attr-module-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "architecture": "aarch64-darwin",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Observed local Charon 0.1.210 executable"
+        },
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Observed nightly Rust/Cargo executables"
+        },
+        {
+          "identity": {
+            "alternate_llbc_sha256": "f63c540636eef0caaf351a63db9569507b3d3e20d3015dd64c7e3d44a19e569c",
+            "default_llbc_sha256": "6afd8dc318bc9282887dc2b890c5b06a0ea0a9bb0b2284fd4dfa2236beba7498",
+            "oracle_prelaunch_sha256": "50e8c818ce76ed873204e41c9bd4afef3f8d9d2f8e0569756d2b5a47e7f24a66",
+            "results_sha256": "979dc2b0f410e8829f676299887a9cfab56341c361836359d666bf8c38f81405"
+          },
+          "name": "Corrected cfg_attr(path) two-feature Charon pair"
+        }
+      ],
+      "topics": [
+        "anneal/source-identity",
+        "rust/cfg-attr",
+        "charon/llbc",
+        "experiments/module-selection"
       ]
     },
     "anneal-3731-i079-generated-edge-spans-2026-09-30": {

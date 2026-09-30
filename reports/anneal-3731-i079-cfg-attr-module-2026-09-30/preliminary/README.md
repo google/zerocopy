@@ -1,0 +1,1 @@
+Preliminary acquisition (excluded from the report comparison): the alternate cell used `--features alternate` and therefore also enabled the empty Cargo `default` feature. The corrected top-level pair runs both cells with `--no-default-features`. These raw files are retained solely for provenance of the earlier control.

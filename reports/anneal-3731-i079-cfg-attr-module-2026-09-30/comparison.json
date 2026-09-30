@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "corrected_pair_only": true,
+  "preliminary_excluded": true,
+  "selected_files": {
+    "default": {
+      "Local": "src/default.rs"
+    },
+    "alternate": {
+      "Local": "src/alternate.rs"
+    }
+  },
+  "marker_file_id": 1,
+  "marker_name": "cfg_attr_module_probe::selected::marker",
+  "differing_leaf_paths": [
+    "$.translated.files[1].contents",
+    "$.translated.files[1].name.Local",
+    "$.translated.fun_decls[1].body.Structured.body.statements[0].kind.Assign[1].Use[0].Const.kind.Literal.Scalar.Unsigned[1]",
+    "$.translated.fun_decls[1].item_meta.source_text",
+    "$.translated.options.dest_file"
+  ],
+  "negative_controls": [
+    "wrong_selected_file",
+    "wrong_item_file_id"
+  ]
+}

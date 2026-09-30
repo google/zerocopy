@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "fixture_sha256": {
+    "Cargo.toml": "9541a8c175e33e380f91e2c5c298535844d5b6e5c5cb2312f39946b2c7e723b5",
+    "Cargo.lock": "f19abd2d098e3559b2cbe90e102966b788ac64d295c08c8659a9f7c71edb6189",
+    "src/lib.rs": "a9ad07c4a1ae7eb74e77836a89605f5b546f07f6f7117a4e387f55202dee68c1",
+    "src/default.rs": "8acab6fdf4017bc1b4fcf457d3a0f6b48e566be9d4a914135d26b13c38fd7cb2",
+    "src/alternate.rs": "26838ffc849d01dd50d2d3039a024f8dce4b65b8eac18bbdaa38ec4550ad820a"
+  },
+  "logical_module": "selected",
+  "logical_item_name": "cfg_attr_module_probe::selected::marker",
+  "runs": {
+    "default": {
+      "cargo_flags": [
+        "--no-default-features"
+      ],
+      "selected_file": "src/default.rs",
+      "excluded_file": "src/alternate.rs",
+      "marker_literal": 17
+    },
+    "alternate": {
+      "cargo_flags": [
+        "--no-default-features",
+        "--features",
+        "alternate"
+      ],
+      "selected_file": "src/alternate.rs",
+      "excluded_file": "src/default.rs",
+      "marker_literal": 29
+    }
+  },
+  "hypotheses": {
+    "physical_file_selection": "LLBC should expose selected module source only",
+    "logical_identity": "same logical marker item name under either cfg"
+  }
+}

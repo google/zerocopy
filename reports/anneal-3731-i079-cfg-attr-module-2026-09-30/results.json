@@ -1,0 +1,578 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-09-30T10:08:56.135898+00:00",
+  "status": "completed",
+  "stop_reason": null,
+  "oracle_prelaunch_sha256": "50e8c818ce76ed873204e41c9bd4afef3f8d9d2f8e0569756d2b5a47e7f24a66",
+  "binary_sha256": {
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "limits": {
+    "minimum_start_reclaimable_percent": 30,
+    "minimum_live_reclaimable_percent": 20,
+    "minimum_disk_bytes": 10737418240,
+    "maximum_process_group_rss_kib": 524288,
+    "maximum_scratch_kib": 102400,
+    "timeout_seconds_per_process": 15
+  },
+  "runs": {
+    "default": {
+      "preflight": {
+        "elapsed_seconds": 0.0039,
+        "host": {
+          "estimated_reclaimable_percent": 31.8184,
+          "free_disk_bytes": 18710777856,
+          "physical_bytes": 8589934592,
+          "page_size": 16384,
+          "pages": {
+            "free": 3726,
+            "inactive": 162116,
+            "speculative": 978
+          }
+        },
+        "process_group_rss_kib": 0,
+        "scratch_kib": 20
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/artifacts/default.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/work/crate/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v",
+        "-j",
+        "1",
+        "--no-default-features"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/work/crate",
+      "environment": {
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup",
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "RAYON_NUM_THREADS": "1",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/work/target-default",
+        "RUSTFLAGS": null,
+        "CARGO_ENCODED_RUSTFLAGS": null,
+        "RUSTC_WRAPPER": null,
+        "RUSTC_WORKSPACE_WRAPPER": null,
+        "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:"
+      },
+      "started_utc": "2026-09-30T10:08:56.150188+00:00",
+      "samples": [
+        {
+          "elapsed_seconds": 0.0055,
+          "host": {
+            "estimated_reclaimable_percent": 31.8096,
+            "free_disk_bytes": 18710777856,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 3675,
+              "inactive": 162118,
+              "speculative": 981
+            }
+          },
+          "process_group_rss_kib": 5008,
+          "scratch_kib": 20
+        },
+        {
+          "elapsed_seconds": 0.0917,
+          "host": {
+            "estimated_reclaimable_percent": 31.7194,
+            "free_disk_bytes": 18710777856,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 3751,
+              "inactive": 161408,
+              "speculative": 1142
+            }
+          },
+          "process_group_rss_kib": 26096,
+          "scratch_kib": 20
+        },
+        {
+          "elapsed_seconds": 0.1759,
+          "host": {
+            "estimated_reclaimable_percent": 31.7379,
+            "free_disk_bytes": 18710777856,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 4350,
+              "inactive": 160652,
+              "speculative": 1396
+            }
+          },
+          "process_group_rss_kib": 23904,
+          "scratch_kib": 20
+        },
+        {
+          "elapsed_seconds": 0.2556,
+          "host": {
+            "estimated_reclaimable_percent": 31.6662,
+            "free_disk_bytes": 18710777856,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 3744,
+              "inactive": 160923,
+              "speculative": 1355
+            }
+          },
+          "process_group_rss_kib": 24576,
+          "scratch_kib": 32
+        },
+        {
+          "elapsed_seconds": 0.3373,
+          "host": {
+            "estimated_reclaimable_percent": 31.4556,
+            "free_disk_bytes": 18710732800,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 4191,
+              "inactive": 159165,
+              "speculative": 1562
+            }
+          },
+          "process_group_rss_kib": 105568,
+          "scratch_kib": 32
+        },
+        {
+          "elapsed_seconds": 0.4175,
+          "host": {
+            "estimated_reclaimable_percent": 31.3913,
+            "free_disk_bytes": 18710724608,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 3562,
+              "inactive": 159406,
+              "speculative": 1613
+            }
+          },
+          "process_group_rss_kib": 123120,
+          "scratch_kib": 32
+        },
+        {
+          "elapsed_seconds": 0.4988,
+          "host": {
+            "estimated_reclaimable_percent": 31.6938,
+            "free_disk_bytes": 18710667264,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 6323,
+              "inactive": 158196,
+              "speculative": 1648
+            }
+          },
+          "process_group_rss_kib": 0,
+          "scratch_kib": 48
+        }
+      ],
+      "pid": 5512,
+      "exit": 0,
+      "ended_utc": "2026-09-30T10:08:56.666588+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "3e30e269ff2cacdd98b4b7d294aa866ebcf6de33c30077050fd1cfe75f1f72e8",
+      "postrun_group_rss_kib": 0,
+      "dest_exists": true,
+      "decoded": {
+        "sha256": "6afd8dc318bc9282887dc2b890c5b06a0ea0a9bb0b2284fd4dfa2236beba7498",
+        "bytes": 5611,
+        "has_errors": false,
+        "crate_name": "cfg_attr_module_probe",
+        "dest_file": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/artifacts/default.llbc",
+        "files": [
+          {
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            },
+            "crate_name": "cfg_attr_module_probe",
+            "contents": "#[cfg_attr(feature = \"alternate\", path = \"alternate.rs\")]\n#[cfg_attr(not(feature = \"alternate\"), path = \"default.rs\")]\nmod selected;\n\npub fn read() -> u32 { selected::marker() }\n",
+            "contents_sha256": "a9ad07c4a1ae7eb74e77836a89605f5b546f07f6f7117a4e387f55202dee68c1"
+          },
+          {
+            "id": 1,
+            "name": {
+              "Local": "src/default.rs"
+            },
+            "crate_name": "cfg_attr_module_probe",
+            "contents": "pub fn marker() -> u32 { 17 }\n",
+            "contents_sha256": "8acab6fdf4017bc1b4fcf457d3a0f6b48e566be9d4a914135d26b13c38fd7cb2"
+          }
+        ],
+        "local_items": [
+          {
+            "kind": "function",
+            "def_id": 0,
+            "name": "cfg_attr_module_probe::read",
+            "file_id": 0,
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 5,
+                  "col": 0
+                },
+                "end": {
+                  "line": 5,
+                  "col": 43
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn read() -> u32 { selected::marker() }"
+          },
+          {
+            "kind": "function",
+            "def_id": 1,
+            "name": "cfg_attr_module_probe::selected::marker",
+            "file_id": 1,
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 1,
+                  "col": 0
+                },
+                "end": {
+                  "line": 1,
+                  "col": 29
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn marker() -> u32 { 17 }"
+          }
+        ],
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "value": [
+              {
+                "Ident": [
+                  "cfg_attr_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "read",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "value": [
+              {
+                "Ident": [
+                  "cfg_attr_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "selected",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "marker",
+                  0
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "alternate": {
+      "preflight": {
+        "elapsed_seconds": 0.0043,
+        "host": {
+          "estimated_reclaimable_percent": 31.6856,
+          "free_disk_bytes": 18710667264,
+          "physical_bytes": 8589934592,
+          "page_size": 16384,
+          "pages": {
+            "free": 6278,
+            "inactive": 158198,
+            "speculative": 1648
+          }
+        },
+        "process_group_rss_kib": 0,
+        "scratch_kib": 48
+      },
+      "status": "completed",
+      "stop_reason": null,
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/artifacts/alternate.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/work/crate/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v",
+        "-j",
+        "1",
+        "--no-default-features",
+        "--features",
+        "alternate"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/work/crate",
+      "environment": {
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup",
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "RAYON_NUM_THREADS": "1",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/work/target-alternate",
+        "RUSTFLAGS": null,
+        "CARGO_ENCODED_RUSTFLAGS": null,
+        "RUSTC_WRAPPER": null,
+        "RUSTC_WORKSPACE_WRAPPER": null,
+        "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:"
+      },
+      "started_utc": "2026-09-30T10:08:56.686383+00:00",
+      "samples": [
+        {
+          "elapsed_seconds": 0.0051,
+          "host": {
+            "estimated_reclaimable_percent": 31.6843,
+            "free_disk_bytes": 18710667264,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 6271,
+              "inactive": 158198,
+              "speculative": 1648
+            }
+          },
+          "process_group_rss_kib": 3952,
+          "scratch_kib": 48
+        },
+        {
+          "elapsed_seconds": 0.0849,
+          "host": {
+            "estimated_reclaimable_percent": 31.6982,
+            "free_disk_bytes": 18710654976,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 6475,
+              "inactive": 158060,
+              "speculative": 1655
+            }
+          },
+          "process_group_rss_kib": 32144,
+          "scratch_kib": 48
+        },
+        {
+          "elapsed_seconds": 0.165,
+          "host": {
+            "estimated_reclaimable_percent": 31.765,
+            "free_disk_bytes": 18710593536,
+            "physical_bytes": 8589934592,
+            "page_size": 16384,
+            "pages": {
+              "free": 7264,
+              "inactive": 157589,
+              "speculative": 1687
+            }
+          },
+          "process_group_rss_kib": 0,
+          "scratch_kib": 76
+        }
+      ],
+      "pid": 5552,
+      "exit": 0,
+      "ended_utc": "2026-09-30T10:08:56.867668+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "7c25e33ada85036db9149ee8f00f355f3eaf705d0271b99ddf993500934228ad",
+      "postrun_group_rss_kib": 0,
+      "dest_exists": true,
+      "decoded": {
+        "sha256": "f63c540636eef0caaf351a63db9569507b3d3e20d3015dd64c7e3d44a19e569c",
+        "bytes": 5615,
+        "has_errors": false,
+        "crate_name": "cfg_attr_module_probe",
+        "dest_file": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-cfg-attr-module-corrected/artifacts/alternate.llbc",
+        "files": [
+          {
+            "id": 0,
+            "name": {
+              "Local": "src/lib.rs"
+            },
+            "crate_name": "cfg_attr_module_probe",
+            "contents": "#[cfg_attr(feature = \"alternate\", path = \"alternate.rs\")]\n#[cfg_attr(not(feature = \"alternate\"), path = \"default.rs\")]\nmod selected;\n\npub fn read() -> u32 { selected::marker() }\n",
+            "contents_sha256": "a9ad07c4a1ae7eb74e77836a89605f5b546f07f6f7117a4e387f55202dee68c1"
+          },
+          {
+            "id": 1,
+            "name": {
+              "Local": "src/alternate.rs"
+            },
+            "crate_name": "cfg_attr_module_probe",
+            "contents": "pub fn marker() -> u32 { 29 }\n",
+            "contents_sha256": "26838ffc849d01dd50d2d3039a024f8dce4b65b8eac18bbdaa38ec4550ad820a"
+          }
+        ],
+        "local_items": [
+          {
+            "kind": "function",
+            "def_id": 0,
+            "name": "cfg_attr_module_probe::read",
+            "file_id": 0,
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 5,
+                  "col": 0
+                },
+                "end": {
+                  "line": 5,
+                  "col": 43
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn read() -> u32 { selected::marker() }"
+          },
+          {
+            "kind": "function",
+            "def_id": 1,
+            "name": "cfg_attr_module_probe::selected::marker",
+            "file_id": 1,
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 1,
+                  "col": 0
+                },
+                "end": {
+                  "line": 1,
+                  "col": 29
+                }
+              },
+              "generated_from_span": null
+            },
+            "source_text": "pub fn marker() -> u32 { 29 }"
+          }
+        ],
+        "item_names": [
+          {
+            "key": {
+              "Fun": 0
+            },
+            "value": [
+              {
+                "Ident": [
+                  "cfg_attr_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "read",
+                  0
+                ]
+              }
+            ]
+          },
+          {
+            "key": {
+              "Fun": 1
+            },
+            "value": [
+              {
+                "Ident": [
+                  "cfg_attr_module_probe",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "selected",
+                  0
+                ]
+              },
+              {
+                "Ident": [
+                  "marker",
+                  0
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "initial_preflight": {
+    "elapsed_seconds": 0.0058,
+    "host": {
+      "estimated_reclaimable_percent": 31.7987,
+      "free_disk_bytes": 18710818816,
+      "physical_bytes": 8589934592,
+      "page_size": 16384,
+      "pages": {
+        "free": 3726,
+        "inactive": 162016,
+        "speculative": 975
+      }
+    },
+    "process_group_rss_kib": 0,
+    "scratch_kib": 0
+  },
+  "postrun_host": {
+    "estimated_reclaimable_percent": 31.745,
+    "free_disk_bytes": 18710593536,
+    "physical_bytes": 8589934592,
+    "page_size": 16384,
+    "pages": {
+      "free": 7038,
+      "inactive": 157709,
+      "speculative": 1688
+    }
+  },
+  "cleanup": {
+    "work_exists_after": false
+  }
+}
