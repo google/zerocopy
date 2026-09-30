@@ -11052,6 +11052,50 @@
         "cargo/rustc-invocation"
       ]
     },
+    "charon-0-1-210-to-nightly-2026-09-30-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "2e9db344b6c0e6391ff78655a18b81ecb7e293e1"
+          },
+          "name": "Frozen reference report corpus for the two Charon 0.1.210 cohorts"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Aeneas-pinned Charon 0.1.210 source"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "version": "0.1.210"
+          },
+          "name": "Separate standalone Charon 0.1.210 source"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "2804f2dbc349a4c80201f7c528adf70f8d1ee5fa",
+            "tag": "nightly-2026.09.30",
+            "version": "0.1.274"
+          },
+          "name": "Standalone Charon nightly-2026.09.30 source"
+        }
+      ],
+      "topics": [
+        "charon/version-review",
+        "rust/toolchain-pins",
+        "cargo/component-identity",
+        "reference/cohort-audit"
+      ]
+    },
     "charon-async-coroutines-0-1-210": {
       "observed_at": "2026-09-26",
       "subjects": [
