@@ -1,0 +1,63 @@
+{
+  "catalog_at_parent_sha256": "6f7f723b759581111c779b32732ace39106d10012fc9a2591f2b926dfd7f334e",
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [],
+  "changed_status_ids": [],
+  "context_investigation_ids": [
+    "I002",
+    "I007",
+    "I157"
+  ],
+  "context_suggestion_ids": [
+    "H09",
+    "L04",
+    "L07",
+    "L08"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v74.csv": "ca59f1da61bde7e98ff132aa4986d61a366ae471f92279855315d021a90a2a00",
+    "investigation-final-v74.csv": "186fb3a7377f44aa9785237d02b20fa33dcf3a757e2a067805daba17de3500a4",
+    "live-issue-snapshot-v74.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v74.json": "1acf02014210fa16b5a702623bf5753502c2731c3c085410956391214e6087b5",
+    "source-package-inventory-v74.csv": "39a25f3013c6ea1abb4215e7447fcb6337bfb1fb377a9a5c50d6c933712af244"
+  },
+  "input_sha256": {
+    "v73/3730-crosswalk-final-v73.csv": "20da48a42148c2eee02c2426361c24ab1119213e5baab9e022b31f1e54932ac4",
+    "v73/investigation-final-v73.csv": "34917e24b0f249a38c475b4b6cca72dd4cb31f32c4e512221a8d98d1826a95d0",
+    "v73/live-issue-snapshot-v73.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "v73/row-challenge-v73.json": "ba9783d88942b1f4891a7276cce9640dda75522c71fb88e45455e7ff5f05a05c",
+    "v73/validation-v73.json": "ae5b2a46a2cd19bc081c589a3c6480fbbd7929da8803c6db8fdb66e43db52852"
+  },
+  "inventory_files": 27,
+  "inventory_only_packages": [],
+  "investigation_count": 159,
+  "new_report_packages": [
+    "rocq-serapi-fleche-current-source-review"
+  ],
+  "reference_tip_at_start": "e0da59ac5dea7e4e75ddd021fc0c26d69bd74cda",
+  "row_count": 333,
+  "source_map_sha256": "9fda0b3e0ce71e54718f0d7069de7e39b1bc2dbd0e8f09fbb9126a566df7202f",
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v73",
+  "source_review_context_packages": [
+    "rocq-serapi-fleche-current-source-review"
+  ],
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345,
+  "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+  "v73_published_commit": "f64e634e06aaf8b7eae2fefb3a9d7f2ebf82d3b2"
+}

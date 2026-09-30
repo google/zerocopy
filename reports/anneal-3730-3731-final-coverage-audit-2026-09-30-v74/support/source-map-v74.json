@@ -1,0 +1,7 @@
+{
+  "rocq-serapi-fleche-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["coq-rocq-stm-serapi-fleche-architecture-2013-2026"],
+    "reason": "R386 freezes this exact v67 source/spec analog and its eleven evidence-map claims. The inspected official SerAPI and Rocq LSP/Flèche default-branch tips still equal the original pinned commits, yielding zero-forward source comparisons and unchanged claim-mapped blobs. No SerAPI, Rocq LSP, Flèche, Rocq, or Anneal executable was run; this is source context only."
+  }
+}

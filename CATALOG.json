@@ -3957,6 +3957,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v74": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "parent_catalog_sha256": "6f7f723b759581111c779b32732ace39106d10012fc9a2591f2b926dfd7f334e",
+            "reference_parent": "e0da59ac5dea7e4e75ddd021fc0c26d69bd74cda",
+            "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+            "v73_published_commit": "f64e634e06aaf8b7eae2fefb3a9d7f2ebf82d3b2"
+          },
+          "name": "Published v73 ledger and exact frozen reference parent"
+        },
+        {
+          "identity": {
+            "package_count": "1",
+            "source_inventory_sha256": "39a25f3013c6ea1abb4215e7447fcb6337bfb1fb377a9a5c50d6c933712af244",
+            "source_map_sha256": "9fda0b3e0ce71e54718f0d7069de7e39b1bc2dbd0e8f09fbb9126a566df7202f"
+          },
+          "name": "One post-v73 SerAPI/Rocq-LSP current-source review"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+            "source": "prior published local snapshot; no new issue fetch"
+          },
+          "name": "Inherited public #3730/#3731 issue snapshot from v65"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
