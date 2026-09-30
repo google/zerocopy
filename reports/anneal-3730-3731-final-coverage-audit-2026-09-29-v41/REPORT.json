@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "artifact-identity/llbc",
+    "charon/cargo-extraction"
+  ],
+  "subjects": [
+    {
+      "name": "Published v40 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "1332bf21478d8418403d306a7884b653cd735eea",
+        "row_challenge_sha256": "cc5e063d2fe1fd186f968ea0e90c917291e6d682f98d4cbbd1840cd7e37f9317"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731 as retained in v40",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Retained Aeneas lexical declaration-block comparison",
+      "identity": {
+        "source_report_sha256": "2282fed71847e05995e786b8249a712841089a6ccef8a58c31489acdc7497710",
+        "compare_sha256": "1edd1769c67ece63917399f457eb30164ce52b2e63fe16d9c3ff39df1fc7fe3d",
+        "comparison_sha256": "1f3219d4c97bfd02b0109b66123f9fecb7383dc29d96865affd01d0627fff475",
+        "source_results_sha256": "694c43532ac90504947bd5cfe9e34369cae68e2164683e8c3f772138022d45b4",
+        "source_handoff_manifest_sha256": "e9870d6f9844eb5ebc192d297d642319333549aac483d9f9a3322c75ba3c8826"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

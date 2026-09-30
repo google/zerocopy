@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "aeneas/lean-generation",
+    "anneal/generation-publication"
+  ],
+  "subjects": [
+    {
+      "name": "Published Aeneas identity-manifest mutation corpus",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "1332bf21478d8418403d306a7884b653cd735eea",
+        "source_report_sha256": "f73fc593ab77cbbbf1647f242cf6a2d8c58441ea8120e1c4b9820b04c667e929",
+        "source_results_sha256": "694c43532ac90504947bd5cfe9e34369cae68e2164683e8c3f772138022d45b4",
+        "source_handoff_manifest_sha256": "e9870d6f9844eb5ebc192d297d642319333549aac483d9f9a3322c75ba3c8826",
+        "source_probe_sha256": "e561d0eaba807dcc9c23d2df1f084e7b8f6cb97aec88f09ffe0d13deea18426e"
+      }
+    },
+    {
+      "name": "Offline lexical declaration-block comparison",
+      "identity": {
+        "compare_sha256": "1edd1769c67ece63917399f457eb30164ce52b2e63fe16d9c3ff39df1fc7fe3d",
+        "comparison_sha256": "1f3219d4c97bfd02b0109b66123f9fecb7383dc29d96865affd01d0627fff475",
+        "source_results_sha256": "694c43532ac90504947bd5cfe9e34369cae68e2164683e8c3f772138022d45b4"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

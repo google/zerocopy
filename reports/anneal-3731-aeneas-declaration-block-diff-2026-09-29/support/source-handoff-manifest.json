@@ -1,0 +1,3858 @@
+{
+  "deletion": {
+    "removed_declarations": [
+      "identity_probe.step",
+      "identity_probe.use_step"
+    ],
+    "shared_destination_failed_to_remove_old_paths": []
+  },
+  "failed_publication": {
+    "exit": 1,
+    "partial_generated_files": {
+      "Current.lean": {
+        "bytes": 20,
+        "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+      },
+      "Funs.lean": {
+        "bytes": 908,
+        "sha256": "aec4a4182c5e540ee604e2313d12d5344ee9b5cc28727d237be2d05ae4fc1669"
+      },
+      "Types.lean": {
+        "bytes": 533,
+        "sha256": "a06e07ba15074ecb210302d51359bae0a0b1e0d3d30baf6f82eee21823b724f4"
+      },
+      "UserModel.lean": {
+        "bytes": 70,
+        "sha256": "ed06e42fae79c64baf2001f6fcf771a87bc4a8ac925d89218f204672d8eb5fcf"
+      }
+    },
+    "reject_candidate": true
+  },
+  "generations": {
+    "base": {
+      "aeneas_flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "anneal_obligations": null,
+      "declarations": [
+        "identity_probe.Bump",
+        "identity_probe.Wrap",
+        "identity_probe.Wrap.Insts.CoreCloneClone",
+        "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "identity_probe.Wrap.Insts.Identity_probeBump",
+        "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "identity_probe.even",
+        "identity_probe.odd",
+        "identity_probe.step",
+        "identity_probe.use_bump",
+        "identity_probe.use_step"
+      ],
+      "generated_files": {
+        "Current.lean": {
+          "bytes": 20,
+          "declarations": [],
+          "imports": [
+            "import Current.Funs"
+          ],
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 4629,
+          "declarations": [
+            {
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line": 21,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+              "origin_comment": {
+                "line": 18,
+                "text": "/-- [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}::clone]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line": 27,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone",
+              "origin_comment": {
+                "line": 24,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line": 34,
+              "name": "identity_probe.Wrap.Insts.CoreMarkerCopy",
+              "origin_comment": {
+                "line": 31,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::marker::Copy for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line": 41,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+              "origin_comment": {
+                "line": 38,
+                "text": "/-- [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}::bump]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line": 47,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump",
+              "origin_comment": {
+                "line": 44,
+                "text": "/-- Trait implementation: [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line": 54,
+              "name": "identity_probe.step",
+              "origin_comment": {
+                "line": 51,
+                "text": "/-- [identity_probe::step]:"
+              }
+            },
+            {
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line": 60,
+              "name": "identity_probe.use_step",
+              "origin_comment": {
+                "line": 57,
+                "text": "/-- [identity_probe::use_step]:"
+              }
+            },
+            {
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line": 66,
+              "name": "identity_probe.use_bump",
+              "origin_comment": {
+                "line": 63,
+                "text": "/-- [identity_probe::use_bump]:"
+              }
+            },
+            {
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line": 74,
+              "name": "identity_probe.even",
+              "origin_comment": {
+                "line": 71,
+                "text": "/-- [identity_probe::even]:"
+              }
+            },
+            {
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line": 84,
+              "name": "identity_probe.odd",
+              "origin_comment": {
+                "line": 81,
+                "text": "/-- [identity_probe::odd]:"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Current.Types"
+          ],
+          "sha256": "93da487c5699cc7285de9f18817d62afb858da4d9e6ebbea1e51eec330a4a325"
+        },
+        "Types.lean": {
+          "bytes": 1205,
+          "declarations": [
+            {
+              "head": "def Wrap := Std.U32",
+              "line": 21,
+              "name": "identity_probe.Wrap",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            },
+            {
+              "head": "structure Bump (Self : Type) where",
+              "line": 26,
+              "name": "identity_probe.Bump",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "llbc_declarations": [
+        {
+          "id": 0,
+          "kind": "type_decls",
+          "local": true,
+          "name": "identity_probe::Wrap",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 25,
+                "line": 3
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "trait_decls",
+          "local": true,
+          "name": "identity_probe::Bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 40,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::clone::Clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 194
+              },
+              "end": {
+                "col": 28,
+                "line": 194
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Destruct",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Copy",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 454
+              },
+              "end": {
+                "col": 21,
+                "line": 454
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 16,
+                "line": 2
+              },
+              "end": {
+                "col": 20,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 5
+              },
+              "end": {
+                "col": 70,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 6
+              },
+              "end": {
+                "col": 48,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 7
+              },
+              "end": {
+                "col": 42,
+                "line": 7
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 44,
+                "line": 8
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::even",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 9
+              },
+              "end": {
+                "col": 70,
+                "line": 9
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::odd",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 10
+              },
+              "end": {
+                "col": 71,
+                "line": 10
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 7,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::clone::Clone::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 4,
+                "line": 236
+              },
+              "end": {
+                "col": 28,
+                "line": 236
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 9,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::Bump::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 17,
+                "line": 4
+              },
+              "end": {
+                "col": 38,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 10,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 21,
+                "line": 5
+              },
+              "end": {
+                "col": 68,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 11,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::num::<impl>::wrapping_add",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 4
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 12,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::marker::Destruct::drop_in_place",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "llbc_schema_version": "0.1.210",
+      "llbc_sha256": "d446aee1aff6be072ffd05a46a01c9a730836c7b5917318bd0519dc7dac02eb5",
+      "proven_mapping_to_rust_items": null,
+      "source_sha256": "9544ae53d6a687bd45cc266cc16e7f7885d4caec32976bcd1a34db903dbfe657"
+    },
+    "delete_step": {
+      "aeneas_flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "anneal_obligations": null,
+      "declarations": [
+        "identity_probe.Bump",
+        "identity_probe.Wrap",
+        "identity_probe.Wrap.Insts.CoreCloneClone",
+        "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "identity_probe.Wrap.Insts.Identity_probeBump",
+        "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "identity_probe.even",
+        "identity_probe.odd",
+        "identity_probe.use_bump"
+      ],
+      "generated_files": {
+        "Current.lean": {
+          "bytes": 20,
+          "declarations": [],
+          "imports": [
+            "import Current.Funs"
+          ],
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 3923,
+          "declarations": [
+            {
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line": 21,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+              "origin_comment": {
+                "line": 18,
+                "text": "/-- [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}::clone]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line": 27,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone",
+              "origin_comment": {
+                "line": 24,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line": 34,
+              "name": "identity_probe.Wrap.Insts.CoreMarkerCopy",
+              "origin_comment": {
+                "line": 31,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::marker::Copy for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line": 41,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+              "origin_comment": {
+                "line": 38,
+                "text": "/-- [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}::bump]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line": 47,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump",
+              "origin_comment": {
+                "line": 44,
+                "text": "/-- Trait implementation: [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line": 54,
+              "name": "identity_probe.use_bump",
+              "origin_comment": {
+                "line": 51,
+                "text": "/-- [identity_probe::use_bump]:"
+              }
+            },
+            {
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line": 62,
+              "name": "identity_probe.even",
+              "origin_comment": {
+                "line": 59,
+                "text": "/-- [identity_probe::even]:"
+              }
+            },
+            {
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line": 72,
+              "name": "identity_probe.odd",
+              "origin_comment": {
+                "line": 69,
+                "text": "/-- [identity_probe::odd]:"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Current.Types"
+          ],
+          "sha256": "39863ea91778d455dacd9f78b194457f13262fd274fd415a08d0738bf06daec8"
+        },
+        "Types.lean": {
+          "bytes": 1205,
+          "declarations": [
+            {
+              "head": "def Wrap := Std.U32",
+              "line": 21,
+              "name": "identity_probe.Wrap",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            },
+            {
+              "head": "structure Bump (Self : Type) where",
+              "line": 26,
+              "name": "identity_probe.Bump",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "llbc_declarations": [
+        {
+          "id": 0,
+          "kind": "type_decls",
+          "local": true,
+          "name": "identity_probe::Wrap",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 25,
+                "line": 3
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "trait_decls",
+          "local": true,
+          "name": "identity_probe::Bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 40,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::clone::Clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 194
+              },
+              "end": {
+                "col": 28,
+                "line": 194
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Destruct",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Copy",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 454
+              },
+              "end": {
+                "col": 21,
+                "line": 454
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 16,
+                "line": 2
+              },
+              "end": {
+                "col": 20,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 5
+              },
+              "end": {
+                "col": 70,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 6
+              },
+              "end": {
+                "col": 44,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::even",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 7
+              },
+              "end": {
+                "col": 70,
+                "line": 7
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::odd",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 71,
+                "line": 8
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::clone::Clone::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 4,
+                "line": 236
+              },
+              "end": {
+                "col": 28,
+                "line": 236
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 7,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::Bump::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 17,
+                "line": 4
+              },
+              "end": {
+                "col": 38,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 8,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 21,
+                "line": 5
+              },
+              "end": {
+                "col": 68,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 9,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::marker::Destruct::drop_in_place",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 10,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::num::<impl>::wrapping_add",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 4
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "llbc_schema_version": "0.1.210",
+      "llbc_sha256": "d9496ee93238f7ff4d41aa379ca5e4d2a800b598b87b7b823312597143044e4d",
+      "proven_mapping_to_rust_items": null,
+      "source_sha256": "46ffbac021ee4e4fe39879f9f6cdd9b9249df467a45d748515815f5f693cbdf0"
+    },
+    "function_body": {
+      "aeneas_flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "anneal_obligations": null,
+      "declarations": [
+        "identity_probe.Bump",
+        "identity_probe.Wrap",
+        "identity_probe.Wrap.Insts.CoreCloneClone",
+        "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "identity_probe.Wrap.Insts.Identity_probeBump",
+        "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "identity_probe.even",
+        "identity_probe.odd",
+        "identity_probe.step",
+        "identity_probe.use_bump",
+        "identity_probe.use_step"
+      ],
+      "generated_files": {
+        "Current.lean": {
+          "bytes": 20,
+          "declarations": [],
+          "imports": [
+            "import Current.Funs"
+          ],
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 4629,
+          "declarations": [
+            {
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line": 21,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+              "origin_comment": {
+                "line": 18,
+                "text": "/-- [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}::clone]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line": 27,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone",
+              "origin_comment": {
+                "line": 24,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line": 34,
+              "name": "identity_probe.Wrap.Insts.CoreMarkerCopy",
+              "origin_comment": {
+                "line": 31,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::marker::Copy for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line": 41,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+              "origin_comment": {
+                "line": 38,
+                "text": "/-- [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}::bump]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line": 47,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump",
+              "origin_comment": {
+                "line": 44,
+                "text": "/-- Trait implementation: [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line": 54,
+              "name": "identity_probe.step",
+              "origin_comment": {
+                "line": 51,
+                "text": "/-- [identity_probe::step]:"
+              }
+            },
+            {
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line": 60,
+              "name": "identity_probe.use_step",
+              "origin_comment": {
+                "line": 57,
+                "text": "/-- [identity_probe::use_step]:"
+              }
+            },
+            {
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line": 66,
+              "name": "identity_probe.use_bump",
+              "origin_comment": {
+                "line": 63,
+                "text": "/-- [identity_probe::use_bump]:"
+              }
+            },
+            {
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line": 74,
+              "name": "identity_probe.even",
+              "origin_comment": {
+                "line": 71,
+                "text": "/-- [identity_probe::even]:"
+              }
+            },
+            {
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line": 84,
+              "name": "identity_probe.odd",
+              "origin_comment": {
+                "line": 81,
+                "text": "/-- [identity_probe::odd]:"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Current.Types"
+          ],
+          "sha256": "0450655e15b98680a664356c6d8bbf8d9828ab759254c5095c1e69c3bb0b3edd"
+        },
+        "Types.lean": {
+          "bytes": 1205,
+          "declarations": [
+            {
+              "head": "def Wrap := Std.U32",
+              "line": 21,
+              "name": "identity_probe.Wrap",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            },
+            {
+              "head": "structure Bump (Self : Type) where",
+              "line": 26,
+              "name": "identity_probe.Bump",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "llbc_declarations": [
+        {
+          "id": 0,
+          "kind": "type_decls",
+          "local": true,
+          "name": "identity_probe::Wrap",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 25,
+                "line": 3
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "trait_decls",
+          "local": true,
+          "name": "identity_probe::Bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 40,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::clone::Clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 194
+              },
+              "end": {
+                "col": 28,
+                "line": 194
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Destruct",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Copy",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 454
+              },
+              "end": {
+                "col": 21,
+                "line": 454
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 16,
+                "line": 2
+              },
+              "end": {
+                "col": 20,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 5
+              },
+              "end": {
+                "col": 70,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 6
+              },
+              "end": {
+                "col": 48,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 7
+              },
+              "end": {
+                "col": 42,
+                "line": 7
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 44,
+                "line": 8
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::even",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 9
+              },
+              "end": {
+                "col": 70,
+                "line": 9
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::odd",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 10
+              },
+              "end": {
+                "col": 71,
+                "line": 10
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 7,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::clone::Clone::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 4,
+                "line": 236
+              },
+              "end": {
+                "col": 28,
+                "line": 236
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 9,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::Bump::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 17,
+                "line": 4
+              },
+              "end": {
+                "col": 38,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 10,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 21,
+                "line": 5
+              },
+              "end": {
+                "col": 68,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 11,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::num::<impl>::wrapping_add",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 4
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 12,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::marker::Destruct::drop_in_place",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "llbc_schema_version": "0.1.210",
+      "llbc_sha256": "93638bcc25cadad10bebc50cb7e8b7402377467409ca27e6a9bbd78670710eb7",
+      "proven_mapping_to_rust_items": null,
+      "source_sha256": "71d890abdf0a8d653c2014065f26a67b7aa5956edbc5ce0831b25c38d7f97dec"
+    },
+    "helper_insert": {
+      "aeneas_flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "anneal_obligations": null,
+      "declarations": [
+        "identity_probe.Bump",
+        "identity_probe.Wrap",
+        "identity_probe.Wrap.Insts.CoreCloneClone",
+        "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "identity_probe.Wrap.Insts.Identity_probeBump",
+        "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "identity_probe.even",
+        "identity_probe.helper",
+        "identity_probe.odd",
+        "identity_probe.step",
+        "identity_probe.use_bump",
+        "identity_probe.use_step"
+      ],
+      "generated_files": {
+        "Current.lean": {
+          "bytes": 20,
+          "declarations": [],
+          "imports": [
+            "import Current.Funs"
+          ],
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 4965,
+          "declarations": [
+            {
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line": 21,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+              "origin_comment": {
+                "line": 18,
+                "text": "/-- [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}::clone]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line": 27,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone",
+              "origin_comment": {
+                "line": 24,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line": 34,
+              "name": "identity_probe.Wrap.Insts.CoreMarkerCopy",
+              "origin_comment": {
+                "line": 31,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::marker::Copy for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line": 41,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+              "origin_comment": {
+                "line": 38,
+                "text": "/-- [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}::bump]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line": 47,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump",
+              "origin_comment": {
+                "line": 44,
+                "text": "/-- Trait implementation: [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def helper (x : Std.U32) : Result Std.U32 := do",
+              "line": 54,
+              "name": "identity_probe.helper",
+              "origin_comment": {
+                "line": 51,
+                "text": "/-- [identity_probe::helper]:"
+              }
+            },
+            {
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line": 60,
+              "name": "identity_probe.step",
+              "origin_comment": {
+                "line": 57,
+                "text": "/-- [identity_probe::step]:"
+              }
+            },
+            {
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line": 66,
+              "name": "identity_probe.use_step",
+              "origin_comment": {
+                "line": 63,
+                "text": "/-- [identity_probe::use_step]:"
+              }
+            },
+            {
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line": 72,
+              "name": "identity_probe.use_bump",
+              "origin_comment": {
+                "line": 69,
+                "text": "/-- [identity_probe::use_bump]:"
+              }
+            },
+            {
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line": 80,
+              "name": "identity_probe.even",
+              "origin_comment": {
+                "line": 77,
+                "text": "/-- [identity_probe::even]:"
+              }
+            },
+            {
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line": 90,
+              "name": "identity_probe.odd",
+              "origin_comment": {
+                "line": 87,
+                "text": "/-- [identity_probe::odd]:"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Current.Types"
+          ],
+          "sha256": "6fbe31082ca54177a1b37891f04368b4cb5f610aa67fc70a1d98434f488802cc"
+        },
+        "Types.lean": {
+          "bytes": 1205,
+          "declarations": [
+            {
+              "head": "def Wrap := Std.U32",
+              "line": 21,
+              "name": "identity_probe.Wrap",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            },
+            {
+              "head": "structure Bump (Self : Type) where",
+              "line": 26,
+              "name": "identity_probe.Bump",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "llbc_declarations": [
+        {
+          "id": 0,
+          "kind": "type_decls",
+          "local": true,
+          "name": "identity_probe::Wrap",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 25,
+                "line": 3
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "trait_decls",
+          "local": true,
+          "name": "identity_probe::Bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 40,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::clone::Clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 194
+              },
+              "end": {
+                "col": 28,
+                "line": 194
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Destruct",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Copy",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 454
+              },
+              "end": {
+                "col": 21,
+                "line": 454
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 16,
+                "line": 2
+              },
+              "end": {
+                "col": 20,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 5
+              },
+              "end": {
+                "col": 70,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::helper",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 6
+              },
+              "end": {
+                "col": 34,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 7
+              },
+              "end": {
+                "col": 48,
+                "line": 7
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 42,
+                "line": 8
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 9
+              },
+              "end": {
+                "col": 44,
+                "line": 9
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::even",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 10
+              },
+              "end": {
+                "col": 70,
+                "line": 10
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::odd",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 11
+              },
+              "end": {
+                "col": 71,
+                "line": 11
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 6,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 8,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::clone::Clone::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 4,
+                "line": 236
+              },
+              "end": {
+                "col": 28,
+                "line": 236
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 10,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::Bump::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 17,
+                "line": 4
+              },
+              "end": {
+                "col": 38,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 11,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 21,
+                "line": 5
+              },
+              "end": {
+                "col": 68,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 12,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::num::<impl>::wrapping_add",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 4
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 13,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::marker::Destruct::drop_in_place",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "llbc_schema_version": "0.1.210",
+      "llbc_sha256": "8134e643ec55067b7f670713697e37a5bcb39889f4d147b6f279409f45f37df4",
+      "proven_mapping_to_rust_items": null,
+      "source_sha256": "0f04c3aa2bcf444cb9d6176469c0ecfd2a5ffe5b6801abf627ae5a8f3d492176"
+    },
+    "recursive_group": {
+      "aeneas_flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "anneal_obligations": null,
+      "declarations": [
+        "identity_probe.Bump",
+        "identity_probe.Wrap",
+        "identity_probe.Wrap.Insts.CoreCloneClone",
+        "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "identity_probe.Wrap.Insts.Identity_probeBump",
+        "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "identity_probe.even",
+        "identity_probe.odd",
+        "identity_probe.step",
+        "identity_probe.use_bump",
+        "identity_probe.use_step"
+      ],
+      "generated_files": {
+        "Current.lean": {
+          "bytes": 20,
+          "declarations": [],
+          "imports": [
+            "import Current.Funs"
+          ],
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 4630,
+          "declarations": [
+            {
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line": 21,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+              "origin_comment": {
+                "line": 18,
+                "text": "/-- [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}::clone]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line": 27,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone",
+              "origin_comment": {
+                "line": 24,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line": 34,
+              "name": "identity_probe.Wrap.Insts.CoreMarkerCopy",
+              "origin_comment": {
+                "line": 31,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::marker::Copy for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line": 41,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+              "origin_comment": {
+                "line": 38,
+                "text": "/-- [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}::bump]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line": 47,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump",
+              "origin_comment": {
+                "line": 44,
+                "text": "/-- Trait implementation: [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line": 54,
+              "name": "identity_probe.step",
+              "origin_comment": {
+                "line": 51,
+                "text": "/-- [identity_probe::step]:"
+              }
+            },
+            {
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line": 60,
+              "name": "identity_probe.use_step",
+              "origin_comment": {
+                "line": 57,
+                "text": "/-- [identity_probe::use_step]:"
+              }
+            },
+            {
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line": 66,
+              "name": "identity_probe.use_bump",
+              "origin_comment": {
+                "line": 63,
+                "text": "/-- [identity_probe::use_bump]:"
+              }
+            },
+            {
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line": 74,
+              "name": "identity_probe.even",
+              "origin_comment": {
+                "line": 71,
+                "text": "/-- [identity_probe::even]:"
+              }
+            },
+            {
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line": 84,
+              "name": "identity_probe.odd",
+              "origin_comment": {
+                "line": 81,
+                "text": "/-- [identity_probe::odd]:"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Current.Types"
+          ],
+          "sha256": "65ddb44a1cddbc5cc3b7059f544655cdfbbcc35222c9cae5709ff6fdd6126d69"
+        },
+        "Types.lean": {
+          "bytes": 1205,
+          "declarations": [
+            {
+              "head": "def Wrap := Std.U32",
+              "line": 21,
+              "name": "identity_probe.Wrap",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            },
+            {
+              "head": "structure Bump (Self : Type) where",
+              "line": 26,
+              "name": "identity_probe.Bump",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "llbc_declarations": [
+        {
+          "id": 0,
+          "kind": "type_decls",
+          "local": true,
+          "name": "identity_probe::Wrap",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 25,
+                "line": 3
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "trait_decls",
+          "local": true,
+          "name": "identity_probe::Bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 40,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::clone::Clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 194
+              },
+              "end": {
+                "col": 28,
+                "line": 194
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Destruct",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Copy",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 454
+              },
+              "end": {
+                "col": 21,
+                "line": 454
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 16,
+                "line": 2
+              },
+              "end": {
+                "col": 20,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 5
+              },
+              "end": {
+                "col": 70,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 6
+              },
+              "end": {
+                "col": 48,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 7
+              },
+              "end": {
+                "col": 42,
+                "line": 7
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 44,
+                "line": 8
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::even",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 9
+              },
+              "end": {
+                "col": 70,
+                "line": 9
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::odd",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 10
+              },
+              "end": {
+                "col": 71,
+                "line": 10
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 7,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::clone::Clone::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 4,
+                "line": 236
+              },
+              "end": {
+                "col": 28,
+                "line": 236
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 9,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::Bump::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 17,
+                "line": 4
+              },
+              "end": {
+                "col": 38,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 10,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 21,
+                "line": 5
+              },
+              "end": {
+                "col": 68,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 11,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::num::<impl>::wrapping_add",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 4
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 12,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::marker::Destruct::drop_in_place",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "llbc_schema_version": "0.1.210",
+      "llbc_sha256": "1e9d93cf7f9d56c3db37de9b03c52b9e7744ab92339aebe4c547999a5f203efc",
+      "proven_mapping_to_rust_items": null,
+      "source_sha256": "81ef865a33b552b4af32da3df855a9ea06c0fc86608f4e6af2697a9b8d562603"
+    },
+    "trait_impl": {
+      "aeneas_flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "anneal_obligations": null,
+      "declarations": [
+        "identity_probe.Bump",
+        "identity_probe.Wrap",
+        "identity_probe.Wrap.Insts.CoreCloneClone",
+        "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "identity_probe.Wrap.Insts.Identity_probeBump",
+        "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "identity_probe.even",
+        "identity_probe.odd",
+        "identity_probe.step",
+        "identity_probe.use_bump",
+        "identity_probe.use_step"
+      ],
+      "generated_files": {
+        "Current.lean": {
+          "bytes": 20,
+          "declarations": [],
+          "imports": [
+            "import Current.Funs"
+          ],
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 4629,
+          "declarations": [
+            {
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line": 21,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+              "origin_comment": {
+                "line": 18,
+                "text": "/-- [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}::clone]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line": 27,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone",
+              "origin_comment": {
+                "line": 24,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line": 34,
+              "name": "identity_probe.Wrap.Insts.CoreMarkerCopy",
+              "origin_comment": {
+                "line": 31,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::marker::Copy for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line": 41,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+              "origin_comment": {
+                "line": 38,
+                "text": "/-- [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}::bump]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line": 47,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump",
+              "origin_comment": {
+                "line": 44,
+                "text": "/-- Trait implementation: [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line": 54,
+              "name": "identity_probe.step",
+              "origin_comment": {
+                "line": 51,
+                "text": "/-- [identity_probe::step]:"
+              }
+            },
+            {
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line": 60,
+              "name": "identity_probe.use_step",
+              "origin_comment": {
+                "line": 57,
+                "text": "/-- [identity_probe::use_step]:"
+              }
+            },
+            {
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line": 66,
+              "name": "identity_probe.use_bump",
+              "origin_comment": {
+                "line": 63,
+                "text": "/-- [identity_probe::use_bump]:"
+              }
+            },
+            {
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line": 74,
+              "name": "identity_probe.even",
+              "origin_comment": {
+                "line": 71,
+                "text": "/-- [identity_probe::even]:"
+              }
+            },
+            {
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line": 84,
+              "name": "identity_probe.odd",
+              "origin_comment": {
+                "line": 81,
+                "text": "/-- [identity_probe::odd]:"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Current.Types"
+          ],
+          "sha256": "6ac57fb6b567f6c2c4b64afdba6e079c8853c3c39a94f521215f8d1e6bbc096d"
+        },
+        "Types.lean": {
+          "bytes": 1205,
+          "declarations": [
+            {
+              "head": "def Wrap := Std.U32",
+              "line": 21,
+              "name": "identity_probe.Wrap",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            },
+            {
+              "head": "structure Bump (Self : Type) where",
+              "line": 26,
+              "name": "identity_probe.Bump",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "llbc_declarations": [
+        {
+          "id": 0,
+          "kind": "type_decls",
+          "local": true,
+          "name": "identity_probe::Wrap",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 25,
+                "line": 3
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "trait_decls",
+          "local": true,
+          "name": "identity_probe::Bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 40,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::clone::Clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 194
+              },
+              "end": {
+                "col": 28,
+                "line": 194
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Destruct",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Copy",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 454
+              },
+              "end": {
+                "col": 21,
+                "line": 454
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 16,
+                "line": 2
+              },
+              "end": {
+                "col": 20,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 5
+              },
+              "end": {
+                "col": 70,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 6
+              },
+              "end": {
+                "col": 48,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 7
+              },
+              "end": {
+                "col": 42,
+                "line": 7
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 44,
+                "line": 8
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::even",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 9
+              },
+              "end": {
+                "col": 70,
+                "line": 9
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::odd",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 10
+              },
+              "end": {
+                "col": 71,
+                "line": 10
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 7,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::clone::Clone::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 4,
+                "line": 236
+              },
+              "end": {
+                "col": 28,
+                "line": 236
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 9,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::Bump::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 17,
+                "line": 4
+              },
+              "end": {
+                "col": 38,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 10,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 21,
+                "line": 5
+              },
+              "end": {
+                "col": 68,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 11,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::num::<impl>::wrapping_add",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 4
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 12,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::marker::Destruct::drop_in_place",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "llbc_schema_version": "0.1.210",
+      "llbc_sha256": "0a118104cadae2aa42d2139d20dc94dce5c2c119e62db1a6f2192881a8506e4a",
+      "proven_mapping_to_rust_items": null,
+      "source_sha256": "03c97cf90244fee8cb578b3f7d7f8eeddbf682593e569dd2393b97d8a4d65526"
+    },
+    "type_shape": {
+      "aeneas_flags": [
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry"
+      ],
+      "anneal_obligations": null,
+      "declarations": [
+        "identity_probe.Bump",
+        "identity_probe.Wrap",
+        "identity_probe.Wrap.Insts.CoreCloneClone",
+        "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "identity_probe.Wrap.Insts.Identity_probeBump",
+        "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "identity_probe.even",
+        "identity_probe.odd",
+        "identity_probe.step",
+        "identity_probe.use_bump",
+        "identity_probe.use_step"
+      ],
+      "generated_files": {
+        "Current.lean": {
+          "bytes": 20,
+          "declarations": [],
+          "imports": [
+            "import Current.Funs"
+          ],
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 4647,
+          "declarations": [
+            {
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line": 21,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone.clone",
+              "origin_comment": {
+                "line": 18,
+                "text": "/-- [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}::clone]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line": 27,
+              "name": "identity_probe.Wrap.Insts.CoreCloneClone",
+              "origin_comment": {
+                "line": 24,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::clone::Clone for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line": 34,
+              "name": "identity_probe.Wrap.Insts.CoreMarkerCopy",
+              "origin_comment": {
+                "line": 31,
+                "text": "/-- Trait implementation: [identity_probe::{impl core::marker::Copy for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line": 41,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump.bump",
+              "origin_comment": {
+                "line": 38,
+                "text": "/-- [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}::bump]:"
+              }
+            },
+            {
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line": 48,
+              "name": "identity_probe.Wrap.Insts.Identity_probeBump",
+              "origin_comment": {
+                "line": 45,
+                "text": "/-- Trait implementation: [identity_probe::{impl identity_probe::Bump for identity_probe::Wrap}]"
+              }
+            },
+            {
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line": 55,
+              "name": "identity_probe.step",
+              "origin_comment": {
+                "line": 52,
+                "text": "/-- [identity_probe::step]:"
+              }
+            },
+            {
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line": 61,
+              "name": "identity_probe.use_step",
+              "origin_comment": {
+                "line": 58,
+                "text": "/-- [identity_probe::use_step]:"
+              }
+            },
+            {
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line": 67,
+              "name": "identity_probe.use_bump",
+              "origin_comment": {
+                "line": 64,
+                "text": "/-- [identity_probe::use_bump]:"
+              }
+            },
+            {
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line": 75,
+              "name": "identity_probe.even",
+              "origin_comment": {
+                "line": 72,
+                "text": "/-- [identity_probe::even]:"
+              }
+            },
+            {
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line": 85,
+              "name": "identity_probe.odd",
+              "origin_comment": {
+                "line": 82,
+                "text": "/-- [identity_probe::odd]:"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas",
+            "import Current.Types"
+          ],
+          "sha256": "db8ed5bc26389c49af6d1f072452e20db7b56683dcfb0f0aa80b910930f24fcb"
+        },
+        "Types.lean": {
+          "bytes": 1203,
+          "declarations": [
+            {
+              "head": "def Wrap := Std.U32 \u00d7 Std.U32",
+              "line": 20,
+              "name": "identity_probe.Wrap",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            },
+            {
+              "head": "structure Bump (Self : Type) where",
+              "line": 25,
+              "name": "identity_probe.Bump",
+              "origin_comment": {
+                "line": 17,
+                "text": "/-- [identity_probe::Wrap]"
+              }
+            }
+          ],
+          "imports": [
+            "import Aeneas"
+          ],
+          "sha256": "d2d5d5b881d29cdd8672891c15622d4c30099519b323fb588f061a3f1c7d4744"
+        }
+      },
+      "llbc_declarations": [
+        {
+          "id": 0,
+          "kind": "type_decls",
+          "local": true,
+          "name": "identity_probe::Wrap",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 3
+              },
+              "end": {
+                "col": 34,
+                "line": 3
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "trait_decls",
+          "local": true,
+          "name": "identity_probe::Bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 4
+              },
+              "end": {
+                "col": 40,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::clone::Clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 194
+              },
+              "end": {
+                "col": 28,
+                "line": 194
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Destruct",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "trait_decls",
+          "local": false,
+          "name": "core::marker::Copy",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 454
+              },
+              "end": {
+                "col": 21,
+                "line": 454
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 16,
+                "line": 2
+              },
+              "end": {
+                "col": 20,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "trait_impls",
+          "local": true,
+          "name": "identity_probe::<impl>",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 5
+              },
+              "end": {
+                "col": 70,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 0,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 6
+              },
+              "end": {
+                "col": 48,
+                "line": 6
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 1,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_step",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 7
+              },
+              "end": {
+                "col": 42,
+                "line": 7
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 2,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::use_bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 8
+              },
+              "end": {
+                "col": 44,
+                "line": 8
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 3,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::even",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 9
+              },
+              "end": {
+                "col": 70,
+                "line": 9
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 4,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::odd",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 10
+              },
+              "end": {
+                "col": 71,
+                "line": 10
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 5,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 9,
+                "line": 2
+              },
+              "end": {
+                "col": 14,
+                "line": 2
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 7,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::clone::Clone::clone",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 4,
+                "line": 236
+              },
+              "end": {
+                "col": 28,
+                "line": 236
+              },
+              "file_id": 1
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 9,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::Bump::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 17,
+                "line": 4
+              },
+              "end": {
+                "col": 38,
+                "line": 4
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 10,
+          "kind": "fun_decls",
+          "local": true,
+          "name": "identity_probe::<impl>::bump",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 21,
+                "line": 5
+              },
+              "end": {
+                "col": 68,
+                "line": 5
+              },
+              "file_id": 0
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 11,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::num::<impl>::wrapping_add",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 8,
+                "line": 2583
+              },
+              "end": {
+                "col": 58,
+                "line": 2583
+              },
+              "file_id": 4
+            },
+            "generated_from_span": null
+          }
+        },
+        {
+          "id": 12,
+          "kind": "fun_decls",
+          "local": false,
+          "name": "core::marker::Destruct::drop_in_place",
+          "span": {
+            "data": {
+              "beg": {
+                "col": 0,
+                "line": 1062
+              },
+              "end": {
+                "col": 38,
+                "line": 1062
+              },
+              "file_id": 3
+            },
+            "generated_from_span": null
+          }
+        }
+      ],
+      "llbc_schema_version": "0.1.210",
+      "llbc_sha256": "241a6759e918e4a0e81a92b117027dadc9bcb4be96f3b7191aea893a91148a68",
+      "proven_mapping_to_rust_items": null,
+      "source_sha256": "e034068565f64ba7e1a942e85318a17e2ce2f5eb52d63792b9a70d1d7198b978"
+    }
+  },
+  "mode_change": {
+    "stale_paths_after_unsplit": [
+      "Funs.lean",
+      "Types.lean"
+    ]
+  },
+  "provenance_level": "exact input and emitted bytes; Aeneas comment hints only, no verified Rust-to-Lean declaration map",
+  "schema": "anneal-research-aeneas-output-manifest-v1",
+  "tool": {
+    "aeneas_binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "aeneas_runtime_libraries": {
+      "libgmp.10.dylib": {
+        "bytes": 515984,
+        "sha256": "1b0ae61990da7a4661f2c8c601f55f6c9950279bbfef12453dd5bb0c01e4b0df"
+      }
+    },
+    "charon_binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "lean_external_registry_source_sha256": "f0ef34854fb4634303ff70f32d51f43e615b36880e3864975e6d62041470a2a8"
+  }
+}

@@ -1,0 +1,1205 @@
+{
+  "cases": {
+    "base": {
+      "declaration_count": 12,
+      "files": {
+        "Current.lean": {
+          "blocks": {},
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "blocks": {
+            "identity_probe.Wrap.Insts.CoreCloneClone": {
+              "byte_end": 1386,
+              "byte_start": 1282,
+              "bytes": 104,
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line_end": 29,
+              "line_start": 27,
+              "sha256": "84a99874c00efec4e17b47b4928e13ca395a74007104e85d4ed9ec635cb0e91c"
+            },
+            "identity_probe.Wrap.Insts.CoreCloneClone.clone": {
+              "byte_end": 948,
+              "byte_start": 868,
+              "bytes": 80,
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line_end": 22,
+              "line_start": 21,
+              "sha256": "1f998ca867e0182c0c0adf7e83c12898dbd506eaf2a3578b721559a430b8d1e0"
+            },
+            "identity_probe.Wrap.Insts.CoreMarkerCopy": {
+              "byte_end": 1823,
+              "byte_start": 1721,
+              "bytes": 102,
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line_end": 36,
+              "line_start": 34,
+              "sha256": "692778bdce5f68d3dadb2406b345fdd8dea5aa897464d81480dae0282c3d0d4a"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump": {
+              "byte_end": 2709,
+              "byte_start": 2611,
+              "bytes": 98,
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line_end": 49,
+              "line_start": 47,
+              "sha256": "0fb355f56fbecbcce2cbab52892cf736f5a365b2bec56018ce7272a5bc511bc9"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump.bump": {
+              "byte_end": 2275,
+              "byte_start": 2155,
+              "bytes": 120,
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line_end": 42,
+              "line_start": 41,
+              "sha256": "963af50976fa474177ab0db1aca347f6c7072d6f66edb5aca5f5b10055ced091"
+            },
+            "identity_probe.even": {
+              "byte_end": 4195,
+              "byte_start": 4065,
+              "bytes": 130,
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line_end": 79,
+              "line_start": 74,
+              "sha256": "823fa01f72dea77ee1e6908a882e646ce1f57cea82fed4febc26e99cfa18ae8d"
+            },
+            "identity_probe.odd": {
+              "byte_end": 4604,
+              "byte_start": 4473,
+              "bytes": 131,
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line_end": 89,
+              "line_start": 84,
+              "sha256": "9b20a9399203d77cabf9585c64aa7e0c2f3b2de3167efd1d27ac5d8ade419362"
+            },
+            "identity_probe.step": {
+              "byte_end": 3073,
+              "byte_start": 2986,
+              "bytes": 87,
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 55,
+              "line_start": 54,
+              "sha256": "c38153328df30f1efa5012375aa8c303648b1b8a84de2ad0cbfb44417f938339"
+            },
+            "identity_probe.use_bump": {
+              "byte_end": 3788,
+              "byte_start": 3694,
+              "bytes": 94,
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line_end": 69,
+              "line_start": 66,
+              "sha256": "ea3a5e19ece769025625313b3218e6b20367ee75423c7ee956e0bee804e3b9aa"
+            },
+            "identity_probe.use_step": {
+              "byte_end": 3413,
+              "byte_start": 3354,
+              "bytes": 59,
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 61,
+              "line_start": 60,
+              "sha256": "72fc8882c6eec32923bb40b781f0333b144ab7cf57c816f540452b1518c1c85e"
+            }
+          },
+          "bytes": 4629,
+          "sha256": "93da487c5699cc7285de9f18817d62afb858da4d9e6ebbea1e51eec330a4a325"
+        },
+        "Types.lean": {
+          "blocks": {
+            "identity_probe.Bump": {
+              "byte_end": 1185,
+              "byte_start": 1117,
+              "bytes": 68,
+              "head": "structure Bump (Self : Type) where",
+              "line_end": 27,
+              "line_start": 26,
+              "sha256": "85ebe44ae3673a12242ae4f629d21e780c9c3219f02dc37b35e45c97eb84954a"
+            },
+            "identity_probe.Wrap": {
+              "byte_end": 822,
+              "byte_start": 802,
+              "bytes": 20,
+              "head": "def Wrap := Std.U32",
+              "line_end": 21,
+              "line_start": 21,
+              "sha256": "58418f32c3664361123a2b9e56956cf6a6c0fd61ce1adb8fa326b21cad99586d"
+            }
+          },
+          "bytes": 1205,
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "inputs": {
+        "llbc": "d446aee1aff6be072ffd05a46a01c9a730836c7b5917318bd0519dc7dac02eb5",
+        "rs": "9544ae53d6a687bd45cc266cc16e7f7885d4caec32976bcd1a34db903dbfe657"
+      }
+    },
+    "delete_step": {
+      "declaration_count": 10,
+      "files": {
+        "Current.lean": {
+          "blocks": {},
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "blocks": {
+            "identity_probe.Wrap.Insts.CoreCloneClone": {
+              "byte_end": 1386,
+              "byte_start": 1282,
+              "bytes": 104,
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line_end": 29,
+              "line_start": 27,
+              "sha256": "84a99874c00efec4e17b47b4928e13ca395a74007104e85d4ed9ec635cb0e91c"
+            },
+            "identity_probe.Wrap.Insts.CoreCloneClone.clone": {
+              "byte_end": 948,
+              "byte_start": 868,
+              "bytes": 80,
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line_end": 22,
+              "line_start": 21,
+              "sha256": "1f998ca867e0182c0c0adf7e83c12898dbd506eaf2a3578b721559a430b8d1e0"
+            },
+            "identity_probe.Wrap.Insts.CoreMarkerCopy": {
+              "byte_end": 1823,
+              "byte_start": 1721,
+              "bytes": 102,
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line_end": 36,
+              "line_start": 34,
+              "sha256": "692778bdce5f68d3dadb2406b345fdd8dea5aa897464d81480dae0282c3d0d4a"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump": {
+              "byte_end": 2709,
+              "byte_start": 2611,
+              "bytes": 98,
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line_end": 49,
+              "line_start": 47,
+              "sha256": "0fb355f56fbecbcce2cbab52892cf736f5a365b2bec56018ce7272a5bc511bc9"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump.bump": {
+              "byte_end": 2275,
+              "byte_start": 2155,
+              "bytes": 120,
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line_end": 42,
+              "line_start": 41,
+              "sha256": "963af50976fa474177ab0db1aca347f6c7072d6f66edb5aca5f5b10055ced091"
+            },
+            "identity_probe.even": {
+              "byte_end": 3491,
+              "byte_start": 3361,
+              "bytes": 130,
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line_end": 67,
+              "line_start": 62,
+              "sha256": "823fa01f72dea77ee1e6908a882e646ce1f57cea82fed4febc26e99cfa18ae8d"
+            },
+            "identity_probe.odd": {
+              "byte_end": 3898,
+              "byte_start": 3767,
+              "bytes": 131,
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line_end": 77,
+              "line_start": 72,
+              "sha256": "9b20a9399203d77cabf9585c64aa7e0c2f3b2de3167efd1d27ac5d8ade419362"
+            },
+            "identity_probe.use_bump": {
+              "byte_end": 3084,
+              "byte_start": 2990,
+              "bytes": 94,
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line_end": 57,
+              "line_start": 54,
+              "sha256": "ea3a5e19ece769025625313b3218e6b20367ee75423c7ee956e0bee804e3b9aa"
+            }
+          },
+          "bytes": 3923,
+          "sha256": "39863ea91778d455dacd9f78b194457f13262fd274fd415a08d0738bf06daec8"
+        },
+        "Types.lean": {
+          "blocks": {
+            "identity_probe.Bump": {
+              "byte_end": 1185,
+              "byte_start": 1117,
+              "bytes": 68,
+              "head": "structure Bump (Self : Type) where",
+              "line_end": 27,
+              "line_start": 26,
+              "sha256": "85ebe44ae3673a12242ae4f629d21e780c9c3219f02dc37b35e45c97eb84954a"
+            },
+            "identity_probe.Wrap": {
+              "byte_end": 822,
+              "byte_start": 802,
+              "bytes": 20,
+              "head": "def Wrap := Std.U32",
+              "line_end": 21,
+              "line_start": 21,
+              "sha256": "58418f32c3664361123a2b9e56956cf6a6c0fd61ce1adb8fa326b21cad99586d"
+            }
+          },
+          "bytes": 1205,
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "inputs": {
+        "llbc": "d9496ee93238f7ff4d41aa379ca5e4d2a800b598b87b7b823312597143044e4d",
+        "rs": "46ffbac021ee4e4fe39879f9f6cdd9b9249df467a45d748515815f5f693cbdf0"
+      }
+    },
+    "function_body": {
+      "declaration_count": 12,
+      "files": {
+        "Current.lean": {
+          "blocks": {},
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "blocks": {
+            "identity_probe.Wrap.Insts.CoreCloneClone": {
+              "byte_end": 1386,
+              "byte_start": 1282,
+              "bytes": 104,
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line_end": 29,
+              "line_start": 27,
+              "sha256": "84a99874c00efec4e17b47b4928e13ca395a74007104e85d4ed9ec635cb0e91c"
+            },
+            "identity_probe.Wrap.Insts.CoreCloneClone.clone": {
+              "byte_end": 948,
+              "byte_start": 868,
+              "bytes": 80,
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line_end": 22,
+              "line_start": 21,
+              "sha256": "1f998ca867e0182c0c0adf7e83c12898dbd506eaf2a3578b721559a430b8d1e0"
+            },
+            "identity_probe.Wrap.Insts.CoreMarkerCopy": {
+              "byte_end": 1823,
+              "byte_start": 1721,
+              "bytes": 102,
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line_end": 36,
+              "line_start": 34,
+              "sha256": "692778bdce5f68d3dadb2406b345fdd8dea5aa897464d81480dae0282c3d0d4a"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump": {
+              "byte_end": 2709,
+              "byte_start": 2611,
+              "bytes": 98,
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line_end": 49,
+              "line_start": 47,
+              "sha256": "0fb355f56fbecbcce2cbab52892cf736f5a365b2bec56018ce7272a5bc511bc9"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump.bump": {
+              "byte_end": 2275,
+              "byte_start": 2155,
+              "bytes": 120,
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line_end": 42,
+              "line_start": 41,
+              "sha256": "963af50976fa474177ab0db1aca347f6c7072d6f66edb5aca5f5b10055ced091"
+            },
+            "identity_probe.even": {
+              "byte_end": 4195,
+              "byte_start": 4065,
+              "bytes": 130,
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line_end": 79,
+              "line_start": 74,
+              "sha256": "823fa01f72dea77ee1e6908a882e646ce1f57cea82fed4febc26e99cfa18ae8d"
+            },
+            "identity_probe.odd": {
+              "byte_end": 4604,
+              "byte_start": 4473,
+              "bytes": 131,
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line_end": 89,
+              "line_start": 84,
+              "sha256": "9b20a9399203d77cabf9585c64aa7e0c2f3b2de3167efd1d27ac5d8ade419362"
+            },
+            "identity_probe.step": {
+              "byte_end": 3073,
+              "byte_start": 2986,
+              "bytes": 87,
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 55,
+              "line_start": 54,
+              "sha256": "a9c750a5ea762e229a5eb40579ee23e33e1544c5fe60c588c02b7025154683d7"
+            },
+            "identity_probe.use_bump": {
+              "byte_end": 3788,
+              "byte_start": 3694,
+              "bytes": 94,
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line_end": 69,
+              "line_start": 66,
+              "sha256": "ea3a5e19ece769025625313b3218e6b20367ee75423c7ee956e0bee804e3b9aa"
+            },
+            "identity_probe.use_step": {
+              "byte_end": 3413,
+              "byte_start": 3354,
+              "bytes": 59,
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 61,
+              "line_start": 60,
+              "sha256": "72fc8882c6eec32923bb40b781f0333b144ab7cf57c816f540452b1518c1c85e"
+            }
+          },
+          "bytes": 4629,
+          "sha256": "0450655e15b98680a664356c6d8bbf8d9828ab759254c5095c1e69c3bb0b3edd"
+        },
+        "Types.lean": {
+          "blocks": {
+            "identity_probe.Bump": {
+              "byte_end": 1185,
+              "byte_start": 1117,
+              "bytes": 68,
+              "head": "structure Bump (Self : Type) where",
+              "line_end": 27,
+              "line_start": 26,
+              "sha256": "85ebe44ae3673a12242ae4f629d21e780c9c3219f02dc37b35e45c97eb84954a"
+            },
+            "identity_probe.Wrap": {
+              "byte_end": 822,
+              "byte_start": 802,
+              "bytes": 20,
+              "head": "def Wrap := Std.U32",
+              "line_end": 21,
+              "line_start": 21,
+              "sha256": "58418f32c3664361123a2b9e56956cf6a6c0fd61ce1adb8fa326b21cad99586d"
+            }
+          },
+          "bytes": 1205,
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "inputs": {
+        "llbc": "93638bcc25cadad10bebc50cb7e8b7402377467409ca27e6a9bbd78670710eb7",
+        "rs": "71d890abdf0a8d653c2014065f26a67b7aa5956edbc5ce0831b25c38d7f97dec"
+      }
+    },
+    "helper_insert": {
+      "declaration_count": 13,
+      "files": {
+        "Current.lean": {
+          "blocks": {},
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "blocks": {
+            "identity_probe.Wrap.Insts.CoreCloneClone": {
+              "byte_end": 1386,
+              "byte_start": 1282,
+              "bytes": 104,
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line_end": 29,
+              "line_start": 27,
+              "sha256": "84a99874c00efec4e17b47b4928e13ca395a74007104e85d4ed9ec635cb0e91c"
+            },
+            "identity_probe.Wrap.Insts.CoreCloneClone.clone": {
+              "byte_end": 948,
+              "byte_start": 868,
+              "bytes": 80,
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line_end": 22,
+              "line_start": 21,
+              "sha256": "1f998ca867e0182c0c0adf7e83c12898dbd506eaf2a3578b721559a430b8d1e0"
+            },
+            "identity_probe.Wrap.Insts.CoreMarkerCopy": {
+              "byte_end": 1823,
+              "byte_start": 1721,
+              "bytes": 102,
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line_end": 36,
+              "line_start": 34,
+              "sha256": "692778bdce5f68d3dadb2406b345fdd8dea5aa897464d81480dae0282c3d0d4a"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump": {
+              "byte_end": 2709,
+              "byte_start": 2611,
+              "bytes": 98,
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line_end": 49,
+              "line_start": 47,
+              "sha256": "0fb355f56fbecbcce2cbab52892cf736f5a365b2bec56018ce7272a5bc511bc9"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump.bump": {
+              "byte_end": 2275,
+              "byte_start": 2155,
+              "bytes": 120,
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line_end": 42,
+              "line_start": 41,
+              "sha256": "963af50976fa474177ab0db1aca347f6c7072d6f66edb5aca5f5b10055ced091"
+            },
+            "identity_probe.even": {
+              "byte_end": 4531,
+              "byte_start": 4401,
+              "bytes": 130,
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line_end": 85,
+              "line_start": 80,
+              "sha256": "823fa01f72dea77ee1e6908a882e646ce1f57cea82fed4febc26e99cfa18ae8d"
+            },
+            "identity_probe.helper": {
+              "byte_end": 3043,
+              "byte_start": 2988,
+              "bytes": 55,
+              "head": "def helper (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 55,
+              "line_start": 54,
+              "sha256": "65854dde4bd529cbc13688f0c754210ab75e7ad2221529f245fe12f2c3051939"
+            },
+            "identity_probe.odd": {
+              "byte_end": 4940,
+              "byte_start": 4809,
+              "bytes": 131,
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line_end": 95,
+              "line_start": 90,
+              "sha256": "9b20a9399203d77cabf9585c64aa7e0c2f3b2de3167efd1d27ac5d8ade419362"
+            },
+            "identity_probe.step": {
+              "byte_end": 3407,
+              "byte_start": 3320,
+              "bytes": 87,
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 61,
+              "line_start": 60,
+              "sha256": "c38153328df30f1efa5012375aa8c303648b1b8a84de2ad0cbfb44417f938339"
+            },
+            "identity_probe.use_bump": {
+              "byte_end": 4122,
+              "byte_start": 4028,
+              "bytes": 94,
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line_end": 75,
+              "line_start": 72,
+              "sha256": "ea3a5e19ece769025625313b3218e6b20367ee75423c7ee956e0bee804e3b9aa"
+            },
+            "identity_probe.use_step": {
+              "byte_end": 3747,
+              "byte_start": 3688,
+              "bytes": 59,
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 67,
+              "line_start": 66,
+              "sha256": "72fc8882c6eec32923bb40b781f0333b144ab7cf57c816f540452b1518c1c85e"
+            }
+          },
+          "bytes": 4965,
+          "sha256": "6fbe31082ca54177a1b37891f04368b4cb5f610aa67fc70a1d98434f488802cc"
+        },
+        "Types.lean": {
+          "blocks": {
+            "identity_probe.Bump": {
+              "byte_end": 1185,
+              "byte_start": 1117,
+              "bytes": 68,
+              "head": "structure Bump (Self : Type) where",
+              "line_end": 27,
+              "line_start": 26,
+              "sha256": "85ebe44ae3673a12242ae4f629d21e780c9c3219f02dc37b35e45c97eb84954a"
+            },
+            "identity_probe.Wrap": {
+              "byte_end": 822,
+              "byte_start": 802,
+              "bytes": 20,
+              "head": "def Wrap := Std.U32",
+              "line_end": 21,
+              "line_start": 21,
+              "sha256": "58418f32c3664361123a2b9e56956cf6a6c0fd61ce1adb8fa326b21cad99586d"
+            }
+          },
+          "bytes": 1205,
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "inputs": {
+        "llbc": "8134e643ec55067b7f670713697e37a5bcb39889f4d147b6f279409f45f37df4",
+        "rs": "0f04c3aa2bcf444cb9d6176469c0ecfd2a5ffe5b6801abf627ae5a8f3d492176"
+      }
+    },
+    "recursive_group": {
+      "declaration_count": 12,
+      "files": {
+        "Current.lean": {
+          "blocks": {},
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "blocks": {
+            "identity_probe.Wrap.Insts.CoreCloneClone": {
+              "byte_end": 1386,
+              "byte_start": 1282,
+              "bytes": 104,
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line_end": 29,
+              "line_start": 27,
+              "sha256": "84a99874c00efec4e17b47b4928e13ca395a74007104e85d4ed9ec635cb0e91c"
+            },
+            "identity_probe.Wrap.Insts.CoreCloneClone.clone": {
+              "byte_end": 948,
+              "byte_start": 868,
+              "bytes": 80,
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line_end": 22,
+              "line_start": 21,
+              "sha256": "1f998ca867e0182c0c0adf7e83c12898dbd506eaf2a3578b721559a430b8d1e0"
+            },
+            "identity_probe.Wrap.Insts.CoreMarkerCopy": {
+              "byte_end": 1823,
+              "byte_start": 1721,
+              "bytes": 102,
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line_end": 36,
+              "line_start": 34,
+              "sha256": "692778bdce5f68d3dadb2406b345fdd8dea5aa897464d81480dae0282c3d0d4a"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump": {
+              "byte_end": 2709,
+              "byte_start": 2611,
+              "bytes": 98,
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line_end": 49,
+              "line_start": 47,
+              "sha256": "0fb355f56fbecbcce2cbab52892cf736f5a365b2bec56018ce7272a5bc511bc9"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump.bump": {
+              "byte_end": 2275,
+              "byte_start": 2155,
+              "bytes": 120,
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line_end": 42,
+              "line_start": 41,
+              "sha256": "963af50976fa474177ab0db1aca347f6c7072d6f66edb5aca5f5b10055ced091"
+            },
+            "identity_probe.even": {
+              "byte_end": 4196,
+              "byte_start": 4065,
+              "bytes": 131,
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line_end": 79,
+              "line_start": 74,
+              "sha256": "5f0d189230eee24d5d4b02867d1c4862a2c99a1e60cad58cab9b4f35a6acede1"
+            },
+            "identity_probe.odd": {
+              "byte_end": 4605,
+              "byte_start": 4474,
+              "bytes": 131,
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line_end": 89,
+              "line_start": 84,
+              "sha256": "9b20a9399203d77cabf9585c64aa7e0c2f3b2de3167efd1d27ac5d8ade419362"
+            },
+            "identity_probe.step": {
+              "byte_end": 3073,
+              "byte_start": 2986,
+              "bytes": 87,
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 55,
+              "line_start": 54,
+              "sha256": "c38153328df30f1efa5012375aa8c303648b1b8a84de2ad0cbfb44417f938339"
+            },
+            "identity_probe.use_bump": {
+              "byte_end": 3788,
+              "byte_start": 3694,
+              "bytes": 94,
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line_end": 69,
+              "line_start": 66,
+              "sha256": "ea3a5e19ece769025625313b3218e6b20367ee75423c7ee956e0bee804e3b9aa"
+            },
+            "identity_probe.use_step": {
+              "byte_end": 3413,
+              "byte_start": 3354,
+              "bytes": 59,
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 61,
+              "line_start": 60,
+              "sha256": "72fc8882c6eec32923bb40b781f0333b144ab7cf57c816f540452b1518c1c85e"
+            }
+          },
+          "bytes": 4630,
+          "sha256": "65ddb44a1cddbc5cc3b7059f544655cdfbbcc35222c9cae5709ff6fdd6126d69"
+        },
+        "Types.lean": {
+          "blocks": {
+            "identity_probe.Bump": {
+              "byte_end": 1185,
+              "byte_start": 1117,
+              "bytes": 68,
+              "head": "structure Bump (Self : Type) where",
+              "line_end": 27,
+              "line_start": 26,
+              "sha256": "85ebe44ae3673a12242ae4f629d21e780c9c3219f02dc37b35e45c97eb84954a"
+            },
+            "identity_probe.Wrap": {
+              "byte_end": 822,
+              "byte_start": 802,
+              "bytes": 20,
+              "head": "def Wrap := Std.U32",
+              "line_end": 21,
+              "line_start": 21,
+              "sha256": "58418f32c3664361123a2b9e56956cf6a6c0fd61ce1adb8fa326b21cad99586d"
+            }
+          },
+          "bytes": 1205,
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "inputs": {
+        "llbc": "1e9d93cf7f9d56c3db37de9b03c52b9e7744ab92339aebe4c547999a5f203efc",
+        "rs": "81ef865a33b552b4af32da3df855a9ea06c0fc86608f4e6af2697a9b8d562603"
+      }
+    },
+    "trait_impl": {
+      "declaration_count": 12,
+      "files": {
+        "Current.lean": {
+          "blocks": {},
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "blocks": {
+            "identity_probe.Wrap.Insts.CoreCloneClone": {
+              "byte_end": 1386,
+              "byte_start": 1282,
+              "bytes": 104,
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line_end": 29,
+              "line_start": 27,
+              "sha256": "84a99874c00efec4e17b47b4928e13ca395a74007104e85d4ed9ec635cb0e91c"
+            },
+            "identity_probe.Wrap.Insts.CoreCloneClone.clone": {
+              "byte_end": 948,
+              "byte_start": 868,
+              "bytes": 80,
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line_end": 22,
+              "line_start": 21,
+              "sha256": "1f998ca867e0182c0c0adf7e83c12898dbd506eaf2a3578b721559a430b8d1e0"
+            },
+            "identity_probe.Wrap.Insts.CoreMarkerCopy": {
+              "byte_end": 1823,
+              "byte_start": 1721,
+              "bytes": 102,
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line_end": 36,
+              "line_start": 34,
+              "sha256": "692778bdce5f68d3dadb2406b345fdd8dea5aa897464d81480dae0282c3d0d4a"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump": {
+              "byte_end": 2709,
+              "byte_start": 2611,
+              "bytes": 98,
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line_end": 49,
+              "line_start": 47,
+              "sha256": "0fb355f56fbecbcce2cbab52892cf736f5a365b2bec56018ce7272a5bc511bc9"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump.bump": {
+              "byte_end": 2275,
+              "byte_start": 2155,
+              "bytes": 120,
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line_end": 42,
+              "line_start": 41,
+              "sha256": "d32d91a916643291b01ea1778abc28dc4ce14bb5ba99f66e8496a6d5f75f08eb"
+            },
+            "identity_probe.even": {
+              "byte_end": 4195,
+              "byte_start": 4065,
+              "bytes": 130,
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line_end": 79,
+              "line_start": 74,
+              "sha256": "823fa01f72dea77ee1e6908a882e646ce1f57cea82fed4febc26e99cfa18ae8d"
+            },
+            "identity_probe.odd": {
+              "byte_end": 4604,
+              "byte_start": 4473,
+              "bytes": 131,
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line_end": 89,
+              "line_start": 84,
+              "sha256": "9b20a9399203d77cabf9585c64aa7e0c2f3b2de3167efd1d27ac5d8ade419362"
+            },
+            "identity_probe.step": {
+              "byte_end": 3073,
+              "byte_start": 2986,
+              "bytes": 87,
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 55,
+              "line_start": 54,
+              "sha256": "c38153328df30f1efa5012375aa8c303648b1b8a84de2ad0cbfb44417f938339"
+            },
+            "identity_probe.use_bump": {
+              "byte_end": 3788,
+              "byte_start": 3694,
+              "bytes": 94,
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line_end": 69,
+              "line_start": 66,
+              "sha256": "ea3a5e19ece769025625313b3218e6b20367ee75423c7ee956e0bee804e3b9aa"
+            },
+            "identity_probe.use_step": {
+              "byte_end": 3413,
+              "byte_start": 3354,
+              "bytes": 59,
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 61,
+              "line_start": 60,
+              "sha256": "72fc8882c6eec32923bb40b781f0333b144ab7cf57c816f540452b1518c1c85e"
+            }
+          },
+          "bytes": 4629,
+          "sha256": "6ac57fb6b567f6c2c4b64afdba6e079c8853c3c39a94f521215f8d1e6bbc096d"
+        },
+        "Types.lean": {
+          "blocks": {
+            "identity_probe.Bump": {
+              "byte_end": 1185,
+              "byte_start": 1117,
+              "bytes": 68,
+              "head": "structure Bump (Self : Type) where",
+              "line_end": 27,
+              "line_start": 26,
+              "sha256": "85ebe44ae3673a12242ae4f629d21e780c9c3219f02dc37b35e45c97eb84954a"
+            },
+            "identity_probe.Wrap": {
+              "byte_end": 822,
+              "byte_start": 802,
+              "bytes": 20,
+              "head": "def Wrap := Std.U32",
+              "line_end": 21,
+              "line_start": 21,
+              "sha256": "58418f32c3664361123a2b9e56956cf6a6c0fd61ce1adb8fa326b21cad99586d"
+            }
+          },
+          "bytes": 1205,
+          "sha256": "e49ed29bf8a537b9a7cc61687bcf88f518811edc77fa1912fce77f12bdaeeec3"
+        }
+      },
+      "inputs": {
+        "llbc": "0a118104cadae2aa42d2139d20dc94dce5c2c119e62db1a6f2192881a8506e4a",
+        "rs": "03c97cf90244fee8cb578b3f7d7f8eeddbf682593e569dd2393b97d8a4d65526"
+      }
+    },
+    "type_shape": {
+      "declaration_count": 12,
+      "files": {
+        "Current.lean": {
+          "blocks": {},
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "blocks": {
+            "identity_probe.Wrap.Insts.CoreCloneClone": {
+              "byte_end": 1386,
+              "byte_start": 1282,
+              "bytes": 104,
+              "head": "def Wrap.Insts.CoreCloneClone : core.clone.Clone Wrap := {",
+              "line_end": 29,
+              "line_start": 27,
+              "sha256": "84a99874c00efec4e17b47b4928e13ca395a74007104e85d4ed9ec635cb0e91c"
+            },
+            "identity_probe.Wrap.Insts.CoreCloneClone.clone": {
+              "byte_end": 948,
+              "byte_start": 868,
+              "bytes": 80,
+              "head": "def Wrap.Insts.CoreCloneClone.clone (self : Wrap) : Result Wrap := do",
+              "line_end": 22,
+              "line_start": 21,
+              "sha256": "1f998ca867e0182c0c0adf7e83c12898dbd506eaf2a3578b721559a430b8d1e0"
+            },
+            "identity_probe.Wrap.Insts.CoreMarkerCopy": {
+              "byte_end": 1823,
+              "byte_start": 1721,
+              "bytes": 102,
+              "head": "def Wrap.Insts.CoreMarkerCopy : core.marker.Copy Wrap := {",
+              "line_end": 36,
+              "line_start": 34,
+              "sha256": "692778bdce5f68d3dadb2406b345fdd8dea5aa897464d81480dae0282c3d0d4a"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump": {
+              "byte_end": 2727,
+              "byte_start": 2629,
+              "bytes": 98,
+              "head": "def Wrap.Insts.Identity_probeBump : Bump Wrap := {",
+              "line_end": 50,
+              "line_start": 48,
+              "sha256": "0fb355f56fbecbcce2cbab52892cf736f5a365b2bec56018ce7272a5bc511bc9"
+            },
+            "identity_probe.Wrap.Insts.Identity_probeBump.bump": {
+              "byte_end": 2293,
+              "byte_start": 2155,
+              "bytes": 138,
+              "head": "def Wrap.Insts.Identity_probeBump.bump (self : Wrap) : Result Std.U32 := do",
+              "line_end": 43,
+              "line_start": 41,
+              "sha256": "ab9d3f0b9ed34aed246dffdd50de4126eb2b9a11bd9a292f8bcf447038baf58e"
+            },
+            "identity_probe.even": {
+              "byte_end": 4213,
+              "byte_start": 4083,
+              "bytes": 130,
+              "head": "def even (n : Std.U32) : Result Bool := do",
+              "line_end": 80,
+              "line_start": 75,
+              "sha256": "823fa01f72dea77ee1e6908a882e646ce1f57cea82fed4febc26e99cfa18ae8d"
+            },
+            "identity_probe.odd": {
+              "byte_end": 4622,
+              "byte_start": 4491,
+              "bytes": 131,
+              "head": "def odd (n : Std.U32) : Result Bool := do",
+              "line_end": 90,
+              "line_start": 85,
+              "sha256": "9b20a9399203d77cabf9585c64aa7e0c2f3b2de3167efd1d27ac5d8ade419362"
+            },
+            "identity_probe.step": {
+              "byte_end": 3091,
+              "byte_start": 3004,
+              "bytes": 87,
+              "head": "def step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 56,
+              "line_start": 55,
+              "sha256": "c38153328df30f1efa5012375aa8c303648b1b8a84de2ad0cbfb44417f938339"
+            },
+            "identity_probe.use_bump": {
+              "byte_end": 3806,
+              "byte_start": 3712,
+              "bytes": 94,
+              "head": "def use_bump (x : Wrap) : Result Std.U32 := do",
+              "line_end": 70,
+              "line_start": 67,
+              "sha256": "ea3a5e19ece769025625313b3218e6b20367ee75423c7ee956e0bee804e3b9aa"
+            },
+            "identity_probe.use_step": {
+              "byte_end": 3431,
+              "byte_start": 3372,
+              "bytes": 59,
+              "head": "def use_step (x : Std.U32) : Result Std.U32 := do",
+              "line_end": 62,
+              "line_start": 61,
+              "sha256": "72fc8882c6eec32923bb40b781f0333b144ab7cf57c816f540452b1518c1c85e"
+            }
+          },
+          "bytes": 4647,
+          "sha256": "db8ed5bc26389c49af6d1f072452e20db7b56683dcfb0f0aa80b910930f24fcb"
+        },
+        "Types.lean": {
+          "blocks": {
+            "identity_probe.Bump": {
+              "byte_end": 1183,
+              "byte_start": 1115,
+              "bytes": 68,
+              "head": "structure Bump (Self : Type) where",
+              "line_end": 26,
+              "line_start": 25,
+              "sha256": "85ebe44ae3673a12242ae4f629d21e780c9c3219f02dc37b35e45c97eb84954a"
+            },
+            "identity_probe.Wrap": {
+              "byte_end": 820,
+              "byte_start": 789,
+              "bytes": 31,
+              "head": "def Wrap := Std.U32 \u00d7 Std.U32",
+              "line_end": 20,
+              "line_start": 20,
+              "sha256": "d759279ca9fc82ae9124c1a02b7263b5cc34139be1a50a1d1b36fae216c5bf6e"
+            }
+          },
+          "bytes": 1203,
+          "sha256": "d2d5d5b881d29cdd8672891c15622d4c30099519b323fb588f061a3f1c7d4744"
+        }
+      },
+      "inputs": {
+        "llbc": "241a6759e918e4a0e81a92b117027dadc9bcb4be96f3b7191aea893a91148a68",
+        "rs": "e034068565f64ba7e1a942e85318a17e2ce2f5eb52d63792b9a70d1d7198b978"
+      }
+    }
+  },
+  "comparisons": {
+    "delete_step": {
+      "added": [],
+      "changed": [],
+      "line_moved": [
+        "Funs.lean::identity_probe.even",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.use_bump"
+      ],
+      "removed": [
+        "Funs.lean::identity_probe.step",
+        "Funs.lean::identity_probe.use_step"
+      ],
+      "unchanged": [
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "Funs.lean::identity_probe.even",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.use_bump",
+        "Types.lean::identity_probe.Bump",
+        "Types.lean::identity_probe.Wrap"
+      ]
+    },
+    "function_body": {
+      "added": [],
+      "changed": [
+        "Funs.lean::identity_probe.step"
+      ],
+      "line_moved": [],
+      "removed": [],
+      "unchanged": [
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "Funs.lean::identity_probe.even",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.use_bump",
+        "Funs.lean::identity_probe.use_step",
+        "Types.lean::identity_probe.Bump",
+        "Types.lean::identity_probe.Wrap"
+      ]
+    },
+    "helper_insert": {
+      "added": [
+        "Funs.lean::identity_probe.helper"
+      ],
+      "changed": [],
+      "line_moved": [
+        "Funs.lean::identity_probe.even",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.step",
+        "Funs.lean::identity_probe.use_bump",
+        "Funs.lean::identity_probe.use_step"
+      ],
+      "removed": [],
+      "unchanged": [
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "Funs.lean::identity_probe.even",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.step",
+        "Funs.lean::identity_probe.use_bump",
+        "Funs.lean::identity_probe.use_step",
+        "Types.lean::identity_probe.Bump",
+        "Types.lean::identity_probe.Wrap"
+      ]
+    },
+    "recursive_group": {
+      "added": [],
+      "changed": [
+        "Funs.lean::identity_probe.even"
+      ],
+      "line_moved": [],
+      "removed": [],
+      "unchanged": [
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.step",
+        "Funs.lean::identity_probe.use_bump",
+        "Funs.lean::identity_probe.use_step",
+        "Types.lean::identity_probe.Bump",
+        "Types.lean::identity_probe.Wrap"
+      ]
+    },
+    "trait_impl": {
+      "added": [],
+      "changed": [
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump.bump"
+      ],
+      "line_moved": [],
+      "removed": [],
+      "unchanged": [
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump",
+        "Funs.lean::identity_probe.even",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.step",
+        "Funs.lean::identity_probe.use_bump",
+        "Funs.lean::identity_probe.use_step",
+        "Types.lean::identity_probe.Bump",
+        "Types.lean::identity_probe.Wrap"
+      ]
+    },
+    "type_shape": {
+      "added": [],
+      "changed": [
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump.bump",
+        "Types.lean::identity_probe.Wrap"
+      ],
+      "line_moved": [
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump",
+        "Funs.lean::identity_probe.even",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.step",
+        "Funs.lean::identity_probe.use_bump",
+        "Funs.lean::identity_probe.use_step",
+        "Types.lean::identity_probe.Bump",
+        "Types.lean::identity_probe.Wrap"
+      ],
+      "removed": [],
+      "unchanged": [
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreCloneClone.clone",
+        "Funs.lean::identity_probe.Wrap.Insts.CoreMarkerCopy",
+        "Funs.lean::identity_probe.Wrap.Insts.Identity_probeBump",
+        "Funs.lean::identity_probe.even",
+        "Funs.lean::identity_probe.odd",
+        "Funs.lean::identity_probe.step",
+        "Funs.lean::identity_probe.use_bump",
+        "Funs.lean::identity_probe.use_step",
+        "Types.lean::identity_probe.Bump"
+      ]
+    }
+  },
+  "elapsed_seconds": 0.0729931250680238,
+  "limits": {
+    "max_rss_bytes": 67108864,
+    "max_seconds": 5.0,
+    "min_reclaimable_percent": 20.0
+  },
+  "peak_rss_bytes": 22708224,
+  "samples": [
+    {
+      "elapsed_seconds": 2.533290535211563e-05,
+      "label": "preflight-before-input",
+      "max_rss_bytes": 21364736,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.200843811035156
+    },
+    {
+      "elapsed_seconds": 0.007239416008815169,
+      "label": "before-base",
+      "max_rss_bytes": 22528000,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.17986297607422
+    },
+    {
+      "elapsed_seconds": 0.012528208084404469,
+      "label": "after-base",
+      "max_rss_bytes": 22593536,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.177764892578125
+    },
+    {
+      "elapsed_seconds": 0.01681433292105794,
+      "label": "before-function_body",
+      "max_rss_bytes": 22593536,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.189208984375
+    },
+    {
+      "elapsed_seconds": 0.02131879096850753,
+      "label": "after-function_body",
+      "max_rss_bytes": 22642688,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.187301635742188
+    },
+    {
+      "elapsed_seconds": 0.02550462493672967,
+      "label": "before-type_shape",
+      "max_rss_bytes": 22642688,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.185585021972656
+    },
+    {
+      "elapsed_seconds": 0.03005508310161531,
+      "label": "after-type_shape",
+      "max_rss_bytes": 22675456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.18482208251953
+    },
+    {
+      "elapsed_seconds": 0.03418558300472796,
+      "label": "before-trait_impl",
+      "max_rss_bytes": 22675456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.175094604492188
+    },
+    {
+      "elapsed_seconds": 0.03972770809195936,
+      "label": "after-trait_impl",
+      "max_rss_bytes": 22675456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.18749237060547
+    },
+    {
+      "elapsed_seconds": 0.043842165963724256,
+      "label": "before-recursive_group",
+      "max_rss_bytes": 22675456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.18596649169922
+    },
+    {
+      "elapsed_seconds": 0.04824754106812179,
+      "label": "after-recursive_group",
+      "max_rss_bytes": 22675456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.1861572265625
+    },
+    {
+      "elapsed_seconds": 0.0522574579808861,
+      "label": "before-helper_insert",
+      "max_rss_bytes": 22675456,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.18463134765625
+    },
+    {
+      "elapsed_seconds": 0.056731707882136106,
+      "label": "after-helper_insert",
+      "max_rss_bytes": 22691840,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.18291473388672
+    },
+    {
+      "elapsed_seconds": 0.06079883291386068,
+      "label": "before-delete_step",
+      "max_rss_bytes": 22708224,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.180816650390625
+    },
+    {
+      "elapsed_seconds": 0.0651158750988543,
+      "label": "after-delete_step",
+      "max_rss_bytes": 22708224,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.19207000732422
+    },
+    {
+      "elapsed_seconds": 0.06901025003753603,
+      "label": "final-before-write",
+      "max_rss_bytes": 22708224,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 25.189781188964844
+    }
+  ],
+  "source_manifest_sha256": "e9870d6f9844eb5ebc192d297d642319333549aac483d9f9a3322c75ba3c8826",
+  "source_results_sha256": "694c43532ac90504947bd5cfe9e34369cae68e2164683e8c3f772138022d45b4",
+  "status": "completed"
+}
