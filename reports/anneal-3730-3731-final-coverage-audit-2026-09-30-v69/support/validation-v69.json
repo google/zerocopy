@@ -1,0 +1,83 @@
+{
+  "catalog_at_parent_sha256": "311d5292896b6ec39a2a596d2a486779551e8ca02cd58b09e0c83e344dfe4f72",
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [],
+  "changed_status_ids": [],
+  "context_investigation_ids": [
+    "I144",
+    "I159"
+  ],
+  "context_suggestion_ids": [
+    "I05",
+    "N01",
+    "N02",
+    "N03",
+    "N04",
+    "N05",
+    "N06",
+    "N07",
+    "N08",
+    "N09",
+    "N10",
+    "N11",
+    "N12",
+    "O01",
+    "O02",
+    "O03",
+    "O04",
+    "O05",
+    "O06",
+    "O07",
+    "O08",
+    "O09",
+    "O10"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v69.csv": "804adf9af6d8e9fd528f78ff1db1fe7c8741fd2d110dd913763de0372888c6b2",
+    "investigation-final-v69.csv": "1a011d0f16c246c4406685d9598714bf171c7af2543d3ce01af148b78517ec2c",
+    "live-issue-snapshot-v69.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v69.json": "c4831730e2b64046e55a741616afe4fa120af8eb7420f36b91036d4934f33d69",
+    "source-package-inventory-v69.csv": "21a16df18cb0aadff6fbc84f6945ae66c81323746fe7754af74f82ece49c9d8a"
+  },
+  "input_sha256": {
+    "v68/3730-crosswalk-final-v68.csv": "39caeb9f89303b43ca143b24ca7ac64ed66b771f5ef912877b481bd4bbac13a9",
+    "v68/investigation-final-v68.csv": "b0f3eb509556b53fd2e0479ad53a12f3317f6861b08ec41417525d7b92a327a5",
+    "v68/live-issue-snapshot-v68.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "v68/row-challenge-v68.json": "94914bf5395a214be1039f51c6647cdf439befde47b1af22cbc94c7fd92dba11",
+    "v68/validation-v68.json": "1d6a483214a95f16895dd1bc09b05cc5ebea8a64001877d1e6419cbda6b89efe"
+  },
+  "inventory_files": 27,
+  "inventory_only_packages": [],
+  "investigation_count": 159,
+  "new_report_packages": [
+    "ninja-current-source-review",
+    "tock-asterinas-current-source-review"
+  ],
+  "reference_tip_at_start": "946df4c8385b246a94b50d6e075dd802569314db",
+  "row_count": 333,
+  "source_map_sha256": "d46226ce3720e3d87869e5e2c4f825a27409c425ae7685baeeb17388ed8d7f6d",
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v68",
+  "source_review_context_packages": [
+    "ninja-current-source-review",
+    "tock-asterinas-current-source-review"
+  ],
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345,
+  "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+  "v68_published_commit": "48b8693b47bb3e33ada4fe6fbb437adad40bbb7e"
+}

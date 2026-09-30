@@ -1,0 +1,16 @@
+{
+  "ninja-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["make-ninja-narrow-build-tool-boundaries-1979-2026"],
+    "reason": "R494 Ninja source-identity review of the exact J042 Make/Ninja analog already mapped to I144 by the v67 synthesis. Current master equals its pin; the stable release is a divergent source line. No Ninja runtime or Anneal product execution."
+  },
+  "tock-asterinas-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": [
+      "tock-asterinas-safe-interface-boundaries-2015-2026",
+      "tock-asterinas-safe-interface-boundaries-2017-2026",
+      "tock-asterinas-trusted-mechanism-boundaries-2017-2026"
+    ],
+    "reason": "R571–R573 current-source review of the exact three Tock/Asterinas analogs already mapped by v67 to I144 and, for R573, I159. One Tock mapped-file lint edit and otherwise unchanged mapped blobs do not establish safety behavior; Asterinas has no forward main revision. No runtime or Anneal product execution."
+  }
+}
