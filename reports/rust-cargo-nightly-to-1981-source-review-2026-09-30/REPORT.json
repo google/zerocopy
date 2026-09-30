@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "rust/version-review",
+    "cargo/version-review",
+    "rust/volatile",
+    "reference/cohort-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Frozen reference report corpus used for the Rust/Cargo cohort",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "d36bc9c6d21837e9881cde82a67ce72af50d415f",
+        "branch": "reference"
+      }
+    },
+    {
+      "name": "Rust 1.98.1 stable toolchain and rustc source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+        "version": "1.98.1"
+      }
+    },
+    {
+      "name": "Rust nightly source of the selected volatile claim",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "toolchain-date": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Cargo 1.98.1 stable component documentation",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "version": "1.98.1",
+        "documentation": "https://doc.rust-lang.org/stable/nightly-rustc/cargo/version/index.html"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

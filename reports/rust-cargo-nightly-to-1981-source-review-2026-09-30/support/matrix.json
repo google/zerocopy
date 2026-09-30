@@ -1,0 +1,3699 @@
+{
+  "schema": 1,
+  "frozen_reference_commit": "d36bc9c6d21837e9881cde82a67ce72af50d415f",
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "baseline_count": 581,
+  "current_count": 586,
+  "cohort": "Rust/Cargo/rustc nightly-2026-05-31",
+  "rows": [
+    {
+      "inventory_id": "R179",
+      "title": "I023: proof edits after the current Rust model fails",
+      "report_md": "reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/REPORT.md",
+      "report_json": "reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/REPORT.json",
+      "frozen_md_sha256": "080f5da732d7f2fb7fb11d54e4639cafb2b94b4c04c8de32cb42a2d87e183391",
+      "frozen_json_sha256": "8e9699f39092f3e68cd20b99db83355c7291b0dd7c3aa230b550b518fe4d61a4",
+      "frozen_subjects_exact": [
+        {
+          "name": "Pinned Charon CLI",
+          "identity": {
+            "executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          }
+        },
+        {
+          "name": "Pinned Aeneas CLI",
+          "identity": {
+            "executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          }
+        },
+        {
+          "name": "Lean v4.30.0-rc2",
+          "identity": {
+            "version": "v4.30.0-rc2",
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "# I023: proof edits after the current Rust model fails",
+        "line": 3
+      },
+      "claim_excerpt_exact": "Observed 2026-09-29 with pinned Charon, one-shot Aeneas and Lean 4.30.0-rc2. The tiny saved Rust source first defined `inc(x: u32) = x + 1`. Charon and Aeneas succeeded, generated Lean modules compiled, and proof v1 of `last_good_probe.inc 0#u32 = .ok 1#u32` passed. The report records the exact source, LLBC, generated-file and proof hashes as **model A**.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R229",
+      "title": "Cargo input closure and workspace ownership controls for an interactive Rust subject",
+      "report_md": "reports/anneal-3730-rust-input-snapshot-2026-09-29/REPORT.md",
+      "report_json": "reports/anneal-3730-rust-input-snapshot-2026-09-29/REPORT.json",
+      "frozen_md_sha256": "f82b3f9037b2f05dc546d54f80085186e66a862e017b42324c81c708a574f1f1",
+      "frozen_json_sha256": "954c802c89810a8875aa487eefc5e53e9c9d04bd57111eaaf4539eba7b25a813",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          }
+        },
+        {
+          "name": "Cargo 1.98.0-nightly",
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+            "binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+          }
+        },
+        {
+          "name": "Offline Cargo input and ownership probe",
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "4101c4def098de100aaa87b2cb8002d7f22ff7872717f50950a8fa6cee37b079"
+          }
+        },
+        {
+          "name": "Two-crate no-registry fixture",
+          "identity": {
+            "artifact": "support/fixture",
+            "canonical_file_hash_manifest_sha256": "2e78b1712c66a02a2167b2102e16c4dfe0b60ecb75e1b89d1bae320640b2561f"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [
+        {
+          "name": "Cargo 1.98.0-nightly",
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+            "binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+          }
+        }
+      ],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "https://github.com/rust-lang/cargo/commit/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+      ],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At one pinned Rust/Cargo toolchain, a dependency-free two-crate fixture produced different compiled output while `app/src/main.rs` stayed byte-identical: changing a file consumed by `include_str!`, selecting a Cargo feature, or changing the manifest's default feature altered the program. Changing a doc comment from `proof: alpha` to `proof: beta` changed a local derive macro's generated constant and the binary's output. A→B→A restored the original source hash/output but represented a later causal revision in a separate file-backed ownership control. A stale writer with the old A revision was rejected even after content returned to A.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R231",
+      "title": "Saved Rust subject versus a private materialized overlay",
+      "report_md": "reports/anneal-3730-saved-vs-private-rust-overlay-2026-09-29/REPORT.md",
+      "report_json": "reports/anneal-3730-saved-vs-private-rust-overlay-2026-09-29/REPORT.json",
+      "frozen_md_sha256": "1ea994320953319878a33251e471fb62f9263fdb369b3fd7162e22dcca071f6a",
+      "frozen_json_sha256": "0127cf9edd611d125fd1f8aa403d0db7511aaf0c8c2a17b2b15bb6de82adb871",
+      "frozen_subjects_exact": [
+        {
+          "name": "Pinned Cargo/Charon and three-package Rust fixture",
+          "identity": {
+            "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "fixture_tree_sha256": "2f8bce5daaea80b2c104afec7c903a68230848b6ee8b1e0085bafbd029e2f4da"
+          }
+        },
+        {
+          "name": "Saved and materialized private-overlay Cargo/Charon matrix",
+          "identity": {
+            "probe_sha256": "5ca55f7a8de3a46ce1764fbafbaaa41d0c51885f8c91a15d485ee065eefabb2b",
+            "verifier_sha256": "e05f6ea762e746950690e258a2d6d8ed19069f8de43be8232f31366d47f5b483",
+            "results_sha256": "5e8c3f8c21624362d6e82c890901546701b9c6891c3f123f91bc436c084e0e56",
+            "saved_subject_sha256": "f1c8ac4ffd7ecce58f07d547e370658b3e3cec76f8b953095bba8ef151a7f248",
+            "clean_overlay_subject_sha256": "f1c8ac4ffd7ecce58f07d547e370658b3e3cec76f8b953095bba8ef151a7f248",
+            "saved_unit_graph_sha256": "dfe8b4f62e1f0336652a498c6fd3f926c0cc4601479a02f69854a6a27071e8f0"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "# Saved Rust subject versus a private materialized overlay",
+        "line": 3
+      },
+      "claim_excerpt_exact": "Observed 2026-09-29 on macOS arm64 with pinned Charon 0.1.210, Cargo/rustc nightly 2026-05-31. This bounded component experiment addresses #3730 D01 and #3731 I009/I015/I073–I080. “Overlay” here means a copied, path-isolated Cargo workspace with a private target and LLBC destination. It is not an in-memory rustc editor overlay or an Anneal scheduler.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R240",
+      "title": "Local execution and evidence-boundary fixture for Rust and Lean",
+      "report_md": "reports/anneal-3730-trust-evidence-boundary-2026-09-29/REPORT.md",
+      "report_json": "reports/anneal-3730-trust-evidence-boundary-2026-09-29/REPORT.json",
+      "frozen_md_sha256": "4a33445ba0de5136cf3feea642defe25e3e08d2cf234210e5ab0faa8486acb40",
+      "frozen_json_sha256": "c06e9f9913495ff481b3377aac82a6766e88e7b3a53797bae40fcbe23b439321",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+            "version": "1.98.1",
+            "binary_sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340"
+          }
+        },
+        {
+          "name": "Cargo executable",
+          "identity": {
+            "version": "1.98.1",
+            "binary_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a"
+          }
+        },
+        {
+          "name": "Lean 4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2",
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+            "version": "1.98.1",
+            "binary_sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985"
+      ],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "In a disposable synthetic fixture, source hashing and `cargo metadata --offline --no-deps` left the workspace files unchanged and produced no side-effect markers. `cargo check --offline` then executed both a build script and a proc macro: each wrote an owned marker outside the intended fixture workspace, wrote through an owned `TMPDIR`, spawned `/usr/bin/true`, and sent a datagram to an owned `127.0.0.1` receiver. Direct `lean --json` executed a `run_cmd` block that wrote one file inside and one outside that workspace and spawned `/usr/bin/true`. None of these observed writes escaped the conversation-owned Meta/Data scratch root. The controls show the practical difference between inspecting source and executing it; they do not establish a security boundary or sandbox guarantee.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "already_current",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R517",
+      "title": "Rust struct, enum, and union layout rules relevant to unsafe code at nightly-2026-05-31",
+      "report_md": "reports/rust-aggregate-layout-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-aggregate-layout-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "a913e41979b21ab854336a446fd8e831d0cd4644284f009258d938074d8ae75b",
+      "frozen_json_sha256": "7810e088a35252bab98218ee64458f42d06320be92e8a773066d389397fbfca3",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference aggregate-layout contract",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "2ee902aef043f4d299e009f6a69d1815d862e69e",
+        "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+        "c330b037007ff36dc2e8475daefc96e176121914"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "Rust's aggregate layout contract at the Anneal-era toolchain has one central dividing line: **the default `Rust` representation deliberately promises very little, while `repr(C)`, primitive enum representations, `repr(transparent)`, and alignment modifiers add specific guarantees without erasing Rust validity rules.** Unsafe code must reason from the representation actually attached to the nominal type rather than from source declaration order or from a compiler layout observed once.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R518",
+      "title": "Rust allocation and deallocation contracts at nightly-2026-05-31",
+      "report_md": "reports/rust-allocation-deallocation-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-allocation-deallocation-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "3750270e21b83fc6ce1d8e8557be3d9acc570d9cf61a65ec1f8f4f41eb67c2f5",
+      "frozen_json_sha256": "500582c6250cee8a33e2c2cbe203a9f652c4fac35afbec69bd93a05c01d03fc0",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust allocation APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust allocation APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "102fb19efc8eabbe32ddb9a5d3a2f7e0ac186b16",
+        "66f5310db83102e28535faf0e4586ba447b4d7a6",
+        "8729e98278a82c17cf5a6b201246ca04db17dcf6",
+        "e97398aa5dc4a3f923d014cecc3734906121d0a9"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust revision behind nightly-2026-05-31, low-level allocation is governed by two related but materially different interfaces. The stable global-allocation functions (`alloc`, `alloc_zeroed`, `realloc`, and `dealloc`) inherit `GlobalAlloc`'s non-zero-size and exact-layout contracts. The unstable `Allocator` interface is deliberately more permissive: it supports zero-sized allocations, can expose an actual allocation size larger than the requested `Layout`, and defines deallocation in terms of a layout that *fits* the allocated block.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R519",
+      "title": "Rust atomic operations and memory orderings at nightly-2026-05-31",
+      "report_md": "reports/rust-atomics-memory-orderings-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-atomics-memory-orderings-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "ebd8558dc079aa86c466c70bc861295eabf6cc0903285d7876f0958e51a29721",
+      "frozen_json_sha256": "757f8b2fd35c5690953e59e48b1070da3a6a9a12b03c373a67afae39b6f39365",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust atomic library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust atomic library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "4f2faa7e5fbd6bd7aa7377118b2e2dc1849243c5"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust revision behind nightly-2026-05-31, the atomic library explicitly adopts the C++20 atomic memory model, omitting `memory_order_consume` and translating C++'s object-based wording into Rust's access-based model. The critical safety boundary is not “all shared writes must be atomic.” It is that a **data race**—conflicting, unsynchronized accesses where at least one access is non-atomic—is undefined behavior. Conflicting atomic accesses can race without becoming a data race, but non-synchronized atomics have an additional mixed-size restriction: partially overlapping atomic accesses are not allowed unless they are both reads.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R520",
+      "title": "Rust auto-trait coinduction and recursive unsafe impls at nightly-2026-05-31",
+      "report_md": "reports/rust-auto-trait-coinduction-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-auto-trait-coinduction-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "2499fc7f11ea77ac1580a72ad956bb740700ade723c6a02d3338f5355b1bcc08",
+      "frozen_json_sha256": "7135c81d476f23671d0702073633a6a93321bf0a5b4365646a550c7281cb210d",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "014e15d1ada6833d828961f1e5879cf333611a96",
+        "523c9b8b1585846d448791b40d0b800f7286af0e",
+        "53141aabacc453e3781bbe9593618e26c06ca732",
+        "54d306466cf5b1b5b8f32625606b469dcfa7d5a8",
+        "6df1ed82d260a5c95dbe9671f2c7ddf8585c36ab",
+        "7658c1f5c5425d03e2183e89b55260e5e9fd889b",
+        "9753f7539c27a08bd443817f9086bd047be957d9",
+        "a46261fcf72716f5571a996da35fa0ffc6e4504f",
+        "e41f7d7f3ceb341d1f48aa4b591435aaccde4273",
+        "eadc937639f209ceaebef0eaf59cf4b279d507e7"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, auto traits such as `Send` and `Sync` are coinductive: some recursive proof cycles are accepted rather than treated as ordinary inductive recursion. This is necessary for recursive data structures whose automatically generated auto-trait proof eventually asks for the same auto trait again.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R521",
+      "title": "`Box` raw conversions at Rust nightly-2026-05-31",
+      "report_md": "reports/rust-box-raw-conversions-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-box-raw-conversions-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "be0dc2e3ec58fcd3041d2c72f91ea58c52f2b71427bbb1c6d58b28358c77cc0a",
+      "frozen_json_sha256": "d356f398cabe99e52a91d5b3579e6420345ab578100988e446a41326d7fbb50d",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust Box raw-conversion APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "release": "1.98.0-nightly",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Current zerocopy Box raw-conversion call sites",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust Box raw-conversion APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "release": "1.98.0-nightly",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+        "4df786fd2104854e1fa259a63c29cd8781f8a404",
+        "944f177c0b0bf66ebd136e5f21ae1b4c2bde48b5",
+        "bd3f10a16dd9b27870c28db0a34bc9b569a36634"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "`Box::into_raw` is an ownership handoff, not a temporary pointer borrow. It consumes a `Box<T>`, suppresses the box destructor, and returns a non-null, properly aligned raw pointer whose pointee and allocation are now the caller's responsibility. `Box::from_raw` performs the inverse handoff only when the pointer still satisfies the `Box<T>` allocation, layout, value-validity, and ownership requirements. Reconstructing two owning boxes from one allocation can double-free it; losing the pointer returned by `into_raw` leaks the allocation unless the caller performs equivalent destruction and deallocation manually.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R522",
+      "title": "Rust conditional compilation before HIR and MIR at nightly-2026-05-31",
+      "report_md": "reports/rust-conditional-compilation-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-conditional-compilation-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "15169eac9a2b64e7aec58b9fa626983eab95fee120039f05a1c4fd870ce33737",
+      "frozen_json_sha256": "f5f6e5536010daf01188dbe9e55fdd2e6bb61a0b54fc1a52c7ee571e4197020f",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "Cargo source",
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [
+        {
+          "name": "Cargo source",
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          }
+        }
+      ],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "https://github.com/rust-lang/cargo/commit/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "2b914a2664fe5f398b3597db5f7c4aa8c64dc91e",
+        "3cc015025bab29ec026d2a56538d97051eb6a660",
+        "623fb4e2c6dd2ff6731bcfa331827ad0d90563b0",
+        "741c34e0304af71c8fbbad394d18809f9126b0df",
+        "746e01d01e256f254481160467b025afc220d2fe",
+        "c0351610d6d0c495233eb382e97cdb6c5ff3864d",
+        "d16ab59a02d9e2691d5eee2dea8ae237a301c466"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust compiler revision used by Anneal's pinned Charon toolchain, false `#[cfg(...)]` branches disappear during AST configuration and macro expansion, before name resolution finishes and before the surviving AST is lowered to HIR. They therefore never become HIR or MIR for that compilation. A downstream MIR consumer cannot recover code excluded by the active configuration from the compiler representation it receives.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R523",
+      "title": "Rust const evaluation and const functions at nightly-2026-05-31",
+      "report_md": "reports/rust-const-eval-const-functions-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-const-eval-const-functions-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "5d16a0a0c33cfe170692344e789b2f7e2428fd4db341035064ba22d092ce24c7",
+      "frozen_json_sha256": "092e67706e7df12ce48be430ebe0964814cde0fbf4361883c63606f00a4237d2",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "1dee2f34371e8fe41e732b742a06ab96e975e77e",
+        "62ec0d2ef8bf49bc37098d1a49a3a7bc89168781",
+        "78d7314c58110b49839894a0f69377f4ee0d1204",
+        "c06b343b041ee7c596cfa34385d62d25358ee7e6"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust compiler revision behind Anneal-era nightly-2026-05-31, `const fn` does not mean “this function always runs at compile time.” It means the function is eligible to be called in a const context. A call from a const context is interpreted by the compiler during compilation, using the compilation target's environment. The same `const fn` called outside a const context behaves like the same function without the `const` qualifier and executes normally at runtime unless ordinary optimization happens to fold it.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R524",
+      "title": "Rust correctness and termination terminology at nightly-2026-05-31",
+      "report_md": "reports/rust-correctness-termination-terminology-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-correctness-termination-terminology-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "c22486d13da5a477863b05160049a38c6b80d59780aa9cd049626b837e91f0cf",
+      "frozen_json_sha256": "699b098082257542f1ff0bf85e76af9f3e00d6710d95c9ae39f4d4d70d4c6817",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "2be7e42fb2c3d4c752202f87aa07c890d68e437b",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "5e25d6d0d944ae8a62236ce7e46f347ded3fbfcc",
+        "8e67295482c3826c841585172560d93b2823510f",
+        "fe30bce74d6ab02eb06b9d6a852f9dc3e523eec2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust revision behind nightly-2026-05-31, several outcomes that all fail to produce an ordinary function result must remain distinct: an execution can panic and unwind, panic and abort, terminate through another process-ending path, execute undefined behavior, or continue forever. Rust's own term *diverging* is broader than *nonterminating*: the Reference defines a diverging expression as one that never completes normal execution, and it explicitly includes `panic!` as well as infinite `loop {}`. A Rust function returning `!` therefore promises only that it never returns normally.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R525",
+      "title": "Rust drop elaboration and downstream visibility at nightly-2026-05-31",
+      "report_md": "reports/rust-drop-elaboration-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-drop-elaboration-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "0752e70cd2a85710b7fae102d5bb3500019e93dce318f20b024656ced0942af2",
+      "frozen_json_sha256": "41a9187d875897ee23408c99a5a053dfe7012ac3cc4387a57d27a4b5bd7e6027",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        },
+        {
+          "name": "Aeneas selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "0eb7db8dbed2d6f04223b42447591664b5f98daa",
+        "23044319a8f763d241912c5d693ed94cf597682f",
+        "3343bec30caf58a38d129dc4a2787f7e0828d15c",
+        "3787276919cf5b4b827bd167d421e0dc2bb7223c",
+        "3c6179f10742b2ee82c8ca07e6d51be6c8dc7694",
+        "7ef60f4cca00b37bdf2fa270d13ae35921aa02be",
+        "97452f658bbd773c16386592d31b0bf61da8891f",
+        "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+        "aa27842622f5fe25efb0f1005d8901e6b77a71c7",
+        "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+        "c03ca8077f131a2ef701e9d27eaa9e69bb617124",
+        "f08f8bae08d7fb5f38773c0be038d925fe80cb4c"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "Rust source semantics require destruction only for initialized values and initialized subobjects. The compiler does not encode that rule directly in newly built MIR. It first inserts `Drop` terminators at places where destruction may occur, including normal scope exits and cleanup paths. At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, the mandatory `ElaborateDrops` pass combines move-path dataflow with generated drop flags and rewrites those potential drops into runtime control flow. It classifies each drop as dead, static, conditional, or open; open drops recursively destroy only the still-initialized subobjects. After elaboration, a remaining `Drop` terminator means an actual invocation of the type's drop glue rather than merely a possible source-level destruction point.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R526",
+      "title": "Rust dynamically sized and slice layout at nightly-2026-05-31",
+      "report_md": "reports/rust-dst-slice-layout-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-dst-slice-layout-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "2f5fb111e14a64b5bb27a81e5083b12aedb4cc482d0d6a3ec1298f283d51d77d",
+      "frozen_json_sha256": "a4c6d8514aaed51d4b3bc1fde881b6744126becf546918cafe2fc8721ad6c4a8",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "05068309a7bfb15a5b4612a24276308a5240c9d0",
+        "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+        "2ee902aef043f4d299e009f6a69d1815d862e69e",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+        "7b07b6a05c0f282c814ccf3b73e89e8db8935cb3",
+        "cd90adb75dc4dc9bd4c7af8ea24a1b5ca7dd7b0b",
+        "e8be3a9f1ef48fe07a786238baccebca8f4abd39"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "Rust's dynamically sized types separate two questions that unsafe-code proofs often blur: **the layout of the dynamically sized value** and **the representation of a pointer that carries enough metadata to locate that value**.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R527",
+      "title": "Rust `extern` declarations and foreign items at nightly-2026-05-31",
+      "report_md": "reports/rust-extern-foreign-items-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-extern-foreign-items-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "552baaa528363add10a85748eb78e8e13bdfb2145ce09ae94ab33b071da3b511",
+      "frozen_json_sha256": "ffeeb62606516e155f66424bbe706b77229535ad9f3cb32929a738f6ab50641d",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "187a703dff83687f369f1903c6646aabdff259d3",
+        "23044319a8f763d241912c5d693ed94cf597682f",
+        "35bef6ea79992c65ea934413765fa95f631274e6",
+        "362b39b5733c385a18e20a928d75f960f1cd427e",
+        "470ed2ff4d992efe30f8c4a09a3676111f304003",
+        "548be29762fdc4f4d1cd652537db6f54065ff6ee",
+        "59d1b4b5576ee47ea6c994977d40d5a948f139ce",
+        "7964644be017856c6d165545a67bd6ef06e0c85c",
+        "8a6b2027083d600ab3fbd5c214b92c53cd17b789",
+        "b4626724fd803a3d8bdd021027e7629370b3f6c1",
+        "b64cb8843ed713f6aa036010aa4a987e045c8eb9",
+        "d275d5a28b88ad73141b684a70c43ca661db809d",
+        "e1704556b5f000c019cd04df63e7e04692454c42"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, an item in an `extern` block is a Rust declaration with compiler identity, a Rust-visible type/signature, safety information, and an ABI boundary, but no Rust body. The Rust Reference describes these items as declarations of definitions provided elsewhere. A proof about Rust code can therefore rely on the Rust-side declaration only after making the foreign implementation's behavior an explicit model or trust assumption.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R528",
+      "title": "Rust initialization, padding, and typed-copy semantics at nightly-2026-05-31",
+      "report_md": "reports/rust-initialization-padding-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-initialization-padding-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "581967023f974efbc2a94097afb966a04e02c771843324ccd4421e3d39fdb048",
+      "frozen_json_sha256": "8f0c17f583a3e2ebc31cfe93c272402c0637110decc6e70e557826226090df54",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library selected by Anneal",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the selected compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library selected by Anneal",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "2ee902aef043f4d299e009f6a69d1815d862e69e",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+        "7e2c6b9b3bcb2d66af376243d95c541e5bd4024d",
+        "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, corresponding to Anneal's `nightly-2026-05-31`, initialization is a property of Rust's abstract memory bytes, while validity is a property of produced typed values. The bundled Rust Reference permits uninitialized bytes in padding even when the enclosing value is otherwise valid. Padding contributes to storage size and layout, but it is not required to hold initialized value bytes merely because a `T` exists there.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R529",
+      "title": "Rust inline and global assembly at nightly-2026-05-31",
+      "report_md": "reports/rust-inline-global-assembly-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-inline-global-assembly-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "956fe45dbdf4f470ba75adca411a76114ba008e8009fcd759a00727800bc7b9f",
+      "frozen_json_sha256": "86545af1cc88896571f0c735111cdf2c7ce35b170357503e49829eea85e47358",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "07322359e92f92a4d8b55865a67257bedacb0a62",
+        "07eaa085fabc9742d0d51c73eeba91dcc9e67d2e",
+        "230dee5515749230c87ca37d54b153dec7f9c5ab",
+        "3c6179f10742b2ee82c8ca07e6d51be6c8dc7694",
+        "40f29f8a4b19f98e929b5fe82b8a009d813120ad",
+        "53536c6df6e241c9655840f6b1f8a4aca2113f90",
+        "59d1b4b5576ee47ea6c994977d40d5a948f139ce",
+        "78bc07869895ad2a8b67cb5d6115eb1cdbc96db3",
+        "c03ca8077f131a2ef701e9d27eaa9e69bb617124"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, Rust inline assembly is an explicit semantic boundary rather than an opaque function call. `asm!` and `naked_asm!` reach MIR as `TerminatorKind::InlineAsm`, where rustc still records the assembly macro kind, template, typed operands, options, source-line spans, control-flow targets, and unwind action. `global_asm!` follows a different path: rustc keeps it as a module-level HIR item and later emits it as a `MonoItem::GlobalAsm`.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R530",
+      "title": "Rust layout information available from rustc at nightly-2026-05-31",
+      "report_md": "reports/rust-layout-rustc-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-layout-rustc-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "a3eacb87198884ffa11be030ec07771f1884ab97cd56053dda4c1c2368b41488",
+      "frozen_json_sha256": "eb9564935a70253a4d68916b34d2005f8d28d609b8cab1f20054a7d166f57f9d",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "1227fe23713cb172b8f1bd9d57162909e69ef663",
+        "166c8bea6f3548307b004aa421ed37c556772ccf",
+        "2ee902aef043f4d299e009f6a69d1815d862e69e",
+        "9cc15a374ff702c2b5c90e179c8e797229f39a4e",
+        "9db9b1769ab9c891ef1aa0cdbdc83cde81e2487d",
+        "b09afc9ec8af606d58b2afddff8510eaecb963ef"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust compiler revision behind Anneal-era nightly-2026-05-31, rustc computes substantially more layout information than the Rust language promises as a stable representation contract. Its internal layout model records size, ABI and preferred alignment, field offsets and memory order, enum variant layouts and tag encoding, scalar validity ranges and niches, inhabitation, backend representation categories, and whether a layout is sized. Type-aware traversal can recover per-field and per-variant layouts, and rustc separately computes the metadata type for potentially wide pointers.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R532",
+      "title": "Lifetime and region information through rustc, Charon, and Aeneas",
+      "report_md": "reports/rust-lifetimes-charon-aeneas-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-lifetimes-charon-aeneas-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "0eb832845261e2bc2a6d207a54ae4947312c7956496b97344ba567e8e9d5dc36",
+      "frozen_json_sha256": "050b643a5f4689b9c21dc93917d20a9c227f3dab73e59155a09ed934cb0b2999",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Aeneas release source",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Anneal configuration",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At Anneal's pinned 2026-05-31 Rust/Charon toolchain and Aeneas\n`nightly-2026.06.03`, lifetime information changes representation several\ntimes rather than disappearing at one compiler boundary.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R534",
+      "title": "Local and nested Rust item identity for Anneal",
+      "report_md": "reports/rust-local-nested-items-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-local-nested-items-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "6fc4f5702da4dd9a616090d014b551202d7094fcd789e46e3237372265816b9c",
+      "frozen_json_sha256": "72509a5b8e2e8de0acdd9f6eff076cf99ac2c1b8e738de2d05937c38297c1956",
+      "frozen_subjects_exact": [
+        {
+          "name": "The Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "rustc",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "release": "1.98.0-nightly",
+            "commit-date": "2026-05-30"
+          }
+        },
+        {
+          "name": "Anneal",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "0eca5581c6d27aaeaba4c421f7bf2a26bdd50228"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "rustc",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "release": "1.98.0-nightly",
+            "commit-date": "2026-05-30"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      ],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "Rust permits definition-like constructs inside bodies that do not have ordinary\nmodule paths.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R535",
+      "title": "`MaybeUninit` semantics at nightly-2026-05-31",
+      "report_md": "reports/rust-maybe-uninit-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-maybe-uninit-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "90afe95830c1c490990954660cbdeced5ffd47fee108e1b04ba005946dd7ddfb",
+      "frozen_json_sha256": "177125b7cb76c2a87caff9ac310e9171c4fa6ce473c419d0fdb7a4cc3444f70d",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust core MaybeUninit semantics selected by Anneal",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the selected compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust core MaybeUninit semantics selected by Anneal",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "7e2c6b9b3bcb2d66af376243d95c541e5bd4024d",
+        "cc3cf02ec0adba12134ad6cb82e51a4b864da784"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `MaybeUninit<T>` is Rust's type-level escape hatch from `T`'s ordinary value-validity invariant. A `MaybeUninit<T>` may contain any initialized or uninitialized byte sequence of the appropriate size. The wrapper carries **no runtime initialized/uninitialized tag** and dropping it never runs `T`'s destructor. Safety is recovered only when code crosses back to `T`, `&T`, `&mut T`, or `Drop` through an operation whose caller asserts that the required initialization and validity conditions now hold.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R536",
+      "title": "Rust module, file, and source identity at nightly-2026-05-31",
+      "report_md": "reports/rust-module-file-resolution-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-module-file-resolution-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "4f2aa1bf5c82249cdf6526206f3920e3ec80e66629499ed40e7ed76f280a2453",
+      "frozen_json_sha256": "8a7cc9a739d42cc853c695aad8eeed556ad536ec5be29b05140f221caeb50776",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "2371bf15756dac74f5488d5d0b069ed6673014a5",
+        "3cc015025bab29ec026d2a56538d97051eb6a660",
+        "47c933e245d4942a81f48dc8bcd6b15ba9c39ea7",
+        "741c34e0304af71c8fbbad394d18809f9126b0df",
+        "c0351610d6d0c495233eb382e97cdb6c5ff3864d",
+        "f64ff982e5238ed567446081830769d47b1898b9"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust compiler revision used by Anneal's pinned Charon toolchain, a Rust module's logical identity and the source file that supplied its text are distinct facts. An inline `mod m { ... }` has a logical module but no separate module file. An out-of-line `mod m;` loads exactly one source file selected by Rust's module-path rules or by a literal `#[path = \"...\"]` override. The resulting file is registered in rustc's `SourceMap` under a `FileName`; spans refer into that source-file identity, while Rust item identity is assigned separately.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R537",
+      "title": "Rust-nightly upgrade checklist for the Anneal toolchain",
+      "report_md": "reports/rust-nightly-upgrade-checklist-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-nightly-upgrade-checklist-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "6ff8c737b85e2b52cd80f6d93b49bed86b3b104c3a0b2066828cf8e66fc94f3e",
+      "frozen_json_sha256": "8ea9167f8b7f33700942ea913d675775b3b4803cc4a49c6356c8e9e7e47fa44d",
+      "frozen_subjects_exact": [
+        {
+          "name": "Anneal toolchain configuration",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        },
+        {
+          "name": "Aeneas release selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Charon pinned by the selected Aeneas release",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        },
+        {
+          "name": "Rust compiler source behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler source behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "06dbe0dbf1d5b7f1e6f2a21889ab6bf770e89de6",
+        "3c98116ae62afb83263fa1654037badaf569e1c1",
+        "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+        "4f12c8e2bb294d910ad85338477c7673bb4dfcf0",
+        "8c9936202e7bdbdaaefbc19305363da1ab6c0084",
+        "9e17911f4d1e7695cc63fe9f8b2b20b2f0322f00",
+        "9edee13427fd5e3699abd3709cc9f33d7652873e",
+        "ab74f3f3d12a869bd8c3c94083b93b7dee1c2482",
+        "b35d1d0236cd7e1c5f68ad5b80b3371b82f2e784",
+        "bf867e0ae5b6c08df1118a2ece970677bc479f1b"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "A Rust-nightly change in current Anneal is not an isolated compiler-version bump. The normal runtime Charon path is built around the Rust nightly required by the Charon revision pinned by Aeneas. At the examined baseline, Aeneas `nightly-2026.06.03` pins Charon `a535e914…`, and that Charon source embeds `nightly-2026-05-31`. Anneal separately hard-codes the same date in `anneal/flake.nix`, packages that Rust sysroot, and invokes the Aeneas-bundled Charon with `CHARON_TOOLCHAIN_IS_IN_PATH=1`. In that mode Charon trusts Anneal's `PATH` and dynamic-library environment; it does not compare the supplied rustc against its embedded channel.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R538",
+      "title": "`NonNull` semantics at nightly-2026-05-31",
+      "report_md": "reports/rust-nonnull-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-nonnull-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "0367351752f2d8d32780e3d39397fe4ae6ed44045f2bcbb8e9491f6b13314c16",
+      "frozen_json_sha256": "2ddd2a5a957630c0b4ed452f2aad58edf43b4655cb27d943f9e4f0468fd512db",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "1e9d6c15eaf98d32d45dec52ed9b8cb0a0cefabe",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "86e9d01381a5198a4694137fafa75beb6a4f9f06",
+        "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `NonNull<T>` is not an owned or dereferenceable pointer abstraction. Its defining extra value invariant over an ordinary raw pointer is much narrower: the pointer value must never be null. It may still dangle, be unusable for an access, carry insufficient provenance, refer to uninitialized storage, or fail the stronger requirements for forming `&T` or `&mut T`.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R539",
+      "title": "Panic-producing Rust primitives at nightly-2026-05-31",
+      "report_md": "reports/rust-panic-primitives-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-panic-primitives-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "1418395fa8d0cb054e88b98d5c3492321e083fbade696719d708571823a3d283",
+      "frozen_json_sha256": "a2093f24d4acdf8cb5c0536e5dceb65d5a970094d43e966af112f957ac86f599",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the selected compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "2be7e42fb2c3d4c752202f87aa07c890d68e437b",
+        "3609dd1fe2e02e639d5ad52b5979c03f69463431",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "6bd23b3072ed9a2266ef029ac09f2266e45ed27b",
+        "90326e649058bee9f49c1e600a054f2805a3ab4f",
+        "a490a26aa0ff3b3b56bb1f5a3c2a74109cbc839d",
+        "c21191dbc19be8e56fd42a46499032442c97776a",
+        "f0e1a1def49d14d40e180d65123494765dbfdae0"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At Rust `nightly-2026-05-31`, ordinary panic-producing primitives and their unchecked counterparts have fundamentally different verification obligations.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R540",
+      "title": "Panic, unwind, abort, and divergence in Rust/MIR at nightly-2026-05-31",
+      "report_md": "reports/rust-panic-unwind-abort-divergence-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-panic-unwind-abort-divergence-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "e826812a88332bb711a79fe63ca7b11354a77d00ffca1ab8fc0927eb72aa8424",
+      "frozen_json_sha256": "551275ef027eed6af3006cf49b71fa20c8934ba8f0ffce79cc29c0b0a3afefbd",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, the Rust outcomes that all fail to return normally are not interchangeable. A computation can return normally, unwind, terminate the process, execute undefined behavior, or fail to terminate. Rust's type-level notion of divergence deliberately groups several of those possibilities: an expression of type `!` never completes normal execution, but that fact alone does not say whether it panics, aborts, loops forever, or otherwise cannot return.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R541",
+      "title": "Rust raw-pointer arithmetic at nightly-2026-05-31",
+      "report_md": "reports/rust-pointer-arithmetic-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-pointer-arithmetic-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "265cb6a8e8ddb1edc334ec1ef7e18787ddc594e9e0c6b6826d06baaf599179ce",
+      "frozen_json_sha256": "778873e5c9ea6ce99fa71f57b9709830e6827b8cf1546cfa98b8304161d51657",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust core raw-pointer arithmetic behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust core raw-pointer arithmetic behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "6e2e87f5f811b5d26f25e331346e8d545ebb4e7d",
+        "f04f5606ab297a8e62e9215064ee839148197c64",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, the raw-pointer arithmetic APIs divide into two semantic families.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R542",
+      "title": "Rust raw-pointer casts and provenance APIs at nightly-2026-05-31",
+      "report_md": "reports/rust-pointer-casts-provenance-apis-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-pointer-casts-provenance-apis-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "d52f91ccc2288ce599cf0574c4848cdf04d4c91db29d889b2a5e5842a5a2d1ce",
+      "frozen_json_sha256": "d36de59b805c0e92011e0f701a9eff2b7de208023522e34fb8a3be7237a5cf52",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust core raw-pointer APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust core raw-pointer APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "6c5e4ffbf1532597c3ffe9a800ca80e0fb3cec8a",
+        "785b88a9987090d4d04ebe614fee3fc0d89794ec",
+        "ecb20487cd204065bd09443f416501e2395c8f38",
+        "f07b6f624ce7fa77db88885df8a5f02e7dc2ba4a",
+        "ff2c18d685b65832c296731f23f1664779b874f2",
+        "ffd234a3b77dbb4d34f58b4e0b366a79ca7cc2f1"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust revision behind `nightly-2026-05-31`, a raw pointer is not interchangeable with its numeric address. The pinned `core::ptr` documentation describes a pointer as carrying an address plus provenance: the address identifies a location, while provenance participates in determining which memory accesses that pointer may perform. The stable Strict Provenance APIs make this separation explicit.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R543",
+      "title": "Rust raw-pointer bulk-copy primitives at nightly-2026-05-31",
+      "report_md": "reports/rust-pointer-copy-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-pointer-copy-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "70c90f3e0b64ee614be3a4ad3b51c5d7bd62f88125f694fc24af487c9b7b108c",
+      "frozen_json_sha256": "5ffa95b3b465ebd13859f1f23b0774c8671e0bf875d841655be4bc254030ef16",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust raw-pointer bulk-copy primitives behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust raw-pointer bulk-copy primitives behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `core::ptr::copy` and `core::ptr::copy_nonoverlapping` are **untyped byte-copy operations with typed alignment**. They copy `count * size_of::<T>()` bytes and preserve the initialization state of those bytes exactly. The source bytes need not form valid initialized `T` values; they may be uninitialized or otherwise violate `T`'s validity requirements. This is materially different from `ptr::read`, which produces a `T` and therefore requires an initialized valid value.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R544",
+      "title": "`ptr::read`, `read_unaligned`, `write`, and `write_unaligned` at nightly-2026-05-31",
+      "report_md": "reports/rust-ptr-read-write-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-ptr-read-write-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "0cd14b031f1e755ff35cf75714aac2741de1d77bb5a579bff0668729b6854d36",
+      "frozen_json_sha256": "188d70876c53afdd7da11c717bbe8a58366a826e05ee24d923fb726e89bf0974",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust core raw-pointer read/write operations behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference examined with the pinned compiler",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust core raw-pointer read/write operations behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "78d7314c58110b49839894a0f69377f4ee0d1204",
+        "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, the four primitive raw-pointer access operations divide along two independent axes: **read versus write** and **aligned versus unaligned**.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R545",
+      "title": "Raw-pointer validity, provenance, and alignment at nightly-2026-05-31",
+      "report_md": "reports/rust-raw-pointer-validity-provenance-alignment-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-raw-pointer-validity-provenance-alignment-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "b64808ad6bb17d0116976e39d5b3ff2bd35463c48900b44135f061767ada64c7",
+      "frozen_json_sha256": "83572c97fdb3638b58eb557ab05a92af4eaafb296f4ad023f176398eb90b393d",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "2c7d6e149b76a5ec0f58677eaa51925d57aac041",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "7658c1f5c5425d03e2183e89b55260e5e9fd889b",
+        "785b88a9987090d4d04ebe614fee3fc0d89794ec",
+        "f04f5606ab297a8e62e9215064ee839148197c64",
+        "ff2c18d685b65832c296731f23f1664779b874f2",
+        "ffd234a3b77dbb4d34f58b4e0b366a79ca7cc2f1"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust revision behind nightly-2026-05-31, a raw-pointer **value** has much weaker requirements than an operation that reads, writes, offsets, or converts through that pointer. The Rust Reference requires a raw-pointer value to be initialized, but it does not require every raw pointer merely to exist as a value to be non-null, aligned, backed by live storage, or usable for an access. The pinned `core::ptr` documentation therefore rejects a context-free question such as “is this pointer valid?”: the relevant question is whether the pointer is valid for a particular operation and access size.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R546",
+      "title": "Raw slice-pointer construction with `ptr::slice_from_raw_parts`",
+      "report_md": "reports/rust-raw-slice-pointer-construction-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-raw-slice-pointer-construction-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "5e6ad41068a095b0c4097a508b7006e4dadd40907a2047777a7846affdf1c6ee",
+      "frozen_json_sha256": "b6eb8b768572f76c585aab730c707c23f1ae8043da21f7bbe92b88c10be1243e",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the selected compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "80b2176933dab215bef525076ceb9089c04389cb",
+        "cd90adb75dc4dc9bd4c7af8ea24a1b5ca7dd7b0b",
+        "ff2c18d685b65832c296731f23f1664779b874f2",
+        "ffd234a3b77dbb4d34f58b4e0b366a79ca7cc2f1"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65` (`nightly-2026-05-31`), `ptr::slice_from_raw_parts` and `ptr::slice_from_raw_parts_mut` are **safe constructors for raw wide slice pointers**. They combine a thin data pointer with a `usize` element count. They do not create a slice reference, read or write memory, check an allocation, require a non-null or aligned address, establish initialization, or establish shared/mutable aliasing rights.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R547",
+      "title": "Rust reference creation from raw pointers at nightly-2026-05-31",
+      "report_md": "reports/rust-reference-creation-from-raw-pointers-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-reference-creation-from-raw-pointers-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "9f6541eeb717219805cd607e61914d7235533f75af54002180ed0ce38765aec7",
+      "frozen_json_sha256": "0e69ca8a1d4fb778b2d6f84e2ff1d68d767782345b707221397f58e01642e8c1",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "2c7d6e149b76a5ec0f58677eaa51925d57aac041",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+        "5b9a1ecb85b91e3d8668352a1169983d36574d80",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "6c5e4ffbf1532597c3ffe9a800ca80e0fb3cec8a",
+        "ff2c18d685b65832c296731f23f1664779b874f2",
+        "ffd234a3b77dbb4d34f58b4e0b366a79ca7cc2f1"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, turning a raw pointer into a Rust reference is itself a safety-critical semantic event. It is not enough that a later load or store would happen to be valid. The exact `core::ptr` documentation says that `&*ptr`, `&mut *ptr`, `ptr.as_ref()`, `ptr.as_ref_unchecked()`, `ptr.as_mut()`, and `ptr.as_mut_unchecked()` require the raw pointer to be **convertible to the corresponding reference at the moment the reference is created**, and those requirements apply even when the resulting reference is unused.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R548",
+      "title": "Rust unsafe syntax and abstraction invariants at nightly-2026-05-31",
+      "report_md": "reports/rust-safety-boundary-completeness-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-safety-boundary-completeness-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "9bc574b647637e086b325a4f0d3c1601f6842df91342eb229b1a12067b0e11d2",
+      "frozen_json_sha256": "32eb36d6097bb8e59f1915f1911d954b2f60a61719a13aa2f531443c48c7a97e",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "1c79cf6bfcb36c2a814155bce8f8ea32afb2c191",
+        "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+        "6c5e4ffbf1532597c3ffe9a800ca80e0fb3cec8a",
+        "7353bcc6004d74b9e8698c71c093b35eebe05a70",
+        "7e2c6b9b3bcb2d66af376243d95c541e5bd4024d",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At Rust nightly-2026-05-31, `unsafe` syntax marks a fixed set of language operations whose use requires additional proof obligations. It is not a general marker for every state transition that can matter to an unsafe abstraction's invariant.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R549",
+      "title": "Rust `size_of`, `align_of`, `size_of_val`, and `align_of_val` at nightly-2026-05-31",
+      "report_md": "reports/rust-size-align-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-size-align-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "705d85a830f03fb7fe82e2bab0c8e1e29e0eaac430614c6abad33d50c0e8e047",
+      "frozen_json_sha256": "c10149850050970120ee44c745183c948640569acb748397ba4a0d9bd17ed5ca",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust core memory-layout APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference layout semantics used to interpret those APIs",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust core memory-layout APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+        "2ee902aef043f4d299e009f6a69d1815d862e69e",
+        "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+        "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+        "78d7314c58110b49839894a0f69377f4ee0d1204",
+        "cd90adb75dc4dc9bd4c7af8ea24a1b5ca7dd7b0b"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust revision behind Anneal's `nightly-2026-05-31` toolchain, the four stable memory-layout queries divide cleanly into **type-level** and **value-level** operations.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R550",
+      "title": "Rust source-span provenance after expansion at nightly-2026-05-31",
+      "report_md": "reports/rust-source-span-provenance-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-source-span-provenance-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "6a0f2c3e75aa27d40393241db76b6db4cbf6f46044ad4b0b1346643f7322c222",
+      "frozen_json_sha256": "975861126f619db353c5b58c899506b03391d3df94a69b2f142f28801ed86f1a",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and proc-macro API behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and proc-macro API behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "187a703dff83687f369f1903c6646aabdff259d3",
+        "1c742052783cd364b2a40227dffc55f408d6a2ac",
+        "2371bf15756dac74f5488d5d0b069ed6673014a5",
+        "7a80a92ea1b3f3eaff1758554001e32019473237",
+        "a01bf38a62dbf600db3bc8a06a51fdcf04cf1e2e"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, a compiler `Span` carries two kinds of information that must not be conflated: a source location and a hygiene/expansion context. `SpanData` stores byte positions plus a `SyntaxContext`; the syntax context links to expansion data that records macro call sites, definition sites, transparency, macro identity, and nested expansion ancestry. The public procedural-macro API exposes the same separation directly: `resolved_at` changes name-resolution behavior without moving the source location, while `located_at` moves the source location without changing resolution behavior.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R551",
+      "title": "Rust transmutation semantics at nightly-2026-05-31",
+      "report_md": "reports/rust-transmute-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-transmute-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "8b90c644b1b81c989e717b1757ccaca8d2f3de3faf2cf4359c0e93f60497a4ea",
+      "frozen_json_sha256": "a694aef3fae8f6cc24974888183a26cd504826c7ccf52513d8effcc946b2f948",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the selected compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+        "78d7314c58110b49839894a0f69377f4ee0d1204",
+        "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+        "e26c1b8fa1e19b5c209aba1a0c45e179ffaf238f"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust revision behind Anneal's `nightly-2026-05-31`, `mem::transmute` is an unsafe **by-value reinterpretation**, not an unchecked byte-array cast. It requires `Src` and `Dst` to have equal size, consumes the source, and produces a `Dst`; both values must be valid at their respective types. The operation is described as a bitwise move, but by-value movement means source or destination padding is **not guaranteed to be preserved**. Equal size is therefore only the first obligation. Destination bit validity, reference/pointer obligations, lifetimes, aliasing, ownership, and library invariants can still make a same-sized transmutation unsound.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R552",
+      "title": "Rust type aliases from resolution through compiler type lowering at nightly-2026-05-31",
+      "report_md": "reports/rust-type-alias-lowering-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-type-alias-lowering-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "0b5fc04676e5efb556839e85e3dc34a5b13a4db37c3a8d8259b578d211712796",
+      "frozen_json_sha256": "557583fcda62b89400a0b4f57cb31188332ddd164bd4f0d435d2d80c4c86460d",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "3ac603fc715f3071b9930e3a07f23c592a2c9633",
+        "59d1b4b5576ee47ea6c994977d40d5a948f139ce",
+        "6f3cea27cafdb097b120c4141c8acd4ca6d58e36",
+        "8ee8ab00fb7815c1e25a370ab400a5252707d0e9",
+        "9db9b1769ab9c891ef1aa0cdbdc83cde81e2487d",
+        "c21981eb8580b4a17dedd7c286d03605d24df118",
+        "d2c236b5e0a12c535a112f495d2c2ae278f40ae5"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, an ordinary Rust type alias has a compiler item identity but normally does not remain a distinct semantic type after type lowering. Name resolution can identify the alias declaration by its own `DefId`, and HIR preserves a `TyAlias` item with its name, generics, and right-hand-side type. When rustc lowers a use of an ordinary alias into its internal type representation, however, it obtains the alias's lowered right-hand side through `type_of`, instantiates that type with the path's generic arguments, and returns the instantiated underlying type.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R553",
+      "title": "Rust undefined behavior and experimental operational models at the 2026-05-31 toolchain",
+      "report_md": "reports/rust-ub-and-operational-models-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-ub-and-operational-models-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "dc522dc1feb0ee244426526c2d10851da4d75fba26e39853b1737d093f43b928",
+      "frozen_json_sha256": "4dbfdf192dfd5d474b5dcefc7b23543709a38069da86c1cfb2dfda9490f969ab",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust source toolchain",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "Miri source bundled in Rust",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "path": "src/tools/miri"
+          }
+        },
+        {
+          "name": "Unsafe Code Guidelines repository",
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust source toolchain",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Miri source bundled in Rust",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "path": "src/tools/miri"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust toolchain revision relevant to Anneal's pinned 2026-05-31\ntoolchain, Rust has authoritative language rules about many forms of undefined\nbehavior, but it does **not** have a complete formal operational semantics for\nunsafe Rust. The Rust Reference explicitly says both that its undefined-behavior\nlist is non-exhaustive and that there is no formal model deciding everything\nunsafe code may do. Its memory-model chapter separately warns that Rust's memory\nmodel is incomplete and not fully decided.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R554",
+      "title": "`unreachable_unchecked` semantics at nightly-2026-05-31",
+      "report_md": "reports/rust-unreachable-unchecked-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-unreachable-unchecked-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "0a5c77fbce541832f6075da862834df4dae845bac3e1e5f7a7c13335b94d2767",
+      "frozen_json_sha256": "6d99d6a6b2a6ffaf8468298d2047ef7e4735b98f22806e4e59028a3678d0fdfe",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the selected compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "07eaa085fabc9742d0d51c73eeba91dcc9e67d2e",
+        "2b715ac1d635b0c8991d475250f611192a8308f0",
+        "3389d5b9ddeafd46d2748f3f863596ea7947da96",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "39f053951276ed77a76edb816c0fc819efc799ea",
+        "3d0716a082d4334cf1642aac1c165738c1a353a9",
+        "78d7314c58110b49839894a0f69377f4ee0d1204",
+        "7d2448cc3c6dfcf06245404408d6f158912f6cdb",
+        "7d9f6903d3ef0e5a441081bb0aba3b50280b7449",
+        "90326e649058bee9f49c1e600a054f2805a3ab4f",
+        "ab8ba4a68e5feea69fd2a1811876f9e9693bc94c",
+        "c21191dbc19be8e56fd42a46499032442c97776a",
+        "e8a770147741598a84e52e340d285fe59611c2f0",
+        "f25781ea8ce5aef2c332b19246c1b5c7e041b2c6",
+        "fe53d301c5574101399b60d38451a57b24c43535"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, `core::hint::unreachable_unchecked() -> !` is an unsafe promise that control flow cannot reach the call. Reaching it is undefined behavior. It is not a faster panic with weaker diagnostics, and it is not merely a hint that an optimizer may ignore.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R555",
+      "title": "Rust unsafe fields at nightly-2026-05-31",
+      "report_md": "reports/rust-unsafe-fields-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-unsafe-fields-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "48c34357eb2c829dc14773270449e425cfd2e6c911fcb650e49a2aec194658ab",
+      "frozen_json_sha256": "1a2f1290d7b22a6a6c77cc8dd0508b61908664f2d46c22ff90b39a2ffd1ff103",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Accepted unsafe-fields RFC",
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f5749baed7b7ecfe03d95dc9197d0c1344712f43",
+            "rfc": "3458"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "388482209cf9eb17a562735bae03b644db686368",
+        "3b599db8ff1c20005aa95ed9928e78aeecfd7f53",
+        "3f6429c6a60f0372cb44262a12218bd6a821c390",
+        "4d9bc5b975d54327ae41df16bbab8bdf729893c7",
+        "6df1ed82d260a5c95dbe9671f2c7ddf8585c36ab",
+        "70f55d67c7a16e582eabdfd160db93d6b03f8c4d",
+        "8114106a2a4117a1e8e1d706afff753ff834f263",
+        "99da2da391151fe1f67cbb0d48fdde32f0c982e9",
+        "cb86479bb20d36dd6db2ea4bdde6ab46f839d578",
+        "cfb9ad6b544fde44efb7e6a555dd9f35eef2d937",
+        "d0e2dc16a13d546baada6f6252181e1fced0fecf",
+        "e09864295020f89899863236d38853505ed1f0ef",
+        "e15d0000079ef16c85506900219c99f66f9ad815",
+        "f99d8934aa7fa8944e2906c2719e1eb4356c3c09",
+        "fb09ed02e3ffee1231400e5ab191e284972d5407"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, the compiler behind Anneal-era nightly-2026-05-31, `#![feature(unsafe_fields)]` is an incomplete unstable feature for marking named fields whose library safety invariant is stronger than the invariant supplied by their Rust type.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R556",
+      "title": "Rust unsafe-trait invariants at nightly-2026-05-31",
+      "report_md": "reports/rust-unsafe-trait-invariants-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-unsafe-trait-invariants-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "b9efeb7d896aaada8bf09666d0029f142fcc2fff0ae04214372805bd4fb9a987",
+      "frozen_json_sha256": "fc377cb304f3b2d6f645e7d27682aa6fe9ec75860cadc1367ac3c92b16e4ca02",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference used for exact unsafe-trait language rules",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "53141aabacc453e3781bbe9593618e26c06ca732",
+        "542d283fe95abab901534fd21e38bddaa6a28823",
+        "7658c1f5c5425d03e2183e89b55260e5e9fd889b",
+        "8114106a2a4117a1e8e1d706afff753ff834f263",
+        "fe1a985f5390b0b7edf15db28cd717ce44c3945b"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust toolchain selected by current Anneal, an `unsafe trait` is an **implementation-side proof obligation**. The trait declaration defines extra safety conditions that implementations must uphold; an `unsafe impl` is the programmer's assertion that those obligations have been discharged. The compiler checks that this assertion is syntactically present for an unsafe trait and rejects `unsafe impl` for an ordinary safe trait, but it does not prove the documented invariant itself.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R557",
+      "title": "`UnsafeCell` and interior mutability at nightly-2026-05-31",
+      "report_md": "reports/rust-unsafecell-interior-mutability-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-unsafecell-interior-mutability-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "1a9c203e0a8a59284ad9cba0f72f348d371a790d6328e7cd869721e25071856e",
+      "frozen_json_sha256": "a9feaa8268b693d87f62f1975249a27033360990f574397f0afacb3c65e7ce5b",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled with the selected compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "1c79cf6bfcb36c2a814155bce8f8ea32afb2c191",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "53141aabacc453e3781bbe9593618e26c06ca732",
+        "6052a16a7f117a302f6f76143b1d6020f406d2f6",
+        "b7dbd3ff172938860782bcf804031d66d42dafc2",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "`UnsafeCell<T>` is Rust's core language/library primitive for interior mutability. At the selected nightly, its special power is narrow: bytes inside an `UnsafeCell` are exempt from the ordinary rule that data reached through a live shared reference must remain immutable. That exemption does **not** relax the uniqueness of `&mut`, does not make data races legal, and does not turn the pointer returned by `UnsafeCell::get` into an automatically valid reference.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R558",
+      "title": "Rust validity versus well-defined execution at nightly-2026-05-31",
+      "report_md": "reports/rust-validity-well-defined-execution-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-validity-well-defined-execution-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "8d08867c37b72e74ef7c6d6191a2d665a7e05bf8ac0ea40407f791d4651e9f30",
+      "frozen_json_sha256": "79b49bb31cd36a278fe721aeec734904797ed9e9ad996f65355b0faf9091e571",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "249a65e22824521af9e4bd433235c667a6fd94a4",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "7e2c6b9b3bcb2d66af376243d95c541e5bd4024d",
+        "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Rust revision behind the nightly-2026-05-31 toolchain, **type validity is a necessary condition for well-defined execution, not a complete definition of it**. The Rust Reference makes producing an invalid typed value immediate undefined behavior. It separately defines other undefined behaviors that can occur while every produced value remains type-valid: accessing dangling or misaligned memory, violating pointer-aliasing rules, mutating immutable bytes, racing non-atomic accesses, calling through the wrong ABI, misusing inline assembly, or violating runtime assumptions.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R559",
+      "title": "Rust volatile memory access at nightly-2026-05-31",
+      "report_md": "reports/rust-volatile-memory-access-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-volatile-memory-access-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "14641edaf9b7ab10ac12a3f03144070207f7fd5dfffa1fdfc8c688fa5b519574",
+      "frozen_json_sha256": "6345d447e99599ab61191e7a2326746f160a1fb7dab30c6d7120f20cecf7d4f4",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust volatile pointer operations",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain-date": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust volatile pointer operations",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain-date": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "78d7314c58110b49839894a0f69377f4ee0d1204",
+        "b9b42c1efe05a97354be95140923c1b517de84ee",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 11
+      },
+      "claim_excerpt_exact": "Volatile does **not** make an access atomic and does not provide inter-thread synchronization.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "selected_source_continuity",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R560",
+      "title": "Rust wide-pointer metadata at nightly-2026-05-31",
+      "report_md": "reports/rust-wide-pointer-metadata-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rust-wide-pointer-metadata-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "e8c0f3e23729252462eaf00eeaaf80c308916b864a63d4f4fda89213dec2cba2",
+      "frozen_json_sha256": "a8b46784fe3412565f78eea5085b1dcaa6faa436009d109237319a83e9af9a54",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust wide raw-pointer metadata APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust wide raw-pointer metadata APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+        "373052061c50fc2f6d1c07a91960d40bac505284",
+        "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "ff2c18d685b65832c296731f23f1664779b874f2",
+        "ffd234a3b77dbb4d34f58b4e0b366a79ca7cc2f1"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, Rust's pointer-metadata API models a raw pointer as a **data pointer plus metadata determined by the pointee type**. Thin pointees use `()` metadata. Wide pointees use non-zero metadata: `str` uses a byte length, `[T]` uses an element count, a DST struct reuses the metadata of its unsized tail field, and a `dyn Trait` uses `DynMetadata<dyn Trait>` backed by a compiler-generated vtable.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R562",
+      "title": "rustc diagnostic width and output-format controls at nightly-2026-05-31",
+      "report_md": "reports/rustc-diagnostic-width-format-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rustc-diagnostic-width-format-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "b596f7627e6e6e9c998cd41d86a5f89c4f504854794f924b694836130c0489b3",
+      "frozen_json_sha256": "dbb88873b1aaf6e4d88de84de7272633f7f718425d56865f694241cf5d67974b",
+      "frozen_subjects_exact": [
+        {
+          "name": "rustc diagnostics selected by Charon/Anneal toolchain",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain-date": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "zerocopy UI diagnostic harness",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+            "component": "tools/ui-runner"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "rustc diagnostics selected by Charon/Anneal toolchain",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain-date": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "04ac140f332618d6fa81254e9a16bc27c729eef5",
+        "4d051a370c06570d2511a0b49b6137b6b99baab9",
+        "7421dd6210806f8e3a9b310f8f72578830309abe",
+        "81cd3efffc9d4fb110bbc736f21024b3dc1a607f",
+        "8e656293b41025febe2236c13bb5e4d6e39670c4",
+        "933bef1b3a41fb11978247ef2a185c3e289257f4",
+        "b6ee6c3f5fa79a2a98e43951658bd958e96dabd3",
+        "c3c9f26c31571596875822ae7227d51dfb34f16b",
+        "c83bb62324e76a0686515782d3290961d655dd3d",
+        "c9e2312895820e0cd480eace6b4a32c12aeea3c3",
+        "cfc0364be76dee749b2baab13d4ee4f6d4e58ede",
+        "de606458d048e93b4bb97b0b5cdc6d70f9cee6a4",
+        "e82f67eac5e9f7d0b089727e6317d77242ba3b1c",
+        "edc7d2e2a4255429405ee2a0a45fac414424ccd6"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1` (`nightly-2026-05-31`), rustc provides a stable command-line control, `--diagnostic-width=<N>`, that directly fixes the width used by its diagnostic renderer. The explicit value takes precedence over terminal-size discovery. The same value is passed into the renderer that populates the `rendered` field of JSON diagnostics, so it is the right control when a test needs stable wrapping in either human output or JSON's embedded human rendering.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R563",
+      "title": "rustc MIR stages and unreachable code before Charon at nightly-2026-05-31",
+      "report_md": "reports/rustc-mir-before-charon-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rustc-mir-before-charon-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "00affbc2b248156168c560f67d38a8c1e5c5f0e19ffb9f22532a276d126f09b0",
+      "frozen_json_sha256": "1af137aeacd559c07607333d88d48dade0d6c3053418feb66765b65d7062c5b9",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Anneal configuration",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At the Charon revision pinned by Aeneas for Anneal's 2026-05-31 Rust\ntoolchain, Charon does **not** consume a literal transcription of Rust source and\ndoes **not** normally consume rustc's optimized MIR for the current crate.\nCharon's default MIR level is `Promoted`; the `Aeneas` preset does not override\nthat choice. For a local function, Charon therefore requests\n`tcx.mir_promoted`: MIR after THIR-to-MIR lowering, rustc's initial CFG\nsimplification, constant promotion, and a second CFG simplification, but before\nborrow checking's post-analysis cleanup, drop elaboration, runtime lowering, and\nthe main MIR optimization pipeline.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R564",
+      "title": "Safety-relevant operations in rustc MIR at nightly-2026-05-31",
+      "report_md": "reports/rustc-mir-unsafe-operations-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rustc-mir-unsafe-operations-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "1a782fc0b4bfe301d124288122490369d93d5acdaa61470d24d6adf394fe4315",
+      "frozen_json_sha256": "e56955cf64e2320e3f61512e78b688b9c26469f3094ce4b504653576ff4abbb3",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "07eaa085fabc9742d0d51c73eeba91dcc9e67d2e",
+        "230dee5515749230c87ca37d54b153dec7f9c5ab",
+        "55296c647c819aecf79f640e8ab370d5b834aba8",
+        "57c2883ef42e45952f42bb2213c59e3a19b8f959",
+        "59d1b4b5576ee47ea6c994977d40d5a948f139ce",
+        "6f3cea27cafdb097b120c4141c8acd4ca6d58e36",
+        "7353bcc6004d74b9e8698c71c093b35eebe05a70",
+        "b32d7dce4f4d3fae770d105b51c65810e3b1096d",
+        "c9aae29cabc533b609663297afbd83fbe6da3b69",
+        "e92f74722626b0fd77c6e7ef81f1115033d60057",
+        "ea27252ad6ce8f325fc6021cdbf8d7f82f67048c",
+        "f99d8934aa7fa8944e2906c2719e1eb4356c3c09",
+        "fe53d301c5574101399b60d38451a57b24c43535"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, rustc checks source safety requirements before MIR construction. HIR distinguishes safe, compiler-generated unsafe, and user-provided unsafe blocks; THIR preserves that distinction; `check_unsafety.rs` combines the current safety context with each safety-relevant operation. MIR then represents executable semantics rather than carrying the source `unsafe { ... }` authorization as a first-class property.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R565",
+      "title": "rustc name resolution and stable item identity at nightly-2026-05-31",
+      "report_md": "reports/rustc-name-resolution-stable-item-identity-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/rustc-name-resolution-stable-item-identity-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "c3d3788c3b1bd83a59a3265fa8694914138c00e9e6edf2af408e3db41f63c7bb",
+      "frozen_json_sha256": "6cde64e5c1968054358ea9eb25a8326f78bfe1a049b4fc725ef488ae0601c50e",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "07b1cceebaf764689d6d4a2746876c398beb5121",
+        "0ea7da4f2ab8707e5a150d3c447e9ec06690c816",
+        "44c3dbf788e3d8194218cf4ecb9f853226524fd0",
+        "49781895c82a63671b730bcea80ca3f4845d641b",
+        "58a96c7fafd7e1c1da37289c948fb1866f6f66f5",
+        "8c5421d582df20d955338549739f80f6570d1e94",
+        "97e739a7f3893d47d94722be46b6d824b515f4f1",
+        "c21981eb8580b4a17dedd7c286d03605d24df118",
+        "cdc2df5bf294533ad80ba078142fb95295345b79",
+        "d275d5a28b88ad73141b684a70c43ca661db809d",
+        "ffb2181bae3a961118e12db1a6dbc8c3de63f275"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, the compiler revision behind Anneal's pinned Charon toolchain, a source spelling is not an item identity. Rust name resolution maps a use of a name to a semantic resolution. Ordinary definitions resolve to a `DefId`; local bindings resolve to a local HIR identity. Namespaces, scopes, imports, aliases, impl disambiguators, and compiler-generated definitions mean that identical text can identify different entities and different text can identify the same entity.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    },
+    {
+      "inventory_id": "R581",
+      "title": "Rust intrinsics that zerocopy reaches at the Anneal pins",
+      "report_md": "reports/zerocopy-rust-intrinsics-nightly-2026-05-31/REPORT.md",
+      "report_json": "reports/zerocopy-rust-intrinsics-nightly-2026-05-31/REPORT.json",
+      "frozen_md_sha256": "cd4eeeaa93bd11085b56e598d3b57eeb283e05745e7daee7571e454f6c98a489",
+      "frozen_json_sha256": "00935c416c96e2e02f847a495700bd526f626b3760ec82a9ff1b435245625902",
+      "frozen_subjects_exact": [
+        {
+          "name": "zerocopy intrinsic-facing source selected by current Anneal",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        },
+        {
+          "name": "Rust compiler and core library behind nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Charon toolchain pin selected by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "old_rust_subjects_exact": [
+        {
+          "name": "Rust compiler and core library behind nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "old_cargo_subjects_exact": [],
+      "old_commit_links": [
+        "https://github.com/rust-lang/rust/commit/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      ],
+      "frozen_source_blob_sha1_mentions": [
+        "023df07d045243e0a2924de1d4db2826d2770bb4",
+        "03b17bf0786e46d74ba957f36c6013e28ca6806d",
+        "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+        "2b5a66929f544a60cede7194c3f82260a1b9e8e3",
+        "2d4ff5515918a8e486683d1863289e4105da3022",
+        "3b70ecc2481a05e01fad69c027932fc9481306e6",
+        "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+        "50454af00ccff8b0b58684fb3f048f955d4650c6",
+        "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+        "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+        "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+        "78d7314c58110b49839894a0f69377f4ee0d1204",
+        "90326e649058bee9f49c1e600a054f2805a3ab4f",
+        "944f177c0b0bf66ebd136e5f21ae1b4c2bde48b5",
+        "afdbc038291633afae5f90a29066f753229d366e",
+        "d58786d637cf8fb94cde85ed7a3549448561ff60",
+        "dd0816327ba2532e4f92cdad5266f38c5de9eb54",
+        "f374a089f414614ea81764ae1ee078af05d27109",
+        "ff2c18d685b65832c296731f23f1664779b874f2"
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "At `google/zerocopy@41f5b37afe7060fd9fe08c00b200672cd76d77b9`, the production `zerocopy` source does not import `core::intrinsics`, `std::intrinsics`, or the `rust-intrinsic` ABI directly. That absence does **not** mean that zerocopy avoids compiler intrinsics. Its unsafe and layout-sensitive code deliberately calls stable or semi-stable `core` APIs whose implementations at the Rust revision behind Anneal's pinned Charon toolchain lower directly to compiler intrinsics.",
+      "stable_rustc": {
+        "version": "1.98.1",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      },
+      "stable_cargo": {
+        "version": "1.98.1",
+        "repository": "rust-lang/cargo",
+        "source_revision": null,
+        "source_revision_status": "unresolved_from_official_release_pages"
+      },
+      "new_rustc_commit_link": "https://github.com/rust-lang/rust/commit/48a229ceaefd4985c50990b14116b6d856af0985",
+      "comparison": "unresolved",
+      "runtime_current_review": "unexecuted_in_this_review",
+      "old_source_snapshot_sha256": null,
+      "old_source_git_blob_sha1": null,
+      "new_source_snapshot_sha256": null
+    }
+  ],
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c",
+      "excluded_reason": "added after the 581-report inventory; no direct membership in its exact 51-row Rust/Cargo/rustc nightly-2026-05-31 cohort"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d",
+      "excluded_reason": "added after the 581-report inventory; no direct membership in its exact 51-row Rust/Cargo/rustc nightly-2026-05-31 cohort"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520",
+      "excluded_reason": "added after the 581-report inventory; no direct membership in its exact 51-row Rust/Cargo/rustc nightly-2026-05-31 cohort"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37",
+      "excluded_reason": "added after the 581-report inventory; no direct membership in its exact 51-row Rust/Cargo/rustc nightly-2026-05-31 cohort"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188",
+      "excluded_reason": "added after the 581-report inventory; no direct membership in its exact 51-row Rust/Cargo/rustc nightly-2026-05-31 cohort"
+    }
+  ]
+}
