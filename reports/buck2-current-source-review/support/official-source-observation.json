@@ -1,0 +1,859 @@
+{
+  "observed_at": "2026-09-30",
+  "repository": "facebook/buck2",
+  "old_commit": "738e69a6c5f1efb6a015645228e7a19ee9b1d9c0",
+  "selected_current_commit": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df",
+  "branch": "main",
+  "raw_ls_remote": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df\tHEAD\nb2b7ba58b5188aa35adc784d8ec6425dd93b98df\trefs/heads/main\n6507dd157a6f81a810c48583edf1758dd0c337c5\trefs/tags/2026-09-15\n0161ff601e2f82af9b8cd431e04e7d9acf9f305c\trefs/tags/latest\n",
+  "refs": {
+    "HEAD": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df",
+    "refs/heads/main": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df",
+    "refs/tags/2026-09-15": "6507dd157a6f81a810c48583edf1758dd0c337c5",
+    "refs/tags/latest": "0161ff601e2f82af9b8cd431e04e7d9acf9f305c"
+  },
+  "compare": {
+    "status": "ahead",
+    "ahead_by": 29,
+    "behind_by": 0,
+    "total_commits": 29,
+    "returned_file_count": 114,
+    "file_list_complete": true,
+    "changed_files": [
+      {
+        "path": "Cargo.lock",
+        "status": "modified",
+        "blob_sha": "c4a5e7354a3edb0fc743e3d520c3ab5ab87f1876",
+        "patch": null
+      },
+      {
+        "path": "Cargo.toml",
+        "status": "modified",
+        "blob_sha": "e465bf8c3154f4f1d690cff377180ae773224ef0",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_analysis/src/analysis/calculation.rs",
+        "status": "modified",
+        "blob_sha": "a024afee34bc9a4398fb8532ffa3ea90da203fae",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_analysis/src/analysis/env.rs",
+        "status": "modified",
+        "blob_sha": "2402bb4dc58301e740c75bc1d35bd14696aed4ae",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_anon_target/src/anon_promises.rs",
+        "status": "modified",
+        "blob_sha": "e0218ea54732aa0ebeed6536e69e7d9285d9b863",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_anon_target/src/anon_target_info.rs",
+        "status": "added",
+        "blob_sha": "56f6f513b17c4cd0f844a1c30c99c9d0183e0b05",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_anon_target/src/anon_target_node.rs",
+        "status": "modified",
+        "blob_sha": "01c57908125023567b6daa6353a90a8796c94d92",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_anon_target/src/anon_targets.rs",
+        "status": "modified",
+        "blob_sha": "1b24ff8581090102eb3b4b4255e1dea2b3c635fa",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_anon_target/src/lib.rs",
+        "status": "modified",
+        "blob_sha": "0352915ddd41e94f5277125846569fa369de275c",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api/src/analysis.rs",
+        "status": "modified",
+        "blob_sha": "36b2790fd94245fbf24cfc3336a104571b01dc99",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api/src/analysis/anon_promises_dyn.rs",
+        "status": "modified",
+        "blob_sha": "60cdd7192032f3dc1210606da5e75b16ecdf137d",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api/src/anon_target.rs",
+        "status": "modified",
+        "blob_sha": "1cf05a5bcb7959f7c537a769e2b24e0e4b10b9a5",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api/src/build/detailed_aggregated_metrics/buck2_sketches.rs",
+        "status": "modified",
+        "blob_sha": "96d56356a8bc6f3ca8070bf81ed17d779fea6173",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api/src/configure_dice.rs",
+        "status": "modified",
+        "blob_sha": "8b1d04990471f29712b59d43bba0544fcf3956cf",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api/src/interpreter/rule_defs/context.rs",
+        "status": "modified",
+        "blob_sha": "e7ec63e65347ae6deb7d2b0fc5b79a3a30343f0a",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api_tests/src/actions/calculation.rs",
+        "status": "modified",
+        "blob_sha": "4a964ab6c0b5dedf54f122d61c0d6c8474d23ae1",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api_tests/src/artifact_groups/calculation.rs",
+        "status": "modified",
+        "blob_sha": "681cd17ab2fdeaa28eba6a284cdab378e1ef1e9c",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_build_api_tests/src/build/detailed_aggregated_metrics/traverse.rs",
+        "status": "modified",
+        "blob_sha": "eb794f005b9966d4fe2a462ed2f8af3f363433d2",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_bxl/src/bxl/starlark_defs/context/anon_target.rs",
+        "status": "modified",
+        "blob_sha": "ba0b2b67b2b84abbdbe2784799f1d965f1a52812",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_cli_proto/src/new_generic.rs",
+        "status": "modified",
+        "blob_sha": "93eb761dff25ff3ae1b021293131d0565d948890",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_cmd_debug_client/src/anon_targets.rs",
+        "status": "added",
+        "blob_sha": "fab457230a38554bfe797e9b2fa1c2f213a5d0e1",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_cmd_debug_client/src/lib.rs",
+        "status": "modified",
+        "blob_sha": "a8b08dd3e82665684d7d40ceecd7b2178c94b099",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_common/src/init.rs",
+        "status": "modified",
+        "blob_sha": "4661baba2a7c32c962086f97fd7079a78879dfa8",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_common/src/settings.rs",
+        "status": "modified",
+        "blob_sha": "119cf92d41dcc3675d61d1c79f429c7d92c3db6f",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_common/src/settings/dice.rs",
+        "status": "added",
+        "blob_sha": "419d2e5e81f3794aefc7663c3aef435c007471f5",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_common/src/settings/settings.rs",
+        "status": "modified",
+        "blob_sha": "a36bed17116729a7eeec47d18de3e1fe2c25bb77",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_concurrency/src/lib.rs",
+        "status": "modified",
+        "blob_sha": "45762b493c9fd8add62ca1e160a2b421ed95447e",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_data/data.proto",
+        "status": "modified",
+        "blob_sha": "457fcc73bc61a3b6311f52fb331139d40bd87e9b",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server/src/ctx.rs",
+        "status": "modified",
+        "blob_sha": "0ba3908de30d0d73356b2a61b392edf1cd20a774",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server/src/daemon/server.rs",
+        "status": "modified",
+        "blob_sha": "4c37f241372213364534c93646a98777ce49d6c6",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server/src/daemon/state.rs",
+        "status": "modified",
+        "blob_sha": "c8efc0739b3ca7ec69f74cca2724384e1b6bed37",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server/src/new_generic.rs",
+        "status": "modified",
+        "blob_sha": "609cbad972f3879ea58ab0ce7b63b8daac835c8e",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server/src/paging.rs",
+        "status": "modified",
+        "blob_sha": "6a7641c8c4f2a986f06bee1e6fd73e5080230063",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server_commands/BUCK",
+        "status": "modified",
+        "blob_sha": "583d37cec8d2504aadd4147ada2afbf11c2a0b21",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server_commands/Cargo.toml",
+        "status": "modified",
+        "blob_sha": "ea22ed319b2a771af6408c5f4f08078c73b88c46",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server_commands/src/debug_anon_targets.rs",
+        "status": "added",
+        "blob_sha": "6444da1645a8bf653b0a11df9e56aa2404f7bb3c",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server_commands/src/init_commands.rs",
+        "status": "modified",
+        "blob_sha": "8f6ef8f26890b9aac809116371aac2901e647180",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server_commands/src/lib.rs",
+        "status": "modified",
+        "blob_sha": "a71dcab8d1df16c1de54d80074a53e9b315c2624",
+        "patch": null
+      },
+      {
+        "path": "app/buck2_server_ctx/src/late_bindings.rs",
+        "status": "modified",
+        "blob_sha": "71818ded80cd4a029bdd60f33604daa59de297fa",
+        "patch": null
+      },
+      {
+        "path": "dice/dice/src/api/computations.rs",
+        "status": "modified",
+        "blob_sha": "9890e896dd2bd1918fa2b552747640509165a8ca",
+        "patch": "@@ -69,6 +69,22 @@ impl<'d> DiceComputations<'d> {\n         self.0.compute(key)\n     }\n \n+    /// Like [`Self::compute`], but also returns the key allocation DICE\n+    /// retains for `key`.\n+    ///\n+    /// Equal keys resolve to the same allocation whoever requests them, so a\n+    /// caller that keeps references to many computed keys can hold this one\n+    /// instead of keeping its own copy of each key alive.\n+    pub fn compute_with_key<'a, K>(\n+        &'a mut self,\n+        key: &K,\n+    ) -> impl Future<Output = DiceResult<(Arc<K>, &'d <K as Key>::Value)>> + use<'a, 'd, K>\n+    where\n+        K: Key,\n+    {\n+        self.0.compute_with_key(key)\n+    }\n+\n     /// Compute \"opaque\" value where the value is only accessible via projections.\n     /// Projections allow accessing derived results from the \"opaque\" value,\n     /// where the dependency of reading a projection is the projection value rather"
+      },
+      {
+        "path": "dice/dice/src/epoch/ctx.rs",
+        "status": "modified",
+        "blob_sha": "4ddce06d789b8c51fcc17a413743a388e5ba5028",
+        "patch": "@@ -156,6 +156,27 @@ impl<'d> TrackedComputations<'d> {\n         })\n     }\n \n+    /// Like [`Self::compute`], but also returns the key allocation DICE\n+    /// retains for `key`. Equal keys share one allocation regardless of who\n+    /// requested them, so this costs an index lookup by position, not a hash.\n+    pub(crate) fn compute_with_key<'a, K>(\n+        &'a mut self,\n+        key: &K,\n+    ) -> impl Future<Output = DiceResult<(StdArc<K>, &'d <K as Key>::Value)>> + use<'a, 'd, K>\n+    where\n+        K: Key,\n+    {\n+        self.ctx_data().compute_opaque(key).map(move |r| {\n+            r.map(|opaque| {\n+                let key = self.ctx_data().canonical_key::<K>(opaque.derive_from_key);\n+                (\n+                    key,\n+                    Self::opaque_into_value_impl(self.dep_trackers_holder(), opaque),\n+                )\n+            })\n+        })\n+    }\n+\n     /// Compute \"opaque\" value where the value is only accessible via projections.\n     /// Projections allow accessing derived results from the \"opaque\" value,\n     /// where the dependency of reading a projection is the projection value rather\n@@ -625,6 +646,17 @@ pub(crate) struct ComputeCtx {\n }\n \n impl ComputeCtx {\n+    /// The allocation the key index holds for an already indexed `key`.\n+    pub(crate) fn canonical_key<K: Key>(&self, key: DiceKey) -> StdArc<K> {\n+        self.transaction_data\n+            .dice\n+            .key_index\n+            .get(key)\n+            .dupe()\n+            .downcast::<K>()\n+            .expect(\"a key indexed as `K` is stored as `K`\")\n+    }\n+\n     /// Compute \"opaque\" value where the value is only accessible via projections.\n     /// Projections allow accessing derived results from the \"opaque\" value,\n     /// where the dependency of reading a projection is the projection value rather"
+      },
+      {
+        "path": "dice/dice/src/epoch/tests/general.rs",
+        "status": "modified",
+        "blob_sha": "71ca84ae0fa8ccc9afe5fc5745caa7e913fcfbdd",
+        "patch": "@@ -739,3 +739,80 @@ async fn test_is_idle_respects_active_transactions() {\n     assert!(dice.is_idle().await);\n     dice.wait_for_idle().await;\n }\n+\n+#[tokio::test]\n+async fn compute_with_key_returns_the_shared_key_allocation() -> anyhow::Result<()> {\n+    #[derive(Clone, Dupe, Debug, Display, Eq, Hash, PartialEq, Allocative, Pagable)]\n+    #[display(\"{:?}\", self)]\n+    #[pagable_typetag(DiceKeyDyn)]\n+    struct Leaf(usize);\n+\n+    #[async_trait]\n+    impl Key for Leaf {\n+        type Value = usize;\n+\n+        async fn compute(\n+            &self,\n+            _ctx: &mut DiceComputations,\n+            _cancellations: &CancellationContext,\n+        ) -> Self::Value {\n+            self.0 + 1\n+        }\n+\n+        fn equality_behavior() -> EqualityBehavior<Self::Value> {\n+            EqualityBehavior::Compare(|x, y| x == y)\n+        }\n+\n+        fn value_serialize() -> impl ValueSerialize<Value = Self::Value> {\n+            NoValueSerialize::<Self::Value>::new()\n+        }\n+    }\n+\n+    #[derive(Clone, Dupe, Debug, Display, Eq, Hash, PartialEq, Allocative, Pagable)]\n+    #[display(\"{:?}\", self)]\n+    #[pagable_typetag(DiceKeyDyn)]\n+    struct Requester(usize);\n+\n+    #[async_trait]\n+    impl Key for Requester {\n+        type Value = (Arc<Leaf>, usize);\n+\n+        async fn compute(\n+            &self,\n+            ctx: &mut DiceComputations,\n+            _cancellations: &CancellationContext,\n+        ) -> Self::Value {\n+            let (key, value) = ctx.compute_with_key(&Leaf(7)).await.unwrap();\n+            (key, *value)\n+        }\n+\n+        fn equality_behavior() -> EqualityBehavior<Self::Value> {\n+            EqualityBehavior::Compare(|x, y| x == y)\n+        }\n+\n+        fn value_serialize() -> impl ValueSerialize<Value = Self::Value> {\n+            NoValueSerialize::<Self::Value>::new()\n+        }\n+    }\n+\n+    let dice = Dice::builder().build(DetectCycles::Disabled);\n+    let ctx = dice.updater().commit().await;\n+    let mut ctx = ctx.ctx();\n+\n+    let (a, b) = ctx\n+        .compute2(\n+            async |ctx| ctx.compute(&Requester(1)).await,\n+            async |ctx| ctx.compute(&Requester(2)).await,\n+        )\n+        .await;\n+    let (a, b) = (a?, b?);\n+\n+    assert_eq!(a.1, 8);\n+    assert_eq!(b.1, 8);\n+    // Each requester built its own `Leaf(7)`; both got the one DICE kept.\n+    assert!(Arc::ptr_eq(&a.0, &b.0));\n+    let (direct, _) = ctx.compute_with_key(&Leaf(7)).await?;\n+    assert!(Arc::ptr_eq(&a.0, &direct));\n+\n+    Ok(())\n+}"
+      },
+      {
+        "path": "explorer/package-lock.json",
+        "status": "modified",
+        "blob_sha": "eac0c75e48acc3f7b99090cab57a130b0c1ac4b6",
+        "patch": null
+      },
+      {
+        "path": "explorer/package.json",
+        "status": "modified",
+        "blob_sha": "3bd03f4427cc8cd9481f521a5b3bac6cb969f1b3",
+        "patch": null
+      },
+      {
+        "path": "integrations/rust-project/src/sysroot.rs",
+        "status": "modified",
+        "blob_sha": "ab8872dc6fb72b4bd16a77ad6ce9095245e194ab",
+        "patch": null
+      },
+      {
+        "path": "prelude/android/android_toolchain.bzl",
+        "status": "modified",
+        "blob_sha": "afbb94b8a66f82a2998b181690933a7824338b22",
+        "patch": null
+      },
+      {
+        "path": "prelude/android/gen_aidl.bzl",
+        "status": "modified",
+        "blob_sha": "2898eba1a00b746ca2f7aa5ff2b5a80c732067e6",
+        "patch": null
+      },
+      {
+        "path": "prelude/cxx/anon_link.bzl",
+        "status": "modified",
+        "blob_sha": "cf327e567a2c351b539a2add7ccf53f6f2371e99",
+        "patch": null
+      },
+      {
+        "path": "prelude/cxx/compile.bzl",
+        "status": "modified",
+        "blob_sha": "70271999afee1134c98747db06e168bd20dee820",
+        "patch": null
+      },
+      {
+        "path": "prelude/cxx/cxx.bzl",
+        "status": "modified",
+        "blob_sha": "237a1452fb957b91ee6ed378ac70c9ba20d50120",
+        "patch": null
+      },
+      {
+        "path": "prelude/cxx/cxx_executable.bzl",
+        "status": "modified",
+        "blob_sha": "6ece1570fd53ea05a6aadf3fc08d50c476142dfa",
+        "patch": null
+      },
+      {
+        "path": "prelude/cxx/cxx_flags.bzl",
+        "status": "added",
+        "blob_sha": "87a46b6f7a03928d163f8e89d6188a260cd8095b",
+        "patch": null
+      },
+      {
+        "path": "prelude/cxx/cxx_library.bzl",
+        "status": "modified",
+        "blob_sha": "2e91712fbd49ddd7cfcded5daf127d72d184a7c4",
+        "patch": null
+      },
+      {
+        "path": "prelude/cxx/cxx_library_utility.bzl",
+        "status": "modified",
+        "blob_sha": "500dcc040b1d4e226ea83b4b40f720c5d391ad5f",
+        "patch": null
+      },
+      {
+        "path": "prelude/cxx/cxx_types.bzl",
+        "status": "modified",
+        "blob_sha": "53c364e3abdaea92ab828af64a63f983eda08008",
+        "patch": null
+      },
+      {
+        "path": "prelude/decls/android_rules.bzl",
+        "status": "modified",
+        "blob_sha": "ee4995f67f422ef8f76b8526decdc20b11b6c021",
+        "patch": null
+      },
+      {
+        "path": "prelude/decls/cxx_common.bzl",
+        "status": "modified",
+        "blob_sha": "9d789eab5a8656d30fb3f387812e0b2d04a2dcad",
+        "patch": null
+      },
+      {
+        "path": "prelude/decls/cxx_rules.bzl",
+        "status": "modified",
+        "blob_sha": "e823bd24acdafb50ce9b2fd031082b3eaae5f5f5",
+        "patch": null
+      },
+      {
+        "path": "prelude/decls/toolchains_common.bzl",
+        "status": "modified",
+        "blob_sha": "8ee554b3169b71f78e1c2e70ef2026d377a4131d",
+        "patch": null
+      },
+      {
+        "path": "prelude/go/tools/gobuckify/lib/buck.go",
+        "status": "modified",
+        "blob_sha": "90f0846227e167b2a5ce5eaa322c40d90eba5708",
+        "patch": null
+      },
+      {
+        "path": "prelude/go/tools/gobuckify/lib/buck_test.go",
+        "status": "modified",
+        "blob_sha": "fd82f32058c9328ca13ddfc2528651e81d328088",
+        "patch": null
+      },
+      {
+        "path": "prelude/go/tools/gobuckify/lib/golist.go",
+        "status": "modified",
+        "blob_sha": "de62076cbd8fa333137474d0e4f3aab33364c67d",
+        "patch": null
+      },
+      {
+        "path": "prelude/go/tools/gobuckify/lib/render.go",
+        "status": "modified",
+        "blob_sha": "54258baa25b3b9c1ccc3667f34cde82f245a92a8",
+        "patch": null
+      },
+      {
+        "path": "prelude/go/tools/gobuckify/lib/render_test.go",
+        "status": "modified",
+        "blob_sha": "02cb1e600e8e13d86c2c10c8ab5501b277e2ac42",
+        "patch": null
+      },
+      {
+        "path": "prelude/platforms/apple/platforms.bzl",
+        "status": "modified",
+        "blob_sha": "17a86bf56a8b866426152a2f3503bb5a88901dd8",
+        "patch": null
+      },
+      {
+        "path": "prelude/rules_impl.bzl",
+        "status": "modified",
+        "blob_sha": "919ad1d2e2ca1c970efca8eebb9802b34d85fad2",
+        "patch": null
+      },
+      {
+        "path": "prelude/rust/build.bzl",
+        "status": "modified",
+        "blob_sha": "b56d1e56520d1535374ad1aa8c0d0de0658c7f41",
+        "patch": null
+      },
+      {
+        "path": "prelude/rust/context.bzl",
+        "status": "modified",
+        "blob_sha": "770368a62cc7a0bb26b244c14a22c96044467e28",
+        "patch": null
+      },
+      {
+        "path": "prelude/rust/extern.bzl",
+        "status": "modified",
+        "blob_sha": "6b70f28c5314ce4af9d6dc5011d2604e7470a650",
+        "patch": null
+      },
+      {
+        "path": "prelude/rust/rust_library.bzl",
+        "status": "modified",
+        "blob_sha": "ebff4a17002511f60d1e76e8348bca9b07c7540f",
+        "patch": null
+      },
+      {
+        "path": "prelude/toolchains/android.bzl",
+        "status": "modified",
+        "blob_sha": "72f99b7136c9220f5b1747c7f3a86e55bbe385d5",
+        "patch": null
+      },
+      {
+        "path": "prelude/toolchains/android/src/com/facebook/buck/testrunner/BUCK",
+        "status": "modified",
+        "blob_sha": "5d542901026a66c347358a6f5166ceebc1e9ec5a",
+        "patch": null
+      },
+      {
+        "path": "prelude/toolchains/demo.bzl",
+        "status": "modified",
+        "blob_sha": "9580bc9d37f78966f477384e07bf4c9e7f1ca44d",
+        "patch": null
+      },
+      {
+        "path": "shim/third-party/rust/Cargo.toml",
+        "status": "modified",
+        "blob_sha": "c5fe3b3534abca36d0f253865fa6f03b9b7bc175",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/bc/bytecode.rs",
+        "status": "modified",
+        "blob_sha": "69263f10d352323171b67799b64067d68907a981",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/bc/compiler/expr.rs",
+        "status": "modified",
+        "blob_sha": "c0e378906ce3cc9e3fece1c58d1823950772ae42",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/bc/instr_impl.rs",
+        "status": "modified",
+        "blob_sha": "5f3589c03c50526d69c64279f214e85b1a9bae05",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/bc/instrs.rs",
+        "status": "modified",
+        "blob_sha": "6f858e0491181ade4fe2fc55def4b8dce0158724",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/bc/slow_arg.rs",
+        "status": "modified",
+        "blob_sha": "79d72d9297b12840d46a40b03374995c6fb8dde5",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/bc/writer.rs",
+        "status": "modified",
+        "blob_sha": "d910cd517304d071b5e667d96628dffba0a58ba6",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/compiler/args.rs",
+        "status": "modified",
+        "blob_sha": "01f964ef1ee716dfc314b64c1027c481a2383649",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/compiler/compr.rs",
+        "status": "modified",
+        "blob_sha": "a81289af0ea368ccfdcf2498b065a9a0822911d4",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/compiler/def.rs",
+        "status": "modified",
+        "blob_sha": "206474aa7a9ac4f15f78e4e969402bc0132a308b",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/compiler/def_inline.rs",
+        "status": "modified",
+        "blob_sha": "a17bbf17b06ddc1366f0d7817cc2a451b7a190b4",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/compiler/expr.rs",
+        "status": "modified",
+        "blob_sha": "03a65bfb3e8d33e116951337519a6c20ecbf0314",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/compiler/small_vec_1.rs",
+        "status": "modified",
+        "blob_sha": "786fb464cc1584f0463f2f207c72c8437f4e4287",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/eval/compiler/stmt.rs",
+        "status": "modified",
+        "blob_sha": "01aaf7b1e01750f5ec0e4b73a52956e17de1a32f",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/tests/bc/golden/def_inline_dict_inlined.golden",
+        "status": "modified",
+        "blob_sha": "fe78be7b28b286cf16ab6ceecc2e983ad0f31913",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/tests/opt/def_inline.rs",
+        "status": "modified",
+        "blob_sha": "b1d704a9e911f43810b0c785ebd66a29e087f38f",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values.rs",
+        "status": "modified",
+        "blob_sha": "0e29b14493052f35f01e0297c8e7bac7e08fd9e7",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values/deferred.rs",
+        "status": "added",
+        "blob_sha": "a27b11df9126073cbd7f57224011da1c68cb7ac6",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values/layout/heap/allocator/alloc/per_thread.rs",
+        "status": "modified",
+        "blob_sha": "4a3fd8f6744647db7e59cadc8c1fff663c1d619f",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values/layout/heap/owned_frozen.rs",
+        "status": "modified",
+        "blob_sha": "579b37ef669e3ba04773585cdac5fb3eced79eb5",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values/layout/heap/owned_frozen_ext.rs",
+        "status": "modified",
+        "blob_sha": "04324709355529986360eb11d219aef2900b8504",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values/layout/pointer.rs",
+        "status": "modified",
+        "blob_sha": "081cdf36af2e29b8fabade31114f20c4e61ee874",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values/layout/value.rs",
+        "status": "modified",
+        "blob_sha": "68a3e8ed119bc0da96b5d0d8a038670af1af6787",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values/thin_box_slice_value/packed_impl.rs",
+        "status": "modified",
+        "blob_sha": "88ef65a97b6a10f577515210c6b90360814d6159",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/starlark/src/values/thin_box_slice_value/thin_box.rs",
+        "status": "modified",
+        "blob_sha": "e7a5c72591b8dfb61dbe05a435162acc12c82079",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/vscode/package-lock.json",
+        "status": "modified",
+        "blob_sha": "fa9bafcfbd6f3981173e3ee062cc930c3bfdbbf4",
+        "patch": null
+      },
+      {
+        "path": "starlark-rust/vscode/package.json",
+        "status": "modified",
+        "blob_sha": "5bf5f28b42459a1aaa39737ff74f0ffd427cbf15",
+        "patch": null
+      },
+      {
+        "path": "tests/core/build/paging/test_paging.py",
+        "status": "modified",
+        "blob_sha": "0449c689ee63ad62621b2d68fee05ab4cd45ddcc",
+        "patch": null
+      },
+      {
+        "path": "tests/core/debug/test_debug_anon_targets.py",
+        "status": "added",
+        "blob_sha": "0db1016446b0b945f97fb1b3d8246de5416e119a",
+        "patch": null
+      },
+      {
+        "path": "tests/core/debug/test_debug_anon_targets_data/.buckconfig",
+        "status": "added",
+        "blob_sha": "425a56f43b9c418653b4c70a5447d7ee1693ff8b",
+        "patch": null
+      },
+      {
+        "path": "tests/core/debug/test_debug_anon_targets_data/.buckroot",
+        "status": "added",
+        "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "patch": null
+      },
+      {
+        "path": "tests/core/debug/test_debug_anon_targets_data/TARGETS.fixture",
+        "status": "added",
+        "blob_sha": "12e2b8fa8c51c0584f973f7e2cb260c35717b141",
+        "patch": null
+      },
+      {
+        "path": "tests/core/debug/test_debug_anon_targets_data/anon_targets_basic_attributes.golden.json",
+        "status": "added",
+        "blob_sha": "6461e4e2f538502e405ca1791dd7491a7d952040",
+        "patch": null
+      },
+      {
+        "path": "tests/core/debug/test_debug_anon_targets_data/anon_targets_json_with_requesters.golden.json",
+        "status": "added",
+        "blob_sha": "c0f48bf794b01dc7e396f9605e8b27b96d5910e1",
+        "patch": null
+      },
+      {
+        "path": "tests/core/debug/test_debug_anon_targets_data/anon_targets_text.golden.txt",
+        "status": "added",
+        "blob_sha": "b0bfb1c679305806c263535016c11ff34b01b350",
+        "patch": null
+      },
+      {
+        "path": "tests/core/debug/test_debug_anon_targets_data/prelude.bzl",
+        "status": "added",
+        "blob_sha": "53e8e3df8fe30c82e82b57eba35c2c49ab01685a",
+        "patch": null
+      },
+      {
+        "path": "tests/e2e/BUCK",
+        "status": "modified",
+        "blob_sha": "83921cee322bfa077000ff7a0e827f8676161e98",
+        "patch": null
+      },
+      {
+        "path": "tests/e2e/test_cxx_flags.py",
+        "status": "added",
+        "blob_sha": "3d0d26809b74ca57067b4cae0b8ff8d9a2c95e6f",
+        "patch": null
+      },
+      {
+        "path": "website/package-lock.json",
+        "status": "modified",
+        "blob_sha": "cacea121f09e500d4b3790eb3285e47a508f156a",
+        "patch": null
+      },
+      {
+        "path": "website/package.json",
+        "status": "modified",
+        "blob_sha": "5af3e8f42e3b540e10dde967a68fdf9b378edc8d",
+        "patch": null
+      },
+      {
+        "path": "website/yarn.lock",
+        "status": "modified",
+        "blob_sha": "2a02b92855503306e09f6a0619f1faed5961b5ed",
+        "patch": null
+      }
+    ]
+  },
+  "release_endpoint": {
+    "status": "not_found",
+    "http_status": 404
+  },
+  "dated_tag": {
+    "name": "2026-09-15",
+    "tag_ref_type": "commit",
+    "tag_ref_sha": "6507dd157a6f81a810c48583edf1758dd0c337c5",
+    "peeled_type": "commit",
+    "peeled_commit": "6507dd157a6f81a810c48583edf1758dd0c337c5",
+    "relation_to_old_pin": {
+      "status": "ahead",
+      "ahead_by": 514,
+      "behind_by": 0
+    },
+    "relation_to_selected_main": {
+      "status": "ahead",
+      "ahead_by": 543,
+      "behind_by": 0
+    }
+  },
+  "mapped_files": [
+    {
+      "path": "docs/about/why.md",
+      "old": {
+        "git_blob_sha1": "6799f38df279cc03f1806b1d0d447fb19570bcfa",
+        "content_sha256": "d55b631899d59b7307be4b7d6697f57c830b2d587e4f2388567077625628372d",
+        "size": 8312,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/738e69a6c5f1efb6a015645228e7a19ee9b1d9c0/docs/about/why.md"
+      },
+      "new": {
+        "git_blob_sha1": "6799f38df279cc03f1806b1d0d447fb19570bcfa",
+        "content_sha256": "d55b631899d59b7307be4b7d6697f57c830b2d587e4f2388567077625628372d",
+        "size": 8312,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/b2b7ba58b5188aa35adc784d8ec6425dd93b98df/docs/about/why.md"
+      }
+    },
+    {
+      "path": "docs/about/benefits/compared_to_buck1.md",
+      "old": {
+        "git_blob_sha1": "296661b09239357fa870a55192dff6c5d54c25ca",
+        "content_sha256": "576947fd49dfa78f9088f6ecbecbb05a532891e14fdd1d76307b270d0295920a",
+        "size": 7620,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/738e69a6c5f1efb6a015645228e7a19ee9b1d9c0/docs/about/benefits/compared_to_buck1.md"
+      },
+      "new": {
+        "git_blob_sha1": "296661b09239357fa870a55192dff6c5d54c25ca",
+        "content_sha256": "576947fd49dfa78f9088f6ecbecbb05a532891e14fdd1d76307b270d0295920a",
+        "size": 7620,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/b2b7ba58b5188aa35adc784d8ec6425dd93b98df/docs/about/benefits/compared_to_buck1.md"
+      }
+    },
+    {
+      "path": "dice/dice/docs/index.md",
+      "old": {
+        "git_blob_sha1": "46897b9bd66a7bd055bbad8db7f363558347d4f0",
+        "content_sha256": "3fc7d2ea9134f73b0e7e14cbab6348b4cba180fe8f08940781046857dd349cc9",
+        "size": 1301,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/738e69a6c5f1efb6a015645228e7a19ee9b1d9c0/dice/dice/docs/index.md"
+      },
+      "new": {
+        "git_blob_sha1": "46897b9bd66a7bd055bbad8db7f363558347d4f0",
+        "content_sha256": "3fc7d2ea9134f73b0e7e14cbab6348b4cba180fe8f08940781046857dd349cc9",
+        "size": 1301,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/b2b7ba58b5188aa35adc784d8ec6425dd93b98df/dice/dice/docs/index.md"
+      }
+    },
+    {
+      "path": "docs/insights_and_knowledge/modern_dice.md",
+      "old": {
+        "git_blob_sha1": "04a9950e2b077cdfdf91ca3e6e6ede68df508580",
+        "content_sha256": "39bb9f0b515c7cabab2ce73636e4e722fd07f272177c3e4fa68b462db3fbfa21",
+        "size": 24306,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/738e69a6c5f1efb6a015645228e7a19ee9b1d9c0/docs/insights_and_knowledge/modern_dice.md"
+      },
+      "new": {
+        "git_blob_sha1": "04a9950e2b077cdfdf91ca3e6e6ede68df508580",
+        "content_sha256": "39bb9f0b515c7cabab2ce73636e4e722fd07f272177c3e4fa68b462db3fbfa21",
+        "size": 24306,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/b2b7ba58b5188aa35adc784d8ec6425dd93b98df/docs/insights_and_knowledge/modern_dice.md"
+      }
+    }
+  ],
+  "adjacent_dice_files": [
+    {
+      "path": "dice/dice/src/api/computations.rs",
+      "old": {
+        "git_blob_sha1": "b5372f0e6763004f4c005b401035b5d0b95e81a2",
+        "content_sha256": "56239fc0cac2b191ffa227e9c98b92da65e3805a85ace944e4a354ab36b54cc5",
+        "size": 24346,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/738e69a6c5f1efb6a015645228e7a19ee9b1d9c0/dice/dice/src/api/computations.rs"
+      },
+      "new": {
+        "git_blob_sha1": "9890e896dd2bd1918fa2b552747640509165a8ca",
+        "content_sha256": "13ba5d3e3db872e9278468f5026380d4cc2439e27c2bdbc2465c1e0656f21733",
+        "size": 24911,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/b2b7ba58b5188aa35adc784d8ec6425dd93b98df/dice/dice/src/api/computations.rs"
+      }
+    },
+    {
+      "path": "dice/dice/src/epoch/ctx.rs",
+      "old": {
+        "git_blob_sha1": "f2276da22e0feadd1306f82b712f9d6d40974300",
+        "content_sha256": "3e851bf8c1bea66b25f51c2fa8285e94fb828c846eddf687eb1be75f2514e72a",
+        "size": 25311,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/738e69a6c5f1efb6a015645228e7a19ee9b1d9c0/dice/dice/src/epoch/ctx.rs"
+      },
+      "new": {
+        "git_blob_sha1": "4ddce06d789b8c51fcc17a413743a388e5ba5028",
+        "content_sha256": "f4c75afca703186a68e93b35fe7c2730e0e83126a61f18ab581702d138b139ec",
+        "size": 26462,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/b2b7ba58b5188aa35adc784d8ec6425dd93b98df/dice/dice/src/epoch/ctx.rs"
+      }
+    },
+    {
+      "path": "dice/dice/src/epoch/tests/general.rs",
+      "old": {
+        "git_blob_sha1": "782daaa35d885c61896b5150c48eec6e6530b022",
+        "content_sha256": "61052e39edad6e7c78a8872a584f41bb25c1bf15950f58a3f6f67960dbff8dad",
+        "size": 21374,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/738e69a6c5f1efb6a015645228e7a19ee9b1d9c0/dice/dice/src/epoch/tests/general.rs"
+      },
+      "new": {
+        "git_blob_sha1": "71ca84ae0fa8ccc9afe5fc5745caa7e913fcfbdd",
+        "content_sha256": "d0c1776af800d69c08214fc76ad2140d2333ea999f73703246826fe127662d4a",
+        "size": 23635,
+        "url": "https://raw.githubusercontent.com/facebook/buck2/b2b7ba58b5188aa35adc784d8ec6425dd93b98df/dice/dice/src/epoch/tests/general.rs"
+      }
+    }
+  ],
+  "tag_inventory": {
+    "raw_ls_remote_sha256": "0b493469636765882af1ea414ec19d96c40c074f4819dbd3fb968b91607dcd2b",
+    "total_ref_lines": 79,
+    "date_named_tags": 77,
+    "latest_date_named_tag": {
+      "name": "2026-09-15",
+      "ref_sha": "6507dd157a6f81a810c48583edf1758dd0c337c5"
+    }
+  },
+  "floating_latest_recheck": {
+    "observed_at_utc": "2026-09-30T21:55:50Z",
+    "raw_ls_remote_sha256": "98a6a690b4d5b39ea4b0d12e3e98767b7b39781eeb093bfacd9e49896f4cdfc0",
+    "refs": {
+      "HEAD": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df",
+      "refs/heads/main": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df",
+      "refs/tags/2026-09-15": "6507dd157a6f81a810c48583edf1758dd0c337c5",
+      "refs/tags/latest": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df"
+    },
+    "original_snapshot_latest_ref_sha": "0161ff601e2f82af9b8cd431e04e7d9acf9f305c",
+    "interpretation": "floating_tag_moved_from_original_snapshot_to_selected_main"
+  }
+}

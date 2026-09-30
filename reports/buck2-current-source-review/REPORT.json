@@ -1,0 +1,10 @@
+{
+  "topics": ["build-systems/buck2", "build-systems/incremental-computation", "reference/version-review", "anneal/architecture"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R346", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "ef8e39197bf8d1f6bb8753e7155c3a494fa8e2f4"}},
+    {"name": "Buck2 original source", "identity": {"repository": "facebook/buck2", "revision": "738e69a6c5f1efb6a015645228e7a19ee9b1d9c0"}},
+    {"name": "Buck2 selected main source", "identity": {"repository": "facebook/buck2", "branch": "main", "revision": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df"}},
+    {"name": "Buck2 latest observed date-named tag", "identity": {"repository": "facebook/buck2", "tag": "2026-09-15", "revision": "6507dd157a6f81a810c48583edf1758dd0c337c5"}}
+  ],
+  "observed_at": "2026-09-30"
+}

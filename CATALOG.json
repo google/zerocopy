@@ -11003,6 +11003,48 @@
         "systems/architectural-rewrites"
       ]
     },
+    "buck2-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "ef8e39197bf8d1f6bb8753e7155c3a494fa8e2f4"
+          },
+          "name": "Frozen reference corpus containing R346"
+        },
+        {
+          "identity": {
+            "repository": "facebook/buck2",
+            "revision": "738e69a6c5f1efb6a015645228e7a19ee9b1d9c0"
+          },
+          "name": "Buck2 original source"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "facebook/buck2",
+            "revision": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df"
+          },
+          "name": "Buck2 selected main source"
+        },
+        {
+          "identity": {
+            "repository": "facebook/buck2",
+            "revision": "6507dd157a6f81a810c48583edf1758dd0c337c5",
+            "tag": "2026-09-15"
+          },
+          "name": "Buck2 latest observed date-named tag"
+        }
+      ],
+      "topics": [
+        "build-systems/buck2",
+        "build-systems/incremental-computation",
+        "reference/version-review",
+        "anneal/architecture"
+      ]
+    },
     "build-systems-a-la-carte-anneal-orchestration-2018-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
