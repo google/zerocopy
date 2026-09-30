@@ -1,0 +1,2940 @@
+{
+  "admission": {
+    "disk_free": 18465099776,
+    "memory": {
+      "fraction": 0.3094596862792969,
+      "page_bytes": 16384,
+      "pages": {
+        "active": 159475,
+        "free": 3738,
+        "inactive": 153636,
+        "occupied by compressor": 67013,
+        "purgeable": 1266,
+        "purged": 44473683,
+        "reactivated": 744350370,
+        "speculative": 4872,
+        "stored in compressor": 442505,
+        "throttled": 0,
+        "wired down": 102270,
+        "zero filled": 1593965706
+      },
+      "total_bytes": 8589934592
+    }
+  },
+  "chosen_limit_bytes": 2308,
+  "continuation_admission": {
+    "disk_free": 18462314496,
+    "memory": {
+      "fraction": 0.3098487854003906,
+      "page_bytes": 16384,
+      "pages": {
+        "active": 154291,
+        "free": 8887,
+        "inactive": 147245,
+        "occupied by compressor": 71696,
+        "purgeable": 870,
+        "purged": 44473932,
+        "reactivated": 744407652,
+        "speculative": 6318,
+        "stored in compressor": 454564,
+        "throttled": 0,
+        "wired down": 102471,
+        "zero filled": 1594019689
+      },
+      "total_bytes": 8589934592
+    }
+  },
+  "final_disk_free": 18461679616,
+  "final_memory": {
+    "fraction": 0.30692100524902344,
+    "page_bytes": 16384,
+    "pages": {
+      "active": 149585,
+      "free": 11715,
+      "inactive": 148673,
+      "occupied by compressor": 72210,
+      "purgeable": 706,
+      "purged": 44473992,
+      "reactivated": 744414807,
+      "speculative": 527,
+      "stored in compressor": 455177,
+      "throttled": 0,
+      "wired down": 108266,
+      "zero filled": 1594079395
+    },
+    "total_bytes": 8589934592
+  },
+  "final_scratch_bytes": 110150,
+  "fixture_sha256": {
+    "check": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+    "lakefile": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+    "new": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+    "old": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+  },
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "old_olean_bytes": 4616,
+  "old_olean_sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+  "rlimit_control_size": 2308,
+  "runs": [
+    {
+      "aborted": null,
+      "after": {
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775765653671570,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775765467693067,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775765652512955,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775765650994719,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775762162820662,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Dep"
+      ],
+      "before": {
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775762162820662,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer",
+      "elapsed": 3.534934,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean",
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/cache"
+      },
+      "exit": 0,
+      "label": "old-build",
+      "observed_file_events": [
+        {
+          "changed": {
+            ".lake/config/[anonymous]/lakefile.olean.trace": {
+              "mtime_ns": 1790775762465775452,
+              "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+              "size": 184
+            }
+          },
+          "elapsed": 0.307557,
+          "removed": []
+        },
+        {
+          "changed": {
+            ".lake/build/ir/Dep.setup.json": {
+              "mtime_ns": 1790775765467693067,
+              "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+              "size": 127
+            },
+            ".lake/config/[anonymous]/lakefile.olean": {
+              "mtime_ns": 1790775765459982427,
+              "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+              "size": 96672
+            },
+            "lake-manifest.json": {
+              "mtime_ns": 1790775765464880800,
+              "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+              "size": 141
+            }
+          },
+          "elapsed": 3.336697,
+          "removed": []
+        },
+        {
+          "changed": {
+            ".lake/build/ir/Dep.c": {
+              "mtime_ns": 1790775765653671570,
+              "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+              "size": 1366
+            },
+            ".lake/build/lib/lean/Dep.ilean": {
+              "mtime_ns": 1790775765652512955,
+              "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+              "size": 289
+            },
+            ".lake/build/lib/lean/Dep.olean": {
+              "mtime_ns": 1790775765650994719,
+              "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+              "size": 4616
+            }
+          },
+          "elapsed": 3.490385,
+          "removed": []
+        },
+        {
+          "changed": {
+            ".lake/build/ir/Dep.c.hash": {
+              "mtime_ns": 1790775765660008513,
+              "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+              "size": 16
+            },
+            ".lake/build/lib/lean/Dep.ilean.hash": {
+              "mtime_ns": 1790775765659908181,
+              "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+              "size": 16
+            },
+            ".lake/build/lib/lean/Dep.olean.hash": {
+              "mtime_ns": 1790775765659798182,
+              "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+              "size": 16
+            },
+            ".lake/build/lib/lean/Dep.trace": {
+              "mtime_ns": 1790775765660371885,
+              "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+              "size": 2033
+            }
+          },
+          "elapsed": 3.498924,
+          "removed": []
+        }
+      ],
+      "pid": 13034,
+      "resource_samples": [
+        {
+          "disk_free": 18465075200,
+          "elapsed": 0.00171,
+          "group_rss_kib": 128,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 128
+            }
+          ],
+          "reclaimable": 0.3094768524169922,
+          "scratch_bytes": 154
+        },
+        {
+          "disk_free": 18465075200,
+          "elapsed": 0.108869,
+          "group_rss_kib": 16400,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 16400
+            }
+          ],
+          "reclaimable": 0.3099250793457031,
+          "scratch_bytes": 154
+        },
+        {
+          "disk_free": 18465075200,
+          "elapsed": 0.215736,
+          "group_rss_kib": 36352,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 36352
+            }
+          ],
+          "reclaimable": 0.30973052978515625,
+          "scratch_bytes": 154
+        },
+        {
+          "disk_free": 18465067008,
+          "elapsed": 0.323355,
+          "group_rss_kib": 53632,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 53632
+            }
+          ],
+          "reclaimable": 0.3095207214355469,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464997376,
+          "elapsed": 0.424243,
+          "group_rss_kib": 65104,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 65104
+            }
+          ],
+          "reclaimable": 0.3089485168457031,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465005568,
+          "elapsed": 0.524978,
+          "group_rss_kib": 77168,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 77168
+            }
+          ],
+          "reclaimable": 0.3086986541748047,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465005568,
+          "elapsed": 0.62532,
+          "group_rss_kib": 89920,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 89920
+            }
+          ],
+          "reclaimable": 0.3079814910888672,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465005568,
+          "elapsed": 0.725903,
+          "group_rss_kib": 103632,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 103632
+            }
+          ],
+          "reclaimable": 0.30777740478515625,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465005568,
+          "elapsed": 0.832956,
+          "group_rss_kib": 114656,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 114656
+            }
+          ],
+          "reclaimable": 0.30764198303222656,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465005568,
+          "elapsed": 0.939825,
+          "group_rss_kib": 127152,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 127152
+            }
+          ],
+          "reclaimable": 0.3073101043701172,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465005568,
+          "elapsed": 1.040294,
+          "group_rss_kib": 139392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 139392
+            }
+          ],
+          "reclaimable": 0.3067474365234375,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465005568,
+          "elapsed": 1.146232,
+          "group_rss_kib": 152336,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 152336
+            }
+          ],
+          "reclaimable": 0.3064384460449219,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465001472,
+          "elapsed": 1.253111,
+          "group_rss_kib": 169808,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 169808
+            }
+          ],
+          "reclaimable": 0.30649566650390625,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465001472,
+          "elapsed": 1.356246,
+          "group_rss_kib": 202320,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 202320
+            }
+          ],
+          "reclaimable": 0.3066272735595703,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465001472,
+          "elapsed": 1.458755,
+          "group_rss_kib": 233936,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 233936
+            }
+          ],
+          "reclaimable": 0.305908203125,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465001472,
+          "elapsed": 1.561174,
+          "group_rss_kib": 268624,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 268624
+            }
+          ],
+          "reclaimable": 0.30281639099121094,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465001472,
+          "elapsed": 1.663482,
+          "group_rss_kib": 299264,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 299264
+            }
+          ],
+          "reclaimable": 0.3019084930419922,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465001472,
+          "elapsed": 1.764636,
+          "group_rss_kib": 325664,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 325664
+            }
+          ],
+          "reclaimable": 0.3021583557128906,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465001472,
+          "elapsed": 1.866628,
+          "group_rss_kib": 355568,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 355568
+            }
+          ],
+          "reclaimable": 0.3018913269042969,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18465001472,
+          "elapsed": 1.966665,
+          "group_rss_kib": 382304,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 382304
+            }
+          ],
+          "reclaimable": 0.3021812438964844,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464989184,
+          "elapsed": 2.070989,
+          "group_rss_kib": 410368,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 410368
+            }
+          ],
+          "reclaimable": 0.3018474578857422,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464989184,
+          "elapsed": 2.17174,
+          "group_rss_kib": 436768,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 436768
+            }
+          ],
+          "reclaimable": 0.3014717102050781,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464989184,
+          "elapsed": 2.273446,
+          "group_rss_kib": 459200,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 459200
+            }
+          ],
+          "reclaimable": 0.30164146423339844,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 2.374753,
+          "group_rss_kib": 482480,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 482480
+            }
+          ],
+          "reclaimable": 0.3017711639404297,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 2.477382,
+          "group_rss_kib": 502176,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 502176
+            }
+          ],
+          "reclaimable": 0.3018379211425781,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 2.578948,
+          "group_rss_kib": 516752,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 516752
+            }
+          ],
+          "reclaimable": 0.3018054962158203,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 2.679934,
+          "group_rss_kib": 531584,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 531584
+            }
+          ],
+          "reclaimable": 0.3018169403076172,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 2.781382,
+          "group_rss_kib": 545952,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 545952
+            }
+          ],
+          "reclaimable": 0.3020153045654297,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 2.882817,
+          "group_rss_kib": 566976,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 566976
+            }
+          ],
+          "reclaimable": 0.3012275695800781,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 2.985322,
+          "group_rss_kib": 584304,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 584304
+            }
+          ],
+          "reclaimable": 0.30133056640625,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 3.088467,
+          "group_rss_kib": 607328,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 607328
+            }
+          ],
+          "reclaimable": 0.30126380920410156,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464948224,
+          "elapsed": 3.192757,
+          "group_rss_kib": 639328,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 639328
+            }
+          ],
+          "reclaimable": 0.30104827880859375,
+          "scratch_bytes": 338
+        },
+        {
+          "disk_free": 18464829440,
+          "elapsed": 3.293602,
+          "group_rss_kib": 661296,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 661296
+            }
+          ],
+          "reclaimable": 0.3007965087890625,
+          "scratch_bytes": 97151
+        },
+        {
+          "disk_free": 18464825344,
+          "elapsed": 3.395082,
+          "group_rss_kib": 756896,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 660704
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pgid": 13034,
+              "pid": 13137,
+              "ppid": 13034,
+              "rss_kib": 96192
+            }
+          ],
+          "reclaimable": 0.30068016052246094,
+          "scratch_bytes": 97278
+        },
+        {
+          "disk_free": 18464784384,
+          "elapsed": 3.498924,
+          "group_rss_kib": 660496,
+          "members": [
+            {
+              "comm": "(lake)",
+              "pgid": 13034,
+              "pid": 13034,
+              "ppid": 13031,
+              "rss_kib": 660496
+            }
+          ],
+          "reclaimable": 0.3025169372558594,
+          "scratch_bytes": 105630
+        }
+      ],
+      "rlimit_fsize_bytes": null,
+      "stderr_sha256": "2c3d65da894df32ecacc29a0a6adcc70fc3ac8cb4862d5d31649fe74d89e52a6",
+      "stdout_sha256": "512ef6dc387395042e5dc4a3550baf2c1dfda9307c445f99d5153b7cdb088510"
+    },
+    {
+      "aborted": null,
+      "after": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775765653671570,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775765467693067,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775765652512955,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775765650994719,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775762162820662,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import pathlib; pathlib.Path(\"fsize-control.bin\").write_bytes(b\"x\" * 3332)"
+      ],
+      "before": {
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775765653671570,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775765467693067,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775765652512955,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775765650994719,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775762162820662,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work",
+      "elapsed": 0.180773,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean",
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/cache"
+      },
+      "exit": 1,
+      "label": "rlimit-control",
+      "observed_file_events": [],
+      "pid": 13163,
+      "resource_samples": [
+        {
+          "disk_free": 18462310400,
+          "elapsed": 0.003453,
+          "group_rss_kib": 7824,
+          "members": [
+            {
+              "comm": "/Library/Developer/CommandLineTools/usr/bin/python3",
+              "pgid": 13163,
+              "pid": 13163,
+              "ppid": 13160,
+              "rss_kib": 7824
+            }
+          ],
+          "reclaimable": 0.30956077575683594,
+          "scratch_bytes": 105630
+        },
+        {
+          "disk_free": 18462302208,
+          "elapsed": 0.109324,
+          "group_rss_kib": 11024,
+          "members": [
+            {
+              "comm": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+              "pgid": 13163,
+              "pid": 13163,
+              "ppid": 13160,
+              "rss_kib": 11024
+            }
+          ],
+          "reclaimable": 0.3092365264892578,
+          "scratch_bytes": 105630
+        }
+      ],
+      "rlimit_fsize_bytes": 2308,
+      "stderr_sha256": "2e5ba03ccec1f9dbf32c067c518e03955a93ecdddb154f70f02b3bf01889ada9",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "aborted": null,
+      "after": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775824745119240,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Dep"
+      ],
+      "before": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775765653671570,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775765467693067,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775765652512955,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775765650994719,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer",
+      "elapsed": 0.55717,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean",
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/cache"
+      },
+      "exit": 1,
+      "label": "limited-update",
+      "observed_file_events": [
+        {
+          "changed": {
+            ".lake/build/ir/Dep.setup.json": {
+              "mtime_ns": 1790775824745119240,
+              "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+              "size": 127
+            }
+          },
+          "elapsed": 0.359314,
+          "removed": [
+            ".lake/build/ir/Dep.c",
+            ".lake/build/lib/lean/Dep.ilean",
+            ".lake/build/lib/lean/Dep.olean"
+          ]
+        },
+        {
+          "changed": {
+            ".lake/build/lib/lean/Dep.olean.tmp.13182": {
+              "mtime_ns": 1790775824922414154,
+              "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+              "size": 2308
+            }
+          },
+          "elapsed": 0.502139,
+          "removed": []
+        }
+      ],
+      "pid": 13170,
+      "resource_samples": [
+        {
+          "disk_free": 18462261248,
+          "elapsed": 0.002999,
+          "group_rss_kib": 23072,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13170,
+              "pid": 13170,
+              "ppid": 13160,
+              "rss_kib": 23072
+            }
+          ],
+          "reclaimable": 0.30959510803222656,
+          "scratch_bytes": 107938
+        },
+        {
+          "disk_free": 18462261248,
+          "elapsed": 0.1091,
+          "group_rss_kib": 111296,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13170,
+              "pid": 13170,
+              "ppid": 13160,
+              "rss_kib": 111296
+            }
+          ],
+          "reclaimable": 0.30512046813964844,
+          "scratch_bytes": 107938
+        },
+        {
+          "disk_free": 18462261248,
+          "elapsed": 0.216094,
+          "group_rss_kib": 556112,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13170,
+              "pid": 13170,
+              "ppid": 13160,
+              "rss_kib": 556112
+            }
+          ],
+          "reclaimable": 0.3030872344970703,
+          "scratch_bytes": 107938
+        },
+        {
+          "disk_free": 18462277632,
+          "elapsed": 0.318812,
+          "group_rss_kib": 638368,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13170,
+              "pid": 13170,
+              "ppid": 13160,
+              "rss_kib": 638368
+            }
+          ],
+          "reclaimable": 0.3015117645263672,
+          "scratch_bytes": 101667
+        },
+        {
+          "disk_free": 18462273536,
+          "elapsed": 0.418995,
+          "group_rss_kib": 812624,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13170,
+              "pid": 13170,
+              "ppid": 13160,
+              "rss_kib": 638528
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pgid": 13170,
+              "pid": 13182,
+              "ppid": 13170,
+              "rss_kib": 174096
+            }
+          ],
+          "reclaimable": 0.2993907928466797,
+          "scratch_bytes": 101667
+        },
+        {
+          "disk_free": 18462220288,
+          "elapsed": 0.519445,
+          "group_rss_kib": 638592,
+          "members": [
+            {
+              "comm": "(lake)",
+              "pgid": 13170,
+              "pid": 13170,
+              "ppid": 13160,
+              "rss_kib": 638592
+            }
+          ],
+          "reclaimable": 0.3027515411376953,
+          "scratch_bytes": 103975
+        }
+      ],
+      "rlimit_fsize_bytes": 2308,
+      "stderr_sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f",
+      "stdout_sha256": "12888a070736daa42ff1fca0a1ad92d18164ea5bfe5fb2377eedac1a553318b8"
+    },
+    {
+      "aborted": null,
+      "after": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775824745119240,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/build/lib/lean/Dep.trace.nobuild": {
+          "mtime_ns": 1790775825278456763,
+          "sha256": "a6e14e67fec9987f349b85407851dbc2b5b1c97152e62005faa67230bf050234",
+          "size": 953
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "before": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775824745119240,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer",
+      "elapsed": 0.414618,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean",
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/cache"
+      },
+      "exit": 3,
+      "label": "post-limit-no-build",
+      "observed_file_events": [
+        {
+          "changed": {
+            ".lake/build/lib/lean/Dep.trace.nobuild": {
+              "mtime_ns": 1790775825278456763,
+              "sha256": "a6e14e67fec9987f349b85407851dbc2b5b1c97152e62005faa67230bf050234",
+              "size": 953
+            }
+          },
+          "elapsed": 0.301817,
+          "removed": []
+        }
+      ],
+      "pid": 13193,
+      "resource_samples": [
+        {
+          "disk_free": 18462035968,
+          "elapsed": 0.00255,
+          "group_rss_kib": 22848,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13193,
+              "pid": 13193,
+              "ppid": 13160,
+              "rss_kib": 22848
+            }
+          ],
+          "reclaimable": 0.3067779541015625,
+          "scratch_bytes": 103975
+        },
+        {
+          "disk_free": 18462027776,
+          "elapsed": 0.108155,
+          "group_rss_kib": 130912,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13193,
+              "pid": 13193,
+              "ppid": 13160,
+              "rss_kib": 130912
+            }
+          ],
+          "reclaimable": 0.3065681457519531,
+          "scratch_bytes": 103975
+        },
+        {
+          "disk_free": 18462027776,
+          "elapsed": 0.211815,
+          "group_rss_kib": 591104,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13193,
+              "pid": 13193,
+              "ppid": 13160,
+              "rss_kib": 591104
+            }
+          ],
+          "reclaimable": 0.30438995361328125,
+          "scratch_bytes": 103975
+        },
+        {
+          "disk_free": 18462023680,
+          "elapsed": 0.318044,
+          "group_rss_kib": 638592,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13193,
+              "pid": 13193,
+              "ppid": 13160,
+              "rss_kib": 638592
+            }
+          ],
+          "reclaimable": 0.3021717071533203,
+          "scratch_bytes": 104928
+        }
+      ],
+      "rlimit_fsize_bytes": null,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "53206bc7347edc27afc56da0409cd0cd3b743b778a490ce843671131392f8b51"
+    },
+    {
+      "aborted": null,
+      "after": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775824745119240,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/build/lib/lean/Dep.trace.nobuild": {
+          "mtime_ns": 1790775825278456763,
+          "sha256": "a6e14e67fec9987f349b85407851dbc2b5b1c97152e62005faa67230bf050234",
+          "size": 953
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "before": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775824745119240,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/build/lib/lean/Dep.trace.nobuild": {
+          "mtime_ns": 1790775825278456763,
+          "sha256": "a6e14e67fec9987f349b85407851dbc2b5b1c97152e62005faa67230bf050234",
+          "size": 953
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer",
+      "elapsed": 0.097987,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean",
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/cache"
+      },
+      "exit": 1,
+      "label": "post-limit-direct",
+      "observed_file_events": [],
+      "pid": 13206,
+      "resource_samples": [
+        {
+          "disk_free": 18461999104,
+          "elapsed": 0.003002,
+          "group_rss_kib": 21424,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pgid": 13206,
+              "pid": 13206,
+              "ppid": 13160,
+              "rss_kib": 21424
+            }
+          ],
+          "reclaimable": 0.3066425323486328,
+          "scratch_bytes": 104928
+        }
+      ],
+      "rlimit_fsize_bytes": null,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "2a7578940668c8045916f7cbd72dfd81b442610a1731304106161c574782241e"
+    },
+    {
+      "aborted": null,
+      "after": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775825960376749,
+          "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775825967541684,
+          "sha256": "9f88aef255c56c9c2920088e156d6221eab837b10d745db724fcd54018e4102d",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775825793487449,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775825960242291,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775825967440394,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775825959928794,
+          "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+          "size": 4520
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775825967322311,
+          "sha256": "90e0ee540c97620f652e2e431faff4e2319df5a18122f29fd186ce97033c38da",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775825967738766,
+          "sha256": "a8b8fc4a91d8ba8489a4f2d7046c7bc8d223f4d48dc768afccdecf326944e736",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Dep"
+      ],
+      "before": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775765660008513,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775824745119240,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775765659908181,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775765659798182,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775765660371885,
+          "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+          "size": 2033
+        },
+        "producer/.lake/build/lib/lean/Dep.trace.nobuild": {
+          "mtime_ns": 1790775825278456763,
+          "sha256": "a6e14e67fec9987f349b85407851dbc2b5b1c97152e62005faa67230bf050234",
+          "size": 953
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer",
+      "elapsed": 0.523588,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean",
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/cache"
+      },
+      "exit": 0,
+      "label": "uncapped-repair",
+      "observed_file_events": [
+        {
+          "changed": {
+            ".lake/build/ir/Dep.setup.json": {
+              "mtime_ns": 1790775825793487449,
+              "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+              "size": 127
+            }
+          },
+          "elapsed": 0.296616,
+          "removed": []
+        },
+        {
+          "changed": {
+            ".lake/build/ir/Dep.c": {
+              "mtime_ns": 1790775825960376749,
+              "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+              "size": 1366
+            },
+            ".lake/build/ir/Dep.c.hash": {
+              "mtime_ns": 1790775825967541684,
+              "sha256": "9f88aef255c56c9c2920088e156d6221eab837b10d745db724fcd54018e4102d",
+              "size": 16
+            },
+            ".lake/build/lib/lean/Dep.ilean": {
+              "mtime_ns": 1790775825960242291,
+              "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+              "size": 289
+            },
+            ".lake/build/lib/lean/Dep.ilean.hash": {
+              "mtime_ns": 1790775825967440394,
+              "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+              "size": 16
+            },
+            ".lake/build/lib/lean/Dep.olean": {
+              "mtime_ns": 1790775825959928794,
+              "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+              "size": 4520
+            },
+            ".lake/build/lib/lean/Dep.olean.hash": {
+              "mtime_ns": 1790775825967322311,
+              "sha256": "90e0ee540c97620f652e2e431faff4e2319df5a18122f29fd186ce97033c38da",
+              "size": 16
+            },
+            ".lake/build/lib/lean/Dep.trace": {
+              "mtime_ns": 1790775825967738766,
+              "sha256": "a8b8fc4a91d8ba8489a4f2d7046c7bc8d223f4d48dc768afccdecf326944e736",
+              "size": 2033
+            }
+          },
+          "elapsed": 0.477766,
+          "removed": [
+            ".lake/build/lib/lean/Dep.trace.nobuild"
+          ]
+        }
+      ],
+      "pid": 13212,
+      "resource_samples": [
+        {
+          "disk_free": 18461970432,
+          "elapsed": 0.002695,
+          "group_rss_kib": 23024,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13212,
+              "pid": 13212,
+              "ppid": 13160,
+              "rss_kib": 23024
+            }
+          ],
+          "reclaimable": 0.30553245544433594,
+          "scratch_bytes": 104928
+        },
+        {
+          "disk_free": 18461945856,
+          "elapsed": 0.108519,
+          "group_rss_kib": 131280,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13212,
+              "pid": 13212,
+              "ppid": 13160,
+              "rss_kib": 131280
+            }
+          ],
+          "reclaimable": 0.30501556396484375,
+          "scratch_bytes": 104928
+        },
+        {
+          "disk_free": 18461941760,
+          "elapsed": 0.215258,
+          "group_rss_kib": 595792,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13212,
+              "pid": 13212,
+              "ppid": 13160,
+              "rss_kib": 595792
+            }
+          ],
+          "reclaimable": 0.30269432067871094,
+          "scratch_bytes": 104928
+        },
+        {
+          "disk_free": 18461941760,
+          "elapsed": 0.322065,
+          "group_rss_kib": 693232,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13212,
+              "pid": 13212,
+              "ppid": 13160,
+              "rss_kib": 638512
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pgid": 13212,
+              "pid": 13222,
+              "ppid": 13212,
+              "rss_kib": 54720
+            }
+          ],
+          "reclaimable": 0.3003959655761719,
+          "scratch_bytes": 104928
+        },
+        {
+          "disk_free": 18461941760,
+          "elapsed": 0.428962,
+          "group_rss_kib": 996976,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13212,
+              "pid": 13212,
+              "ppid": 13160,
+              "rss_kib": 638528
+            },
+            {
+              "comm": "(lean)",
+              "pgid": 13212,
+              "pid": 13222,
+              "ppid": 13212,
+              "rss_kib": 358448
+            }
+          ],
+          "reclaimable": 0.29895782470703125,
+          "scratch_bytes": 104928
+        }
+      ],
+      "rlimit_fsize_bytes": null,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "0595faf10a81c51c4700c4250b7af9ddd9b43bead8db0db56afc5cebc531fc2f"
+    },
+    {
+      "aborted": null,
+      "after": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775825960376749,
+          "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775825967541684,
+          "sha256": "9f88aef255c56c9c2920088e156d6221eab837b10d745db724fcd54018e4102d",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775825793487449,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775825960242291,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775825967440394,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775825959928794,
+          "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+          "size": 4520
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775825967322311,
+          "sha256": "90e0ee540c97620f652e2e431faff4e2319df5a18122f29fd186ce97033c38da",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775825967738766,
+          "sha256": "a8b8fc4a91d8ba8489a4f2d7046c7bc8d223f4d48dc768afccdecf326944e736",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "before": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775825960376749,
+          "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775825967541684,
+          "sha256": "9f88aef255c56c9c2920088e156d6221eab837b10d745db724fcd54018e4102d",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775825793487449,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775825960242291,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775825967440394,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775825959928794,
+          "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+          "size": 4520
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775825967322311,
+          "sha256": "90e0ee540c97620f652e2e431faff4e2319df5a18122f29fd186ce97033c38da",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775825967738766,
+          "sha256": "a8b8fc4a91d8ba8489a4f2d7046c7bc8d223f4d48dc768afccdecf326944e736",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer",
+      "elapsed": 0.412068,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean",
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/cache"
+      },
+      "exit": 0,
+      "label": "post-repair-no-build",
+      "observed_file_events": [],
+      "pid": 13229,
+      "resource_samples": [
+        {
+          "disk_free": 18461732864,
+          "elapsed": 0.0031,
+          "group_rss_kib": 23488,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13229,
+              "pid": 13229,
+              "ppid": 13160,
+              "rss_kib": 23488
+            }
+          ],
+          "reclaimable": 0.30638694763183594,
+          "scratch_bytes": 110150
+        },
+        {
+          "disk_free": 18461728768,
+          "elapsed": 0.110644,
+          "group_rss_kib": 133040,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13229,
+              "pid": 13229,
+              "ppid": 13160,
+              "rss_kib": 133040
+            }
+          ],
+          "reclaimable": 0.30582237243652344,
+          "scratch_bytes": 110150
+        },
+        {
+          "disk_free": 18461728768,
+          "elapsed": 0.218229,
+          "group_rss_kib": 598816,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13229,
+              "pid": 13229,
+              "ppid": 13160,
+              "rss_kib": 598816
+            }
+          ],
+          "reclaimable": 0.30381202697753906,
+          "scratch_bytes": 110150
+        },
+        {
+          "disk_free": 18461728768,
+          "elapsed": 0.326627,
+          "group_rss_kib": 638320,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pgid": 13229,
+              "pid": 13229,
+              "ppid": 13160,
+              "rss_kib": 638320
+            }
+          ],
+          "reclaimable": 0.3016357421875,
+          "scratch_bytes": 110150
+        }
+      ],
+      "rlimit_fsize_bytes": null,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "19048cc6584fadc47457dc5c402fff3c7e61c18bb3e8af65a337957107b11ddd"
+    },
+    {
+      "aborted": null,
+      "after": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775825960376749,
+          "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775825967541684,
+          "sha256": "9f88aef255c56c9c2920088e156d6221eab837b10d745db724fcd54018e4102d",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775825793487449,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775825960242291,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775825967440394,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775825959928794,
+          "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+          "size": 4520
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775825967322311,
+          "sha256": "90e0ee540c97620f652e2e431faff4e2319df5a18122f29fd186ce97033c38da",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775825967738766,
+          "sha256": "a8b8fc4a91d8ba8489a4f2d7046c7bc8d223f4d48dc768afccdecf326944e736",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "before": {
+        "fsize-control.bin": {
+          "mtime_ns": 1790775824414310114,
+          "sha256": "f978d1363310465df9aeb51c0531b9a85c97655f02025133a96cf955aced40e0",
+          "size": 2308
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790775825960376749,
+          "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790775825967541684,
+          "sha256": "9f88aef255c56c9c2920088e156d6221eab837b10d745db724fcd54018e4102d",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790775825793487449,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790775825960242291,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790775825967440394,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790775825959928794,
+          "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+          "size": 4520
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790775825967322311,
+          "sha256": "90e0ee540c97620f652e2e431faff4e2319df5a18122f29fd186ce97033c38da",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.tmp.13182": {
+          "mtime_ns": 1790775824922414154,
+          "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+          "size": 2308
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790775825967738766,
+          "sha256": "a8b8fc4a91d8ba8489a4f2d7046c7bc8d223f4d48dc768afccdecf326944e736",
+          "size": 2033
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790775765459982427,
+          "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+          "size": 96672
+        },
+        "producer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790775762465775452,
+          "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+          "size": 184
+        },
+        "producer/Check.lean": {
+          "mtime_ns": 1790775762162967368,
+          "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+          "size": 26
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790775824418506619,
+          "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790775765464880800,
+          "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+          "size": 141
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790775762162747829,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790775762162894494,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer",
+      "elapsed": 0.178499,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean",
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/cache"
+      },
+      "exit": 0,
+      "label": "post-repair-direct",
+      "observed_file_events": [],
+      "pid": 13242,
+      "resource_samples": [
+        {
+          "disk_free": 18461716480,
+          "elapsed": 0.00311,
+          "group_rss_kib": 21408,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pgid": 13242,
+              "pid": 13242,
+              "ppid": 13160,
+              "rss_kib": 21408
+            }
+          ],
+          "reclaimable": 0.3063621520996094,
+          "scratch_bytes": 110150
+        },
+        {
+          "disk_free": 18461700096,
+          "elapsed": 0.103654,
+          "group_rss_kib": 306704,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pgid": 13242,
+              "pid": 13242,
+              "ppid": 13160,
+              "rss_kib": 306704
+            }
+          ],
+          "reclaimable": 0.3056602478027344,
+          "scratch_bytes": 110150
+        }
+      ],
+      "rlimit_fsize_bytes": null,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "39a2c36f7056e3bd33811eb4ef8d8efce80fe4f1a6783a19fd66d3caa147cc44"
+    }
+  ],
+  "schema": 1,
+  "snapshots": {
+    "after-limited": {
+      ".lake/build/ir/Dep.c.hash": {
+        "mtime_ns": 1790775765660008513,
+        "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+        "size": 16
+      },
+      ".lake/build/ir/Dep.setup.json": {
+        "mtime_ns": 1790775824745119240,
+        "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+        "size": 127
+      },
+      ".lake/build/lib/lean/Dep.ilean.hash": {
+        "mtime_ns": 1790775765659908181,
+        "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+        "size": 16
+      },
+      ".lake/build/lib/lean/Dep.olean.hash": {
+        "mtime_ns": 1790775765659798182,
+        "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+        "size": 16
+      },
+      ".lake/build/lib/lean/Dep.olean.tmp.13182": {
+        "mtime_ns": 1790775824922414154,
+        "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+        "size": 2308
+      },
+      ".lake/build/lib/lean/Dep.trace": {
+        "mtime_ns": 1790775765660371885,
+        "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+        "size": 2033
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "mtime_ns": 1790775765459982427,
+        "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+        "size": 96672
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "mtime_ns": 1790775762465775452,
+        "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+        "size": 184
+      },
+      "Check.lean": {
+        "mtime_ns": 1790775762162967368,
+        "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+        "size": 26
+      },
+      "Dep.lean": {
+        "mtime_ns": 1790775824418506619,
+        "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+        "size": 24
+      },
+      "lake-manifest.json": {
+        "mtime_ns": 1790775765464880800,
+        "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+        "size": 141
+      },
+      "lakefile.lean": {
+        "mtime_ns": 1790775762162747829,
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "size": 75
+      },
+      "lean-toolchain": {
+        "mtime_ns": 1790775762162894494,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29
+      }
+    },
+    "after-repair": {
+      ".lake/build/ir/Dep.c": {
+        "mtime_ns": 1790775825960376749,
+        "sha256": "f2a41539afc893aff7fc4b6573fdb353552680f6e5b8a0d0309fc8df463eb695",
+        "size": 1366
+      },
+      ".lake/build/ir/Dep.c.hash": {
+        "mtime_ns": 1790775825967541684,
+        "sha256": "9f88aef255c56c9c2920088e156d6221eab837b10d745db724fcd54018e4102d",
+        "size": 16
+      },
+      ".lake/build/ir/Dep.setup.json": {
+        "mtime_ns": 1790775825793487449,
+        "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+        "size": 127
+      },
+      ".lake/build/lib/lean/Dep.ilean": {
+        "mtime_ns": 1790775825960242291,
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "size": 289
+      },
+      ".lake/build/lib/lean/Dep.ilean.hash": {
+        "mtime_ns": 1790775825967440394,
+        "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+        "size": 16
+      },
+      ".lake/build/lib/lean/Dep.olean": {
+        "mtime_ns": 1790775825959928794,
+        "sha256": "fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745",
+        "size": 4520
+      },
+      ".lake/build/lib/lean/Dep.olean.hash": {
+        "mtime_ns": 1790775825967322311,
+        "sha256": "90e0ee540c97620f652e2e431faff4e2319df5a18122f29fd186ce97033c38da",
+        "size": 16
+      },
+      ".lake/build/lib/lean/Dep.olean.tmp.13182": {
+        "mtime_ns": 1790775824922414154,
+        "sha256": "7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995",
+        "size": 2308
+      },
+      ".lake/build/lib/lean/Dep.trace": {
+        "mtime_ns": 1790775825967738766,
+        "sha256": "a8b8fc4a91d8ba8489a4f2d7046c7bc8d223f4d48dc768afccdecf326944e736",
+        "size": 2033
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "mtime_ns": 1790775765459982427,
+        "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+        "size": 96672
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "mtime_ns": 1790775762465775452,
+        "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+        "size": 184
+      },
+      "Check.lean": {
+        "mtime_ns": 1790775762162967368,
+        "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+        "size": 26
+      },
+      "Dep.lean": {
+        "mtime_ns": 1790775824418506619,
+        "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+        "size": 24
+      },
+      "lake-manifest.json": {
+        "mtime_ns": 1790775765464880800,
+        "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+        "size": 141
+      },
+      "lakefile.lean": {
+        "mtime_ns": 1790775762162747829,
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "size": 75
+      },
+      "lean-toolchain": {
+        "mtime_ns": 1790775762162894494,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29
+      }
+    },
+    "old-valid": {
+      ".lake/build/ir/Dep.c": {
+        "mtime_ns": 1790775765653671570,
+        "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        "size": 1366
+      },
+      ".lake/build/ir/Dep.c.hash": {
+        "mtime_ns": 1790775765660008513,
+        "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+        "size": 16
+      },
+      ".lake/build/ir/Dep.setup.json": {
+        "mtime_ns": 1790775765467693067,
+        "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+        "size": 127
+      },
+      ".lake/build/lib/lean/Dep.ilean": {
+        "mtime_ns": 1790775765652512955,
+        "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        "size": 289
+      },
+      ".lake/build/lib/lean/Dep.ilean.hash": {
+        "mtime_ns": 1790775765659908181,
+        "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+        "size": 16
+      },
+      ".lake/build/lib/lean/Dep.olean": {
+        "mtime_ns": 1790775765650994719,
+        "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        "size": 4616
+      },
+      ".lake/build/lib/lean/Dep.olean.hash": {
+        "mtime_ns": 1790775765659798182,
+        "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+        "size": 16
+      },
+      ".lake/build/lib/lean/Dep.trace": {
+        "mtime_ns": 1790775765660371885,
+        "sha256": "f2619de6a7d3fed11efb9714952ad41592fbdeba188e8fa8b955557e0703d1cf",
+        "size": 2033
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "mtime_ns": 1790775765459982427,
+        "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5",
+        "size": 96672
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "mtime_ns": 1790775762465775452,
+        "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7",
+        "size": 184
+      },
+      "Check.lean": {
+        "mtime_ns": 1790775762162967368,
+        "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95",
+        "size": 26
+      },
+      "Dep.lean": {
+        "mtime_ns": 1790775762162820662,
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "size": 24
+      },
+      "lake-manifest.json": {
+        "mtime_ns": 1790775765464880800,
+        "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10",
+        "size": 141
+      },
+      "lakefile.lean": {
+        "mtime_ns": 1790775762162747829,
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "size": 75
+      },
+      "lean-toolchain": {
+        "mtime_ns": 1790775762162894494,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29
+      }
+    }
+  },
+  "source_after_edit_sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0",
+  "status": "completed"
+}

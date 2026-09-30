@@ -3429,6 +3429,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v62": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v61",
+            "reference_commit": "60ac83369bb7355bd6c729bc2b7256e479489987"
+          },
+          "name": "Published #3730/#3731 v61 coverage ledger"
+        },
+        {
+          "identity": {
+            "checker_sha256": "03dc2a855a31aa2e7af67162df069c59a75c1c9929d97308c732c3cbd335f16a",
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "results_sha256": "50701ff9bcbdad74a8097e2d3a330e1a30d32dece848e9227e40271b6c15a05d",
+            "source_package": "anneal-3731-i151-package-local-interrupted-olean-2026-09-30"
+          },
+          "name": "Lake package-local interrupted OLean observation"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "d5d962f78229165289a303f28218b4ba6b7ca209a6028edb2818c20ad7332381",
+            "source": "public GitHub REST issue and comments endpoints"
+          },
+          "name": "Fresh public #3730/#3731 issue snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "lake/package-local-artifacts",
+        "lake/interrupted-write",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -8675,6 +8709,25 @@
         "lake",
         "lake/concurrency",
         "lake/build-cache"
+      ]
+    },
+    "anneal-3731-i151-package-local-interrupted-olean-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake package-local Dep module artifact interruption"
+        }
+      ],
+      "topics": [
+        "lake/package-local-artifacts",
+        "lake/interrupted-write",
+        "lake/recovery"
       ]
     },
     "anneal-3731-lake-fresh-cache-consumer-matrix-2026-09-29": {

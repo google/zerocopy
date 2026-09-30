@@ -1,0 +1,29 @@
+# Interrupted package-local OLean write and repair
+
+Observed 2026-09-30 on macOS arm64/APFS with installed Lake/Lean `v4.30.0-rc2`. Lake executable SHA-256 `9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb`; Lean executable SHA-256 `b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997`. These hashes pin the actual binaries; the report does not independently establish their source-build commit. The fixture is one local `probe_dep` Lake package and one `Dep` module; no artifact cache, network, other package, native plugin, Mathlib, or Anneal process ran.
+
+## Question and distinction
+
+The published [I151 matched shared/isolated writer report](../anneal-3731-i151-matched-lake-writer-isolation-2026-09-29/REPORT.md) killed writers inside Lean source code **before** artifact output. Earlier file-size-limit reports interrupted a Charon `.llbc` destination or a Lake **artifact-cache** map/object, not this package's writable `.lake/build` output. This probe changes `depValue` from `7` to `9` at one fixed package path and imposes a child-inherited file-size limit during its rebuild. It tests the package-local result and recovery at one output-write boundary. #3730 F12 crosswalks to I108 and I151; I151 receives direct bounded evidence and F12 context only.
+
+## Method and resource controls
+
+The [one-shot runner](probe.py) first built value `7` normally and retained the entire old package tree in `snapshots/old-valid/`. Its `Dep.olean` was 4,616 bytes. Before the fault, the runner selected `RLIMIT_FSIZE=2,308` bytes, exactly half that observed size. A separate child-only Python write attempted 3,332 bytes into a private file; it exited 1 with `File too large`, leaving exactly 2,308 bytes. The same pre-exec limit was then applied to Lake and inherited by its Lean child. Lake's verbose command line records `lean Dep.lean -o <package>/.lake/build/lib/lean/Dep.olean ...`. A fresh source edit to value `9` was the only intended package input change. Lake's artifact cache was disabled with `LAKE_ARTIFACT_CACHE=false` and `LAKE_NO_CACHE=1`; `LAKE_NO_NET=1`, a private `HOME`/cache, and `LEAN_NUM_THREADS=1` were set. `RLIMIT_CORE=0` prevented a core dump.
+
+The two phases each required over 30% reclaimable RAM and over 10 GiB free disk before launch. A live sampler stopped a process group below 20% reclaimable RAM, above 1.2 GiB summed group RSS, below 10 GiB disk, above 100 MiB work scratch, or after 30 seconds. The baseline and continuation admissions were 30.95% and 30.98% reclaimable, respectively, with more than 18.4 GB disk free. Across eight sequential commands, sampled minimum reclaimable RAM was 29.90%; maximum summed process-group RSS was 996,976 KiB; minimum disk free was 18,461,700,096 bytes; maximum scratch was 110,150 bytes. No guard fired. These are sampled bounds, not a unique physical-memory or between-sample peak measure.
+
+[`results.json`](results.json) retains exact argv, environment overrides, PIDs, exits, streams' hashes, full before/after inventories, resource samples, and timestamped observed file events. `raw/` retains every stdout/stderr stream. `snapshots/` retains complete package trees before the edit, after the limited failure, and after uncapped repair. [`check.py`](check.py) verifies the source hashes, old/partial/repaired bytes, observed outcomes, limits, and guards from those saved files; it passes without rerunning Lake.
+
+## Observed sequence
+
+| Point | Package-local output and process result | Fresh read |
+|---|---|---|
+| Old valid | Value-7 `Dep.olean`: 4,616 bytes, SHA-256 `cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b`. Old trace and 16-byte `.olean.hash` retained. | Baseline `lake build Dep` exited 0. |
+| Limited value-9 update | Lake exited 1 and reported `Lean exited with code 153`. Final `Dep.olean` was absent. `Dep.olean.tmp.13182` was 2,308 bytes, SHA-256 `7e1d8d579e75d02a1861874190a82afbe13ae8effab532d8128eabe1fee94995`. Old trace and hash sidecar retained their old hashes. | `lake --no-build build Dep` exited 3 as out of date. Fresh direct Lean import exited 1 with missing `Dep` module. |
+| Uncapped repair | `lake build Dep` exited 0 and wrote a 4,520-byte value-9 `Dep.olean`, SHA-256 `fe893ce3c24d2c295ade06017eb859638f0e75aa29df7e9444f3026bfd7a7745`; trace and `.olean.hash` changed. The partial `.tmp.13182` file remained byte-identical. | No-build replay exited 0; fresh direct Lean `#eval depValue` exited 0 and returned `9`. |
+
+The file poller first observed removal of old final `Dep.olean`, then appearance of the partial temporary file in later sample. That establishes this *observed sample order*, not the exact syscall order or any unsampled transient state. `153` is the exit code Lake reported for its Lean child; `128+25` is consistent with `SIGXFSZ` on this system, but the probe did not directly retain the child's wait status. The Python child control demonstrates the configured limit's effect separately. The orphan partial temp after repair is a cleanup observation, not evidence that Lake would select it as a valid artifact.
+
+## Bounded inference and residual
+
+For this one package-local update, an interrupted Lean write left the active OLean path absent and a partial temporary file, while old trace/hash metadata remained. The tested no-build and fresh direct-import paths rejected the incomplete state. A normal retry rebuilt the changed module, passed no-build, and loaded the new value. This does not establish general crash atomicity, integrity of a present but wrong OLean, power-loss durability, concurrent shared-writer safety, or an Anneal preparation owner. In particular, no two writer processes overlapped here; F12's shared-writer policy remains product-gated. Further interruption points in trace/hash replacement and same-path concurrent publishing remain open.

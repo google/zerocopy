@@ -1,0 +1,6 @@
+✔ [0/3] Ran job computation
+✔ [1/3] Ran probe_dep:extraDep
+ℹ [2/3] Built Dep (174ms)
+trace: .> LEAN_PATH=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/Dep.lean -o /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean/Dep.olean -i /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/lib/lean/Dep.ilean -c /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/ir/Dep.c --setup /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i151-package-local-interruption/work/producer/.lake/build/ir/Dep.setup.json --json
+✔ [3/3] Ran probe_dep/Dep:default
+Build completed successfully (3 jobs).
