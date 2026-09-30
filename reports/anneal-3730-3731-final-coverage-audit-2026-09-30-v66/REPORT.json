@@ -1,0 +1,29 @@
+{
+  "topics": ["anneal/issue-3730-3731", "lake/server-readiness", "lake/manifest", "research/coverage-audit"],
+  "subjects": [
+    {
+      "name": "Reference parent containing published v65 ledger",
+      "identity": {
+        "reference_commit": "57155f6541e478f201ae47d8a27da2f3d448df5e",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v65"
+      }
+    },
+    {
+      "name": "Three-manifest preseeded Lake server observation",
+      "identity": {
+        "source_package": "anneal-3731-i092-preseeded-manifest-server-readiness-2026-09-30",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+        "results_sha256": "73bcd2c942ec5a9306fab22a77ceecbb2dbdc43d40516e9b4999a6593f0dd158",
+        "checker_sha256": "6f2649cf46d72b079bb0f35a4772935a7eb52644d94cb36af506c1fc25f0d7ad"
+      }
+    },
+    {
+      "name": "Inherited public #3730/#3731 issue snapshot from v65",
+      "identity": {
+        "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

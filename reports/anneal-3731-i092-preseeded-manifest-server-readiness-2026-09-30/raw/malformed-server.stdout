@@ -1,0 +1,51 @@
+Content-Length: 1540
+
+{"id":1,"jsonrpc":"2.0","result":{"capabilities":{"callHierarchyProvider":true,"codeActionProvider":{"codeActionKinds":["quickfix","refactor","source.organizeImports"],"resolveProvider":true,"workDoneProgress":false},"colorProvider":{"workDoneProgress":false},"completionProvider":{"resolveProvider":true,"triggerCharacters":["."]},"declarationProvider":true,"definitionProvider":true,"documentHighlightProvider":true,"documentSymbolProvider":true,"experimental":{"moduleHierarchyProvider":{},"rpcProvider":{"highlightMatchesProvider":{},"rpcWireFormat":"v1"}},"foldingRangeProvider":true,"hoverProvider":true,"inlayHintProvider":{"resolveProvider":false,"workDoneProgress":false},"referencesProvider":true,"renameProvider":{"prepareProvider":true},"semanticTokensProvider":{"full":true,"legend":{"tokenModifiers":["declaration","definition","readonly","static","deprecated","abstract","async","modification","documentation","defaultLibrary"],"tokenTypes":["keyword","variable","property","function","namespace","type","class","enum","interface","struct","typeParameter","parameter","enumMember","event","method","macro","modifier","comment","string","number","regexp","operator","decorator","leanSorryLike"]},"range":true},"signatureHelpProvider":{"triggerCharacters":[" "],"workDoneProgress":false},"textDocumentSync":{"change":2,"openClose":true,"save":{"includeText":true},"willSave":false,"willSaveWaitUntil":false},"typeDefinitionProvider":true,"workspaceSymbolProvider":true},"serverInfo":{"name":"Lean 4 Server","version":"0.3.0"}}}Content-Length: 267
+
+{"id":"register_lean_watcher","jsonrpc":"2.0","method":"client/registerCapability","params":{"registrations":[{"id":"lean_watcher","method":"workspace/didChangeWatchedFiles","registerOptions":{"watchers":[{"globPattern":"**/*.lean"},{"globPattern":"**/*.ilean"}]}}]}}Content-Length: 340
+
+{"jsonrpc":"2.0","method":"$/lean/fileProgress","params":{"processing":[{"kind":1,"range":{"end":{"character":0,"line":3},"start":{"character":0,"line":0}}}],"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean","version":1}}}Content-Length: 629
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[{"fullRange":{"end":{"character":0,"line":3},"start":{"character":0,"line":0}},"message":"error: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/lake-manifest.json: invalid JSON: offset 2: unexpected end of input\n","range":{"end":{"character":0,"line":1},"start":{"character":0,"line":0}},"severity":3}],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean","version":1}}Content-Length: 528
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[{"fullRange":{"end":{"character":0,"line":3},"start":{"character":0,"line":0}},"message":"Failed to configure the Lake workspace. Please restart the server after fixing the error above.\n","range":{"end":{"character":0,"line":1},"start":{"character":0,"line":0}},"severity":3}],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean","version":1}}Content-Length: 252
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean","version":1}}Content-Length: 256
+
+{"jsonrpc":"2.0","method":"$/lean/fileProgress","params":{"processing":[],"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean","version":1}}}Content-Length: 340
+
+{"jsonrpc":"2.0","method":"$/lean/fileProgress","params":{"processing":[{"kind":2,"range":{"end":{"character":0,"line":3},"start":{"character":0,"line":0}}}],"textDocument":{"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean","version":1}}}Content-Length: 1029
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[{"fullRange":{"end":{"character":0,"line":3},"start":{"character":0,"line":0}},"message":"`/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake setup-file /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean -` failed:\n\nstderr:\nerror: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/lake-manifest.json: invalid JSON: offset 2: unexpected end of input\nFailed to configure the Lake workspace. Please restart the server after fixing the error above.\n","range":{"end":{"character":0,"line":1},"start":{"character":0,"line":0}},"severity":1,"source":"Lean 4"}],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean","version":1}}Content-Length: 63
+
+{"id":0,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 63
+
+{"id":1,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 63
+
+{"id":2,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 68
+
+{"id":3,"jsonrpc":"2.0","method":"workspace/semanticTokens/refresh"}Content-Length: 63
+
+{"id":4,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 63
+
+{"id":5,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 63
+
+{"id":6,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 63
+
+{"id":7,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 68
+
+{"id":8,"jsonrpc":"2.0","method":"workspace/semanticTokens/refresh"}Content-Length: 63
+
+{"id":9,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 64
+
+{"id":10,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 64
+
+{"id":11,"jsonrpc":"2.0","method":"workspace/inlayHint/refresh"}Content-Length: 69
+
+{"id":12,"jsonrpc":"2.0","method":"workspace/semanticTokens/refresh"}Content-Length: 38
+
+{"id":2,"jsonrpc":"2.0","result":null}Content-Length: 252
+
+{"jsonrpc":"2.0","method":"textDocument/publishDiagnostics","params":{"diagnostics":[],"uri":"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness-retry-20260930/work/consumer/Generated.lean","version":1}}Content-Length: 38
+
+{"id":3,"jsonrpc":"2.0","result":null}

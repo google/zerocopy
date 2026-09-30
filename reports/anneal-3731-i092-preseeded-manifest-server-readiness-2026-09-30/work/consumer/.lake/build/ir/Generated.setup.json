@@ -1,0 +1,9 @@
+{"plugins": [],
+ "package": "consumer",
+ "options": {},
+ "name": "Generated",
+ "isModule": false,
+ "importArts":
+ {"Dep":
+  ["/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-malformed-manifest-preflight/work/cache/artifacts/4ab07c203eb6f06e.olean"]},
+ "dynlibs": []}

@@ -1,0 +1,54 @@
+{
+  "bounded_context_ids": [
+    "F07",
+    "F08"
+  ],
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [
+    "I092"
+  ],
+  "changed_status_ids": [],
+  "direct_evidence_ids": [
+    "I092"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v66.csv": "e0a9e0b32a76a73ecc2f3f874aeeb432a9ba2c5c109ebba6e7e8d645ec22d55f",
+    "investigation-final-v66.csv": "f0eeee6a87b6350d462d631a44db8ab3ba648cad8b974aace12d27abd632883f",
+    "row-challenge-v66.json": "a2509b58bf9ff79690b097a20864b99c2b3802263af56389c92b1f8dbb77abdd",
+    "source-package-inventory-v66.csv": "9b995117c7ca3cc3775670e320e7cb242ebe9155ed2f336b8ff7836784b5f1d5"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v66.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "v65/3730-crosswalk-final-v65.csv": "55361b83a9fb656458a7a6929f9551947cda42338c659299b71664e5377fbfbf",
+    "v65/investigation-final-v65.csv": "2054d0b4f1d3e88c9cabd22594a9b0129f3296d493c6b3c59488f1a029f44e6d",
+    "v65/row-challenge-v65.json": "833563addd19d993fcd748364c6e8ec78af366d1a724968c3c436ca2f1459e1d"
+  },
+  "inventory_files": 61,
+  "investigation_count": 159,
+  "issue_snapshot_relation": "v65 public REST snapshot reused unchanged; no fresh issue read",
+  "reference_tip_at_start": "57155f6541e478f201ae47d8a27da2f3d448df5e",
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v65",
+    "anneal-3731-i092-preseeded-manifest-server-readiness-2026-09-30"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v65",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

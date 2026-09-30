@@ -1,0 +1,2 @@
+error: missing manifest; use `lake update` to generate one
+warning: package configuration has errors, falling back to plain `lean --server`
