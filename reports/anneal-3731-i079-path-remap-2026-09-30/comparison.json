@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "rustc_diagnostic_paths": {
+    "plain": "src/error.rs",
+    "remap": "/virtual/anneal-src/error.rs"
+  },
+  "charon_driver_remap_flag_observed": true,
+  "charon_local_file_paths": [
+    {
+      "Local": "src/lib.rs"
+    },
+    {
+      "Local": "src/left/common.rs"
+    },
+    {
+      "Local": "src/right/common.rs"
+    }
+  ],
+  "charon_local_item_file_ids": {
+    "symlink_module_probe::combine": 0,
+    "symlink_module_probe::left::step": 1,
+    "symlink_module_probe::right::step": 2
+  },
+  "raw_llbc_differing_leaf_paths": [
+    "$.translated.options.dest_file",
+    "$.translated.short_names[0].key.Fun",
+    "$.translated.short_names[0].value[0].Ident[0]",
+    "$.translated.short_names[2].key.Fun",
+    "$.translated.short_names[2].value[0].Ident[0]"
+  ],
+  "typed_short_names_equal": true,
+  "negative_controls": [
+    "remapped_llbc_file_path",
+    "switched_item_file_id"
+  ]
+}

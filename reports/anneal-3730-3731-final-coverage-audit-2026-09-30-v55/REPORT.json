@@ -1,0 +1,35 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v54 coverage ledger",
+      "identity": {
+        "reference_commit": "87bbe2425ed749ba4eff9e729ad6799313124cb2",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v54"
+      }
+    },
+    {
+      "name": "Pinned Rust diagnostic and Charon LLBC path-remap observations",
+      "identity": {
+        "source_package": "anneal-3731-i079-path-remap-2026-09-30",
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "plain_llbc_sha256": "c574d05f3036d0c6d652b088cbd8a9ac99f3e1315fe5d3a905b3896b3a42853f",
+        "remap_llbc_sha256": "323fbe9ee1881ef8e896da2eec36d99affa98ddb6638d42bdc91d848bfcaf530",
+        "results_sha256": "e27b10622230a96ed937d66ae6d388ac4de19b9927c73a61df6a4e7b13fd83cf"
+      }
+    },
+    {
+      "name": "Fresh public #3730/#3731 issue snapshot",
+      "identity": {
+        "snapshot_sha256": "91f77e310f2de83570a25aea7a685a9f09438b0e5f9fa6a97eb22da0f281c9bc",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/source-identity",
+    "charon/llbc",
+    "research/coverage-audit"
+  ]
+}
