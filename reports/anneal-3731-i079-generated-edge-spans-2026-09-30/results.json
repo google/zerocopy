@@ -1,0 +1,504 @@
+{
+  "cleanup": {
+    "work_exists": false
+  },
+  "command": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "cargo",
+      "--preset",
+      "aeneas",
+      "--dest-file",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/generated.llbc",
+      "--",
+      "--manifest-path",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/Cargo.toml",
+      "--package",
+      "generated_span_probe",
+      "--lib",
+      "--offline",
+      "--locked",
+      "-v",
+      "-j",
+      "1"
+    ],
+    "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work",
+    "driver_lines": [
+      "     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name build_script_build --edition=2021 build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=e5f70ac7641172cc -C extra-filename=-c06bd3cb0a999324 --out-dir /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/target/debug/build/generated_span_probe-c06bd3cb0a999324 -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/target/debug/deps --verbose`",
+      "     Running `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver rustc --crate-name generated_span_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dd9fcf65a91ddcec -C extra-filename=-911ccdefa8100f93 --out-dir /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/target/aarch64-apple-darwin/debug/deps -L dependency=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/target/debug/deps --verbose`"
+    ],
+    "end_monotonic_ns": 2030433232490583,
+    "ended_utc": "2026-09-30T06:18:41.533478+00:00",
+    "environment": {
+      "CARGO_BUILD_JOBS": "1",
+      "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+      "CARGO_INCREMENTAL": "0",
+      "CARGO_NET_OFFLINE": "true",
+      "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/target",
+      "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+      "DYLD_LIBRARY_PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib:",
+      "PATH": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "RAYON_NUM_THREADS": "1",
+      "RUSTFLAGS": null,
+      "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+    },
+    "exit": 0,
+    "pid": 99047,
+    "start_monotonic_ns": 2030432069352041,
+    "started_utc": "2026-09-30T06:18:40.370350+00:00",
+    "stderr_bytes": 2422,
+    "stderr_sha256": "cdfd9f1f95aebe1d7d3293a761393762d46acafb351594eb3155abb0193764bd",
+    "stdout_bytes": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "command_preflight": {
+    "elapsed_seconds": 0.0038,
+    "host": {
+      "estimated_reclaimable_percent": 34.9049,
+      "free_disk_bytes": 18764525568,
+      "page_size": 16384,
+      "pages": {
+        "free": 3781,
+        "inactive": 178706,
+        "speculative": 515
+      },
+      "physical_memory_bytes": 8589934592
+    },
+    "process_group_rss_kib": 0,
+    "scratch_bytes": 938
+  },
+  "fixture_sha256": {
+    "Cargo.lock": "39e3fbbbe53b3137a19f733290586219799b3e143662b8c986791dc8c52a111d",
+    "Cargo.toml": "b135cfc7635c72065b0da28fc46b19c20f219797c71ad9eb29f4186f400b1cc4",
+    "build.rs": "64400cefdde17eae6f67ccdbc10937f4b2cecf3fff4a24adb5420c302ac16c34",
+    "generated_template.rs": "1a8f1e3ba34f78259326d24feeebf69c6b03356019ba08773e4f5992c833c620",
+    "src/lib.rs": "44af6b61586c0f28eb15456e57e593faf29fd0aac2e62ce3d2c3b96175b7cf14"
+  },
+  "generated_candidates": [
+    "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/target/aarch64-apple-darwin/debug/build/generated_span_probe-52a9dd8888444b99/out/generated.rs"
+  ],
+  "generated_source": {
+    "bytes": 201,
+    "original_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i079-generated-edge-oracle/anneal-3731-i079-generated-edge-spans-2026-09-30/work/target/aarch64-apple-darwin/debug/build/generated_span_probe-52a9dd8888444b99/out/generated.rs",
+    "sha256": "1a8f1e3ba34f78259326d24feeebf69c6b03356019ba08773e4f5992c833c620"
+  },
+  "limits": {
+    "maximum_process_group_rss_kib": 524288,
+    "maximum_scratch_bytes": 104857600,
+    "minimum_admission_reclaimable_percent": 30.0,
+    "minimum_free_disk_bytes": 10737418240,
+    "minimum_live_reclaimable_percent": 20.0,
+    "timeout_seconds": 15.0
+  },
+  "observed_utc": "2026-09-30T06:18:40.365982+00:00",
+  "output": {
+    "bytes": 18623,
+    "sha256": "d66ef10093c31bc1050b02119220b25f2eb75213d0f37d61f92ab3d397fbff7b"
+  },
+  "postrun_host": {
+    "estimated_reclaimable_percent": 35.1385,
+    "free_disk_bytes": 18762702848,
+    "page_size": 16384,
+    "pages": {
+      "free": 7282,
+      "inactive": 175216,
+      "speculative": 1729
+    },
+    "physical_memory_bytes": 8589934592
+  },
+  "postrun_process_group_rss_kib": 0,
+  "preflight": {
+    "elapsed_seconds": 0.0067,
+    "host": {
+      "estimated_reclaimable_percent": 34.9127,
+      "free_disk_bytes": 18764558336,
+      "page_size": 16384,
+      "pages": {
+        "free": 3832,
+        "inactive": 178705,
+        "speculative": 506
+      },
+      "physical_memory_bytes": 8589934592
+    },
+    "process_group_rss_kib": 0,
+    "scratch_bytes": 0
+  },
+  "samples": [
+    {
+      "elapsed_seconds": 0.009,
+      "host": {
+        "estimated_reclaimable_percent": 34.9157,
+        "free_disk_bytes": 18764525568,
+        "page_size": 16384,
+        "pages": {
+          "free": 3837,
+          "inactive": 178706,
+          "speculative": 516
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 144,
+      "scratch_bytes": 938
+    },
+    {
+      "elapsed_seconds": 0.0598,
+      "host": {
+        "estimated_reclaimable_percent": 34.9194,
+        "free_disk_bytes": 18764525568,
+        "page_size": 16384,
+        "pages": {
+          "free": 3853,
+          "inactive": 178706,
+          "speculative": 519
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 144,
+      "scratch_bytes": 938
+    },
+    {
+      "elapsed_seconds": 0.1105,
+      "host": {
+        "estimated_reclaimable_percent": 34.9268,
+        "free_disk_bytes": 18764509184,
+        "page_size": 16384,
+        "pages": {
+          "free": 4204,
+          "inactive": 178356,
+          "speculative": 557
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 8016,
+      "scratch_bytes": 938
+    },
+    {
+      "elapsed_seconds": 0.1613,
+      "host": {
+        "estimated_reclaimable_percent": 34.8743,
+        "free_disk_bytes": 18764603392,
+        "page_size": 16384,
+        "pages": {
+          "free": 3575,
+          "inactive": 178822,
+          "speculative": 445
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 23728,
+      "scratch_bytes": 938
+    },
+    {
+      "elapsed_seconds": 0.2117,
+      "host": {
+        "estimated_reclaimable_percent": 34.8913,
+        "free_disk_bytes": 18764599296,
+        "page_size": 16384,
+        "pages": {
+          "free": 3787,
+          "inactive": 178667,
+          "speculative": 477
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 3840,
+      "scratch_bytes": 938
+    },
+    {
+      "elapsed_seconds": 0.262,
+      "host": {
+        "estimated_reclaimable_percent": 34.9302,
+        "free_disk_bytes": 18764599296,
+        "page_size": 16384,
+        "pages": {
+          "free": 4158,
+          "inactive": 178496,
+          "speculative": 481
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 47536,
+      "scratch_bytes": 938
+    },
+    {
+      "elapsed_seconds": 0.3124,
+      "host": {
+        "estimated_reclaimable_percent": 34.9396,
+        "free_disk_bytes": 18764599296,
+        "page_size": 16384,
+        "pages": {
+          "free": 4033,
+          "inactive": 178625,
+          "speculative": 526
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 23216,
+      "scratch_bytes": 938
+    },
+    {
+      "elapsed_seconds": 0.3638,
+      "host": {
+        "estimated_reclaimable_percent": 34.9504,
+        "free_disk_bytes": 18764558336,
+        "page_size": 16384,
+        "pages": {
+          "free": 4265,
+          "inactive": 178376,
+          "speculative": 600
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 35872,
+      "scratch_bytes": 1340
+    },
+    {
+      "elapsed_seconds": 0.4168,
+      "host": {
+        "estimated_reclaimable_percent": 34.927,
+        "free_disk_bytes": 18764554240,
+        "page_size": 16384,
+        "pages": {
+          "free": 3692,
+          "inactive": 178759,
+          "speculative": 667
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 81376,
+      "scratch_bytes": 1340
+    },
+    {
+      "elapsed_seconds": 0.4685,
+      "host": {
+        "estimated_reclaimable_percent": 34.9112,
+        "free_disk_bytes": 18764550144,
+        "page_size": 16384,
+        "pages": {
+          "free": 3538,
+          "inactive": 178739,
+          "speculative": 758
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 91088,
+      "scratch_bytes": 2016
+    },
+    {
+      "elapsed_seconds": 0.52,
+      "host": {
+        "estimated_reclaimable_percent": 34.9527,
+        "free_disk_bytes": 18764550144,
+        "page_size": 16384,
+        "pages": {
+          "free": 3776,
+          "inactive": 178594,
+          "speculative": 883
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 102912,
+      "scratch_bytes": 2016
+    },
+    {
+      "elapsed_seconds": 0.5726,
+      "host": {
+        "estimated_reclaimable_percent": 34.8717,
+        "free_disk_bytes": 18764550144,
+        "page_size": 16384,
+        "pages": {
+          "free": 3622,
+          "inactive": 178319,
+          "speculative": 887
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 113696,
+      "scratch_bytes": 2016
+    },
+    {
+      "elapsed_seconds": 0.6246,
+      "host": {
+        "estimated_reclaimable_percent": 34.9491,
+        "free_disk_bytes": 18764550144,
+        "page_size": 16384,
+        "pages": {
+          "free": 3900,
+          "inactive": 178317,
+          "speculative": 1017
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 123664,
+      "scratch_bytes": 2016
+    },
+    {
+      "elapsed_seconds": 0.6765,
+      "host": {
+        "estimated_reclaimable_percent": 34.8352,
+        "free_disk_bytes": 18764550144,
+        "page_size": 16384,
+        "pages": {
+          "free": 4041,
+          "inactive": 177564,
+          "speculative": 1032
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 135392,
+      "scratch_bytes": 2016
+    },
+    {
+      "elapsed_seconds": 0.728,
+      "host": {
+        "estimated_reclaimable_percent": 34.8114,
+        "free_disk_bytes": 18764439552,
+        "page_size": 16384,
+        "pages": {
+          "free": 3865,
+          "inactive": 177535,
+          "speculative": 1112
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 125024,
+      "scratch_bytes": 107240
+    },
+    {
+      "elapsed_seconds": 0.782,
+      "host": {
+        "estimated_reclaimable_percent": 34.7874,
+        "free_disk_bytes": 18764361728,
+        "page_size": 16384,
+        "pages": {
+          "free": 4006,
+          "inactive": 177140,
+          "speculative": 1240
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 140336,
+      "scratch_bytes": 1094344
+    },
+    {
+      "elapsed_seconds": 0.8354,
+      "host": {
+        "estimated_reclaimable_percent": 35.1936,
+        "free_disk_bytes": 18763845632,
+        "page_size": 16384,
+        "pages": {
+          "free": 7825,
+          "inactive": 175211,
+          "speculative": 1480
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 35360,
+      "scratch_bytes": 1094344
+    },
+    {
+      "elapsed_seconds": 0.8895,
+      "host": {
+        "estimated_reclaimable_percent": 35.1912,
+        "free_disk_bytes": 18763845632,
+        "page_size": 16384,
+        "pages": {
+          "free": 7764,
+          "inactive": 175211,
+          "speculative": 1528
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 35360,
+      "scratch_bytes": 1094344
+    },
+    {
+      "elapsed_seconds": 0.944,
+      "host": {
+        "estimated_reclaimable_percent": 35.1568,
+        "free_disk_bytes": 18763845632,
+        "page_size": 16384,
+        "pages": {
+          "free": 7519,
+          "inactive": 175256,
+          "speculative": 1548
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 35360,
+      "scratch_bytes": 1094344
+    },
+    {
+      "elapsed_seconds": 0.9977,
+      "host": {
+        "estimated_reclaimable_percent": 35.1547,
+        "free_disk_bytes": 18763845632,
+        "page_size": 16384,
+        "pages": {
+          "free": 7404,
+          "inactive": 175358,
+          "speculative": 1550
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 35360,
+      "scratch_bytes": 1094344
+    },
+    {
+      "elapsed_seconds": 1.0488,
+      "host": {
+        "estimated_reclaimable_percent": 35.1377,
+        "free_disk_bytes": 18763845632,
+        "page_size": 16384,
+        "pages": {
+          "free": 7310,
+          "inactive": 175359,
+          "speculative": 1554
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 35360,
+      "scratch_bytes": 1095250
+    },
+    {
+      "elapsed_seconds": 1.1008,
+      "host": {
+        "estimated_reclaimable_percent": 34.8625,
+        "free_disk_bytes": 18762768384,
+        "page_size": 16384,
+        "pages": {
+          "free": 4653,
+          "inactive": 176412,
+          "speculative": 1715
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 129712,
+      "scratch_bytes": 1095250
+    },
+    {
+      "elapsed_seconds": 1.1532,
+      "host": {
+        "estimated_reclaimable_percent": 35.1261,
+        "free_disk_bytes": 18762711040,
+        "page_size": 16384,
+        "pages": {
+          "free": 7221,
+          "inactive": 175211,
+          "speculative": 1730
+        },
+        "physical_memory_bytes": 8589934592
+      },
+      "process_group_rss_kib": 0,
+      "scratch_bytes": 1100760
+    }
+  ],
+  "schema": 1,
+  "status": "completed",
+  "stop_reason": null,
+  "tool_sha256": {
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  }
+}

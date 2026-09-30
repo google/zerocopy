@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "source_sha256": "1a8f1e3ba34f78259326d24feeebf69c6b03356019ba08773e4f5992c833c620",
+  "source_bytes": 201,
+  "source_line_ending": "CRLF",
+  "items": [
+    {
+      "name": "generated_span_probe::PREFIX",
+      "source_text": "pub const PREFIX: &str = \"😀é\";",
+      "source_utf8_sha256": "1d4716442ab21783a307230b17a4d23fbdae77dca7d142ee89ded45f8b228212",
+      "begin": {
+        "line": 1,
+        "columns": {
+          "utf8_bytes": 0,
+          "unicode_scalars": 0,
+          "utf16_code_units": 0,
+          "tab_one": 0,
+          "tab_fixed_four": 0,
+          "tab_fixed_eight": 0,
+          "tab_stop_four": 0,
+          "tab_stop_eight": 0
+        }
+      },
+      "end": {
+        "line": 1,
+        "columns": {
+          "utf8_bytes": 35,
+          "unicode_scalars": 31,
+          "utf16_code_units": 32,
+          "tab_one": 31,
+          "tab_fixed_four": 31,
+          "tab_fixed_eight": 31,
+          "tab_stop_four": 31,
+          "tab_stop_eight": 31
+        }
+      },
+      "scalar_range": [
+        0,
+        31
+      ],
+      "byte_range": [
+        0,
+        35
+      ]
+    },
+    {
+      "name": "generated_span_probe::after_prefix",
+      "source_text": "pub fn after_prefix() -> usize { 1 }",
+      "source_utf8_sha256": "6291adfb491ff3c244adf0bba55b5c9ad88440e31ed2b05dce8090bb9ce78e5b",
+      "begin": {
+        "line": 1,
+        "columns": {
+          "utf8_bytes": 36,
+          "unicode_scalars": 32,
+          "utf16_code_units": 33,
+          "tab_one": 32,
+          "tab_fixed_four": 35,
+          "tab_fixed_eight": 39,
+          "tab_stop_four": 32,
+          "tab_stop_eight": 32
+        }
+      },
+      "end": {
+        "line": 1,
+        "columns": {
+          "utf8_bytes": 72,
+          "unicode_scalars": 68,
+          "utf16_code_units": 69,
+          "tab_one": 68,
+          "tab_fixed_four": 71,
+          "tab_fixed_eight": 75,
+          "tab_stop_four": 68,
+          "tab_stop_eight": 68
+        }
+      },
+      "scalar_range": [
+        32,
+        68
+      ],
+      "byte_range": [
+        36,
+        72
+      ]
+    },
+    {
+      "name": "generated_span_probe::tabbed_multiline",
+      "source_text": "pub fn tabbed_multiline(x: u32) -> u32 {\r\n\tlet note = \"é😀\";\r\n\tx + note.len() as u32\r\n\t}",
+      "source_utf8_sha256": "7a84c71b2850499757804548f510d1dc916d3cdafc619510a4e49e90bedfa63c",
+      "begin": {
+        "line": 2,
+        "columns": {
+          "utf8_bytes": 1,
+          "unicode_scalars": 1,
+          "utf16_code_units": 1,
+          "tab_one": 1,
+          "tab_fixed_four": 4,
+          "tab_fixed_eight": 8,
+          "tab_stop_four": 4,
+          "tab_stop_eight": 8
+        }
+      },
+      "end": {
+        "line": 5,
+        "columns": {
+          "utf8_bytes": 2,
+          "unicode_scalars": 2,
+          "utf16_code_units": 2,
+          "tab_one": 2,
+          "tab_fixed_four": 5,
+          "tab_fixed_eight": 9,
+          "tab_stop_four": 5,
+          "tab_stop_eight": 9
+        }
+      },
+      "scalar_range": [
+        71,
+        159
+      ],
+      "byte_range": [
+        75,
+        167
+      ]
+    },
+    {
+      "name": "generated_span_probe::AFTER",
+      "source_text": "pub const AFTER: &str = \"é\";",
+      "source_utf8_sha256": "1f4711416e48f0a20000ee79546feb96dda807903b772ec34fd9bf0a3590bb97",
+      "begin": {
+        "line": 6,
+        "columns": {
+          "utf8_bytes": 0,
+          "unicode_scalars": 0,
+          "utf16_code_units": 0,
+          "tab_one": 0,
+          "tab_fixed_four": 0,
+          "tab_fixed_eight": 0,
+          "tab_stop_four": 0,
+          "tab_stop_eight": 0
+        }
+      },
+      "end": {
+        "line": 6,
+        "columns": {
+          "utf8_bytes": 30,
+          "unicode_scalars": 29,
+          "utf16_code_units": 29,
+          "tab_one": 28,
+          "tab_fixed_four": 28,
+          "tab_fixed_eight": 28,
+          "tab_stop_four": 28,
+          "tab_stop_eight": 28
+        }
+      },
+      "scalar_range": [
+        161,
+        190
+      ],
+      "byte_range": [
+        169,
+        199
+      ]
+    }
+  ]
+}

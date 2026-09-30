@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "template_sha256": "1a8f1e3ba34f78259326d24feeebf69c6b03356019ba08773e4f5992c833c620",
+  "generated_sha256": "1a8f1e3ba34f78259326d24feeebf69c6b03356019ba08773e4f5992c833c620",
+  "embedded_normalized_sha256": "59d0ebba3ee4303cb2284105e1915e7cdfd5bf95995e4f20ebc901b1de319e99",
+  "llbc_sha256": "d66ef10093c31bc1050b02119220b25f2eb75213d0f37d61f92ab3d397fbff7b",
+  "raw_source_bytes": 201,
+  "normalized_embedded_bytes": 195,
+  "generated_file_id": 1,
+  "observations": [
+    {
+      "category": "fun_decls",
+      "name": "generated_span_probe::after_prefix",
+      "observed": {
+        "begin": {
+          "line": 1,
+          "col": 35
+        },
+        "end": {
+          "line": 1,
+          "col": 71
+        }
+      },
+      "hypothesis_matches": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": false,
+        "tab_one": false,
+        "tab_fixed_four": true,
+        "tab_fixed_eight": false,
+        "tab_stop_four": false,
+        "tab_stop_eight": false
+      },
+      "source_text_crlf_normalized": false,
+      "source_text": "pub fn after_prefix() -> usize { 1 }"
+    },
+    {
+      "category": "fun_decls",
+      "name": "generated_span_probe::tabbed_multiline",
+      "observed": {
+        "begin": {
+          "line": 2,
+          "col": 4
+        },
+        "end": {
+          "line": 5,
+          "col": 5
+        }
+      },
+      "hypothesis_matches": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": false,
+        "tab_one": false,
+        "tab_fixed_four": true,
+        "tab_fixed_eight": false,
+        "tab_stop_four": true,
+        "tab_stop_eight": false
+      },
+      "source_text_crlf_normalized": true,
+      "source_text": "pub fn tabbed_multiline(x: u32) -> u32 {\n\tlet note = \"é😀\";\n\tx + note.len() as u32\n\t}"
+    },
+    {
+      "category": "fun_decls",
+      "name": "generated_span_probe::PREFIX",
+      "observed": {
+        "begin": {
+          "line": 1,
+          "col": 0
+        },
+        "end": {
+          "line": 1,
+          "col": 31
+        }
+      },
+      "hypothesis_matches": {
+        "utf8_bytes": false,
+        "unicode_scalars": true,
+        "utf16_code_units": false,
+        "tab_one": true,
+        "tab_fixed_four": true,
+        "tab_fixed_eight": true,
+        "tab_stop_four": true,
+        "tab_stop_eight": true
+      },
+      "source_text_crlf_normalized": false,
+      "source_text": "pub const PREFIX: &str = \"😀é\";"
+    },
+    {
+      "category": "fun_decls",
+      "name": "generated_span_probe::AFTER",
+      "observed": {
+        "begin": {
+          "line": 6,
+          "col": 0
+        },
+        "end": {
+          "line": 6,
+          "col": 28
+        }
+      },
+      "hypothesis_matches": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": false,
+        "tab_one": true,
+        "tab_fixed_four": true,
+        "tab_fixed_eight": true,
+        "tab_stop_four": true,
+        "tab_stop_eight": true
+      },
+      "source_text_crlf_normalized": false,
+      "source_text": "pub const AFTER: &str = \"é\";"
+    },
+    {
+      "category": "global_decls",
+      "name": "generated_span_probe::PREFIX",
+      "observed": {
+        "begin": {
+          "line": 1,
+          "col": 0
+        },
+        "end": {
+          "line": 1,
+          "col": 31
+        }
+      },
+      "hypothesis_matches": {
+        "utf8_bytes": false,
+        "unicode_scalars": true,
+        "utf16_code_units": false,
+        "tab_one": true,
+        "tab_fixed_four": true,
+        "tab_fixed_eight": true,
+        "tab_stop_four": true,
+        "tab_stop_eight": true
+      },
+      "source_text_crlf_normalized": false,
+      "source_text": "pub const PREFIX: &str = \"😀é\";"
+    },
+    {
+      "category": "global_decls",
+      "name": "generated_span_probe::AFTER",
+      "observed": {
+        "begin": {
+          "line": 6,
+          "col": 0
+        },
+        "end": {
+          "line": 6,
+          "col": 28
+        }
+      },
+      "hypothesis_matches": {
+        "utf8_bytes": false,
+        "unicode_scalars": false,
+        "utf16_code_units": false,
+        "tab_one": true,
+        "tab_fixed_four": true,
+        "tab_fixed_eight": true,
+        "tab_stop_four": true,
+        "tab_stop_eight": true
+      },
+      "source_text_crlf_normalized": false,
+      "source_text": "pub const AFTER: &str = \"é\";"
+    }
+  ],
+  "excluded_nonlocal": [
+    {
+      "category": "fun_decls",
+      "name": "core::str::len",
+      "file_id": 2
+    }
+  ],
+  "mismatch_counts": {
+    "utf8_bytes": 6,
+    "unicode_scalars": 4,
+    "utf16_code_units": 6,
+    "tab_one": 2,
+    "tab_fixed_four": 0,
+    "tab_fixed_eight": 2,
+    "tab_stop_four": 1,
+    "tab_stop_eight": 2
+  },
+  "controls": {
+    "wrong_file_id_zero_rejected": true,
+    "begin_plus_one_rejected": true,
+    "inclusive_end_rejected": true,
+    "changed_template_bytes_rejected": true,
+    "raw_crlf_equals_embedded_rejected": true
+  }
+}
