@@ -15732,6 +15732,51 @@
         "netstack3/static-typing"
       ]
     },
+    "nix-guix-2352-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "85c0dbe51660afbd6a6362eade507f00c49b4ec5"
+          },
+          "name": "Frozen reference corpus containing R502 and R503"
+        },
+        {
+          "identity": {
+            "repository": "NixOS/nix",
+            "revision": "9bc9ab32a57504f068847af4f8013417476cb1ec"
+          },
+          "name": "R503 pinned Nix source"
+        },
+        {
+          "identity": {
+            "annotated-tag-object": "a400e1f45939a4e0521f66e76470eea9e8ea666b",
+            "peeled-revision": "2c73b59da29606068c0c98db015dd3a66955525d",
+            "repository": "NixOS/nix",
+            "tag": "2.35.2"
+          },
+          "name": "Nix 2.35.2 stable release source"
+        },
+        {
+          "identity": {
+            "annotated-tag-object": "749a73cacad30fd9e149d9086c7e4e4a0b86834b",
+            "peeled-revision": "230aa373f315f247852ee07dff34146e9b480aec",
+            "repository": "guix/guix",
+            "tag": "v1.5.0"
+          },
+          "name": "GNU Guix 1.5.0 stable release source"
+        }
+      ],
+      "topics": [
+        "nix/version-review",
+        "nix/profiles",
+        "nix/garbage-collection",
+        "guix/version-review",
+        "reference/cohort-audit"
+      ]
+    },
     "nix-guix-functional-deployment-roots-2007-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
