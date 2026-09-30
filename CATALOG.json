@@ -18496,6 +18496,49 @@
         "verification/validators"
       ]
     },
+    "typescript-602-to-702-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "a69cfaf1cbee462fb9bbae9a75d57e16e6c34a64"
+          },
+          "name": "Frozen reference corpus containing R576"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/TypeScript",
+            "revision": "607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+            "version": "6.0.2"
+          },
+          "name": "Old TypeScript JavaScript implementation"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/TypeScript",
+            "revision": "1e4744d68260a7cb91b62b12edc3f6a2187faaf1",
+            "tag": "v7.0.2"
+          },
+          "name": "TypeScript 7.0.2 mirrored release tag"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/typescript-go",
+            "revision": "2bd066d87f5bafd315be9f40889d0a60b9e58e0b",
+            "tag": "typescript/v7.0.2"
+          },
+          "name": "TypeScript 7.0.2 original native source tag"
+        }
+      ],
+      "topics": [
+        "typescript/version-review",
+        "typescript/language-service",
+        "typescript/native-transition",
+        "reference/cohort-audit"
+      ]
+    },
     "typescript-host-owned-language-world-2014-2026": {
       "observed_at": "2026-09-30",
       "subjects": [

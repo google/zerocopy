@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "a69cfaf1cbee462fb9bbae9a75d57e16e6c34a64",
+  "baseline_count": 581,
+  "current_count": 589,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "cohort": "TypeScript 6.0.2 source 607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+  "rows": [
+    {
+      "inventory_id": "R576",
+      "inventory_cohort": "TypeScript 6.0.2 source 607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+      "title": "TypeScript's host-owned world around shared language machinery",
+      "report_md": "reports/typescript-host-owned-language-world-2014-2026/REPORT.md",
+      "report_json": "reports/typescript-host-owned-language-world-2014-2026/REPORT.json",
+      "frozen_md_sha256": "ea2f8c312b4fa368a0f80a04422362b2b39dfba2fed00c0e9265a3dbe29f1624",
+      "frozen_json_sha256": "cff5d9b67538e472622422f58fb0857ced4d876d6c0d754103baffe791ab69fe",
+      "frozen_subjects_exact": [
+        {
+          "name": "TypeScript 6.0.2 compiler and language-service architecture",
+          "identity": {
+            "repository": "microsoft/TypeScript",
+            "revision": "607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+            "version": "6.0.2"
+          }
+        },
+        {
+          "name": "TypeScript language-service design guide",
+          "identity": {
+            "repository": "microsoft/TypeScript-wiki",
+            "revision": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d",
+            "path": "Using-the-Language-Service-API.md"
+          }
+        },
+        {
+          "name": "TypeScript 7.0 native transition",
+          "identity": {
+            "release": "TypeScript 7.0",
+            "date": "2026-07-08",
+            "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/"
+          }
+        },
+        {
+          "name": "Anneal design authority",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          }
+        }
+      ],
+      "old_typescript_subject_exact": {
+        "name": "TypeScript 6.0.2 compiler and language-service architecture",
+        "identity": {
+          "repository": "microsoft/TypeScript",
+          "revision": "607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+          "version": "6.0.2"
+        }
+      },
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "claim_excerpt_exact": "TypeScript's language-service architecture is a useful precedent for Anneal because it does **not** make the compiler or language service the authority for the whole world around a query. The reusable semantic machinery owns parsing, binding, type analysis, and editor operations over the state it is given. A host supplies the project's files, versions, snapshots, compiler options, filesystem semantics, module-resolution inputs, cancellation, and related environment facts. `ProjectService` then adds another substantial layer that tracks open editor buffers, configured, inferred, and externally supplied projects, config-file discovery, watchers, and version history.",
+      "old_source_blob_sha1_mentions": [
+        "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+        "34adf6e49b7daa33c0b9d65bb3675cfde7a8b85b",
+        "4bcedabb7eb0f4d168a2f6b43a54cadd924a1eb5",
+        "5329fe901b2403fad070e2fdb3b61212102e7c57",
+        "8d1ca9ff320e216be72abbca267c4372fcb8d0e1",
+        "9885093ed618047cfebad26ac731032cd7071ab6",
+        "aa578c7ed0815f064b88eda052c7d8ac9029558f",
+        "c3584b2b433dd304216e0affe3302a56a2ace681",
+        "d532b9fe321f547efe355a9044b707a06727ed65",
+        "d5339a95254eae14ac201139d07d9d36d48a19fb"
+      ],
+      "target": {
+        "release": "7.0.2",
+        "mirrored_repository": "microsoft/TypeScript",
+        "mirrored_tag": "v7.0.2",
+        "mirrored_commit": "1e4744d68260a7cb91b62b12edc3f6a2187faaf1",
+        "original_native_repository": "microsoft/typescript-go",
+        "original_native_tag": "typescript/v7.0.2",
+        "original_native_commit": "2bd066d87f5bafd315be9f40889d0a60b9e58e0b",
+        "mirrored_tag_ref_type": "lightweight",
+        "original_native_tag_ref_type": "lightweight"
+      },
+      "source_claim_result": "unresolved_at_target",
+      "current_runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed",
+      "old_source_snapshot_sha256": null,
+      "new_source_snapshot_sha256": null
+    }
+  ],
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c",
+      "excluded_reason": "post-inventory package; not the single R576 TypeScript cohort"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d",
+      "excluded_reason": "post-inventory package; not the single R576 TypeScript cohort"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520",
+      "excluded_reason": "post-inventory package; not the single R576 TypeScript cohort"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37",
+      "excluded_reason": "post-inventory package; not the single R576 TypeScript cohort"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f",
+      "excluded_reason": "post-inventory package; not the single R576 TypeScript cohort"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408",
+      "excluded_reason": "post-inventory package; not the single R576 TypeScript cohort"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188",
+      "excluded_reason": "post-inventory package; not the single R576 TypeScript cohort"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68",
+      "excluded_reason": "post-inventory package; not the single R576 TypeScript cohort"
+    }
+  ]
+}
