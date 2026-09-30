@@ -1,0 +1,7 @@
+{
+  "kotlin-swift-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["kotlin-swift-compiler-backed-ide-boundaries-2021-2026"],
+    "reason": "R410 freezes the exact six-claim source map of this v67 analog. It checks Kotlin FIR/Analysis API, Swift compiler SourceKit, and SourceKit-LSP claim-mapped blobs at separate pinned/current revisions. Selected blobs are unchanged; the SourceKit-LSP default branch has no forward revision. No compiler/server/runtime fixture or Anneal product execution occurred."
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "catalog_at_parent_sha256": "3b8baae62f84ae8f1cc40396120515ef02231e3161080451207e3a3ade2cd84c",
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [],
+  "changed_status_ids": [],
+  "context_investigation_ids": [
+    "I002",
+    "I020",
+    "I096",
+    "I157"
+  ],
+  "context_suggestion_ids": [
+    "D07",
+    "F05",
+    "F17",
+    "L07",
+    "L08"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v71.csv": "35489392ce7926f1b201163c37627c31827d18d444a70ba5f750157643a059ef",
+    "investigation-final-v71.csv": "d3edd3c83e09b1d625f1d321e2e940efcc52c6e46ea0cec245b85f2aa863ecbf",
+    "live-issue-snapshot-v71.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v71.json": "12ab16cf1f7e6553032533cf8b5b4aea2005df09828c9689a244741c6f32d19a",
+    "source-package-inventory-v71.csv": "72e366c71ff17499ae2fba3f0bb14c10377027938f697ec2b5829098ab8f58cc"
+  },
+  "input_sha256": {
+    "v70/3730-crosswalk-final-v70.csv": "3645738f55e900bf52abe4a25023395127cc1e303dfe86f05a551d1fb5bbdc2b",
+    "v70/investigation-final-v70.csv": "762aea99647a03daef66f3b377c26470fb2e5fa8b193ae399a4b2d7dd598692b",
+    "v70/live-issue-snapshot-v70.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "v70/row-challenge-v70.json": "2968309f34ecc4da435ed5c02e96967f6490c9a08efcd98ae06fc64089c54e46",
+    "v70/validation-v70.json": "198fe50f1b58c1a892e15920ff223ced98d644e169614eceb00bdc281ba4537f"
+  },
+  "inventory_files": 19,
+  "inventory_only_packages": [],
+  "investigation_count": 159,
+  "new_report_packages": [
+    "kotlin-swift-current-source-review"
+  ],
+  "reference_tip_at_start": "a7dba95cacd7659fb84ad5e619821568fbb25b61",
+  "row_count": 333,
+  "source_map_sha256": "5189291dcac442a705180b78ca7ca4c19a040744e9268b4444afcabf874b315d",
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v70",
+  "source_review_context_packages": [
+    "kotlin-swift-current-source-review"
+  ],
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345,
+  "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+  "v70_published_commit": "0acbffd307e1d4288d784055f9883dd9fa5fd3b9"
+}

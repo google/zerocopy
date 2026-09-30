@@ -3855,6 +3855,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v71": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "parent_catalog_sha256": "3b8baae62f84ae8f1cc40396120515ef02231e3161080451207e3a3ade2cd84c",
+            "reference_parent": "a7dba95cacd7659fb84ad5e619821568fbb25b61",
+            "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+            "v70_published_commit": "0acbffd307e1d4288d784055f9883dd9fa5fd3b9"
+          },
+          "name": "Published v70 ledger and exact frozen reference parent"
+        },
+        {
+          "identity": {
+            "package_count": "1",
+            "source_inventory_sha256": "72e366c71ff17499ae2fba3f0bb14c10377027938f697ec2b5829098ab8f58cc",
+            "source_map_sha256": "5189291dcac442a705180b78ca7ca4c19a040744e9268b4444afcabf874b315d"
+          },
+          "name": "One post-v70 Kotlin/Swift current-source review"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+            "source": "prior published local snapshot; no new issue fetch"
+          },
+          "name": "Inherited public #3730/#3731 issue snapshot from v65"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
