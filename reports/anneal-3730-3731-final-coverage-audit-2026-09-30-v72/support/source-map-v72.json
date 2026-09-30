@@ -1,0 +1,7 @@
+{
+  "reconciliation-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["reconciliation-event-hints-repair-loops-2005-2026"],
+    "reason": "R510 freezes this exact v67 source/spec analog and checks the cited controller-runtime reconcile files and Kubernetes monorepo client-go Reflector file. Controller-runtime main still equals the pin; the Reflector blob is unchanged on a 20-commit forward Kubernetes range. No controller, cluster, watcher, or Anneal runtime was executed, so this is source context only."
+  }
+}
