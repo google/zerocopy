@@ -18772,6 +18772,63 @@
         "rustc/hir"
       ]
     },
+    "salsa-rustc-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "ca4e34659fadfb1ad24084db833adae9ffd8eb05"
+          },
+          "name": "Frozen reference corpus containing R566"
+        },
+        {
+          "identity": {
+            "repository": "salsa-rs/salsa",
+            "revision": "a7f8c558555f179ca02f6bdf7397d1317f91aa43"
+          },
+          "name": "Salsa original source"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "salsa-rs/salsa",
+            "revision": "30b614d826d697c47bc0f21591fab218f2004032"
+          },
+          "name": "Salsa selected master source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85"
+          },
+          "name": "rustc developer guide original source"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "be8854f66df1b5450349061e45374ac072abd109"
+          },
+          "name": "rustc developer guide selected main source"
+        },
+        {
+          "identity": {
+            "repository": "salsa-rs/salsa",
+            "revision": "d434f8805c60ac60dce5f367ca91c5a7cd3e4c86",
+            "tag": "salsa-v0.28.5"
+          },
+          "name": "Salsa GitHub release salsa-v0.28.5"
+        }
+      ],
+      "topics": [
+        "incremental-computation/salsa",
+        "rust/rustc-dev-guide",
+        "reference/version-review",
+        "anneal/architecture"
+      ]
+    },
     "salsa-rustc-query-granularity-2016-2026": {
       "observed_at": "2026-09-30",
       "subjects": [

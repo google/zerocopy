@@ -1,0 +1,2 @@
+inventory_id,cohort,report_json,report_md
+R566,Salsa a7f8c558 + rustc query docs 8ae6c255,reports/salsa-rustc-query-granularity-2016-2026/REPORT.json,reports/salsa-rustc-query-granularity-2016-2026/REPORT.md
