@@ -1,0 +1,34 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v56 coverage ledger",
+      "identity": {
+        "reference_commit": "a5ecd5bde3d2b33457b5a13b4b435d79515f4012",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v56"
+      }
+    },
+    {
+      "name": "Lean UTF-32-only Unicode LSP and batch observation",
+      "identity": {
+        "source_package": "anneal-3731-i062-utf32-only-unicode-lsp-2026-09-30",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "results_sha256": "15bbeb7d5ae7f7c0d7e5f9016363214d3ef02558fd280069134333a850ab05ac",
+        "oracle_prelaunch_sha256": "c7bf9661e8ebef39410aa24e898949fc16614770cc2477ce601f2c14a68cc894"
+      }
+    },
+    {
+      "name": "Fresh public #3730/#3731 issue snapshot",
+      "identity": {
+        "snapshot_sha256": "a90f3bb21b44da69b64e82dd86d85f9e3f88e4d74da3f53101ab6d7583e42001",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/editor-position-encoding",
+    "lean/lsp",
+    "research/coverage-audit"
+  ]
+}

@@ -1,0 +1,1 @@
+{"caption":"","data":"(\"😀é\", Nat.zero) : String × Nat","endPos":{"column":6,"line":1},"fileName":"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i062-utf32-only-unicode-lsp/work/patched.lean","isSilent":false,"keepFullRange":false,"kind":"[anonymous]","pos":{"column":0,"line":1},"severity":"information"}

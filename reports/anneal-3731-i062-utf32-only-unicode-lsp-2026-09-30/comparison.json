@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "oracle_prelaunch_sha256": "c7bf9661e8ebef39410aa24e898949fc16614770cc2477ce601f2c14a68cc894",
+  "fixture_sha256": {
+    "original": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+    "patched": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f"
+  },
+  "coordinate_oracle": {
+    "begin": {
+      "unicode_scalars": 15,
+      "utf16_code_units": 16,
+      "utf8_bytes": 19
+    },
+    "end": {
+      "unicode_scalars": 26,
+      "utf16_code_units": 27,
+      "utf8_bytes": 30
+    }
+  },
+  "sessions": {
+    "utf32_only": {
+      "offered": [
+        "utf-32"
+      ],
+      "selected_position_encoding": null,
+      "initial_error_range": {
+        "end": {
+          "character": 27,
+          "line": 0
+        },
+        "start": {
+          "character": 16,
+          "line": 0
+        }
+      },
+      "after_error_messages": [
+        "Unknown constant `Nat.zeroe`"
+      ],
+      "max_sampled_rss_kib": 188192,
+      "min_sampled_reclaimable_percent": 30.8069,
+      "min_sampled_free_disk_bytes": 18596851712,
+      "max_sampled_scratch_bytes": 8272,
+      "sample_count": 51,
+      "exit": 0
+    }
+  },
+  "batch": {
+    "original": {
+      "exit": 1,
+      "message_count": 2,
+      "max_sampled_rss_kib": 96432,
+      "min_sampled_reclaimable_percent": 32.0368,
+      "min_sampled_free_disk_bytes": 18596835328
+    },
+    "patched": {
+      "exit": 0,
+      "message_count": 1,
+      "max_sampled_rss_kib": 97248,
+      "min_sampled_reclaimable_percent": 32.0074,
+      "min_sampled_free_disk_bytes": 18596802560
+    }
+  },
+  "negative_controls": {
+    "utf32_offer_did_not_change_utf16_diagnostic": true,
+    "scalar_ranged_edit_did_not_repair": true,
+    "fresh_batch_patched_succeeded": true
+  },
+  "cleanup": {
+    "work_exists": true,
+    "work_exists_after": false
+  }
+}

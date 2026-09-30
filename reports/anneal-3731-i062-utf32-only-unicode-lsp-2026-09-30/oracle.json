@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "original_sha256": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+  "patched_sha256": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f",
+  "token": "unknownName",
+  "line_zero_based": 0,
+  "begin": {
+    "unicode_scalars": 15,
+    "utf16_code_units": 16,
+    "utf8_bytes": 19
+  },
+  "end": {
+    "unicode_scalars": 26,
+    "utf16_code_units": 27,
+    "utf8_bytes": 30
+  },
+  "replacement": "Nat.zero",
+  "source_scalar_range": [
+    15,
+    26
+  ],
+  "utf32_only_change_range": {
+    "start": {
+      "line": 0,
+      "character": 15
+    },
+    "end": {
+      "line": 0,
+      "character": 26
+    }
+  },
+  "utf8_only_change_range": {
+    "start": {
+      "line": 0,
+      "character": 19
+    },
+    "end": {
+      "line": 0,
+      "character": 30
+    }
+  },
+  "utf16_only_change_range": {
+    "start": {
+      "line": 0,
+      "character": 16
+    },
+    "end": {
+      "line": 0,
+      "character": 27
+    }
+  }
+}

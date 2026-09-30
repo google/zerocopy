@@ -3259,6 +3259,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v57": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v56",
+            "reference_commit": "a5ecd5bde3d2b33457b5a13b4b435d79515f4012"
+          },
+          "name": "Published #3730/#3731 v56 coverage ledger"
+        },
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "oracle_prelaunch_sha256": "c7bf9661e8ebef39410aa24e898949fc16614770cc2477ce601f2c14a68cc894",
+            "results_sha256": "15bbeb7d5ae7f7c0d7e5f9016363214d3ef02558fd280069134333a850ab05ac",
+            "source_package": "anneal-3731-i062-utf32-only-unicode-lsp-2026-09-30"
+          },
+          "name": "Lean UTF-32-only Unicode LSP and batch observation"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "a90f3bb21b44da69b64e82dd86d85f9e3f88e4d74da3f53101ab6d7583e42001",
+            "source": "public GitHub REST issue and comments endpoints"
+          },
+          "name": "Fresh public #3730/#3731 issue snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/editor-position-encoding",
+        "lean/lsp",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7434,6 +7468,34 @@
         "lean/position-encoding",
         "anneal/editor-integration",
         "experiments/version-boundary"
+      ]
+    },
+    "anneal-3731-i062-utf32-only-unicode-lsp-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "architecture": "aarch64-darwin",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Observed Lean v4.30.0-rc2 executable"
+        },
+        {
+          "identity": {
+            "oracle_prelaunch_sha256": "c7bf9661e8ebef39410aa24e898949fc16614770cc2477ce601f2c14a68cc894",
+            "original_sha256": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+            "patched_sha256": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f",
+            "results_sha256": "15bbeb7d5ae7f7c0d7e5f9016363214d3ef02558fd280069134333a850ab05ac"
+          },
+          "name": "UTF-32-only Unicode LSP and fresh batch fixture"
+        }
+      ],
+      "topics": [
+        "anneal/editor-position-encoding",
+        "lean/lsp",
+        "experiments/utf32-unicode",
+        "research/issue-3731"
       ]
     },
     "anneal-3731-i062-utf8-only-unicode-lsp-2026-09-30": {
