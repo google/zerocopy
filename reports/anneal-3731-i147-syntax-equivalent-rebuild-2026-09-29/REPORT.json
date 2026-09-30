@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/interactive-verification",
+    "lean/compilation-reproducibility",
+    "lean/import-invalidation"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 direct language server, batch compiler, and Lake",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+      }
+    },
+    {
+      "name": "Local syntax-equivalent imported-definition fixture",
+      "identity": {
+        "reference_parent": "e26a9414ab48844eeb95b91ee8b743046c8a8982",
+        "baseline_source_sha256": "a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc",
+        "edited_source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb",
+        "olean_sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/compilation-subject-identity",
+    "cargo/profile",
+    "cargo/cfg",
+    "charon/cargo-extraction"
+  ],
+  "subjects": [
+    {
+      "name": "Checked-in Anneal V2 artifact slug helper",
+      "identity": {
+        "source_commit": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "scanner_sha256": "6a347ef9b6b0afd624ace8794eec19fa2af9c5c6ceecd533b12bf52992f20567"
+      }
+    },
+    {
+      "name": "Pinned Charon/Cargo/rustc toolchain",
+      "identity": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+        "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Dependency-free profile/cfg fixture and probe",
+      "identity": {
+        "fixture_source_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d",
+        "probe_sha256": "d3f5c0efcf646c2c288a3b2ed5d3b5540cfbafd51357d8804fc04375f3a0a99a"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

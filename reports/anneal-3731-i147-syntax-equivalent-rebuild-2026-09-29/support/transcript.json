@@ -1,0 +1,7864 @@
+[
+  {
+    "seq": 0,
+    "ms": 7.3,
+    "kind": "guard",
+    "label": "before-lean-version",
+    "free_percent": 24.54,
+    "scratch_bytes": 67,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 1,
+    "ms": 34.2,
+    "kind": "command",
+    "label": "lean-version",
+    "args": [
+      "$LEAN_BIN",
+      "--version"
+    ],
+    "cwd": "$WORK",
+    "rc": 0,
+    "stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+    "stderr": "",
+    "elapsed_ms": 26.9
+  },
+  {
+    "seq": 2,
+    "ms": 39.0,
+    "kind": "guard",
+    "label": "after-lean-version",
+    "free_percent": 24.55,
+    "scratch_bytes": 67,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 3,
+    "ms": 45.0,
+    "kind": "subject",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "host_ram_bytes": 8589934592,
+    "free_percent": 24.54,
+    "rss_cap_bytes": 1610612736,
+    "scratch_cap_bytes": 1073741824,
+    "proof_sha256": "2a08bde5070950eee3fc3881ee3eaf96dc8eb05775ae01f1fb71e49191568010",
+    "missing_sha256": "a08fc79d319e53c19f4d1b51f54f7519e6134934758cff96ae529c540dc983ef"
+  },
+  {
+    "seq": 4,
+    "ms": 49.5,
+    "kind": "guard",
+    "label": "admission",
+    "free_percent": 24.54,
+    "scratch_bytes": 67,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 5,
+    "ms": 54.2,
+    "kind": "guard",
+    "label": "before-session",
+    "free_percent": 24.53,
+    "scratch_bytes": 67,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 6,
+    "ms": 59.1,
+    "kind": "guard",
+    "label": "before-initial-lake-build",
+    "free_percent": 24.52,
+    "scratch_bytes": 621,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 7,
+    "ms": 632.2,
+    "kind": "command",
+    "label": "initial-lake-build",
+    "args": [
+      "$LAKE_BIN",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "Dep"
+    ],
+    "cwd": "$WORK/direct-source",
+    "rc": 0,
+    "stdout": "\u2714 [2/3] Built Dep (175ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: refresh_probe: no previous manifest, creating one from scratch\n",
+    "elapsed_ms": 573.0
+  },
+  {
+    "seq": 8,
+    "ms": 640.0,
+    "kind": "guard",
+    "label": "after-initial-lake-build",
+    "free_percent": 24.07,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 9,
+    "ms": 640.2,
+    "kind": "fixture",
+    "root": "$WORK/direct-source",
+    "source_sha256": "a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc",
+    "proof_sha256": "2a08bde5070950eee3fc3881ee3eaf96dc8eb05775ae01f1fb71e49191568010",
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728493362536649,
+      "hash_sidecar": "02136653dd4a1442"
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 646.4,
+    "kind": "guard",
+    "label": "before-batch-before",
+    "free_percent": 24.07,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 11,
+    "ms": 810.4,
+    "kind": "command",
+    "label": "batch-before",
+    "args": [
+      "$LEAN_BIN",
+      "--json",
+      "Check.lean"
+    ],
+    "cwd": "$WORK/direct-source",
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n",
+    "stderr": "",
+    "elapsed_ms": 163.9
+  },
+  {
+    "seq": 12,
+    "ms": 815.6,
+    "kind": "guard",
+    "label": "after-batch-before",
+    "free_percent": 24.06,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 13,
+    "ms": 815.6,
+    "kind": "batch_before",
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 14,
+    "ms": 816.6,
+    "kind": "launch",
+    "label": "direct-source",
+    "mode": "direct",
+    "argv": [
+      "$LEAN_BIN",
+      "--server"
+    ],
+    "pid": 60701,
+    "root": "$WORK/direct-source"
+  },
+  {
+    "seq": 15,
+    "ms": 839.6,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 60677,
+        "rootUri": "$WORK_URI/direct-source",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 843.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 843.1,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 843.1,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 843.1,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 843.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 843.2,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 22,
+    "ms": 843.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 23,
+    "ms": 1080.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 1080.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 1292.1,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 26,
+    "ms": 1400.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 1431.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "ms": 1433.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 1434.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "ms": 1434.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 1434.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "ms": 1434.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 1434.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 1434.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 1435.1,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "ms": 1435.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 1436.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 1436.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 1436.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "ms": 1436.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 41,
+    "ms": 1436.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 42,
+    "ms": 1436.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "ms": 1436.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "ms": 1436.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 45,
+    "ms": 1436.6,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 46,
+    "ms": 1436.6,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 47,
+    "ms": 1436.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 48,
+    "ms": 1436.7,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 10,
+    "elapsed_ms": 593.6
+  },
+  {
+    "seq": 49,
+    "ms": 1462.5,
+    "kind": "guard",
+    "label": "sample-baseline",
+    "free_percent": 23.17,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 498532352
+  },
+  {
+    "seq": 50,
+    "ms": 1481.3,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 51,
+    "ms": 1481.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 52,
+    "ms": 1481.9,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 11,
+    "elapsed_ms": 0.7
+  },
+  {
+    "seq": 53,
+    "ms": 1482.0,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 54,
+    "ms": 1482.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 55,
+    "ms": 1482.2,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 12,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 56,
+    "ms": 1482.2,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 57,
+    "ms": 1482.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 58,
+    "ms": 1482.5,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 13,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 59,
+    "ms": 1482.5,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 60,
+    "ms": 1482.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 1482.9,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 14,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 62,
+    "ms": 1482.9,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 63,
+    "ms": 1483.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 64,
+    "ms": 1483.2,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 15,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 65,
+    "ms": 1483.2,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 6,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 66,
+    "ms": 1483.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "ms": 1483.5,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 16,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 68,
+    "ms": 1483.7,
+    "kind": "sample",
+    "label": "direct-source",
+    "phase": "baseline",
+    "name": "Proof.lean",
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goals": {
+      "rfl-start": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "rfl-end": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "exact-start": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-inside": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-end": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "eof": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/direct-source/Proof.lean",
+      "version": 1
+    },
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728493362536649,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "source_sha256": "a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 499695616,
+      "processes": [
+        {
+          "pid": 60701,
+          "ppid": 60677,
+          "rss_bytes": 111902720,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60702,
+          "ppid": 60701,
+          "rss_bytes": 387792896,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 69,
+    "ms": 1484.3,
+    "kind": "source_only_change",
+    "label": "direct-source",
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728493362536649,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb"
+  },
+  {
+    "seq": 70,
+    "ms": 1484.3,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "workspace/didChangeWatchedFiles",
+      "params": {
+        "changes": [
+          {
+            "uri": "$WORK_URI/direct-source/Dep.lean",
+            "type": 2
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 71,
+    "ms": 1507.8,
+    "kind": "guard",
+    "label": "sample-old-open",
+    "free_percent": 23.24,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 503250944
+  },
+  {
+    "seq": 72,
+    "ms": 1526.4,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "ms": 1527.1,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "ms": 1527.1,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 17,
+    "elapsed_ms": 0.8
+  },
+  {
+    "seq": 75,
+    "ms": 1527.1,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 76,
+    "ms": 1527.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 77,
+    "ms": 1527.3,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 18,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 78,
+    "ms": 1527.3,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 79,
+    "ms": 1527.6,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 80,
+    "ms": 1527.6,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 19,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 81,
+    "ms": 1527.6,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 82,
+    "ms": 1527.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 83,
+    "ms": 1527.8,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 20,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 84,
+    "ms": 1527.8,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 85,
+    "ms": 1528.1,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 86,
+    "ms": 1528.1,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 21,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 87,
+    "ms": 1528.1,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 6,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 88,
+    "ms": 1528.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "ms": 1528.3,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 22,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 90,
+    "ms": 1528.6,
+    "kind": "sample",
+    "label": "direct-source",
+    "phase": "old-open",
+    "name": "Proof.lean",
+    "wait": null,
+    "goals": {
+      "rfl-start": {
+        "id": 17,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "rfl-end": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "exact-start": {
+        "id": 19,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-inside": {
+        "id": 20,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-end": {
+        "id": 21,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "eof": {
+        "id": 22,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/direct-source/Proof.lean",
+      "version": 1
+    },
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728493362536649,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 504266752,
+      "processes": [
+        {
+          "pid": 60701,
+          "ppid": 60677,
+          "rss_bytes": 115834880,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60702,
+          "ppid": 60701,
+          "rss_bytes": 388431872,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 91,
+    "ms": 1528.7,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 92,
+    "ms": 1528.7,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/direct-source/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 93,
+    "ms": 1528.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 94,
+    "ms": 1766.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 95,
+    "ms": 1766.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 96,
+    "ms": 1930.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 97,
+    "ms": 2086.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 98,
+    "ms": 2086.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u2714 [2/3] Built Dep (209ms)\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 99,
+    "ms": 2097.1,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 100,
+    "ms": 2233.1,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 101,
+    "ms": 2235.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 102,
+    "ms": 2235.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 103,
+    "ms": 2235.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 104,
+    "ms": 2235.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 105,
+    "ms": 2235.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 106,
+    "ms": 2235.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 107,
+    "ms": 2236.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 108,
+    "ms": 2236.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 109,
+    "ms": 2236.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 110,
+    "ms": 2236.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 111,
+    "ms": 2237.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 112,
+    "ms": 2237.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 113,
+    "ms": 2237.1,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "ms": 2237.6,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 115,
+    "ms": 2237.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 116,
+    "ms": 2237.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "ms": 2237.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "ms": 2237.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 119,
+    "ms": 2237.9,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 23,
+    "elapsed_ms": 709.2
+  },
+  {
+    "seq": 120,
+    "ms": 2262.5,
+    "kind": "guard",
+    "label": "sample-new-open",
+    "free_percent": 22.6,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 952614912
+  },
+  {
+    "seq": 121,
+    "ms": 2281.3,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "ms": 2281.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 123,
+    "ms": 2281.9,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 24,
+    "elapsed_ms": 0.7
+  },
+  {
+    "seq": 124,
+    "ms": 2282.0,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 125,
+    "ms": 2282.1,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 126,
+    "ms": 2282.1,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 25,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 127,
+    "ms": 2282.2,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 128,
+    "ms": 2282.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 26,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 129,
+    "ms": 2282.5,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 26,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 130,
+    "ms": 2282.5,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "ms": 2282.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 132,
+    "ms": 2282.8,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 27,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 133,
+    "ms": 2282.8,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 134,
+    "ms": 2283.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 28,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "ms": 2283.0,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 28,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 136,
+    "ms": 2283.0,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/New.lean"
+        },
+        "position": {
+          "line": 6,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 137,
+    "ms": 2283.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 29,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "ms": 2283.3,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 29,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 139,
+    "ms": 2283.5,
+    "kind": "sample",
+    "label": "direct-source",
+    "phase": "new-open",
+    "name": "New.lean",
+    "wait": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goals": {
+      "rfl-start": {
+        "id": 24,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "rfl-end": {
+        "id": 25,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "exact-start": {
+        "id": 26,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-inside": {
+        "id": 27,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-end": {
+        "id": 28,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "eof": {
+        "id": 29,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/direct-source/New.lean",
+      "version": 1
+    },
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728494872547912,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb",
+    "tree": {
+      "count": 3,
+      "rss_bytes": 953810944,
+      "processes": [
+        {
+          "pid": 60701,
+          "ppid": 60677,
+          "rss_bytes": 177225728,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60702,
+          "ppid": 60701,
+          "rss_bytes": 388497408,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60712,
+          "ppid": 60701,
+          "rss_bytes": 388087808,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 140,
+    "ms": 2307.9,
+    "kind": "guard",
+    "label": "sample-old-after-new",
+    "free_percent": 22.63,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 957874176
+  },
+  {
+    "seq": 141,
+    "ms": 2326.5,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 142,
+    "ms": 2327.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 143,
+    "ms": 2327.3,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 30,
+    "elapsed_ms": 0.8
+  },
+  {
+    "seq": 144,
+    "ms": 2327.3,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 145,
+    "ms": 2327.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 146,
+    "ms": 2327.5,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 31,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 147,
+    "ms": 2327.5,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 148,
+    "ms": 2327.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 149,
+    "ms": 2327.8,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 32,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 150,
+    "ms": 2327.8,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 151,
+    "ms": 2328.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 33,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 152,
+    "ms": 2328.0,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 33,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 153,
+    "ms": 2328.1,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 154,
+    "ms": 2328.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 34,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 155,
+    "ms": 2328.3,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 34,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 156,
+    "ms": 2328.3,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 6,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 157,
+    "ms": 2328.5,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 35,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 158,
+    "ms": 2328.5,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 35,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 159,
+    "ms": 2328.8,
+    "kind": "sample",
+    "label": "direct-source",
+    "phase": "old-after-new",
+    "name": "Proof.lean",
+    "wait": null,
+    "goals": {
+      "rfl-start": {
+        "id": 30,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "rfl-end": {
+        "id": 31,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "exact-start": {
+        "id": 32,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-inside": {
+        "id": 33,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-end": {
+        "id": 34,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "eof": {
+        "id": 35,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/direct-source/Proof.lean",
+      "version": 1
+    },
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728494872547912,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb",
+    "tree": {
+      "count": 3,
+      "rss_bytes": 960069632,
+      "processes": [
+        {
+          "pid": 60701,
+          "ppid": 60677,
+          "rss_bytes": 182763520,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60702,
+          "ppid": 60701,
+          "rss_bytes": 388497408,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60712,
+          "ppid": 60701,
+          "rss_bytes": 388808704,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 160,
+    "ms": 2328.8,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 161,
+    "ms": 2328.8,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 162,
+    "ms": 2328.8,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 163,
+    "ms": 2329.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 164,
+    "ms": 2329.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 165,
+    "ms": 2567.6,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 166,
+    "ms": 2567.6,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 167,
+    "ms": 2616.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 168,
+    "ms": 2776.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 169,
+    "ms": 2873.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 170,
+    "ms": 2915.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 171,
+    "ms": 2916.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 172,
+    "ms": 2917.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 173,
+    "ms": 2917.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 174,
+    "ms": 2917.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 175,
+    "ms": 2917.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 176,
+    "ms": 2917.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 177,
+    "ms": 2917.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 178,
+    "ms": 2917.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 179,
+    "ms": 2918.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 180,
+    "ms": 2918.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 181,
+    "ms": 2918.6,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 182,
+    "ms": 2919.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 183,
+    "ms": 2919.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 184,
+    "ms": 2919.3,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 185,
+    "ms": 2919.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 186,
+    "ms": 2919.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 187,
+    "ms": 2919.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 36,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 188,
+    "ms": 2919.4,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 36,
+    "elapsed_ms": 590.6
+  },
+  {
+    "seq": 189,
+    "ms": 2944.0,
+    "kind": "guard",
+    "label": "sample-reopened",
+    "free_percent": 22.53,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 1013760000
+  },
+  {
+    "seq": 190,
+    "ms": 2962.8,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 191,
+    "ms": 2963.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 37,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 192,
+    "ms": 2963.4,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 37,
+    "elapsed_ms": 0.6
+  },
+  {
+    "seq": 193,
+    "ms": 2963.4,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 194,
+    "ms": 2963.6,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 38,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 195,
+    "ms": 2963.6,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 38,
+    "elapsed_ms": 0.1
+  },
+  {
+    "seq": 196,
+    "ms": 2963.6,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 39,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 197,
+    "ms": 2963.8,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 39,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 198,
+    "ms": 2963.8,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 39,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 199,
+    "ms": 2963.9,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 40,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 200,
+    "ms": 2964.2,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 40,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 201,
+    "ms": 2964.2,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 40,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 202,
+    "ms": 2964.2,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 41,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 203,
+    "ms": 2964.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 41,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 204,
+    "ms": 2964.4,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 41,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 205,
+    "ms": 2964.4,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 42,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 6,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 206,
+    "ms": 2964.7,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 42,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 207,
+    "ms": 2964.7,
+    "kind": "request_latency",
+    "label": "direct-source",
+    "method": "$/lean/plainGoal",
+    "rid": 42,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 208,
+    "ms": 2964.9,
+    "kind": "sample",
+    "label": "direct-source",
+    "phase": "reopened",
+    "name": "Proof.lean",
+    "wait": {
+      "id": 36,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goals": {
+      "rfl-start": {
+        "id": 37,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "rfl-end": {
+        "id": 38,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "exact-start": {
+        "id": 39,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-inside": {
+        "id": 40,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-end": {
+        "id": 41,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "eof": {
+        "id": 42,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/direct-source/Proof.lean",
+      "version": 1
+    },
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728494872547912,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb",
+    "tree": {
+      "count": 3,
+      "rss_bytes": 1016676352,
+      "processes": [
+        {
+          "pid": 60701,
+          "ppid": 60677,
+          "rss_bytes": 239976448,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60712,
+          "ppid": 60701,
+          "rss_bytes": 388808704,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60723,
+          "ppid": 60701,
+          "rss_bytes": 387891200,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 209,
+    "ms": 2964.9,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 210,
+    "ms": 2965.4,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/New.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 211,
+    "ms": 2965.9,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 212,
+    "ms": 2972.0,
+    "kind": "server",
+    "label": "direct-source",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 213,
+    "ms": 2972.1,
+    "kind": "client",
+    "label": "direct-source",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 214,
+    "ms": 2975.7,
+    "kind": "stop",
+    "label": "direct-source",
+    "rc": 0,
+    "pid": 60701,
+    "stderr": ""
+  },
+  {
+    "seq": 215,
+    "ms": 2977.0,
+    "kind": "launch",
+    "label": "direct-source-fresh",
+    "mode": "direct",
+    "argv": [
+      "$LEAN_BIN",
+      "--server"
+    ],
+    "pid": 60729,
+    "root": "$WORK/direct-source"
+  },
+  {
+    "seq": 216,
+    "ms": 2977.1,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 60677,
+        "rootUri": "$WORK_URI/direct-source",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 217,
+    "ms": 3002.2,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 218,
+    "ms": 3002.2,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 219,
+    "ms": 3002.3,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 220,
+    "ms": 3002.3,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 221,
+    "ms": 3002.3,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 222,
+    "ms": 3002.4,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 223,
+    "ms": 3002.6,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 224,
+    "ms": 3239.7,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 225,
+    "ms": 3239.7,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 226,
+    "ms": 3454.8,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 227,
+    "ms": 3554.6,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 228,
+    "ms": 3595.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 229,
+    "ms": 3596.9,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 230,
+    "ms": 3597.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 231,
+    "ms": 3597.2,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 232,
+    "ms": 3597.2,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 233,
+    "ms": 3597.6,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 234,
+    "ms": 3597.9,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 235,
+    "ms": 3598.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 236,
+    "ms": 3598.8,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 237,
+    "ms": 3599.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 238,
+    "ms": 3599.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 8,
+                "line": 5
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 5
+              },
+              "start": {
+                "character": 34,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 239,
+    "ms": 3599.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 240,
+    "ms": 3599.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 241,
+    "ms": 3599.2,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 242,
+    "ms": 3599.2,
+    "kind": "request_latency",
+    "label": "direct-source-fresh",
+    "method": "textDocument/waitForDiagnostics",
+    "rid": 10,
+    "elapsed_ms": 596.9
+  },
+  {
+    "seq": 243,
+    "ms": 3625.9,
+    "kind": "guard",
+    "label": "sample-fresh-server",
+    "free_percent": 23.54,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 498532352
+  },
+  {
+    "seq": 244,
+    "ms": 3644.9,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 245,
+    "ms": 3645.5,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 246,
+    "ms": 3645.5,
+    "kind": "request_latency",
+    "label": "direct-source-fresh",
+    "method": "$/lean/plainGoal",
+    "rid": 11,
+    "elapsed_ms": 0.7
+  },
+  {
+    "seq": 247,
+    "ms": 3645.6,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 248,
+    "ms": 3645.8,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 249,
+    "ms": 3645.8,
+    "kind": "request_latency",
+    "label": "direct-source-fresh",
+    "method": "$/lean/plainGoal",
+    "rid": 12,
+    "elapsed_ms": 0.2
+  },
+  {
+    "seq": 250,
+    "ms": 3645.8,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 251,
+    "ms": 3646.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 252,
+    "ms": 3646.1,
+    "kind": "request_latency",
+    "label": "direct-source-fresh",
+    "method": "$/lean/plainGoal",
+    "rid": 13,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 253,
+    "ms": 3646.1,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 254,
+    "ms": 3646.5,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 255,
+    "ms": 3646.5,
+    "kind": "request_latency",
+    "label": "direct-source-fresh",
+    "method": "$/lean/plainGoal",
+    "rid": 14,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 256,
+    "ms": 3646.5,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "seq": 257,
+    "ms": 3646.8,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 258,
+    "ms": 3646.8,
+    "kind": "request_latency",
+    "label": "direct-source-fresh",
+    "method": "$/lean/plainGoal",
+    "rid": 15,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 259,
+    "ms": 3646.8,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/direct-source/Proof.lean"
+        },
+        "position": {
+          "line": 6,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 260,
+    "ms": 3647.1,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 selected = 7"
+        ],
+        "rendered": "```lean\n\u22a2 selected = 7\n```"
+      }
+    }
+  },
+  {
+    "seq": 261,
+    "ms": 3647.1,
+    "kind": "request_latency",
+    "label": "direct-source-fresh",
+    "method": "$/lean/plainGoal",
+    "rid": 16,
+    "elapsed_ms": 0.3
+  },
+  {
+    "seq": 262,
+    "ms": 3647.4,
+    "kind": "sample",
+    "label": "direct-source-fresh",
+    "phase": "fresh-server",
+    "name": "Proof.lean",
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goals": {
+      "rfl-start": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "rfl-end": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "exact-start": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-inside": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "exact-end": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      },
+      "eof": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 selected = 7"
+          ],
+          "rendered": "```lean\n\u22a2 selected = 7\n```"
+        }
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "message": "7",
+          "range": {
+            "end": {
+              "character": 5,
+              "line": 1
+            },
+            "start": {
+              "character": 0,
+              "line": 1
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 8,
+              "line": 5
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 10,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\n\u22a2 selected = 7",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 5
+            },
+            "start": {
+              "character": 34,
+              "line": 4
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "$WORK_URI/direct-source/Proof.lean",
+      "version": 1
+    },
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728494872547912,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb",
+    "tree": {
+      "count": 2,
+      "rss_bytes": 500006912,
+      "processes": [
+        {
+          "pid": 60729,
+          "ppid": 60677,
+          "rss_bytes": 112541696,
+          "comm": "$LEAN_BIN"
+        },
+        {
+          "pid": 60730,
+          "ppid": 60729,
+          "rss_bytes": 387465216,
+          "comm": "$LEAN_BIN"
+        }
+      ]
+    }
+  },
+  {
+    "seq": 263,
+    "ms": 3647.4,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 264,
+    "ms": 3647.6,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/direct-source/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 265,
+    "ms": 3653.5,
+    "kind": "server",
+    "label": "direct-source-fresh",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 266,
+    "ms": 3653.6,
+    "kind": "client",
+    "label": "direct-source-fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 267,
+    "ms": 3658.2,
+    "kind": "stop",
+    "label": "direct-source-fresh",
+    "rc": 0,
+    "pid": 60729,
+    "stderr": ""
+  },
+  {
+    "seq": 268,
+    "ms": 3663.9,
+    "kind": "guard",
+    "label": "before-setup-file-Proof.lean",
+    "free_percent": 24.36,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 269,
+    "ms": 4068.3,
+    "kind": "command",
+    "label": "setup-file-Proof.lean",
+    "args": [
+      "$LAKE_BIN",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Proof.lean"
+    ],
+    "cwd": "$WORK/direct-source",
+    "rc": 0,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/direct-source/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+    "stderr": "",
+    "elapsed_ms": 404.3
+  },
+  {
+    "seq": 270,
+    "ms": 4077.3,
+    "kind": "guard",
+    "label": "after-setup-file-Proof.lean",
+    "free_percent": 24.36,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 271,
+    "ms": 4077.6,
+    "kind": "setup_file",
+    "label": "direct-source",
+    "name": "Proof.lean",
+    "rc": 0,
+    "before": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728494872547912,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "after": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728494872547912,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/direct-source/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 272,
+    "ms": 4084.8,
+    "kind": "guard",
+    "label": "before-batch-after",
+    "free_percent": 24.36,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 273,
+    "ms": 4258.7,
+    "kind": "command",
+    "label": "batch-after",
+    "args": [
+      "$LEAN_BIN",
+      "--json",
+      "Check.lean"
+    ],
+    "cwd": "$WORK/direct-source",
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n",
+    "stderr": "",
+    "elapsed_ms": 173.8
+  },
+  {
+    "seq": 274,
+    "ms": 4264.1,
+    "kind": "guard",
+    "label": "after-batch-after",
+    "free_percent": 24.35,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 275,
+    "ms": 4264.3,
+    "kind": "batch_after",
+    "label": "direct-source",
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n",
+    "stderr": "",
+    "artifact": {
+      "sha256": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+      "bytes": 4616,
+      "mtime_ns": 1790728494872547912,
+      "hash_sidecar": "02136653dd4a1442"
+    },
+    "source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb"
+  },
+  {
+    "seq": 276,
+    "ms": 4269.3,
+    "kind": "guard",
+    "label": "end",
+    "free_percent": 24.35,
+    "scratch_bytes": 106813,
+    "tree_rss_bytes": 0
+  },
+  {
+    "seq": 277,
+    "ms": 4269.3,
+    "kind": "completed"
+  }
+]

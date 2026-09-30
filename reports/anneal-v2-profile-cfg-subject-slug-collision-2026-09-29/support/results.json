@@ -1,0 +1,924 @@
+{
+  "preflight": {
+    "vm_page_size": 16384,
+    "vm_pages": {
+      "free": 3709,
+      "inactive": 115179,
+      "speculative": 871
+    },
+    "physical_memory_bytes": 8589934592,
+    "estimated_reclaimable_percent": 22.842,
+    "free_disk_bytes": 44261281792
+  },
+  "limits": {
+    "minimum_estimated_reclaimable_percent": 20.0,
+    "minimum_free_disk_bytes": 10737418240,
+    "maximum_group_rss_kib": 1048576,
+    "per_command_timeout_seconds": 60
+  },
+  "source_identity": {
+    "reference_commit": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+    "scanner_sha256": "6a347ef9b6b0afd624ace8794eec19fa2af9c5c6ceecd533b12bf52992f20567",
+    "harness_main_sha256": "29959e9fdaa0773297c4ac87e9f85c444bb089e4b9d4110d289223c8db269801",
+    "harness_manifest_sha256": "49d32e6361ab1ff43c9474ec16c4e0f41f6729e8de1936866397aa70e361581d",
+    "harness_lock_sha256": "ab85f4a02573cfcabbf9af2b55650cfdcef62324b3442b6998d6109c709cdf36",
+    "fixture_source_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d",
+    "fixture_manifest_sha256": "8a6d76f03342b43e1058f011572e64ae3f5b9c2265bb05dc540546a0718bd529",
+    "fixture_lock_sha256": "15b58addf5869982e59fea4831aa9b217bffbe2b4e647aacb195674672d56d24",
+    "fixture_manifest_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/fixture/Cargo.toml",
+    "tool_sha256": {
+      "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+    },
+    "harness_binary_sha256": "45cbf8d993853a79ebe00e82b9dbfdb882a128b914f179d8729598db19625266"
+  },
+  "commands": {
+    "harness_build": {
+      "label": "harness_build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/harness",
+      "environment": {
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-profile-cfg-slug/work/harness-target",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null,
+        "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+        "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false"
+      },
+      "preflight": {
+        "vm_page_size": 16384,
+        "vm_pages": {
+          "free": 3883,
+          "inactive": 114876,
+          "speculative": 928
+        },
+        "physical_memory_bytes": 8589934592,
+        "estimated_reclaimable_percent": 22.828,
+        "free_disk_bytes": 44261277696
+      },
+      "samples": [
+        {
+          "elapsed_seconds": 0.0016,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3865,
+            "inactive": 114974,
+            "speculative": 931
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.844,
+          "free_disk_bytes": 44261277696,
+          "group_rss_kib": 32
+        },
+        {
+          "elapsed_seconds": 0.1172,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3772,
+            "inactive": 114511,
+            "speculative": 1126
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.775,
+          "free_disk_bytes": 44261277696,
+          "group_rss_kib": 31392
+        },
+        {
+          "elapsed_seconds": 0.2352,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3906,
+            "inactive": 114208,
+            "speculative": 1545
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.823,
+          "free_disk_bytes": 44261072896,
+          "group_rss_kib": 18160
+        },
+        {
+          "elapsed_seconds": 0.3613,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3720,
+            "inactive": 112933,
+            "speculative": 2705
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.766,
+          "free_disk_bytes": 44261175296,
+          "group_rss_kib": 75280
+        },
+        {
+          "elapsed_seconds": 0.4933,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3697,
+            "inactive": 112466,
+            "speculative": 2856
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.701,
+          "free_disk_bytes": 44261167104,
+          "group_rss_kib": 101232
+        },
+        {
+          "elapsed_seconds": 0.622,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3793,
+            "inactive": 111840,
+            "speculative": 3044
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.636,
+          "free_disk_bytes": 44261167104,
+          "group_rss_kib": 130384
+        },
+        {
+          "elapsed_seconds": 0.7475,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3866,
+            "inactive": 111581,
+            "speculative": 3251
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.64,
+          "free_disk_bytes": 44261089280,
+          "group_rss_kib": 158560
+        },
+        {
+          "elapsed_seconds": 0.8728,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 4783,
+            "inactive": 110721,
+            "speculative": 3356
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.671,
+          "free_disk_bytes": 44260687872,
+          "group_rss_kib": 92208
+        },
+        {
+          "elapsed_seconds": 0.998,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3948,
+            "inactive": 111150,
+            "speculative": 3334
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.589,
+          "free_disk_bytes": 44260610048,
+          "group_rss_kib": 122288
+        },
+        {
+          "elapsed_seconds": 1.1233,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3707,
+            "inactive": 110722,
+            "speculative": 3700
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.531,
+          "free_disk_bytes": 44260605952,
+          "group_rss_kib": 136656
+        },
+        {
+          "elapsed_seconds": 1.2506,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 6967,
+            "inactive": 108794,
+            "speculative": 3953
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.834,
+          "free_disk_bytes": 44259954688,
+          "group_rss_kib": 32432
+        },
+        {
+          "elapsed_seconds": 1.3803,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 5684,
+            "inactive": 109181,
+            "speculative": 4095
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.69,
+          "free_disk_bytes": 44259954688,
+          "group_rss_kib": 32432
+        },
+        {
+          "elapsed_seconds": 1.505,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3984,
+            "inactive": 109891,
+            "speculative": 4193
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.52,
+          "free_disk_bytes": 44259954688,
+          "group_rss_kib": 32432
+        },
+        {
+          "elapsed_seconds": 1.6354,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3783,
+            "inactive": 109524,
+            "speculative": 4456
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.462,
+          "free_disk_bytes": 44259897344,
+          "group_rss_kib": 114240
+        },
+        {
+          "elapsed_seconds": 1.765,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3804,
+            "inactive": 109127,
+            "speculative": 4490
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.396,
+          "free_disk_bytes": 44259880960,
+          "group_rss_kib": 151856
+        },
+        {
+          "elapsed_seconds": 1.8903,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3811,
+            "inactive": 109522,
+            "speculative": 4515
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.478,
+          "free_disk_bytes": 44259819520,
+          "group_rss_kib": 178336
+        },
+        {
+          "elapsed_seconds": 2.0153,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 7375,
+            "inactive": 107158,
+            "speculative": 4698
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.742,
+          "free_disk_bytes": 44254179328,
+          "group_rss_kib": 116880
+        },
+        {
+          "elapsed_seconds": 2.1403,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 6499,
+            "inactive": 107636,
+            "speculative": 4716
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.669,
+          "free_disk_bytes": 44254158848,
+          "group_rss_kib": 142992
+        },
+        {
+          "elapsed_seconds": 2.2651,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 7260,
+            "inactive": 107127,
+            "speculative": 4806
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.734,
+          "free_disk_bytes": 44252491776,
+          "group_rss_kib": 137568
+        },
+        {
+          "elapsed_seconds": 2.3905,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 8626,
+            "inactive": 106705,
+            "speculative": 4893
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.931,
+          "free_disk_bytes": 44251807744,
+          "group_rss_kib": 32432
+        },
+        {
+          "elapsed_seconds": 2.5161,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 8227,
+            "inactive": 106746,
+            "speculative": 4877
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.86,
+          "free_disk_bytes": 44251807744,
+          "group_rss_kib": 32432
+        },
+        {
+          "elapsed_seconds": 2.6408,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 7242,
+            "inactive": 107044,
+            "speculative": 4920
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.737,
+          "free_disk_bytes": 44251766784,
+          "group_rss_kib": 85552
+        },
+        {
+          "elapsed_seconds": 2.7678,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 4423,
+            "inactive": 108091,
+            "speculative": 4949
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.404,
+          "free_disk_bytes": 44251729920,
+          "group_rss_kib": 156096
+        },
+        {
+          "elapsed_seconds": 2.8933,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 7902,
+            "inactive": 106984,
+            "speculative": 5094
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.884,
+          "free_disk_bytes": 44247257088,
+          "group_rss_kib": 32592
+        },
+        {
+          "elapsed_seconds": 3.0186,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 8376,
+            "inactive": 106810,
+            "speculative": 5144
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.951,
+          "free_disk_bytes": 44246691840,
+          "group_rss_kib": 32592
+        },
+        {
+          "elapsed_seconds": 3.144,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 5835,
+            "inactive": 107857,
+            "speculative": 5176
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.672,
+          "free_disk_bytes": 44246401024,
+          "group_rss_kib": 146336
+        },
+        {
+          "elapsed_seconds": 3.2695,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 5392,
+            "inactive": 108309,
+            "speculative": 5089
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.657,
+          "free_disk_bytes": 44245852160,
+          "group_rss_kib": 165632
+        },
+        {
+          "elapsed_seconds": 3.3946,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 9518,
+            "inactive": 106682,
+            "speculative": 5139
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 23.144,
+          "free_disk_bytes": 44244668416,
+          "group_rss_kib": 0
+        }
+      ],
+      "guard_reason": null,
+      "exit": 0,
+      "elapsed_seconds": 3.4128,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "aa2dda1d61a0d38d3cbbed27dd610b36056f4cb1648d22176a210a9bf39da73f",
+      "target_allocated_kib": 17532
+    },
+    "slug": {
+      "label": "slug",
+      "argv": [
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-profile-cfg-slug/work/harness-target/debug/anneal-scanner-slug-probe",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/fixture/Cargo.toml"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/harness",
+      "environment": {
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-profile-cfg-slug/work/harness-target",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null,
+        "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+        "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false"
+      },
+      "preflight": {
+        "vm_page_size": 16384,
+        "vm_pages": {
+          "free": 9444,
+          "inactive": 106709,
+          "speculative": 5162
+        },
+        "physical_memory_bytes": 8589934592,
+        "estimated_reclaimable_percent": 23.139,
+        "free_disk_bytes": 44244660224
+      },
+      "samples": [
+        {
+          "elapsed_seconds": 0.001,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 9435,
+            "inactive": 106707,
+            "speculative": 5161
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 23.137,
+          "free_disk_bytes": 44244660224,
+          "group_rss_kib": 32
+        },
+        {
+          "elapsed_seconds": 0.1255,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 9145,
+            "inactive": 106704,
+            "speculative": 5167
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 23.082,
+          "free_disk_bytes": 44244660224,
+          "group_rss_kib": 32
+        },
+        {
+          "elapsed_seconds": 0.2521,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 9302,
+            "inactive": 106703,
+            "speculative": 5166
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 23.112,
+          "free_disk_bytes": 44244660224,
+          "group_rss_kib": 0
+        }
+      ],
+      "guard_reason": null,
+      "exit": 0,
+      "elapsed_seconds": 0.2845,
+      "stdout_sha256": "d8dae61b72c77c2443918e679be94b6888231202b7765b504260422c45a466cc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "target_allocated_kib": 17532
+    },
+    "debug": {
+      "label": "debug",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/artifacts/debug.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/fixture",
+      "environment": {
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-profile-cfg-slug/work/target-debug",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null,
+        "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+        "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false"
+      },
+      "preflight": {
+        "vm_page_size": 16384,
+        "vm_pages": {
+          "free": 9291,
+          "inactive": 106705,
+          "speculative": 5166
+        },
+        "physical_memory_bytes": 8589934592,
+        "estimated_reclaimable_percent": 23.11,
+        "free_disk_bytes": 44244656128
+      },
+      "samples": [
+        {
+          "elapsed_seconds": 0.0018,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 9270,
+            "inactive": 106706,
+            "speculative": 5165
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 23.106,
+          "free_disk_bytes": 44244656128,
+          "group_rss_kib": 144
+        },
+        {
+          "elapsed_seconds": 0.1221,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 6091,
+            "inactive": 107187,
+            "speculative": 6105
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.771,
+          "free_disk_bytes": 44244656128,
+          "group_rss_kib": 34288
+        },
+        {
+          "elapsed_seconds": 0.2473,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 5487,
+            "inactive": 107357,
+            "speculative": 6262
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.718,
+          "free_disk_bytes": 44244656128,
+          "group_rss_kib": 23904
+        },
+        {
+          "elapsed_seconds": 0.372,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 3500,
+            "inactive": 107195,
+            "speculative": 6346
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.324,
+          "free_disk_bytes": 44244631552,
+          "group_rss_kib": 117104
+        },
+        {
+          "elapsed_seconds": 0.4983,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 6350,
+            "inactive": 105753,
+            "speculative": 6451
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.612,
+          "free_disk_bytes": 44244590592,
+          "group_rss_kib": 0
+        }
+      ],
+      "guard_reason": null,
+      "exit": 0,
+      "elapsed_seconds": 0.519,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "dab050095d51d0aa100655924e2b52ac8326e5a944b784e9ff07d9f67af29ffb",
+      "target_allocated_kib": 28
+    },
+    "release": {
+      "label": "release",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/artifacts/release.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/fixture/Cargo.toml",
+        "--lib",
+        "--release",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/fixture",
+      "environment": {
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-profile-cfg-slug/work/target-release",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null,
+        "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+        "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false"
+      },
+      "preflight": {
+        "vm_page_size": 16384,
+        "vm_pages": {
+          "free": 5910,
+          "inactive": 105896,
+          "speculative": 6450
+        },
+        "physical_memory_bytes": 8589934592,
+        "estimated_reclaimable_percent": 22.556,
+        "free_disk_bytes": 44244586496
+      },
+      "samples": [
+        {
+          "elapsed_seconds": 0.0012,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 6018,
+            "inactive": 105885,
+            "speculative": 6457
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.575,
+          "free_disk_bytes": 44244574208,
+          "group_rss_kib": 3728
+        },
+        {
+          "elapsed_seconds": 0.124,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 5052,
+            "inactive": 106212,
+            "speculative": 6433
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.449,
+          "free_disk_bytes": 44244553728,
+          "group_rss_kib": 26016
+        },
+        {
+          "elapsed_seconds": 0.2492,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 6578,
+            "inactive": 105537,
+            "speculative": 6472
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.619,
+          "free_disk_bytes": 44244500480,
+          "group_rss_kib": 0
+        }
+      ],
+      "guard_reason": null,
+      "exit": 0,
+      "elapsed_seconds": 0.2693,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "5504fbd7309a52d7221c6d500a8847e70b45ff0669e7fb57c80ba5e1adc08dd6",
+      "target_allocated_kib": 28
+    },
+    "cfg_alt": {
+      "label": "cfg_alt",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/artifacts/cfg_alt.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/fixture",
+      "environment": {
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i076-profile-cfg-slug/work/target-cfg_alt",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_NET_OFFLINE": "true",
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": "--cfg probe_alt",
+        "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS": "true",
+        "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false"
+      },
+      "preflight": {
+        "vm_page_size": 16384,
+        "vm_pages": {
+          "free": 6666,
+          "inactive": 105542,
+          "speculative": 6471
+        },
+        "physical_memory_bytes": 8589934592,
+        "estimated_reclaimable_percent": 22.636,
+        "free_disk_bytes": 44244496384
+      },
+      "samples": [
+        {
+          "elapsed_seconds": 0.0012,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 6589,
+            "inactive": 105542,
+            "speculative": 6471
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.622,
+          "free_disk_bytes": 44244496384,
+          "group_rss_kib": 3728
+        },
+        {
+          "elapsed_seconds": 0.1264,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 5196,
+            "inactive": 105891,
+            "speculative": 6470
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.422,
+          "free_disk_bytes": 44244496384,
+          "group_rss_kib": 24032
+        },
+        {
+          "elapsed_seconds": 0.2513,
+          "vm_page_size": 16384,
+          "vm_pages": {
+            "free": 6648,
+            "inactive": 105088,
+            "speculative": 6512
+          },
+          "physical_memory_bytes": 8589934592,
+          "estimated_reclaimable_percent": 22.554,
+          "free_disk_bytes": 44244434944,
+          "group_rss_kib": 0
+        }
+      ],
+      "guard_reason": null,
+      "exit": 0,
+      "elapsed_seconds": 0.2717,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d24a838cbd5e9606bcad16882ad53d12114f534bdfd3b01abdcf965ee304cc2a",
+      "target_allocated_kib": 28
+    }
+  },
+  "slug_rows": [
+    [
+      "debug",
+      "UnitKeyProbeUnitKeyProbe420dc0784be82942",
+      "UnitKeyProbeUnitKeyProbe420dc0784be82942.llbc"
+    ],
+    [
+      "release",
+      "UnitKeyProbeUnitKeyProbe420dc0784be82942",
+      "UnitKeyProbeUnitKeyProbe420dc0784be82942.llbc"
+    ],
+    [
+      "cfg_alt",
+      "UnitKeyProbeUnitKeyProbe420dc0784be82942",
+      "UnitKeyProbeUnitKeyProbe420dc0784be82942.llbc"
+    ]
+  ],
+  "artifacts": {
+    "debug": {
+      "sha256": "51a0aafb437bd25782b3cbede5a654aea817f4643a36139e11d0012e3e308eae",
+      "bytes": 5605,
+      "crate_name": "unit_key_probe",
+      "has_errors": false,
+      "local_bodies": {
+        "unit_key_probe::profile_value": {
+          "sha256": "bca07fc614c2ea3ff6e08dad2996dc05c7132798dcfe0ed996e0fe44c9e49a7a",
+          "u32_literals": [
+            "7"
+          ]
+        },
+        "unit_key_probe::config_value": {
+          "sha256": "31388b2838e0010bd5d9de7a28121675049d9e37870bf73d59180e34898e2af8",
+          "u32_literals": [
+            "23"
+          ]
+        }
+      },
+      "files": [
+        {
+          "name": {
+            "Local": "src/lib.rs"
+          },
+          "contents_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d"
+        }
+      ]
+    },
+    "release": {
+      "sha256": "375cb601ffbe70bfb2ee5fde4b5cb1a573467905dca39c4e0a61d43a84a8a5b1",
+      "bytes": 5609,
+      "crate_name": "unit_key_probe",
+      "has_errors": false,
+      "local_bodies": {
+        "unit_key_probe::profile_value": {
+          "sha256": "4aa641c6e3d9a247e85fccea7dfc0d49d99cfc4b77feb4ade97e1a8c2c5d79db",
+          "u32_literals": [
+            "11"
+          ]
+        },
+        "unit_key_probe::config_value": {
+          "sha256": "31388b2838e0010bd5d9de7a28121675049d9e37870bf73d59180e34898e2af8",
+          "u32_literals": [
+            "23"
+          ]
+        }
+      },
+      "files": [
+        {
+          "name": {
+            "Local": "src/lib.rs"
+          },
+          "contents_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d"
+        }
+      ]
+    },
+    "cfg_alt": {
+      "sha256": "f9375847bc60d94d168ee939e07165c0851b2f9236354fbd3cf4936e00691072",
+      "bytes": 5607,
+      "crate_name": "unit_key_probe",
+      "has_errors": false,
+      "local_bodies": {
+        "unit_key_probe::profile_value": {
+          "sha256": "bca07fc614c2ea3ff6e08dad2996dc05c7132798dcfe0ed996e0fe44c9e49a7a",
+          "u32_literals": [
+            "7"
+          ]
+        },
+        "unit_key_probe::config_value": {
+          "sha256": "2e872bd1c5e2756fa659fc4f68a2ceb8c14594d9ecdd8a44bc65ead0eb8d97f4",
+          "u32_literals": [
+            "29"
+          ]
+        }
+      },
+      "files": [
+        {
+          "name": {
+            "Local": "src/lib.rs"
+          },
+          "contents_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d"
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "work_exists_after_removal": false,
+    "postrun_headroom": {
+      "vm_page_size": 16384,
+      "vm_pages": {
+        "free": 7905,
+        "inactive": 105065,
+        "speculative": 6047
+      },
+      "physical_memory_bytes": 8589934592,
+      "estimated_reclaimable_percent": 22.701,
+      "free_disk_bytes": 44260622336
+    }
+  }
+}

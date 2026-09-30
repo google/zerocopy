@@ -1,0 +1,61 @@
+{
+  "bounded_context_ids": [
+    "D03"
+  ],
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [
+    "C06",
+    "D07",
+    "I020",
+    "I076",
+    "I147"
+  ],
+  "changed_status_ids": [],
+  "direct_evidence_ids": [
+    "C06",
+    "D07",
+    "I020",
+    "I076",
+    "I147"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v33.csv": "f7cc2a11250a8a3eea620e3d80890258ff030b56a0c6e24836f9bc4d6dc7f794",
+    "investigation-final-v33.csv": "2ffd999c7fb24f9de14c068aad73bcbe6293e81cdbc57415aeb0b4a1b283d92d",
+    "row-challenge-v33.json": "b5b5a1ed3d6baa86b541e06032475bce21cbe3ca0732561f46132cfa90126f5e",
+    "source-package-inventory-v33.csv": "13f1ce542e0128ba7158d3f12c6c69eab510be762f4c23c6768e69f43968997b"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v33.json": "f37fc1a55985cd8f7180d1b292c188705b8e336f93a9a2616da79ca78fa7292a",
+    "v31/3730-crosswalk-final-v31.csv": "7259a9a4be0e6b854ba7166878ebf9ea2de4e01132772e82ea4dec0d475d8ce8",
+    "v31/investigation-final-v31.csv": "fe8bb003df23a5cee2fa00c93722ad53c1b41483289e5c5c7b50c3ef86279d7a",
+    "v31/row-challenge-v31.json": "9c1b9741f9d5f4a92fa899ed2ad79d6a9f23177963ec4412e0f5df9b5189603d"
+  },
+  "inventory_files": 82,
+  "investigation_count": 159,
+  "reference_tip_at_start": "e26a9414ab48844eeb95b91ee8b743046c8a8982",
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v31",
+    "anneal-3731-i147-syntax-equivalent-rebuild-2026-09-29",
+    "anneal-v2-profile-cfg-subject-slug-collision-2026-09-29"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v31",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

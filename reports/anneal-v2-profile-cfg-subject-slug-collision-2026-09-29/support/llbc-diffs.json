@@ -1,0 +1,182 @@
+{
+  "debug_vs_cfg_alt": {
+    "$.translated.fun_decls[1].body.Structured.body.span.data.beg.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.body.span.data.end.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.body.statements[0].kind.Assign[1].Use[0].Const.kind.Literal.Scalar.Unsigned[1]": [
+      "23",
+      "29"
+    ],
+    "$.translated.fun_decls[1].body.Structured.body.statements[0].span.data.beg.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.body.statements[0].span.data.end.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.body.statements[1].span.data.beg.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.body.statements[1].span.data.end.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.locals.locals[0].span.data.beg.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.locals.locals[0].span.data.end.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.span.data.beg.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].body.Structured.span.data.end.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].item_meta.source_text": [
+      "pub fn config_value() -> u32 { 23 }",
+      "pub fn config_value() -> u32 { 29 }"
+    ],
+    "$.translated.fun_decls[1].item_meta.span.data.beg.line": [
+      13,
+      10
+    ],
+    "$.translated.fun_decls[1].item_meta.span.data.end.line": [
+      13,
+      10
+    ],
+    "$.translated.options.dest_file": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/artifacts/debug.llbc",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/artifacts/cfg_alt.llbc"
+    ],
+    "$.translated.short_names[0].key.Fun": [
+      0,
+      1
+    ],
+    "$.translated.short_names[0].value[0].Ident[0]": [
+      "profile_value",
+      "config_value"
+    ],
+    "$.translated.short_names[1].key.Fun": [
+      1,
+      0
+    ],
+    "$.translated.short_names[1].value[0].Ident[0]": [
+      "config_value",
+      "profile_value"
+    ]
+  },
+  "debug_vs_release": {
+    "$.translated.fun_decls[0].body.Structured.body.span.data.beg.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.span.data.end.col": [
+      35,
+      36
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.span.data.end.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.statements[0].kind.Assign[1].Use[0].Const.kind.Literal.Scalar.Unsigned[1]": [
+      "7",
+      "11"
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.statements[0].span.data.beg.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.statements[0].span.data.end.col": [
+      33,
+      34
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.statements[0].span.data.end.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.statements[1].span.data.beg.col": [
+      35,
+      36
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.statements[1].span.data.beg.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.statements[1].span.data.end.col": [
+      35,
+      36
+    ],
+    "$.translated.fun_decls[0].body.Structured.body.statements[1].span.data.end.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.locals.locals[0].span.data.beg.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.locals.locals[0].span.data.end.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.span.data.beg.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].body.Structured.span.data.end.col": [
+      35,
+      36
+    ],
+    "$.translated.fun_decls[0].body.Structured.span.data.end.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].item_meta.source_text": [
+      "pub fn profile_value() -> u32 { 7 }",
+      "pub fn profile_value() -> u32 { 11 }"
+    ],
+    "$.translated.fun_decls[0].item_meta.span.data.beg.line": [
+      4,
+      7
+    ],
+    "$.translated.fun_decls[0].item_meta.span.data.end.col": [
+      35,
+      36
+    ],
+    "$.translated.fun_decls[0].item_meta.span.data.end.line": [
+      4,
+      7
+    ],
+    "$.translated.options.dest_file": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/artifacts/debug.llbc",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/artifacts/release.llbc"
+    ],
+    "$.translated.short_names[0].key.Fun": [
+      0,
+      1
+    ],
+    "$.translated.short_names[0].value[0].Ident[0]": [
+      "profile_value",
+      "config_value"
+    ],
+    "$.translated.short_names[1].key.Fun": [
+      1,
+      0
+    ],
+    "$.translated.short_names[1].value[0].Ident[0]": [
+      "config_value",
+      "profile_value"
+    ]
+  }
+}

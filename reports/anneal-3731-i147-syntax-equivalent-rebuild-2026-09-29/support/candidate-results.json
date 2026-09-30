@@ -1,0 +1,74 @@
+[
+  {
+    "name": "baseline",
+    "source": "def selected : Nat := 7\n",
+    "free_percent": 24.4,
+    "rc": 0,
+    "elapsed_ms": 185,
+    "stdout": "",
+    "stderr": "",
+    "source_sha256": "a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc",
+    "olean_sha256": "1e9a6a4dc613d2f40aa23301cca0bd9ad919bcbbf000d9d60dc535b321715087",
+    "olean_bytes": 4552
+  },
+  {
+    "name": "unicode_nat",
+    "source": "def selected : ℕ := 7\n",
+    "free_percent": 24.32,
+    "rc": 1,
+    "elapsed_ms": 161,
+    "stdout": "Dep.lean:1:20: error(lean.synthInstanceFailed): failed to synthesize instance of type class\n  OfNat ℕ 7\nnumerals are polymorphic in Lean, but the numeral `7` cannot be used in a context where the expected type is\n  ℕ\ndue to the absence of the instance above\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.\n",
+    "stderr": "",
+    "source_sha256": "ec52cdfa44a6594b5c57d290eb545fe3dd21862b5265007486b217dc94db3ad6",
+    "olean_sha256": null,
+    "olean_bytes": 0
+  },
+  {
+    "name": "hex_literal",
+    "source": "def selected : Nat := 0x7\n",
+    "free_percent": 24.34,
+    "rc": 0,
+    "elapsed_ms": 160,
+    "stdout": "",
+    "stderr": "",
+    "source_sha256": "8cf10a1c6bf590369609935262e963f6b92e27878e30850b8d863b9801eba2ae",
+    "olean_sha256": "d0460b83a2e8a826e83fc50ee90a15b92d9b38afb42946b302de9a74c854c8db",
+    "olean_bytes": 4552
+  },
+  {
+    "name": "type_ascription",
+    "source": "def selected : Nat := (7 : Nat)\n",
+    "free_percent": 24.34,
+    "rc": 0,
+    "elapsed_ms": 160,
+    "stdout": "",
+    "stderr": "",
+    "source_sha256": "695950c40507acdff8783cf35413f31e1c415e198c61f8e9c29c2b3c17bd7bc7",
+    "olean_sha256": "4d4339abd5a291efbc74233ab2b8e220d7a198d07bb0e14791ce468c475bfcb7",
+    "olean_bytes": 4552
+  },
+  {
+    "name": "hex_equal_length",
+    "source": "def selected:Nat := 0x7\n",
+    "free_percent": 24.57,
+    "rc": 0,
+    "elapsed_ms": 163,
+    "stdout": "",
+    "stderr": "",
+    "source_sha256": "258b3e8a5ffffa4c7edabc080a9c1af11b2d135019c5780e7248d7e0dc33cfbb",
+    "olean_sha256": "1e9a6a4dc613d2f40aa23301cca0bd9ad919bcbbf000d9d60dc535b321715087",
+    "olean_bytes": 4552
+  },
+  {
+    "name": "paren_equal_length",
+    "source": "def selected:Nat := (7)\n",
+    "free_percent": 24.55,
+    "rc": 0,
+    "elapsed_ms": 160,
+    "stdout": "",
+    "stderr": "",
+    "source_sha256": "4a43c08a6340af054d35efd3606d0058ec532d5d0fe05f4b6cfef2413040a7a7",
+    "olean_sha256": "1e9a6a4dc613d2f40aa23301cca0bd9ad919bcbbf000d9d60dc535b321715087",
+    "olean_bytes": 4552
+  }
+]

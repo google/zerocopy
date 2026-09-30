@@ -1,0 +1,12 @@
+   Compiling version_check v0.9.5
+   Compiling generic-array v0.14.7
+   Compiling typenum v1.20.0
+   Compiling libc v0.2.186
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling digest v0.10.7
+   Compiling cpufeatures v0.2.17
+   Compiling cfg-if v1.0.4
+   Compiling sha2 v0.10.9
+   Compiling anneal-scanner-slug-probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/support/harness)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.30s

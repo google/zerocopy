@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "anneal/interactive-verification",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "anneal/compilation-subject-identity",
+    "lean/import-invalidation"
+  ],
+  "subjects": [
+    {
+      "name": "Published v31 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "e26a9414ab48844eeb95b91ee8b743046c8a8982",
+        "row_challenge_sha256": "9c1b9741f9d5f4a92fa899ed2ad79d6a9f23177963ec4412e0f5df9b5189603d"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Pinned syntax-equivalent Lean and Lake rebuild report",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "source_report_sha256": "e98352f2c9bea466af8c91ea41e5f9a40828da8559b3d197d753c77831cc24bd",
+        "transcript_sha256": "e67b662649b65dde7400878c942c99b99e14637166625b38c2cb85509f2f0e71"
+      }
+    },
+    {
+      "name": "Checked-in V2 slug and pinned profile/cfg Charon subject report",
+      "identity": {
+        "repository": "google/zerocopy",
+        "source_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "source_report_sha256": "f6c027ab45138a2f7659f257656723ce20e09a1ad2bf3f4355447ab2f2d0aa01",
+        "results_sha256": "ed27ba3bf4b30791bb162acdf0732d195ec7a4f5105e087249ef6f36c779eadb"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}
