@@ -1,0 +1,13 @@
+{
+  "editor-engines-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": [
+      "clangd-authority-freshness-2017-2026",
+      "gopls-snapshots-views-workspace-evolution-2018-2026",
+      "rls-rust-analyzer-architecture-evolution-2015-2026",
+      "rls-rust-analyzer-architecture-transition-2015-2026",
+      "rls-to-rust-analyzer-editor-engine-history-2015-2026"
+    ],
+    "reason": "The grouped R383/R404/R513–R515 review freezes each exact original report and checks its claim-mapped current-source blobs. These five predecessors already have exact v67 source-ID mappings. This supplies bounded source context only: selected clangd/gopls blobs are unchanged on a forward branch range; rust-analyzer has no forward master revision. No editor/runtime or Anneal product execution."
+  }
+}
