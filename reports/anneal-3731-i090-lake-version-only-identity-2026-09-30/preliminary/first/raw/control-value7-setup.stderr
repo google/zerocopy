@@ -1,0 +1,7 @@
+✔ [0/4] Ran job computation
+✔ [1/4] Ran consumer:extraDep
+✔ [2/4] Ran probe_dep:extraDep
+ℹ [3/4] Replayed Dep
+trace: .> LEAN_PATH=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i090-lake-version-only-identity/work/control/producer/.lake/build/lib/lean:/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i090-lake-version-only-identity/work/control/consumer/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i090-lake-version-only-identity/work/control/producer/Dep.lean -o /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i090-lake-version-only-identity/work/control/producer/.lake/build/lib/lean/Dep.olean -i /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i090-lake-version-only-identity/work/control/producer/.lake/build/lib/lean/Dep.ilean -c /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i090-lake-version-only-identity/work/control/producer/.lake/build/ir/Dep.c --setup /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i090-lake-version-only-identity/work/control/producer/.lake/build/ir/Dep.setup.json --json
+ℹ [4/4] Ran setup-file /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i090-lake-version-only-identity/work/control/consumer/Generated.lean
+trace: file identified as module: Generated

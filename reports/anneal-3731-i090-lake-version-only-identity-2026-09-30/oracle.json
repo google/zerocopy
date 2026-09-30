@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "toolchain": "leanprover/lean4:v4.30.0-rc2",
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "files": {
+    "producer_v1_lakefile": {
+      "text": "import Lake\nopen Lake DSL\npackage probe_dep where\n  version := v!\"1.0.0\"\n@[default_target]\nlean_lib Dep\n",
+      "sha256": "c5066d5386b421709696ac7ead3e893cecd72df5a4c9ad80f86cf9e1861f9cf3"
+    },
+    "producer_v2_lakefile": {
+      "text": "import Lake\nopen Lake DSL\npackage probe_dep where\n  version := v!\"2.0.0\"\n@[default_target]\nlean_lib Dep\n",
+      "sha256": "718b5d33acbd9dd01cad94021f52d92d38089eb1c097f08b6d8ea00fbe8c2157"
+    },
+    "producer_dep7": {
+      "text": "def depValue : Nat := 7\n",
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    },
+    "producer_dep9": {
+      "text": "def depValue : Nat := 9\n",
+      "sha256": "f24ea593a7ec12a08b2ab0c096b8babdbf9baeaef4c4a46286e12bf19959c0d0"
+    },
+    "consumer_lakefile": {
+      "text": "import Lake\nopen Lake DSL\nrequire probe_dep from \"../producer\"\npackage consumer\n@[default_target]\nlean_lib Generated\n",
+      "sha256": "7bb73c3cab9e353fb3512d4fc998a2bd6c6193ee62cdf54cca05c5b465bd72a8"
+    },
+    "consumer_generated": {
+      "text": "import Dep\n#eval depValue\n",
+      "sha256": "b80031a4b323a902350e2002106e80d8bf48a04ec737833998b768ec0ff83f95"
+    }
+  },
+  "main_versions": [
+    "1.0.0",
+    "2.0.0",
+    "1.0.0"
+  ],
+  "control_values": [
+    7,
+    9
+  ],
+  "maximum_cell_seconds": 30
+}

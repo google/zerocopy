@@ -1,0 +1,34 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v60 coverage ledger",
+      "identity": {
+        "reference_commit": "97677918e2120591c57486a353ee1b75e2f0bd6f",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v60"
+      }
+    },
+    {
+      "name": "Lake producer package-version-only identity observation",
+      "identity": {
+        "source_package": "anneal-3731-i090-lake-version-only-identity-2026-09-30",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+        "results_sha256": "cd7584e45ac2985a604f8bbb7329c3b373f08e7106e90cdcbf97ade28d15cfba",
+        "oracle_sha256": "3a21cf2380212bda121d64a236301b6f219a4530b1ed47f08ea63415c1904afc"
+      }
+    },
+    {
+      "name": "Fresh public #3730/#3731 issue snapshot",
+      "identity": {
+        "snapshot_sha256": "60eba5b7544f67302871de7cfc3a3aea53092748bf7b132c65ee9e019a8fa38a",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/issue-3730-3731",
+    "lake/package-identity",
+    "lake/configuration-trace",
+    "research/coverage-audit"
+  ]
+}
