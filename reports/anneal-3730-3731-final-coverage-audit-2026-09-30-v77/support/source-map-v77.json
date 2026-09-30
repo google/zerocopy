@@ -1,0 +1,10 @@
+{
+  "sel4-compcert-everest-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["proof-maintenance-architectures-sel4-compcert-everest-2009-2026"],
+    "mapped_report_ids": ["R507"],
+    "inventory_only_report_ids": ["R578"],
+    "inventory_only_report_paths": ["reports/verified-compiler-pass-composition-compcert-3-18-popl-2008/REPORT.md"],
+    "reason": "The grouped package freezes R507 and R578 separately. R507 has the exact v67 proof-maintenance analog mapped to I001; five default-branch refs equal their pins and CompCert master is four commits forward with unchanged claim-mapped blobs. R578's narrower pass-composition report has no predecessor in the published v67 ID map, so its source review is inventoried but supplies no #3731 row link. No proof, compiler, extraction, or Anneal execution occurred."
+  }
+}

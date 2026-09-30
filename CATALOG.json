@@ -4059,6 +4059,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v77": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "parent_catalog_sha256": "c0067f2b79b49f9ad7afc3966a90e8eb56aa3665898d322b23e787beb77caadd",
+            "reference_parent": "1a73769318280689985be655c67693ac59b56cae",
+            "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+            "v76_published_commit": "47d8250bff3ea17f1fbb4340370032e03692617b"
+          },
+          "name": "Published v76 ledger and exact frozen reference parent"
+        },
+        {
+          "identity": {
+            "package_count": "1",
+            "source_inventory_sha256": "bd4b4a797f2d3917e15229b86014f1148d499706f0ba4b12a65f68eaab940cd9",
+            "source_map_sha256": "1547e5ed0da5627e933ffe9cd4198cf2099ddcfca8f0acdea7f32bcc7ea88a16"
+          },
+          "name": "One post-v76 grouped R507/R578 current-source review"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+            "source": "prior published local snapshot; no new issue fetch"
+          },
+          "name": "Inherited public #3730/#3731 issue snapshot from v65"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
