@@ -1,0 +1,7 @@
+# #3730/#3731 coverage audit v63: malformed consumer manifest
+
+This audit inherits all 333 rows, including 159 consolidated investigations and 174 #3730 suggestions, from published v62 at `249263d6b8c2aed57a3d2757947458e636f126c0`. A fresh public GitHub REST read found #3730 closed and #3731 open; issue bodies, comments, and update timestamps were unchanged from v62. The exact snapshot is [live-issue-snapshot-v63.json](support/live-issue-snapshot-v63.json).
+
+The new [I092 malformed-manifest preflight report](../anneal-3731-i092-malformed-manifest-preflight-2026-09-30/REPORT.md) finds that a two-byte malformed consumer manifest makes pinned Lake `setup-file` and Lake-mediated batch commands exit 1 under offline `--no-build --no-cache` controls. `lake serve` instead warns that it is falling back to plain `lean --server` and completes an initialize/shutdown handshake. No document was opened in that fallback. A direct Lean import succeeds against the retained producer OLean with an explicit import path, and exact manifest restoration restores the Lake controls. The first LEAN_PATH-confounded acquisition is retained and excluded.
+
+Exactly **I092** receives an appended direct residual. **F07**, whose crosswalk destinations include I092, receives bounded context with its residual unchanged. No status, gate, or prerequisite changes. The generated ledger, crosswalk, row challenge, source inventory, validation hashes, replay script, and offline checker are under [support/](support/).

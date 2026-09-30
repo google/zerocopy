@@ -1,0 +1,2 @@
+error: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-malformed-manifest-preflight/work/consumer/lake-manifest.json: invalid JSON: offset 2: unexpected end of input
+warning: package configuration has errors, falling back to plain `lean --server`

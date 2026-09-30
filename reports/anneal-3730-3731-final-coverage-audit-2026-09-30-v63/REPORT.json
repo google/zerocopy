@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Published #3730/#3731 v62 coverage ledger",
+      "identity": {
+        "reference_commit": "249263d6b8c2aed57a3d2757947458e636f126c0",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v62"
+      }
+    },
+    {
+      "name": "Lake malformed consumer manifest observation",
+      "identity": {
+        "source_package": "anneal-3731-i092-malformed-manifest-preflight-2026-09-30",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+        "results_sha256": "d4c3000b980f44c43bb15440866c043bc10c0f8e0bb04b9cbfeef1312d6b46b0",
+        "checker_sha256": "38db394b53074984c7beeb424450f6b792b62b0c6c494c4182581da1348e3daa"
+      }
+    },
+    {
+      "name": "Fresh public #3730/#3731 issue snapshot",
+      "identity": {
+        "snapshot_sha256": "8d64b5db89c6cdff55857fa1f661587cb3119b0fcb58f68da1c5dbef83ccf1b1",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "topics": ["anneal/issue-3730-3731", "lake/manifest", "lake/server-fallback", "research/coverage-audit"]
+}
