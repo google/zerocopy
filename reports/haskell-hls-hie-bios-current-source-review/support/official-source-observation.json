@@ -1,0 +1,115 @@
+{
+  "observed_at": "2026-09-30",
+  "official_remote": "https://github.com/haskell/",
+  "repositories": [
+    {
+      "repository": "haskell/haskell-language-server",
+      "old_pinned_commit": "187fcd4a685c220caabb72999565604b3287aff2",
+      "raw_ls_remote": "187fcd4a685c220caabb72999565604b3287aff2\tHEAD\n187fcd4a685c220caabb72999565604b3287aff2\trefs/heads/master\n",
+      "refs": {
+        "HEAD": "187fcd4a685c220caabb72999565604b3287aff2",
+        "refs/heads/master": "187fcd4a685c220caabb72999565604b3287aff2"
+      },
+      "official_default_branch": "master",
+      "default_branch_commit": "187fcd4a685c220caabb72999565604b3287aff2",
+      "old_commit_parent_ids": [
+        "a7453b1c469c1614f01ce8e5858009443790e35a"
+      ],
+      "old_commit_tree_id": "314b82906145950b960111c9a9fcf906829944d3",
+      "old_commit_committer_date": "2026-09-29T17:19:24Z",
+      "forward_commit_count": 0,
+      "changed_paths": [],
+      "mapped_sources": [
+        {
+          "source_map_id": "hls-readme",
+          "path": "README.md",
+          "old_source_map_blob_sha": "8d856d0de144928350dac9e4a27e2b9afd224a1b",
+          "current_blob_sha": "8d856d0de144928350dac9e4a27e2b9afd224a1b",
+          "current_type": "file",
+          "current_size": 2374,
+          "supports": [
+            "current HLS identity as official Haskell LSP implementation"
+          ],
+          "commit_pinned_url": "https://github.com/haskell/haskell-language-server/blob/187fcd4a685c220caabb72999565604b3287aff2/README.md"
+        },
+        {
+          "source_map_id": "hls-graph-readme",
+          "path": "hls-graph/README.md",
+          "old_source_map_blob_sha": "802b7b101690b205240f7df57538c62f7a535442",
+          "current_blob_sha": "802b7b101690b205240f7df57538c62f7a535442",
+          "current_type": "file",
+          "current_size": 766,
+          "supports": [
+            "Shake replacement",
+            "in-memory specialization",
+            "dynamic dependencies",
+            "reactive minimal rebuilds",
+            "persistence/general-purpose omissions",
+            "simplicity/performance rationale"
+          ],
+          "commit_pinned_url": "https://github.com/haskell/haskell-language-server/blob/187fcd4a685c220caabb72999565604b3287aff2/hls-graph/README.md"
+        },
+        {
+          "source_map_id": "hls-current-rules",
+          "path": "ghcide/src/Development/IDE/Core/Rules.hs",
+          "old_source_map_blob_sha": "0ae7dfc029e3a5540b61fca5f77120037d00b010",
+          "current_blob_sha": "0ae7dfc029e3a5540b61fca5f77120037d00b010",
+          "current_type": "file",
+          "current_size": 75596,
+          "supports": [
+            "current rule-based compiler service",
+            "parse/module/dependency/typecheck rule composition"
+          ],
+          "commit_pinned_url": "https://github.com/haskell/haskell-language-server/blob/187fcd4a685c220caabb72999565604b3287aff2/ghcide/src/Development/IDE/Core/Rules.hs"
+        },
+        {
+          "source_map_id": "hls-cabal-project",
+          "path": "cabal.project",
+          "old_source_map_blob_sha": "fd110195cc431f3e12c2a1190cd07d266f399672",
+          "current_blob_sha": "fd110195cc431f3e12c2a1190cd07d266f399672",
+          "current_type": "file",
+          "current_size": 2307,
+          "supports": [
+            "current component/package separation"
+          ],
+          "commit_pinned_url": "https://github.com/haskell/haskell-language-server/blob/187fcd4a685c220caabb72999565604b3287aff2/cabal.project"
+        }
+      ]
+    },
+    {
+      "repository": "haskell/hie-bios",
+      "old_pinned_commit": "32dd07707423ffabb34e44af68fcbd027b60ded2",
+      "raw_ls_remote": "32dd07707423ffabb34e44af68fcbd027b60ded2\tHEAD\n32dd07707423ffabb34e44af68fcbd027b60ded2\trefs/heads/master\n",
+      "refs": {
+        "HEAD": "32dd07707423ffabb34e44af68fcbd027b60ded2",
+        "refs/heads/master": "32dd07707423ffabb34e44af68fcbd027b60ded2"
+      },
+      "official_default_branch": "master",
+      "default_branch_commit": "32dd07707423ffabb34e44af68fcbd027b60ded2",
+      "old_commit_parent_ids": [
+        "9cc36d18045e967b661634e41e3b1e0ed809968d"
+      ],
+      "old_commit_tree_id": "d67b74556dfe7f582ad652d43d94c511ea9b463b",
+      "old_commit_committer_date": "2026-09-11T10:34:16Z",
+      "forward_commit_count": 0,
+      "changed_paths": [],
+      "mapped_sources": [
+        {
+          "source_map_id": "hie-bios-readme",
+          "path": "README.md",
+          "old_source_map_blob_sha": "81abf4cd7bb5c883b167fc0180a9bbfaafff36be",
+          "current_blob_sha": "81abf4cd7bb5c883b167fc0180a9bbfaafff36be",
+          "current_type": "file",
+          "current_size": 26814,
+          "supports": [
+            "build-tool-owned environment principle",
+            "GHC flag/session interface",
+            "path-to-component multi-cradles",
+            "direct cradle drift warning"
+          ],
+          "commit_pinned_url": "https://github.com/haskell/hie-bios/blob/32dd07707423ffabb34e44af68fcbd027b60ded2/README.md"
+        }
+      ]
+    }
+  ]
+}

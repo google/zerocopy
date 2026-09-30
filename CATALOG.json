@@ -12945,6 +12945,41 @@
         "anneal/interactive-architecture"
       ]
     },
+    "haskell-hls-hie-bios-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "3d730ab522554cd534b2ddf582b96e1e233f1fff"
+          },
+          "name": "Frozen reference corpus containing R405"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "haskell/haskell-language-server",
+            "revision": "187fcd4a685c220caabb72999565604b3287aff2"
+          },
+          "name": "Haskell Language Server pinned and observed master"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "haskell/hie-bios",
+            "revision": "32dd07707423ffabb34e44af68fcbd027b60ded2"
+          },
+          "name": "hie-bios pinned and observed master"
+        }
+      ],
+      "topics": [
+        "haskell/hls",
+        "haskell/hie-bios",
+        "reference/version-review",
+        "anneal/project-environment"
+      ]
+    },
     "haskell-ide-lineage-environment-graph-boundaries-2017-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
