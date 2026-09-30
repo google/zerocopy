@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "anneal/interactive-verification",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "lake/server-preparation",
+    "lean/tactic-state"
+  ],
+  "subjects": [
+    {
+      "name": "Published v43 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "3d88b2c31d6c0774066ff581cf5d2bc27547b948",
+        "row_challenge_sha256": "1bba9b2778f0d436f79c56df00e3be25fb354bd483d9eb247e92ba1a5c3737a9"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731 as retained in v43",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Pinned reflexive Lake tactic and term-position report",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "source_report_sha256": "a4a30d43f685380fa285324cb75b538fe181ec565d27ce8effea192e7f84875c",
+        "results_sha256": "71c94390d16bbfaa1f0e5e5c5260de689fcdd68febf40028a7f622b0149d0455",
+        "probe_sha256": "9f17d45428378c76bd5995e3c7ea20b31223562b0a594dd75cba52f78576fb16"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}
