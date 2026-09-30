@@ -1,0 +1,32 @@
+Wed Sep 30 23:22:20 UTC 2026
+Filesystem      Size    Used   Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s1   228Gi   177Gi    17Gi    92%    2.4M  178M    1%   /System/Volumes/Data
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                                    19920.
+Pages active:                                 142208.
+Pages inactive:                               137760.
+Pages speculative:                              4231.
+Pages throttled:                                   0.
+Pages wired down:                             102911.
+Pages purgeable:                                1170.
+"Translation faults":                     6372783315.
+Pages copy-on-write:                       568333489.
+Pages zero filled:                        1615038423.
+Pages reactivated:                         746079492.
+Pages purged:                               44554358.
+File-backed pages:                            113067.
+Anonymous pages:                              171132.
+Pages stored in compressor:                   460627.
+Pages occupied by compressor:                  83832.
+Decompressions:                            530952360.
+Compressions:                              629745445.
+Pageins:                                   325633439.
+Pageouts:                                    5896754.
+Swapins:                                    44146221.
+Swapouts:                                   60564565.
+The system has 8589934592 (524288 pages with a page size of 16384).
+System-wide memory free percentage: 61%
+/usr/bin/curl
+/opt/homebrew/bin/zstd
+/usr/bin/file
+/usr/bin/tar

@@ -1,0 +1,4 @@
+/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/lean-4341-linux-aarch64-leantar-20260930/raw/bundled-leantar: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, not stripped
+5a7aaf4a60170490640a4463d31f12515f8de00aa9b66a124b1716768fbd62bc  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/lean-4341-linux-aarch64-leantar-20260930/raw/bundled-leantar
+ 2563160 /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/lean-4341-linux-aarch64-leantar-20260930/raw/bundled-leantar
+ELF magic 7f454c46 class 2 data 1 e_machine 183

@@ -1,0 +1,1 @@
+-rwxr-xr-x  0 runner runner   2563160 Jun 27 10:25 lean-4.34.1-linux_aarch64/bin/leantar

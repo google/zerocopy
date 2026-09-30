@@ -1,0 +1,14 @@
+{
+  "inventory_id": "R443",
+  "classification": "newer_version_recheck",
+  "cohort": "Lean/Lake v4.30.0-rc2 Linux aarch64 + leantar",
+  "title": "Lean 4.30.0-rc2 `linux_aarch64` bundled leantar anomaly",
+  "claim_or_cell_to_recheck": "Reinspection of the official Lean 4.30.0-rc2 linuxaarch64 archive confirmed its bundled bin/leantar is x86-64, while the separately released aarch64 leantar is AArch64. The foreign binary was inspected but never executed.",
+  "subject_names": "Lean 4.30.0-rc2 linux_aarch64 archive; leantar v0.1.16 native AArch64 archive",
+  "added_in_issue_3732_e269": "False",
+  "classification_rationale": "Empirical or source-backed behavior depends on the named toolchain pin.",
+  "newer_comparison_target": "Lean/Lake stable v4.34.1; optional prerelease v4.35.0-rc3. Rebuild all OLean/native artifacts.",
+  "report_json_at_commit": "reports/lean-430-rc2-linux-aarch64-leantar-anomaly/REPORT.json",
+  "report_md_at_commit": "reports/lean-430-rc2-linux-aarch64-leantar-anomaly/REPORT.md",
+  "exact_pinned_subject_identities_json": "[{\"name\":\"Lean 4.30.0-rc2 linux_aarch64 archive\",\"identity\":{\"repository\":\"leanprover/lean4\",\"version\":\"v4.30.0-rc2\",\"asset\":\"lean-4.30.0-rc2-linux_aarch64.tar.zst\",\"sha256\":\"b196f41da23960e842fc0fc04749d1639d44839feafc0414e53cb2db6b16790f\"}},{\"name\":\"leantar v0.1.16 native AArch64 archive\",\"identity\":{\"repository\":\"digama0/leangz\",\"version\":\"v0.1.16\",\"asset\":\"leantar-v0.1.16-aarch64-unknown-linux-musl.tar.gz\",\"sha256\":\"26eb775436883e3d5cdad27af35b9c37212c73106316863ea1fc5f8ec2cc9de4\"}}]"
+}

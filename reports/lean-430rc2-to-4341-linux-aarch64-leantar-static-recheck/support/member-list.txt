@@ -1,0 +1,2 @@
+lean-4.34.1-linux_aarch64/bin/leantar
+lean-4.34.1-linux_aarch64/bin/lean

@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "lean/toolchain-archive",
+    "lean/cross-architecture",
+    "leantar",
+    "reproducibility"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.30.0-rc2 linux_aarch64 archive",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.30.0-rc2",
+        "asset": "lean-4.30.0-rc2-linux_aarch64.tar.zst",
+        "sha256": "b196f41da23960e842fc0fc04749d1639d44839feafc0414e53cb2db6b16790f"
+      }
+    },
+    {
+      "name": "leantar v0.1.16 native AArch64 archive",
+      "identity": {
+        "repository": "digama0/leangz",
+        "version": "v0.1.16",
+        "asset": "leantar-v0.1.16-aarch64-unknown-linux-musl.tar.gz",
+        "sha256": "26eb775436883e3d5cdad27af35b9c37212c73106316863ea1fc5f8ec2cc9de4"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

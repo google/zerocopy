@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "frozen_reference_commit": "71f4f352ccaf10afde6fea5a1f1c459c6a36c19e",
+  "baseline_inventory_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "inventory_id": "R443",
+  "predecessor_report_path": "reports/lean-430-rc2-linux-aarch64-leantar-anomaly/REPORT.md",
+  "exact_frozen_claim": "Reinspection of the official Lean 4.30.0-rc2 linuxaarch64 archive confirmed its bundled bin/leantar is x86-64, while the separately released aarch64 leantar is AArch64. The foreign binary was inspected but never executed.",
+  "predecessor_report_md_sha256": "cbfb3b672ae62887cd3726c712fbf374061e502a6c5e674f041fcf2f40257e7d",
+  "predecessor_report_json_sha256": "4602012d78199901c98e2d84bcdc7448cdd4b813aec8e741f8d68f0e04d0a20f",
+  "predecessor_archive_identities_sha256": "15df1213c4399d6419147d5c588e342118e6485fe5415097430b059083d61516",
+  "old": {
+    "tag": "v4.30.0-rc2",
+    "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "archive_name": "lean-4.30.0-rc2-linux_aarch64.tar.zst",
+    "archive_size": 529196053,
+    "archive_sha256": "b196f41da23960e842fc0fc04749d1639d44839feafc0414e53cb2db6b16790f",
+    "bundled_leantar_sha256": "89ef0c3bd2c40e727191bcd406ef3dac95e0b9000ac93cb7f8c681031ad486be",
+    "bundled_leantar_e_machine": 62,
+    "evidence_status": "frozen_predecessor_not_redownloaded"
+  },
+  "new": {
+    "tag": "v4.34.1",
+    "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "archive_name": "lean-4.34.1-linux_aarch64.tar.zst",
+    "archive_url": "https://github.com/leanprover/lean4/releases/download/v4.34.1/lean-4.34.1-linux_aarch64.tar.zst",
+    "archive_size": 581946052,
+    "archive_sha256": "fdb974c2cdb4627e090d5d4007b913e09d13c4868720fb5594e22808b3de9e37",
+    "bundled_leantar_member": "lean-4.34.1-linux_aarch64/bin/leantar",
+    "bundled_leantar_size": 2563160,
+    "bundled_leantar_sha256": "5a7aaf4a60170490640a4463d31f12515f8de00aa9b66a124b1716768fbd62bc",
+    "bundled_leantar_e_machine": 183,
+    "elf_header_sha256": "5b554a65e4e05382dd5b8d47e8be85c660f4f55a638b7e0c8a6a1c66fa3ea522"
+  },
+  "support_files": {
+    "frozen-predecessor-REPORT.json": {
+      "sha256": "4602012d78199901c98e2d84bcdc7448cdd4b813aec8e741f8d68f0e04d0a20f",
+      "size": 808
+    },
+    "frozen-predecessor-REPORT.md": {
+      "sha256": "cbfb3b672ae62887cd3726c712fbf374061e502a6c5e674f041fcf2f40257e7d",
+      "size": 8603
+    },
+    "postdownload.txt": {
+      "sha256": "1b58bc09d18ace11da2c6a19390a6fd93a34924d867fb88cd1db142a4d1c7bec",
+      "size": 652
+    },
+    "frozen-archive-identities.json": {
+      "sha256": "15df1213c4399d6419147d5c588e342118e6485fe5415097430b059083d61516",
+      "size": 800
+    },
+    "member-list.txt": {
+      "sha256": "17a65705bceb7b244a989b8269299056187db1ff2b33bc28d7d362f823677b95",
+      "size": 73
+    },
+    "member-details.txt": {
+      "sha256": "72b29cc922d27a605a538582ac3aac1525861d8655b5af8f8b2ad5599eb4617f",
+      "size": 89
+    },
+    "helper-inspection.txt": {
+      "sha256": "ee8e4b1e601328de8ebad2a31f5e00220599400938c35d864e7cdaab78d790a1",
+      "size": 580
+    },
+    "new-bundled-leantar-elf-header.bin": {
+      "sha256": "5b554a65e4e05382dd5b8d47e8be85c660f4f55a638b7e0c8a6a1c66fa3ea522",
+      "size": 64
+    },
+    "v4.30.0-rc2-release.json": {
+      "sha256": "b8ab1d59fc0fd360189734739afc2696ce8790e6225734ef68f903f04ca67462",
+      "size": 22417
+    },
+    "budget-and-download.txt": {
+      "sha256": "c805f03d93aad63f101d154215f83bcab06786e78968a67f1dfe4baa60a5b0e8",
+      "size": 1418
+    },
+    "frozen-inventory-row.json": {
+      "sha256": "01081a2be29871ec2ee3c69e774e650673e8a8c5557a7ee4fb557faa5a4018a2",
+      "size": 1595
+    },
+    "preflight.txt": {
+      "sha256": "6cb21c71893bd6c1b05f2cddf9b66990a29e4c6c89664d3fa5a3955390e36cbb",
+      "size": 1612
+    },
+    "v4.34.1-release.json": {
+      "sha256": "6f8e30278ebef212f100ba87ec103fa2abea2f62be718862e03b47eabe9d9849",
+      "size": 22249
+    },
+    "tag-refs.txt": {
+      "sha256": "dd950bf4a81258cb44dc8fb61709e2903c8c3ede767e0d0d89cc7aa287dac47c",
+      "size": 122
+    }
+  },
+  "raw_archive_preserved_in_data": "raw/lean-4.34.1-linux_aarch64.tar.zst",
+  "raw_helper_preserved_in_data": "raw/bundled-leantar",
+  "runtime_status": "unexecuted_static_binary_inspection_only",
+  "product_status": "unassessed",
+  "nix_status": "not_invoked"
+}

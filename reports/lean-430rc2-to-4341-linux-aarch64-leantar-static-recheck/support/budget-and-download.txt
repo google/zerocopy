@@ -1,0 +1,10 @@
+at=2026-09-30T23:22:53.607899+00:00
+archive_expected_bytes=581946052
+archive_sha256=sha256:fdb974c2cdb4627e090d5d4007b913e09d13c4868720fb5594e22808b3de9e37
+cap_bytes=1000000000
+command=curl -fL --retry 2 --max-time 300 --max-filesize 600000000 -o lean-4.34.1-linux_aarch64.tar.zst https://github.com/leanprover/lean4/releases/download/v4.34.1/lean-4.34.1-linux_aarch64.tar.zst
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  5  554M    5 29.2M    0     0  42.4M      0  0:00:13 --:--:--  0:00:13 42.4M 18  554M   18  100M    0     0  59.3M      0  0:00:09  0:00:01  0:00:08 70.9M 31  554M   31  175M    0     0  65.1M      0  0:00:08  0:00:02  0:00:06 73.0M 45  554M   45  251M    0     0  68.2M      0  0:00:08  0:00:03  0:00:05 74.2M 58  554M   58  325M    0     0  69.3M      0  0:00:08  0:00:04  0:00:04 73.9M 72  554M   72  403M    0     0  70.9M      0  0:00:07  0:00:05  0:00:02 74.8M 84  554M   84  471M    0     0  70.4M      0  0:00:07  0:00:06  0:00:01 74.2M 95  554M   95  530M    0     0  68.9M      0  0:00:08  0:00:07  0:00:01 70.9M100  554M  100  554M    0     0  67.8M      0  0:00:08  0:00:08 --:--:-- 67.4M
+curl_exit=0

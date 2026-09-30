@@ -1,0 +1,7 @@
+Wed Sep 30 23:23:45 UTC 2026
+Filesystem      Size    Used   Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s1   228Gi   178Gi    16Gi    92%    2.4M  173M    1%   /System/Volumes/Data
+The system has 8589934592 (524288 pages with a page size of 16384).
+System-wide memory free percentage: 61%
+561M	/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/lean-4341-linux-aarch64-leantar-20260930/raw/lean-4.34.1-linux_aarch64.tar.zst
+fdb974c2cdb4627e090d5d4007b913e09d13c4868720fb5594e22808b3de9e37  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/lean-4341-linux-aarch64-leantar-20260930/raw/lean-4.34.1-linux_aarch64.tar.zst

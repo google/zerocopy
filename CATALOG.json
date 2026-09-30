@@ -14797,6 +14797,45 @@
         "reproducibility"
       ]
     },
+    "lean-430rc2-to-4341-linux-aarch64-leantar-static-recheck": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "path": "reports/lean-430-rc2-linux-aarch64-leantar-anomaly/REPORT.md",
+            "repository": "google/zerocopy",
+            "revision": "71f4f352ccaf10afde6fea5a1f1c459c6a36c19e"
+          },
+          "name": "Frozen R443 predecessor report"
+        },
+        {
+          "identity": {
+            "asset": "lean-4.30.0-rc2-linux_aarch64.tar.zst",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "sha256": "b196f41da23960e842fc0fc04749d1639d44839feafc0414e53cb2db6b16790f",
+            "tag": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2 Linux AArch64 archive"
+        },
+        {
+          "identity": {
+            "asset": "lean-4.34.1-linux_aarch64.tar.zst",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "sha256": "fdb974c2cdb4627e090d5d4007b913e09d13c4868720fb5594e22808b3de9e37",
+            "tag": "v4.34.1"
+          },
+          "name": "Lean v4.34.1 Linux AArch64 archive"
+        }
+      ],
+      "topics": [
+        "lean/toolchain-archive",
+        "lean/cross-architecture",
+        "leantar",
+        "reference/version-review"
+      ]
+    },
     "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2": {
       "observed_at": "2026-09-28",
       "subjects": [
