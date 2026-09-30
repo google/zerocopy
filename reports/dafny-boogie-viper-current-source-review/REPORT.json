@@ -1,0 +1,13 @@
+{
+  "topics": ["verification/dafny", "verification/boogie", "verification/viper", "reference/version-review", "anneal/architecture"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R389", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "2720194c6f74fe5489428adecc1ded39df98b096"}},
+    {"name": "Dafny pinned and observed master source", "identity": {"repository": "dafny-lang/dafny", "branch": "master", "revision": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb"}},
+    {"name": "Boogie pinned and observed master source", "identity": {"repository": "boogie-org/boogie", "branch": "master", "revision": "fcecf73a49d11ad3ab16729abd03169e5ecfd938"}},
+    {"name": "Viper Silver pinned and observed master source", "identity": {"repository": "viperproject/silver", "branch": "master", "revision": "da1c8993b66feb39976e3609e2580a4661137a0f"}},
+    {"name": "Viper Silicon pinned and observed master source", "identity": {"repository": "viperproject/silicon", "branch": "master", "revision": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed"}},
+    {"name": "Viper Carbon pinned and observed master source", "identity": {"repository": "viperproject/carbon", "branch": "master", "revision": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2"}},
+    {"name": "ViperServer pinned and observed master source", "identity": {"repository": "viperproject/viperserver", "branch": "master", "revision": "4cc5bbbe18d4a83e4b398da3904ba9696256611b"}}
+  ],
+  "observed_at": "2026-09-30"
+}
