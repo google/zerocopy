@@ -1,0 +1,35 @@
+{
+  "observed_at": "2026-09-30",
+  "subjects": [
+    {
+      "name": "Current reference parent containing the published v64 ledger and #3732 reports",
+      "identity": {
+        "reference_commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+        "v64_published_commit": "4288c5b97a3dd398c77fe6c9f18e7de3000b1c63",
+        "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v64"
+      }
+    },
+    {
+      "name": "Preseeded valid Lake server goal observation",
+      "identity": {
+        "source_package": "anneal-3731-i092-preseeded-valid-server-goal-2026-09-30",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+        "results_sha256": "8afec7f0e6e0ebcaedb9d690711c6d06dad65f81252caa6556ea85f91da417a4",
+        "checker_sha256": "19293c035edffe9db7d8966e663649c05b2f24978849861dcc0bde590dde7a4f"
+      }
+    },
+    {
+      "name": "Fresh public #3730/#3731 issue snapshot",
+      "identity": {
+        "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "topics": [
+    "anneal/issue-3730-3731",
+    "lake/server-readiness",
+    "lake/preseeded-dependencies",
+    "research/coverage-audit"
+  ]
+}

@@ -1,0 +1,4909 @@
+{
+  "admission": {
+    "disk_free": 18768822272,
+    "memory": {
+      "fraction": 0.31105995178222656,
+      "page_bytes": 16384,
+      "pages": {
+        "active": 160087,
+        "free": 3805,
+        "inactive": 157183,
+        "occupied by compressor": 65137,
+        "purgeable": 2189,
+        "purged": 44490563,
+        "reactivated": 744713950,
+        "speculative": 2097,
+        "stored in compressor": 440310,
+        "throttled": 0,
+        "wired down": 102594,
+        "zero filled": 1597351547
+      },
+      "total_bytes": 8589934592
+    }
+  },
+  "consumer_source_sha256": "086270efb5c0dc2ec7d11571e0fa6499c90f8132dda90119258e77947f58e702",
+  "error": "malformed-server:fresh_admission_denied",
+  "final_disk_free": 18764980224,
+  "final_memory": {
+    "fraction": 0.2983055114746094,
+    "page_bytes": 16384,
+    "pages": {
+      "active": 128729,
+      "free": 28341,
+      "inactive": 124510,
+      "occupied by compressor": 97358,
+      "purgeable": 34,
+      "purged": 44492083,
+      "reactivated": 744786035,
+      "speculative": 3547,
+      "stored in compressor": 506830,
+      "throttled": 0,
+      "wired down": 108486,
+      "zero filled": 1597458486
+    },
+    "total_bytes": 8589934592
+  },
+  "final_scratch_bytes": 235100,
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "manifest_sha256": {
+    "malformed": "a6fb08fda1acb957b6116bd37811a1fe41a01611c0631edbf786d6889a27a55c",
+    "semantic-no-dependency": "4fb28120dd4bd38458daa883b741b9ba8a46af776acbfb7a58dfb015d1af758c",
+    "valid": "4cf0c1b12e990e08af5075710832c08e1df761220ab141edb2da7211cb2fd230"
+  },
+  "phases": {
+    "malformed": {
+      "cache_before": {
+        "artifacts/00bf8030d25f958c.olean": {
+          "mtime_ns": 1790777960270859041,
+          "sha256": "4c8a3564f561cc455c41b9799b3d74f8eaa0fee4acab4ee57cb248834a6870ed",
+          "size": 4152
+        },
+        "artifacts/2e5e5f54056bf16f.c": {
+          "mtime_ns": 1790777960271297290,
+          "sha256": "e51cdeedb34d395fab591e49007fc31d428c725cb9263bc1c19ffc29028f692b",
+          "size": 1258
+        },
+        "artifacts/3df289e2daffc40d.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "artifacts/4ab07c203eb6f06e.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "artifacts/c5d35a822517caef.ilean": {
+          "mtime_ns": 1790777960271192124,
+          "sha256": "d057a545620ef5168b34f0926277eb6cf9e06e41fe779a7e1a290ac26fa16de4",
+          "size": 371
+        },
+        "artifacts/d2264521cb1531dd.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "outputs/consumer/f79d925d4225b900.json": {
+          "mtime_ns": 1790777960279524894,
+          "sha256": "fd521b28bfc2a0b540353cab48da63efb1c2c779a200e4bd4a7c0cc2ba4b7240",
+          "size": 170
+        },
+        "outputs/probe_dep/bc2ee9095550ff31.json": {
+          "mtime_ns": 1790777960093391276,
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "size": 170
+        }
+      },
+      "manifest_sha256": "a6fb08fda1acb957b6116bd37811a1fe41a01611c0631edbf786d6889a27a55c",
+      "producer_before": {
+        ".lake/build/ir/Dep.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790777960093151818,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790777959913095477,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790777960092787153,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790777960092365237,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790777960091886155,
+          "sha256": "3684e4fa265a71b1af7fe13b4ce9394f51aac75902200872a0f57774d2bf4149",
+          "size": 2177
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "mtime_ns": 1790777959911482356,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "size": 96288
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "mtime_ns": 1790777959881671513,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "size": 182
+        },
+        "Dep.lean": {
+          "mtime_ns": 1790777959530633016,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "lake-manifest.json": {
+          "mtime_ns": 1790777959530699599,
+          "sha256": "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+          "size": 150
+        },
+        "lakefile.lean": {
+          "mtime_ns": 1790777959530563391,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "lean-toolchain": {
+          "mtime_ns": 1790777959530961306,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      }
+    },
+    "valid": {
+      "cache_after": {
+        "artifacts/00bf8030d25f958c.olean": {
+          "mtime_ns": 1790777960270859041,
+          "sha256": "4c8a3564f561cc455c41b9799b3d74f8eaa0fee4acab4ee57cb248834a6870ed",
+          "size": 4152
+        },
+        "artifacts/2e5e5f54056bf16f.c": {
+          "mtime_ns": 1790777960271297290,
+          "sha256": "e51cdeedb34d395fab591e49007fc31d428c725cb9263bc1c19ffc29028f692b",
+          "size": 1258
+        },
+        "artifacts/3df289e2daffc40d.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "artifacts/4ab07c203eb6f06e.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "artifacts/c5d35a822517caef.ilean": {
+          "mtime_ns": 1790777960271192124,
+          "sha256": "d057a545620ef5168b34f0926277eb6cf9e06e41fe779a7e1a290ac26fa16de4",
+          "size": 371
+        },
+        "artifacts/d2264521cb1531dd.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "outputs/consumer/f79d925d4225b900.json": {
+          "mtime_ns": 1790777960279524894,
+          "sha256": "fd521b28bfc2a0b540353cab48da63efb1c2c779a200e4bd4a7c0cc2ba4b7240",
+          "size": 170
+        },
+        "outputs/probe_dep/bc2ee9095550ff31.json": {
+          "mtime_ns": 1790777960093391276,
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "size": 170
+        }
+      },
+      "cache_before": {
+        "artifacts/00bf8030d25f958c.olean": {
+          "mtime_ns": 1790777960270859041,
+          "sha256": "4c8a3564f561cc455c41b9799b3d74f8eaa0fee4acab4ee57cb248834a6870ed",
+          "size": 4152
+        },
+        "artifacts/2e5e5f54056bf16f.c": {
+          "mtime_ns": 1790777960271297290,
+          "sha256": "e51cdeedb34d395fab591e49007fc31d428c725cb9263bc1c19ffc29028f692b",
+          "size": 1258
+        },
+        "artifacts/3df289e2daffc40d.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "artifacts/4ab07c203eb6f06e.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "artifacts/c5d35a822517caef.ilean": {
+          "mtime_ns": 1790777960271192124,
+          "sha256": "d057a545620ef5168b34f0926277eb6cf9e06e41fe779a7e1a290ac26fa16de4",
+          "size": 371
+        },
+        "artifacts/d2264521cb1531dd.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "outputs/consumer/f79d925d4225b900.json": {
+          "mtime_ns": 1790777960279524894,
+          "sha256": "fd521b28bfc2a0b540353cab48da63efb1c2c779a200e4bd4a7c0cc2ba4b7240",
+          "size": 170
+        },
+        "outputs/probe_dep/bc2ee9095550ff31.json": {
+          "mtime_ns": 1790777960093391276,
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "size": 170
+        }
+      },
+      "consumer_after": {
+        ".lake/build/ir/Generated.c": {
+          "mtime_ns": 1790777960271297290,
+          "sha256": "e51cdeedb34d395fab591e49007fc31d428c725cb9263bc1c19ffc29028f692b",
+          "size": 1258
+        },
+        ".lake/build/ir/Generated.c.hash": {
+          "mtime_ns": 1790777960279365145,
+          "sha256": "35e2de2e1bf885ecc317555e1d765feb8e1c9b4a4d7ae6ec8cbf2bc3fd28d1c9",
+          "size": 16
+        },
+        ".lake/build/ir/Generated.setup.json": {
+          "mtime_ns": 1790777960093804900,
+          "sha256": "99c6f67c6083255958884e35d6f7731dcd1628cf2e8554d34abcd925a442675a",
+          "size": 284
+        },
+        ".lake/build/lib/lean/Generated.ilean": {
+          "mtime_ns": 1790777960271192124,
+          "sha256": "d057a545620ef5168b34f0926277eb6cf9e06e41fe779a7e1a290ac26fa16de4",
+          "size": 371
+        },
+        ".lake/build/lib/lean/Generated.ilean.hash": {
+          "mtime_ns": 1790777960278911479,
+          "sha256": "0733a8953b47d9e8775f7f92f0f838c487e7c5c8fa36326ddc079eaec27f5ca1",
+          "size": 16
+        },
+        ".lake/build/lib/lean/Generated.olean": {
+          "mtime_ns": 1790777960270859041,
+          "sha256": "4c8a3564f561cc455c41b9799b3d74f8eaa0fee4acab4ee57cb248834a6870ed",
+          "size": 4152
+        },
+        ".lake/build/lib/lean/Generated.olean.hash": {
+          "mtime_ns": 1790777960278464147,
+          "sha256": "80e2b8930cb7576304aa0c544cc1cb4eb6a2fb4fedd4f5cb7e3d53b25be5e930",
+          "size": 16
+        },
+        ".lake/build/lib/lean/Generated.trace": {
+          "mtime_ns": 1790777960278023315,
+          "sha256": "78f3c4820dd6f8cb8ce469eb532381cf06d7bec7600c691cd911529564879fa1",
+          "size": 2389
+        },
+        ".lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790777959880115226,
+          "sha256": "747504419341ae1bc7739268f4f8dd2272b50b824c7a25968a600b4b71c23865",
+          "size": 108432
+        },
+        ".lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790777959562354895,
+          "sha256": "d2791c668ba043b1c2bb8ff8eed9c27e5bbe0a26b7c106b8747aae702dfa2e05",
+          "size": 184
+        },
+        "Generated.lean": {
+          "mtime_ns": 1790777959530825557,
+          "sha256": "086270efb5c0dc2ec7d11571e0fa6499c90f8132dda90119258e77947f58e702",
+          "size": 71
+        },
+        "lake-manifest.json": {
+          "mtime_ns": 1790777962757042288,
+          "sha256": "4cf0c1b12e990e08af5075710832c08e1df761220ab141edb2da7211cb2fd230",
+          "size": 366
+        },
+        "lakefile.lean": {
+          "mtime_ns": 1790777959530764765,
+          "sha256": "7bb73c3cab9e353fb3512d4fc998a2bd6c6193ee62cdf54cca05c5b465bd72a8",
+          "size": 117
+        },
+        "lean-toolchain": {
+          "mtime_ns": 1790777959531036306,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "manifest_sha256": "4cf0c1b12e990e08af5075710832c08e1df761220ab141edb2da7211cb2fd230",
+      "producer_after": {
+        ".lake/build/ir/Dep.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790777960093151818,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790777959913095477,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790777960092787153,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790777960092365237,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790777960091886155,
+          "sha256": "3684e4fa265a71b1af7fe13b4ce9394f51aac75902200872a0f57774d2bf4149",
+          "size": 2177
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "mtime_ns": 1790777959911482356,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "size": 96288
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "mtime_ns": 1790777959881671513,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "size": 182
+        },
+        "Dep.lean": {
+          "mtime_ns": 1790777959530633016,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "lake-manifest.json": {
+          "mtime_ns": 1790777959530699599,
+          "sha256": "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+          "size": 150
+        },
+        "lakefile.lean": {
+          "mtime_ns": 1790777959530563391,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "lean-toolchain": {
+          "mtime_ns": 1790777959530961306,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "producer_before": {
+        ".lake/build/ir/Dep.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790777960093151818,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790777959913095477,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790777960092787153,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790777960092365237,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790777960091886155,
+          "sha256": "3684e4fa265a71b1af7fe13b4ce9394f51aac75902200872a0f57774d2bf4149",
+          "size": 2177
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "mtime_ns": 1790777959911482356,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "size": 96288
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "mtime_ns": 1790777959881671513,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "size": 182
+        },
+        "Dep.lean": {
+          "mtime_ns": 1790777959530633016,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "lake-manifest.json": {
+          "mtime_ns": 1790777959530699599,
+          "sha256": "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+          "size": 150
+        },
+        "lakefile.lean": {
+          "mtime_ns": 1790777959530563391,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "lean-toolchain": {
+          "mtime_ns": 1790777959530961306,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      }
+    }
+  },
+  "preseed_sha256": "853d5f9de66c5e554f0e8482b1ab39fdddca2ae66e87a8c74fd39a3688e5a272",
+  "producer_source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+  "runs": [
+    {
+      "abort": null,
+      "after": {
+        "cache/artifacts/00bf8030d25f958c.olean": {
+          "mtime_ns": 1790777960270859041,
+          "sha256": "4c8a3564f561cc455c41b9799b3d74f8eaa0fee4acab4ee57cb248834a6870ed",
+          "size": 4152
+        },
+        "cache/artifacts/2e5e5f54056bf16f.c": {
+          "mtime_ns": 1790777960271297290,
+          "sha256": "e51cdeedb34d395fab591e49007fc31d428c725cb9263bc1c19ffc29028f692b",
+          "size": 1258
+        },
+        "cache/artifacts/3df289e2daffc40d.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "cache/artifacts/4ab07c203eb6f06e.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "cache/artifacts/c5d35a822517caef.ilean": {
+          "mtime_ns": 1790777960271192124,
+          "sha256": "d057a545620ef5168b34f0926277eb6cf9e06e41fe779a7e1a290ac26fa16de4",
+          "size": 371
+        },
+        "cache/artifacts/d2264521cb1531dd.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "cache/outputs/consumer/f79d925d4225b900.json": {
+          "mtime_ns": 1790777960279524894,
+          "sha256": "fd521b28bfc2a0b540353cab48da63efb1c2c779a200e4bd4a7c0cc2ba4b7240",
+          "size": 170
+        },
+        "cache/outputs/probe_dep/bc2ee9095550ff31.json": {
+          "mtime_ns": 1790777960093391276,
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "size": 170
+        },
+        "consumer/.lake/build/ir/Generated.c": {
+          "mtime_ns": 1790777960271297290,
+          "sha256": "e51cdeedb34d395fab591e49007fc31d428c725cb9263bc1c19ffc29028f692b",
+          "size": 1258
+        },
+        "consumer/.lake/build/ir/Generated.c.hash": {
+          "mtime_ns": 1790777960279365145,
+          "sha256": "35e2de2e1bf885ecc317555e1d765feb8e1c9b4a4d7ae6ec8cbf2bc3fd28d1c9",
+          "size": 16
+        },
+        "consumer/.lake/build/ir/Generated.setup.json": {
+          "mtime_ns": 1790777960093804900,
+          "sha256": "99c6f67c6083255958884e35d6f7731dcd1628cf2e8554d34abcd925a442675a",
+          "size": 284
+        },
+        "consumer/.lake/build/lib/lean/Generated.ilean": {
+          "mtime_ns": 1790777960271192124,
+          "sha256": "d057a545620ef5168b34f0926277eb6cf9e06e41fe779a7e1a290ac26fa16de4",
+          "size": 371
+        },
+        "consumer/.lake/build/lib/lean/Generated.ilean.hash": {
+          "mtime_ns": 1790777960278911479,
+          "sha256": "0733a8953b47d9e8775f7f92f0f838c487e7c5c8fa36326ddc079eaec27f5ca1",
+          "size": 16
+        },
+        "consumer/.lake/build/lib/lean/Generated.olean": {
+          "mtime_ns": 1790777960270859041,
+          "sha256": "4c8a3564f561cc455c41b9799b3d74f8eaa0fee4acab4ee57cb248834a6870ed",
+          "size": 4152
+        },
+        "consumer/.lake/build/lib/lean/Generated.olean.hash": {
+          "mtime_ns": 1790777960278464147,
+          "sha256": "80e2b8930cb7576304aa0c544cc1cb4eb6a2fb4fedd4f5cb7e3d53b25be5e930",
+          "size": 16
+        },
+        "consumer/.lake/build/lib/lean/Generated.trace": {
+          "mtime_ns": 1790777960278023315,
+          "sha256": "78f3c4820dd6f8cb8ce469eb532381cf06d7bec7600c691cd911529564879fa1",
+          "size": 2389
+        },
+        "consumer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790777959880115226,
+          "sha256": "747504419341ae1bc7739268f4f8dd2272b50b824c7a25968a600b4b71c23865",
+          "size": 108432
+        },
+        "consumer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790777959562354895,
+          "sha256": "d2791c668ba043b1c2bb8ff8eed9c27e5bbe0a26b7c106b8747aae702dfa2e05",
+          "size": 184
+        },
+        "consumer/Generated.lean": {
+          "mtime_ns": 1790777959530825557,
+          "sha256": "086270efb5c0dc2ec7d11571e0fa6499c90f8132dda90119258e77947f58e702",
+          "size": 71
+        },
+        "consumer/lake-manifest.json": {
+          "mtime_ns": 1790777962757042288,
+          "sha256": "4cf0c1b12e990e08af5075710832c08e1df761220ab141edb2da7211cb2fd230",
+          "size": 366
+        },
+        "consumer/lakefile.lean": {
+          "mtime_ns": 1790777959530764765,
+          "sha256": "7bb73c3cab9e353fb3512d4fc998a2bd6c6193ee62cdf54cca05c5b465bd72a8",
+          "size": 117
+        },
+        "consumer/lean-toolchain": {
+          "mtime_ns": 1790777959531036306,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790777960093151818,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790777959913095477,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790777960092787153,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790777960092365237,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790777960091886155,
+          "sha256": "3684e4fa265a71b1af7fe13b4ce9394f51aac75902200872a0f57774d2bf4149",
+          "size": 2177
+        },
+        "producer/.lake/config/probe_dep/lakefile.olean": {
+          "mtime_ns": 1790777959911482356,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "size": 96288
+        },
+        "producer/.lake/config/probe_dep/lakefile.olean.trace": {
+          "mtime_ns": 1790777959881671513,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "size": 182
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790777959530633016,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790777959530699599,
+          "sha256": "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+          "size": 150
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790777959530563391,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790777959530961306,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-ansi",
+        "--no-build",
+        "--no-cache",
+        "serve"
+      ],
+      "before": {
+        "cache/artifacts/00bf8030d25f958c.olean": {
+          "mtime_ns": 1790777960270859041,
+          "sha256": "4c8a3564f561cc455c41b9799b3d74f8eaa0fee4acab4ee57cb248834a6870ed",
+          "size": 4152
+        },
+        "cache/artifacts/2e5e5f54056bf16f.c": {
+          "mtime_ns": 1790777960271297290,
+          "sha256": "e51cdeedb34d395fab591e49007fc31d428c725cb9263bc1c19ffc29028f692b",
+          "size": 1258
+        },
+        "cache/artifacts/3df289e2daffc40d.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "cache/artifacts/4ab07c203eb6f06e.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "cache/artifacts/c5d35a822517caef.ilean": {
+          "mtime_ns": 1790777960271192124,
+          "sha256": "d057a545620ef5168b34f0926277eb6cf9e06e41fe779a7e1a290ac26fa16de4",
+          "size": 371
+        },
+        "cache/artifacts/d2264521cb1531dd.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "cache/outputs/consumer/f79d925d4225b900.json": {
+          "mtime_ns": 1790777960279524894,
+          "sha256": "fd521b28bfc2a0b540353cab48da63efb1c2c779a200e4bd4a7c0cc2ba4b7240",
+          "size": 170
+        },
+        "cache/outputs/probe_dep/bc2ee9095550ff31.json": {
+          "mtime_ns": 1790777960093391276,
+          "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+          "size": 170
+        },
+        "consumer/.lake/build/ir/Generated.c": {
+          "mtime_ns": 1790777960271297290,
+          "sha256": "e51cdeedb34d395fab591e49007fc31d428c725cb9263bc1c19ffc29028f692b",
+          "size": 1258
+        },
+        "consumer/.lake/build/ir/Generated.c.hash": {
+          "mtime_ns": 1790777960279365145,
+          "sha256": "35e2de2e1bf885ecc317555e1d765feb8e1c9b4a4d7ae6ec8cbf2bc3fd28d1c9",
+          "size": 16
+        },
+        "consumer/.lake/build/ir/Generated.setup.json": {
+          "mtime_ns": 1790777960093804900,
+          "sha256": "99c6f67c6083255958884e35d6f7731dcd1628cf2e8554d34abcd925a442675a",
+          "size": 284
+        },
+        "consumer/.lake/build/lib/lean/Generated.ilean": {
+          "mtime_ns": 1790777960271192124,
+          "sha256": "d057a545620ef5168b34f0926277eb6cf9e06e41fe779a7e1a290ac26fa16de4",
+          "size": 371
+        },
+        "consumer/.lake/build/lib/lean/Generated.ilean.hash": {
+          "mtime_ns": 1790777960278911479,
+          "sha256": "0733a8953b47d9e8775f7f92f0f838c487e7c5c8fa36326ddc079eaec27f5ca1",
+          "size": 16
+        },
+        "consumer/.lake/build/lib/lean/Generated.olean": {
+          "mtime_ns": 1790777960270859041,
+          "sha256": "4c8a3564f561cc455c41b9799b3d74f8eaa0fee4acab4ee57cb248834a6870ed",
+          "size": 4152
+        },
+        "consumer/.lake/build/lib/lean/Generated.olean.hash": {
+          "mtime_ns": 1790777960278464147,
+          "sha256": "80e2b8930cb7576304aa0c544cc1cb4eb6a2fb4fedd4f5cb7e3d53b25be5e930",
+          "size": 16
+        },
+        "consumer/.lake/build/lib/lean/Generated.trace": {
+          "mtime_ns": 1790777960278023315,
+          "sha256": "78f3c4820dd6f8cb8ce469eb532381cf06d7bec7600c691cd911529564879fa1",
+          "size": 2389
+        },
+        "consumer/.lake/config/[anonymous]/lakefile.olean": {
+          "mtime_ns": 1790777959880115226,
+          "sha256": "747504419341ae1bc7739268f4f8dd2272b50b824c7a25968a600b4b71c23865",
+          "size": 108432
+        },
+        "consumer/.lake/config/[anonymous]/lakefile.olean.trace": {
+          "mtime_ns": 1790777959562354895,
+          "sha256": "d2791c668ba043b1c2bb8ff8eed9c27e5bbe0a26b7c106b8747aae702dfa2e05",
+          "size": 184
+        },
+        "consumer/Generated.lean": {
+          "mtime_ns": 1790777959530825557,
+          "sha256": "086270efb5c0dc2ec7d11571e0fa6499c90f8132dda90119258e77947f58e702",
+          "size": 71
+        },
+        "consumer/lake-manifest.json": {
+          "mtime_ns": 1790777962757042288,
+          "sha256": "4cf0c1b12e990e08af5075710832c08e1df761220ab141edb2da7211cb2fd230",
+          "size": 366
+        },
+        "consumer/lakefile.lean": {
+          "mtime_ns": 1790777959530764765,
+          "sha256": "7bb73c3cab9e353fb3512d4fc998a2bd6c6193ee62cdf54cca05c5b465bd72a8",
+          "size": 117
+        },
+        "consumer/lean-toolchain": {
+          "mtime_ns": 1790777959531036306,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        },
+        "producer/.lake/build/ir/Dep.c": {
+          "mtime_ns": 1790777960085330546,
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366
+        },
+        "producer/.lake/build/ir/Dep.c.hash": {
+          "mtime_ns": 1790777960093151818,
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16
+        },
+        "producer/.lake/build/ir/Dep.setup.json": {
+          "mtime_ns": 1790777959913095477,
+          "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+          "size": 127
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean": {
+          "mtime_ns": 1790777960085203088,
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289
+        },
+        "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+          "mtime_ns": 1790777960092787153,
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.olean": {
+          "mtime_ns": 1790777960084882714,
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616
+        },
+        "producer/.lake/build/lib/lean/Dep.olean.hash": {
+          "mtime_ns": 1790777960092365237,
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16
+        },
+        "producer/.lake/build/lib/lean/Dep.trace": {
+          "mtime_ns": 1790777960091886155,
+          "sha256": "3684e4fa265a71b1af7fe13b4ce9394f51aac75902200872a0f57774d2bf4149",
+          "size": 2177
+        },
+        "producer/.lake/config/probe_dep/lakefile.olean": {
+          "mtime_ns": 1790777959911482356,
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "size": 96288
+        },
+        "producer/.lake/config/probe_dep/lakefile.olean.trace": {
+          "mtime_ns": 1790777959881671513,
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "size": 182
+        },
+        "producer/Dep.lean": {
+          "mtime_ns": 1790777959530633016,
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24
+        },
+        "producer/lake-manifest.json": {
+          "mtime_ns": 1790777959530699599,
+          "sha256": "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+          "size": 150
+        },
+        "producer/lakefile.lean": {
+          "mtime_ns": 1790777959530563391,
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75
+        },
+        "producer/lean-toolchain": {
+          "mtime_ns": 1790777959530961306,
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29
+        }
+      },
+      "client_errors": [],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer",
+      "decoded_messages": [
+        {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        },
+        {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "method": "client/registerCapability",
+          "params": {
+            "registrations": [
+              {
+                "id": "lean_watcher",
+                "method": "workspace/didChangeWatchedFiles",
+                "registerOptions": {
+                  "watchers": [
+                    {
+                      "globPattern": "**/*.lean"
+                    },
+                    {
+                      "globPattern": "**/*.ilean"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+            "version": 1
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+            "version": 1
+          }
+        },
+        {
+          "id": 0,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 41,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 41,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 41,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 41,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 41,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+            "version": 1
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 14,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "message": "7",
+                "range": {
+                  "end": {
+                    "character": 5,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                },
+                "severity": 3,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+            "version": 1
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "method": "workspace/semanticTokens/refresh"
+        },
+        {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 5,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 6,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 7,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 8,
+          "jsonrpc": "2.0",
+          "method": "workspace/semanticTokens/refresh"
+        },
+        {
+          "id": 9,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 10,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 11,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        },
+        {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "\u22a2 depValue = 7"
+            ],
+            "rendered": "```lean\n\u22a2 depValue = 7\n```"
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+            "version": 1
+          }
+        },
+        {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      ],
+      "diagnostic_wait_seconds": 6.0809,
+      "elapsed": 9.5118,
+      "env_overrides": {
+        "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+        "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/home",
+        "LAKE_ARTIFACT_CACHE": "false",
+        "LAKE_CACHE_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/cache",
+        "LAKE_NO_CACHE": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1",
+        "LEAN_PATH": null,
+        "XDG_CACHE_HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/xdg"
+      },
+      "exit": 0,
+      "first_diagnostic_observed": true,
+      "goal_response": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 depValue = 7"
+          ],
+          "rendered": "```lean\n\u22a2 depValue = 7\n```"
+        }
+      },
+      "label": "valid-server",
+      "opened": true,
+      "pid": 17596,
+      "readiness_quiescent": true,
+      "received_events": [
+        {
+          "elapsed": 3.2677,
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "result": {
+              "capabilities": {
+                "callHierarchyProvider": true,
+                "codeActionProvider": {
+                  "codeActionKinds": [
+                    "quickfix",
+                    "refactor",
+                    "source.organizeImports"
+                  ],
+                  "resolveProvider": true,
+                  "workDoneProgress": false
+                },
+                "colorProvider": {
+                  "workDoneProgress": false
+                },
+                "completionProvider": {
+                  "resolveProvider": true,
+                  "triggerCharacters": [
+                    "."
+                  ]
+                },
+                "declarationProvider": true,
+                "definitionProvider": true,
+                "documentHighlightProvider": true,
+                "documentSymbolProvider": true,
+                "experimental": {
+                  "moduleHierarchyProvider": {},
+                  "rpcProvider": {
+                    "highlightMatchesProvider": {},
+                    "rpcWireFormat": "v1"
+                  }
+                },
+                "foldingRangeProvider": true,
+                "hoverProvider": true,
+                "inlayHintProvider": {
+                  "resolveProvider": false,
+                  "workDoneProgress": false
+                },
+                "referencesProvider": true,
+                "renameProvider": {
+                  "prepareProvider": true
+                },
+                "semanticTokensProvider": {
+                  "full": true,
+                  "legend": {
+                    "tokenModifiers": [
+                      "declaration",
+                      "definition",
+                      "readonly",
+                      "static",
+                      "deprecated",
+                      "abstract",
+                      "async",
+                      "modification",
+                      "documentation",
+                      "defaultLibrary"
+                    ],
+                    "tokenTypes": [
+                      "keyword",
+                      "variable",
+                      "property",
+                      "function",
+                      "namespace",
+                      "type",
+                      "class",
+                      "enum",
+                      "interface",
+                      "struct",
+                      "typeParameter",
+                      "parameter",
+                      "enumMember",
+                      "event",
+                      "method",
+                      "macro",
+                      "modifier",
+                      "comment",
+                      "string",
+                      "number",
+                      "regexp",
+                      "operator",
+                      "decorator",
+                      "leanSorryLike"
+                    ]
+                  },
+                  "range": true
+                },
+                "signatureHelpProvider": {
+                  "triggerCharacters": [
+                    " "
+                  ],
+                  "workDoneProgress": false
+                },
+                "textDocumentSync": {
+                  "change": 2,
+                  "openClose": true,
+                  "save": {
+                    "includeText": true
+                  },
+                  "willSave": false,
+                  "willSaveWaitUntil": false
+                },
+                "typeDefinitionProvider": true,
+                "workspaceSymbolProvider": true
+              },
+              "serverInfo": {
+                "name": "Lean 4 Server",
+                "version": "0.3.0"
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.2693,
+          "message": {
+            "id": "register_lean_watcher",
+            "jsonrpc": "2.0",
+            "method": "client/registerCapability",
+            "params": {
+              "registrations": [
+                {
+                  "id": "lean_watcher",
+                  "method": "workspace/didChangeWatchedFiles",
+                  "registerOptions": {
+                    "watchers": [
+                      {
+                        "globPattern": "**/*.lean"
+                      },
+                      {
+                        "globPattern": "**/*.ilean"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "elapsed": 3.2703,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.5148,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.5148,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "elapsed": 3.8037,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "elapsed": 3.821,
+          "message": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 3.9749,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 44,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9752,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 44,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9906,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 44,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 41,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9914,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 44,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 41,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9915,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 44,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 41,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9915,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 44,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 41,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9929,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 44,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 41,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9936,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9937,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9939,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9954,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9956,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9956,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9957,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "elapsed": 3.9957,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 3.9971,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 14,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 4.0081,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 4.0084,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  },
+                  "message": "7",
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "elapsed": 4.0086,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 4.0087,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 4.343,
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 4.8731,
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 5.391,
+          "message": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "elapsed": 5.4028,
+          "message": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 5.9331,
+          "message": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 6.4632,
+          "message": {
+            "id": 6,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 6.985,
+          "message": {
+            "id": 7,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 7.4831,
+          "message": {
+            "id": 8,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "elapsed": 7.5151,
+          "message": {
+            "id": 9,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 8.0452,
+          "message": {
+            "id": 10,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 8.5754,
+          "message": {
+            "id": 11,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "elapsed": 9.3555,
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "\u22a2 depValue = 7"
+              ],
+              "rendered": "```lean\n\u22a2 depValue = 7\n```"
+            }
+          }
+        },
+        {
+          "elapsed": 9.3564,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "elapsed": 9.3621,
+          "message": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        }
+      ],
+      "resource_samples": [
+        {
+          "disk_free": 18768814080,
+          "elapsed": 0.0001,
+          "group_rss_kib": 160,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 160
+            }
+          ],
+          "reclaimable": 0.31089019775390625,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768814080,
+          "elapsed": 0.1254,
+          "group_rss_kib": 21984,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 21984
+            }
+          ],
+          "reclaimable": 0.31117820739746094,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768814080,
+          "elapsed": 0.247,
+          "group_rss_kib": 44288,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 44288
+            }
+          ],
+          "reclaimable": 0.31175994873046875,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768814080,
+          "elapsed": 0.367,
+          "group_rss_kib": 60000,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 60000
+            }
+          ],
+          "reclaimable": 0.3115501403808594,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768814080,
+          "elapsed": 0.4896,
+          "group_rss_kib": 75056,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 75056
+            }
+          ],
+          "reclaimable": 0.3092384338378906,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768809984,
+          "elapsed": 0.6118,
+          "group_rss_kib": 90624,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 90624
+            }
+          ],
+          "reclaimable": 0.3083915710449219,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768809984,
+          "elapsed": 0.7347,
+          "group_rss_kib": 106448,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 106448
+            }
+          ],
+          "reclaimable": 0.30826377868652344,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768781312,
+          "elapsed": 0.8569,
+          "group_rss_kib": 120464,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 120464
+            }
+          ],
+          "reclaimable": 0.30747032165527344,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769256448,
+          "elapsed": 0.9784,
+          "group_rss_kib": 134608,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 134608
+            }
+          ],
+          "reclaimable": 0.30731964111328125,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 1.1002,
+          "group_rss_kib": 149136,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 149136
+            }
+          ],
+          "reclaimable": 0.3067035675048828,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 1.2221,
+          "group_rss_kib": 168624,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 168624
+            }
+          ],
+          "reclaimable": 0.3061542510986328,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 1.3441,
+          "group_rss_kib": 205920,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 205920
+            }
+          ],
+          "reclaimable": 0.30603599548339844,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 1.4669,
+          "group_rss_kib": 250032,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 250032
+            }
+          ],
+          "reclaimable": 0.3062019348144531,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 1.5918,
+          "group_rss_kib": 292592,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 292592
+            }
+          ],
+          "reclaimable": 0.30632972717285156,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 1.7061,
+          "group_rss_kib": 325744,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 325744
+            }
+          ],
+          "reclaimable": 0.3061256408691406,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 1.8262,
+          "group_rss_kib": 361376,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 361376
+            }
+          ],
+          "reclaimable": 0.3059844970703125,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 1.9463,
+          "group_rss_kib": 392016,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 392016
+            }
+          ],
+          "reclaimable": 0.30596160888671875,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769154048,
+          "elapsed": 2.0726,
+          "group_rss_kib": 425824,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 425824
+            }
+          ],
+          "reclaimable": 0.30582618713378906,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 2.206,
+          "group_rss_kib": 455424,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 455424
+            }
+          ],
+          "reclaimable": 0.3056964874267578,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 2.3241,
+          "group_rss_kib": 479104,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 479104
+            }
+          ],
+          "reclaimable": 0.3055915832519531,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 2.4406,
+          "group_rss_kib": 502496,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 502496
+            }
+          ],
+          "reclaimable": 0.304656982421875,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 2.5728,
+          "group_rss_kib": 523360,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 523360
+            }
+          ],
+          "reclaimable": 0.3033580780029297,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 2.6933,
+          "group_rss_kib": 539792,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 539792
+            }
+          ],
+          "reclaimable": 0.30239295959472656,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 2.8178,
+          "group_rss_kib": 561440,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 561440
+            }
+          ],
+          "reclaimable": 0.3018608093261719,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 2.9385,
+          "group_rss_kib": 583632,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 583632
+            }
+          ],
+          "reclaimable": 0.3008537292480469,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 3.0637,
+          "group_rss_kib": 617936,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 617936
+            }
+          ],
+          "reclaimable": 0.2991008758544922,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18769100800,
+          "elapsed": 3.1897,
+          "group_rss_kib": 636928,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 636704
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 224
+            }
+          ],
+          "reclaimable": 0.2983055114746094,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768924672,
+          "elapsed": 3.3104,
+          "group_rss_kib": 685520,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 49936
+            }
+          ],
+          "reclaimable": 0.2956714630126953,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768711680,
+          "elapsed": 3.4404,
+          "group_rss_kib": 691664,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 56080
+            }
+          ],
+          "reclaimable": 0.2916851043701172,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768711680,
+          "elapsed": 3.5682,
+          "group_rss_kib": 701872,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 66288
+            }
+          ],
+          "reclaimable": 0.2877464294433594,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768666624,
+          "elapsed": 3.6939,
+          "group_rss_kib": 712160,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 76576
+            }
+          ],
+          "reclaimable": 0.28518104553222656,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768666624,
+          "elapsed": 3.8191,
+          "group_rss_kib": 722208,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 86624
+            }
+          ],
+          "reclaimable": 0.28955078125,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768666624,
+          "elapsed": 3.9459,
+          "group_rss_kib": 731776,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 96192
+            }
+          ],
+          "reclaimable": 0.2863445281982422,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768666624,
+          "elapsed": 4.069,
+          "group_rss_kib": 744784,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 109200
+            }
+          ],
+          "reclaimable": 0.287353515625,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768666624,
+          "elapsed": 4.1893,
+          "group_rss_kib": 752864,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 117280
+            }
+          ],
+          "reclaimable": 0.2867698669433594,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768605184,
+          "elapsed": 4.3111,
+          "group_rss_kib": 761104,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 125520
+            }
+          ],
+          "reclaimable": 0.28692054748535156,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768576512,
+          "elapsed": 4.4346,
+          "group_rss_kib": 770320,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 134736
+            }
+          ],
+          "reclaimable": 0.28569602966308594,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768658432,
+          "elapsed": 4.5582,
+          "group_rss_kib": 780496,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 144912
+            }
+          ],
+          "reclaimable": 0.2858562469482422,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768658432,
+          "elapsed": 4.6884,
+          "group_rss_kib": 790416,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 154832
+            }
+          ],
+          "reclaimable": 0.2852020263671875,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18768539648,
+          "elapsed": 4.8127,
+          "group_rss_kib": 800448,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 164864
+            }
+          ],
+          "reclaimable": 0.28420257568359375,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766594048,
+          "elapsed": 4.9362,
+          "group_rss_kib": 809184,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 173600
+            }
+          ],
+          "reclaimable": 0.28365325927734375,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766594048,
+          "elapsed": 5.0499,
+          "group_rss_kib": 820032,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635584
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 184448
+            }
+          ],
+          "reclaimable": 0.282958984375,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766467072,
+          "elapsed": 5.1653,
+          "group_rss_kib": 830912,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635328
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 195584
+            }
+          ],
+          "reclaimable": 0.2830963134765625,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766467072,
+          "elapsed": 5.2859,
+          "group_rss_kib": 840720,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 205440
+            }
+          ],
+          "reclaimable": 0.2820777893066406,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766467072,
+          "elapsed": 5.4128,
+          "group_rss_kib": 850176,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 214896
+            }
+          ],
+          "reclaimable": 0.28017425537109375,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766372864,
+          "elapsed": 5.5383,
+          "group_rss_kib": 858960,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 223680
+            }
+          ],
+          "reclaimable": 0.28024864196777344,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766372864,
+          "elapsed": 5.6631,
+          "group_rss_kib": 869536,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 234256
+            }
+          ],
+          "reclaimable": 0.2790679931640625,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766372864,
+          "elapsed": 5.7839,
+          "group_rss_kib": 890656,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 255376
+            }
+          ],
+          "reclaimable": 0.27676963806152344,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766327808,
+          "elapsed": 5.9048,
+          "group_rss_kib": 903168,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 267888
+            }
+          ],
+          "reclaimable": 0.27570152282714844,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766307328,
+          "elapsed": 6.0277,
+          "group_rss_kib": 919568,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 284288
+            }
+          ],
+          "reclaimable": 0.2747344970703125,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766303232,
+          "elapsed": 6.1515,
+          "group_rss_kib": 925648,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 290368
+            }
+          ],
+          "reclaimable": 0.2750072479248047,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766303232,
+          "elapsed": 6.2728,
+          "group_rss_kib": 932720,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 297440
+            }
+          ],
+          "reclaimable": 0.27422523498535156,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18766303232,
+          "elapsed": 6.391,
+          "group_rss_kib": 937040,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 301760
+            }
+          ],
+          "reclaimable": 0.2742195129394531,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765250560,
+          "elapsed": 6.5148,
+          "group_rss_kib": 938736,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 303456
+            }
+          ],
+          "reclaimable": 0.2745037078857422,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765250560,
+          "elapsed": 6.6353,
+          "group_rss_kib": 938752,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 303472
+            }
+          ],
+          "reclaimable": 0.2741584777832031,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765250560,
+          "elapsed": 6.7563,
+          "group_rss_kib": 938768,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 303488
+            }
+          ],
+          "reclaimable": 0.27433013916015625,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765250560,
+          "elapsed": 6.8725,
+          "group_rss_kib": 938912,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 303632
+            }
+          ],
+          "reclaimable": 0.2742424011230469,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765250560,
+          "elapsed": 6.9928,
+          "group_rss_kib": 939152,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 303872
+            }
+          ],
+          "reclaimable": 0.2742137908935547,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765250560,
+          "elapsed": 7.1057,
+          "group_rss_kib": 939248,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 303968
+            }
+          ],
+          "reclaimable": 0.2744312286376953,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 7.2262,
+          "group_rss_kib": 939392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304112
+            }
+          ],
+          "reclaimable": 0.2740325927734375,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 7.3471,
+          "group_rss_kib": 939392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304112
+            }
+          ],
+          "reclaimable": 0.27457618713378906,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 7.4676,
+          "group_rss_kib": 939392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304112
+            }
+          ],
+          "reclaimable": 0.2745552062988281,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 7.5878,
+          "group_rss_kib": 939392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304112
+            }
+          ],
+          "reclaimable": 0.274627685546875,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 7.7082,
+          "group_rss_kib": 939392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304112
+            }
+          ],
+          "reclaimable": 0.27457618713378906,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 7.8209,
+          "group_rss_kib": 939392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304112
+            }
+          ],
+          "reclaimable": 0.2743511199951172,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 7.9351,
+          "group_rss_kib": 939392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304112
+            }
+          ],
+          "reclaimable": 0.2745170593261719,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 8.0553,
+          "group_rss_kib": 939392,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304112
+            }
+          ],
+          "reclaimable": 0.27445411682128906,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 8.1762,
+          "group_rss_kib": 939664,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 304384
+            }
+          ],
+          "reclaimable": 0.2743797302246094,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 8.2969,
+          "group_rss_kib": 941616,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 306336
+            }
+          ],
+          "reclaimable": 0.27414894104003906,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 8.4178,
+          "group_rss_kib": 944176,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 308896
+            }
+          ],
+          "reclaimable": 0.27396583557128906,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765221888,
+          "elapsed": 8.5393,
+          "group_rss_kib": 948912,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 313632
+            }
+          ],
+          "reclaimable": 0.2746448516845703,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765172736,
+          "elapsed": 8.6597,
+          "group_rss_kib": 948912,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 313632
+            }
+          ],
+          "reclaimable": 0.27422142028808594,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765172736,
+          "elapsed": 8.7805,
+          "group_rss_kib": 948896,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 313616
+            }
+          ],
+          "reclaimable": 0.2743511199951172,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765172736,
+          "elapsed": 8.9032,
+          "group_rss_kib": 948896,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 313616
+            }
+          ],
+          "reclaimable": 0.2743816375732422,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765172736,
+          "elapsed": 9.0358,
+          "group_rss_kib": 948896,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 313616
+            }
+          ],
+          "reclaimable": 0.27428436279296875,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765172736,
+          "elapsed": 9.1695,
+          "group_rss_kib": 948896,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 313616
+            }
+          ],
+          "reclaimable": 0.2744941711425781,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765172736,
+          "elapsed": 9.3043,
+          "group_rss_kib": 948896,
+          "members": [
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 313616
+            }
+          ],
+          "reclaimable": 0.27445411682128906,
+          "scratch_bytes": 235464
+        },
+        {
+          "disk_free": 18765172736,
+          "elapsed": 9.4397,
+          "group_rss_kib": 949024,
+          "members": [
+            {
+              "comm": "(lake)",
+              "pid": 17596,
+              "ppid": 17591,
+              "rss_kib": 635280
+            },
+            {
+              "comm": "(lean)",
+              "pid": 17702,
+              "ppid": 17596,
+              "rss_kib": 313744
+            }
+          ],
+          "reclaimable": 0.2776298522949219,
+          "scratch_bytes": 235464
+        }
+      ],
+      "sent_events": [
+        {
+          "elapsed": 0.0318,
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "initialize",
+            "params": {
+              "capabilities": {},
+              "initializationOptions": {
+                "hasWidgets": false
+              },
+              "processId": 17591,
+              "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer"
+            }
+          }
+        },
+        {
+          "elapsed": 3.2678,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "initialized",
+            "params": {}
+          }
+        },
+        {
+          "elapsed": 3.268,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+              "textDocument": {
+                "languageId": "lean4",
+                "text": "import Dep\ntheorem generatedEq : depValue = 7 := by rfl\n#eval depValue\n",
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 9.3489,
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "method": "$/lean/plainGoal",
+            "params": {
+              "position": {
+                "character": 40,
+                "line": 1
+              },
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i092-preseeded-server-readiness/work/consumer/Generated.lean"
+              }
+            }
+          }
+        },
+        {
+          "elapsed": 9.3558,
+          "message": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "method": "shutdown",
+            "params": null
+          }
+        },
+        {
+          "elapsed": 9.3621,
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exit"
+          }
+        }
+      ],
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c2aa7a18977cd68c4d00b98846873ca9280304973c3c08a6bba3471b0e0f480c"
+    }
+  ],
+  "schema": 2,
+  "server_admissions": {
+    "malformed-server": {
+      "disk_free": 18764988416,
+      "memory": {
+        "fraction": 0.29827880859375,
+        "page_bytes": 16384,
+        "pages": {
+          "active": 128729,
+          "free": 28327,
+          "inactive": 124510,
+          "occupied by compressor": 97358,
+          "purgeable": 34,
+          "purged": 44492083,
+          "reactivated": 744786035,
+          "speculative": 3547,
+          "stored in compressor": 506830,
+          "throttled": 0,
+          "wired down": 108486,
+          "zero filled": 1597458394
+        },
+        "total_bytes": 8589934592
+      }
+    },
+    "valid-server": {
+      "disk_free": 18768818176,
+      "memory": {
+        "fraction": 0.3111839294433594,
+        "page_bytes": 16384,
+        "pages": {
+          "active": 160090,
+          "free": 3873,
+          "inactive": 157175,
+          "occupied by compressor": 65137,
+          "purgeable": 2189,
+          "purged": 44490563,
+          "reactivated": 744713950,
+          "speculative": 2102,
+          "stored in compressor": 440310,
+          "throttled": 0,
+          "wired down": 102595,
+          "zero filled": 1597351635
+        },
+        "total_bytes": 8589934592
+      }
+    }
+  },
+  "status": "stopped"
+}

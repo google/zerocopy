@@ -1,0 +1,13 @@
+{
+  "topics": ["anneal/lake-preparation", "lake/manifest", "lake/server-readiness", "lake/resource-gate"],
+  "subjects": [{
+    "name": "Lean and Lake 4.30.0-rc2 preseeded valid consumer",
+    "identity": {
+      "repository": "leanprover/lean4",
+      "version": "v4.30.0-rc2",
+      "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+      "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    }
+  }],
+  "observed_at": "2026-09-30"
+}

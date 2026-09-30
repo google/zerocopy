@@ -1,0 +1,7 @@
+# #3730/#3731 coverage audit v65: preseeded valid Lake server goal
+
+This audit inherits all 333 rows, including 159 consolidated investigations and 174 #3730 suggestions, from published v64 at `4288c5b97a3dd398c77fe6c9f18e7de3000b1c63`; the current `reference` parent is `e2692485db6b8417bf415c83223cfc5a99e73e4f` and also contains #3732 reports. A fresh public GitHub REST read found #3730 closed and #3731 open, with issue bodies, comments, and update timestamps unchanged from v64. The exact snapshot is [live-issue-snapshot-v65.json](support/live-issue-snapshot-v65.json).
+
+The [new I092 report](../anneal-3731-i092-preseeded-valid-server-goal-2026-09-30/REPORT.md) retains one relocated, byte-exact preseeded valid producer/consumer tree. A no-build/no-cache Lake server opened `Generated.lean`, reported `#eval` information `7`, reached a processing-empty state, and returned the live goal `⊢ depValue = 7`; before/after work, producer and cache inventories were unchanged. Fresh resource admission then denied the planned malformed-manifest server at 29.8279% reclaimable RAM. Neither a malformed-manifest nor a missing-dependency server ran. This is a narrow valid-control result, not a malformed-manifest comparison.
+
+Exactly **I092** receives an appended direct residual. **F07**, whose crosswalk destination is I092, gains bounded context with its residual unchanged. No status, gate or prerequisite changes. The generated ledger, crosswalk, row challenge, source inventory, validation hashes, replay script and offline checker are under [support/](support/).
