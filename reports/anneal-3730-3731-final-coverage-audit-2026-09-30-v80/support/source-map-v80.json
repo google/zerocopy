@@ -1,0 +1,12 @@
+{
+  "lean-430rc2-to-4341-linux-aarch64-leantar-static-recheck": {
+    "classification": "static_version_artifact_review_unmapped",
+    "predecessors": [],
+    "frozen_report_ids": ["R443"],
+    "frozen_report_paths": ["reports/lean-430-rc2-linux-aarch64-leantar-anomaly/REPORT.md"],
+    "evidence_scope": "static_archive_and_elf_header_only",
+    "runtime_executed": false,
+    "anneal_product_assessed": false,
+    "reason": "The exact frozen 581-row inventory names R443 and the predecessor Lean 4.30.0-rc2 linux_aarch64 leantar anomaly report; that package is absent from v67's published #3731 source/spec ID map. The newer v4.34.1 archive's bundled leantar has AArch64 ELF e_machine=183, whereas the inherited old report recorded x86-64 e_machine=62. This is static archive/member evidence only; neither foreign binary nor any Anneal path was executed. No I or suggestion row obtains coverage."
+  }
+}

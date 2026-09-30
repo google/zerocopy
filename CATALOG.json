@@ -4161,6 +4161,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v80": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "parent_catalog_sha256": "81d8209fc35e2423c3e652e60f4144941f8d562e1500eb77d2afe06dfe591eec",
+            "reference_parent": "33094f85390762325b8ce8b27cde93be11639689",
+            "v49_published_commit": "4db5d007205b9b1a3967f0f05b4b08d49c6563e1",
+            "v79_published_commit": "71f4f352ccaf10afde6fea5a1f1c459c6a36c19e"
+          },
+          "name": "Published v79 ledger and exact frozen reference parent"
+        },
+        {
+          "identity": {
+            "package_count": "1",
+            "source_inventory_sha256": "e3becbe57185bbb33437d4e72ae5e0526b72bee40232e79558d4ea889f7f9866",
+            "source_map_sha256": "50779232887680be19abe7c3ba45ab8aa474aec3d1a6eb6b7261c972d646ad53"
+          },
+          "name": "One post-v79 R443 static Lean AArch64 leantar recheck, inventory-only"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+            "source": "prior published local snapshot; no new issue fetch"
+          },
+          "name": "Inherited public #3730/#3731 issue snapshot from v65"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
