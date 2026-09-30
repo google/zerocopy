@@ -1,0 +1,268 @@
+{
+  "artifact_sha256": {
+    "baseline": "5d1ae9cb6d26d618985cd092fd0218faf1a3c6e2c188f77eebd8615fccf20580",
+    "warm_repeat": "6021a295099927891f14c18bfbb0ec2b1e6b851f72b800f1c203443e9d5cbe0d"
+  },
+  "difference_count": 30,
+  "differences": [
+    {
+      "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/baseline.llbc",
+      "path": "/translated/options/dest_file",
+      "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/warm_repeat.llbc"
+    },
+    {
+      "left": 0,
+      "path": "/translated/short_names/3/key/Fun",
+      "right_missing": true
+    },
+    {
+      "left_missing": true,
+      "path": "/translated/short_names/3/key/TraitDecl",
+      "right": 0
+    },
+    {
+      "left": "bin_value",
+      "path": "/translated/short_names/3/value/0/Ident/0",
+      "right": "Display"
+    },
+    {
+      "left": 4,
+      "path": "/translated/short_names/4/key/Type",
+      "right": 3
+    },
+    {
+      "left": "Result",
+      "path": "/translated/short_names/4/value/0/Ident/0",
+      "right": "Formatter"
+    },
+    {
+      "left": 3,
+      "path": "/translated/short_names/5/key/Type",
+      "right": 5
+    },
+    {
+      "left": "Formatter",
+      "path": "/translated/short_names/5/value/0/Ident/0",
+      "right": "Error"
+    },
+    {
+      "left": 0,
+      "path": "/translated/short_names/6/key/TraitDecl",
+      "right_missing": true
+    },
+    {
+      "left_missing": true,
+      "path": "/translated/short_names/6/key/Type",
+      "right": 4
+    },
+    {
+      "left": "Display",
+      "path": "/translated/short_names/6/value/0/Ident/0",
+      "right": "Result"
+    },
+    {
+      "left_missing": true,
+      "path": "/translated/short_names/8/key/Fun",
+      "right": 4
+    },
+    {
+      "left": 0,
+      "path": "/translated/short_names/8/key/Type",
+      "right_missing": true
+    },
+    {
+      "left": "Arguments",
+      "path": "/translated/short_names/8/value/0/Ident/0",
+      "right": "new"
+    },
+    {
+      "left": 4,
+      "path": "/translated/short_names/9/key/Fun",
+      "right": 2
+    },
+    {
+      "left": "new",
+      "path": "/translated/short_names/9/value/0/Ident/0",
+      "right": "wrapping_add"
+    },
+    {
+      "left": 2,
+      "path": "/translated/short_names/10/key/Fun",
+      "right_missing": true
+    },
+    {
+      "left_missing": true,
+      "path": "/translated/short_names/10/key/Type",
+      "right": 1
+    },
+    {
+      "left": "wrapping_add",
+      "path": "/translated/short_names/10/value/0/Ident/0",
+      "right": "Argument"
+    },
+    {
+      "left": 5,
+      "path": "/translated/short_names/11/key/Fun",
+      "right": 0
+    },
+    {
+      "left": "_print",
+      "path": "/translated/short_names/11/value/0/Ident/0",
+      "right": "bin_value"
+    },
+    {
+      "left_missing": true,
+      "path": "/translated/short_names/12/key/Fun",
+      "right": 3
+    },
+    {
+      "left": 5,
+      "path": "/translated/short_names/12/key/Type",
+      "right_missing": true
+    },
+    {
+      "left": "Error",
+      "path": "/translated/short_names/12/value/0/Ident/0",
+      "right": "new_display"
+    },
+    {
+      "left_missing": true,
+      "path": "/translated/short_names/13/key/Fun",
+      "right": 5
+    },
+    {
+      "left": 1,
+      "path": "/translated/short_names/13/key/Type",
+      "right_missing": true
+    },
+    {
+      "left": "Argument",
+      "path": "/translated/short_names/13/value/0/Ident/0",
+      "right": "_print"
+    },
+    {
+      "left": 3,
+      "path": "/translated/short_names/14/key/Fun",
+      "right_missing": true
+    },
+    {
+      "left_missing": true,
+      "path": "/translated/short_names/14/key/Type",
+      "right": 0
+    },
+    {
+      "left": "new_display",
+      "path": "/translated/short_names/14/value/0/Ident/0",
+      "right": "Arguments"
+    }
+  ],
+  "elapsed_seconds": 0.025852999882772565,
+  "limits": {
+    "max_rss_bytes": 67108864,
+    "max_seconds": 5.0,
+    "min_reclaimable_percent": 20.0
+  },
+  "object_key_order_differences": [
+    {
+      "left_keys": [
+        "Fun"
+      ],
+      "path": "/translated/short_names/3/key",
+      "right_keys": [
+        "TraitDecl"
+      ]
+    },
+    {
+      "left_keys": [
+        "TraitDecl"
+      ],
+      "path": "/translated/short_names/6/key",
+      "right_keys": [
+        "Type"
+      ]
+    },
+    {
+      "left_keys": [
+        "Type"
+      ],
+      "path": "/translated/short_names/8/key",
+      "right_keys": [
+        "Fun"
+      ]
+    },
+    {
+      "left_keys": [
+        "Fun"
+      ],
+      "path": "/translated/short_names/10/key",
+      "right_keys": [
+        "Type"
+      ]
+    },
+    {
+      "left_keys": [
+        "Type"
+      ],
+      "path": "/translated/short_names/12/key",
+      "right_keys": [
+        "Fun"
+      ]
+    },
+    {
+      "left_keys": [
+        "Type"
+      ],
+      "path": "/translated/short_names/13/key",
+      "right_keys": [
+        "Fun"
+      ]
+    },
+    {
+      "left_keys": [
+        "Fun"
+      ],
+      "path": "/translated/short_names/14/key",
+      "right_keys": [
+        "Type"
+      ]
+    }
+  ],
+  "peak_rss_bytes": 22429696,
+  "roundtrip_exact": {
+    "baseline": true,
+    "warm_repeat": true
+  },
+  "samples": [
+    {
+      "elapsed_seconds": 2.2624852135777473e-05,
+      "label": "preflight-before-input",
+      "max_rss_bytes": 21282816,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 24.444198608398438
+    },
+    {
+      "elapsed_seconds": 0.007824040949344635,
+      "label": "decoded-baseline",
+      "max_rss_bytes": 21807104,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 24.44133758544922
+    },
+    {
+      "elapsed_seconds": 0.012961375061422586,
+      "label": "decoded-warm_repeat",
+      "max_rss_bytes": 22396928,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 24.437904357910156
+    },
+    {
+      "elapsed_seconds": 0.021482374984771013,
+      "label": "compared",
+      "max_rss_bytes": 22429696,
+      "physical_bytes": 8589934592,
+      "reclaimable_percent": 24.440765380859375
+    }
+  ],
+  "short_names_keyed_maps_equal": true,
+  "source_results_sha256": "ecc7934451a6da4bc94ee7e0e7006f5fdfa162736afa344e32f31d4491b7dac5",
+  "status": "completed"
+}

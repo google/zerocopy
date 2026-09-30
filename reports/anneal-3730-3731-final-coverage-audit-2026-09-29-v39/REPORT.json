@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "artifact-identity/llbc",
+    "charon/cargo-extraction"
+  ],
+  "subjects": [
+    {
+      "name": "Published v38 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "f15ee4d3a9896c17b13c3167e364cb98f11a259f",
+        "row_challenge_sha256": "799526dc4516ee789f94e5aa458a3e7296deba371e36ad98456deffbcf20e71d"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731 as retained in v38",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Retained selected-binary cold/warm full-field LLBC comparison",
+      "identity": {
+        "source_report_sha256": "f3b94a4babb7fe89a104c476c27a12b9381486d679ed69e6edbc21153a019fac",
+        "compare_sha256": "8e511e81aa48dde2695348314bf1145eb6496919e2055a8fdfd67682a24f9332",
+        "comparison_sha256": "463abe75a867c3a14dc1d827bd08430b606ee07aaaadf0270fdc89eddeab4360",
+        "source_results_sha256": "ecc7934451a6da4bc94ee7e0e7006f5fdfa162736afa344e32f31d4491b7dac5"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}
