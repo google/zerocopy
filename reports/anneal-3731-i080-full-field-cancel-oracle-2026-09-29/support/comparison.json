@@ -1,0 +1,707 @@
+{
+  "artifacts": {
+    "companion-B.llbc": {
+      "bytes": 24216,
+      "crate_name": "warm_probe",
+      "has_errors": false,
+      "sha256": "12904a0345e2d16c1f89aa714a4fb98e5cff1295e0a3c87c46cff2979981d730"
+    },
+    "oracle-baseline-B.llbc": {
+      "bytes": 24231,
+      "crate_name": "warm_probe",
+      "has_errors": false,
+      "sha256": "fe8b7fd5e4d4bde12b9ed3dc940adc4fb40f27933c1ead8a8121dbb7677d2bff"
+    },
+    "oracle-edited-A.llbc": {
+      "bytes": 24227,
+      "crate_name": "warm_probe",
+      "has_errors": false,
+      "sha256": "1c4eafdbae3130cb169dbbe99cd04400896de772ee2796f5c91aaa35959c89ea"
+    },
+    "prewarm-A.llbc": {
+      "bytes": 24214,
+      "crate_name": "warm_probe",
+      "has_errors": false,
+      "sha256": "4b3ee8e86b1b94a37760c8f0f0c021010ef3fde5b162d98f6e22c101faeb3f81"
+    },
+    "prewarm-B.llbc": {
+      "bytes": 24214,
+      "crate_name": "warm_probe",
+      "has_errors": false,
+      "sha256": "af8c64477b1350fd2c62a5559d125f92f6efb3f4b9e3f860db91365d3880bdcc"
+    },
+    "recovery-A.llbc": {
+      "bytes": 24215,
+      "crate_name": "warm_probe",
+      "has_errors": false,
+      "sha256": "2a9dc269ba89c215218772f110c59ce780eb020b765c29cb0ef19cd1e0ddc0a1"
+    }
+  },
+  "elapsed_seconds": 0.05482,
+  "input_sha256": {
+    "companion-B.llbc": "12904a0345e2d16c1f89aa714a4fb98e5cff1295e0a3c87c46cff2979981d730",
+    "oracle-baseline-B.llbc": "fe8b7fd5e4d4bde12b9ed3dc940adc4fb40f27933c1ead8a8121dbb7677d2bff",
+    "oracle-edited-A.llbc": "1c4eafdbae3130cb169dbbe99cd04400896de772ee2796f5c91aaa35959c89ea",
+    "prewarm-A.llbc": "4b3ee8e86b1b94a37760c8f0f0c021010ef3fde5b162d98f6e22c101faeb3f81",
+    "prewarm-B.llbc": "af8c64477b1350fd2c62a5559d125f92f6efb3f4b9e3f860db91365d3880bdcc",
+    "recovery-A.llbc": "2a9dc269ba89c215218772f110c59ce780eb020b765c29cb0ef19cd1e0ddc0a1"
+  },
+  "limits": {
+    "maximum_self_peak_rss_bytes": 67108864,
+    "maximum_wall_seconds": 5.0,
+    "minimum_estimated_reclaimable_percent": 20.0
+  },
+  "pairs": {
+    "companion_B_to_baseline_oracle": {
+      "difference_count": 17,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/oracle-baseline-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/companion-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/oracle-baseline-B.llbc"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "wrapping_add"
+        }
+      ],
+      "full_json_equal": false,
+      "left": "companion-B.llbc",
+      "right": "oracle-baseline-B.llbc"
+    },
+    "edited_to_baseline_negative_control": {
+      "difference_count": 23,
+      "differences": [
+        {
+          "left": "#![allow(dead_code)]\ninclude!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));\n/// proof-id: A\npub fn step(x: u32) -> u32 { x.wrapping_add(2) }\npub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }\npub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }\npub fn generated_value() -> u32 { SNAPSHOT_VALUE }\n",
+          "path": "/translated/files/0/contents",
+          "right": "#![allow(dead_code)]\ninclude!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));\n/// proof-id: A\npub fn step(x: u32) -> u32 { x.wrapping_add(1) }\npub fn use_step(x: u32) -> u32 { step(x).wrapping_add(dep_path::delta(x)) }\npub fn payload_len() -> usize { include_str!(\"payload.txt\").len() }\npub fn generated_value() -> u32 { SNAPSHOT_VALUE }\n"
+        },
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/oracle-edited-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/oracle-baseline-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "2",
+          "path": "/translated/fun_decls/0/body/Structured/body/statements/2/kind/Call/args/1/Const/kind/Literal/Scalar/Unsigned/1",
+          "right": "1"
+        },
+        {
+          "left": "pub fn step(x: u32) -> u32 { x.wrapping_add(2) }",
+          "path": "/translated/fun_decls/0/item_meta/source_text",
+          "right": "pub fn step(x: u32) -> u32 { x.wrapping_add(1) }"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/oracle-edited-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/oracle-baseline-B.llbc"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 0
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        }
+      ],
+      "full_json_equal": false,
+      "left": "oracle-edited-A.llbc",
+      "right": "oracle-baseline-B.llbc"
+    },
+    "prewarm_A_to_baseline_oracle": {
+      "difference_count": 14,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/oracle-baseline-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/prewarm-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/oracle-baseline-B.llbc"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/1/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/1/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "wrapping_add"
+        }
+      ],
+      "full_json_equal": false,
+      "left": "prewarm-A.llbc",
+      "right": "oracle-baseline-B.llbc"
+    },
+    "prewarm_B_to_baseline_oracle": {
+      "difference_count": 12,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/oracle-baseline-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/prewarm-B.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/oracle-baseline-B.llbc"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Fun",
+          "right": 0
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/4/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "step"
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/5/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/6/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/6/key/Global",
+          "right": 0
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 4
+        },
+        {
+          "left": "step",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        }
+      ],
+      "full_json_equal": false,
+      "left": "prewarm-B.llbc",
+      "right": "oracle-baseline-B.llbc"
+    },
+    "recovery_A_to_edited_oracle": {
+      "difference_count": 19,
+      "differences": [
+        {
+          "left": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs",
+          "path": "/translated/files/1/name/Local",
+          "right": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/oracle-edited-target/aarch64-apple-darwin/debug/build/warm_probe-dabd77d42b6ea02e/out/generated.rs"
+        },
+        {
+          "left": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/recovery-A.llbc",
+          "path": "/translated/options/dest_file",
+          "right": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/oracle-edited-A.llbc"
+        },
+        {
+          "left": 2,
+          "path": "/translated/short_names/0/key/Fun",
+          "right": 6
+        },
+        {
+          "left": "payload_len",
+          "path": "/translated/short_names/0/value/0/Ident/0",
+          "right": "delta"
+        },
+        {
+          "left": 1,
+          "path": "/translated/short_names/2/key/Fun",
+          "right": 3
+        },
+        {
+          "left": "use_step",
+          "path": "/translated/short_names/2/value/0/Ident/0",
+          "right": "generated_value"
+        },
+        {
+          "left": 5,
+          "path": "/translated/short_names/3/key/Fun",
+          "right": 1
+        },
+        {
+          "left": "wrapping_add",
+          "path": "/translated/short_names/3/value/0/Ident/0",
+          "right": "use_step"
+        },
+        {
+          "left": 7,
+          "path": "/translated/short_names/4/key/Fun",
+          "right_missing": true
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/4/key/Global",
+          "right": 0
+        },
+        {
+          "left": "len",
+          "path": "/translated/short_names/4/value/0/Ident/0",
+          "right": "SNAPSHOT_VALUE"
+        },
+        {
+          "left_missing": true,
+          "path": "/translated/short_names/5/key/Fun",
+          "right": 4
+        },
+        {
+          "left": 0,
+          "path": "/translated/short_names/5/key/Global",
+          "right_missing": true
+        },
+        {
+          "left": 4,
+          "path": "/translated/short_names/6/key/Fun",
+          "right": 2
+        },
+        {
+          "left": "SNAPSHOT_VALUE",
+          "path": "/translated/short_names/6/value/0/Ident/0",
+          "right": "payload_len"
+        },
+        {
+          "left": 3,
+          "path": "/translated/short_names/7/key/Fun",
+          "right": 7
+        },
+        {
+          "left": "generated_value",
+          "path": "/translated/short_names/7/value/0/Ident/0",
+          "right": "len"
+        },
+        {
+          "left": 6,
+          "path": "/translated/short_names/8/key/Fun",
+          "right": 5
+        },
+        {
+          "left": "delta",
+          "path": "/translated/short_names/8/value/0/Ident/0",
+          "right": "wrapping_add"
+        }
+      ],
+      "full_json_equal": false,
+      "left": "recovery-A.llbc",
+      "right": "oracle-edited-A.llbc"
+    }
+  },
+  "samples": [
+    {
+      "elapsed_seconds": 1e-05,
+      "host": {
+        "estimated_reclaimable_percent": 22.6515,
+        "page_size": 16384,
+        "pages": {
+          "free": 3877,
+          "inactive": 108405,
+          "speculative": 6477
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 21053440,
+      "stage": "preflight"
+    },
+    {
+      "elapsed_seconds": 0.00792,
+      "host": {
+        "estimated_reclaimable_percent": 22.6261,
+        "page_size": 16384,
+        "pages": {
+          "free": 3681,
+          "inactive": 108444,
+          "speculative": 6501
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 21200896,
+      "stage": "decoded:companion-B.llbc"
+    },
+    {
+      "elapsed_seconds": 0.01267,
+      "host": {
+        "estimated_reclaimable_percent": 22.6498,
+        "page_size": 16384,
+        "pages": {
+          "free": 3721,
+          "inactive": 108527,
+          "speculative": 6502
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 21381120,
+      "stage": "decoded:oracle-baseline-B.llbc"
+    },
+    {
+      "elapsed_seconds": 0.01706,
+      "host": {
+        "estimated_reclaimable_percent": 22.6345,
+        "page_size": 16384,
+        "pages": {
+          "free": 3639,
+          "inactive": 108527,
+          "speculative": 6504
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 21594112,
+      "stage": "decoded:oracle-edited-A.llbc"
+    },
+    {
+      "elapsed_seconds": 0.0212,
+      "host": {
+        "estimated_reclaimable_percent": 22.6311,
+        "page_size": 16384,
+        "pages": {
+          "free": 3619,
+          "inactive": 108527,
+          "speculative": 6506
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 21790720,
+      "stage": "decoded:prewarm-A.llbc"
+    },
+    {
+      "elapsed_seconds": 0.02524,
+      "host": {
+        "estimated_reclaimable_percent": 22.6269,
+        "page_size": 16384,
+        "pages": {
+          "free": 3599,
+          "inactive": 108527,
+          "speculative": 6504
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 21987328,
+      "stage": "decoded:prewarm-B.llbc"
+    },
+    {
+      "elapsed_seconds": 0.02939,
+      "host": {
+        "estimated_reclaimable_percent": 22.6244,
+        "page_size": 16384,
+        "pages": {
+          "free": 3583,
+          "inactive": 108527,
+          "speculative": 6507
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 22183936,
+      "stage": "decoded:recovery-A.llbc"
+    },
+    {
+      "elapsed_seconds": 0.03403,
+      "host": {
+        "estimated_reclaimable_percent": 22.6336,
+        "page_size": 16384,
+        "pages": {
+          "free": 3629,
+          "inactive": 108528,
+          "speculative": 6508
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 22183936,
+      "stage": "compared:prewarm_A_to_baseline_oracle"
+    },
+    {
+      "elapsed_seconds": 0.03852,
+      "host": {
+        "estimated_reclaimable_percent": 22.6307,
+        "page_size": 16384,
+        "pages": {
+          "free": 3612,
+          "inactive": 108529,
+          "speculative": 6509
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 22200320,
+      "stage": "compared:prewarm_B_to_baseline_oracle"
+    },
+    {
+      "elapsed_seconds": 0.04283,
+      "host": {
+        "estimated_reclaimable_percent": 22.6397,
+        "page_size": 16384,
+        "pages": {
+          "free": 3659,
+          "inactive": 108529,
+          "speculative": 6509
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 22216704,
+      "stage": "compared:companion_B_to_baseline_oracle"
+    },
+    {
+      "elapsed_seconds": 0.04713,
+      "host": {
+        "estimated_reclaimable_percent": 22.6374,
+        "page_size": 16384,
+        "pages": {
+          "free": 3643,
+          "inactive": 108530,
+          "speculative": 6512
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 22216704,
+      "stage": "compared:recovery_A_to_edited_oracle"
+    },
+    {
+      "elapsed_seconds": 0.05143,
+      "host": {
+        "estimated_reclaimable_percent": 22.6349,
+        "page_size": 16384,
+        "pages": {
+          "free": 3628,
+          "inactive": 108529,
+          "speculative": 6515
+        },
+        "physical_bytes": 8589934592
+      },
+      "self_peak_rss_bytes": 22216704,
+      "stage": "compared:edited_to_baseline_negative_control"
+    }
+  ],
+  "schema": 1,
+  "self_peak_rss_bytes": 22216704,
+  "source_results_sha256": "42822b050fc86ffa0506927e7ba19a9055c2b57c04d6914253b0682070667107",
+  "status": "completed"
+}

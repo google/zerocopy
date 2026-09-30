@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "cargo/incremental",
+    "charon/cancellation",
+    "artifact-identity/llbc"
+  ],
+  "subjects": [
+    {
+      "name": "Published v36 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "52b16195ee71b52b936476b2efd6da2e49622cd0",
+        "row_challenge_sha256": "01780cccbf88faff505054d08b96d9efd2847217fd288ef35b08f218fb1a1bb0"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731 as retained in v36",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Retained I080 full-field LLBC comparison",
+      "identity": {
+        "source_report_sha256": "1713291f867c042a502c2ec527270685619f288a9e40acaa63938f6e49af335d",
+        "compare_sha256": "cbe0ac43e1a4d81458c9256a066b8cea224de504a889b5d47f2363895d8f22fc",
+        "comparison_sha256": "be26b95d7a7e290624598f1916382ab79db89832271a1ad0ae742785db942029",
+        "source_results_sha256": "42822b050fc86ffa0506927e7ba19a9055c2b57c04d6914253b0682070667107"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}
