@@ -1,0 +1,359 @@
+{
+  "runs": [
+    {
+      "cases": {
+        "explicit_historical": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            },
+            {
+              "decision": "historical_only",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "old_reply_before_edit": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ True",
+              "request": 20
+            },
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            }
+          ]
+        },
+        "old_reply_first_after_edit": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            },
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            }
+          ]
+        },
+        "recorded_arrival": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            },
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "restart_reuses_id_and_snapshot": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "expired_incarnation",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_snapshot_changed_position": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_snapshot_changed_uri": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_version_changed_source": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        }
+      },
+      "position": {
+        "character": 9,
+        "line": 3
+      },
+      "run": 1
+    },
+    {
+      "cases": {
+        "explicit_historical": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            },
+            {
+              "decision": "historical_only",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "old_reply_before_edit": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ True",
+              "request": 20
+            },
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            }
+          ]
+        },
+        "old_reply_first_after_edit": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            },
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            }
+          ]
+        },
+        "recorded_arrival": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            },
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "restart_reuses_id_and_snapshot": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "expired_incarnation",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_snapshot_changed_position": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_snapshot_changed_uri": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_version_changed_source": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        }
+      },
+      "position": {
+        "character": 9,
+        "line": 3
+      },
+      "run": 2
+    },
+    {
+      "cases": {
+        "explicit_historical": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            },
+            {
+              "decision": "historical_only",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "old_reply_before_edit": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ True",
+              "request": 20
+            },
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            }
+          ]
+        },
+        "old_reply_first_after_edit": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            },
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            }
+          ]
+        },
+        "recorded_arrival": {
+          "final_latest": [
+            "⊢ False"
+          ],
+          "replies": [
+            {
+              "decision": "current_live",
+              "goal": "⊢ False",
+              "request": 21
+            },
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "restart_reuses_id_and_snapshot": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "expired_incarnation",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_snapshot_changed_position": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_snapshot_changed_uri": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        },
+        "same_version_changed_source": {
+          "final_latest": [],
+          "replies": [
+            {
+              "decision": "stale_snapshot",
+              "goal": "⊢ True",
+              "request": 20
+            }
+          ]
+        }
+      },
+      "position": {
+        "character": 9,
+        "line": 3
+      },
+      "run": 3
+    }
+  ],
+  "source_sha256": {
+    "V1": "17f79c983f479120cd5324330ee4cbf299922b90f55ad11957a2b9d7af3d0ad3",
+    "V2": "acf6662f56cbeff6ce95f35affefc9bb03e262079274a814e0d45f4bd8ce70e5"
+  }
+}

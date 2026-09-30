@@ -1,0 +1,32 @@
+{
+  "recorded_arrival": [
+    ["submit", 20], ["edit", 2, "V2"], ["submit", 21],
+    ["reply", "A", 21], ["reply", "A", 20]
+  ],
+  "explicit_historical": [
+    ["submit", 20, "historical"], ["edit", 2, "V2"], ["submit", 21],
+    ["reply", "A", 21], ["reply", "A", 20]
+  ],
+  "old_reply_first_after_edit": [
+    ["submit", 20], ["edit", 2, "V2"], ["submit", 21],
+    ["reply", "A", 20], ["reply", "A", 21]
+  ],
+  "old_reply_before_edit": [
+    ["submit", 20], ["reply", "A", 20], ["edit", 2, "V2"],
+    ["submit", 21], ["reply", "A", 21]
+  ],
+  "restart_reuses_id_and_snapshot": [
+    ["submit", 20], ["restart", "B", 1, "V1"], ["submit", 20],
+    ["reply", "A", 20]
+  ],
+  "same_version_changed_source": [
+    ["submit", 20], ["edit", 1, "V2"], ["reply", "A", 20]
+  ],
+  "same_snapshot_changed_position": [
+    ["submit", 20], ["retarget", 5, 8], ["reply", "A", 20]
+  ],
+  "same_snapshot_changed_uri": [
+    ["submit", 20], ["switch_uri", "file://$WORK/Other.lean"],
+    ["reply", "A", 20]
+  ]
+}

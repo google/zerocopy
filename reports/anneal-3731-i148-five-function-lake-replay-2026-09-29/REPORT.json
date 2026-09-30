@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "lean/lake",
+    "lean/build-cache",
+    "aeneas/code-generation"
+  ],
+  "subjects": [
+    {
+      "name": "I148 retained five-function corpus",
+      "identity": {
+        "prior_report_sha256": "48b6bd8de4255684656c8c4f737b6fed69d03697825b36c09acd080bb4616451",
+        "prior_results_sha256": "f553da995110e9264c3f4504c5cb154865de37e121b1d6de5b73fa36db7e28b3",
+        "original_rust_source_sha256": "c1307296746705f68f957cf4604aeca9695d1be87dba68b7a87deca4da825f6c"
+      }
+    },
+    {
+      "name": "Pinned local translation and Lake tools",
+      "identity": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+        "lean_version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Retained same-path replay and function-change control",
+      "identity": {
+        "probe_sha256": "2be6627b90bfde250077832db7233b01a6c95e973bc039decf6f7feae7f44e67",
+        "results_sha256": "1d466c5283a2c5b8585cc97e092169660740768efb625165c8bb959ccd911967",
+        "mutant_rust_source_sha256": "f3139d907e73cfec6bdb58dda1c800766ea771349b5693a1b58125e03a0281d7",
+        "mutant_funs_sha256": "f5f50d295621081c3f68e3e09add0e9eb88b822350adc4700eec892c8e77b160"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

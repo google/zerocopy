@@ -1,0 +1,138 @@
+{
+  "builds": [
+    {
+      "label": "fresh-baseline",
+      "local_jobs": [
+        "ℹ [1682/1686] Built Probe.Types (11s)",
+        "ℹ [1683/1686] Built Probe.Funs (9.0s)",
+        "ℹ [1684/1686] Built Probe (10s)",
+        "ℹ [1685/1686] Built Consumer (10s)"
+      ],
+      "seconds": 48.552
+    },
+    {
+      "label": "warm-no-write",
+      "local_jobs": [
+        "ℹ [1682/1686] Replayed Probe.Types",
+        "ℹ [1683/1686] Replayed Probe.Funs",
+        "ℹ [1684/1686] Replayed Probe",
+        "ℹ [1685/1686] Replayed Consumer"
+      ],
+      "seconds": 4.911
+    },
+    {
+      "label": "identical-replace-2",
+      "local_jobs": [
+        "ℹ [1682/1686] Replayed Probe.Types",
+        "ℹ [1683/1686] Replayed Probe.Funs",
+        "ℹ [1684/1686] Replayed Probe",
+        "ℹ [1685/1686] Replayed Consumer"
+      ],
+      "seconds": 3.32
+    },
+    {
+      "label": "identical-replace-3",
+      "local_jobs": [
+        "ℹ [1682/1686] Replayed Probe.Types",
+        "ℹ [1683/1686] Replayed Probe.Funs",
+        "ℹ [1684/1686] Replayed Probe",
+        "ℹ [1685/1686] Replayed Consumer"
+      ],
+      "seconds": 3.093
+    },
+    {
+      "label": "identical-replace-4",
+      "local_jobs": [
+        "ℹ [1682/1686] Replayed Probe.Types",
+        "ℹ [1683/1686] Replayed Probe.Funs",
+        "ℹ [1684/1686] Replayed Probe",
+        "ℹ [1685/1686] Replayed Consumer"
+      ],
+      "seconds": 3.317
+    },
+    {
+      "label": "identical-replace-5",
+      "local_jobs": [
+        "ℹ [1682/1686] Replayed Probe.Types",
+        "ℹ [1683/1686] Replayed Probe.Funs",
+        "ℹ [1684/1686] Replayed Probe",
+        "ℹ [1685/1686] Replayed Consumer"
+      ],
+      "seconds": 3.128
+    },
+    {
+      "label": "function-change",
+      "local_jobs": [
+        "ℹ [1682/1686] Replayed Probe.Types",
+        "ℹ [1683/1686] Built Probe.Funs (9.2s)",
+        "ℹ [1684/1686] Built Probe (5.6s)",
+        "ℹ [1685/1686] Built Consumer (6.6s)"
+      ],
+      "seconds": 24.453
+    },
+    {
+      "label": "changed-no-write",
+      "local_jobs": [
+        "ℹ [1682/1686] Replayed Probe.Types",
+        "ℹ [1683/1686] Replayed Probe.Funs",
+        "ℹ [1684/1686] Replayed Probe",
+        "ℹ [1685/1686] Replayed Consumer"
+      ],
+      "seconds": 4.17
+    }
+  ],
+  "checker": "support/check.py",
+  "comparison": {
+    "all_identical_replacements_replayed": true,
+    "all_replacement_trace_and_olean_hashes_unchanged": true,
+    "changed_generated_funs_sha256": "f5f50d295621081c3f68e3e09add0e9eb88b822350adc4700eec892c8e77b160",
+    "changed_no_write_all_replayed": true,
+    "function_change": "add_one x + 1 to x + 2",
+    "function_change_local_actions": {
+      "Consumer": "Built",
+      "Probe": "Built",
+      "Probe.Funs": "Built",
+      "Probe.Types": "Replayed"
+    },
+    "identical_replacement_runs": 4
+  },
+  "date": "2026-09-29",
+  "guards": {
+    "limits": {
+      "build_seconds_max": 60,
+      "disk_bytes_min": 10737418240,
+      "free_memory_percent_min": 30,
+      "process_tree_rss_bytes_max": 2684354560
+    },
+    "max_build_seconds": 48.552,
+    "max_sampled_tree_rss_bytes": 2295758848,
+    "min_preflight_free_disk_bytes": 45783330816,
+    "min_preflight_free_memory_percent": 35
+  },
+  "inputs": {
+    "functions": 5,
+    "generated_sets": 5,
+    "identical_generated_sets": 5,
+    "prior_report_sha256": "48b6bd8de4255684656c8c4f737b6fed69d03697825b36c09acd080bb4616451",
+    "prior_results_sha256": "f553da995110e9264c3f4504c5cb154865de37e121b1d6de5b73fa36db7e28b3"
+  },
+  "limitations": [
+    "Local pinned component fixture only",
+    "Self-equality theorem compilation is not Rust refinement",
+    "Anneal publication and product behavior untested",
+    "One-shot Aeneas positive control",
+    "No concurrent or shared-writer build"
+  ],
+  "mapping": {
+    "E06": "context_only_partial",
+    "E07": "context_only_partial",
+    "F20": "context_only_partial",
+    "I148": "partial"
+  },
+  "parent_commit": "3b549cb1eddebc54896a106c5c94ede6c2c134e5",
+  "result_record": "support/results.json",
+  "schema": 1,
+  "status": "component_observation_complete; coverage_partial",
+  "theorem_output": "support/theorem-output.txt",
+  "title": "I148 five-function same-path Lake replay and function-change control"
+}

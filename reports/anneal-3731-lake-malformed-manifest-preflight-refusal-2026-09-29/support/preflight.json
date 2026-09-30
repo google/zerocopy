@@ -1,0 +1,37 @@
+{
+  "observed_at_utc": "2026-09-30T00:12:58Z",
+  "observed_at_local": "2026-09-29 20:12:58 EDT",
+  "worktree_head": "3b549cb1eddebc54896a106c5c94ede6c2c134e5",
+  "commands": {
+    "memory": "vm_stat",
+    "installed_memory": "sysctl -n hw.memsize",
+    "disk": "df -g .",
+    "processes": "ps -axo pid,ppid,rss,command | rg '[l]ake|[l]ean|[p]robe.py'",
+    "lake_identity": "shasum -a 256 /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake"
+  },
+  "memory": {
+    "page_bytes": 16384,
+    "free_pages": 6125,
+    "inactive_pages": 120024,
+    "speculative_pages": 4199,
+    "purgeable_pages": 1185,
+    "installed_bytes": 8589934592,
+    "estimated_available_bytes": 2155036672,
+    "estimated_available_percent": 25.09,
+    "required_percent": 30
+  },
+  "disk": {"df_available_gib_rounded_down": 42, "required_gib": 10},
+  "matching_lake_lean_probe_processes": [],
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "source_fixture_probe_sha256": "0b5dc8abace2ac483cf64f7cf783ce3bc878eabcf7b142c8d2c8b4e6b9e5d491",
+  "planned_mutation": {"file": "consumer/lake-manifest.json", "replacement_utf8": "{\n"},
+  "attempted_lake_commands": [],
+  "fixture_created": false,
+  "producer_inventory_before": null,
+  "producer_inventory_after": null,
+  "cache_inventory_before": null,
+  "cache_inventory_after": null,
+  "first_goal": null,
+  "diagnostics": null,
+  "decision": "refused_memory_below_30_percent"
+}

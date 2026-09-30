@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "anneal/interactive-verification",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "lean/lake",
+    "lean/protocol-concurrency"
+  ],
+  "subjects": [
+    {
+      "name": "Published v30 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "3b549cb1eddebc54896a106c5c94ede6c2c134e5",
+        "row_challenge_sha256": "4eec3f7ecf2bc0e42f33c6d04ae55667c68082195ec026c30c59d0bccd65bd38"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Pinned Lean direct-server wire records and client replay",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "replay_sha256": "c170f5444284cfcbd81177812d530e598e5dcd47c3da278d17f2b5bd20a91d41"
+      }
+    },
+    {
+      "name": "Pinned five-function Lake replay",
+      "identity": {
+        "prior_report_sha256": "48b6bd8de4255684656c8c4f737b6fed69d03697825b36c09acd080bb4616451",
+        "replay_results_sha256": "1d466c5283a2c5b8585cc97e092169660740768efb625165c8bb959ccd911967",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,946 @@
+{
+  "builds": [
+    {
+      "label": "fresh-baseline",
+      "own_job_lines": [
+        "\u2139 [1682/1686] Built Probe.Types (11s)",
+        "\u2139 [1683/1686] Built Probe.Funs (9.0s)",
+        "\u2139 [1684/1686] Built Probe (10s)",
+        "\u2139 [1685/1686] Built Consumer (10s)"
+      ],
+      "state": {
+        ".lake/build/lib/lean/Consumer.olean": {
+          "mtime_ns": 1790726549799214639,
+          "sha256": "fc1b4f3062e8ffc7444b1d592e68797b7fb77dfdd5d6c926846ddbde628e5b7e",
+          "size": 9328
+        },
+        ".lake/build/lib/lean/Consumer.trace": {
+          "mtime_ns": 1790726549832574936,
+          "sha256": "99e1cc20cbe7883b804cac61c578ce5cd7f59555aa0b2131bd2e56be2cc602ac",
+          "size": 4385
+        },
+        ".lake/build/lib/lean/Probe.olean": {
+          "mtime_ns": 1790726539363515815,
+          "sha256": "89a6fadb3c81e245ee0466be7ec04a8408637377e2d13b7621e115f620fedf96",
+          "size": 1376
+        },
+        ".lake/build/lib/lean/Probe.trace": {
+          "mtime_ns": 1790726539404484601,
+          "sha256": "d5a78c4633c5e160d3cf67f11788c81d6a61c192a5cff34331190ccf83bf4984",
+          "size": 4234
+        },
+        ".lake/build/lib/lean/Probe/Funs.olean": {
+          "mtime_ns": 1790726529159255135,
+          "sha256": "b92df6b2b630f36e561386f8570b1088c3de66378324d6241aa447b58e2304a3",
+          "size": 32776
+        },
+        ".lake/build/lib/lean/Probe/Funs.trace": {
+          "mtime_ns": 1790726529195155734,
+          "sha256": "4a2c7cb95160f2ff5da85998bf843bd67bbfb3d828e0e123b0b6b5d617f35359",
+          "size": 4398
+        },
+        ".lake/build/lib/lean/Probe/Types.olean": {
+          "mtime_ns": 1790726519204965536,
+          "sha256": "95ed236ac9ba3ac9b53eb3a759b450030972b715eb75c6b5ea03288bcb7a4cc9",
+          "size": 28096
+        },
+        ".lake/build/lib/lean/Probe/Types.trace": {
+          "mtime_ns": 1790726519240931301,
+          "sha256": "aaaa4c283932b973d84a6a11ce90151ba9608f78d8d1258078c74fb179c4d034",
+          "size": 4274
+        },
+        "Consumer.lean": {
+          "mtime_ns": 1790726501555548621,
+          "sha256": "a8334fe5cbf3993719db200fb19e25dc8807a05ab6a2634a136aaf64f11c43ba",
+          "size": 622
+        },
+        "Probe.lean": {
+          "mtime_ns": 1790726501555383748,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "size": 18
+        },
+        "Probe/Funs.lean": {
+          "mtime_ns": 1790726501555164793,
+          "sha256": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+          "size": 1525
+        },
+        "Probe/Types.lean": {
+          "mtime_ns": 1790726501554950462,
+          "sha256": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6",
+          "size": 671
+        }
+      }
+    },
+    {
+      "label": "warm-no-write",
+      "own_job_lines": [
+        "\u2139 [1682/1686] Replayed Probe.Types",
+        "\u2139 [1683/1686] Replayed Probe.Funs",
+        "\u2139 [1684/1686] Replayed Probe",
+        "\u2139 [1685/1686] Replayed Consumer"
+      ],
+      "state": {
+        ".lake/build/lib/lean/Consumer.olean": {
+          "mtime_ns": 1790726549799214639,
+          "sha256": "fc1b4f3062e8ffc7444b1d592e68797b7fb77dfdd5d6c926846ddbde628e5b7e",
+          "size": 9328
+        },
+        ".lake/build/lib/lean/Consumer.trace": {
+          "mtime_ns": 1790726549832574936,
+          "sha256": "99e1cc20cbe7883b804cac61c578ce5cd7f59555aa0b2131bd2e56be2cc602ac",
+          "size": 4385
+        },
+        ".lake/build/lib/lean/Probe.olean": {
+          "mtime_ns": 1790726539363515815,
+          "sha256": "89a6fadb3c81e245ee0466be7ec04a8408637377e2d13b7621e115f620fedf96",
+          "size": 1376
+        },
+        ".lake/build/lib/lean/Probe.trace": {
+          "mtime_ns": 1790726539404484601,
+          "sha256": "d5a78c4633c5e160d3cf67f11788c81d6a61c192a5cff34331190ccf83bf4984",
+          "size": 4234
+        },
+        ".lake/build/lib/lean/Probe/Funs.olean": {
+          "mtime_ns": 1790726529159255135,
+          "sha256": "b92df6b2b630f36e561386f8570b1088c3de66378324d6241aa447b58e2304a3",
+          "size": 32776
+        },
+        ".lake/build/lib/lean/Probe/Funs.trace": {
+          "mtime_ns": 1790726529195155734,
+          "sha256": "4a2c7cb95160f2ff5da85998bf843bd67bbfb3d828e0e123b0b6b5d617f35359",
+          "size": 4398
+        },
+        ".lake/build/lib/lean/Probe/Types.olean": {
+          "mtime_ns": 1790726519204965536,
+          "sha256": "95ed236ac9ba3ac9b53eb3a759b450030972b715eb75c6b5ea03288bcb7a4cc9",
+          "size": 28096
+        },
+        ".lake/build/lib/lean/Probe/Types.trace": {
+          "mtime_ns": 1790726519240931301,
+          "sha256": "aaaa4c283932b973d84a6a11ce90151ba9608f78d8d1258078c74fb179c4d034",
+          "size": 4274
+        },
+        "Consumer.lean": {
+          "mtime_ns": 1790726501555548621,
+          "sha256": "a8334fe5cbf3993719db200fb19e25dc8807a05ab6a2634a136aaf64f11c43ba",
+          "size": 622
+        },
+        "Probe.lean": {
+          "mtime_ns": 1790726501555383748,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "size": 18
+        },
+        "Probe/Funs.lean": {
+          "mtime_ns": 1790726501555164793,
+          "sha256": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+          "size": 1525
+        },
+        "Probe/Types.lean": {
+          "mtime_ns": 1790726501554950462,
+          "sha256": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6",
+          "size": 671
+        }
+      }
+    },
+    {
+      "label": "identical-replace-2",
+      "own_job_lines": [
+        "\u2139 [1682/1686] Replayed Probe.Types",
+        "\u2139 [1683/1686] Replayed Probe.Funs",
+        "\u2139 [1684/1686] Replayed Probe",
+        "\u2139 [1685/1686] Replayed Consumer"
+      ],
+      "state": {
+        ".lake/build/lib/lean/Consumer.olean": {
+          "mtime_ns": 1790726549799214639,
+          "sha256": "fc1b4f3062e8ffc7444b1d592e68797b7fb77dfdd5d6c926846ddbde628e5b7e",
+          "size": 9328
+        },
+        ".lake/build/lib/lean/Consumer.trace": {
+          "mtime_ns": 1790726549832574936,
+          "sha256": "99e1cc20cbe7883b804cac61c578ce5cd7f59555aa0b2131bd2e56be2cc602ac",
+          "size": 4385
+        },
+        ".lake/build/lib/lean/Probe.olean": {
+          "mtime_ns": 1790726539363515815,
+          "sha256": "89a6fadb3c81e245ee0466be7ec04a8408637377e2d13b7621e115f620fedf96",
+          "size": 1376
+        },
+        ".lake/build/lib/lean/Probe.trace": {
+          "mtime_ns": 1790726539404484601,
+          "sha256": "d5a78c4633c5e160d3cf67f11788c81d6a61c192a5cff34331190ccf83bf4984",
+          "size": 4234
+        },
+        ".lake/build/lib/lean/Probe/Funs.olean": {
+          "mtime_ns": 1790726529159255135,
+          "sha256": "b92df6b2b630f36e561386f8570b1088c3de66378324d6241aa447b58e2304a3",
+          "size": 32776
+        },
+        ".lake/build/lib/lean/Probe/Funs.trace": {
+          "mtime_ns": 1790726529195155734,
+          "sha256": "4a2c7cb95160f2ff5da85998bf843bd67bbfb3d828e0e123b0b6b5d617f35359",
+          "size": 4398
+        },
+        ".lake/build/lib/lean/Probe/Types.olean": {
+          "mtime_ns": 1790726519204965536,
+          "sha256": "95ed236ac9ba3ac9b53eb3a759b450030972b715eb75c6b5ea03288bcb7a4cc9",
+          "size": 28096
+        },
+        ".lake/build/lib/lean/Probe/Types.trace": {
+          "mtime_ns": 1790726519240931301,
+          "sha256": "aaaa4c283932b973d84a6a11ce90151ba9608f78d8d1258078c74fb179c4d034",
+          "size": 4274
+        },
+        "Consumer.lean": {
+          "mtime_ns": 1790726501555548621,
+          "sha256": "a8334fe5cbf3993719db200fb19e25dc8807a05ab6a2634a136aaf64f11c43ba",
+          "size": 622
+        },
+        "Probe.lean": {
+          "mtime_ns": 1790726555168665452,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "size": 18
+        },
+        "Probe/Funs.lean": {
+          "mtime_ns": 1790726555168389580,
+          "sha256": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+          "size": 1525
+        },
+        "Probe/Types.lean": {
+          "mtime_ns": 1790726555168103459,
+          "sha256": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6",
+          "size": 671
+        }
+      }
+    },
+    {
+      "label": "identical-replace-3",
+      "own_job_lines": [
+        "\u2139 [1682/1686] Replayed Probe.Types",
+        "\u2139 [1683/1686] Replayed Probe.Funs",
+        "\u2139 [1684/1686] Replayed Probe",
+        "\u2139 [1685/1686] Replayed Consumer"
+      ],
+      "state": {
+        ".lake/build/lib/lean/Consumer.olean": {
+          "mtime_ns": 1790726549799214639,
+          "sha256": "fc1b4f3062e8ffc7444b1d592e68797b7fb77dfdd5d6c926846ddbde628e5b7e",
+          "size": 9328
+        },
+        ".lake/build/lib/lean/Consumer.trace": {
+          "mtime_ns": 1790726549832574936,
+          "sha256": "99e1cc20cbe7883b804cac61c578ce5cd7f59555aa0b2131bd2e56be2cc602ac",
+          "size": 4385
+        },
+        ".lake/build/lib/lean/Probe.olean": {
+          "mtime_ns": 1790726539363515815,
+          "sha256": "89a6fadb3c81e245ee0466be7ec04a8408637377e2d13b7621e115f620fedf96",
+          "size": 1376
+        },
+        ".lake/build/lib/lean/Probe.trace": {
+          "mtime_ns": 1790726539404484601,
+          "sha256": "d5a78c4633c5e160d3cf67f11788c81d6a61c192a5cff34331190ccf83bf4984",
+          "size": 4234
+        },
+        ".lake/build/lib/lean/Probe/Funs.olean": {
+          "mtime_ns": 1790726529159255135,
+          "sha256": "b92df6b2b630f36e561386f8570b1088c3de66378324d6241aa447b58e2304a3",
+          "size": 32776
+        },
+        ".lake/build/lib/lean/Probe/Funs.trace": {
+          "mtime_ns": 1790726529195155734,
+          "sha256": "4a2c7cb95160f2ff5da85998bf843bd67bbfb3d828e0e123b0b6b5d617f35359",
+          "size": 4398
+        },
+        ".lake/build/lib/lean/Probe/Types.olean": {
+          "mtime_ns": 1790726519204965536,
+          "sha256": "95ed236ac9ba3ac9b53eb3a759b450030972b715eb75c6b5ea03288bcb7a4cc9",
+          "size": 28096
+        },
+        ".lake/build/lib/lean/Probe/Types.trace": {
+          "mtime_ns": 1790726519240931301,
+          "sha256": "aaaa4c283932b973d84a6a11ce90151ba9608f78d8d1258078c74fb179c4d034",
+          "size": 4274
+        },
+        "Consumer.lean": {
+          "mtime_ns": 1790726501555548621,
+          "sha256": "a8334fe5cbf3993719db200fb19e25dc8807a05ab6a2634a136aaf64f11c43ba",
+          "size": 622
+        },
+        "Probe.lean": {
+          "mtime_ns": 1790726558533481172,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "size": 18
+        },
+        "Probe/Funs.lean": {
+          "mtime_ns": 1790726558533016053,
+          "sha256": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+          "size": 1525
+        },
+        "Probe/Types.lean": {
+          "mtime_ns": 1790726558532793764,
+          "sha256": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6",
+          "size": 671
+        }
+      }
+    },
+    {
+      "label": "identical-replace-4",
+      "own_job_lines": [
+        "\u2139 [1682/1686] Replayed Probe.Types",
+        "\u2139 [1683/1686] Replayed Probe.Funs",
+        "\u2139 [1684/1686] Replayed Probe",
+        "\u2139 [1685/1686] Replayed Consumer"
+      ],
+      "state": {
+        ".lake/build/lib/lean/Consumer.olean": {
+          "mtime_ns": 1790726549799214639,
+          "sha256": "fc1b4f3062e8ffc7444b1d592e68797b7fb77dfdd5d6c926846ddbde628e5b7e",
+          "size": 9328
+        },
+        ".lake/build/lib/lean/Consumer.trace": {
+          "mtime_ns": 1790726549832574936,
+          "sha256": "99e1cc20cbe7883b804cac61c578ce5cd7f59555aa0b2131bd2e56be2cc602ac",
+          "size": 4385
+        },
+        ".lake/build/lib/lean/Probe.olean": {
+          "mtime_ns": 1790726539363515815,
+          "sha256": "89a6fadb3c81e245ee0466be7ec04a8408637377e2d13b7621e115f620fedf96",
+          "size": 1376
+        },
+        ".lake/build/lib/lean/Probe.trace": {
+          "mtime_ns": 1790726539404484601,
+          "sha256": "d5a78c4633c5e160d3cf67f11788c81d6a61c192a5cff34331190ccf83bf4984",
+          "size": 4234
+        },
+        ".lake/build/lib/lean/Probe/Funs.olean": {
+          "mtime_ns": 1790726529159255135,
+          "sha256": "b92df6b2b630f36e561386f8570b1088c3de66378324d6241aa447b58e2304a3",
+          "size": 32776
+        },
+        ".lake/build/lib/lean/Probe/Funs.trace": {
+          "mtime_ns": 1790726529195155734,
+          "sha256": "4a2c7cb95160f2ff5da85998bf843bd67bbfb3d828e0e123b0b6b5d617f35359",
+          "size": 4398
+        },
+        ".lake/build/lib/lean/Probe/Types.olean": {
+          "mtime_ns": 1790726519204965536,
+          "sha256": "95ed236ac9ba3ac9b53eb3a759b450030972b715eb75c6b5ea03288bcb7a4cc9",
+          "size": 28096
+        },
+        ".lake/build/lib/lean/Probe/Types.trace": {
+          "mtime_ns": 1790726519240931301,
+          "sha256": "aaaa4c283932b973d84a6a11ce90151ba9608f78d8d1258078c74fb179c4d034",
+          "size": 4274
+        },
+        "Consumer.lean": {
+          "mtime_ns": 1790726501555548621,
+          "sha256": "a8334fe5cbf3993719db200fb19e25dc8807a05ab6a2634a136aaf64f11c43ba",
+          "size": 622
+        },
+        "Probe.lean": {
+          "mtime_ns": 1790726561677587241,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "size": 18
+        },
+        "Probe/Funs.lean": {
+          "mtime_ns": 1790726561677184287,
+          "sha256": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+          "size": 1525
+        },
+        "Probe/Types.lean": {
+          "mtime_ns": 1790726561676789042,
+          "sha256": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6",
+          "size": 671
+        }
+      }
+    },
+    {
+      "label": "identical-replace-5",
+      "own_job_lines": [
+        "\u2139 [1682/1686] Replayed Probe.Types",
+        "\u2139 [1683/1686] Replayed Probe.Funs",
+        "\u2139 [1684/1686] Replayed Probe",
+        "\u2139 [1685/1686] Replayed Consumer"
+      ],
+      "state": {
+        ".lake/build/lib/lean/Consumer.olean": {
+          "mtime_ns": 1790726549799214639,
+          "sha256": "fc1b4f3062e8ffc7444b1d592e68797b7fb77dfdd5d6c926846ddbde628e5b7e",
+          "size": 9328
+        },
+        ".lake/build/lib/lean/Consumer.trace": {
+          "mtime_ns": 1790726549832574936,
+          "sha256": "99e1cc20cbe7883b804cac61c578ce5cd7f59555aa0b2131bd2e56be2cc602ac",
+          "size": 4385
+        },
+        ".lake/build/lib/lean/Probe.olean": {
+          "mtime_ns": 1790726539363515815,
+          "sha256": "89a6fadb3c81e245ee0466be7ec04a8408637377e2d13b7621e115f620fedf96",
+          "size": 1376
+        },
+        ".lake/build/lib/lean/Probe.trace": {
+          "mtime_ns": 1790726539404484601,
+          "sha256": "d5a78c4633c5e160d3cf67f11788c81d6a61c192a5cff34331190ccf83bf4984",
+          "size": 4234
+        },
+        ".lake/build/lib/lean/Probe/Funs.olean": {
+          "mtime_ns": 1790726529159255135,
+          "sha256": "b92df6b2b630f36e561386f8570b1088c3de66378324d6241aa447b58e2304a3",
+          "size": 32776
+        },
+        ".lake/build/lib/lean/Probe/Funs.trace": {
+          "mtime_ns": 1790726529195155734,
+          "sha256": "4a2c7cb95160f2ff5da85998bf843bd67bbfb3d828e0e123b0b6b5d617f35359",
+          "size": 4398
+        },
+        ".lake/build/lib/lean/Probe/Types.olean": {
+          "mtime_ns": 1790726519204965536,
+          "sha256": "95ed236ac9ba3ac9b53eb3a759b450030972b715eb75c6b5ea03288bcb7a4cc9",
+          "size": 28096
+        },
+        ".lake/build/lib/lean/Probe/Types.trace": {
+          "mtime_ns": 1790726519240931301,
+          "sha256": "aaaa4c283932b973d84a6a11ce90151ba9608f78d8d1258078c74fb179c4d034",
+          "size": 4274
+        },
+        "Consumer.lean": {
+          "mtime_ns": 1790726501555548621,
+          "sha256": "a8334fe5cbf3993719db200fb19e25dc8807a05ab6a2634a136aaf64f11c43ba",
+          "size": 622
+        },
+        "Probe.lean": {
+          "mtime_ns": 1790726565074608772,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "size": 18
+        },
+        "Probe/Funs.lean": {
+          "mtime_ns": 1790726565074182527,
+          "sha256": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+          "size": 1525
+        },
+        "Probe/Types.lean": {
+          "mtime_ns": 1790726565073804282,
+          "sha256": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6",
+          "size": 671
+        }
+      }
+    },
+    {
+      "label": "function-change",
+      "own_job_lines": [
+        "\u2139 [1682/1686] Replayed Probe.Types",
+        "\u2139 [1683/1686] Built Probe.Funs (9.2s)",
+        "\u2139 [1684/1686] Built Probe (5.6s)",
+        "\u2139 [1685/1686] Built Consumer (6.6s)"
+      ],
+      "state": {
+        ".lake/build/lib/lean/Consumer.olean": {
+          "mtime_ns": 1790726593987118727,
+          "sha256": "fc1b4f3062e8ffc7444b1d592e68797b7fb77dfdd5d6c926846ddbde628e5b7e",
+          "size": 9328
+        },
+        ".lake/build/lib/lean/Consumer.trace": {
+          "mtime_ns": 1790726594020177861,
+          "sha256": "6a183641850cfacc09ed24a4e2d5c976948e7a92a4cf8973be4d7facc17f7566",
+          "size": 4385
+        },
+        ".lake/build/lib/lean/Probe.olean": {
+          "mtime_ns": 1790726587423284612,
+          "sha256": "89a6fadb3c81e245ee0466be7ec04a8408637377e2d13b7621e115f620fedf96",
+          "size": 1376
+        },
+        ".lake/build/lib/lean/Probe.trace": {
+          "mtime_ns": 1790726587455819419,
+          "sha256": "f2e434221a5844085250d116c1c37e9f9674edd69e240877e0c3f658aaedd54b",
+          "size": 4234
+        },
+        ".lake/build/lib/lean/Probe/Funs.olean": {
+          "mtime_ns": 1790726581856365027,
+          "sha256": "8778abd80c28786145b81c844a9ed27e272abc1a1e85ce40ae22df8f82676a55",
+          "size": 32776
+        },
+        ".lake/build/lib/lean/Probe/Funs.trace": {
+          "mtime_ns": 1790726581892609121,
+          "sha256": "3b0727dca7e3512ded11b140f51565fad5e6bd43e60237592ee97ca88b9124e8",
+          "size": 4398
+        },
+        ".lake/build/lib/lean/Probe/Types.olean": {
+          "mtime_ns": 1790726519204965536,
+          "sha256": "95ed236ac9ba3ac9b53eb3a759b450030972b715eb75c6b5ea03288bcb7a4cc9",
+          "size": 28096
+        },
+        ".lake/build/lib/lean/Probe/Types.trace": {
+          "mtime_ns": 1790726519240931301,
+          "sha256": "aaaa4c283932b973d84a6a11ce90151ba9608f78d8d1258078c74fb179c4d034",
+          "size": 4274
+        },
+        "Consumer.lean": {
+          "mtime_ns": 1790726501555548621,
+          "sha256": "a8334fe5cbf3993719db200fb19e25dc8807a05ab6a2634a136aaf64f11c43ba",
+          "size": 622
+        },
+        "Probe.lean": {
+          "mtime_ns": 1790726569636121681,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "size": 18
+        },
+        "Probe/Funs.lean": {
+          "mtime_ns": 1790726569635765519,
+          "sha256": "f5f50d295621081c3f68e3e09add0e9eb88b822350adc4700eec892c8e77b160",
+          "size": 1525
+        },
+        "Probe/Types.lean": {
+          "mtime_ns": 1790726569635374107,
+          "sha256": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6",
+          "size": 671
+        }
+      }
+    },
+    {
+      "label": "changed-no-write",
+      "own_job_lines": [
+        "\u2139 [1682/1686] Replayed Probe.Types",
+        "\u2139 [1683/1686] Replayed Probe.Funs",
+        "\u2139 [1684/1686] Replayed Probe",
+        "\u2139 [1685/1686] Replayed Consumer"
+      ],
+      "state": {
+        ".lake/build/lib/lean/Consumer.olean": {
+          "mtime_ns": 1790726593987118727,
+          "sha256": "fc1b4f3062e8ffc7444b1d592e68797b7fb77dfdd5d6c926846ddbde628e5b7e",
+          "size": 9328
+        },
+        ".lake/build/lib/lean/Consumer.trace": {
+          "mtime_ns": 1790726594020177861,
+          "sha256": "6a183641850cfacc09ed24a4e2d5c976948e7a92a4cf8973be4d7facc17f7566",
+          "size": 4385
+        },
+        ".lake/build/lib/lean/Probe.olean": {
+          "mtime_ns": 1790726587423284612,
+          "sha256": "89a6fadb3c81e245ee0466be7ec04a8408637377e2d13b7621e115f620fedf96",
+          "size": 1376
+        },
+        ".lake/build/lib/lean/Probe.trace": {
+          "mtime_ns": 1790726587455819419,
+          "sha256": "f2e434221a5844085250d116c1c37e9f9674edd69e240877e0c3f658aaedd54b",
+          "size": 4234
+        },
+        ".lake/build/lib/lean/Probe/Funs.olean": {
+          "mtime_ns": 1790726581856365027,
+          "sha256": "8778abd80c28786145b81c844a9ed27e272abc1a1e85ce40ae22df8f82676a55",
+          "size": 32776
+        },
+        ".lake/build/lib/lean/Probe/Funs.trace": {
+          "mtime_ns": 1790726581892609121,
+          "sha256": "3b0727dca7e3512ded11b140f51565fad5e6bd43e60237592ee97ca88b9124e8",
+          "size": 4398
+        },
+        ".lake/build/lib/lean/Probe/Types.olean": {
+          "mtime_ns": 1790726519204965536,
+          "sha256": "95ed236ac9ba3ac9b53eb3a759b450030972b715eb75c6b5ea03288bcb7a4cc9",
+          "size": 28096
+        },
+        ".lake/build/lib/lean/Probe/Types.trace": {
+          "mtime_ns": 1790726519240931301,
+          "sha256": "aaaa4c283932b973d84a6a11ce90151ba9608f78d8d1258078c74fb179c4d034",
+          "size": 4274
+        },
+        "Consumer.lean": {
+          "mtime_ns": 1790726501555548621,
+          "sha256": "a8334fe5cbf3993719db200fb19e25dc8807a05ab6a2634a136aaf64f11c43ba",
+          "size": 622
+        },
+        "Probe.lean": {
+          "mtime_ns": 1790726569636121681,
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "size": 18
+        },
+        "Probe/Funs.lean": {
+          "mtime_ns": 1790726569635765519,
+          "sha256": "f5f50d295621081c3f68e3e09add0e9eb88b822350adc4700eec892c8e77b160",
+          "size": 1525
+        },
+        "Probe/Types.lean": {
+          "mtime_ns": 1790726569635374107,
+          "sha256": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6",
+          "size": 671
+        }
+      }
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/consumer",
+      "elapsed_seconds": 48.552,
+      "env_overrides": {
+        "LAKE_JOBS": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "fresh-baseline",
+      "peak_tree_rss_bytes": 2189885440,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "abe4b710048a328c5aad819dc34cc7f782b41779cd0b92b0fc5523a3ad5fe58f"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/consumer",
+      "elapsed_seconds": 4.911,
+      "env_overrides": {
+        "LAKE_JOBS": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "warm-no-write",
+      "peak_tree_rss_bytes": 677642240,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "0125fc70b7a9aeafc11a6bb10023bffe3ef7f0da3b6f171ca3bc6be3b48b2cd5"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/consumer",
+      "elapsed_seconds": 3.32,
+      "env_overrides": {
+        "LAKE_JOBS": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "identical-replace-2",
+      "peak_tree_rss_bytes": 678133760,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e847e8a9e02deb98fb53fe437e8091a8501a025c4fe1864f34df00726a761eb1"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/consumer",
+      "elapsed_seconds": 3.093,
+      "env_overrides": {
+        "LAKE_JOBS": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "identical-replace-3",
+      "peak_tree_rss_bytes": 679772160,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "586f76eaa6ae01548a1ed8d03f50f43c9bf4eef754384f3f332f9da8b310d39e"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/consumer",
+      "elapsed_seconds": 3.317,
+      "env_overrides": {
+        "LAKE_JOBS": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "identical-replace-4",
+      "peak_tree_rss_bytes": 680787968,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "56291b0b19b12a6cb06d718788734e6779270e2f08b7fef3690c304d85697706"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/consumer",
+      "elapsed_seconds": 3.128,
+      "env_overrides": {
+        "LAKE_JOBS": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "identical-replace-5",
+      "peak_tree_rss_bytes": 679821312,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "5e3ba09bc27f27b2684798d12747a5e401d66ca85b133b3730e3934bdda50d65"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/mutant.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/mutant/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/mutant",
+      "elapsed_seconds": 0.885,
+      "env_overrides": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_NET_OFFLINE": "true",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/target-mutant",
+        "RAYON_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "charon-mutant",
+      "peak_tree_rss_bytes": 131940352,
+      "stderr_sha256": "b9625a78498ce2c7150006e5c69a4cbed20aa06f9a0bff97a2b2ab289f71d745",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/mutant-generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/mutant-input/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work",
+      "elapsed_seconds": 0.456,
+      "env_overrides": {},
+      "exit": 0,
+      "guard_failure": null,
+      "label": "aeneas-mutant",
+      "peak_tree_rss_bytes": 44580864,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "3e3809df63901848b89801cf4e4696c8aa20a1544b08b70c7543e6aa716e2daa"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/consumer",
+      "elapsed_seconds": 24.453,
+      "env_overrides": {
+        "LAKE_JOBS": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "function-change",
+      "peak_tree_rss_bytes": 2295758848,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "60ec356e00b9911a9dd233c6a48d5dc2eb285077d5ded8bbaffb092092f6cebb"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "-v"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i148-five-function-lake-replay-2026-09-29/support/work/consumer",
+      "elapsed_seconds": 4.17,
+      "env_overrides": {
+        "LAKE_JOBS": "1",
+        "LAKE_NO_NET": "1",
+        "LEAN_NUM_THREADS": "1"
+      },
+      "exit": 0,
+      "guard_failure": null,
+      "label": "changed-no-write",
+      "peak_tree_rss_bytes": 674545664,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "5c8eb004eb8a68b35ba436ba99e73fa53c0551e78ea431b36caaa828b0df42b6"
+    }
+  ],
+  "generated": {},
+  "identity": {
+    "parent_commit": "3b549cb1eddebc54896a106c5c94ede6c2c134e5",
+    "prior_generated": {
+      "gen-1": {
+        "Funs.lean": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+        "Probe.lean": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "Types.lean": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6"
+      },
+      "gen-2": {
+        "Funs.lean": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+        "Probe.lean": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "Types.lean": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6"
+      },
+      "gen-3": {
+        "Funs.lean": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+        "Probe.lean": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "Types.lean": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6"
+      },
+      "gen-4": {
+        "Funs.lean": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+        "Probe.lean": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "Types.lean": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6"
+      },
+      "gen-5": {
+        "Funs.lean": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+        "Probe.lean": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "Types.lean": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6"
+      }
+    },
+    "prior_llbc": {
+      "seq-1": "d4e43d2d7d86817aa212ceb2411ba3adce1d8e55fda1ad535998f0f18a5556b5",
+      "seq-2": "0c43333d2c5cf1ce2dafc10d94a0476a85ee1b9f6560cf5e2f9e51d0dd9054e0",
+      "seq-3": "fb75646c83c35d354796dfd1c8cd6c00de2cca68c4ee2a5a3643ef8bc2cc1f18"
+    },
+    "prior_report_sha256": "48b6bd8de4255684656c8c4f737b6fed69d03697825b36c09acd080bb4616451",
+    "prior_results_sha256": "f553da995110e9264c3f4504c5cb154865de37e121b1d6de5b73fa36db7e28b3",
+    "tools": {
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean/Aeneas.olean": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/lake-manifest.json": "92f8605a5f81a49924d1cac5e5a16d1b8328b797df787cf3afe87bdfdcc12bdb",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+    }
+  },
+  "limits": {
+    "build_seconds_max": 60,
+    "disk_bytes_min": 10737418240,
+    "free_memory_percent_min": 30,
+    "process_tree_rss_bytes_max": 2684354560
+  },
+  "mutation": {
+    "changed_sha256": "f3139d907e73cfec6bdb58dda1c800766ea771349b5693a1b58125e03a0281d7",
+    "description": "add_one body x + 1 to x + 2",
+    "generated": {
+      "Funs.lean": "f5f50d295621081c3f68e3e09add0e9eb88b822350adc4700eec892c8e77b160",
+      "Probe.lean": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+      "Types.lean": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6"
+    },
+    "llbc_sha256": "333e75f23d24705615bf9016a64d4d7034b9ecc6e1fe6f258887816d8b71575d",
+    "original_sha256": "c1307296746705f68f957cf4604aeca9695d1be87dba68b7a87deca4da825f6c"
+  },
+  "preflights": [
+    {
+      "free_disk_bytes": 45845811200,
+      "free_memory_percent": 49,
+      "label": "initial",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 49%\n",
+      "time_ns": 1790726501474669000
+    },
+    {
+      "free_disk_bytes": 45845467136,
+      "free_memory_percent": 49,
+      "label": "fresh-baseline",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 49%\n",
+      "time_ns": 1790726501559268000
+    },
+    {
+      "free_disk_bytes": 45815607296,
+      "free_memory_percent": 35,
+      "label": "warm-no-write",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 35%\n",
+      "time_ns": 1790726550183151000
+    },
+    {
+      "free_disk_bytes": 45810597888,
+      "free_memory_percent": 39,
+      "label": "identical-replace-2",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 39%\n",
+      "time_ns": 1790726555172141000
+    },
+    {
+      "free_disk_bytes": 45803532288,
+      "free_memory_percent": 39,
+      "label": "identical-replace-3",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 39%\n",
+      "time_ns": 1790726558536455000
+    },
+    {
+      "free_disk_bytes": 45801885696,
+      "free_memory_percent": 40,
+      "label": "identical-replace-4",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 40%\n",
+      "time_ns": 1790726561680592000
+    },
+    {
+      "free_disk_bytes": 45797548032,
+      "free_memory_percent": 40,
+      "label": "identical-replace-5",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 40%\n",
+      "time_ns": 1790726565078400000
+    },
+    {
+      "free_disk_bytes": 45792239616,
+      "free_memory_percent": 40,
+      "label": "charon-mutant",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 40%\n",
+      "time_ns": 1790726568274471000
+    },
+    {
+      "free_disk_bytes": 45791797248,
+      "free_memory_percent": 41,
+      "label": "aeneas-mutant",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 41%\n",
+      "time_ns": 1790726569175445000
+    },
+    {
+      "free_disk_bytes": 45791776768,
+      "free_memory_percent": 41,
+      "label": "function-change",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 41%\n",
+      "time_ns": 1790726569642747000
+    },
+    {
+      "free_disk_bytes": 45783330816,
+      "free_memory_percent": 35,
+      "label": "changed-no-write",
+      "memory_pressure_stderr": "",
+      "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 35%\n",
+      "time_ns": 1790726594148925000
+    }
+  ],
+  "schema": 1,
+  "status": "complete"
+}

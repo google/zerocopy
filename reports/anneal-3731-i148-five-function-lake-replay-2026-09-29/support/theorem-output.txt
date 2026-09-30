@@ -1,0 +1,5 @@
+fresh-baseline:
+info: Consumer.lean:7:0: 'combine_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+function-change:
+info: Consumer.lean:7:0: 'combine_self' depends on axioms: [propext, Classical.choice, Quot.sound]
