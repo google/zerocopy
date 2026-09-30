@@ -1,0 +1,12 @@
+{
+  "topics": ["kubernetes/controllers", "kubernetes/client-go", "kubernetes/watch-cache", "reference/version-review", "anneal/invalidation"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R510", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "7aba064d95afec974b2478feca6f8c1a1c0b3088"}},
+    {"name": "controller-runtime pinned and observed main source", "identity": {"repository": "kubernetes-sigs/controller-runtime", "branch": "main", "revision": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"}},
+    {"name": "client-go Reflector pinned Kubernetes monorepo source", "identity": {"repository": "kubernetes/kubernetes", "revision": "6d1d025050cb63ae5b8e53037aced205e6a28410"}},
+    {"name": "client-go Reflector selected Kubernetes master source", "identity": {"repository": "kubernetes/kubernetes", "branch": "master", "revision": "08147af84478f859c2e2234d71ceace8bdb412c7"}},
+    {"name": "controller-runtime v0.25.1 release source", "identity": {"repository": "kubernetes-sigs/controller-runtime", "tag": "v0.25.1", "revision": "67b72c2517be1d2b0dec612477eb20c3c959a8aa"}},
+    {"name": "Kubernetes v1.37.1 release source", "identity": {"repository": "kubernetes/kubernetes", "tag": "v1.37.1", "revision": "f78e722310e50bcaca9276be22276d9e91d91308"}}
+  ],
+  "observed_at": "2026-09-30"
+}

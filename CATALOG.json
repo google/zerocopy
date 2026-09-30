@@ -16598,6 +16598,65 @@
         "aeneas/termination"
       ]
     },
+    "reconciliation-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "7aba064d95afec974b2478feca6f8c1a1c0b3088"
+          },
+          "name": "Frozen reference corpus containing R510"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "kubernetes-sigs/controller-runtime",
+            "revision": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"
+          },
+          "name": "controller-runtime pinned and observed main source"
+        },
+        {
+          "identity": {
+            "repository": "kubernetes/kubernetes",
+            "revision": "6d1d025050cb63ae5b8e53037aced205e6a28410"
+          },
+          "name": "client-go Reflector pinned Kubernetes monorepo source"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "kubernetes/kubernetes",
+            "revision": "08147af84478f859c2e2234d71ceace8bdb412c7"
+          },
+          "name": "client-go Reflector selected Kubernetes master source"
+        },
+        {
+          "identity": {
+            "repository": "kubernetes-sigs/controller-runtime",
+            "revision": "67b72c2517be1d2b0dec612477eb20c3c959a8aa",
+            "tag": "v0.25.1"
+          },
+          "name": "controller-runtime v0.25.1 release source"
+        },
+        {
+          "identity": {
+            "repository": "kubernetes/kubernetes",
+            "revision": "f78e722310e50bcaca9276be22276d9e91d91308",
+            "tag": "v1.37.1"
+          },
+          "name": "Kubernetes v1.37.1 release source"
+        }
+      ],
+      "topics": [
+        "kubernetes/controllers",
+        "kubernetes/client-go",
+        "kubernetes/watch-cache",
+        "reference/version-review",
+        "anneal/invalidation"
+      ]
+    },
     "reconciliation-event-hints-repair-loops-2005-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
