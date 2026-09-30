@@ -3051,6 +3051,40 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v51": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v50",
+            "reference_commit": "ebfeac694e945da0b52e09c6a185d857f982f4f3"
+          },
+          "name": "Published #3730/#3731 v50 coverage ledger"
+        },
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "oracle_prelaunch_sha256": "7f7aac75610935a82f2382381ca0fbab519eaee9abb26767dcd90ab8cabe4cc7",
+            "original_sha256": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+            "results_sha256": "a81a7fbbecc428f1cf4ce91eea2f03d49185a4a4b694ca3b0b48c6f46ea38469"
+          },
+          "name": "Unicode Lean LSP capability and edit evidence"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "08de544674dc82f8b7753283b80dc92d315a25abafcc9b87985e952b90d43f3c",
+            "source_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v50"
+          },
+          "name": "Inherited public #3730/#3731 issue snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/editor-integration",
+        "lean/lsp",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7154,6 +7188,34 @@
         "anneal/research-coverage",
         "rust/charon",
         "rust/compilation-unit-identity"
+      ]
+    },
+    "anneal-3731-i062-utf8-only-unicode-lsp-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "architecture": "aarch64-darwin",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "toolchain": "leanprover/lean4 v4.30.0-rc2"
+          },
+          "name": "Observed local Lean LSP and batch binary"
+        },
+        {
+          "identity": {
+            "oracle_prelaunch_sha256": "7f7aac75610935a82f2382381ca0fbab519eaee9abb26767dcd90ab8cabe4cc7",
+            "original_sha256": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+            "patched_sha256": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f",
+            "results_sha256": "a81a7fbbecc428f1cf4ce91eea2f03d49185a4a4b694ca3b0b48c6f46ea38469"
+          },
+          "name": "Unicode fixture and sequential protocol observation"
+        }
+      ],
+      "topics": [
+        "lean/lsp",
+        "lean/position-encoding",
+        "anneal/editor-integration",
+        "experiments/unicode"
       ]
     },
     "anneal-3731-i075-warm-bin-full-field-2026-09-29": {

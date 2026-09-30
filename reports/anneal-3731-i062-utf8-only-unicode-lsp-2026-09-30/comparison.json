@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "oracle_prelaunch_sha256": "7f7aac75610935a82f2382381ca0fbab519eaee9abb26767dcd90ab8cabe4cc7",
+  "fixture_sha256": {
+    "original": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+    "patched": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f"
+  },
+  "coordinate_oracle": {
+    "begin": {
+      "unicode_scalars": 15,
+      "utf16_code_units": 16,
+      "utf8_bytes": 19
+    },
+    "end": {
+      "unicode_scalars": 26,
+      "utf16_code_units": 27,
+      "utf8_bytes": 30
+    }
+  },
+  "sessions": {
+    "utf8_only": {
+      "offered": [
+        "utf-8"
+      ],
+      "selected_position_encoding": null,
+      "initial_error_range": {
+        "end": {
+          "character": 27,
+          "line": 0
+        },
+        "start": {
+          "character": 16,
+          "line": 0
+        }
+      },
+      "after_error_messages": [
+        "unexpected end of input; expected ')'"
+      ],
+      "max_sampled_rss_kib": 196880,
+      "min_sampled_reclaimable_percent": 33.8657,
+      "min_sampled_free_disk_bytes": 18843561984,
+      "max_sampled_scratch_bytes": 8814,
+      "sample_count": 53,
+      "exit": 0
+    },
+    "utf16_only": {
+      "offered": [
+        "utf-16"
+      ],
+      "selected_position_encoding": null,
+      "initial_error_range": {
+        "end": {
+          "character": 27,
+          "line": 0
+        },
+        "start": {
+          "character": 16,
+          "line": 0
+        }
+      },
+      "after_error_messages": [],
+      "max_sampled_rss_kib": 115824,
+      "min_sampled_reclaimable_percent": 34.3344,
+      "min_sampled_free_disk_bytes": 18843697152,
+      "max_sampled_scratch_bytes": 15934,
+      "sample_count": 26,
+      "exit": 0
+    }
+  },
+  "batch": {
+    "original": {
+      "exit": 1,
+      "message_count": 2,
+      "max_sampled_rss_kib": 97552,
+      "min_sampled_reclaimable_percent": 34.6872,
+      "min_sampled_free_disk_bytes": 18843643904
+    },
+    "patched": {
+      "exit": 0,
+      "message_count": 1,
+      "max_sampled_rss_kib": 98016,
+      "min_sampled_reclaimable_percent": 34.6695,
+      "min_sampled_free_disk_bytes": 18843627520
+    }
+  },
+  "negative_controls": {
+    "utf8_offer_not_selection": true,
+    "utf8_ranged_edit_did_not_repair": true,
+    "utf16_ranged_edit_repaired": true
+  },
+  "cleanup": {
+    "work_exists": true,
+    "work_exists_after": false
+  }
+}
