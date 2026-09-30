@@ -17052,6 +17052,42 @@
         "rust/rust-analyzer"
       ]
     },
+    "rocq-serapi-fleche-current-source-review": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "f64e634e06aaf8b7eae2fefb3a9d7f2ebf82d3b2"
+          },
+          "name": "Frozen reference corpus containing R386"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "rocq-archive/coq-serapi",
+            "revision": "6196f9f572ef9dd3749b885cabce7a57406cedb9"
+          },
+          "name": "SerAPI pinned and observed main source"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "rocq-community/rocq-lsp",
+            "revision": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"
+          },
+          "name": "Rocq LSP and Fl\u00e8che pinned and observed main source"
+        }
+      ],
+      "topics": [
+        "proof-assistants/rocq",
+        "proof-assistants/serapi",
+        "proof-assistants/fleche",
+        "reference/version-review",
+        "anneal/architecture"
+      ]
+    },
     "roslyn-current-source-review": {
       "observed_at": "2026-09-30",
       "subjects": [

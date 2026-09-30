@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-09-30T22:02:11Z",
+  "repositories": [
+    {
+      "evidence_id": "E3",
+      "repository": "rocq-archive/coq-serapi",
+      "pinned_commit": "6196f9f572ef9dd3749b885cabce7a57406cedb9",
+      "current_default_branch": "main",
+      "current_commit": "6196f9f572ef9dd3749b885cabce7a57406cedb9",
+      "raw_ref_snapshot_path": "serapi-refs.txt",
+      "raw_ref_snapshot_sha256": "cb694088133d20cc6228677ce4926fde1d6bef95bfb6370ae57b686172a770a7",
+      "refs": {
+        "HEAD": "6196f9f572ef9dd3749b885cabce7a57406cedb9",
+        "refs/heads/main": "6196f9f572ef9dd3749b885cabce7a57406cedb9"
+      },
+      "ancestry": "identical_commit_zero_forward_range",
+      "forward_commit_count": 0,
+      "changed_paths": [],
+      "files": [
+        {
+          "path": "README.md",
+          "pinned_blob_sha1": "85c5708fe72147f103c87e2316403697f4c51214",
+          "current_blob_sha1": "85c5708fe72147f103c87e2316403697f4c51214",
+          "content_sha256": "e79c692d702657482f5756978616bfa53c36abfc8b6482f7080c11f3887bca0d",
+          "size": 16435,
+          "snapshot_path": "snapshots/serapi/README.md",
+          "raw_url": "https://raw.githubusercontent.com/rocq-archive/coq-serapi/6196f9f572ef9dd3749b885cabce7a57406cedb9/README.md"
+        },
+        {
+          "path": "serapi/serapi_protocol.mli",
+          "pinned_blob_sha1": "ed3ed38c409d0dc778709c7eeb73bd290f67c006",
+          "current_blob_sha1": "ed3ed38c409d0dc778709c7eeb73bd290f67c006",
+          "content_sha256": "8ec52ada62a871ed8242a316cb895d473791991bde3d990f2d43fdaaee0f3b62",
+          "size": 25606,
+          "snapshot_path": "snapshots/serapi/serapi/serapi_protocol.mli",
+          "raw_url": "https://raw.githubusercontent.com/rocq-archive/coq-serapi/6196f9f572ef9dd3749b885cabce7a57406cedb9/serapi/serapi_protocol.mli"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E5",
+      "repository": "rocq-community/rocq-lsp",
+      "pinned_commit": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe",
+      "current_default_branch": "main",
+      "current_commit": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe",
+      "raw_ref_snapshot_path": "rocq-lsp-refs.txt",
+      "raw_ref_snapshot_sha256": "5bd9e89a5aa4fee85e69cc11bfc4d6486e4723ce94f54089adb8265c076372ac",
+      "refs": {
+        "HEAD": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe",
+        "refs/heads/main": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"
+      },
+      "ancestry": "identical_commit_zero_forward_range",
+      "forward_commit_count": 0,
+      "changed_paths": [],
+      "files": [
+        {
+          "path": "README.md",
+          "pinned_blob_sha1": "37b132ed9c7e15bb4e11205e110d592a1503a6b6",
+          "current_blob_sha1": "37b132ed9c7e15bb4e11205e110d592a1503a6b6",
+          "content_sha256": "fbd0bf2032e2d32cb09c7c795dddac0038cc204b15be0146c5df7d423b0aca82",
+          "size": 22582,
+          "snapshot_path": "snapshots/rocq-lsp/README.md",
+          "raw_url": "https://raw.githubusercontent.com/rocq-community/rocq-lsp/2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe/README.md"
+        },
+        {
+          "path": "etc/doc/USER_MANUAL.md",
+          "pinned_blob_sha1": "2b989fcf528d08ef3c58b115f45248d2cf4e0bcc",
+          "current_blob_sha1": "2b989fcf528d08ef3c58b115f45248d2cf4e0bcc",
+          "content_sha256": "621f5a10b33c1b7f51733f2c26d659ff67b6c21a366aefa1256a933824af0772",
+          "size": 6747,
+          "snapshot_path": "snapshots/rocq-lsp/etc/doc/USER_MANUAL.md",
+          "raw_url": "https://raw.githubusercontent.com/rocq-community/rocq-lsp/2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe/etc/doc/USER_MANUAL.md"
+        },
+        {
+          "path": "etc/doc/PROTOCOL.md",
+          "pinned_blob_sha1": "30d2b18cefd1d2b6fdd3493b744426c29b482c57",
+          "current_blob_sha1": "30d2b18cefd1d2b6fdd3493b744426c29b482c57",
+          "content_sha256": "43481ef7cd9a9378f71931d85283ef92e4e3ed4bdf70d5ea97b792cd5cfd51b2",
+          "size": 40850,
+          "snapshot_path": "snapshots/rocq-lsp/etc/doc/PROTOCOL.md",
+          "raw_url": "https://raw.githubusercontent.com/rocq-community/rocq-lsp/2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe/etc/doc/PROTOCOL.md"
+        },
+        {
+          "path": "fleche/doc.ml",
+          "pinned_blob_sha1": "2cb236a36a17acf610c971308e8c9962b341e74f",
+          "current_blob_sha1": "2cb236a36a17acf610c971308e8c9962b341e74f",
+          "content_sha256": "c0b6f6fea1a3a028bb15985f177930303010aa155a13e1d6bcb43505c4a7d674",
+          "size": 47262,
+          "snapshot_path": "snapshots/rocq-lsp/fleche/doc.ml",
+          "raw_url": "https://raw.githubusercontent.com/rocq-community/rocq-lsp/2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe/fleche/doc.ml"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "topics": ["proof-assistants/rocq", "proof-assistants/serapi", "proof-assistants/fleche", "reference/version-review", "anneal/architecture"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R386", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "f64e634e06aaf8b7eae2fefb3a9d7f2ebf82d3b2"}},
+    {"name": "SerAPI pinned and observed main source", "identity": {"repository": "rocq-archive/coq-serapi", "branch": "main", "revision": "6196f9f572ef9dd3749b885cabce7a57406cedb9"}},
+    {"name": "Rocq LSP and Flèche pinned and observed main source", "identity": {"repository": "rocq-community/rocq-lsp", "branch": "main", "revision": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"}}
+  ],
+  "observed_at": "2026-09-30"
+}
