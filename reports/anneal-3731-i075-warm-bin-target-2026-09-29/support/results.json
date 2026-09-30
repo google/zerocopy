@@ -1,0 +1,192 @@
+{
+  "fixture": {
+    "Cargo.lock": "5ff08f21f79e786e546a6514040ff4ad9914b720efc6a99596441d0b2b95a8eb",
+    "Cargo.toml": "5a4d6e27f3152246a117585ea4478012bde67607417a9e58f2521470d4dcaaea",
+    "src/lib.rs": "b4013f29aab99417d099eba3acc9bb803e600b2e1038c040b89d23a16614d0e7",
+    "src/main.rs": "6779b68adf7555b80d7b8956963e629bfe69851a5bcdc94e2342790031e193b1",
+    "tests/check.rs": "c0a8372bca45e87902a51f51d384f45c49ee4bcc275ee0a1e9208e326f00ea56"
+  },
+  "owned_scratch_bytes_before_cleanup": 115917,
+  "parent_reference_head": "641f55cfd54fcd3c6ba0de67643a62a29df4f3a1",
+  "runs": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/baseline.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/fixture/Cargo.toml",
+        "--bin",
+        "subject_matrix_cli",
+        "--offline",
+        "--locked",
+        "-j",
+        "1",
+        "-v"
+      ],
+      "crate_name": "subject_matrix_cli",
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/fixture",
+      "dest_exists": true,
+      "dest_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/baseline.llbc",
+      "dest_sha256": "5d1ae9cb6d26d618985cd092fd0218faf1a3c6e2c188f77eebd8615fccf20580",
+      "driver_crates": [
+        "subject_matrix",
+        "subject_matrix_cli"
+      ],
+      "elapsed_seconds": 0.6455,
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_NET_OFFLINE": "true",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/target",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null,
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+      },
+      "exit_code": 0,
+      "guard_stop": null,
+      "has_errors": false,
+      "label": "baseline",
+      "preflight": {
+        "free_disk_bytes": 40100016128,
+        "memory_estimate_percent": 23.27,
+        "owned_scratch_bytes": 927
+      },
+      "samples": [
+        {
+          "free_disk_bytes": 40100016128,
+          "memory_estimate_percent": 23.265,
+          "owned_scratch_bytes": 927,
+          "rss_kib": 32,
+          "seconds": 0.0011
+        },
+        {
+          "free_disk_bytes": 40100016128,
+          "memory_estimate_percent": 23.044,
+          "owned_scratch_bytes": 927,
+          "rss_kib": 24048,
+          "seconds": 0.1253
+        },
+        {
+          "free_disk_bytes": 40100016128,
+          "memory_estimate_percent": 23.08,
+          "owned_scratch_bytes": 927,
+          "rss_kib": 55584,
+          "seconds": 0.2514
+        },
+        {
+          "free_disk_bytes": 40099991552,
+          "memory_estimate_percent": 23.076,
+          "owned_scratch_bytes": 1329,
+          "rss_kib": 72016,
+          "seconds": 0.3718
+        },
+        {
+          "free_disk_bytes": 40099987456,
+          "memory_estimate_percent": 23.012,
+          "owned_scratch_bytes": 1329,
+          "rss_kib": 124704,
+          "seconds": 0.5009
+        },
+        {
+          "free_disk_bytes": 40099868672,
+          "memory_estimate_percent": 23.063,
+          "owned_scratch_bytes": 16421,
+          "rss_kib": 33504,
+          "seconds": 0.6282
+        }
+      ],
+      "stderr_sha256": "68a95c22d29feab30009c7c58a7e39843960df56f519bb52e4e0c7f021bf81e5",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/warm_repeat.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/fixture/Cargo.toml",
+        "--bin",
+        "subject_matrix_cli",
+        "--offline",
+        "--locked",
+        "-j",
+        "1",
+        "-v"
+      ],
+      "crate_name": "subject_matrix_cli",
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/fixture",
+      "dest_exists": true,
+      "dest_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/warm_repeat.llbc",
+      "dest_sha256": "6021a295099927891f14c18bfbb0ec2b1e6b851f72b800f1c203443e9d5cbe0d",
+      "driver_crates": [
+        "subject_matrix",
+        "subject_matrix_cli"
+      ],
+      "elapsed_seconds": 0.1451,
+      "environment": {
+        "CARGO_BUILD_JOBS": "1",
+        "CARGO_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/cargo",
+        "CARGO_INCREMENTAL": "0",
+        "CARGO_NET_OFFLINE": "true",
+        "CARGO_TARGET_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i075-warm-bin-target/target",
+        "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+        "RAYON_NUM_THREADS": "1",
+        "RUSTFLAGS": null,
+        "RUSTUP_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup"
+      },
+      "exit_code": 0,
+      "guard_stop": null,
+      "has_errors": false,
+      "label": "warm_repeat",
+      "preflight": {
+        "free_disk_bytes": 40099733504,
+        "memory_estimate_percent": 23.482,
+        "owned_scratch_bytes": 61638
+      },
+      "samples": [
+        {
+          "free_disk_bytes": 40099733504,
+          "memory_estimate_percent": 23.48,
+          "owned_scratch_bytes": 61638,
+          "rss_kib": 3728,
+          "seconds": 0.001
+        },
+        {
+          "free_disk_bytes": 40099659776,
+          "memory_estimate_percent": 23.48,
+          "owned_scratch_bytes": 115917,
+          "rss_kib": 0,
+          "seconds": 0.1267
+        }
+      ],
+      "stderr_sha256": "ab43c1077683a72623b53cd3ecddae1197455a8b854125754977136ad992062b",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "tools": {
+    "cargo": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+    },
+    "charon": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+    },
+    "rustc": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+    }
+  },
+  "work_removed": true
+}
