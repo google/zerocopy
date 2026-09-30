@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "lean/native-plugins",
+    "lean/server-lifecycle"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.30.0-rc2 server and worker executable",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "Prepared native plugin variants",
+      "identity": {
+        "v1_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+        "v2_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

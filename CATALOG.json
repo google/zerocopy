@@ -2880,6 +2880,45 @@
         "lean/tactic-state"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v46": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "reference_revision": "22c27b3d8ba12ab9708cb7cd8f13eb29217ec71a",
+            "repository": "google/zerocopy",
+            "row_challenge_sha256": "74948ac2e3847354b0db3b260a936c34150c5be55544502543cd9f472ea3a511"
+          },
+          "name": "Published v45 coverage ledger"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Public issues 3730 and 3731 refreshed for v46"
+        },
+        {
+          "identity": {
+            "observed_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "source_report_sha256": "620934319cd5ee64bafbe0cc3699a1d6d165eee228d6d1fbe83aa3e54bd6dc27",
+            "source_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Pinned Lean native-plugin mapped-worker component report"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk",
+        "lean/native-plugins",
+        "lean/server-lifecycle"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -7479,6 +7518,31 @@
         "anneal/research-coverage",
         "lean/lake",
         "anneal/workspace-trust"
+      ]
+    },
+    "anneal-3731-i125-i154-native-plugin-mapped-workers-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Lean 4.30.0-rc2 server and worker executable"
+        },
+        {
+          "identity": {
+            "v1_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+            "v2_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9"
+          },
+          "name": "Prepared native plugin variants"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "lean/native-plugins",
+        "lean/server-lifecycle"
       ]
     },
     "anneal-3731-i125-plugin-cwd-path-alias-v4-30-0-rc2": {

@@ -1,0 +1,1363 @@
+[
+  {
+    "seq": 0,
+    "kind": "recovery_subject",
+    "prior_abort": {
+      "reason": "process-tree RSS cap exceeded",
+      "total_kib": 1576608,
+      "cap_kib": 1572864,
+      "active_server_pid": 93511,
+      "tree": [
+        {
+          "pid": 93511,
+          "ppid": 93509,
+          "pgid": 93511,
+          "rss_kib": 300432,
+          "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean --plugin=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib --server"
+        },
+        {
+          "pid": 93706,
+          "ppid": 93511,
+          "pgid": 93706,
+          "rss_kib": 1187888,
+          "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean --worker -p/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P1.lean"
+        }
+      ]
+    },
+    "free_memory_percent": 67,
+    "v1_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "v2_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9"
+  },
+  {
+    "seq": 1,
+    "kind": "replace",
+    "label": "forced-restart-v2-to-v1",
+    "old_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+    "new_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "link_target": "v1/plugin__probe_Plugin.dylib",
+    "marker": null
+  },
+  {
+    "seq": 2,
+    "kind": "server_start",
+    "label": "forced_restart",
+    "pid": 93910,
+    "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4"
+  },
+  {
+    "seq": 3,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 93906,
+        "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 4,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 5,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 6,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 7,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 10,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 11,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 14,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 0,
+      "result": null
+    }
+  },
+  {
+    "seq": 15,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 16,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": null
+    }
+  },
+  {
+    "seq": 17,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 18,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": null
+    }
+  },
+  {
+    "seq": 19,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 21,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": null
+    }
+  },
+  {
+    "seq": 22,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 23,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": null
+    }
+  },
+  {
+    "seq": 24,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 25,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": null
+    }
+  },
+  {
+    "seq": 26,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 27,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 29,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 41,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 42,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "kind": "phase",
+    "label": "v1-after-forced-restart",
+    "file": "P2.lean",
+    "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "marker": "plugin-v1",
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "kind": "mapping",
+    "label": "forced-restart-v1",
+    "server_pid": 93910,
+    "processes": [
+      {
+        "process": {
+          "pid": 93910,
+          "ppid": 93906,
+          "pgid": 93910,
+          "rss_kib": 298368,
+          "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean --plugin=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib --server"
+        },
+        "tools": {
+          "lsof": {
+            "exit": 0,
+            "raw_sha256": "96e7c629cbb500ada6f5a87b5a69cc48890eee4a521532700ae922a39db09221",
+            "archive": "forced-restart-v1-93910-lsof.txt.gz",
+            "matching_lines": [
+              "lean    93910 josh  txt      REG               1,13     51120            25662851 /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib"
+            ]
+          },
+          "vmmap": {
+            "exit": 0,
+            "raw_sha256": "6dfae88a65cc1a91fbbb6ac8f4b5c22c6525c3bc942025b0b2e39df0acf492b4",
+            "archive": "forced-restart-v1-93910-vmmap.txt.gz",
+            "matching_lines": [
+              "__TEXT                      102420000-102424000    [   16K    16K     0K     0K] r-x/rwx SM=COW          /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib",
+              "__DATA_CONST                102424000-102428000    [   16K    16K    16K     0K] r--/rwx SM=COW          /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib",
+              "__LINKEDIT                  10242c000-102430000    [   16K    16K     0K     0K] r--/rwx SM=COW          /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib",
+              "__DATA                      102428000-10242c000    [   16K    16K    16K     0K] rw-/rwx SM=COW          /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib"
+            ]
+          }
+        }
+      },
+      {
+        "process": {
+          "pid": 93911,
+          "ppid": 93910,
+          "pgid": 93911,
+          "rss_kib": 1185920,
+          "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean --worker -p/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean"
+        },
+        "tools": {
+          "lsof": {
+            "exit": 0,
+            "raw_sha256": "acde694d08660fa3293149f781a5834184e2fc4e8da54ba710652f54587e74e2",
+            "archive": "forced-restart-v1-93911-lsof.txt.gz",
+            "matching_lines": [
+              "lean    93911 josh  txt      REG               1,13     51120            25662851 /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib"
+            ]
+          },
+          "vmmap": {
+            "exit": 0,
+            "raw_sha256": "2b8bd202e1c2a4776878cf6155c1536d46cce60b4e9c96d32f5e275e904877d1",
+            "archive": "forced-restart-v1-93911-vmmap.txt.gz",
+            "matching_lines": [
+              "__TEXT                      100760000-100764000    [   16K    16K     0K     0K] r-x/rwx SM=COW          /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib",
+              "__DATA_CONST                100764000-100768000    [   16K    16K    16K     0K] r--/rwx SM=COW          /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib",
+              "__LINKEDIT                  10076c000-100770000    [   16K    16K     0K     0K] r--/rwx SM=COW          /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib",
+              "__DATA                      100768000-10076c000    [   16K    16K    16K     0K] rw-/rwx SM=COW          /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/v1/plugin__probe_Plugin.dylib"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "seq": 45,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 46,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 47,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "result": null
+    }
+  },
+  {
+    "seq": 48,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 49,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "result": null
+    }
+  },
+  {
+    "seq": 50,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 51,
+    "kind": "server",
+    "label": "forced_restart",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 52,
+    "kind": "client",
+    "label": "forced_restart",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 53,
+    "kind": "server_stop",
+    "label": "forced_restart",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 54,
+    "kind": "after_shutdown",
+    "remaining": []
+  },
+  {
+    "seq": 55,
+    "kind": "resources",
+    "peak_process_tree_rss_kib": 1572736,
+    "samples": 63,
+    "cap_kib": 1572864
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "reason": "process-tree RSS cap exceeded",
+  "total_kib": 1576608,
+  "cap_kib": 1572864,
+  "active_server_pid": 93511,
+  "tree": [
+    {
+      "pid": 93511,
+      "ppid": 93509,
+      "pgid": 93511,
+      "rss_kib": 300432,
+      "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean --plugin=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib --server"
+    },
+    {
+      "pid": 93706,
+      "ppid": 93511,
+      "pgid": 93706,
+      "rss_kib": 1187888,
+      "command": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean --worker -p/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/.lake/build/lib/lean/plugin__probe_Plugin.dylib file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i125-plugin-mapped-workers/support/run/live/P1.lean"
+    }
+  ]
+}

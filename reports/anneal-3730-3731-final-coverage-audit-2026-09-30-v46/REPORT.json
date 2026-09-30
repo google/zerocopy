@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "lean/native-plugins",
+    "lean/server-lifecycle"
+  ],
+  "subjects": [
+    {
+      "name": "Published v45 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "22c27b3d8ba12ab9708cb7cd8f13eb29217ec71a",
+        "row_challenge_sha256": "74948ac2e3847354b0db3b260a936c34150c5be55544502543cd9f472ea3a511"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731 refreshed for v46",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Pinned Lean native-plugin mapped-worker component report",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "source_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "observed_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "source_report_sha256": "620934319cd5ee64bafbe0cc3699a1d6d165eee228d6d1fbe83aa3e54bd6dc27"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}
