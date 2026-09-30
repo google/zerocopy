@@ -1,0 +1,22 @@
+{
+  "topics": ["anneal/issue-3730-3731", "anneal/architecture", "research/source-synthesis"],
+  "subjects": [
+    {
+      "name": "Forty #3732 architectural source reports and the later J024 LCF report",
+      "identity": {
+        "source_commits": "e2692485db6b8417bf415c83223cfc5a99e73e4f;0c504d98f5abafcbbd1460738e6d753378a6460e",
+        "source_census_sha256": "0f44d3879ac5477f18decf0fc9e5049a4018f7e424bc88989a7b26f3ca9b3884",
+        "source_package_count": "41"
+      }
+    },
+    {
+      "name": "Bounded #3731 source/spec investigation map",
+      "identity": {
+        "reference_parent": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+        "id_map_sha256": "b4ba8efa17316e282391323ddd661d7caca9a7c5a40b7cf28cbc0d5cb9ba8675",
+        "investigation_count": "23"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

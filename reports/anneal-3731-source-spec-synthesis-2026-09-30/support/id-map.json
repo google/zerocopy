@@ -1,0 +1,135 @@
+{
+  "I001": [
+    "dafny-boogie-viper-obligation-boundaries-2005-2026",
+    "proof-maintenance-architectures-sel4-compcert-everest-2009-2026",
+    "why3-durable-proof-sessions-2011-2025",
+    "lcf-abstract-theorem-values-trust-boundaries-1978-2026",
+    "fstar-extensible-proof-automation-trust-boundaries-2019-2026"
+  ],
+  "I002": [
+    "rls-rust-analyzer-architecture-evolution-2015-2026",
+    "rls-rust-analyzer-architecture-transition-2015-2026",
+    "rls-to-rust-analyzer-editor-engine-history-2015-2026",
+    "kotlin-swift-compiler-backed-ide-boundaries-2021-2026",
+    "typescript-host-owned-language-world-2014-2026",
+    "coq-rocq-stm-serapi-fleche-architecture-2013-2026"
+  ],
+  "I005": [
+    "build-systems-a-la-carte-anneal-orchestration-2018-2026",
+    "salsa-rustc-query-granularity-2016-2026",
+    "roslyn-immutable-snapshots-workspace-boundaries-2012-2026",
+    "self-adjusting-computation-from-scratch-consistency-2005-2013",
+    "persistent-data-structures-snapshot-space-costs-1989-2026",
+    "mvcc-snapshot-isolation-proof-work-consistency-1981-2026"
+  ],
+  "I007": [
+    "isabelle-pide-document-processing-2008-2019",
+    "coq-rocq-stm-serapi-fleche-architecture-2013-2026",
+    "netstack3-architecture-evolution-2019-2026",
+    "theseus-ownership-global-invariants-2017-2024",
+    "redleaf-mixed-language-isolation-boundaries-2020-2026"
+  ],
+  "I009": [
+    "cargo-rustc-cache-reuse-extraction-boundaries-2016-2026",
+    "functional-core-effects-hidden-state-2005-2026",
+    "self-adjusting-computation-from-scratch-consistency-2005-2013",
+    "nix-guix-functional-deployment-roots-2007-2026"
+  ],
+  "I010": [
+    "mvcc-snapshot-isolation-proof-work-consistency-1981-2026",
+    "roslyn-immutable-snapshots-workspace-boundaries-2012-2026",
+    "nix-guix-immutable-closures-mutable-roots-2004-2026",
+    "reconciliation-event-hints-repair-loops-2005-2026"
+  ],
+  "I011": [
+    "adapton-names-identity-freshness-2014-2018",
+    "mvcc-snapshot-isolation-proof-work-consistency-1981-2026",
+    "theseus-ownership-global-invariants-2017-2024",
+    "nix-guix-immutable-closures-mutable-roots-2004-2026"
+  ],
+  "I015": [
+    "early-cutoff-equality-relations-2010-2026",
+    "salsa-rustc-query-granularity-2016-2026",
+    "self-adjusting-computation-from-scratch-consistency-2005-2013",
+    "adapton-names-identity-freshness-2014-2018"
+  ],
+  "I020": [
+    "gopls-snapshots-views-workspace-evolution-2018-2026",
+    "haskell-ide-lineage-environment-graph-boundaries-2017-2026",
+    "kotlin-swift-compiler-backed-ide-boundaries-2021-2026",
+    "cargo-rustc-cache-reuse-extraction-boundaries-2016-2026"
+  ],
+  "I056": [
+    "early-cutoff-equality-relations-2010-2026",
+    "salsa-rustc-query-granularity-2016-2026",
+    "self-adjusting-computation-from-scratch-consistency-2005-2013",
+    "persistent-data-structures-snapshot-space-costs-1989-2026",
+    "adapton-names-identity-freshness-2014-2018"
+  ],
+  "I057": [],
+  "I058": [
+    "clangd-authority-freshness-2017-2026",
+    "gopls-snapshots-views-workspace-evolution-2018-2026"
+  ],
+  "I059": [],
+  "I060": [
+    "optimistic-edits-semantic-transactions-1981-2026",
+    "mvcc-snapshot-isolation-proof-work-consistency-1981-2026"
+  ],
+  "I061": [],
+  "I062": [],
+  "I063": [
+    "reconciliation-event-hints-repair-loops-2005-2026",
+    "typescript-host-owned-language-world-2014-2026"
+  ],
+  "I064": [
+    "typescript-host-owned-language-world-2014-2026",
+    "roslyn-immutable-snapshots-workspace-boundaries-2012-2026",
+    "gopls-snapshots-views-workspace-evolution-2018-2026",
+    "reconciliation-event-hints-repair-loops-2005-2026"
+  ],
+  "I096": [
+    "haskell-ide-lineage-environment-graph-boundaries-2017-2026",
+    "typescript-host-owned-language-world-2014-2026",
+    "kotlin-swift-compiler-backed-ide-boundaries-2021-2026",
+    "clangd-authority-freshness-2017-2026"
+  ],
+  "I144": [
+    "information-hiding-versus-pipeline-decomposition-1972-2026",
+    "make-ninja-narrow-build-tool-boundaries-1979-2026",
+    "buck-to-buck2-one-graph-rewrite-2013-2026",
+    "compatibility-constrained-rewrites-zcore-rel4-theseus-anneal",
+    "functional-core-effect-boundaries-1988-2026",
+    "functional-core-effects-hidden-state-2005-2026",
+    "tock-asterinas-safe-interface-boundaries-2015-2026",
+    "tock-asterinas-safe-interface-boundaries-2017-2026",
+    "tock-asterinas-trusted-mechanism-boundaries-2017-2026",
+    "lcf-abstract-theorem-values-trust-boundaries-1978-2026",
+    "fstar-extensible-proof-automation-trust-boundaries-2019-2026"
+  ],
+  "I145": [
+    "adapton-names-identity-freshness-2014-2018",
+    "nix-guix-functional-deployment-roots-2007-2026",
+    "nix-guix-immutable-closures-mutable-roots-2004-2026",
+    "why3-durable-proof-sessions-2011-2025",
+    "theseus-ownership-global-invariants-2017-2024",
+    "lcf-abstract-theorem-values-trust-boundaries-1978-2026"
+  ],
+  "I157": [
+    "typescript-host-owned-language-world-2014-2026",
+    "coq-rocq-stm-serapi-fleche-architecture-2013-2026",
+    "kotlin-swift-compiler-backed-ide-boundaries-2021-2026",
+    "isabelle-pide-document-processing-evolution-2009-2019",
+    "lcf-abstract-theorem-values-trust-boundaries-1978-2026"
+  ],
+  "I159": [
+    "rls-rust-analyzer-architecture-evolution-2015-2026",
+    "rls-rust-analyzer-architecture-transition-2015-2026",
+    "rls-to-rust-analyzer-editor-engine-history-2015-2026",
+    "salsa-rustc-query-granularity-2016-2026",
+    "buck-to-buck2-one-graph-rewrite-2013-2026",
+    "redleaf-mixed-language-isolation-boundaries-2020-2026",
+    "tock-asterinas-trusted-mechanism-boundaries-2017-2026",
+    "fstar-extensible-proof-automation-trust-boundaries-2019-2026"
+  ]
+}

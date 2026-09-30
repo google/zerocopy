@@ -1,0 +1,17 @@
+path,sha256,size
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/REPORT.json,687c50ce6170b547211882980c29206aac5882f6b5632928863e9851ad009ab2,1168
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/REPORT.md,70d2285b170791d8fa1b18cf833891fe5260dfa51fdac1e46897ac1a5bfd0224,3332
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/support/3730-crosswalk-final-v66.csv,e0a9e0b32a76a73ecc2f3f874aeeb432a9ba2c5c109ebba6e7e8d645ec22d55f,6788530
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/support/build_audit.py,8d6e00334573814e5fb76398391183a577966db864047276f2bf1aa8c62443ad,9678
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/support/check.py,0b722fd338343180555678c71721e4a2d78acb97fad9a20a9e6dab180ea514e1,7349
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/support/investigation-final-v66.csv,f0eeee6a87b6350d462d631a44db8ab3ba648cad8b974aace12d27abd632883f,5896395
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/support/live-issue-snapshot-v66.json,2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d,171871
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/support/row-challenge-v66.json,a2509b58bf9ff79690b097a20864b99c2b3802263af56389c92b1f8dbb77abdd,16336033
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/support/source-package-inventory-v66.csv,9b995117c7ca3cc3775670e320e7cb242ebe9155ed2f336b8ff7836784b5f1d5,10475
+reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v66/support/validation-v66.json,bd2e85754073cdf39a3ae96b7a9cbf400dd947eb311050c2b3fc9142e340e1f1,1997
+reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json,55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6,826
+reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md,60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37,12842
+reports/anneal-3731-source-spec-synthesis-2026-09-30/support/build.py,37ac3ece1ae5237ba6c1af15682029c5b5e1b3a24e79bc30e18f482f10dae8dc,4589
+reports/anneal-3731-source-spec-synthesis-2026-09-30/support/check.py,02c4f5a2c56d31d9f019ef941a5788963007c084183f32e6b44807205984ab99,2309
+reports/anneal-3731-source-spec-synthesis-2026-09-30/support/id-map.json,b4ba8efa17316e282391323ddd661d7caca9a7c5a40b7cf28cbc0d5cb9ba8675,5643
+reports/anneal-3731-source-spec-synthesis-2026-09-30/support/source-census.json,0f44d3879ac5477f18decf0fc9e5049a4018f7e424bc88989a7b26f3ca9b3884,40559

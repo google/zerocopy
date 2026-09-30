@@ -1,0 +1,29 @@
+{
+  "topics": ["anneal/issue-3730-3731", "anneal/architecture", "research/coverage-audit"],
+  "subjects": [
+    {
+      "name": "Published v66 ledger and actual reference parent",
+      "identity": {
+        "reference_parent": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+        "source_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v66",
+        "v66_published_git_parent": "0c504d98f5abafcbbd1460738e6d753378a6460e"
+      }
+    },
+    {
+      "name": "Forty-one published #3732 source/spec reports through J024",
+      "identity": {
+        "source_package": "anneal-3731-source-spec-synthesis-2026-09-30",
+        "source_census_sha256": "0f44d3879ac5477f18decf0fc9e5049a4018f7e424bc88989a7b26f3ca9b3884",
+        "id_map_sha256": "b4ba8efa17316e282391323ddd661d7caca9a7c5a40b7cf28cbc0d5cb9ba8675"
+      }
+    },
+    {
+      "name": "Inherited public #3730/#3731 issue snapshot from v65",
+      "identity": {
+        "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+        "source": "public GitHub REST issue and comments endpoints"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

@@ -1,0 +1,1112 @@
+[
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/adapton-names-identity-freshness-2014-2018/REPORT.json",
+        "sha256": "9e2587818d02fada44aab8bffc783f8ef0e689318c45abcf1b5239c894efa279",
+        "size": 1190
+      },
+      {
+        "path": "reports/adapton-names-identity-freshness-2014-2018/REPORT.md",
+        "sha256": "6d0634e98c6d0d80b07d2185b26dcab19eb4fa9fc1003bc740e345922c11566b",
+        "size": 27472
+      },
+      {
+        "path": "reports/adapton-names-identity-freshness-2014-2018/support/evidence-map.json",
+        "sha256": "b665ca20306e3179ff4c2241c5259c5bcda7374998269d98db010748497eed2b",
+        "size": 2476
+      }
+    ],
+    "mapped_ids": [
+      "I011",
+      "I015",
+      "I056",
+      "I145"
+    ],
+    "package": "adapton-names-identity-freshness-2014-2018",
+    "report_sha256": "6d0634e98c6d0d80b07d2185b26dcab19eb4fa9fc1003bc740e345922c11566b"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/buck-to-buck2-one-graph-rewrite-2013-2026/REPORT.json",
+        "sha256": "7ba3b767b5e72cf20f0c5a6f8fd001de830044f2df0a1d235dfe0d18712f5603",
+        "size": 1864
+      },
+      {
+        "path": "reports/buck-to-buck2-one-graph-rewrite-2013-2026/REPORT.md",
+        "sha256": "f495a6028d763e485ee93f60769b83925c15e6e5d031dc44297e61904ee91df9",
+        "size": 28430
+      }
+    ],
+    "mapped_ids": [
+      "I144",
+      "I159"
+    ],
+    "package": "buck-to-buck2-one-graph-rewrite-2013-2026",
+    "report_sha256": "f495a6028d763e485ee93f60769b83925c15e6e5d031dc44297e61904ee91df9"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/build-systems-a-la-carte-anneal-orchestration-2018-2026/REPORT.json",
+        "sha256": "eb0e5380fa13a221953b825dd564fca6308ddc4823cb7aad9469aa945b2dd293",
+        "size": 1127
+      },
+      {
+        "path": "reports/build-systems-a-la-carte-anneal-orchestration-2018-2026/REPORT.md",
+        "sha256": "6f898aa5d6438871e7b25fdccb37a239f1db8b4edf3ee7c70e6e6f771d89b50a",
+        "size": 43812
+      },
+      {
+        "path": "reports/build-systems-a-la-carte-anneal-orchestration-2018-2026/evidence-map.json",
+        "sha256": "3b4bd0647c94319311c9a77195566a6af4998fbbb722feddbe51a5366a9cfd8a",
+        "size": 4598
+      }
+    ],
+    "mapped_ids": [
+      "I005"
+    ],
+    "package": "build-systems-a-la-carte-anneal-orchestration-2018-2026",
+    "report_sha256": "6f898aa5d6438871e7b25fdccb37a239f1db8b4edf3ee7c70e6e6f771d89b50a"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/cargo-rustc-cache-reuse-extraction-boundaries-2016-2026/REPORT.json",
+        "sha256": "c6f2c6436195367d4f4c85b38079f4e695bf52a122865202acd88bdf26e7ded6",
+        "size": 1147
+      },
+      {
+        "path": "reports/cargo-rustc-cache-reuse-extraction-boundaries-2016-2026/REPORT.md",
+        "sha256": "8ee45f873a60b74920ed9a3c018088c5d7c7a9934a9d67d0edd71d8e6221b548",
+        "size": 30129
+      },
+      {
+        "path": "reports/cargo-rustc-cache-reuse-extraction-boundaries-2016-2026/evidence-map.json",
+        "sha256": "d80cb4bdddfc571d95fe433e0046a5c886b67ac036f3d1bcfff33424cb511a63",
+        "size": 3106
+      }
+    ],
+    "mapped_ids": [
+      "I009",
+      "I020"
+    ],
+    "package": "cargo-rustc-cache-reuse-extraction-boundaries-2016-2026",
+    "report_sha256": "8ee45f873a60b74920ed9a3c018088c5d7c7a9934a9d67d0edd71d8e6221b548"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/clangd-authority-freshness-2017-2026/REPORT.json",
+        "sha256": "062f988ad30645ee5360e5b13b3b07e9077f262725c26323c41bbe63b9e88762",
+        "size": 1873
+      },
+      {
+        "path": "reports/clangd-authority-freshness-2017-2026/REPORT.md",
+        "sha256": "7b40734a30b69382807680f13f8d11ce0fdc0309127424946c544e23f745ff4d",
+        "size": 37911
+      },
+      {
+        "path": "reports/clangd-authority-freshness-2017-2026/evidence-map.json",
+        "sha256": "c69d17e1c05033214819e1c4a735b62f9dbbf394669ca4f97b630259ed483303",
+        "size": 5169
+      }
+    ],
+    "mapped_ids": [
+      "I058",
+      "I096"
+    ],
+    "package": "clangd-authority-freshness-2017-2026",
+    "report_sha256": "7b40734a30b69382807680f13f8d11ce0fdc0309127424946c544e23f745ff4d"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/compatibility-constrained-rewrites-zcore-rel4-theseus-anneal/REPORT.json",
+        "sha256": "8229524995ba316d2f3f44583dd41b62f15b447d64684e88e62199c14aad2c13",
+        "size": 1722
+      },
+      {
+        "path": "reports/compatibility-constrained-rewrites-zcore-rel4-theseus-anneal/REPORT.md",
+        "sha256": "fbf65867a491ae388b03c5fc5a7a6699b0dc3b7f5b6fb39a2cdb0c09270fedfd",
+        "size": 29368
+      },
+      {
+        "path": "reports/compatibility-constrained-rewrites-zcore-rel4-theseus-anneal/evidence-map.json",
+        "sha256": "480f6d516c2b178e2bedaed294e07e37da853bc8309ad14cb221a549b91b7169",
+        "size": 4962
+      }
+    ],
+    "mapped_ids": [
+      "I144"
+    ],
+    "package": "compatibility-constrained-rewrites-zcore-rel4-theseus-anneal",
+    "report_sha256": "fbf65867a491ae388b03c5fc5a7a6699b0dc3b7f5b6fb39a2cdb0c09270fedfd"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/coq-rocq-stm-serapi-fleche-architecture-2013-2026/REPORT.json",
+        "sha256": "53391a3d81a04a46c1c359cb5d915e86f4932eb90d231665ae10bf7b01c33938",
+        "size": 1321
+      },
+      {
+        "path": "reports/coq-rocq-stm-serapi-fleche-architecture-2013-2026/REPORT.md",
+        "sha256": "9af670719de07700e601d65010dd05ef637fea52b98af7a3302b83a3aca005e1",
+        "size": 35609
+      },
+      {
+        "path": "reports/coq-rocq-stm-serapi-fleche-architecture-2013-2026/evidence-map.json",
+        "sha256": "201f4ee455d7128033dbeda45259d697d40c68d9348e0e83b74d50f653fdf0c4",
+        "size": 6093
+      }
+    ],
+    "mapped_ids": [
+      "I002",
+      "I007",
+      "I157"
+    ],
+    "package": "coq-rocq-stm-serapi-fleche-architecture-2013-2026",
+    "report_sha256": "9af670719de07700e601d65010dd05ef637fea52b98af7a3302b83a3aca005e1"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/dafny-boogie-viper-obligation-boundaries-2005-2026/REPORT.json",
+        "sha256": "16b0c7f3744fa491e5713a85fbabecd5ca8027e0efa8717515313baefe2501a2",
+        "size": 2022
+      },
+      {
+        "path": "reports/dafny-boogie-viper-obligation-boundaries-2005-2026/REPORT.md",
+        "sha256": "3410b4eec2fa9d01d5130d921048f7a7491771059a1e11883e1e884ae3a94bfd",
+        "size": 30987
+      },
+      {
+        "path": "reports/dafny-boogie-viper-obligation-boundaries-2005-2026/evidence-map.json",
+        "sha256": "250c12d6e4dbb717c31c02bf242a809b4ba778d16565e0a7d7b34c13facdbf27",
+        "size": 4685
+      }
+    ],
+    "mapped_ids": [
+      "I001"
+    ],
+    "package": "dafny-boogie-viper-obligation-boundaries-2005-2026",
+    "report_sha256": "3410b4eec2fa9d01d5130d921048f7a7491771059a1e11883e1e884ae3a94bfd"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/early-cutoff-equality-relations-2010-2026/REPORT.json",
+        "sha256": "eb92d27155e5f673086bed9cdf38bc9364521d55a3c61945f067d0d30ea9c0af",
+        "size": 1315
+      },
+      {
+        "path": "reports/early-cutoff-equality-relations-2010-2026/REPORT.md",
+        "sha256": "9396c986ab33570b4ff3ba8caccefdbd4b3aa92bcee12699366877559e178673",
+        "size": 35327
+      },
+      {
+        "path": "reports/early-cutoff-equality-relations-2010-2026/source-map.json",
+        "sha256": "15d7ed616ab21d3736e25bf406376cccb4cdd58797f4efb9ff5b1a4efc3e76d0",
+        "size": 4749
+      }
+    ],
+    "mapped_ids": [
+      "I015",
+      "I056"
+    ],
+    "package": "early-cutoff-equality-relations-2010-2026",
+    "report_sha256": "9396c986ab33570b4ff3ba8caccefdbd4b3aa92bcee12699366877559e178673"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/fstar-extensible-proof-automation-trust-boundaries-2019-2026/REPORT.json",
+        "sha256": "fef4c7a70f6857ead67604b79499a3b2176e4d1a70b5abebf93102a7eeeda359",
+        "size": 1429
+      },
+      {
+        "path": "reports/fstar-extensible-proof-automation-trust-boundaries-2019-2026/REPORT.md",
+        "sha256": "35772b8b08b48417a090ef4b1d9995090f6ed476f66c629ac669e50392733566",
+        "size": 45350
+      },
+      {
+        "path": "reports/fstar-extensible-proof-automation-trust-boundaries-2019-2026/evidence-map.json",
+        "sha256": "04a9e9cd52c246d50f71e87ac4d5a5d00209ccaf6abedec95f27bff0594b7689",
+        "size": 3804
+      }
+    ],
+    "mapped_ids": [
+      "I001",
+      "I144",
+      "I159"
+    ],
+    "package": "fstar-extensible-proof-automation-trust-boundaries-2019-2026",
+    "report_sha256": "35772b8b08b48417a090ef4b1d9995090f6ed476f66c629ac669e50392733566"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/functional-core-effect-boundaries-1988-2026/REPORT.json",
+        "sha256": "9eea84105bfb979e148da6cef312ea7256e8d133fb10e8ea0e3cdbf08dc1d8cc",
+        "size": 1614
+      },
+      {
+        "path": "reports/functional-core-effect-boundaries-1988-2026/REPORT.md",
+        "sha256": "d45f404f22a42ed3d5de2b8a9ac8d032bf8a8eb2183d091b2fd4bf6e6d5f60e0",
+        "size": 44216
+      },
+      {
+        "path": "reports/functional-core-effect-boundaries-1988-2026/evidence-map.json",
+        "sha256": "b5f9041c98f1b358b51debcfc4ca42849ecc4f74d6cceb7a8467ffdcb194ddaa",
+        "size": 8105
+      }
+    ],
+    "mapped_ids": [
+      "I144"
+    ],
+    "package": "functional-core-effect-boundaries-1988-2026",
+    "report_sha256": "d45f404f22a42ed3d5de2b8a9ac8d032bf8a8eb2183d091b2fd4bf6e6d5f60e0"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/functional-core-effects-hidden-state-2005-2026/REPORT.json",
+        "sha256": "1024dc28de2d73d5217b0ff5a0f0a8d8492d110890afdef79d212ec04c3d5243",
+        "size": 1796
+      },
+      {
+        "path": "reports/functional-core-effects-hidden-state-2005-2026/REPORT.md",
+        "sha256": "89264b4326576e9e10a263ed445dc76554aec5b545280a54c72e58aaa42abcd7",
+        "size": 41489
+      },
+      {
+        "path": "reports/functional-core-effects-hidden-state-2005-2026/evidence-map.json",
+        "sha256": "1481b85ecb97d436819895748886ed968e452f64ed572dea4ef3ab0499e89721",
+        "size": 4787
+      }
+    ],
+    "mapped_ids": [
+      "I009",
+      "I144"
+    ],
+    "package": "functional-core-effects-hidden-state-2005-2026",
+    "report_sha256": "89264b4326576e9e10a263ed445dc76554aec5b545280a54c72e58aaa42abcd7"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/gopls-snapshots-views-workspace-evolution-2018-2026/REPORT.json",
+        "sha256": "e831990f5cca438a8bb3232489e9aca7e9b915f4546bb3572a219a8c96ce4662",
+        "size": 1941
+      },
+      {
+        "path": "reports/gopls-snapshots-views-workspace-evolution-2018-2026/REPORT.md",
+        "sha256": "369178d72906f7be8808dc0b3725e832407113811c20b68aec2484f89a8f2620",
+        "size": 33976
+      },
+      {
+        "path": "reports/gopls-snapshots-views-workspace-evolution-2018-2026/evidence-map.json",
+        "sha256": "ca352c6e7a858788c0e66cb9ecd2bff98c5576708e707c7953d0ac8dcab360ad",
+        "size": 7168
+      }
+    ],
+    "mapped_ids": [
+      "I020",
+      "I058",
+      "I064"
+    ],
+    "package": "gopls-snapshots-views-workspace-evolution-2018-2026",
+    "report_sha256": "369178d72906f7be8808dc0b3725e832407113811c20b68aec2484f89a8f2620"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/haskell-ide-lineage-environment-graph-boundaries-2017-2026/REPORT.json",
+        "sha256": "3b7ec60b18041d993a08de7b5214c6287e13de0943509cacd55d96554f87d5ae",
+        "size": 992
+      },
+      {
+        "path": "reports/haskell-ide-lineage-environment-graph-boundaries-2017-2026/REPORT.md",
+        "sha256": "1063d2ce2cbce06371f2e0adac9c2fd8c7af4a96a3fb7a442c9230622512023b",
+        "size": 30937
+      },
+      {
+        "path": "reports/haskell-ide-lineage-environment-graph-boundaries-2017-2026/lineage-matrix.json",
+        "sha256": "3db9ac9e282d1ac6a472795367e71f87c2388147d463b3617088158d964a9941",
+        "size": 3678
+      },
+      {
+        "path": "reports/haskell-ide-lineage-environment-graph-boundaries-2017-2026/source-map.json",
+        "sha256": "e1cc365620e56e61b5542d4cf7b93beedf3b8fbb28c20c922ec6c6a1a1d95907",
+        "size": 7295
+      }
+    ],
+    "mapped_ids": [
+      "I020",
+      "I096"
+    ],
+    "package": "haskell-ide-lineage-environment-graph-boundaries-2017-2026",
+    "report_sha256": "1063d2ce2cbce06371f2e0adac9c2fd8c7af4a96a3fb7a442c9230622512023b"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/information-hiding-versus-pipeline-decomposition-1972-2026/REPORT.json",
+        "sha256": "b5c8d3a76511c971d9d80aeab5b02c9257108eca1582513dfbdf5ce4a2653b40",
+        "size": 1385
+      },
+      {
+        "path": "reports/information-hiding-versus-pipeline-decomposition-1972-2026/REPORT.md",
+        "sha256": "bb73ad0476b599bb55783221f264415ad63c39d044f53359e8ef0c64c89836cb",
+        "size": 46702
+      },
+      {
+        "path": "reports/information-hiding-versus-pipeline-decomposition-1972-2026/change-matrix.json",
+        "sha256": "1550e0d7bef87a8c729cf426f229a74682a8d10834a872e9c2b1d6c3c28055b2",
+        "size": 3690
+      }
+    ],
+    "mapped_ids": [
+      "I144"
+    ],
+    "package": "information-hiding-versus-pipeline-decomposition-1972-2026",
+    "report_sha256": "bb73ad0476b599bb55783221f264415ad63c39d044f53359e8ef0c64c89836cb"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/isabelle-pide-document-processing-2008-2019/REPORT.json",
+        "sha256": "f370c64fb806d440b7583c269eff412d92e48e3a158e64c774e26709afe885f2",
+        "size": 1277
+      },
+      {
+        "path": "reports/isabelle-pide-document-processing-2008-2019/REPORT.md",
+        "sha256": "4237f2ae911b6479880462e8c54efa6d4c0ba2f88e9231744f8072aaf6d39e5f",
+        "size": 25446
+      },
+      {
+        "path": "reports/isabelle-pide-document-processing-2008-2019/support/evidence-map.json",
+        "sha256": "d0f1d25813dd77800652b1387f43f9902ee776879f38d2bb080c1c8afd59de12",
+        "size": 2734
+      }
+    ],
+    "mapped_ids": [
+      "I007"
+    ],
+    "package": "isabelle-pide-document-processing-2008-2019",
+    "report_sha256": "4237f2ae911b6479880462e8c54efa6d4c0ba2f88e9231744f8072aaf6d39e5f"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/isabelle-pide-document-processing-evolution-2009-2019/REPORT.json",
+        "sha256": "a0380f7004a1d9b0aca645bc98c28aecc5c6634d98d0080a57583c8ad35fe420",
+        "size": 1986
+      },
+      {
+        "path": "reports/isabelle-pide-document-processing-evolution-2009-2019/REPORT.md",
+        "sha256": "ab8f3ecec0764608372c205ce2fb1b604ce65708142f55a09b254299088f39d1",
+        "size": 38290
+      },
+      {
+        "path": "reports/isabelle-pide-document-processing-evolution-2009-2019/evidence-map.json",
+        "sha256": "3e154df4699a7a594026dda2f9c9cfb0bb5c1b45c3a5a51d4027ed439438d28c",
+        "size": 5222
+      }
+    ],
+    "mapped_ids": [
+      "I157"
+    ],
+    "package": "isabelle-pide-document-processing-evolution-2009-2019",
+    "report_sha256": "ab8f3ecec0764608372c205ce2fb1b604ce65708142f55a09b254299088f39d1"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/kotlin-swift-compiler-backed-ide-boundaries-2021-2026/REPORT.json",
+        "sha256": "c10c558fa61557313ac197414ccebad84a8dbf19315115202c9188442a8b666c",
+        "size": 1080
+      },
+      {
+        "path": "reports/kotlin-swift-compiler-backed-ide-boundaries-2021-2026/REPORT.md",
+        "sha256": "01d2b6ee09d3e81566e584c8c4636d19ef9648deb1892630ec0307832cf7291f",
+        "size": 35955
+      },
+      {
+        "path": "reports/kotlin-swift-compiler-backed-ide-boundaries-2021-2026/evidence-map.json",
+        "sha256": "879cb0a583be754f9e059fd8484d432bc5e01cb19bc61f2518501176e2c909bc",
+        "size": 4603
+      }
+    ],
+    "mapped_ids": [
+      "I002",
+      "I020",
+      "I096",
+      "I157"
+    ],
+    "package": "kotlin-swift-compiler-backed-ide-boundaries-2021-2026",
+    "report_sha256": "01d2b6ee09d3e81566e584c8c4636d19ef9648deb1892630ec0307832cf7291f"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/make-ninja-narrow-build-tool-boundaries-1979-2026/REPORT.json",
+        "sha256": "bcd4f10df91d9d54e67cd32cc92a2e46c3729446ec2f01e4a4c587c7d7e7277c",
+        "size": 1049
+      },
+      {
+        "path": "reports/make-ninja-narrow-build-tool-boundaries-1979-2026/REPORT.md",
+        "sha256": "21d1a9b9f828ad2ddd9f1b4f31e089a9ef0e9821ef444ffc83ba92a786a195f2",
+        "size": 35394
+      },
+      {
+        "path": "reports/make-ninja-narrow-build-tool-boundaries-1979-2026/evidence-map.json",
+        "sha256": "cdef7ca082dc3e3a624752085ee94c14e788a5ed6adda76b1bd9957aadb7ef47",
+        "size": 3043
+      }
+    ],
+    "mapped_ids": [
+      "I144"
+    ],
+    "package": "make-ninja-narrow-build-tool-boundaries-1979-2026",
+    "report_sha256": "21d1a9b9f828ad2ddd9f1b4f31e089a9ef0e9821ef444ffc83ba92a786a195f2"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/mvcc-snapshot-isolation-proof-work-consistency-1981-2026/REPORT.json",
+        "sha256": "c0f4272c1385dfdd5a1faeec076b599853c37db79d1db7d93447c6b4d7a9c3a5",
+        "size": 1924
+      },
+      {
+        "path": "reports/mvcc-snapshot-isolation-proof-work-consistency-1981-2026/REPORT.md",
+        "sha256": "dd6ac56d6bb192f67802f280bc4aea150b0b8ab644537d0fad73c6a720aa17fe",
+        "size": 26346
+      },
+      {
+        "path": "reports/mvcc-snapshot-isolation-proof-work-consistency-1981-2026/support/evidence-map.json",
+        "sha256": "346cc99e18f323c2817dbf4ae79520eea568f0a236df0bb7a59e323995a08d3f",
+        "size": 3866
+      }
+    ],
+    "mapped_ids": [
+      "I005",
+      "I010",
+      "I011",
+      "I060"
+    ],
+    "package": "mvcc-snapshot-isolation-proof-work-consistency-1981-2026",
+    "report_sha256": "dd6ac56d6bb192f67802f280bc4aea150b0b8ab644537d0fad73c6a720aa17fe"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/netstack3-architecture-evolution-2019-2026/REPORT.json",
+        "sha256": "3f400a024b3edaeae3bffa652dfaec3f934030e0dd038da3569a8c1d1ac56ea5",
+        "size": 1356
+      },
+      {
+        "path": "reports/netstack3-architecture-evolution-2019-2026/REPORT.md",
+        "sha256": "a77943ab37ac1394c30fff32c76959f15aeab06d669b8a08c691594ba2cbae0b",
+        "size": 30644
+      },
+      {
+        "path": "reports/netstack3-architecture-evolution-2019-2026/judgment-matrix.json",
+        "sha256": "faf6be54a1ba82a3ecc7bd7c7cb29deecffd0221f3e2525e85bc714614e4e0aa",
+        "size": 2171
+      },
+      {
+        "path": "reports/netstack3-architecture-evolution-2019-2026/source-map.json",
+        "sha256": "c0d385d07c253c61f205f31b911a0abe0edaa725bddbfddd4e9c6cf14b1fbd0b",
+        "size": 3225
+      },
+      {
+        "path": "reports/netstack3-architecture-evolution-2019-2026/timeline.json",
+        "sha256": "37c81d3742c8a02398251e1080f1f51a17cc6c6d70a5af7d80e41c801011550b",
+        "size": 2718
+      }
+    ],
+    "mapped_ids": [
+      "I007"
+    ],
+    "package": "netstack3-architecture-evolution-2019-2026",
+    "report_sha256": "a77943ab37ac1394c30fff32c76959f15aeab06d669b8a08c691594ba2cbae0b"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/nix-guix-functional-deployment-roots-2007-2026/REPORT.json",
+        "sha256": "8c7c579617108aa3a10c9f724e756dea7e510573a3ae1678034956ee31ff0982",
+        "size": 2458
+      },
+      {
+        "path": "reports/nix-guix-functional-deployment-roots-2007-2026/REPORT.md",
+        "sha256": "f4539cd747ba794061b449368b590aa6dff2aef2a0ec0d70c507acec1ef4d847",
+        "size": 35158
+      }
+    ],
+    "mapped_ids": [
+      "I009",
+      "I145"
+    ],
+    "package": "nix-guix-functional-deployment-roots-2007-2026",
+    "report_sha256": "f4539cd747ba794061b449368b590aa6dff2aef2a0ec0d70c507acec1ef4d847"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/nix-guix-immutable-closures-mutable-roots-2004-2026/REPORT.json",
+        "sha256": "6ff06cf6d7c267c38bfbe4b7776e7177dc1b1f684b679024dd45fdf6c6ce4cc9",
+        "size": 1471
+      },
+      {
+        "path": "reports/nix-guix-immutable-closures-mutable-roots-2004-2026/REPORT.md",
+        "sha256": "1ff2025d1c675af336c4b545ff205bed0e11a9f17409825fdb7d297090d103d8",
+        "size": 38831
+      },
+      {
+        "path": "reports/nix-guix-immutable-closures-mutable-roots-2004-2026/support/evidence-map.json",
+        "sha256": "e9ab9dbbf081bd86e5f6f6e55ca076e786fa7ad2ff48878f3a601b44174d176d",
+        "size": 4305
+      }
+    ],
+    "mapped_ids": [
+      "I010",
+      "I011",
+      "I145"
+    ],
+    "package": "nix-guix-immutable-closures-mutable-roots-2004-2026",
+    "report_sha256": "1ff2025d1c675af336c4b545ff205bed0e11a9f17409825fdb7d297090d103d8"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/optimistic-edits-semantic-transactions-1981-2026/REPORT.json",
+        "sha256": "6847d56407c25a36d2bc3dcacfe98327714b245afe0c2684deeed855527c6d7e",
+        "size": 1509
+      },
+      {
+        "path": "reports/optimistic-edits-semantic-transactions-1981-2026/REPORT.md",
+        "sha256": "3d5636bf15ad27bce9e19b4da0d89cde85a6a3a2aa2c9b71b46f9dcf883df54d",
+        "size": 27404
+      },
+      {
+        "path": "reports/optimistic-edits-semantic-transactions-1981-2026/support/decision-matrix.json",
+        "sha256": "10fc225e73e7e4641fca25ab75c6734b0a5c8f4b44e0769adcfc8a08b4645308",
+        "size": 2115
+      },
+      {
+        "path": "reports/optimistic-edits-semantic-transactions-1981-2026/support/evidence-map.json",
+        "sha256": "0ae9fd98b3a7df79c03dc7157f91c5d3b8e66ffea57add41a48464f53ece735d",
+        "size": 4171
+      }
+    ],
+    "mapped_ids": [
+      "I060"
+    ],
+    "package": "optimistic-edits-semantic-transactions-1981-2026",
+    "report_sha256": "3d5636bf15ad27bce9e19b4da0d89cde85a6a3a2aa2c9b71b46f9dcf883df54d"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/persistent-data-structures-snapshot-space-costs-1989-2026/REPORT.json",
+        "sha256": "6dcbb56e37b266a12ee9e9fdd997c4ff4062f20f149e82987b1c41f3464776a0",
+        "size": 1518
+      },
+      {
+        "path": "reports/persistent-data-structures-snapshot-space-costs-1989-2026/REPORT.md",
+        "sha256": "67f844e0fc159342365932e91075ee60bf1a233c1da539eb59cc2f648a5e39a0",
+        "size": 37801
+      },
+      {
+        "path": "reports/persistent-data-structures-snapshot-space-costs-1989-2026/evidence-map.json",
+        "sha256": "ffef166e7ff1c973c956b73d75c254d8b07770ced818dc54b9c843c502cd87e5",
+        "size": 3341
+      }
+    ],
+    "mapped_ids": [
+      "I005",
+      "I056"
+    ],
+    "package": "persistent-data-structures-snapshot-space-costs-1989-2026",
+    "report_sha256": "67f844e0fc159342365932e91075ee60bf1a233c1da539eb59cc2f648a5e39a0"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/REPORT.json",
+        "sha256": "26841c96154a323e4da36663250014fa08960bd447b08a45f519f49cdff73d8b",
+        "size": 1803
+      },
+      {
+        "path": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/REPORT.md",
+        "sha256": "d85b993bfc8ea691c47690b99e8765329681d1e4b1d225afa1cdc6276bb79808",
+        "size": 46547
+      },
+      {
+        "path": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/maintenance-cases.json",
+        "sha256": "7041427625e6df3e235ad96097cee62985e9563d64d92e7451155e9bae135fd4",
+        "size": 5256
+      },
+      {
+        "path": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/source-map.json",
+        "sha256": "af9d860fa9ee0c46c33218785016f7678bb2919f29ef04a4158be56033402156",
+        "size": 5401
+      }
+    ],
+    "mapped_ids": [
+      "I001"
+    ],
+    "package": "proof-maintenance-architectures-sel4-compcert-everest-2009-2026",
+    "report_sha256": "d85b993bfc8ea691c47690b99e8765329681d1e4b1d225afa1cdc6276bb79808"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/reconciliation-event-hints-repair-loops-2005-2026/REPORT.json",
+        "sha256": "e75f38d7968ad635d3d59a277ccfbc42c184cba9ac47fb899751e3461dcb5247",
+        "size": 1825
+      },
+      {
+        "path": "reports/reconciliation-event-hints-repair-loops-2005-2026/REPORT.md",
+        "sha256": "1e3c6993b22e218350b5385f414feab4f4abf81db5925452105c9b600c9c4a1a",
+        "size": 33098
+      },
+      {
+        "path": "reports/reconciliation-event-hints-repair-loops-2005-2026/support/evidence-map.json",
+        "sha256": "3c36679a011bf8e25bb612b4fbaf46a17ca17eaade9f86c334b84309e81d3c28",
+        "size": 3212
+      }
+    ],
+    "mapped_ids": [
+      "I010",
+      "I063",
+      "I064"
+    ],
+    "package": "reconciliation-event-hints-repair-loops-2005-2026",
+    "report_sha256": "1e3c6993b22e218350b5385f414feab4f4abf81db5925452105c9b600c9c4a1a"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/redleaf-mixed-language-isolation-boundaries-2020-2026/REPORT.json",
+        "sha256": "7623c8514be89040dc8820e87a2530c6cfdf6787b9c563823b9fd87845aa7530",
+        "size": 1265
+      },
+      {
+        "path": "reports/redleaf-mixed-language-isolation-boundaries-2020-2026/REPORT.md",
+        "sha256": "0a5070f9647b65af86cdcc4c00e2819f130ccb75e6da17a2b4cf386a3426eb02",
+        "size": 37259
+      },
+      {
+        "path": "reports/redleaf-mixed-language-isolation-boundaries-2020-2026/comparison-matrix.json",
+        "sha256": "9dd52809d273708af1860d8fbbb56399ddc3bca5ee751feab5c832e0d9231167",
+        "size": 2810
+      },
+      {
+        "path": "reports/redleaf-mixed-language-isolation-boundaries-2020-2026/evidence-map.json",
+        "sha256": "b3d3a38b79de4ba3a94a358249a6d2477b89568361b3a1a0822c269b0e211fb8",
+        "size": 6860
+      }
+    ],
+    "mapped_ids": [
+      "I007",
+      "I159"
+    ],
+    "package": "redleaf-mixed-language-isolation-boundaries-2020-2026",
+    "report_sha256": "0a5070f9647b65af86cdcc4c00e2819f130ccb75e6da17a2b4cf386a3426eb02"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/REPORT.json",
+        "sha256": "241d16c6942f624a93f678fae494e990347a5fa5261db85c44d8fd3ced92c1c9",
+        "size": 1400
+      },
+      {
+        "path": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/REPORT.md",
+        "sha256": "c175a94489839f3e679619da20df9e8d450dae8044a244a86f514861cb41b572",
+        "size": 37333
+      },
+      {
+        "path": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/judgment-matrix.json",
+        "sha256": "981c71e53f14e1b869fef9df5c654f671b88ce53deb6f1a53cb350126a89867d",
+        "size": 3210
+      },
+      {
+        "path": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/source-map.json",
+        "sha256": "75c19201ede53f0a7efa643ca341e4b1f8f7bcd7d65e6d699889f40f5e74082b",
+        "size": 5615
+      },
+      {
+        "path": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/timeline.json",
+        "sha256": "f8f0291665ba3cb31899873f86fe906a050d1744da0fd756fc95f55be448eda1",
+        "size": 3352
+      }
+    ],
+    "mapped_ids": [
+      "I002",
+      "I159"
+    ],
+    "package": "rls-rust-analyzer-architecture-evolution-2015-2026",
+    "report_sha256": "c175a94489839f3e679619da20df9e8d450dae8044a244a86f514861cb41b572"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/rls-rust-analyzer-architecture-transition-2015-2026/REPORT.json",
+        "sha256": "031a04123255570ab57f75ab6720ab6f45ad961f2f877d7106d28293d5a19037",
+        "size": 1124
+      },
+      {
+        "path": "reports/rls-rust-analyzer-architecture-transition-2015-2026/REPORT.md",
+        "sha256": "34b704140b8cda146cc211eaf6c0194c5bcfb1205388af8318a5d77530fa3190",
+        "size": 30819
+      },
+      {
+        "path": "reports/rls-rust-analyzer-architecture-transition-2015-2026/evidence-map.json",
+        "sha256": "76b322f4d12d900871d9cc7954f163d3d2abcfa2c1cb4be69e2cfe8357996e5b",
+        "size": 3941
+      }
+    ],
+    "mapped_ids": [
+      "I002",
+      "I159"
+    ],
+    "package": "rls-rust-analyzer-architecture-transition-2015-2026",
+    "report_sha256": "34b704140b8cda146cc211eaf6c0194c5bcfb1205388af8318a5d77530fa3190"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/REPORT.json",
+        "sha256": "b3bbf757f53842f36e061eff0ae3cdbb4fb35e51761351028a9e1d54d02192ac",
+        "size": 1459
+      },
+      {
+        "path": "reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/REPORT.md",
+        "sha256": "00f967001d4a2b3fad3c8291d4bd274107b31dc7cbc169f734c9e3cd9d153a1a",
+        "size": 30923
+      },
+      {
+        "path": "reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/evidence-ledger.json",
+        "sha256": "c73082686aad6408cbcdd33278387555ee70e54b8fc722944ef70a20d6ac0aa3",
+        "size": 5450
+      }
+    ],
+    "mapped_ids": [
+      "I002",
+      "I159"
+    ],
+    "package": "rls-to-rust-analyzer-editor-engine-history-2015-2026",
+    "report_sha256": "00f967001d4a2b3fad3c8291d4bd274107b31dc7cbc169f734c9e3cd9d153a1a"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/roslyn-immutable-snapshots-workspace-boundaries-2012-2026/REPORT.json",
+        "sha256": "fa36cf238802e0494dec724338216b07fa0f42217cac91737014faed260a4c97",
+        "size": 1432
+      },
+      {
+        "path": "reports/roslyn-immutable-snapshots-workspace-boundaries-2012-2026/REPORT.md",
+        "sha256": "7a5109278efcdfaa790f993844dde111a76e6ee20359ce989578edec0f4792dc",
+        "size": 27362
+      },
+      {
+        "path": "reports/roslyn-immutable-snapshots-workspace-boundaries-2012-2026/evidence-map.json",
+        "sha256": "fdbdfc6c544cfb63c4313fe2496615705d513f0bf0260131744c3ce296dff458",
+        "size": 5225
+      }
+    ],
+    "mapped_ids": [
+      "I005",
+      "I010",
+      "I064"
+    ],
+    "package": "roslyn-immutable-snapshots-workspace-boundaries-2012-2026",
+    "report_sha256": "7a5109278efcdfaa790f993844dde111a76e6ee20359ce989578edec0f4792dc"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/salsa-rustc-query-granularity-2016-2026/REPORT.json",
+        "sha256": "c5ebd4dfd4470c8d690f59c61d6cd9c456e1268f6aebb12db978644e90afcaa6",
+        "size": 1116
+      },
+      {
+        "path": "reports/salsa-rustc-query-granularity-2016-2026/REPORT.md",
+        "sha256": "b12e101c115e24f5e63991bb28ee1fb454c0756bd5b2e4235fbef44f353a882c",
+        "size": 27483
+      },
+      {
+        "path": "reports/salsa-rustc-query-granularity-2016-2026/support/evidence.json",
+        "sha256": "15552fe4db18c590c61773ceaa5e2de9d0f6a4eb2060d63541ca6e5323821b04",
+        "size": 2478
+      }
+    ],
+    "mapped_ids": [
+      "I005",
+      "I015",
+      "I056",
+      "I159"
+    ],
+    "package": "salsa-rustc-query-granularity-2016-2026",
+    "report_sha256": "b12e101c115e24f5e63991bb28ee1fb454c0756bd5b2e4235fbef44f353a882c"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/self-adjusting-computation-from-scratch-consistency-2005-2013/REPORT.json",
+        "sha256": "f3fbe87cf3337804f460e3a57a46b03af9efe23e6dc4541dd409c19377d55ef5",
+        "size": 1423
+      },
+      {
+        "path": "reports/self-adjusting-computation-from-scratch-consistency-2005-2013/REPORT.md",
+        "sha256": "dfd07540031f6045c668e20ee1b4f4f8f4590edac8e3cc1102eb1ca7e713c8da",
+        "size": 26980
+      },
+      {
+        "path": "reports/self-adjusting-computation-from-scratch-consistency-2005-2013/evidence-map.json",
+        "sha256": "83c40e512fe6064801091d515357a79adbd151feccd0872b24f2fa78bad7e93b",
+        "size": 3584
+      }
+    ],
+    "mapped_ids": [
+      "I005",
+      "I009",
+      "I015",
+      "I056"
+    ],
+    "package": "self-adjusting-computation-from-scratch-consistency-2005-2013",
+    "report_sha256": "dfd07540031f6045c668e20ee1b4f4f8f4590edac8e3cc1102eb1ca7e713c8da"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/theseus-ownership-global-invariants-2017-2024/REPORT.json",
+        "sha256": "40c0b53591b5dca23fbbbd2be85d80ba40d5aed5e09b7a00c37a811add8e5755",
+        "size": 1376
+      },
+      {
+        "path": "reports/theseus-ownership-global-invariants-2017-2024/REPORT.md",
+        "sha256": "d449050ff598762e01043f40aa0a58de8303556a864698737b9e75ef7e394b3c",
+        "size": 34051
+      },
+      {
+        "path": "reports/theseus-ownership-global-invariants-2017-2024/evidence-map.json",
+        "sha256": "1965fdedb17da5c9b5f62a6e773af32d78307278a0360a61988bd59fc1e8adff",
+        "size": 4202
+      }
+    ],
+    "mapped_ids": [
+      "I007",
+      "I011",
+      "I145"
+    ],
+    "package": "theseus-ownership-global-invariants-2017-2024",
+    "report_sha256": "d449050ff598762e01043f40aa0a58de8303556a864698737b9e75ef7e394b3c"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/tock-asterinas-safe-interface-boundaries-2015-2026/REPORT.json",
+        "sha256": "989acb6b562f43096dd27e6139dd504ea374c3814b8ec7871705a996a695324d",
+        "size": 1221
+      },
+      {
+        "path": "reports/tock-asterinas-safe-interface-boundaries-2015-2026/REPORT.md",
+        "sha256": "9af3d5bcccf6620b7f7ce745a5f11c1a9064659a34f83a11ede961ad2b096faf",
+        "size": 40745
+      },
+      {
+        "path": "reports/tock-asterinas-safe-interface-boundaries-2015-2026/support/evidence-map.json",
+        "sha256": "568369ca80efc879e12f04f1fe01c88c32a34b4aabc4202bd9941614a53be1b6",
+        "size": 2397
+      }
+    ],
+    "mapped_ids": [
+      "I144"
+    ],
+    "package": "tock-asterinas-safe-interface-boundaries-2015-2026",
+    "report_sha256": "9af3d5bcccf6620b7f7ce745a5f11c1a9064659a34f83a11ede961ad2b096faf"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/tock-asterinas-safe-interface-boundaries-2017-2026/REPORT.json",
+        "sha256": "555773d8260076b6f3f004f1ddfb69502db36fbb4c42604a23eae69d5cb554f0",
+        "size": 1485
+      },
+      {
+        "path": "reports/tock-asterinas-safe-interface-boundaries-2017-2026/REPORT.md",
+        "sha256": "7ffc5e18b640849259d4e539844ca1e0bc265b7d0c0eb2f9b7cec880d82628b9",
+        "size": 37949
+      },
+      {
+        "path": "reports/tock-asterinas-safe-interface-boundaries-2017-2026/source-map.json",
+        "sha256": "8f884c1fc55240cfbf5641cc70e991e1b40cfda640fdda2452c4d47b6489105f",
+        "size": 3847
+      }
+    ],
+    "mapped_ids": [
+      "I144"
+    ],
+    "package": "tock-asterinas-safe-interface-boundaries-2017-2026",
+    "report_sha256": "7ffc5e18b640849259d4e539844ca1e0bc265b7d0c0eb2f9b7cec880d82628b9"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/REPORT.json",
+        "sha256": "09f7f8a6a3e2cbead5a61ccbab49dae860334aa878f7948c6a68d70371318451",
+        "size": 1349
+      },
+      {
+        "path": "reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/REPORT.md",
+        "sha256": "18f7fb1a7894f1f1aa5fa69cf6ea91ad4de389cea6ceb6e93e5934186ce1870e",
+        "size": 43197
+      },
+      {
+        "path": "reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/source-map.json",
+        "sha256": "0fd7039c9e0c800bac812d7b9e904f1fff2d1d14f0659e3976a3da02dba53a02",
+        "size": 4989
+      }
+    ],
+    "mapped_ids": [
+      "I144",
+      "I159"
+    ],
+    "package": "tock-asterinas-trusted-mechanism-boundaries-2017-2026",
+    "report_sha256": "18f7fb1a7894f1f1aa5fa69cf6ea91ad4de389cea6ceb6e93e5934186ce1870e"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/typescript-host-owned-language-world-2014-2026/REPORT.json",
+        "sha256": "cff5d9b67538e472622422f58fb0857ced4d876d6c0d754103baffe791ab69fe",
+        "size": 1209
+      },
+      {
+        "path": "reports/typescript-host-owned-language-world-2014-2026/REPORT.md",
+        "sha256": "ea2f8c312b4fa368a0f80a04422362b2b39dfba2fed00c0e9265a3dbe29f1624",
+        "size": 28465
+      },
+      {
+        "path": "reports/typescript-host-owned-language-world-2014-2026/evidence-map.json",
+        "sha256": "27e637eaaa9e75b72957588b98f0a3f35c266eb856d6275fb84ad4eeb0f00629",
+        "size": 5022
+      }
+    ],
+    "mapped_ids": [
+      "I002",
+      "I063",
+      "I064",
+      "I096",
+      "I157"
+    ],
+    "package": "typescript-host-owned-language-world-2014-2026",
+    "report_sha256": "ea2f8c312b4fa368a0f80a04422362b2b39dfba2fed00c0e9265a3dbe29f1624"
+  },
+  {
+    "commit": "e2692485db6b8417bf415c83223cfc5a99e73e4f",
+    "files": [
+      {
+        "path": "reports/why3-durable-proof-sessions-2011-2025/REPORT.json",
+        "sha256": "48a5d72b15d0e79fe595e4d8245f25866cfc0ca3b6314591976d22bdae3ea13a",
+        "size": 1103
+      },
+      {
+        "path": "reports/why3-durable-proof-sessions-2011-2025/REPORT.md",
+        "sha256": "64a87251949ba60f39ecabe51ac37a7df03df4c919cb3db66ebbdc0777a8773a",
+        "size": 33289
+      },
+      {
+        "path": "reports/why3-durable-proof-sessions-2011-2025/support/history-matrix.json",
+        "sha256": "4c4e573c9c9381f664c90d64f75c08579c3ed14f08695a5e31e38c486732c404",
+        "size": 2050
+      },
+      {
+        "path": "reports/why3-durable-proof-sessions-2011-2025/support/source-map.json",
+        "sha256": "488cb798e0a56411fbea79d98ef21bdd99dfc259c9df0cc2f1da1e4183ec588d",
+        "size": 5955
+      }
+    ],
+    "mapped_ids": [
+      "I001",
+      "I145"
+    ],
+    "package": "why3-durable-proof-sessions-2011-2025",
+    "report_sha256": "64a87251949ba60f39ecabe51ac37a7df03df4c919cb3db66ebbdc0777a8773a"
+  },
+  {
+    "commit": "0c504d98f5abafcbbd1460738e6d753378a6460e",
+    "files": [
+      {
+        "path": "reports/lcf-abstract-theorem-values-trust-boundaries-1978-2026/REPORT.json",
+        "sha256": "a20c72120792ea3be4e70acb4858829ee53eff36a12dcddec716c00e1aa3aa3a",
+        "size": 1211
+      },
+      {
+        "path": "reports/lcf-abstract-theorem-values-trust-boundaries-1978-2026/REPORT.md",
+        "sha256": "4fa4ae692f211fea7870fd5475e84f18f5264965a5b4fdf826f7e4688c77a409",
+        "size": 21480
+      },
+      {
+        "path": "reports/lcf-abstract-theorem-values-trust-boundaries-1978-2026/evidence-map.json",
+        "sha256": "a1828623e85f0dcf4f8ff1deefe18cafdf9e564f570c2c399819c7e04afc9753",
+        "size": 2088
+      }
+    ],
+    "mapped_ids": [
+      "I001",
+      "I144",
+      "I145",
+      "I157"
+    ],
+    "package": "lcf-abstract-theorem-values-trust-boundaries-1978-2026",
+    "report_sha256": "4fa4ae692f211fea7870fd5475e84f18f5264965a5b4fdf826f7e4688c77a409"
+  }
+]

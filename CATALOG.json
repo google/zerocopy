@@ -3647,6 +3647,39 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v67": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "reference_parent": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+            "source_package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v66",
+            "v66_published_git_parent": "0c504d98f5abafcbbd1460738e6d753378a6460e"
+          },
+          "name": "Published v66 ledger and actual reference parent"
+        },
+        {
+          "identity": {
+            "id_map_sha256": "b4ba8efa17316e282391323ddd661d7caca9a7c5a40b7cf28cbc0d5cb9ba8675",
+            "source_census_sha256": "0f44d3879ac5477f18decf0fc9e5049a4018f7e424bc88989a7b26f3ca9b3884",
+            "source_package": "anneal-3731-source-spec-synthesis-2026-09-30"
+          },
+          "name": "Forty-one published #3732 source/spec reports through J024"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+            "source": "public GitHub REST issue and comments endpoints"
+          },
+          "name": "Inherited public #3730/#3731 issue snapshot from v65"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -9250,6 +9283,32 @@
         "lean/language-server",
         "lean/tactic-state",
         "lean/rpc"
+      ]
+    },
+    "anneal-3731-source-spec-synthesis-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "source_census_sha256": "0f44d3879ac5477f18decf0fc9e5049a4018f7e424bc88989a7b26f3ca9b3884",
+            "source_commits": "e2692485db6b8417bf415c83223cfc5a99e73e4f;0c504d98f5abafcbbd1460738e6d753378a6460e",
+            "source_package_count": "41"
+          },
+          "name": "Forty #3732 architectural source reports and the later J024 LCF report"
+        },
+        {
+          "identity": {
+            "id_map_sha256": "b4ba8efa17316e282391323ddd661d7caca9a7c5a40b7cf28cbc0d5cb9ba8675",
+            "investigation_count": "23",
+            "reference_parent": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837"
+          },
+          "name": "Bounded #3731 source/spec investigation map"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/source-synthesis"
       ]
     },
     "anneal-3731-two-concurrent-fresh-cache-goal-consumers-2026-09-29": {
