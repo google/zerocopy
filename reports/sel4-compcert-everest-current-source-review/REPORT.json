@@ -1,0 +1,14 @@
+{
+  "topics": ["verified-systems/sel4", "verified-systems/compcert", "verified-systems/project-everest", "reference/version-review", "anneal/architecture"],
+  "subjects": [
+    {"name": "Frozen reference corpus containing R507 and R578", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "47d8250bff3ea17f1fbb4340370032e03692617b"}},
+    {"name": "seL4 L4.verified pinned and observed master", "identity": {"repository": "seL4/l4v", "branch": "master", "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"}},
+    {"name": "seL4 verification manifest pinned and observed master", "identity": {"repository": "seL4/verification-manifest", "branch": "master", "revision": "f1f7a4289585e9610733ea041c1849e46af9701b"}},
+    {"name": "CompCert 3.18 pinned source", "identity": {"repository": "AbsInt/CompCert", "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6", "version": "3.18"}},
+    {"name": "CompCert selected master source", "identity": {"repository": "AbsInt/CompCert", "branch": "master", "revision": "66a9fd06ef88619cc94765ca995a1018f7259b5c"}},
+    {"name": "HACL* pinned and observed main", "identity": {"repository": "hacl-star/hacl-star", "branch": "main", "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f"}},
+    {"name": "KaRaMeL pinned and observed master", "identity": {"repository": "FStarLang/karamel", "branch": "master", "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53"}},
+    {"name": "Project Everest pinned and observed master", "identity": {"repository": "project-everest/everest", "branch": "master", "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac"}}
+  ],
+  "observed_at": "2026-09-30"
+}

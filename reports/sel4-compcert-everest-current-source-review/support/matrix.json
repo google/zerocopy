@@ -1,0 +1,952 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "47d8250bff3ea17f1fbb4340370032e03692617b",
+  "baseline_count": 581,
+  "current_count": 613,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.md",
+      "json_sha256": "21a96ce39b4681d3e6b6e426f51bf2eacf9aa434d142b128654be618abdeb086",
+      "md_sha256": "94a758764628ac63b8da6cddb01e8b68806d0f095b734fd69929da2f87a2c342"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v69/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v69/REPORT.md",
+      "json_sha256": "f054483f37f575e10f0f5fb1127c3227225e5da9fbb9f613a19c4b5fb8080ba0",
+      "md_sha256": "e4897cbaaf4f6fb2a7c1449163b5530968daaaac3f53d20b09c42c1ecb90c6c5"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v70/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v70/REPORT.md",
+      "json_sha256": "9f47bf070b63536ed0560f6a5db246134172a564ac80eff5a9e684b2091def3a",
+      "md_sha256": "430f47fedfc99187d28b4cf58a3b5283a313e63846cc6d5a89fe1fd0b5a7db50"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v71/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v71/REPORT.md",
+      "json_sha256": "fb0e6b84da881a5f418495286344e987ae0d1827d736e2bf154bcb2e36e05f49",
+      "md_sha256": "e9081fe187cfa79e2c32c743f356f789d9aa81cc4e92cedf334d290a2f8e7a42"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v72/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v72/REPORT.md",
+      "json_sha256": "68ed4fadad0e0eeefc57c796a6cee5b88f507ec39b9eb8e58f94b0321004c6e8",
+      "md_sha256": "9283147055fa8a420df53b2459953444da7f7d72e5dd171873d1946e93fda17b"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v73/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v73/REPORT.md",
+      "json_sha256": "8a026c993b3558eac4dfa1a06fa437f2c6fd62c4d915c40cd471a107b1a9f4e1",
+      "md_sha256": "42af42bb1dab3d653dc8618cb4f12437011f9ade249839c8be76b79838ce0618"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v74/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v74/REPORT.md",
+      "json_sha256": "a167be465aaade00b64189c25e0d7a642471ed8ce28a340a026bbd61b8cdc875",
+      "md_sha256": "9aa6eb578566721b239a9c31cc488ab2613593d3e64962d48b2c3751a2493908"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v75/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v75/REPORT.md",
+      "json_sha256": "12a4e9983dd18ca2345057f0065eb8022a92f11f846ad7529fc2ae0e146c498d",
+      "md_sha256": "4fdac5ee022faf70b1aabe2a2f17edc2bd0fba95606a26860e1c288ae1e46173"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v76/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v76/REPORT.md",
+      "json_sha256": "3d0599c5786a347cfc9baca9c5884c9dda62ddd6898f556156bcf99eedb66a70",
+      "md_sha256": "559b5c4a55a45e6f212ab4c227313416739b61534eac73d0a939a329e32a4c75"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37"
+    },
+    {
+      "report_json": "reports/buck2-current-source-review/REPORT.json",
+      "report_md": "reports/buck2-current-source-review/REPORT.md",
+      "json_sha256": "19c124566341695397f622669907c794ba490acf49b5111ac1cf28a91a2e8a5f",
+      "md_sha256": "7dbf54839ec28471927febb6d520d2d29ff8ade274acc0d854be518827d0e5f7"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f"
+    },
+    {
+      "report_json": "reports/dafny-boogie-viper-current-source-review/REPORT.json",
+      "report_md": "reports/dafny-boogie-viper-current-source-review/REPORT.md",
+      "json_sha256": "ad66a7e5fe503b2018d4c398e1bc63a2593f9c0fc94962cd0f73cd44dfe874f8",
+      "md_sha256": "2cbd8a1c3adb89ce701d33c504e00b32fde0807fc881aeabac0b2960508ca7e2"
+    },
+    {
+      "report_json": "reports/editor-engines-current-source-review/REPORT.json",
+      "report_md": "reports/editor-engines-current-source-review/REPORT.md",
+      "json_sha256": "728cca801b5fb052c3e037b8b10653e905544e069a3d5b75643f41bb83f2c8f0",
+      "md_sha256": "5156bc18b65bf0bf04dfeccb337abd4612e36092680e5b91f19d718bc38bfca9"
+    },
+    {
+      "report_json": "reports/fstar-20260927-current-source-review/REPORT.json",
+      "report_md": "reports/fstar-20260927-current-source-review/REPORT.md",
+      "json_sha256": "a462a846213aa9d5b7da25e91c90aa335dc994b4b7af0c03995bb7a7f4a7f4d8",
+      "md_sha256": "80e3114611101e2208d28a898945b73a5920135ac1e8505cac1d4deb3aceef62"
+    },
+    {
+      "report_json": "reports/haskell-hls-hie-bios-current-source-review/REPORT.json",
+      "report_md": "reports/haskell-hls-hie-bios-current-source-review/REPORT.md",
+      "json_sha256": "35a6762ee7dec7ccc16fd9b7dca9c01fa2047889b62dc35441d2ef497942f33f",
+      "md_sha256": "96c3036954c1c8fad677c4096b1fd177496eb369d9ac83f51fc1787204d5e325"
+    },
+    {
+      "report_json": "reports/kotlin-swift-current-source-review/REPORT.json",
+      "report_md": "reports/kotlin-swift-current-source-review/REPORT.md",
+      "json_sha256": "d453c04998bcea1aed701bdb47fad2702733b3d23ed49453ab66f413b681bc53",
+      "md_sha256": "25c957729ccbc6921c7fdb5532493a78d719d9e496e7d035fcab0fa55388e42e"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188"
+    },
+    {
+      "report_json": "reports/netstack3-current-source-review/REPORT.json",
+      "report_md": "reports/netstack3-current-source-review/REPORT.md",
+      "json_sha256": "52b2e22a22dfa151525046827ee20f9ad0ce133970815c4df86e91c840c4d8d1",
+      "md_sha256": "9cc1252705b231bc31bc7437a88a7e018781581af49e5d8584eeeabbc669ee1e"
+    },
+    {
+      "report_json": "reports/ninja-current-source-review/REPORT.json",
+      "report_md": "reports/ninja-current-source-review/REPORT.md",
+      "json_sha256": "90685322eb2a019f64c23444ce92b866887e0c3421a9fe3df312e3e9b5905ceb",
+      "md_sha256": "de2a0cd8f661113207d587efae30e9bafdce58d2b9a8e89322bdae8a9264d732"
+    },
+    {
+      "report_json": "reports/nix-guix-2352-source-review/REPORT.json",
+      "report_md": "reports/nix-guix-2352-source-review/REPORT.md",
+      "json_sha256": "991f95e73e14d678c49f6f21a45856f9b6987aa47d57b983f65fafb907708e4d",
+      "md_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b"
+    },
+    {
+      "report_json": "reports/reconciliation-current-source-review/REPORT.json",
+      "report_md": "reports/reconciliation-current-source-review/REPORT.md",
+      "json_sha256": "3fa31ba7722ed07cd1441067a8594d2e571503c9e866c86882087937771b6061",
+      "md_sha256": "4790e30980e3be2b0a3bba10caf3e8af7222e274b9b055c071d3282af5e3f3ac"
+    },
+    {
+      "report_json": "reports/rocq-serapi-fleche-current-source-review/REPORT.json",
+      "report_md": "reports/rocq-serapi-fleche-current-source-review/REPORT.md",
+      "json_sha256": "4b4b71853197f52a266f0d301fb3912ba76a79a88cac6ce7f0acfd03e1816a5e",
+      "md_sha256": "2740c055550f6664bdc721901b6090efd57135dae2d10d316690eff89b2c0deb"
+    },
+    {
+      "report_json": "reports/roslyn-current-source-review/REPORT.json",
+      "report_md": "reports/roslyn-current-source-review/REPORT.md",
+      "json_sha256": "fab1d4cf7cc79374da45d79ff0fe0b406fc4a60bf82ae49cf1d010a867b96f3d",
+      "md_sha256": "2dc8c283c7c1ecaf13a13c507896110c63e81dffc6a21d93bc2942a79ecd2564"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68"
+    },
+    {
+      "report_json": "reports/salsa-rustc-current-source-review/REPORT.json",
+      "report_md": "reports/salsa-rustc-current-source-review/REPORT.md",
+      "json_sha256": "0ea58034c4d0e09a27e0597753310e98ae878b3ce8c469865673fb6a84b0a156",
+      "md_sha256": "2a77d867b4d6ace618db7fe928d10e5d8dc8b2a8eeb6e378769b237f1d9c1d50"
+    },
+    {
+      "report_json": "reports/tock-asterinas-current-source-review/REPORT.json",
+      "report_md": "reports/tock-asterinas-current-source-review/REPORT.md",
+      "json_sha256": "de4abd4dfb0e1cc7a6cc6e34e02fcfc12c8946274565fd0055e6ff0271839760",
+      "md_sha256": "7b05bdda22d860bcddd6820aad9d137d4e38808a768e8e9f8727fb6155977fd0"
+    },
+    {
+      "report_json": "reports/typescript-602-to-702-source-review/REPORT.json",
+      "report_md": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "json_sha256": "44532136e82a83946ba595de4d30103c41bb3d1c2e532236417507a5c80143a7",
+      "md_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785"
+    }
+  ],
+  "rows": [
+    {
+      "inventory_id": "R507",
+      "classification": "source_revision_recheck",
+      "cohort": "seL4 6b4076ae + CompCert 3.18 + Everest/HACL* 504c2987",
+      "title": "Proof maintenance architectures: seL4, CompCert, and Project Everest, 2009–2026",
+      "report_json": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/REPORT.json",
+      "report_md": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/REPORT.md",
+      "source_map_path": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/source-map.json",
+      "auxiliary_path": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/maintenance-cases.json",
+      "frozen_json_sha256": "26841c96154a323e4da36663250014fa08960bd447b08a45f519f49cdff73d8b",
+      "frozen_md_sha256": "d85b993bfc8ea691c47690b99e8765329681d1e4b1d225afa1cdc6276bb79808",
+      "frozen_source_map_sha256": "af9d860fa9ee0c46c33218785016f7678bb2919f29ef04a4158be56033402156",
+      "frozen_auxiliary_sha256": "7041427625e6df3e235ad96097cee62985e9563d64d92e7451155e9bae135fd4",
+      "frozen_subjects_exact": [
+        {
+          "name": "seL4 L4.verified proof corpus",
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+          }
+        },
+        {
+          "name": "seL4 verification manifest",
+          "identity": {
+            "repository": "seL4/verification-manifest",
+            "revision": "f1f7a4289585e9610733ea041c1849e46af9701b"
+          }
+        },
+        {
+          "name": "CompCert 3.18 semantic-preservation development",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "HACL* verified cryptographic library",
+          "identity": {
+            "repository": "hacl-star/hacl-star",
+            "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f"
+          }
+        },
+        {
+          "name": "KaRaMeL extraction compiler",
+          "identity": {
+            "repository": "FStarLang/karamel",
+            "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53"
+          }
+        },
+        {
+          "name": "Project Everest integration repository",
+          "identity": {
+            "repository": "project-everest/everest",
+            "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac"
+          }
+        },
+        {
+          "name": "Modularity, Code Specialization, and Zero-Cost Abstractions for Program Verification",
+          "identity": {
+            "doi": "10.1145/3607844",
+            "publication": "PACMPL 7 (ICFP 2023)"
+          }
+        }
+      ],
+      "source_map_exact": {
+        "schema": "anneal-reference/support/source-map/v1",
+        "observed_at": "2026-09-30",
+        "sources": [
+          {
+            "id": "sel4-l4v-readme",
+            "role": [
+              "source",
+              "documentation"
+            ],
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+            "path": "README.md",
+            "blob": "03421c4b7db4e9756efde5f46f19e60970fc7288",
+            "supports": [
+              "specification/refinement layering",
+              "generated specification workflow",
+              "proof-session structure"
+            ]
+          },
+          {
+            "id": "sel4-l4v-setup",
+            "role": [
+              "documentation"
+            ],
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+            "path": "docs/setup.md",
+            "blob": "c20d7ba4fb16845977b4d205d725cb6c52a64eb9",
+            "supports": [
+              "repo-based configuration control",
+              "verification-manifest role"
+            ]
+          },
+          {
+            "id": "sel4-verification-manifest",
+            "role": [
+              "source",
+              "documentation"
+            ],
+            "repository": "seL4/verification-manifest",
+            "revision": "f1f7a4289585e9610733ea041c1849e46af9701b",
+            "path": "README.md",
+            "blob": "2b3f4a193bbb3012f9b7711f06bbb3dc2c98e352",
+            "supports": [
+              "tested exact revision sets",
+              "development/release manifest semantics"
+            ]
+          },
+          {
+            "id": "sel4-current-docs",
+            "role": [
+              "documentation"
+            ],
+            "urls": [
+              "https://docs.sel4.systems/projects/sel4/kernel-contribution.html",
+              "https://docs.sel4.systems/releases.html",
+              "https://sel4.systems/Verification/proofs.html",
+              "https://sel4.systems/About/FAQ.html"
+            ],
+            "supports": [
+              "continuous proof updates",
+              "release proof manifests",
+              "proof assumptions",
+              "configuration-specific coverage"
+            ]
+          },
+          {
+            "id": "compcert-core",
+            "role": [
+              "source"
+            ],
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18",
+            "files": {
+              "VERSION": "5fd2882f6f042e89ce617586ce5041f5762c1766",
+              "common/Smallstep.v": "cefab134fdce4f3ea2f970db49a99d987c05d3a1",
+              "driver/Compiler.v": "60fc74fec1411216425004f6d63567354e146e9c"
+            },
+            "supports": [
+              "pass simulation interface",
+              "generic composition",
+              "whole-compiler semantic-preservation structure"
+            ]
+          },
+          {
+            "id": "translation-validation-paper",
+            "role": [
+              "publication"
+            ],
+            "title": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
+            "authors": [
+              "Jean-Baptiste Tristan",
+              "Xavier Leroy"
+            ],
+            "venue": "POPL 2008",
+            "doi": "10.1145/1328438.1328444",
+            "supports": [
+              "unverified producer behind proved validator",
+              "reject-on-failure semantic boundary"
+            ]
+          },
+          {
+            "id": "hacl-readme",
+            "role": [
+              "source",
+              "documentation"
+            ],
+            "repository": "hacl-star/hacl-star",
+            "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f",
+            "path": "README.md",
+            "blob": "8815628e9cea88ca1cbb777e5f30cab98b66e012",
+            "supports": [
+              "Low* verified properties",
+              "generated C in dist",
+              "ValeCrypt and EverCrypt architecture",
+              "current-vs-2017 codebase boundary"
+            ]
+          },
+          {
+            "id": "karamel-docs",
+            "role": [
+              "source",
+              "documentation"
+            ],
+            "repository": "FStarLang/karamel",
+            "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53",
+            "files": {
+              "README.md": "3c0396bb78ad3b8c252da3a0518eba029b2e7cc9",
+              "DESIGN.md": "1c61b9572744fa0fbb8f602129ea15aadaac6a36"
+            },
+            "supports": [
+              "extraction pipeline",
+              "paper formalization scope",
+              "current implementation's unverified Low* invariant"
+            ]
+          },
+          {
+            "id": "everest-readme",
+            "role": [
+              "source",
+              "documentation"
+            ],
+            "repository": "project-everest/everest",
+            "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac",
+            "path": "README.md",
+            "blob": "ce627659804164d6250a5ec1397c403c14af4418",
+            "supports": [
+              "known-good revision orchestration",
+              "proof replay command",
+              "integration testing"
+            ]
+          },
+          {
+            "id": "everest-current-site",
+            "role": [
+              "documentation"
+            ],
+            "url": "https://project-everest.github.io/",
+            "supports": [
+              "blessed version sets",
+              "version-controlled generated C/ASM"
+            ]
+          },
+          {
+            "id": "hacl-modularity-paper",
+            "role": [
+              "publication",
+              "reported-outcome"
+            ],
+            "title": "Modularity, Code Specialization, and Zero-Cost Abstractions for Program Verification",
+            "authors": [
+              "Son Ho",
+              "Aymeric Fromherz",
+              "Jonathan Protzenko"
+            ],
+            "publication": "PACMPL 7 (ICFP 2023)",
+            "doi": "10.1145/3607844",
+            "locator": "https://www.microsoft.com/en-us/research/publication/modularity-code-specialization-and-zero-cost-abstractions-for-program-verification/",
+            "supports": [
+              "reported HACL* scaling",
+              "reported proof-engineer productivity",
+              "generic streaming proof reuse"
+            ]
+          }
+        ]
+      },
+      "auxiliary_exact": {
+        "schema": "anneal-reference/support/maintenance-cases/v1",
+        "observed_at": "2026-09-30",
+        "cases": [
+          {
+            "system": "seL4/l4v",
+            "revision": "bce918b83bd9deaf91c3b9e7c3678929c4ad5799",
+            "change": "allow numDomains=256",
+            "mechanism": "existing proof obligations already implied the corrected bound",
+            "reported_effect": "maintainer states no proofs broke",
+            "patch": {
+              "files": 1,
+              "additions": 2,
+              "deletions": 1
+            },
+            "interpretation_limit": "patch size and commit message do not measure engineer time"
+          },
+          {
+            "system": "seL4/l4v",
+            "revision": "589b63f232d3c042cc7fc41f5fd304f2e7114e7a",
+            "change": "reserve AArch64 VMID 0",
+            "mechanism": "new invariant that next VMID is never reserved plus allocator sanity lemma",
+            "reported_effect": "proof update across invariant/refinement/C-refinement/infoflow files",
+            "patch": {
+              "files": 9,
+              "additions": 171,
+              "deletions": 93
+            },
+            "interpretation_limit": "line counts are not proof difficulty"
+          },
+          {
+            "system": "seL4/l4v",
+            "revision": "411e76099fff81c09cd4eb6619cef13d8d9bb6cf",
+            "change": "reserve ARM/ARM_HYP hardware ASID 0",
+            "mechanism": "new invariant and reused AArch64 proof setup",
+            "reported_effect": "broad repair across proof layers and architectures",
+            "patch": {
+              "files": 36,
+              "additions": 891,
+              "deletions": 589
+            },
+            "interpretation_limit": "cleanup is mixed with semantic repair"
+          },
+          {
+            "system": "seL4/l4v",
+            "revision": "9ae6b8106f5ef4dd14cb0e9543d9fe14101bbc4f",
+            "change": "make Haskell init equivalent to Isabelle butlast",
+            "mechanism": "prove equivalence but retain original formulation because simp behavior differs",
+            "reported_effect": "maintainer expects direct replacement to break proofs",
+            "patch": {
+              "files": 1,
+              "additions": 11,
+              "deletions": 1
+            },
+            "interpretation_limit": "expected breakage was not executed in this report"
+          },
+          {
+            "system": "AbsInt/CompCert",
+            "revision": "2f5e3204c48510f94c91699c64dee8bd18cd2b75",
+            "change": "strengthen memory injections for hidden negative-offset metadata",
+            "mechanism": "shared semantic relation gains a condition needed for free/malloc metadata correctness",
+            "reported_effect": "common memory model plus several proof clients changed",
+            "patch": {
+              "files": 6,
+              "additions": 218,
+              "deletions": 156
+            },
+            "interpretation_limit": "one change in a larger memory-model evolution"
+          },
+          {
+            "system": "AbsInt/CompCert",
+            "revision": "59b473374b23660f587230969b48ff407241dc19",
+            "change": "introduce Senv.inject, Genv.inject, Val.inject_ptr_flat",
+            "mechanism": "factor and replace shared injection/global-preservation proof interfaces",
+            "reported_effect": "many pass proofs and semantic libraries changed",
+            "patch": {
+              "files": 16,
+              "additions": 250,
+              "deletions": 375
+            },
+            "interpretation_limit": "refactoring and semantic-interface cleanup are mixed"
+          },
+          {
+            "system": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "change": "restore Events.meminj_preserve_globals",
+            "mechanism": "compatibility theorem for VST and other downstream users",
+            "reported_effect": "migration window without reverting new internal organization",
+            "patch": {
+              "files": 1,
+              "additions": 18,
+              "deletions": 0
+            },
+            "interpretation_limit": "does not show how many downstream proofs used the shim"
+          },
+          {
+            "system": "hacl-star/hacl-star",
+            "revision": "bfb6db8ecc67f36754d257500c2a0f1e2f6be609",
+            "change": "stabilize Vale proof",
+            "mechanism": "proof passed locally but failed in Everest/check-world; proof term adjusted",
+            "reported_effect": "15-line proof stabilization",
+            "patch": {
+              "files": 1,
+              "additions": 12,
+              "deletions": 3
+            },
+            "interpretation_limit": "cause of environment-dependent behavior not isolated here"
+          },
+          {
+            "system": "hacl-star/hacl-star",
+            "revision": "ecbf1aaa83016c0b3e67c49c0f962afcdd3986fa",
+            "change": "merge proof stabilization, pin F*/KaRaMeL, regenerate hints",
+            "mechanism": "freeze known tool versions and update recorded proof automation artifacts",
+            "reported_effect": "large generated hint churn plus small source/config changes",
+            "patch": {
+              "total_changes": 64560
+            },
+            "interpretation_limit": "generated hint diff size is not hand-written proof effort"
+          },
+          {
+            "system": "hacl-star/hacl-star",
+            "revision": "ee6ac4d2b58fb3da421086e778132800fb3f0e37",
+            "change": "fix generated and source file both",
+            "mechanism": "synchronize source-side and dist/generated-side build metadata",
+            "reported_effect": "same logical fix applied across both durable representations",
+            "patch": {
+              "files": 2,
+              "additions": 2,
+              "deletions": 2
+            },
+            "interpretation_limit": "small build-file example, not verification correspondence proof"
+          }
+        ]
+      },
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "Mature verification systems reduce proof-maintenance cost by stabilizing the semantic interfaces that proofs depend on, not by freezing implementations and not by verifying every tool in the development path. The three systems examined here reach that result through different architectures.",
+      "full_summary_exact": "Mature verification systems reduce proof-maintenance cost by stabilizing the *semantic interfaces that proofs depend on*, not by freezing implementations and not by verifying every tool in the development path. The three systems examined here reach that result through different architectures.\n\nseL4 places several specifications and refinement proofs between the abstract kernel contract and generated representations of the C implementation. It also records exact known-working combinations of kernel, proofs, and theorem prover in a verification manifest. Recent maintenance history shows both sides of that design. A three-line strengthening of a configuration bound required no downstream proof repair because existing obligations already implied the new fact. Reserving a hardware address-space identifier, by contrast, introduced a new invariant and changed many architecture-specific proof files. A library cleanup that made two functions extensionally equivalent was deliberately *not* substituted because different simplifier behavior was expected to break proofs. Stable semantic layers limit propagation, but the effective proof interface also includes normal forms, theorem names, automation behavior, and tool versions.\n\nCompCert makes the semantic boundary more explicit. Individual passes export simulation theorems, and generic composition machinery builds the whole-compiler result from those theorems. A pass can therefore change internally without forcing unrelated proofs to change while its semantic relation remains stable. CompCert also illustrates the opposite case: changes to shared memory-injection machinery touched many pass proofs, and a later compatibility shim deliberately retained an old theorem for downstream users such as VST. The architecture gives maintainers a concrete place to spend compatibility effort: shared proof interfaces rather than every implementation detail. It also supports a serious alternative to verifying a transformation implementation: an unverified transformation can sit behind a proved validator that rejects outputs whose required relation cannot be established.\n\nProject Everest and HACL* attack a different source of maintenance cost. Their Low* work uses high-level, reusable specifications and verification abstractions, then specializes and extracts low-level code. The ICFP 2023 authors report that these techniques were critical to scaling HACL* beyond 100,000 lines of verified source and materially improved proof-engineer productivity; one generic streaming development was reused across more than a dozen cases. At the same time, current repositories pin F*, KaRaMeL, solver, and proof-hint state, keep generated C/assembly under version control, and contain explicit maintenance commits for proof instability and generated artifacts. This is evidence that modular proofs and generated production artifacts can coexist, but the generator, solver behavior, platform glue, and artifact provenance remain real boundaries rather than disappearing behind the verified source.\n\nThe conditional implication for Anneal is to stabilize a small set of proof-facing contracts and make everything else replaceable. Strong candidates are: source-to-model correspondence, canonical proof-obligation schemas, assumption/trust declarations, artifact identities, and fail-closed acceptance relations. Anneal should not require every preparatory tool, normalizer, generator, or agent to be verified before use if a narrow checked interface can establish the property that later stages need. It should also avoid making incidental prover terms, generated syntax, or RPC object identities durable APIs when those details can be reconstructed. However, the seL4 history warns that semantic abstraction alone does not eliminate proof churn: if automation depends on a representation's simplifier behavior or theorem vocabulary, that representation has become a de facto interface and should be versioned, normalized, or deliberately hidden.\n\nThis is a comparative engineering judgment, not an adopted Anneal design policy. No proof development was executed for this report. The evidence is exact repository history, current project documentation, published proof results, and existing reference reports used as supporting evidence rather than as substitutes for this J025 judgment.",
+      "summary_paragraphs": [
+        {
+          "number": 1,
+          "exact_excerpt": "Mature verification systems reduce proof-maintenance cost by stabilizing the *semantic interfaces that proofs depend on*, not by freezing implementations and not by verifying every tool in the development path. The three systems examined here reach that result through different architectures.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "seL4 places several specifications and refinement proofs between the abstract kernel contract and generated representations of the C implementation. It also records exact known-working combinations of kernel, proofs, and theorem prover in a verification manifest. Recent maintenance history shows both sides of that design. A three-line strengthening of a configuration bound required no downstream proof repair because existing obligations already implied the new fact. Reserving a hardware address-space identifier, by contrast, introduced a new invariant and changed many architecture-specific proof files. A library cleanup that made two functions extensionally equivalent was deliberately *not* substituted because different simplifier behavior was expected to break proofs. Stable semantic layers limit propagation, but the effective proof interface also includes normal forms, theorem names, automation behavior, and tool versions.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "CompCert makes the semantic boundary more explicit. Individual passes export simulation theorems, and generic composition machinery builds the whole-compiler result from those theorems. A pass can therefore change internally without forcing unrelated proofs to change while its semantic relation remains stable. CompCert also illustrates the opposite case: changes to shared memory-injection machinery touched many pass proofs, and a later compatibility shim deliberately retained an old theorem for downstream users such as VST. The architecture gives maintainers a concrete place to spend compatibility effort: shared proof interfaces rather than every implementation detail. It also supports a serious alternative to verifying a transformation implementation: an unverified transformation can sit behind a proved validator that rejects outputs whose required relation cannot be established.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "Project Everest and HACL* attack a different source of maintenance cost. Their Low* work uses high-level, reusable specifications and verification abstractions, then specializes and extracts low-level code. The ICFP 2023 authors report that these techniques were critical to scaling HACL* beyond 100,000 lines of verified source and materially improved proof-engineer productivity; one generic streaming development was reused across more than a dozen cases. At the same time, current repositories pin F*, KaRaMeL, solver, and proof-hint state, keep generated C/assembly under version control, and contain explicit maintenance commits for proof instability and generated artifacts. This is evidence that modular proofs and generated production artifacts can coexist, but the generator, solver behavior, platform glue, and artifact provenance remain real boundaries rather than disappearing behind the verified source.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 5,
+          "exact_excerpt": "The conditional implication for Anneal is to stabilize a small set of proof-facing contracts and make everything else replaceable. Strong candidates are: source-to-model correspondence, canonical proof-obligation schemas, assumption/trust declarations, artifact identities, and fail-closed acceptance relations. Anneal should not require every preparatory tool, normalizer, generator, or agent to be verified before use if a narrow checked interface can establish the property that later stages need. It should also avoid making incidental prover terms, generated syntax, or RPC object identities durable APIs when those details can be reconstructed. However, the seL4 history warns that semantic abstraction alone does not eliminate proof churn: if automation depends on a representation's simplifier behavior or theorem vocabulary, that representation has become a de facto interface and should be versioned, normalized, or deliberately hidden.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 6,
+          "exact_excerpt": "This is a comparative engineering judgment, not an adopted Anneal design policy. No proof development was executed for this report. The evidence is exact repository history, current project documentation, published proof results, and existing reference reports used as supporting evidence rather than as substitutes for this J025 judgment.",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "finding_locators": [
+        {
+          "heading": "### Maintenance cost enters through at least five distinct interfaces",
+          "line": 35
+        },
+        {
+          "heading": "### seL4 separates abstract behavior, implementation correspondence, and proof configuration",
+          "line": 49
+        },
+        {
+          "heading": "### A behavior-preserving change can be almost free when it stays behind an existing obligation",
+          "line": 61
+        },
+        {
+          "heading": "### A new invariant crosses layers even when the implementation edit is conceptually small",
+          "line": 71
+        },
+        {
+          "heading": "### Proof-facing representation is an interface even when the functions are extensionally equivalent",
+          "line": 85
+        },
+        {
+          "heading": "### seL4 treats the toolchain combination as configuration-controlled proof state",
+          "line": 101
+        },
+        {
+          "heading": "### seL4 keeps proof coverage and trusted exclusions explicit instead of making the pipeline look fully verified",
+          "line": 115
+        },
+        {
+          "heading": "### CompCert puts pass implementations behind semantic-preservation relations",
+          "line": 125
+        },
+        {
+          "heading": "### Shared semantic relations are high-leverage—and high-blast-radius—interfaces",
+          "line": 137
+        },
+        {
+          "heading": "### Compatibility shims can protect downstream proofs while a shared interface evolves",
+          "line": 151
+        },
+        {
+          "heading": "### A verified validator can replace a verified transformation implementation at a maintenance boundary",
+          "line": 163
+        },
+        {
+          "heading": "### Project Everest puts reusable proof abstractions above generated low-level artifacts",
+          "line": 175
+        },
+        {
+          "heading": "### Zero-cost specialization reduces duplicate proof work, but it does not make extraction or deployment disappear from the trust model",
+          "line": 187
+        },
+        {
+          "heading": "### Pinned tool versions and proof hints are maintenance state, not incidental build trivia",
+          "line": 199
+        },
+        {
+          "heading": "### Generated artifacts need synchronized provenance even when the high-level proof is the source of authority",
+          "line": 211
+        },
+        {
+          "heading": "### The strongest reusable architecture is a stable checked contract plus replaceable producers",
+          "line": 226
+        },
+        {
+          "heading": "### Stable interfaces have four recurring failure modes",
+          "line": 247
+        },
+        {
+          "heading": "### Serious alternatives trade recurring proof repair against trust and up-front verification work",
+          "line": 269
+        },
+        {
+          "heading": "### Conditional judgment for Anneal",
+          "line": 289
+        }
+      ],
+      "source_result": "five_repos_same_pin_compcert_four_commit_forward_range_mapped_blobs_unchanged",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    },
+    {
+      "inventory_id": "R578",
+      "classification": "no_newer_release",
+      "cohort": "CompCert 3.18 (latest official release 3.18)",
+      "title": "Verified compiler-pass composition: CompCert 3.18 and verified validators",
+      "report_json": "reports/verified-compiler-pass-composition-compcert-3-18-popl-2008/REPORT.json",
+      "report_md": "reports/verified-compiler-pass-composition-compcert-3-18-popl-2008/REPORT.md",
+      "source_map_path": "reports/verified-compiler-pass-composition-compcert-3-18-popl-2008/source-map.json",
+      "auxiliary_path": "reports/verified-compiler-pass-composition-compcert-3-18-popl-2008/composition-patterns.json",
+      "frozen_json_sha256": "ee55c1267444d8cffe77ce95c125a91c8c442c99ace6e1df7c68bff5ad73e2a4",
+      "frozen_md_sha256": "accf7e3f3f1595d8e45465c4e1c4cdc1809d59644dc1ec58c140695eb2c7658f",
+      "frozen_source_map_sha256": "26ddb58428f71dcc8ac06c2a4923ba5f3c0d3eab6ff0bf161867d988642a58b8",
+      "frozen_auxiliary_sha256": "52dcbfab6dca1fc179aac99853a842f937de2f1da121d1929185fa5b46abef4f",
+      "frozen_subjects_exact": [
+        {
+          "name": "CompCert 3.18 verified compiler",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
+          "identity": {
+            "doi": "10.1145/1328438.1328444",
+            "publication": "POPL 2008"
+          }
+        }
+      ],
+      "source_map_exact": {
+        "schema": "anneal-reference/source-map/v1",
+        "observed_at": "2026-09-27",
+        "sources": [
+          {
+            "role": "source",
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "path": "VERSION",
+            "blob": "5fd2882f6f042e89ce617586ce5041f5762c1766",
+            "anchors": [
+              "line 1: version=3.18"
+            ]
+          },
+          {
+            "role": "source",
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "path": "common/Smallstep.v",
+            "blob": "cefab134fdce4f3ea2f970db49a99d987c05d3a1",
+            "anchors": [
+              "compose_forward_simulations around lines 1003-1043",
+              "compose_backward_simulation around lines 1566 onward",
+              "forward_to_backward_simulation around lines 1863 onward",
+              "factor_forward_simulation around lines 2004 onward"
+            ]
+          },
+          {
+            "role": "source",
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "path": "driver/Compiler.v",
+            "blob": "60fc74fec1411216425004f6d63567354e146e9c",
+            "anchors": [
+              "cstrategy_semantic_preservation around lines 344-416",
+              "c_semantic_preservation around lines 419-434",
+              "transf_c_program_correct around lines 446-453",
+              "separate_transf_c_program_correct around lines 466 onward"
+            ]
+          },
+          {
+            "role": "documentation",
+            "subject": "CompCert 3.18",
+            "version": "3.18",
+            "released": "2026-08-31",
+            "locator": "https://compcert.org/doc/",
+            "anchors": [
+              "Compiler: composing the passes together; whole-compiler semantic preservation theorems"
+            ]
+          },
+          {
+            "role": "documentation",
+            "subject": "CompCert manual",
+            "version": "3.18",
+            "locator": "https://compcert.org/man/manual001.html",
+            "anchors": [
+              "semantic preservation theorem",
+              "per-pass proof composition",
+              "compile-time failure permitted"
+            ]
+          },
+          {
+            "role": "published-result",
+            "authors": [
+              "Jean-Baptiste Tristan",
+              "Xavier Leroy"
+            ],
+            "title": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+            "publication": "POPL 2008",
+            "doi": "10.1145/1328438.1328444",
+            "author_copy": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+            "anchors": [
+              "§2.1 equations (1)-(2) and Theorem 1",
+              "§2.2 definedness constraints"
+            ]
+          }
+        ]
+      },
+      "auxiliary_exact": {
+        "schema": "anneal-reference/composition-patterns/v1",
+        "subject": "verified compiler-pass composition techniques",
+        "patterns": [
+          {
+            "pattern": "directly verified pass",
+            "producer": "pass correctness theorem",
+            "accepted_interface": "semantic simulation/refinement from input language to output language",
+            "failure_semantics": "successful transformed output must satisfy theorem premises; compiler may return Error",
+            "composition_requirement": "relation and side conditions must match a generic composition theorem"
+          },
+          {
+            "pattern": "disabled optional pass",
+            "producer": "identity relation",
+            "accepted_interface": "forward simulation of semantics with itself",
+            "failure_semantics": "not applicable",
+            "composition_requirement": "identity must inhabit the same simulation interface as enabled-pass correctness"
+          },
+          {
+            "pattern": "verified validator around unverified pass",
+            "producer": "proved validator plus fail-closed wrapper",
+            "accepted_interface": "validator acceptance implies required source/target semantic relation",
+            "failure_semantics": "transformer error or validator rejection becomes Error",
+            "composition_requirement": "accepted relation must be the relation expected by adjacent verified stages"
+          },
+          {
+            "pattern": "forward-simulation vertical composition",
+            "producer": "CompCert compose_forward_simulations",
+            "accepted_interface": "L1→L2 forward simulation and L2→L3 forward simulation",
+            "failure_semantics": "not a compiler operation; proof composition only",
+            "composition_requirement": "intermediate semantics shared; stuttering measures combined by a well-founded lexicographic order"
+          },
+          {
+            "pattern": "forward-to-backward conversion",
+            "producer": "CompCert forward_to_backward_simulation",
+            "accepted_interface": "forward simulation",
+            "failure_semantics": "not a compiler operation; proof conversion only",
+            "composition_requirement": "source receptive and target determinate"
+          },
+          {
+            "pattern": "backward-simulation vertical composition",
+            "producer": "CompCert compose_backward_simulation",
+            "accepted_interface": "L1→L2 and L2→L3 backward simulations",
+            "failure_semantics": "not a compiler operation; proof composition only",
+            "composition_requirement": "target L3 has single-event steps under CompCert's theorem"
+          },
+          {
+            "pattern": "separate compilation plus linking",
+            "producer": "CompCert separate_transf_c_program_correct",
+            "accepted_interface": "per-unit successful compilation plus source linking",
+            "failure_semantics": "the theorem applies only under successful per-unit compilation and linking premises",
+            "composition_requirement": "linking must preserve the program relation in addition to per-pass compiler correctness"
+          }
+        ],
+        "anneal_review_questions": [
+          "What semantic relation does each translation boundary establish?",
+          "Does the next boundary consume that exact relation or require a justified bridge?",
+          "Which observations—UB, effects, divergence, panic, provenance, source correspondence—are represented by the relation?",
+          "What side conditions are required to compose or change proof direction?",
+          "Does inability to establish a relation prevent ordinary success or become an explicit trusted assumption?",
+          "Are horizontal abstraction/linking obligations being confused with vertical translation-pass obligations?"
+        ]
+      },
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "Verified compiler correctness is compositional only when every stage exports a semantic relation that the next proof can actually compose. CompCert 3.18 makes this concrete. It proves forward simulations for individual passes, composes those simulations into a source-to-assembly forward simulation, and then obtains the whole-compiler backward simulation through additional semantic side conditions: source receptiveness, target determinacy, event factoring, and a separate strat",
+      "full_summary_exact": "Verified compiler correctness is compositional only when every stage exports a semantic relation that the next proof can actually compose. CompCert 3.18 makes this concrete. It proves forward simulations for individual passes, composes those simulations into a source-to-assembly forward simulation, and then obtains the whole-compiler backward simulation through additional semantic side conditions: source receptiveness, target determinacy, event factoring, and a separate strategy-to-language simulation. The final theorem is conditional on successful compilation. A failed or disabled pass does not silently inherit correctness; it either contributes an identity simulation or produces no successful compiler result.\n\nThis matters because “each pass is verified” is not, by itself, an end-to-end proof rule. The relation direction, treatment of stuttering, trace model, failure semantics, and auxiliary hypotheses have to line up. CompCert's generic `compose_forward_simulations` theorem explicitly constructs the intermediate-state witness and combines the well-founded measures needed when a source step can correspond to zero target steps. Its backward-simulation composition theorem carries an additional `single_events` premise. Its forward-to-backward conversion requires a receptive source semantics and determinate target semantics.\n\nTristan and Leroy's POPL 2008 verified-validator construction shows a complementary way to satisfy the same interface. An optimization implementation may remain unverified if a formally proved validator checks each concrete source/target pair and the wrapper rejects outputs the validator cannot establish as related. The wrapper then exports the same kind of pass-level semantic-preservation fact that a directly verified transformation would export. The unverified optimizer is therefore removable from the correctness proof, but the validator, its semantic relation, and the reject-on-failure wrapper are not.\n\nThe reusable rule for Anneal is to model translation boundaries by explicit proof obligations that compose. A Charon, Aeneas, normalization, or proof-generation stage can be directly verified, validated after the fact, or trusted under an explicit assumption. What cannot be done soundly is to let a stage return ordinary success when its required relation is unknown. Composition preserves the weakest semantic contract actually established at every boundary; it does not recover behaviors, effects, definedness conditions, or source correspondence that an earlier stage omitted.\n\nNo compiler or prover was executed for this report. CompCert claims were checked against exact 3.18 source at `AbsInt/CompCert@74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6` and the corresponding 3.18 documentation. Verified-validator claims were checked against Tristan and Leroy's POPL 2008 paper, DOI `10.1145/1328438.1328444`.",
+      "summary_paragraphs": [
+        {
+          "number": 1,
+          "exact_excerpt": "Verified compiler correctness is compositional only when every stage exports a semantic relation that the next proof can actually compose. CompCert 3.18 makes this concrete. It proves forward simulations for individual passes, composes those simulations into a source-to-assembly forward simulation, and then obtains the whole-compiler backward simulation through additional semantic side conditions: source receptiveness, target determinacy, event factoring, and a separate strategy-to-language simulation. The final theorem is conditional on successful compilation. A failed or disabled pass does not silently inherit correctness; it either contributes an identity simulation or produces no successful compiler result.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "This matters because “each pass is verified” is not, by itself, an end-to-end proof rule. The relation direction, treatment of stuttering, trace model, failure semantics, and auxiliary hypotheses have to line up. CompCert's generic `compose_forward_simulations` theorem explicitly constructs the intermediate-state witness and combines the well-founded measures needed when a source step can correspond to zero target steps. Its backward-simulation composition theorem carries an additional `single_events` premise. Its forward-to-backward conversion requires a receptive source semantics and determinate target semantics.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "Tristan and Leroy's POPL 2008 verified-validator construction shows a complementary way to satisfy the same interface. An optimization implementation may remain unverified if a formally proved validator checks each concrete source/target pair and the wrapper rejects outputs the validator cannot establish as related. The wrapper then exports the same kind of pass-level semantic-preservation fact that a directly verified transformation would export. The unverified optimizer is therefore removable from the correctness proof, but the validator, its semantic relation, and the reject-on-failure wrapper are not.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "The reusable rule for Anneal is to model translation boundaries by explicit proof obligations that compose. A Charon, Aeneas, normalization, or proof-generation stage can be directly verified, validated after the fact, or trusted under an explicit assumption. What cannot be done soundly is to let a stage return ordinary success when its required relation is unknown. Composition preserves the weakest semantic contract actually established at every boundary; it does not recover behaviors, effects, definedness conditions, or source correspondence that an earlier stage omitted.",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 5,
+          "exact_excerpt": "No compiler or prover was executed for this report. CompCert claims were checked against exact 3.18 source at `AbsInt/CompCert@74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6` and the corresponding 3.18 documentation. Verified-validator claims were checked against Tristan and Leroy's POPL 2008 paper, DOI `10.1145/1328438.1328444`.",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "finding_locators": [
+        {
+          "heading": "### Pass proofs compose through a shared semantic interface, not through their implementation structure",
+          "line": 32
+        },
+        {
+          "heading": "### The whole CompCert proof is an explicit chain of pass-level simulations",
+          "line": 50
+        },
+        {
+          "heading": "### Simulation direction and semantic side conditions matter at the pipeline boundary",
+          "line": 62
+        },
+        {
+          "heading": "### Successful compilation is a premise, so pass failure composes by failing closed",
+          "line": 91
+        },
+        {
+          "heading": "### A verified validator replaces the pass proof only when it exports the same required relation",
+          "line": 110
+        },
+        {
+          "heading": "### Composition preserves the weakest established end-to-end contract",
+          "line": 124
+        },
+        {
+          "heading": "### Separate compilation shows that vertical pass composition is not the only composition boundary",
+          "line": 146
+        }
+      ],
+      "source_result": "compcert_four_commit_forward_range_three_mapped_blobs_unchanged",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    }
+  ],
+  "official_observation_sha256": "aa76a117ac9177cc52ec41cbecd85cd7c342a3c2dadd167ef68a31e3c93f284c",
+  "runtime_result": "unexecuted_in_this_review",
+  "anneal_product_result": "unassessed"
+}
