@@ -1,0 +1,7 @@
+{
+  "buck2-current-source-review": {
+    "classification": "source_review_v67_analog",
+    "predecessors": ["buck-to-buck2-one-graph-rewrite-2013-2026"],
+    "reason": "R346 freezes the exact Buck2 one-graph/DICE source analog already mapped by v67 to I144 and I159. Its four cited architecture-document blobs are unchanged on a 29-commit forward main range; adjacent DICE implementation adds compute_with_key and a source test. No Buck2/DICE test, build graph, or Anneal product execution occurred, so this is bounded source context only."
+  }
+}
