@@ -1,0 +1,1347 @@
+{
+  "subject": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "harness_sha256": "9d5d5c7e3d85e8679e1ee04f9f8df485d163be3bd0eebaa0ffadaf27f7dc50a7",
+    "probe_sha256": "27b815dade438ae3f76b811d3ef80f8ff748b7e0f6cfc13c87ae6ad6eb9e5f89",
+    "host_free_percent": 40
+  },
+  "source": "theorem hole (n : Nat) : n = n := by\n  exact ?_\n",
+  "source_sha256": "fdf822edf4b00ec43bd29cd96db47a87002fd5a761fa3922e2a34000e2943447",
+  "idle_seconds": 42.01,
+  "wait": {
+    "id": 1000,
+    "jsonrpc": "2.0",
+    "result": {}
+  },
+  "connect": {
+    "id": 1001,
+    "jsonrpc": "2.0",
+    "result": {
+      "sessionId": "16373680052637381182"
+    }
+  },
+  "rich": {
+    "id": 1002,
+    "jsonrpc": "2.0",
+    "result": {
+      "goals": [
+        {
+          "ctx": {
+            "p": "4"
+          },
+          "goalPrefix": "⊢ ",
+          "hyps": [
+            {
+              "fvarIds": [
+                "_uniq.7.2"
+              ],
+              "names": [
+                "n"
+              ],
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "0"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "text": "Nat"
+                  }
+                ]
+              }
+            }
+          ],
+          "mvarId": "_uniq.7.3",
+          "type": {
+            "tag": [
+              {
+                "info": {
+                  "p": "1"
+                },
+                "subexprPos": "/"
+              },
+              {
+                "append": [
+                  {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "2"
+                        },
+                        "subexprPos": "/0/1"
+                      },
+                      {
+                        "text": "n"
+                      }
+                    ]
+                  },
+                  {
+                    "text": " = "
+                  },
+                  {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "3"
+                        },
+                        "subexprPos": "/1"
+                      },
+                      {
+                        "text": "n"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "reference": {
+    "p": "0"
+  },
+  "before": {
+    "id": 1003,
+    "jsonrpc": "2.0",
+    "result": {
+      "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+      "exprExplicit": {
+        "text": "Nat"
+      },
+      "type": {
+        "tag": [
+          {
+            "info": {
+              "p": "5"
+            },
+            "subexprPos": "/"
+          },
+          {
+            "text": "Type"
+          }
+        ]
+      }
+    }
+  },
+  "expired": {
+    "error": {
+      "code": -32900,
+      "message": "Outdated RPC session"
+    },
+    "id": 1004,
+    "jsonrpc": "2.0"
+  },
+  "reopen": null,
+  "new_connect": {
+    "id": 1005,
+    "jsonrpc": "2.0",
+    "result": {
+      "sessionId": "1531605975014441736"
+    }
+  },
+  "recovered": {
+    "id": 1006,
+    "jsonrpc": "2.0",
+    "result": {
+      "goals": [
+        {
+          "ctx": {
+            "p": "4"
+          },
+          "goalPrefix": "⊢ ",
+          "hyps": [
+            {
+              "fvarIds": [
+                "_uniq.7.2"
+              ],
+              "names": [
+                "n"
+              ],
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "0"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "text": "Nat"
+                  }
+                ]
+              }
+            }
+          ],
+          "mvarId": "_uniq.7.3",
+          "type": {
+            "tag": [
+              {
+                "info": {
+                  "p": "1"
+                },
+                "subexprPos": "/"
+              },
+              {
+                "append": [
+                  {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "2"
+                        },
+                        "subexprPos": "/0/1"
+                      },
+                      {
+                        "text": "n"
+                      }
+                    ]
+                  },
+                  {
+                    "text": " = "
+                  },
+                  {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "3"
+                        },
+                        "subexprPos": "/1"
+                      },
+                      {
+                        "text": "n"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "wire_events": [
+    {
+      "seq": 0,
+      "ms": 20.3,
+      "kind": "launch",
+      "label": "rpc-idle-expiry",
+      "mode": "direct",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--server"
+      ],
+      "pid": 5186,
+      "root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work"
+    },
+    {
+      "seq": 1,
+      "ms": 20.4,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 5184,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "ms": 45.8,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 3,
+      "ms": 45.8,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 4,
+      "ms": 45.8,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "theorem hole (n : Nat) : n = n := by\n  exact ?_\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "ms": 45.8,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1000,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "ms": 45.9,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 7,
+      "ms": 45.9,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 8,
+      "ms": 46.2,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "ms": 103.1,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "ms": 283.9,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "ms": 284.0,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "ms": 284.0,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 1
+                },
+                "start": {
+                  "character": 8,
+                  "line": 1
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n⊢ n = n",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 1
+                },
+                "start": {
+                  "character": 8,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 1
+                },
+                "start": {
+                  "character": 34,
+                  "line": 0
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n⊢ n = n",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 34,
+                  "line": 0
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "ms": 284.2,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 1000,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 14,
+      "ms": 284.2,
+      "kind": "request_latency",
+      "label": "rpc-idle-expiry",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 1000,
+      "elapsed_ms": 238.4
+    },
+    {
+      "seq": 15,
+      "ms": 284.2,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1001,
+        "method": "$/lean/rpc/connect",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean"
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "ms": 284.5,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 1001,
+        "jsonrpc": "2.0",
+        "result": {
+          "sessionId": "16373680052637381182"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "ms": 284.5,
+      "kind": "request_latency",
+      "label": "rpc-idle-expiry",
+      "method": "$/lean/rpc/connect",
+      "rid": 1001,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 18,
+      "ms": 284.5,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1002,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 8
+          },
+          "sessionId": "16373680052637381182",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean"
+            },
+            "position": {
+              "line": 1,
+              "character": 8
+            }
+          }
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "ms": 285.3,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 1002,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "4"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.7.2"
+                  ],
+                  "names": [
+                    "n"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "Nat"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.7.3",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "1"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "2"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "text": "n"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "3"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "n"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "ms": 285.3,
+      "kind": "request_latency",
+      "label": "rpc-idle-expiry",
+      "method": "$/lean/rpc/call",
+      "rid": 1002,
+      "elapsed_ms": 0.8
+    },
+    {
+      "seq": 21,
+      "ms": 285.3,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1003,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 8
+          },
+          "sessionId": "16373680052637381182",
+          "method": "Lean.Widget.InteractiveDiagnostics.infoToInteractive",
+          "params": {
+            "p": "0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 22,
+      "ms": 286.3,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 1003,
+        "jsonrpc": "2.0",
+        "result": {
+          "doc": "The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n",
+          "exprExplicit": {
+            "text": "Nat"
+          },
+          "type": {
+            "tag": [
+              {
+                "info": {
+                  "p": "5"
+                },
+                "subexprPos": "/"
+              },
+              {
+                "text": "Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "seq": 23,
+      "ms": 286.3,
+      "kind": "request_latency",
+      "label": "rpc-idle-expiry",
+      "method": "$/lean/rpc/call",
+      "rid": 1003,
+      "elapsed_ms": 1.1
+    },
+    {
+      "seq": 24,
+      "ms": 42296.9,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1004,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 8
+          },
+          "sessionId": "16373680052637381182",
+          "method": "Lean.Widget.InteractiveDiagnostics.infoToInteractive",
+          "params": {
+            "p": "0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 25,
+      "ms": 42297.2,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 26,
+      "ms": 42297.2,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 27,
+      "ms": 42297.2,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 28,
+      "ms": 42297.3,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 29,
+      "ms": 42297.3,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 30,
+      "ms": 42297.3,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 31,
+      "ms": 42297.3,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 32,
+      "ms": 42297.3,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 33,
+      "ms": 42297.4,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 8,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 34,
+      "ms": 42297.4,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 9,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 35,
+      "ms": 42297.4,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 36,
+      "ms": 42297.4,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 37,
+      "ms": 42297.4,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 38,
+      "ms": 42297.4,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 39,
+      "ms": 42297.5,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 40,
+      "ms": 42297.5,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 41,
+      "ms": 42297.5,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 42,
+      "ms": 42297.5,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 17,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 43,
+      "ms": 42297.5,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 44,
+      "ms": 42297.5,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 19,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "seq": 45,
+      "ms": 42298.3,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "error": {
+          "code": -32900,
+          "message": "Outdated RPC session"
+        },
+        "id": 1004,
+        "jsonrpc": "2.0"
+      }
+    },
+    {
+      "seq": 46,
+      "ms": 42298.3,
+      "kind": "request_latency",
+      "label": "rpc-idle-expiry",
+      "method": "$/lean/rpc/call",
+      "rid": 1004,
+      "elapsed_ms": 1.7
+    },
+    {
+      "seq": 47,
+      "ms": 42298.4,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1005,
+        "method": "$/lean/rpc/connect",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean"
+        }
+      }
+    },
+    {
+      "seq": 48,
+      "ms": 42298.9,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 1005,
+        "jsonrpc": "2.0",
+        "result": {
+          "sessionId": "1531605975014441736"
+        }
+      }
+    },
+    {
+      "seq": 49,
+      "ms": 42298.9,
+      "kind": "request_latency",
+      "label": "rpc-idle-expiry",
+      "method": "$/lean/rpc/connect",
+      "rid": 1005,
+      "elapsed_ms": 0.6
+    },
+    {
+      "seq": 50,
+      "ms": 42299.0,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1006,
+        "method": "$/lean/rpc/call",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean"
+          },
+          "position": {
+            "line": 1,
+            "character": 8
+          },
+          "sessionId": "1531605975014441736",
+          "method": "Lean.Widget.getInteractiveGoals",
+          "params": {
+            "textDocument": {
+              "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean"
+            },
+            "position": {
+              "line": 1,
+              "character": 8
+            }
+          }
+        }
+      }
+    },
+    {
+      "seq": 51,
+      "ms": 42301.1,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 1006,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            {
+              "ctx": {
+                "p": "4"
+              },
+              "goalPrefix": "⊢ ",
+              "hyps": [
+                {
+                  "fvarIds": [
+                    "_uniq.7.2"
+                  ],
+                  "names": [
+                    "n"
+                  ],
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "0"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "Nat"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "mvarId": "_uniq.7.3",
+              "type": {
+                "tag": [
+                  {
+                    "info": {
+                      "p": "1"
+                    },
+                    "subexprPos": "/"
+                  },
+                  {
+                    "append": [
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "2"
+                            },
+                            "subexprPos": "/0/1"
+                          },
+                          {
+                            "text": "n"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " = "
+                      },
+                      {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "3"
+                            },
+                            "subexprPos": "/1"
+                          },
+                          {
+                            "text": "n"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 52,
+      "ms": 42301.1,
+      "kind": "request_latency",
+      "label": "rpc-idle-expiry",
+      "method": "$/lean/rpc/call",
+      "rid": 1006,
+      "elapsed_ms": 2.2
+    },
+    {
+      "seq": 53,
+      "ms": 42303.6,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 54,
+      "ms": 42304.9,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-rpc-idle-expiry-v4-30-0-rc2/support/work/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 55,
+      "ms": 42320.5,
+      "kind": "server",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 56,
+      "ms": 42320.6,
+      "kind": "client",
+      "label": "rpc-idle-expiry",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 57,
+      "ms": 42468.4,
+      "kind": "stop",
+      "label": "rpc-idle-expiry",
+      "rc": 0,
+      "pid": 5186,
+      "stderr": ""
+    }
+  ]
+}
