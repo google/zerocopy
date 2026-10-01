@@ -1,0 +1,64 @@
+--- old/src/cargo/core/compiler/compilation.rs
++++ new/src/cargo/core/compiler/compilation.rs
+@@ -94,9 +94,9 @@
+     /// Root output directory (for the local package's artifacts)
+     pub root_output: HashMap<CompileKind, PathBuf>,
+ 
+-    /// Output directory for rust dependencies.
++    /// Output directories for rust dependencies.
+     /// May be for the host or for a specific target.
+-    pub deps_output: HashMap<CompileKind, PathBuf>,
++    pub deps_output: HashMap<CompileKind, BTreeSet<PathBuf>>,
+ 
+     /// The path to libstd for each target
+     sysroot_target_libdir: HashMap<CompileKind, PathBuf>,
+@@ -374,7 +374,9 @@
+                     &self.root_output[&CompileKind::Host],
+                 ));
+             }
+-            search_path.push(self.deps_output[&CompileKind::Host].clone());
++            if let Some(paths) = self.deps_output.get(&CompileKind::Host) {
++                search_path.extend(paths.clone());
++            }
+         } else {
+             if let Some(path) = self.root_output.get(&kind) {
+                 search_path.extend(super::filter_dynamic_search_path(
+@@ -383,7 +385,9 @@
+                 ));
+                 search_path.push(path.clone());
+             }
+-            search_path.push(self.deps_output[&kind].clone());
++            if let Some(paths) = self.deps_output.get(&kind) {
++                search_path.extend(paths.clone());
++            }
+             // For build-std, we don't want to accidentally pull in any shared
+             // libs from the sysroot that ships with rustc. This may not be
+             // required (at least I cannot craft a situation where it
+@@ -505,6 +509,13 @@
+     if let Some(runner) = bcx.target_data.target_config(kind).runner.as_ref() {
+         let path = runner.val.path.clone().resolve_program(bcx.gctx);
+         return Ok(Some((path, runner.val.args.clone())));
++    }
++
++    // With `target-applies-to-host = true`,
++    // host artifacts must fall through to pick up from [target]
++    // since this is the stable behavior
++    if kind.is_host() && !bcx.gctx.target_applies_to_host()? {
++        return Ok(None);
+     }
+ 
+     // try target.'cfg(...)'.runner
+@@ -548,6 +559,13 @@
+         return Ok(Some(path));
+     }
+ 
++    // With `target-applies-to-host = true`,
++    // host artifacts must fall through to pick up from [target]
++    // since this is the stable behavior
++    if kind.is_host() && !bcx.gctx.target_applies_to_host()? {
++        return Ok(None);
++    }
++
+     // Try target.'cfg(...)'.linker.
+     let target_cfg = bcx.target_data.info(kind).cfg();
+     let mut cfgs = bcx

@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "cargo/source-review",
+    "cargo/unit-graph",
+    "cargo/compilation-coverage",
+    "rust/toolchain-pin"
+  ],
+  "subjects": [
+    {
+      "name": "Frozen R350 predecessor corpus",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "1b6f146d7951402e10102354a131b5cee9c5f855",
+        "report": "reports/cargo-rust-charon-anneal-coverage-matrix-2026-09-28/REPORT.md"
+      }
+    },
+    {
+      "name": "Original Cargo source",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+      }
+    },
+    {
+      "name": "Cargo source gitlink in official Rust 1.98.1 tree",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "rust-release": "1.98.1",
+        "rust-revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

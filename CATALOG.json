@@ -4220,6 +4220,58 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v82": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "cargo_source_package": "cargo-r348-r349-r352-to-rust-1981-source-review-2026-09-30",
+            "crosswalk_sha256": "d3b4ece346c5ba9fa534d45d1c8005199724ced3a76b2fe6cf7aeae9b8ebf85f",
+            "inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+            "reference_parent": "1e87e9bf7b672c354b4c2903a372329ee61faf63"
+          },
+          "name": "Frozen newer-version inventory and Cargo source-review completion"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+            "v81_report": "anneal-3730-3731-final-coverage-audit-2026-09-30-v81"
+          },
+          "name": "Inherited v81 issue ledger and snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v83": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "crosswalk_sha256": "43f16f6984d8b4eff1cfd42b042c4fb9f95b0d70b81e57aed152bfc91ee91f2c",
+            "inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+            "r350_claim_matrix_sha256": "eedbc914234a926a631cc5906c2d33e8b3fff013e2054a482ca87351c3ce32fe",
+            "reference_parent": "1e87e9bf7b672c354b4c2903a372329ee61faf63"
+          },
+          "name": "Frozen newer-version inventory and R350 Cargo claim source review"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+            "v81_report": "anneal-3730-3731-final-coverage-audit-2026-09-30-v81"
+          },
+          "name": "Inherited v81 issue ledger and snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -11478,6 +11530,41 @@
         "rust/toolchain-pin",
         "cargo/unit-graph",
         "cargo/feature-resolution"
+      ]
+    },
+    "cargo-r350-coverage-to-rust-1981-source-review-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "report": "reports/cargo-rust-charon-anneal-coverage-matrix-2026-09-28/REPORT.md",
+            "repository": "google/zerocopy",
+            "revision": "1b6f146d7951402e10102354a131b5cee9c5f855"
+          },
+          "name": "Frozen R350 predecessor corpus"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          },
+          "name": "Original Cargo source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+            "rust-release": "1.98.1",
+            "rust-revision": "48a229ceaefd4985c50990b14116b6d856af0985"
+          },
+          "name": "Cargo source gitlink in official Rust 1.98.1 tree"
+        }
+      ],
+      "topics": [
+        "cargo/source-review",
+        "cargo/unit-graph",
+        "cargo/compilation-coverage",
+        "rust/toolchain-pin"
       ]
     },
     "cargo-rust-charon-anneal-coverage-matrix-2026-09-28": {

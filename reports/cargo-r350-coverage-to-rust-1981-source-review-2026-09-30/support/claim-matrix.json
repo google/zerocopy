@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "inventory_id": "R350",
+  "reference_parent_for_this_review": "1e87e9bf7b672c354b4c2903a372329ee61faf63",
+  "frozen_reference_commit": "1b6f146d7951402e10102354a131b5cee9c5f855",
+  "predecessor_report_md": "reports/cargo-rust-charon-anneal-coverage-matrix-2026-09-28/REPORT.md",
+  "predecessor_report_md_sha256": "c0e5052c8fefc2ecc6be309d4abc463a201c2cc67c8769aef85be1c714a27002",
+  "predecessor_report_json": "reports/cargo-rust-charon-anneal-coverage-matrix-2026-09-28/REPORT.json",
+  "predecessor_report_json_sha256": "a2e0a49e9cebb2c1cc66a111addff6a5f50aef3895c088aa5d55e5d302d9c5e6",
+  "predecessor_subjects": [
+    {
+      "name": "Rust Cargo",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "version": "1.98.0-nightly (2026-05-26)"
+      }
+    },
+    {
+      "name": "Charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+      }
+    },
+    {
+      "name": "Anneal V1",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "full_summary_exact": "Cargo's workspace unit graph, actual rustc command capture, Charon output, and one Anneal V1 proof answer different coverage questions. In this fixture Cargo built 12 units for the workspace/all-targets path, but the successful V1 proof was only for the `coverage_app` library with `selected` enabled. Build-script output and a procedural-macro expansion appeared in that library's LLBC/model; a normal dependency stayed opaque, and a separate consumer's LLBC represented the proof-bearing library function as foreign. Cargo target coverage must therefore be tied to the exact selected extraction roots and emitted obligations, not inferred from what Cargo compiled.\n\nThis is executed evidence for #3725 recommendations R06, R15, R23, R31, R32, and R37.",
+  "selected_findings": [
+    {
+      "heading": "Compilation and verification roots are separate sets",
+      "exact_passage": "`cargo -Z unstable-options build --offline --workspace --all-targets --unit-graph` reported 12 units and 9 roots. An actual `cargo build --offline --workspace --all-targets` recorded 14 rustc command invocations in the wrapper log; `cargo test --offline --workspace` completed successfully. These commands include separate contexts such as build-script-build and proc-macro host units alongside target units. This is evidence about Cargo's selected work, not a count of functions translated or proved.\n\n`cargo -Z unstable-options build --offline --package coverage_app --lib --features selected --unit-graph` reported 7 units and one root. The retained unit graph and manifests are in `support/`. This was the Cargo selection used for the focused verification invocation.\n\nBasis: **execution**. The unit graph captures Cargo's resolved units and roots; the wrapper separately records actual rustc invocations. Neither is a Charon declaration inventory."
+    },
+    {
+      "heading": "Feature resolution is unit- and command-sensitive",
+      "exact_passage": "The workspace all-targets graph contains distinct `shared` feature sets: a build-side unit with `build-api`, and target/test units with the union `dev-api`, `macro-api`, and `target-api`. The selected library-only graph has the build-side set and a target-side `target-api` set, without `dev-api`. Feature unification within one Cargo unit does not imply that every unit has the same set. The V1 scanner discovers an annotation behind `#[cfg(feature = \"selected\")]` even when the verification command omits that feature; Charon/rustc then fails because the declaration is cfg-removed. The exact no-feature verification exited 1. This is a failure of that observed path, not an assertion that all cfg combinations panic.\n\nBasis: **execution** + **derived**. The command-specific feature arrays are preserved in the unit graphs. The scanner/extraction distinction follows from the annotation being present in source while the declaration is absent from the selected compilation."
+    },
+    {
+      "heading": "Generated and macro-expanded code can enter the selected crate's translation",
+      "exact_passage": "The build script writes `BUILD_VALUE = 17` into Cargo's `OUT_DIR`; a proc macro emits `proc_generated() = 29`; the library function `library_subject` references both. Charon's LLBC has local declarations for the macro expansion, included generated constant, library function, and selected function. Aeneas output represents the generated constant as `17#u32` and the macro result as a local function returning `29#u32`.\n\nThis shows that these outputs can be represented in this specific library extraction. It does not preserve complete provenance from build-script inputs or macro implementation to each declaration, nor does it prove every generated declaration has an Anneal contract. The V1 proof invocation verified only the annotated feature-gated function; its theorem was `selected_feature_subject.spec`, with postcondition `ret.val = 101` (see `support/v1-generated-selected-spec.lean`).\n\nBasis: **execution**. Reproducer sources, Charon's local/foreign function projection, Aeneas `Funs.lean`, and the generated V1 specification are retained in `support/`."
+    },
+    {
+      "heading": "Dependency code is not implied by proving a consumer crate",
+      "exact_passage": "The normal local dependency `shared::target_value` appears as an external/opaque call in the library's Aeneas model. Separately extracting the `consumer` binary succeeds, but its LLBC marks `coverage_app::selected_feature_subject` non-local with foreign opacity and no local body. The consumer's own extraction therefore does not translate the dependency body just because Cargo compiled that dependency. A dependency needs its own extraction/verification subject or a justified trusted model to enter the assurance claim.\n\nDirect Charon selection of the workspace binary or integration-test target failed in this fixture with `extern location for coverage_app does not exist` for the expected rlib. This report preserves the observed failure but does not infer that Charon cannot support those targets in all configurations; the exact Cargo target/features/fingerprint combination is part of the subject.\n\nBasis: **execution** + **derived**. Charon locality and opacity are preserved in compact JSON projections. The inference is limited to the missing dependency body in this selected output."
+    },
+    {
+      "heading": "Successful compilation is not a checked-obligation count",
+      "exact_passage": "The full Cargo build and test establish compilation and test behavior for the fixture. `cargo-anneal verify --manifest-path .../coverage_app/Cargo.toml --features selected --lib` separately exited 0 for the annotated library function. It did not establish verification of `library_subject`, the generated constant, the proc-macro implementation, the binary, integration test, or `shared::target_value`. The generated V1 theorem was separately elaborated and queried with `#print axioms`; that establishes only Lean elaboration and the theorem's Lean axiom dependencies, not Rust-to-LLBC semantic correspondence."
+    }
+  ],
+  "old_cargo_commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+  "new_cargo_commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+  "source_observation_sha256": "83b4d7e326280c1853442e69501381499f4e186616549bbbbdfb80ea317fedf5",
+  "runtime_status": "unexecuted_in_this_review",
+  "charon_aeneas_anneal_status": "unassessed_in_this_review"
+}

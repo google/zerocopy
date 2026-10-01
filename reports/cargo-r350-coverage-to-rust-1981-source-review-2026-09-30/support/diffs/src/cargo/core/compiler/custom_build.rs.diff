@@ -1,0 +1,18 @@
+--- old/src/cargo/core/compiler/custom_build.rs
++++ new/src/cargo/core/compiler/custom_build.rs
+@@ -399,7 +399,14 @@
+     }
+ 
+     if let Some(trim_paths) = unit.profile.trim_paths.as_ref() {
+-        cmd.env("CARGO_TRIM_PATHS", trim_paths.to_string());
++        cmd.env("CARGO_TRIM_PATHS_SCOPE", trim_paths.to_string());
++        if !trim_paths.is_none() {
++            let pairs = super::trim_paths_remap(build_runner, unit);
++            cmd.env(
++                "CARGO_TRIM_PATHS_REMAP",
++                paths::join_paths(&pairs, "CARGO_TRIM_PATHS_REMAP")?,
++            );
++        }
+     }
+ 
+     // Be sure to pass along all enabled features for this package, this is the

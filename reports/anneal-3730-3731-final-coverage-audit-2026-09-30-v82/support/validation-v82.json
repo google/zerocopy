@@ -1,0 +1,27 @@
+{
+  "cargo_matrix": "reports/cargo-r348-r349-r352-to-rust-1981-source-review-2026-09-30/support/frozen-cohort.csv",
+  "cohort_count": 11,
+  "coverage_status_counts": {
+    "contextual_or_paired_component_only": 39,
+    "exact_claim_source_review": 322,
+    "unmapped": 0
+  },
+  "crosswalk_sha256": "d3b4ece346c5ba9fa534d45d1c8005199724ced3a76b2fe6cf7aeae9b8ebf85f",
+  "frozen_reference_parent": "1e87e9bf7b672c354b4c2903a372329ee61faf63",
+  "inherited_v81_sha256": {
+    "3730-crosswalk-final-v80.csv": "4f089ad58d470d407836acab57cdbdc04708a3f3ecccb7771008640dfc1bb57f",
+    "investigation-final-v80.csv": "8d41ffd4d9519f54b94d5d8e6d0755b466e5afb44751ffc22fa36dce8f75b9bc",
+    "live-issue-snapshot-v80.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v80.json": "73c1c314244c97efc8abe3889ffffd8edf73dfb5e2f73dc562674ccdd102c893"
+  },
+  "inventory_rows": 581,
+  "inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "new_cargo_ids": [
+    "R348",
+    "R349",
+    "R352"
+  ],
+  "newer_version_rows": 361,
+  "r578_classification": "no_newer_release",
+  "source_package_inventory_sha256": "5171a0d19036fe1400847321045d3e61f6e49cd08aa906f8f83ad01a01f854f3"
+}

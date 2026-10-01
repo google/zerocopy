@@ -1,0 +1,215 @@
+{
+  "schema": 1,
+  "old_cargo_commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+  "new_cargo_commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+  "files": [
+    {
+      "path": "src/cargo/core/compiler/unit.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/core/compiler/unit.rs",
+        "snapshot": "snapshots/old/src/cargo/core/compiler/unit.rs",
+        "sha256": "edcc3fb5d266cd1de90b2e630cafea34c0bbda6722a860d3614a0f60b0862d8b",
+        "git_blob_sha1": "5703b4bfe29f779d8db87534d406a8c64599910b",
+        "size": 12380
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/core/compiler/unit.rs",
+        "snapshot": "snapshots/new/src/cargo/core/compiler/unit.rs",
+        "sha256": "edcc3fb5d266cd1de90b2e630cafea34c0bbda6722a860d3614a0f60b0862d8b",
+        "git_blob_sha1": "5703b4bfe29f779d8db87534d406a8c64599910b",
+        "size": 12380
+      },
+      "same_blob": true
+    },
+    {
+      "path": "src/cargo/core/compiler/unit_graph.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/core/compiler/unit_graph.rs",
+        "snapshot": "snapshots/old/src/cargo/core/compiler/unit_graph.rs",
+        "sha256": "d964a2f985009c7e49bfc95cc338646dd840c66685a0754f87167c4823c637b4",
+        "git_blob_sha1": "944b062cddf6cb617e93a31d72e9d4a8ccb7675a",
+        "size": 5445
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/core/compiler/unit_graph.rs",
+        "snapshot": "snapshots/new/src/cargo/core/compiler/unit_graph.rs",
+        "sha256": "d964a2f985009c7e49bfc95cc338646dd840c66685a0754f87167c4823c637b4",
+        "git_blob_sha1": "944b062cddf6cb617e93a31d72e9d4a8ccb7675a",
+        "size": 5445
+      },
+      "same_blob": true
+    },
+    {
+      "path": "src/cargo/core/resolver/features.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/core/resolver/features.rs",
+        "snapshot": "snapshots/old/src/cargo/core/resolver/features.rs",
+        "sha256": "9db7ce547afb86a043ed18abb1543de1195d94a3c140a0aa09d217187f5bddc8",
+        "git_blob_sha1": "6d45edc669145a77c6eb554e29d48dd3781b10ca",
+        "size": 39369
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/core/resolver/features.rs",
+        "snapshot": "snapshots/new/src/cargo/core/resolver/features.rs",
+        "sha256": "9db7ce547afb86a043ed18abb1543de1195d94a3c140a0aa09d217187f5bddc8",
+        "git_blob_sha1": "6d45edc669145a77c6eb554e29d48dd3781b10ca",
+        "size": 39369
+      },
+      "same_blob": true
+    },
+    {
+      "path": "src/cargo/ops/cargo_compile/unit_generator.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/ops/cargo_compile/unit_generator.rs",
+        "snapshot": "snapshots/old/src/cargo/ops/cargo_compile/unit_generator.rs",
+        "sha256": "c126d6fc3b73579cf33e5aa0228d47eb52672034a6e2ac694e85999e0cbf3681",
+        "git_blob_sha1": "c56b3b1012442be1800568208b069fa0615e0be6",
+        "size": 33523
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/ops/cargo_compile/unit_generator.rs",
+        "snapshot": "snapshots/new/src/cargo/ops/cargo_compile/unit_generator.rs",
+        "sha256": "c126d6fc3b73579cf33e5aa0228d47eb52672034a6e2ac694e85999e0cbf3681",
+        "git_blob_sha1": "c56b3b1012442be1800568208b069fa0615e0be6",
+        "size": 33523
+      },
+      "same_blob": true
+    },
+    {
+      "path": "src/cargo/core/compiler/unit_dependencies.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/core/compiler/unit_dependencies.rs",
+        "snapshot": "snapshots/old/src/cargo/core/compiler/unit_dependencies.rs",
+        "sha256": "59ffc23fef8adc506b38eb0f6a7647983af31983e744dd82b6a07368123da04c",
+        "git_blob_sha1": "2d0ea7c3c62bfa3bd76730dcfacf052d0e8268ef",
+        "size": 45208
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/core/compiler/unit_dependencies.rs",
+        "snapshot": "snapshots/new/src/cargo/core/compiler/unit_dependencies.rs",
+        "sha256": "59ffc23fef8adc506b38eb0f6a7647983af31983e744dd82b6a07368123da04c",
+        "git_blob_sha1": "2d0ea7c3c62bfa3bd76730dcfacf052d0e8268ef",
+        "size": 45208
+      },
+      "same_blob": true
+    },
+    {
+      "path": "src/cargo/ops/cargo_compile/mod.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/ops/cargo_compile/mod.rs",
+        "snapshot": "snapshots/old/src/cargo/ops/cargo_compile/mod.rs",
+        "sha256": "b78cd25f7a98a3209415a2ee6eb52a7a9bb5e84c524f6949c2dd01c908e331a8",
+        "git_blob_sha1": "aae55186a3701da74a7dbf940ca2c06baf101c4b",
+        "size": 47064
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/ops/cargo_compile/mod.rs",
+        "snapshot": "snapshots/new/src/cargo/ops/cargo_compile/mod.rs",
+        "sha256": "f6f7df95cf95a43470930dac793649efa1fa1037f420bffd266751cb65ba3318",
+        "git_blob_sha1": "ba6c433fcfebaedc1e0ecfc16aada8d5539ecc33",
+        "size": 47153
+      },
+      "same_blob": false,
+      "diff_path": "diffs/src/cargo/ops/cargo_compile/mod.rs.diff",
+      "diff_sha256": "6ca9d7d5ceac91b564cf3c87175c244ff64baf55191f52c0de1bbe6cd7f9753e"
+    },
+    {
+      "path": "src/cargo/core/compiler/mod.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/core/compiler/mod.rs",
+        "snapshot": "snapshots/old/src/cargo/core/compiler/mod.rs",
+        "sha256": "55a82354d5ed0c475956a14099c5bdbc33b07e88d38b8d1e465333e62f25de5a",
+        "git_blob_sha1": "746e01d01e256f254481160467b025afc220d2fe",
+        "size": 101732
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/core/compiler/mod.rs",
+        "snapshot": "snapshots/new/src/cargo/core/compiler/mod.rs",
+        "sha256": "a709d6f3acdb848c9c8b06747f1a048a3d3d8acd843a9bad72a4100e515899a9",
+        "git_blob_sha1": "6153b2f1e4e8009ce2b8f5624f11b2ced651eee1",
+        "size": 102224
+      },
+      "same_blob": false,
+      "diff_path": "diffs/src/cargo/core/compiler/mod.rs.diff",
+      "diff_sha256": "7366b8dee0e6e1ada722bb0c6745671f0d8d309ee85098e1b1f60da914f12201"
+    },
+    {
+      "path": "src/cargo/core/compiler/compilation.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/core/compiler/compilation.rs",
+        "snapshot": "snapshots/old/src/cargo/core/compiler/compilation.rs",
+        "sha256": "143263b660cd89e6ae2a0ecca33333e23d4254d134f6336a2ae7f36621435753",
+        "git_blob_sha1": "2249c8a1b4bd6f2604f2a6781b6228351664b5bb",
+        "size": 21676
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/core/compiler/compilation.rs",
+        "snapshot": "snapshots/new/src/cargo/core/compiler/compilation.rs",
+        "sha256": "ec2559118df3d010375722f8eb8e018718aaa29bb0c76c72adc68359fdb1fb30",
+        "git_blob_sha1": "8a284db3abafdda3099de167e36d74104037aa9f",
+        "size": 22310
+      },
+      "same_blob": false,
+      "diff_path": "diffs/src/cargo/core/compiler/compilation.rs.diff",
+      "diff_sha256": "40110277e54d1d73979912ac7b45e4103842c904a367e08fcede007dab17a6f4"
+    },
+    {
+      "path": "src/cargo/core/compiler/custom_build.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/core/compiler/custom_build.rs",
+        "snapshot": "snapshots/old/src/cargo/core/compiler/custom_build.rs",
+        "sha256": "7bf93fc54c5af827c2763246f8d55d8057e1d645c8712ae5c5d86a2eda1d298d",
+        "git_blob_sha1": "f4f77b7095057bb39f6ade77f79961abba671259",
+        "size": 60593
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/core/compiler/custom_build.rs",
+        "snapshot": "snapshots/new/src/cargo/core/compiler/custom_build.rs",
+        "sha256": "348e77f133050d17a2acc91579a1831844d210f6c05806d6894fea93c04043f2",
+        "git_blob_sha1": "f46c58cf4ce78309a70edd409a299bade9cc1a17",
+        "size": 60861
+      },
+      "same_blob": false,
+      "diff_path": "diffs/src/cargo/core/compiler/custom_build.rs.diff",
+      "diff_sha256": "0145d4a0091e0e202e805de371f97562af98ffcab6250740df6fcb8b1f372a18"
+    },
+    {
+      "path": "src/cargo/util/rustc.rs",
+      "old": {
+        "commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef/src/cargo/util/rustc.rs",
+        "snapshot": "snapshots/old/src/cargo/util/rustc.rs",
+        "sha256": "7477929d9edc24afa662275022d5a83251a336d7e35277c852d63b893cde455c",
+        "git_blob_sha1": "42c06ecabe6601a6002834f6b52c43987ca29d2d",
+        "size": 14089
+      },
+      "new": {
+        "commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "url": "https://raw.githubusercontent.com/rust-lang/cargo/797e8a9bca276c1c9f9f738d2a20f484fa4eea9d/src/cargo/util/rustc.rs",
+        "snapshot": "snapshots/new/src/cargo/util/rustc.rs",
+        "sha256": "7477929d9edc24afa662275022d5a83251a336d7e35277c852d63b893cde455c",
+        "git_blob_sha1": "42c06ecabe6601a6002834f6b52c43987ca29d2d",
+        "size": 14089
+      },
+      "same_blob": true
+    }
+  ]
+}

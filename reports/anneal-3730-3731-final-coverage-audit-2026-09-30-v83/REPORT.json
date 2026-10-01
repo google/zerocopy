@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/architecture",
+    "research/coverage-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Frozen newer-version inventory and R350 Cargo claim source review",
+      "identity": {
+        "reference_parent": "1e87e9bf7b672c354b4c2903a372329ee61faf63",
+        "inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+        "crosswalk_sha256": "43f16f6984d8b4eff1cfd42b042c4fb9f95b0d70b81e57aed152bfc91ee91f2c",
+        "r350_claim_matrix_sha256": "eedbc914234a926a631cc5906c2d33e8b3fff013e2054a482ca87351c3ce32fe"
+      }
+    },
+    {
+      "name": "Inherited v81 issue ledger and snapshot",
+      "identity": {
+        "v81_report": "anneal-3730-3731-final-coverage-audit-2026-09-30-v81",
+        "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}
