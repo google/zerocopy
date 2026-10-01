@@ -1,0 +1,23 @@
+{
+  "license": "/- Copyright 2026 The Fuchsia Authors\n\nLicensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n<LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\nlicense <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\nThis file may not be copied, modified, or distributed except according to\nthose terms. -/",
+  "version": 2,
+  "required_functions": [
+    {
+      "file": "zerocopy/src/util/mod.rs",
+      "syntax": "max"
+    },
+    {
+      "file": "zerocopy/src/util/mod.rs",
+      "syntax": "min"
+    },
+    {
+      "file": "zerocopy/src/util/mod.rs",
+      "syntax": "padding_needed_for"
+    },
+    {
+      "file": "zerocopy/src/util/mod.rs",
+      "syntax": "round_down_to_next_multiple_of_alignment"
+    }
+  ],
+  "covered_impls": []
+}

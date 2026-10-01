@@ -1,0 +1,13 @@
+--- a/src/Main.ml
++++ b/src/Main.ml
+@@ -105,6 +105,10 @@
+         Arg.String set_subdir,
+         " Extract the files in a sub-folder; this option has an impact on the \
+          import paths of the generated files" );
++      ( "-use-tuple-structs",
++        Arg.Bool (fun b -> use_tuple_structs := b),
++        " Extract structures with unnamed fields as tuples (default: true). \
++         Pass `-use-tuple-structs false` to preserve their nominal identity." );
+       ( "-use-lean-modules",
+         Arg.Bool (fun b -> use_lean_modules := b),
+         " Emit Lean files using the module system (default: true). Pass \
