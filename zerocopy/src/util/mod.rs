@@ -108,7 +108,7 @@ impl<T: ?Sized> AsAddress for *const T {
         #[allow(clippy::as_conversions)]
         #[cfg_attr(
             __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
-            allow(lossy_provenance_casts)
+            allow(implicit_provenance_casts)
         )]
         return self.cast::<()>() as usize;
     }
@@ -895,6 +895,8 @@ mod tests {
 
     #[test]
     fn test_round_down_to_next_multiple_of_alignment() {
+        // Division by `NonZeroUsize` unsupported on our MSRV.
+        #[allow(clippy::needless_nonzero_get)]
         fn alt_impl(n: usize, align: NonZeroUsize) -> usize {
             let mul = n / align.get();
             mul * align.get()

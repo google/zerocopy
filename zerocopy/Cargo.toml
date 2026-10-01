@@ -88,8 +88,8 @@ no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
-pinned-stable = "1.93.1"
-pinned-nightly = "nightly-2026-01-25"
+pinned-stable = "1.99.0"
+pinned-nightly = "nightly-2026-09-30"
 
 [package.metadata.docs.rs]
 all-features = true

@@ -385,7 +385,7 @@ impl UiTestRunner {
             command.arg(format!("--rustc-arg=--target={}", t));
         }
 
-        let mut test_src_dir = format!("{}/ui", &self.tests_dir);
+        let mut test_src_dir = format!("{}/ui", self.tests_dir);
         if let Some(subdir) = self.tests_subdir.as_ref() {
             test_src_dir = format!("{}/{}", test_src_dir, subdir);
         }

@@ -566,6 +566,8 @@ impl RawRepr {
         let ident = path.get_ident().ok_or(UnrecognizedReprError)?;
 
         // Only returns `Ok` for non-zero power-of-two values.
+        // `NonZeroU32::is_power_of_two` is unsupported on our MSRV.
+        #[allow(clippy::needless_nonzero_get)]
         let parse_nzu64 = |list: &MetaList| {
             list.parse_args::<LitInt>()
                 .and_then(|int| int.base10_parse::<NonZeroU32>())
