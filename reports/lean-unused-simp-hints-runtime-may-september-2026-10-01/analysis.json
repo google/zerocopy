@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "cell_count": 8,
+  "warning_positions_per_version": {
+    "ordinary": [5, 10],
+    "options": [10],
+    "no-progress": [],
+    "no-progress-relaxed": [6]
+  },
+  "warning_shape_equal_except_hint_rendering": true,
+  "old_hint_mode": "strikethrough diff",
+  "new_hint_mode": "[apply] replacement",
+  "no_progress_failure_transcript_equal": true,
+  "source_delta": "diffGranularity := .none added to suggestion for warnUnused"
+}

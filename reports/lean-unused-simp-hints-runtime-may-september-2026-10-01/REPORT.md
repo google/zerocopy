@@ -1,0 +1,24 @@
+# R488 unused simp argument linter: Lean 4.30.0-rc2 to 4.34.1
+
+## Result and scope
+
+The [published R488 source report](../lean-unused-simp-args-linter-v4-30-0-rc2/REPORT.md) (SHA-256 `ec09b1a678b78a1ab309ad26507975993f733ab33d1e19088f5844e41e951fe7`) describes Lean 4.30.0-rc2's `linter.unusedSimpArgs` from implementation and checked-in tests but did not execute the Lean binary. This supplement runs four small, **new** batch fixtures based on representative old test patterns. The original report did not retain executable fixture bytes. Both versions run the exact same new files with `lean --json`.
+
+The linter's observed warning **locations, severities, kinds, and main explanation remain the same**, but its suggested edit renders differently. Lean 4.30.0-rc2 prints a struck-through argument-list diff after “Hint: Omit it from the simp argument list.” Lean 4.34.1 prints a direct replacement, `[apply] simp` (or `[apply] simp -failIfUnchanged`). This is a concrete diagnostic-format behavior difference. The retained [source diff](support/source-diff.patch) for `src/Lean/Linter/UnusedSimpArgs.lean` has one relevant code-line change: the `warnUnused` suggestion sets `diffGranularity := .none` in 4.34.1. That source change explains the measured hint rendering; it does not establish behavior for every editor frontend.
+
+| Fixture | Both versions' observed linter behavior | Difference |
+| --- | --- | --- |
+| [ordinary](fixture/ordinary.lean) | Two separate unused `some_def` occurrences warn at lines 5 and 10; a used argument and a duplicate used argument do not warn. Exit 0. | Hint diff versus `[apply] simp`. |
+| [options](fixture/options.lean) | `linter.all false` suppresses the warning, explicit `linter.unusedSimpArgs true` overrides it and warns at line 10, and explicit false suppresses it. The traced `simp` yields an information message and no unused-argument warning. Exit 0. | Same one warning's hint rendering. |
+| [no-progress](fixture/no-progress.lean) | Default `simp` aborts with `` `simp` made no progress `` and no unused-argument warning. Exit 1. | Complete JSON transcript is byte-identical. |
+| [no-progress-relaxed](fixture/no-progress-relaxed.lean) | `-failIfUnchanged` reaches the linter: unresolved-goal error plus unused `some_rdef` warning at line 6. Exit 1. | Warning's hint diff versus `[apply] simp -failIfUnchanged`. |
+
+These are warnings about recorded simplifier use. As the original source report explains, they do not prove an argument is semantically safe to remove; a missing warning does not prove necessity. This small fixture does not retest equation-theorem identity collapsing, multi-goal aggregation, macro range suppression, reversed-argument semantics, simproc/let tracking, or every option scope. The trace case shows this one fixture's absence of a linter warning; the source-level explanation for the tactic hook's trace path remains in the pinned source report.
+
+## Exact identities and evidence
+
+The old tool is Lean 4.30.0-rc2, commit `3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc`, executable SHA-256 `b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997`. The newer tool is Lean 4.34.1, commit `5045d0056413266e57c625dcd7c365b10e377c52`, SHA-256 `1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554`. Both are `arm64-apple-darwin24.6.0` release binaries. The old `UnusedSimpArgs.lean` source Git blob is `1c8f04bef6604d01fcf3151400c16ea4807c1399`; the newer blob is `a620b76ed32474d95e50710fd4493f22bf4dc594`. The retained diff SHA-256 is `4332852cd21d2908dbef35d4c4470eacb330832813b2283bc68ae3eff86326a2`.
+
+All eight Lean children ran serially, offline, without Lake, Mathlib, LSP/server, downloads, or installs. [results.json](results.json) records exact version strings, binary/fixture hashes, argv, resource admission, exits, and raw stream hashes. The [raw outputs](raw/) and [analysis.json](analysis.json) preserve the warnings and extracted result. [support/probe.py](support/probe.py) admitted each child only above 20% estimated reclaimable RAM, above 1 GiB free disk, and below 100 MB owned package bytes; it capped duration at 30 seconds and sampled RSS at 1 GiB. Minimum recorded admission was **24.8795%** RAM and **4,181,663,744** free disk bytes; maximum owned bytes at admission **16,650**, sampled RSS **397,568 KiB**, and duration **1.576 s**.
+
+`python3 -B support/check.py` verifies the exact fixture/tool identities, all eight commands and raw hashes, gate arithmetic, warning counts/positions, unchanged non-hint fields, hint mode difference, and source-diff bytes without launching Lean; it works after relocation. `python3 -B support/probe.py` repeats the guarded local matrix. JSON rendering, Unicode strikeout, and edit suggestions are frontend-sensitive surfaces; this report's difference is for the retained `lean --json` output at these exact versions and paths.
