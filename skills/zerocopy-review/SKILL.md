@@ -54,6 +54,44 @@ Check the issues that are relevant to the changed behavior, including:
 Before suggesting a new dependency, check `Cargo.toml` and the existing
 workspace for an appropriate dependency or utility.
 
+## Specification Meaning
+
+For every specification under review, reconstruct the guarantee a human likely
+intends. Ground that interpretation in the specification, surrounding
+documentation, callers, reference implementations, and the bug or change that
+motivated it. Compare the intended guarantee with what the specification
+actually states. A passing proof establishes the written proposition; it does
+not establish that the proposition captures the intended behavior.
+
+Look for ways the written guarantee could be weaker than that intention:
+
+- Requirements, ghost parameters, or branch guards exclude intended inputs.
+  Inconsistent requirements, a ghost parameter with an empty type, or an
+  admission predicate that always returns `false` can make a claim vacuous:
+  there are no cases in which the promised behavior must hold.
+- Automatic input decoding or type-model invariants restrict the domain beyond
+  what a reader would reasonably infer from the function's specification.
+- Postconditions omit intended observations, or compare projections that
+  discard the information whose correctness matters.
+- An equivalence harness checks only successful results or skips comparisons
+  on relevant paths, leaving intended failure behavior or other cases unchecked.
+- A reference implementation shares the very logic whose correctness the
+  equivalence check is meant to establish.
+- A partial-correctness contract allows divergence where termination is
+  intended, or a proof covers fewer inputs or configurations than claimed.
+
+A total `ensures _ => True` can be sufficient for an assertion harness:
+successful termination requires its assertions to pass on admitted inputs.
+Inspect the assertions and admission conditions rather than rejecting the
+postcondition merely because it is `True`. Concrete admission examples can
+expose vacuity, but do not establish coverage of every intended input.
+
+Report substantiated gaps even when the proofs pass. State the intended
+guarantee, the weaker written claim, and a distinguishing case when possible.
+Keep inferred intention separate from the existing contract. When intention is
+unclear, make that uncertainty explicit and seek clarification when needed;
+do not silently invent a stronger requirement.
+
 ## Findings
 
 Report actionable findings, not private chain-of-thought. For each finding:
