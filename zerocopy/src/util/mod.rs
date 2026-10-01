@@ -153,6 +153,34 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 #[cfg_attr(not(zerocopy_inline_always), inline)]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
+    // ```aeneas
+    // model:
+    //   def util.padding_needed_for
+    //     (len : Std.Usize)
+    //     (align : core.num.nonzero.NonZero Std.Usize
+    //     core.num.niche_types.NonZeroUsizeInner) :
+    //     Result Std.Usize
+    //     := do
+    //     let i ←
+    //       core.num.nonzero.NonZero.get
+    //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+    //     let mask ← i - 1#usize
+    //     let i1 ← lift (core.num.Usize.wrapping_sub len 1#usize)
+    //     let i2 ← lift (~~~ i1)
+    //     ok (i2 &&& mask)
+    // proof:
+    //   theorem padding_lt_alignment (len : Usize) (align : NonZeroUsize)
+    //       (h : 0 < align.val.val) :
+    //       util.padding_needed_for len align ⦃ p => p.val < align.val.val ⦄ := by
+    //     unfold util.padding_needed_for
+    //     simp only [core.num.nonzero.NonZero.get, bind_ok]
+    //     step
+    //     simp only [lift, bind_ok, WP.spec_ok, UScalar.val_and]
+    //     have hbound :
+    //         (~~~(core.num.Usize.wrapping_sub len 1#usize)).val &&& mask.val ≤ mask.val :=
+    //       Nat.and_le_right
+    //     omega
+    // ```
     #[cfg(kani)]
     #[kani::proof_for_contract(padding_needed_for)]
     fn proof() {
@@ -237,6 +265,45 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
     align: NonZeroUsize,
 ) -> usize {
+    // ```aeneas
+    // model:
+    //   def util.round_down_to_next_multiple_of_alignment
+    //     (n : Std.Usize)
+    //     (align : core.num.nonzero.NonZero Std.Usize
+    //     core.num.niche_types.NonZeroUsizeInner) :
+    //     Result Std.Usize
+    //     := do
+    //     let align1 ←
+    //       core.num.nonzero.NonZero.get
+    //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+    //     let b ← core.num.Usize.is_power_of_two align1
+    //     massert b
+    //     let i ← align1 - 1#usize
+    //     let mask ← lift (~~~ i)
+    //     ok (n &&& mask)
+    // proof:
+    //   theorem round_down_spec (n : Usize) (align : NonZeroUsize)
+    //       (hpos : 0 < align.val.val) (h : align.val.val.isPowerOfTwo) :
+    //       util.round_down_to_next_multiple_of_alignment n align
+    //         ⦃ m => m.val ≤ n.val ∧ m.val % align.val.val = 0 ⦄ := by
+    //     unfold util.round_down_to_next_multiple_of_alignment
+    //     simp only [core.num.nonzero.NonZero.get, bind_ok]
+    //     step
+    //     step
+    //     step with UScalar.sub_bv_spec as ⟨mask, hval, hle, hbv⟩
+    //     simp only [lift, bind_ok, WP.spec_ok]
+    //     constructor
+    //     · simp only [UScalar.val_and]
+    //       exact Nat.and_le_left
+    //     · have clear : (n &&& ~~~mask).val &&& mask.val = 0 := by
+    //         rw [← UScalar.val_and]
+    //         change ((n.bv &&& ~~~mask.bv) &&& mask.bv).toNat = 0
+    //         simp [BitVec.and_assoc]
+    //       unfold Nat.isPowerOfTwo at h
+    //       rcases h with ⟨k, hk⟩
+    //       rw [hval, hk, Nat.and_two_pow_sub_one_eq_mod] at clear
+    //       simpa only [hk] using clear
+    // ```
     #[cfg(kani)]
     #[kani::proof_for_contract(round_down_to_next_multiple_of_alignment)]
     fn proof() {
@@ -256,6 +323,35 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
 #[cfg_attr(not(zerocopy_inline_always), inline)]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
 pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
+    // ```aeneas
+    // model:
+    //   def util.max
+    //     (a : core.num.nonzero.NonZero Std.Usize
+    //     core.num.niche_types.NonZeroUsizeInner)
+    //     (b : core.num.nonzero.NonZero Std.Usize
+    //     core.num.niche_types.NonZeroUsizeInner) :
+    //     Result (core.num.nonzero.NonZero Std.Usize
+    //       core.num.niche_types.NonZeroUsizeInner)
+    //     := do
+    //     let i ←
+    //       core.num.nonzero.NonZero.get
+    //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner a
+    //     let i1 ←
+    //       core.num.nonzero.NonZero.get
+    //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner b
+    //     if i < i1
+    //     then ok b
+    //     else ok a
+    // proof:
+    //   theorem max_spec (a b : NonZeroUsize) :
+    //       ∃ r, util.max a b = .ok r ∧ r.val.val = Nat.max a.val.val b.val.val := by
+    //     simp only [util.max, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+    //     split
+    //     · rename_i h
+    //       exact ⟨b, rfl, (Nat.max_eq_right (by omega)).symm⟩
+    //     · rename_i h
+    //       exact ⟨a, rfl, (Nat.max_eq_left (by omega)).symm⟩
+    // ```
     if a.get() < b.get() {
         b
     } else {
@@ -266,6 +362,35 @@ pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
 #[cfg_attr(not(zerocopy_inline_always), inline)]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
 pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
+    // ```aeneas
+    // model:
+    //   def util.min
+    //     (a : core.num.nonzero.NonZero Std.Usize
+    //     core.num.niche_types.NonZeroUsizeInner)
+    //     (b : core.num.nonzero.NonZero Std.Usize
+    //     core.num.niche_types.NonZeroUsizeInner) :
+    //     Result (core.num.nonzero.NonZero Std.Usize
+    //       core.num.niche_types.NonZeroUsizeInner)
+    //     := do
+    //     let i ←
+    //       core.num.nonzero.NonZero.get
+    //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner a
+    //     let i1 ←
+    //       core.num.nonzero.NonZero.get
+    //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner b
+    //     if i > i1
+    //     then ok b
+    //     else ok a
+    // proof:
+    //   theorem min_spec (a b : NonZeroUsize) :
+    //       ∃ r, util.min a b = .ok r ∧ r.val.val = Nat.min a.val.val b.val.val := by
+    //     simp only [util.min, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+    //     split
+    //     · rename_i h
+    //       exact ⟨b, rfl, (Nat.min_eq_right (by omega)).symm⟩
+    //     · rename_i h
+    //       exact ⟨a, rfl, (Nat.min_eq_left (by omega)).symm⟩
+    // ```
     if a.get() > b.get() {
         b
     } else {
