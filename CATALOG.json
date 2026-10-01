@@ -4360,6 +4360,33 @@
         "lean/version-difference"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-10-01-v88": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "6fe9f8ed36f1bfb474afe091a9799ee29016f667"
+          },
+          "name": "Frozen #3731 investigation and version inventory"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "a3c6ae3635322591ffc81bc21adaaa84a82b2220"
+          },
+          "name": "v88 published local version-supplement set through R488"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/issue-3731",
+        "anneal/version-review",
+        "anneal/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [

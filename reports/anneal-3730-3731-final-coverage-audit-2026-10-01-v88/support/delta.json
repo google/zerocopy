@@ -1,0 +1,263 @@
+{
+  "baseline_v87_head": "a4beefac6f89f167886a07600ef778dabf5a0331",
+  "catalog_blob": "3553917a70baa3ae270e75a2fe86d0dfcae4ec7f",
+  "catalog_sha256": "6c89262f0409e500c08d36eb3aa782d8c68717e957f9418ff7cb2a8493f89bda",
+  "inherited_counts": {
+    "challenge_rows": 333,
+    "investigations": 159,
+    "suggestion_links": 345,
+    "suggestions": 174,
+    "version_inventory": 581
+  },
+  "inherited_investigation_statuses": {
+    "complete": 4,
+    "conditional": 3,
+    "not-run": 1,
+    "partial": 151
+  },
+  "inherited_manifest_sha256": "bef49b55bcf3a2b5d42cb2bc593699a61d96a128f0b879b852c270ce9fc6e48e",
+  "inherited_version_partitions": {
+    "contextual_or_paired_component_only": 5,
+    "exact_claim_source_review": 356,
+    "newer_version_rows": 361,
+    "prior_comparison_rows": 11,
+    "source_changed": 21,
+    "source_revision_rows": 72,
+    "source_unavailable": 7,
+    "source_unchanged": 55
+  },
+  "issue_state_source": "inherited_v86_read_only_observation_no_new_issue_read_or_mutation",
+  "lean_source_delta": {
+    "evidence_kind": "source_only",
+    "metadata_sha256": "26b9d1112acbde01b9479f64979c96887ca0629c28354471723979e019b06c35",
+    "package": "lean-incremental-diagnostics-430rc2-to-4341-source-delta-2026-10-01",
+    "publication_revision": "46b7576360aec884a259666c5bb67d8a87ce48da",
+    "report_sha256": "80f8b4cdf8745b13e1225b9ccbed2123c3963898cc2423ea88e4c28ffe5cf331",
+    "tree": "d5087609d4f5c522b833fb50a483d38355bb781c"
+  },
+  "observed_at": "2026-10-01",
+  "pre_v86_runtime": {
+    "contextual_ids": [],
+    "evidence_kind": "runtime_fixture",
+    "inventory_ids": [
+      "R121"
+    ],
+    "metadata_sha256": "9a14eeca60c733c32b48d9cb0095057647f3bd17dcb3cfb02251024c805a6ff5",
+    "package": "anneal-3731-r121-rust-version-runtime-2026-09-30",
+    "publication_revision": "b7e455374bce8b656204a81571643808e60c7aea",
+    "report_sha256": "20e10b0376f68a513d59cc720df03eec336d3b2b05a2cce2d366dd6f6944a967",
+    "tree": "a90be120933031b24c86c7096f699d799453a7a0"
+  },
+  "reference_head": "a3c6ae3635322591ffc81bc21adaaa84a82b2220",
+  "reference_tree": "6d8565cc7145449b2e7d15b9eeca073a9ada0bb2",
+  "resource_observation": {
+    "batch_min_disk_bytes_exclusive": 1073741824,
+    "batch_min_reclaimable_percent_exclusive": 20,
+    "disk_free_bytes": 4173266944,
+    "lake_build_min_disk_bytes_exclusive": 10737418240,
+    "lean_server_min_reclaimable_percent_exclusive": 30,
+    "memory_bytes": 8589934592,
+    "page_bytes": 16384,
+    "pages": {
+      "free": 3856,
+      "inactive": 125182,
+      "speculative": 1569
+    },
+    "reclaimable_percent": 24.91130828857422
+  },
+  "schema": 1,
+  "supplements": [
+    {
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R491"
+      ],
+      "metadata_sha256": "8bf0a70b142d081b3d04d4bc44d8033c9816ee36e8714a0a51521f581eb3719b",
+      "package": "leantar-runtime-016-019-020-darwin-arm64-2026-10-01",
+      "publication_revision": "7751060fc4e67d3c944d998f9c2d8f47d27524d9",
+      "report_sha256": "96a51570fed33bbad19d3dc86467327fa8dddc8062299b3780e3358c38c36fbb",
+      "tree": "715182f564a0572e65dc01cc1455b9ae49533f2b"
+    },
+    {
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R447"
+      ],
+      "metadata_sha256": "e80a845a3b806a20da0f3f6824458aeed393278fa53adcc722d380fdffa9eda7",
+      "package": "lean-compilation-reproducibility-429-430-434-batch-delta-2026-10-01",
+      "publication_revision": "f1d65cebb04252101e928fca578d18dd65c62c74",
+      "report_sha256": "0cdcb9ea88ddea35181e7309f9ab8e7ae5cabdd75a8ddfb799acb516c3d4181a",
+      "tree": "ca13cad3d1fd7c9fe807d5f2684df405f11c5461"
+    },
+    {
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R423"
+      ],
+      "metadata_sha256": "d0a55e5728826f385dbacd65d1498555c3425f0a6815092c4c650cb763b2ca08",
+      "package": "lake-configuration-ownership-431-434-runtime-2026-10-01",
+      "publication_revision": "e725df268dcaa6edb5f2c5ae844c2220f76793f7",
+      "report_sha256": "e2bb5b94151ed94025b2999f9616fcf66c7ed53ea08464a4a7cf2a839040b42a",
+      "tree": "85dc55e17c44766b41636588a0af06086b583499"
+    },
+    {
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R562"
+      ],
+      "metadata_sha256": "fe77db32b71543e795400f24e5910530ca3e98d33c7725084b71f1731edcc854",
+      "package": "rustc-diagnostic-width-nightly-2026-05-31-to-2026-09-30-2026-10-01",
+      "publication_revision": "b3ccfb2c029bd3062562fdaf460788694462bd32",
+      "report_sha256": "9487753fd69d2d69764f14247a4d762eb6b7e235701aeb7de53022ae6ed602df",
+      "tree": "81133db5960f11246d909297e38cbe3b336b5d21"
+    },
+    {
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R348",
+        "R349",
+        "R352"
+      ],
+      "metadata_sha256": "c546ba7396cf17aa949d14774546f5525827016d82685cd04542981ca763fe94",
+      "package": "cargo-subject-features-unit-graphs-nightly-2026-05-31-to-2026-09-30",
+      "publication_revision": "c7b63f536fa230dc324a398c9623be2008e194c5",
+      "report_sha256": "8813d64332a93f77fade5839450c0240253cebab42f37313cbd4bdb616832427",
+      "tree": "0cd52dcb6defd861fd61e1afcc8f1d459fb9ad61"
+    },
+    {
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R506"
+      ],
+      "metadata_sha256": "e8a85d7d190d3aa7054a97ae41c9f3f2ebfdca70779b1d3815d1facf6997d274",
+      "package": "lean-persistent-collections-r506-runtime-430rc2-to-4341-2026-10-01",
+      "publication_revision": "a4beefac6f89f167886a07600ef778dabf5a0331",
+      "report_sha256": "f87a0c39ab6cec7ec1965e3c83bd7baba80d0397571e18594684b0a312a3d0ed",
+      "tree": "2360f9c7f6a80cb04ea36eab7a18179bdefea12e"
+    },
+    {
+      "contextual_ids": [
+        "R565"
+      ],
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R534"
+      ],
+      "metadata_sha256": "9e69fffaa59cc34583af17ee0f10cb268e075f1aa7951cc7a87aa0c152ef7592",
+      "package": "rustc-local-identity-r534-r565-may-to-september-2026-10-01",
+      "publication_revision": "e81103991ff73bf47d507327516491481c3cca0a",
+      "report_sha256": "67c9e7acfccbd6714ec1dc7ab6df0d5b134a0d59ca2e902ee59c99ece6cd2198",
+      "tree": "8c2373683b523e16194041a2a8d6c6b69f9435de"
+    },
+    {
+      "contextual_ids": [],
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R444",
+        "R448"
+      ],
+      "metadata_sha256": "1d112e204751a38affb51cb2a194ce32d4c6942865d67482b1e3fbc604016a53",
+      "package": "lean-batch-diagnostics-r444-r448-430rc2-to-4341-2026-10-01",
+      "publication_revision": "3bed837ce4283d5afc2339cf1fb806e261624ec6",
+      "report_sha256": "3a42869468aca8de422463f1c6257ac44d27f7cd84e5816551694e0eab748f8d",
+      "tree": "66718e028f5e6359f3a1e1d3c3a88e9fad17dec2"
+    },
+    {
+      "contextual_ids": [],
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R522"
+      ],
+      "metadata_sha256": "e6cb4b0858c7f3df94a56858d5953e74c3198a1aa9db0b73ffe3c35bb95457cf",
+      "package": "rust-cfg-hir-mir-r522-may-september-2026-10-01",
+      "publication_revision": "780565e136c01a53abcbd71eb27be375897c7b2f",
+      "report_sha256": "44b0826f7b0d38b6697e901a628b32d46faf001ab216b04be1434d0378eeccc1",
+      "tree": "9e2df3ac37be57e82dac13aad424b95dc39231bb"
+    },
+    {
+      "contextual_ids": [],
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R563",
+        "R564"
+      ],
+      "metadata_sha256": "b784346711d14789b1309147e6d6827862d1f5bfeed0260d2341c02ac8dc61d6",
+      "package": "rustc-mir-version-followup-r563-r564-2026-10-01",
+      "publication_revision": "fa4d5940acd2394b3c6704a3932c40f391c42596",
+      "report_sha256": "c5e54f19ef2826cf804cc7b6f118d6b0ff0ddc76671872e164fb14ea041e1f4c",
+      "tree": "c66d9202a98bd53b91d496de5f8fef7edb5718c0"
+    },
+    {
+      "contextual_ids": [],
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R530"
+      ],
+      "metadata_sha256": "dd5cfa907568bb6a0c9e478792c984ed5bc71a13b869c39182ecfc7998f0aeda",
+      "package": "rust-layout-runtime-may-september-2026-10-01",
+      "publication_revision": "62035e9defa79075084fc84f76642877b296fea8",
+      "report_sha256": "db81528b6dd41c7e805a350f35579313399f9c1959917251e6d43c1c8ac9637d",
+      "tree": "f00ba9bae282f5f01a506b4ca688da014c1f9f6a"
+    },
+    {
+      "contextual_ids": [],
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R470"
+      ],
+      "metadata_sha256": "48b838626bee0e27cc0e8ad7f716539d8e511b61ade0e3d7c7cc2835c8a9d051",
+      "package": "lean-omega-runtime-may-september-2026-10-01",
+      "publication_revision": "d62ddfd74ce83cd32456cfc816a76a24b0b9e8a9",
+      "report_sha256": "d61d1071d8c0305ce2e60de45c932b103f11722007f8b412a2053de0fd74c667",
+      "tree": "d37716e9ed7920fc74819aaa6cc98981913643b3"
+    },
+    {
+      "contextual_ids": [],
+      "evidence_kind": "runtime_fixture",
+      "inventory_ids": [
+        "R488"
+      ],
+      "metadata_sha256": "8bb401a36ea01741afffaa5186ae31cb276c6697fa83344ceb46cd20debb5694",
+      "package": "lean-unused-simp-hints-runtime-may-september-2026-10-01",
+      "publication_revision": "a3c6ae3635322591ffc81bc21adaaa84a82b2220",
+      "report_sha256": "a51626b44ce5104c33ffb33bd2c159a0530ab43f47844b7baf305fe1884fdfae",
+      "tree": "cb67ef6ba0d9cf3a06b5684b4ae12883ca6a502b"
+    }
+  ],
+  "v84": {
+    "metadata_sha256": "989c43723d7301f6bbb13cfb67bf832c61fb17a29ea5949c6f60ec25ba12389d",
+    "package": "anneal-3730-3731-final-coverage-audit-2026-09-30-v84",
+    "publication_revision": "6fe9f8ed36f1bfb474afe091a9799ee29016f667",
+    "report_sha256": "09eaba52c77b44656a39c901937d69f5fc21119b70378066f52472809cec821d",
+    "tree": "af076278e1ac9d215f3285db67c3800952f9233e"
+  },
+  "v85": {
+    "metadata_sha256": "2fa3e7babcdc2fa3585407a210d59b6f2b026bc3cacb8b3cf15c7ca4ac896c3b",
+    "package": "anneal-3730-3731-final-coverage-audit-2026-10-01-v85",
+    "publication_revision": "6d02a803cbe2e26a1b7881d98245f7eb48e2b309",
+    "report_sha256": "ab343a0c07bee64e6e5addbb8050b3092e5c55f0f7a457d3beedbca1b9bfbc33",
+    "tree": "166a173721ec7545136bd92e3b0e870a5a5511af"
+  },
+  "v86": {
+    "metadata_sha256": "c5a849e0777957e0593f45af0cb52600c567d5433759c2861b5789547558098f",
+    "package": "anneal-3730-3731-final-coverage-audit-2026-10-01-v86",
+    "publication_revision": "fd695168fa6ad75cab3542b729def8fbd99764cb",
+    "report_sha256": "1f06c39b70702421b91b9af4a4b20b62469b975d5e8117d8ed1e75942991e6ab",
+    "tree": "b8917f13002666e85d6a21d5a939bd51caa94a99"
+  },
+  "v86_delta_sha256": "58fb7388b4db0b1567fd1c8eb940a468842732badd6c926a9d8288e39d79c922",
+  "v86_issue_observation_sha256": "54f09355deff0b5fed62c17edc0f007623f859a31203efe3d0762aa5018864ee",
+  "version_matrix": {
+    "contextual_only_original_ids": [
+      "R565"
+    ],
+    "direct_runtime_original_ids": 18,
+    "frozen_inventory_rows": 581,
+    "mapped_original_ids": 19,
+    "path": "support/version-coverage-matrix-20261001.csv",
+    "post_frozen_report_rows": 65,
+    "rows": 646,
+    "runtime_packages_including_pre_v86": 14,
+    "sha256": "8c63e7a5fa11b105a0c6a5b631605f5790574c09c4163f8aad22c14bd217ce3b"
+  }
+}
