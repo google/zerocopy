@@ -1,0 +1,26 @@
+# #3730/#3731 coverage audit v90: two guarded runtime follow-ups
+
+## Dated result
+
+At observed `reference@0dc78ac0ca00516fe75ac58c63f2d60b91a148de` on 2026-10-01, this draft extends the published [v89 audit](../anneal-3730-3731-final-coverage-audit-2026-10-01-v89/REPORT.md). The frozen ledger remains **159 investigations, 174 suggestions, 345 destination links, 333 challenge rows, and 581 version-inventory rows**. Its investigation statuses remain **151 partial, four complete, three conditional, and one not-run**. The source partitions remain **356 exact-claim reviews and five contextual/paired-component reviews** among 361 newer-version rows, with the separate 83-row source audit at **21 changed, 55 unchanged, seven unavailable**. This addendum changes none of those frozen rows, any issue checkbox, or either issue status.
+
+Since the v89 reference baseline, three report directories were published: the v89 audit itself and the two follow-ups below. The [651-report matrix](support/version-coverage-matrix-20261001-v90.csv) adds those three rows to v89's 648 and changes only the R425 mapping and the post-581 Lean incremental-diagnostics source-report mapping. Its original 581 IDs and their classification and source columns are preserved. The new Lake fixture adds **R425** as one directly probed original inventory ID, bringing the fixture-level direct total to **19** across prior and new packages; R565 remains contextual only. The new LSP package adds no directly completed original inventory ID.
+
+## New published evidence
+
+| Report | Observation | Remaining boundary |
+| --- | --- | --- |
+| [Lean diagnostic LSP runtime A/B](../lean-incremental-diagnostics-lsp-runtime-ab-430rc2-to-4341-2026-10-01/REPORT.md), published at `686e1e8172be05f72d09fafa8c58d80d0e9ffa39` | Six serial open/edit LSP sessions compared Lean 4.30.0-rc2 and 4.34.1 with the capability absent, false, and true. Both published the expected final diagnostics. On 4.34.1 with capability true, substantive publications carried `isIncremental: false`; four batch invocations confirmed the fixture's compiler messages. | No `isIncremental: true` append publication was observed. The source-level opt-in append branch remains unverified at runtime. The cold-session publication timing does not establish a capability effect. |
+| [I094 Lake read-only consumer/server](../i094-lake-readonly-consumer-server-430rc2-to-4341-2026-10-01/REPORT.md), published at `0dc78ac0ca00516fe75ac58c63f2d60b91a148de` | A prebuilt read-only local path dependency was consumed at both installed tuples with a seeded relative manifest. Fresh manifest-absent 4.30 consumers failed build/setup on a dependency config lock, and its server fell back without the expected value. Fresh 4.34 consumers built, resolved the dependency OLean, and served the expected value; per-version producer inventories were unchanged. | This is one two-module local path-dependency fixture. The actual content-identified Anneal/Aeneas/Mathlib archive, coupled generated artifacts, other cache families, relocation, scaling, enforced write tracing, and the source-level Lake ownership explanation remain open. |
+
+The [affected crosswalk](support/affected-crosswalk.json) keeps **I094 partial** and **M01 partial**. It records **F03 as partial at this v90 assessment** because a narrow installed 4.30/4.34 comparison now exists; the frozen v80 suggestion row remains `not-run` and is not edited. None of these rows is complete. The prior v89 resource snapshot is historical. These two published experiments used their own guards and user-authorized waiver of the earlier >30% RAM admission threshold; this audit ran no Lean server, Lake build, or new resource admission check. The separate R428 1 GiB cap and zero-case invalidation result remain as v89 recorded.
+
+## Catalog and publication preparation
+
+The committed `CATALOG.json` at this reference HEAD has **649 entries for 651 report directories**. It includes the v89 audit but omits both newly published runtime reports. [Candidate catalog additions](support/catalog-additions.json) contain only those two missing metadata entries plus the proposed v90 audit entry. No reference file has been changed in this draft. On publication, apply these additions to the current catalog and publish the v90 package together; that would yield 652 report directories and 652 catalog entries if no other reports land first.
+
+The public issue pages were rechecked read-only on 2026-10-01: [#3731](https://github.com/google/zerocopy/issues/3731) was Open and [#3730](https://github.com/google/zerocopy/issues/3730) was Closed as not planned. No issue state was edited. Product-level #3731 work remains open.
+
+## Offline revalidation
+
+[Support data](support/delta.json) binds the observed HEAD/tree, v89 baseline, publication commit/tree/report/metadata hashes, catalog gap, matrix hash, and scoped crosswalk. The [offline checker](support/check.py) reruns the existing v89 checker against the chosen reference checkout, validates the three published packages and candidate catalog additions, enforces the two-row matrix change and three-row extension, and checks the open boundaries above. Run `python3 -B support/check.py --reference-root /path/to/reference`. It invokes no Lean, Lake, server, network request, or GitHub mutation.

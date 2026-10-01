@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/issue-3731",
+    "anneal/version-review",
+    "anneal/coverage-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Frozen #3731 investigation and version inventory",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "6fe9f8ed36f1bfb474afe091a9799ee29016f667"
+      }
+    },
+    {
+      "name": "v90 scoped published follow-up audit",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "0dc78ac0ca00516fe75ac58c63f2d60b91a148de"
+      }
+    }
+  ],
+  "observed_at": "2026-10-01"
+}

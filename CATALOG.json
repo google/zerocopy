@@ -4414,6 +4414,33 @@
         "anneal/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-10-01-v90": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "6fe9f8ed36f1bfb474afe091a9799ee29016f667"
+          },
+          "name": "Frozen #3731 investigation and version inventory"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "0dc78ac0ca00516fe75ac58c63f2d60b91a148de"
+          },
+          "name": "v90 scoped published follow-up audit"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/issue-3731",
+        "anneal/version-review",
+        "anneal/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -14081,6 +14108,48 @@
         "ide/incremental-analysis"
       ]
     },
+    "i094-lake-readonly-consumer-server-430rc2-to-4341-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lake_version": "5.0.0-src+3dc1a08",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "lean_version": "4.30.0-rc2",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Lean/Lake 4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "lake_sha256": "c8c24f1398162ab4004e2a869952d8469f54293651151feaad4526f2b8474c6e",
+            "lake_version": "5.0.0-src+5045d00",
+            "lean_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+            "lean_version": "4.34.1",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lean/Lake 4.34.1"
+        },
+        {
+          "identity": {
+            "consumer_module": "Generated.lean",
+            "payload": "work/",
+            "producer_module": "Dep.lean"
+          },
+          "name": "Synthetic two-package read-only path dependency fixture"
+        }
+      ],
+      "topics": [
+        "anneal/lake",
+        "lake/read-only-dependencies",
+        "lake/workspace-setup",
+        "lake/server",
+        "lean/version-difference"
+      ]
+    },
     "information-hiding-versus-pipeline-decomposition-1972-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -15761,6 +15830,45 @@
         "lean/lsp",
         "lean/diagnostics",
         "lean/version-difference"
+      ]
+    },
+    "lean-incremental-diagnostics-lsp-runtime-ab-430rc2-to-4341-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2 language server"
+        },
+        {
+          "identity": {
+            "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4.34.1 language server"
+        },
+        {
+          "identity": {
+            "artifact": "reports/lean-incremental-diagnostics-430rc2-to-4341-source-delta-2026-10-01/fixture",
+            "edited_sha256": "9caea97a94d2d9d37a3cb507278414674d173507a0ebf9db9e3c5024dc3ebfeb",
+            "open_sha256": "d42fbf3d79611aa442bb233680e4f20af6848dc8f1f0c7be3c3dd4df22b5dcc7",
+            "repository": "google/zerocopy"
+          },
+          "name": "Published two-line open/edit diagnostic fixture"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/language-server",
+        "lean/diagnostics",
+        "lean/version-difference",
+        "anneal/evidence-oracles"
       ]
     },
     "lean-infotree-elaboration-info-v4-30-0-rc2": {

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "observed_at": "2026-10-01",
+  "frozen_v80_rows_unchanged": true,
+  "investigation": [
+    {
+      "id": "I094",
+      "frozen_v80_status": "partial",
+      "v90_assessment": "partial",
+      "new_evidence": "reports/i094-lake-readonly-consumer-server-430rc2-to-4341-2026-10-01/REPORT.md",
+      "narrow_result": "Installed 4.30.0-rc2 fails first-use manifest-absent local read-only dependency consumer/server; 4.34.1 succeeds in the reconstructed fixture.",
+      "remaining": "Actual content-identified Anneal/Aeneas/Mathlib archive and coupled generated artifacts; wider native/plugin/cache families, relocation, multi-consumer scaling, enforced write tracing and source-level ownership explanation."
+    }
+  ],
+  "suggestions": [
+    {
+      "id": "F03",
+      "frozen_v80_status": "not-run",
+      "v90_assessment": "partial",
+      "new_evidence": "reports/i094-lake-readonly-consumer-server-430rc2-to-4341-2026-10-01/REPORT.md",
+      "narrow_result": "One installed 4.30 versus 4.34 local path-dependency read-only comparison completed.",
+      "remaining": "Prepared actual archive and broader Lake ownership/read-only contract remain open."
+    },
+    {
+      "id": "M01",
+      "frozen_v80_status": "partial",
+      "v90_assessment": "partial",
+      "new_evidence": "reports/i094-lake-readonly-consumer-server-430rc2-to-4341-2026-10-01/REPORT.md",
+      "narrow_result": "Component-level upgraded Lake server open publishes the expected value in this fixture.",
+      "remaining": "Interactive invariants on the actual prepared archive, Anneal service and independent host remain open."
+    }
+  ]
+}

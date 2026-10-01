@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "observed_at": "2026-10-01",
+  "reference_head": "0dc78ac0ca00516fe75ac58c63f2d60b91a148de",
+  "reference_tree": "598a05ee640eebaa757c519ede9c740cbb079a16",
+  "v89_reference_head": "604a61e3bafe184b09587a4d0cfde5477977f638",
+  "v89_publication_revision": "53dd854ebe5022ec0a45d9cb57aa124bd79ca7d5",
+  "v89_local_delta_sha256": "c1839e29ee1f2d42e66f1a90f9640e921e0d20ce434c1818d2812e96a83122f8",
+  "v89_local_checker_sha256": "109fc273adfa1132cf0806919359d62b0cd1dbf313410e3e14fad11a103668e0",
+  "catalog_blob": "66927fc2b4e00949b9741664f71599a173689ef8",
+  "catalog_sha256": "2c3257c7a06bdf30df8757ab02ef7717b9a1c457a8dc24f4c9be866153deb126",
+  "catalog_entries": 649,
+  "report_directories": 651,
+  "catalog_missing_new_reports": [
+    "lean-incremental-diagnostics-lsp-runtime-ab-430rc2-to-4341-2026-10-01",
+    "i094-lake-readonly-consumer-server-430rc2-to-4341-2026-10-01"
+  ],
+  "packages": {
+    "v89": {
+      "package": "anneal-3730-3731-final-coverage-audit-2026-10-01-v89",
+      "publication_revision": "53dd854ebe5022ec0a45d9cb57aa124bd79ca7d5",
+      "tree": "12e3be23c2aa4d8cedd70b79940f2ada8ac5bcf5",
+      "report_sha256": "2a632eb0172a9cedb83b9bbd54b7fe12b5dbf0c530f68cee1c0faa88dc512107",
+      "metadata_sha256": "ad38ff682bf5eaddc3404b584e9d899ab5963696fd4ba257bc884ed4bc48cdf4"
+    },
+    "lean_lsp": {
+      "package": "lean-incremental-diagnostics-lsp-runtime-ab-430rc2-to-4341-2026-10-01",
+      "publication_revision": "686e1e8172be05f72d09fafa8c58d80d0e9ffa39",
+      "tree": "cd77fe17676a422c6e5ef7f0159ef83230dda26d",
+      "report_sha256": "38aa1a36595c59248686f4462a6d74d9df536e8a8cf5159d4e139496e6749668",
+      "metadata_sha256": "3f48a355d6fb5fecc82afb87144d2aed1d218b6f409319920b1ffab5a9540da9"
+    },
+    "i094_lake": {
+      "package": "i094-lake-readonly-consumer-server-430rc2-to-4341-2026-10-01",
+      "publication_revision": "0dc78ac0ca00516fe75ac58c63f2d60b91a148de",
+      "tree": "40ac5800f86b237ca53f8589451a4e2254d9fb4f",
+      "report_sha256": "d05dd73adaa0b0a50238694aa7dc6bc0ff71cd701a8f2df4077a66d58cf64c73",
+      "metadata_sha256": "afe5576cbcf72d1e57d616e25060597bff64844e5da1c5b84721da857a0b00ae"
+    }
+  },
+  "inherited_counts": {
+    "challenge_rows": 333,
+    "investigations": 159,
+    "suggestion_links": 345,
+    "suggestions": 174,
+    "version_inventory": 581
+  },
+  "inherited_investigation_statuses": {
+    "complete": 4,
+    "conditional": 3,
+    "not-run": 1,
+    "partial": 151
+  },
+  "inherited_version_partitions": {
+    "contextual_or_paired_component_only": 5,
+    "exact_claim_source_review": 356,
+    "newer_version_rows": 361,
+    "prior_comparison_rows": 11,
+    "source_changed": 21,
+    "source_revision_rows": 72,
+    "source_unavailable": 7,
+    "source_unchanged": 55
+  },
+  "new_direct_original_inventory_ids": [
+    "R425"
+  ],
+  "new_contextual_original_inventory_ids": [],
+  "direct_original_inventory_ids_total": 19,
+  "contextual_original_inventory_ids_total": 1,
+  "version_matrix": {
+    "path": "support/version-coverage-matrix-20261001-v90.csv",
+    "sha256": "0e308f4cb43bee371c29f7dd4e83b9a2e8af0ebb0c2c8af26178907c515dbeb3",
+    "rows": 651,
+    "frozen_inventory_rows": 581,
+    "post_frozen_report_rows": 70
+  },
+  "affected_crosswalk_sha256": "da552a2a07726df29fdc80684aef24b1c51209e3ab649cdf2c17e7d05bab5285",
+  "catalog_additions_sha256": "800abb300c48536b8a75ecb837592b4630c7a6c94cbe64ade471839146cdb5a3",
+  "lean_lsp_append_observed": false,
+  "i094_full_archive_tested": false,
+  "issue_observation": {
+    "observed_at": "2026-10-01",
+    "method": "read-only public GitHub page recheck by coordinating agent",
+    "issues": [
+      {
+        "number": 3731,
+        "status": "Open",
+        "url": "https://github.com/google/zerocopy/issues/3731"
+      },
+      {
+        "number": 3730,
+        "status": "Closed as not planned",
+        "url": "https://github.com/google/zerocopy/issues/3730"
+      }
+    ],
+    "mutations": 0
+  }
+}
