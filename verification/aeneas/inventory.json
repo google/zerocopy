@@ -1,0 +1,38 @@
+{
+  "license": "/- Copyright 2026 The Fuchsia Authors\n\nLicensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n<LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\nlicense <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\nThis file may not be copied, modified, or distributed except according to\nthose terms. -/",
+  "version": 1,
+  "functions": [
+    {
+      "rust": "zerocopy::util::max",
+      "file": "zerocopy/src/util/mod.rs",
+      "syntax": "max",
+      "model": "util.max",
+      "theorem": "max_spec",
+      "golden": "util.max.lean.in"
+    },
+    {
+      "rust": "zerocopy::util::min",
+      "file": "zerocopy/src/util/mod.rs",
+      "syntax": "min",
+      "model": "util.min",
+      "theorem": "min_spec",
+      "golden": "util.min.lean.in"
+    },
+    {
+      "rust": "zerocopy::util::padding_needed_for",
+      "file": "zerocopy/src/util/mod.rs",
+      "syntax": "padding_needed_for",
+      "model": "util.padding_needed_for",
+      "theorem": "padding_lt_alignment",
+      "golden": "util.padding_needed_for.lean.in"
+    },
+    {
+      "rust": "zerocopy::util::round_down_to_next_multiple_of_alignment",
+      "file": "zerocopy/src/util/mod.rs",
+      "syntax": "round_down_to_next_multiple_of_alignment",
+      "model": "util.round_down_to_next_multiple_of_alignment",
+      "theorem": "round_down_spec",
+      "golden": "util.round_down_to_next_multiple_of_alignment.lean.in"
+    }
+  ]
+}
