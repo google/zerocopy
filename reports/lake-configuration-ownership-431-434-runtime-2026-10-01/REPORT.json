@@ -1,0 +1,8 @@
+{
+  "topics": ["lean/lake", "lean/configuration", "lean/workspaces", "lean/version-difference"],
+  "subjects": [
+    {"name":"Lake compiled Lean configuration ownership at 4.31.0","identity":{"repository":"leanprover/lean4","revision":"68218e876d2a38b1985b8590fff244a83c321783","version":"v4.31.0","component":"Lake"}},
+    {"name":"Lake compiled Lean configuration ownership at 4.34.1","identity":{"repository":"leanprover/lean4","revision":"5045d0056413266e57c625dcd7c365b10e377c52","version":"v4.34.1","component":"Lake"}}
+  ],
+  "observed_at": "2026-10-01"
+}

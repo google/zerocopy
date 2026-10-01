@@ -1,0 +1,13 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages":
+ [{"type": "path",
+   "scope": "",
+   "name": "shared",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../shared",
+   "configFile": "lakefile.lean"}],
+ "name": "alpha",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

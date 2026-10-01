@@ -1,0 +1,3094 @@
+{
+  "calls": [
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13066162176,
+        "reclaimable_fraction": 0.2292938232421875,
+        "scratch_bytes": 324418
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.31.0/bin/lake",
+        "--keep-toolchain",
+        "update"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/a",
+      "elapsed_seconds": 0.3715,
+      "label": "load-a",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13066158080,
+          "group_rss_kib": 110848,
+          "reclaimable_fraction": 0.22757720947265625,
+          "scratch_bytes": 324602
+        },
+        {
+          "disk_free_bytes": 13066158080,
+          "group_rss_kib": 565392,
+          "reclaimable_fraction": 0.2281322479248047,
+          "scratch_bytes": 324602
+        },
+        {
+          "disk_free_bytes": 13066018816,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.2275371551513672,
+          "scratch_bytes": 450621
+        }
+      ],
+      "observed_lock_paths": [],
+      "returncode": 0,
+      "stderr": "info: alpha: no previous manifest, creating one from scratch\nwarning: shared: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/shared/lake-manifest.json\n",
+      "stdout": "",
+      "version": "v4.31.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13066006528,
+        "reclaimable_fraction": 0.23641204833984375,
+        "scratch_bytes": 461518
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.31.0/bin/lake",
+        "--keep-toolchain",
+        "update"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/b",
+      "elapsed_seconds": 0.3419,
+      "label": "load-b",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13065998336,
+          "group_rss_kib": 129296,
+          "reclaimable_fraction": 0.23124313354492188,
+          "scratch_bytes": 461702
+        },
+        {
+          "disk_free_bytes": 13065900032,
+          "group_rss_kib": 608784,
+          "reclaimable_fraction": 0.22626876831054688,
+          "scratch_bytes": 461702
+        }
+      ],
+      "observed_lock_paths": [],
+      "returncode": 0,
+      "stderr": "info: beta: no previous manifest, creating one from scratch\nwarning: filler: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/filler/lake-manifest.json\nwarning: shared: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/shared/lake-manifest.json\n",
+      "stdout": "",
+      "version": "v4.31.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13065674752,
+        "reclaimable_fraction": 0.2353229522705078,
+        "scratch_bytes": 662312
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.31.0/bin/lake",
+        "--keep-toolchain",
+        "update"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/a",
+      "elapsed_seconds": 0.307,
+      "label": "reload-a",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13065674752,
+          "group_rss_kib": 133040,
+          "reclaimable_fraction": 0.23382186889648438,
+          "scratch_bytes": 662312
+        },
+        {
+          "disk_free_bytes": 13065674752,
+          "group_rss_kib": 617280,
+          "reclaimable_fraction": 0.22957611083984375,
+          "scratch_bytes": 662312
+        }
+      ],
+      "observed_lock_paths": [],
+      "returncode": 0,
+      "stderr": "warning: shared: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/shared/lake-manifest.json\n",
+      "stdout": "",
+      "version": "v4.31.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13065535488,
+        "reclaimable_fraction": 0.23543739318847656,
+        "scratch_bytes": 675334
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.31.0/bin/lake",
+        "--keep-toolchain",
+        "-f",
+        "lakefile.toml",
+        "update"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/t",
+      "elapsed_seconds": 0.3062,
+      "label": "load-toml",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13065531392,
+          "group_rss_kib": 132736,
+          "reclaimable_fraction": 0.2338695526123047,
+          "scratch_bytes": 675513
+        },
+        {
+          "disk_free_bytes": 13065531392,
+          "group_rss_kib": 617632,
+          "reclaimable_fraction": 0.2293682098388672,
+          "scratch_bytes": 675513
+        }
+      ],
+      "observed_lock_paths": [
+        "a/.lake/config/1/lakefile.olean.lock"
+      ],
+      "returncode": 0,
+      "stderr": "info: gamma: no previous manifest, creating one from scratch\nwarning: shared: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_31_0/shared/lake-manifest.json\n",
+      "stdout": "",
+      "version": "v4.31.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13065404416,
+        "reclaimable_fraction": 0.23523330688476562,
+        "scratch_bytes": 746808
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "update"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/a",
+      "elapsed_seconds": 2.5351,
+      "label": "load-a",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13065400320,
+          "group_rss_kib": 68336,
+          "reclaimable_fraction": 0.23271942138671875,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065400320,
+          "group_rss_kib": 90320,
+          "reclaimable_fraction": 0.23101806640625,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065400320,
+          "group_rss_kib": 113328,
+          "reclaimable_fraction": 0.22915077209472656,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065400320,
+          "group_rss_kib": 134448,
+          "reclaimable_fraction": 0.22737503051757812,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065400320,
+          "group_rss_kib": 155232,
+          "reclaimable_fraction": 0.22598838806152344,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065400320,
+          "group_rss_kib": 172608,
+          "reclaimable_fraction": 0.22600173950195312,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065400320,
+          "group_rss_kib": 193152,
+          "reclaimable_fraction": 0.22559356689453125,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065613312,
+          "group_rss_kib": 235248,
+          "reclaimable_fraction": 0.22478485107421875,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065572352,
+          "group_rss_kib": 285136,
+          "reclaimable_fraction": 0.22316360473632812,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065551872,
+          "group_rss_kib": 344240,
+          "reclaimable_fraction": 0.222198486328125,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065543680,
+          "group_rss_kib": 395392,
+          "reclaimable_fraction": 0.220458984375,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065482240,
+          "group_rss_kib": 436048,
+          "reclaimable_fraction": 0.2199993133544922,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065461760,
+          "group_rss_kib": 475088,
+          "reclaimable_fraction": 0.2195453643798828,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065461760,
+          "group_rss_kib": 508960,
+          "reclaimable_fraction": 0.2196044921875,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065461760,
+          "group_rss_kib": 539584,
+          "reclaimable_fraction": 0.2196025848388672,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065457664,
+          "group_rss_kib": 566560,
+          "reclaimable_fraction": 0.21913909912109375,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065457664,
+          "group_rss_kib": 588240,
+          "reclaimable_fraction": 0.21923255920410156,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065457664,
+          "group_rss_kib": 620208,
+          "reclaimable_fraction": 0.21899795532226562,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065457664,
+          "group_rss_kib": 652432,
+          "reclaimable_fraction": 0.21881484985351562,
+          "scratch_bytes": 746992
+        },
+        {
+          "disk_free_bytes": 13065457664,
+          "group_rss_kib": 686960,
+          "reclaimable_fraction": 0.2186870574951172,
+          "scratch_bytes": 746992
+        }
+      ],
+      "observed_lock_paths": [],
+      "returncode": 0,
+      "stderr": "info: alpha: no previous manifest, creating one from scratch\nwarning: shared: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/shared/lake-manifest.json\n",
+      "stdout": "",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13065293824,
+        "reclaimable_fraction": 0.22419357299804688,
+        "scratch_bytes": 888391
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "update"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/b",
+      "elapsed_seconds": 0.3747,
+      "label": "load-b",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13065289728,
+          "group_rss_kib": 133040,
+          "reclaimable_fraction": 0.22740554809570312,
+          "scratch_bytes": 888575
+        },
+        {
+          "disk_free_bytes": 13065289728,
+          "group_rss_kib": 618160,
+          "reclaimable_fraction": 0.22746849060058594,
+          "scratch_bytes": 888575
+        },
+        {
+          "disk_free_bytes": 13065080832,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.221954345703125,
+          "scratch_bytes": 1078110
+        }
+      ],
+      "observed_lock_paths": [],
+      "returncode": 0,
+      "stderr": "info: beta: no previous manifest, creating one from scratch\nwarning: filler: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/filler/lake-manifest.json\nwarning: shared: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/shared/lake-manifest.json\n",
+      "stdout": "",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13065068544,
+        "reclaimable_fraction": 0.23208045959472656,
+        "scratch_bytes": 1091238
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "update"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/a",
+      "elapsed_seconds": 0.3335,
+      "label": "reload-a",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13065068544,
+          "group_rss_kib": 134224,
+          "reclaimable_fraction": 0.22993850708007812,
+          "scratch_bytes": 1091238
+        },
+        {
+          "disk_free_bytes": 13065068544,
+          "group_rss_kib": 625792,
+          "reclaimable_fraction": 0.2261371612548828,
+          "scratch_bytes": 1091238
+        }
+      ],
+      "observed_lock_paths": [],
+      "returncode": 0,
+      "stderr": "warning: shared: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/shared/lake-manifest.json\n",
+      "stdout": "",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13065052160,
+        "reclaimable_fraction": 0.23128700256347656,
+        "scratch_bytes": 1104264
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "-f",
+        "lakefile.toml",
+        "update"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/t",
+      "elapsed_seconds": 0.3331,
+      "label": "load-toml",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13065048064,
+          "group_rss_kib": 133344,
+          "reclaimable_fraction": 0.22994232177734375,
+          "scratch_bytes": 1104443
+        },
+        {
+          "disk_free_bytes": 13065048064,
+          "group_rss_kib": 623216,
+          "reclaimable_fraction": 0.2261486053466797,
+          "scratch_bytes": 1104443
+        }
+      ],
+      "observed_lock_paths": [
+        "a/.lake/config/1/lakefile.olean.lock"
+      ],
+      "returncode": 0,
+      "stderr": "info: gamma: no previous manifest, creating one from scratch\nwarning: shared: ignoring missing manifest:\n  /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r423-lake-config-ownership-431-434-20261001/runs/v4_34_1/shared/lake-manifest.json\n",
+      "stdout": "",
+      "version": "v4.34.1"
+    }
+  ],
+  "fixture_sha256": {
+    "a/lakefile.lean": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+    "b/lakefile.lean": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+    "filler/lakefile.lean": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+    "shared/lakefile.lean": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+    "t/lakefile.toml": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c"
+  },
+  "guard": {
+    "live_memory_fraction": 0.18,
+    "max_rss_kib": 1228800,
+    "max_scratch_bytes": 104857600,
+    "min_disk_bytes": 10737418240,
+    "start_memory_fraction": 0.2,
+    "timeout_seconds": 20
+  },
+  "identities": {
+    "v4.31.0": {
+      "lake_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.31.0/bin/lake",
+      "lake_sha256": "58261a1a2fa1a362376c71e02ca854a093e71cc5e6ea64b287a931cb2565273d",
+      "lake_version": "Lake version 5.0.0-src+68218e8 (Lean version 4.31.0)",
+      "lean_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.31.0/bin/lean",
+      "lean_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+      "lean_version": "Lean (version 4.31.0, arm64-apple-darwin24.6.0, commit 68218e876d2a38b1985b8590fff244a83c321783, Release)"
+    },
+    "v4.34.1": {
+      "lake_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+      "lake_sha256": "c8c24f1398162ab4004e2a869952d8469f54293651151feaad4526f2b8474c6e",
+      "lake_version": "Lake version 5.0.0-src+5045d00 (Lean version 4.34.1)",
+      "lean_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+      "lean_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+      "lean_version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+    }
+  },
+  "initial_admission": {
+    "disk_free_bytes": 13065150464,
+    "reclaimable_fraction": 0.22917556762695312,
+    "scratch_bytes": 1180131
+  },
+  "schema": 1,
+  "snapshots": {
+    "v4.31.0": {
+      "before": {
+        "a": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757481060,
+            "inode": 25928023,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757613684,
+            "inode": 25928024,
+            "mtime_ns": 1790835877757613684,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757942226,
+            "inode": 25928026,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758088142,
+            "inode": 25928027,
+            "mtime_ns": 1790835877758088142,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756386478,
+            "inode": 25928017,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877756566353,
+            "inode": 25928018,
+            "mtime_ns": 1790835877756566353,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          "lakefile.toml": {
+            "ctime_ns": 1790835877758427308,
+            "inode": 25928029,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758552933,
+            "inode": 25928030,
+            "mtime_ns": 1790835877758552933,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "load-a": {
+        "a": {
+          ".lake": {
+            "ctime_ns": 1790835877793070412,
+            "inode": 25928031,
+            "mtime_ns": 1790835877793070412,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835878108625513,
+            "inode": 25928032,
+            "mtime_ns": 1790835878108625513,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835878107561264,
+            "inode": 25928033,
+            "mtime_ns": 1790835878107561264,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835878107561223,
+            "inode": 25928035,
+            "mtime_ns": 1790835878107425931,
+            "sha256": "3b34f03c33be75448375ac181757891e59870bb97b4fc0e463386f81c74bec75",
+            "size": 70168,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835877793292579,
+            "inode": 25928034,
+            "mtime_ns": 1790835877793292579,
+            "sha256": "5917055b15f0b4ed1df3884908ce360db67fd85e4d4cec4b1eeff5b9328e9731",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835878117113247,
+            "inode": 25928036,
+            "mtime_ns": 1790835878117113247,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835878117113247,
+            "inode": 25928039,
+            "mtime_ns": 1790835878116980873,
+            "sha256": "be9d3b8be4de2556fd20436672e51135ce49051f7a03aead08a01bb675cec860",
+            "size": 55360,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835878108829970,
+            "inode": 25928038,
+            "mtime_ns": 1790835878108829970,
+            "sha256": "716e38bf6d4d6b05927ab8359cf9a5ec46455a6fee53e81626e177926efc30f9",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835878117824663,
+            "inode": 25928040,
+            "mtime_ns": 1790835878117824663,
+            "sha256": "9b5d15d8786cf54c66c475d09646f112b5eb79453eb762f36a61c88f6ca44193",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757481060,
+            "inode": 25928023,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757613684,
+            "inode": 25928024,
+            "mtime_ns": 1790835877757613684,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757942226,
+            "inode": 25928026,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758088142,
+            "inode": 25928027,
+            "mtime_ns": 1790835877758088142,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "filler": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756957186,
+            "inode": 25928020,
+            "mtime_ns": 1790835671229160812,
+            "sha256": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757089019,
+            "inode": 25928021,
+            "mtime_ns": 1790835877757089019,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          ".lake": {
+            "ctime_ns": 1790835878108732929,
+            "inode": 25928037,
+            "mtime_ns": 1790835878108711137,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756386478,
+            "inode": 25928017,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877756566353,
+            "inode": 25928018,
+            "mtime_ns": 1790835877756566353,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          "lakefile.toml": {
+            "ctime_ns": 1790835877758427308,
+            "inode": 25928029,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758552933,
+            "inode": 25928030,
+            "mtime_ns": 1790835877758552933,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "load-a-traces": {
+        "a": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "9dad7885bdb25c6d",
+            "idx": 0,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "b": {},
+        "filler": {},
+        "shared": {},
+        "t": {}
+      },
+      "load-b": {
+        "a": {
+          ".lake": {
+            "ctime_ns": 1790835877793070412,
+            "inode": 25928031,
+            "mtime_ns": 1790835877793070412,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835878108625513,
+            "inode": 25928032,
+            "mtime_ns": 1790835878108625513,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835878107561264,
+            "inode": 25928033,
+            "mtime_ns": 1790835878107561264,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835878107561223,
+            "inode": 25928035,
+            "mtime_ns": 1790835878107425931,
+            "sha256": "3b34f03c33be75448375ac181757891e59870bb97b4fc0e463386f81c74bec75",
+            "size": 70168,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835877793292579,
+            "inode": 25928034,
+            "mtime_ns": 1790835877793292579,
+            "sha256": "5917055b15f0b4ed1df3884908ce360db67fd85e4d4cec4b1eeff5b9328e9731",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835878117113247,
+            "inode": 25928036,
+            "mtime_ns": 1790835878117113247,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835878117113247,
+            "inode": 25928039,
+            "mtime_ns": 1790835878116980873,
+            "sha256": "be9d3b8be4de2556fd20436672e51135ce49051f7a03aead08a01bb675cec860",
+            "size": 55360,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835878108829970,
+            "inode": 25928038,
+            "mtime_ns": 1790835878108829970,
+            "sha256": "716e38bf6d4d6b05927ab8359cf9a5ec46455a6fee53e81626e177926efc30f9",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835878117824663,
+            "inode": 25928040,
+            "mtime_ns": 1790835878117824663,
+            "sha256": "9b5d15d8786cf54c66c475d09646f112b5eb79453eb762f36a61c88f6ca44193",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757481060,
+            "inode": 25928023,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757613684,
+            "inode": 25928024,
+            "mtime_ns": 1790835877757613684,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          ".lake": {
+            "ctime_ns": 1790835878175150226,
+            "inode": 25928041,
+            "mtime_ns": 1790835878175150226,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835878469755697,
+            "inode": 25928042,
+            "mtime_ns": 1790835878469755697,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835878459510549,
+            "inode": 25928043,
+            "mtime_ns": 1790835878459510549,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835878459510507,
+            "inode": 25928055,
+            "mtime_ns": 1790835878459364466,
+            "sha256": "fce0e473006b7a8c0bdf77c61de39cd175f6eb12655cdfaca522f74e4f8c725f",
+            "size": 75936,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835878175373184,
+            "inode": 25928044,
+            "mtime_ns": 1790835878175373184,
+            "sha256": "df781971fc046049c897bd9005e2bd13885654c0b5ab93052f235dce02190493",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835878469100115,
+            "inode": 25928056,
+            "mtime_ns": 1790835878469100115,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835878469100073,
+            "inode": 25928059,
+            "mtime_ns": 1790835878468951657,
+            "sha256": "b460717b95dee2f4079c11de7b3bf710f97e9bc2f7f78127166fe137645f0175",
+            "size": 55360,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835878460998088,
+            "inode": 25928058,
+            "mtime_ns": 1790835878460998088,
+            "sha256": "895bcf18118dcaace51e0d0a5e2dedfb650d33450f08a8cdabcde1dced1acbde",
+            "size": 179,
+            "type": "file"
+          },
+          ".lake/config/2": {
+            "ctime_ns": 1790835878477881683,
+            "inode": 25928060,
+            "mtime_ns": 1790835878477881683,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/2/lakefile.olean": {
+            "ctime_ns": 1790835878477881641,
+            "inode": 25928062,
+            "mtime_ns": 1790835878477753183,
+            "sha256": "e3933b6c8b791b94284f4e575862ef81b453314dd9ad4d37a73c9d4d010d38ef",
+            "size": 55520,
+            "type": "file"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "ctime_ns": 1790835878469927739,
+            "inode": 25928061,
+            "mtime_ns": 1790835878469927739,
+            "sha256": "239465b996551391b07ff67b3f99a2a03e6170d38167034a244fdfdb47197ea1",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835878478515557,
+            "inode": 25928063,
+            "mtime_ns": 1790835878478515557,
+            "sha256": "ec4e499e4e40439f9e2cd91f2cbbfa577257bb91d6c4d0dc5fe954a3b5a72000",
+            "size": 489,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757942226,
+            "inode": 25928026,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758088142,
+            "inode": 25928027,
+            "mtime_ns": 1790835877758088142,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "filler": {
+          ".lake": {
+            "ctime_ns": 1790835878460895130,
+            "inode": 25928057,
+            "mtime_ns": 1790835878460864671,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756957186,
+            "inode": 25928020,
+            "mtime_ns": 1790835671229160812,
+            "sha256": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757089019,
+            "inode": 25928021,
+            "mtime_ns": 1790835877757089019,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          ".lake": {
+            "ctime_ns": 1790835878108732929,
+            "inode": 25928037,
+            "mtime_ns": 1790835878108711137,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756386478,
+            "inode": 25928017,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877756566353,
+            "inode": 25928018,
+            "mtime_ns": 1790835877756566353,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          "lakefile.toml": {
+            "ctime_ns": 1790835877758427308,
+            "inode": 25928029,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758552933,
+            "inode": 25928030,
+            "mtime_ns": 1790835877758552933,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "load-b-traces": {
+        "a": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "9dad7885bdb25c6d",
+            "idx": 0,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "b": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "e2f4a54282c13f82",
+            "idx": 0,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "a52fff8b45f64504",
+            "idx": 1,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "filler",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 2,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "filler": {},
+        "shared": {},
+        "t": {}
+      },
+      "load-toml": {
+        "a": {
+          ".lake": {
+            "ctime_ns": 1790835877793070412,
+            "inode": 25928031,
+            "mtime_ns": 1790835877793070412,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835878108625513,
+            "inode": 25928032,
+            "mtime_ns": 1790835878108625513,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835878107561264,
+            "inode": 25928033,
+            "mtime_ns": 1790835878107561264,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835878107561223,
+            "inode": 25928035,
+            "mtime_ns": 1790835878107425931,
+            "sha256": "3b34f03c33be75448375ac181757891e59870bb97b4fc0e463386f81c74bec75",
+            "size": 70168,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835877793292579,
+            "inode": 25928034,
+            "mtime_ns": 1790835877793292579,
+            "sha256": "5917055b15f0b4ed1df3884908ce360db67fd85e4d4cec4b1eeff5b9328e9731",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835878793984116,
+            "inode": 25928036,
+            "mtime_ns": 1790835878793984116,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835878793984074,
+            "inode": 25928065,
+            "mtime_ns": 1790835878793829283,
+            "sha256": "be9d3b8be4de2556fd20436672e51135ce49051f7a03aead08a01bb675cec860",
+            "size": 55360,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.lock": {
+            "ctime_ns": 1790835878784047342,
+            "inode": 25928064,
+            "mtime_ns": 1790835878784011926,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835878784191634,
+            "inode": 25928038,
+            "mtime_ns": 1790835878784191634,
+            "sha256": "716e38bf6d4d6b05927ab8359cf9a5ec46455a6fee53e81626e177926efc30f9",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835878794751323,
+            "inode": 25928040,
+            "mtime_ns": 1790835878794751323,
+            "sha256": "9b5d15d8786cf54c66c475d09646f112b5eb79453eb762f36a61c88f6ca44193",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757481060,
+            "inode": 25928023,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757613684,
+            "inode": 25928024,
+            "mtime_ns": 1790835877757613684,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          ".lake": {
+            "ctime_ns": 1790835878175150226,
+            "inode": 25928041,
+            "mtime_ns": 1790835878175150226,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835878469755697,
+            "inode": 25928042,
+            "mtime_ns": 1790835878469755697,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835878459510549,
+            "inode": 25928043,
+            "mtime_ns": 1790835878459510549,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835878459510507,
+            "inode": 25928055,
+            "mtime_ns": 1790835878459364466,
+            "sha256": "fce0e473006b7a8c0bdf77c61de39cd175f6eb12655cdfaca522f74e4f8c725f",
+            "size": 75936,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835878175373184,
+            "inode": 25928044,
+            "mtime_ns": 1790835878175373184,
+            "sha256": "df781971fc046049c897bd9005e2bd13885654c0b5ab93052f235dce02190493",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835878469100115,
+            "inode": 25928056,
+            "mtime_ns": 1790835878469100115,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835878469100073,
+            "inode": 25928059,
+            "mtime_ns": 1790835878468951657,
+            "sha256": "b460717b95dee2f4079c11de7b3bf710f97e9bc2f7f78127166fe137645f0175",
+            "size": 55360,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835878460998088,
+            "inode": 25928058,
+            "mtime_ns": 1790835878460998088,
+            "sha256": "895bcf18118dcaace51e0d0a5e2dedfb650d33450f08a8cdabcde1dced1acbde",
+            "size": 179,
+            "type": "file"
+          },
+          ".lake/config/2": {
+            "ctime_ns": 1790835878477881683,
+            "inode": 25928060,
+            "mtime_ns": 1790835878477881683,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/2/lakefile.olean": {
+            "ctime_ns": 1790835878477881641,
+            "inode": 25928062,
+            "mtime_ns": 1790835878477753183,
+            "sha256": "e3933b6c8b791b94284f4e575862ef81b453314dd9ad4d37a73c9d4d010d38ef",
+            "size": 55520,
+            "type": "file"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "ctime_ns": 1790835878469927739,
+            "inode": 25928061,
+            "mtime_ns": 1790835878469927739,
+            "sha256": "239465b996551391b07ff67b3f99a2a03e6170d38167034a244fdfdb47197ea1",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835878478515557,
+            "inode": 25928063,
+            "mtime_ns": 1790835878478515557,
+            "sha256": "ec4e499e4e40439f9e2cd91f2cbbfa577257bb91d6c4d0dc5fe954a3b5a72000",
+            "size": 489,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757942226,
+            "inode": 25928026,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758088142,
+            "inode": 25928027,
+            "mtime_ns": 1790835877758088142,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "filler": {
+          ".lake": {
+            "ctime_ns": 1790835878460895130,
+            "inode": 25928057,
+            "mtime_ns": 1790835878460864671,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756957186,
+            "inode": 25928020,
+            "mtime_ns": 1790835671229160812,
+            "sha256": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757089019,
+            "inode": 25928021,
+            "mtime_ns": 1790835877757089019,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          ".lake": {
+            "ctime_ns": 1790835878108732929,
+            "inode": 25928037,
+            "mtime_ns": 1790835878108711137,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756386478,
+            "inode": 25928017,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877756566353,
+            "inode": 25928018,
+            "mtime_ns": 1790835877756566353,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          ".lake": {
+            "ctime_ns": 1790835878842284613,
+            "inode": 25928066,
+            "mtime_ns": 1790835878842284613,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835878842320404,
+            "inode": 25928067,
+            "mtime_ns": 1790835878842320404,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835879110523339,
+            "inode": 25928068,
+            "mtime_ns": 1790835879110523339,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835879110523298,
+            "inode": 25928070,
+            "mtime_ns": 1790835879110390923,
+            "sha256": "be9d3b8be4de2556fd20436672e51135ce49051f7a03aead08a01bb675cec860",
+            "size": 55360,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835878842491029,
+            "inode": 25928069,
+            "mtime_ns": 1790835878842491029,
+            "sha256": "716e38bf6d4d6b05927ab8359cf9a5ec46455a6fee53e81626e177926efc30f9",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835879111372463,
+            "inode": 25928071,
+            "mtime_ns": 1790835879111372463,
+            "sha256": "c6b71274c3286b10a76ea91265a9e9f08da1049f1931c92d206d3036ea37ee20",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.toml": {
+            "ctime_ns": 1790835877758427308,
+            "inode": 25928029,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758552933,
+            "inode": 25928030,
+            "mtime_ns": 1790835877758552933,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "load-toml-traces": {
+        "a": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "9dad7885bdb25c6d",
+            "idx": 0,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "b": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "e2f4a54282c13f82",
+            "idx": 0,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "a52fff8b45f64504",
+            "idx": 1,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "filler",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 2,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "filler": {},
+        "shared": {},
+        "t": {
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        }
+      },
+      "reload-a": {
+        "a": {
+          ".lake": {
+            "ctime_ns": 1790835877793070412,
+            "inode": 25928031,
+            "mtime_ns": 1790835877793070412,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835878108625513,
+            "inode": 25928032,
+            "mtime_ns": 1790835878108625513,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835878107561264,
+            "inode": 25928033,
+            "mtime_ns": 1790835878107561264,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835878107561223,
+            "inode": 25928035,
+            "mtime_ns": 1790835878107425931,
+            "sha256": "3b34f03c33be75448375ac181757891e59870bb97b4fc0e463386f81c74bec75",
+            "size": 70168,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835877793292579,
+            "inode": 25928034,
+            "mtime_ns": 1790835877793292579,
+            "sha256": "5917055b15f0b4ed1df3884908ce360db67fd85e4d4cec4b1eeff5b9328e9731",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835878793984116,
+            "inode": 25928036,
+            "mtime_ns": 1790835878793984116,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835878793984074,
+            "inode": 25928065,
+            "mtime_ns": 1790835878793829283,
+            "sha256": "be9d3b8be4de2556fd20436672e51135ce49051f7a03aead08a01bb675cec860",
+            "size": 55360,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.lock": {
+            "ctime_ns": 1790835878784047342,
+            "inode": 25928064,
+            "mtime_ns": 1790835878784011926,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835878784191634,
+            "inode": 25928038,
+            "mtime_ns": 1790835878784191634,
+            "sha256": "716e38bf6d4d6b05927ab8359cf9a5ec46455a6fee53e81626e177926efc30f9",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835878794751323,
+            "inode": 25928040,
+            "mtime_ns": 1790835878794751323,
+            "sha256": "9b5d15d8786cf54c66c475d09646f112b5eb79453eb762f36a61c88f6ca44193",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757481060,
+            "inode": 25928023,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757613684,
+            "inode": 25928024,
+            "mtime_ns": 1790835877757613684,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          ".lake": {
+            "ctime_ns": 1790835878175150226,
+            "inode": 25928041,
+            "mtime_ns": 1790835878175150226,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835878469755697,
+            "inode": 25928042,
+            "mtime_ns": 1790835878469755697,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835878459510549,
+            "inode": 25928043,
+            "mtime_ns": 1790835878459510549,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835878459510507,
+            "inode": 25928055,
+            "mtime_ns": 1790835878459364466,
+            "sha256": "fce0e473006b7a8c0bdf77c61de39cd175f6eb12655cdfaca522f74e4f8c725f",
+            "size": 75936,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835878175373184,
+            "inode": 25928044,
+            "mtime_ns": 1790835878175373184,
+            "sha256": "df781971fc046049c897bd9005e2bd13885654c0b5ab93052f235dce02190493",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835878469100115,
+            "inode": 25928056,
+            "mtime_ns": 1790835878469100115,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835878469100073,
+            "inode": 25928059,
+            "mtime_ns": 1790835878468951657,
+            "sha256": "b460717b95dee2f4079c11de7b3bf710f97e9bc2f7f78127166fe137645f0175",
+            "size": 55360,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835878460998088,
+            "inode": 25928058,
+            "mtime_ns": 1790835878460998088,
+            "sha256": "895bcf18118dcaace51e0d0a5e2dedfb650d33450f08a8cdabcde1dced1acbde",
+            "size": 179,
+            "type": "file"
+          },
+          ".lake/config/2": {
+            "ctime_ns": 1790835878477881683,
+            "inode": 25928060,
+            "mtime_ns": 1790835878477881683,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/2/lakefile.olean": {
+            "ctime_ns": 1790835878477881641,
+            "inode": 25928062,
+            "mtime_ns": 1790835878477753183,
+            "sha256": "e3933b6c8b791b94284f4e575862ef81b453314dd9ad4d37a73c9d4d010d38ef",
+            "size": 55520,
+            "type": "file"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "ctime_ns": 1790835878469927739,
+            "inode": 25928061,
+            "mtime_ns": 1790835878469927739,
+            "sha256": "239465b996551391b07ff67b3f99a2a03e6170d38167034a244fdfdb47197ea1",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835878478515557,
+            "inode": 25928063,
+            "mtime_ns": 1790835878478515557,
+            "sha256": "ec4e499e4e40439f9e2cd91f2cbbfa577257bb91d6c4d0dc5fe954a3b5a72000",
+            "size": 489,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877757942226,
+            "inode": 25928026,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758088142,
+            "inode": 25928027,
+            "mtime_ns": 1790835877758088142,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "filler": {
+          ".lake": {
+            "ctime_ns": 1790835878460895130,
+            "inode": 25928057,
+            "mtime_ns": 1790835878460864671,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756957186,
+            "inode": 25928020,
+            "mtime_ns": 1790835671229160812,
+            "sha256": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877757089019,
+            "inode": 25928021,
+            "mtime_ns": 1790835877757089019,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          ".lake": {
+            "ctime_ns": 1790835878108732929,
+            "inode": 25928037,
+            "mtime_ns": 1790835878108711137,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835877756386478,
+            "inode": 25928017,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877756566353,
+            "inode": 25928018,
+            "mtime_ns": 1790835877756566353,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          "lakefile.toml": {
+            "ctime_ns": 1790835877758427308,
+            "inode": 25928029,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835877758552933,
+            "inode": 25928030,
+            "mtime_ns": 1790835877758552933,
+            "sha256": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "reload-a-traces": {
+        "a": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "9dad7885bdb25c6d",
+            "idx": 0,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "b": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "e2f4a54282c13f82",
+            "idx": 0,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "a52fff8b45f64504",
+            "idx": 1,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "filler",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 2,
+            "leanHash": "68218e876d2a38b1985b8590fff244a83c321783",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "filler": {},
+        "shared": {},
+        "t": {}
+      }
+    },
+    "v4.34.1": {
+      "before": {
+        "a": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125643229,
+            "inode": 25928080,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125769645,
+            "inode": 25928081,
+            "mtime_ns": 1790835879125769645,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835879126051686,
+            "inode": 25928083,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126148395,
+            "inode": 25928084,
+            "mtime_ns": 1790835879126148395,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835879124936022,
+            "inode": 25928074,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125045646,
+            "inode": 25928075,
+            "mtime_ns": 1790835879125045646,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          "lakefile.toml": {
+            "ctime_ns": 1790835879126402102,
+            "inode": 25928086,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126525686,
+            "inode": 25928087,
+            "mtime_ns": 1790835879126525686,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "load-a": {
+        "a": {
+          ".lake": {
+            "ctime_ns": 1790835879163619744,
+            "inode": 25928088,
+            "mtime_ns": 1790835879163619744,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835881648400827,
+            "inode": 25928089,
+            "mtime_ns": 1790835881648400827,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835881645851289,
+            "inode": 25928090,
+            "mtime_ns": 1790835881645851289,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835881645851248,
+            "inode": 25928102,
+            "mtime_ns": 1790835881645714540,
+            "sha256": "ed0e8e3a834160f94383e11dfacb4efb690d0dc4a14fde411f5f6dcd5da489e9",
+            "size": 70936,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835879163868743,
+            "inode": 25928091,
+            "mtime_ns": 1790835879163868743,
+            "sha256": "914f2a2b6a58bd597b05de3ba4981736541006e2e4097de8b0a6c9a8eb7ec4f5",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835881656442145,
+            "inode": 25928103,
+            "mtime_ns": 1790835881656442145,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835881656442104,
+            "inode": 25928106,
+            "mtime_ns": 1790835881656318729,
+            "sha256": "242275a4c60796fca565c126eca22b0e75483c0604aca8d936bd86600722e60f",
+            "size": 55912,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835881648617493,
+            "inode": 25928105,
+            "mtime_ns": 1790835881648617493,
+            "sha256": "4afb906bc3a42bf095f75fccc889f9644d995ad3d576d26a4925e57f7700d389",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835881657247352,
+            "inode": 25928107,
+            "mtime_ns": 1790835881657247352,
+            "sha256": "9b5d15d8786cf54c66c475d09646f112b5eb79453eb762f36a61c88f6ca44193",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125643229,
+            "inode": 25928080,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125769645,
+            "inode": 25928081,
+            "mtime_ns": 1790835879125769645,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835879126051686,
+            "inode": 25928083,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126148395,
+            "inode": 25928084,
+            "mtime_ns": 1790835879126148395,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "filler": {
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125276105,
+            "inode": 25928077,
+            "mtime_ns": 1790835671229160812,
+            "sha256": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125371354,
+            "inode": 25928078,
+            "mtime_ns": 1790835879125371354,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          ".lake": {
+            "ctime_ns": 1790835881648512410,
+            "inode": 25928104,
+            "mtime_ns": 1790835881648489201,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879124936022,
+            "inode": 25928074,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125045646,
+            "inode": 25928075,
+            "mtime_ns": 1790835879125045646,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          "lakefile.toml": {
+            "ctime_ns": 1790835879126402102,
+            "inode": 25928086,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126525686,
+            "inode": 25928087,
+            "mtime_ns": 1790835879126525686,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "load-a-traces": {
+        "a": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "9dad7885bdb25c6d",
+            "idx": 0,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "b": {},
+        "filler": {},
+        "shared": {},
+        "t": {}
+      },
+      "load-b": {
+        "a": {
+          ".lake": {
+            "ctime_ns": 1790835879163619744,
+            "inode": 25928088,
+            "mtime_ns": 1790835879163619744,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835881648400827,
+            "inode": 25928089,
+            "mtime_ns": 1790835881648400827,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835881645851289,
+            "inode": 25928090,
+            "mtime_ns": 1790835881645851289,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835881645851248,
+            "inode": 25928102,
+            "mtime_ns": 1790835881645714540,
+            "sha256": "ed0e8e3a834160f94383e11dfacb4efb690d0dc4a14fde411f5f6dcd5da489e9",
+            "size": 70936,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835879163868743,
+            "inode": 25928091,
+            "mtime_ns": 1790835879163868743,
+            "sha256": "914f2a2b6a58bd597b05de3ba4981736541006e2e4097de8b0a6c9a8eb7ec4f5",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835881656442145,
+            "inode": 25928103,
+            "mtime_ns": 1790835881656442145,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835881656442104,
+            "inode": 25928106,
+            "mtime_ns": 1790835881656318729,
+            "sha256": "242275a4c60796fca565c126eca22b0e75483c0604aca8d936bd86600722e60f",
+            "size": 55912,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835881648617493,
+            "inode": 25928105,
+            "mtime_ns": 1790835881648617493,
+            "sha256": "4afb906bc3a42bf095f75fccc889f9644d995ad3d576d26a4925e57f7700d389",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835881657247352,
+            "inode": 25928107,
+            "mtime_ns": 1790835881657247352,
+            "sha256": "9b5d15d8786cf54c66c475d09646f112b5eb79453eb762f36a61c88f6ca44193",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125643229,
+            "inode": 25928080,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125769645,
+            "inode": 25928081,
+            "mtime_ns": 1790835879125769645,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          ".lake": {
+            "ctime_ns": 1790835881707533304,
+            "inode": 25928108,
+            "mtime_ns": 1790835881707533304,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835882018496579,
+            "inode": 25928109,
+            "mtime_ns": 1790835882018496579,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835882009096220,
+            "inode": 25928110,
+            "mtime_ns": 1790835882009096220,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835882009096179,
+            "inode": 25928112,
+            "mtime_ns": 1790835882008974471,
+            "sha256": "7bcfc8ccf8ea98db27cfcee325e0c7cc34d1802bb43d82ac72c8641f178c59fe",
+            "size": 76704,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835881707744595,
+            "inode": 25928111,
+            "mtime_ns": 1790835881707744595,
+            "sha256": "01ae6fa36466a599906135908fad01e77dbc440fa22b1521f9fe7bcc4f17a03c",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835882017919038,
+            "inode": 25928113,
+            "mtime_ns": 1790835882017919038,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835882017918996,
+            "inode": 25928116,
+            "mtime_ns": 1790835882017776538,
+            "sha256": "f72e02b16fb4b5f8ec44b82c5bb6339897d2fbda2cdb6a79da85681e7818cc67",
+            "size": 55912,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835882010385968,
+            "inode": 25928115,
+            "mtime_ns": 1790835882010385968,
+            "sha256": "08d4a277dd86f95c06acd9fc9d7da08142467115b32ecf395e4078a94199d8b8",
+            "size": 179,
+            "type": "file"
+          },
+          ".lake/config/2": {
+            "ctime_ns": 1790835882026011148,
+            "inode": 25928117,
+            "mtime_ns": 1790835882026011148,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/2/lakefile.olean": {
+            "ctime_ns": 1790835882026011148,
+            "inode": 25928119,
+            "mtime_ns": 1790835882025892274,
+            "sha256": "321118c853d6df493c9ba90e65c3a6e818f054568ed84ba3b458c10521ac34b7",
+            "size": 56072,
+            "type": "file"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "ctime_ns": 1790835882018668120,
+            "inode": 25928118,
+            "mtime_ns": 1790835882018668120,
+            "sha256": "5c9bf313df6dcd985f71010f055a44cbae0a55fe8ae94ca42ff9156b2bc35c89",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835882026640356,
+            "inode": 25928120,
+            "mtime_ns": 1790835882026640356,
+            "sha256": "ec4e499e4e40439f9e2cd91f2cbbfa577257bb91d6c4d0dc5fe954a3b5a72000",
+            "size": 489,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879126051686,
+            "inode": 25928083,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126148395,
+            "inode": 25928084,
+            "mtime_ns": 1790835879126148395,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "filler": {
+          ".lake": {
+            "ctime_ns": 1790835882010289343,
+            "inode": 25928114,
+            "mtime_ns": 1790835882010262343,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125276105,
+            "inode": 25928077,
+            "mtime_ns": 1790835671229160812,
+            "sha256": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125371354,
+            "inode": 25928078,
+            "mtime_ns": 1790835879125371354,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          ".lake": {
+            "ctime_ns": 1790835881648512410,
+            "inode": 25928104,
+            "mtime_ns": 1790835881648489201,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879124936022,
+            "inode": 25928074,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125045646,
+            "inode": 25928075,
+            "mtime_ns": 1790835879125045646,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          "lakefile.toml": {
+            "ctime_ns": 1790835879126402102,
+            "inode": 25928086,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126525686,
+            "inode": 25928087,
+            "mtime_ns": 1790835879126525686,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "load-b-traces": {
+        "a": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "9dad7885bdb25c6d",
+            "idx": 0,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "b": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "e2f4a54282c13f82",
+            "idx": 0,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "a52fff8b45f64504",
+            "idx": 1,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "filler",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 2,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "filler": {},
+        "shared": {},
+        "t": {}
+      },
+      "load-toml": {
+        "a": {
+          ".lake": {
+            "ctime_ns": 1790835879163619744,
+            "inode": 25928088,
+            "mtime_ns": 1790835879163619744,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835881648400827,
+            "inode": 25928089,
+            "mtime_ns": 1790835881648400827,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835881645851289,
+            "inode": 25928090,
+            "mtime_ns": 1790835881645851289,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835881645851248,
+            "inode": 25928102,
+            "mtime_ns": 1790835881645714540,
+            "sha256": "ed0e8e3a834160f94383e11dfacb4efb690d0dc4a14fde411f5f6dcd5da489e9",
+            "size": 70936,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835879163868743,
+            "inode": 25928091,
+            "mtime_ns": 1790835879163868743,
+            "sha256": "914f2a2b6a58bd597b05de3ba4981736541006e2e4097de8b0a6c9a8eb7ec4f5",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835882385013629,
+            "inode": 25928103,
+            "mtime_ns": 1790835882385013629,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835882385013587,
+            "inode": 25928122,
+            "mtime_ns": 1790835882384879046,
+            "sha256": "242275a4c60796fca565c126eca22b0e75483c0604aca8d936bd86600722e60f",
+            "size": 55912,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.lock": {
+            "ctime_ns": 1790835882375835895,
+            "inode": 25928121,
+            "mtime_ns": 1790835882375791687,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835882375990228,
+            "inode": 25928105,
+            "mtime_ns": 1790835882375990228,
+            "sha256": "4afb906bc3a42bf095f75fccc889f9644d995ad3d576d26a4925e57f7700d389",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835882385753294,
+            "inode": 25928107,
+            "mtime_ns": 1790835882385753294,
+            "sha256": "9b5d15d8786cf54c66c475d09646f112b5eb79453eb762f36a61c88f6ca44193",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125643229,
+            "inode": 25928080,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125769645,
+            "inode": 25928081,
+            "mtime_ns": 1790835879125769645,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          ".lake": {
+            "ctime_ns": 1790835881707533304,
+            "inode": 25928108,
+            "mtime_ns": 1790835881707533304,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835882018496579,
+            "inode": 25928109,
+            "mtime_ns": 1790835882018496579,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835882009096220,
+            "inode": 25928110,
+            "mtime_ns": 1790835882009096220,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835882009096179,
+            "inode": 25928112,
+            "mtime_ns": 1790835882008974471,
+            "sha256": "7bcfc8ccf8ea98db27cfcee325e0c7cc34d1802bb43d82ac72c8641f178c59fe",
+            "size": 76704,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835881707744595,
+            "inode": 25928111,
+            "mtime_ns": 1790835881707744595,
+            "sha256": "01ae6fa36466a599906135908fad01e77dbc440fa22b1521f9fe7bcc4f17a03c",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835882017919038,
+            "inode": 25928113,
+            "mtime_ns": 1790835882017919038,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835882017918996,
+            "inode": 25928116,
+            "mtime_ns": 1790835882017776538,
+            "sha256": "f72e02b16fb4b5f8ec44b82c5bb6339897d2fbda2cdb6a79da85681e7818cc67",
+            "size": 55912,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835882010385968,
+            "inode": 25928115,
+            "mtime_ns": 1790835882010385968,
+            "sha256": "08d4a277dd86f95c06acd9fc9d7da08142467115b32ecf395e4078a94199d8b8",
+            "size": 179,
+            "type": "file"
+          },
+          ".lake/config/2": {
+            "ctime_ns": 1790835882026011148,
+            "inode": 25928117,
+            "mtime_ns": 1790835882026011148,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/2/lakefile.olean": {
+            "ctime_ns": 1790835882026011148,
+            "inode": 25928119,
+            "mtime_ns": 1790835882025892274,
+            "sha256": "321118c853d6df493c9ba90e65c3a6e818f054568ed84ba3b458c10521ac34b7",
+            "size": 56072,
+            "type": "file"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "ctime_ns": 1790835882018668120,
+            "inode": 25928118,
+            "mtime_ns": 1790835882018668120,
+            "sha256": "5c9bf313df6dcd985f71010f055a44cbae0a55fe8ae94ca42ff9156b2bc35c89",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835882026640356,
+            "inode": 25928120,
+            "mtime_ns": 1790835882026640356,
+            "sha256": "ec4e499e4e40439f9e2cd91f2cbbfa577257bb91d6c4d0dc5fe954a3b5a72000",
+            "size": 489,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879126051686,
+            "inode": 25928083,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126148395,
+            "inode": 25928084,
+            "mtime_ns": 1790835879126148395,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "filler": {
+          ".lake": {
+            "ctime_ns": 1790835882010289343,
+            "inode": 25928114,
+            "mtime_ns": 1790835882010262343,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125276105,
+            "inode": 25928077,
+            "mtime_ns": 1790835671229160812,
+            "sha256": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125371354,
+            "inode": 25928078,
+            "mtime_ns": 1790835879125371354,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          ".lake": {
+            "ctime_ns": 1790835881648512410,
+            "inode": 25928104,
+            "mtime_ns": 1790835881648489201,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879124936022,
+            "inode": 25928074,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125045646,
+            "inode": 25928075,
+            "mtime_ns": 1790835879125045646,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          ".lake": {
+            "ctime_ns": 1790835882439421031,
+            "inode": 25928123,
+            "mtime_ns": 1790835882439421031,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835882439457489,
+            "inode": 25928124,
+            "mtime_ns": 1790835882439457489,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835882730620009,
+            "inode": 25928125,
+            "mtime_ns": 1790835882730620009,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835882730619967,
+            "inode": 25928127,
+            "mtime_ns": 1790835882730484384,
+            "sha256": "242275a4c60796fca565c126eca22b0e75483c0604aca8d936bd86600722e60f",
+            "size": 55912,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835882439616031,
+            "inode": 25928126,
+            "mtime_ns": 1790835882439616031,
+            "sha256": "4afb906bc3a42bf095f75fccc889f9644d995ad3d576d26a4925e57f7700d389",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835882731491424,
+            "inode": 25928128,
+            "mtime_ns": 1790835882731491424,
+            "sha256": "c6b71274c3286b10a76ea91265a9e9f08da1049f1931c92d206d3036ea37ee20",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.toml": {
+            "ctime_ns": 1790835879126402102,
+            "inode": 25928086,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126525686,
+            "inode": 25928087,
+            "mtime_ns": 1790835879126525686,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "load-toml-traces": {
+        "a": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "9dad7885bdb25c6d",
+            "idx": 0,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "b": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "e2f4a54282c13f82",
+            "idx": 0,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "a52fff8b45f64504",
+            "idx": 1,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "filler",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 2,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "filler": {},
+        "shared": {},
+        "t": {
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        }
+      },
+      "reload-a": {
+        "a": {
+          ".lake": {
+            "ctime_ns": 1790835879163619744,
+            "inode": 25928088,
+            "mtime_ns": 1790835879163619744,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835881648400827,
+            "inode": 25928089,
+            "mtime_ns": 1790835881648400827,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835881645851289,
+            "inode": 25928090,
+            "mtime_ns": 1790835881645851289,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835881645851248,
+            "inode": 25928102,
+            "mtime_ns": 1790835881645714540,
+            "sha256": "ed0e8e3a834160f94383e11dfacb4efb690d0dc4a14fde411f5f6dcd5da489e9",
+            "size": 70936,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835879163868743,
+            "inode": 25928091,
+            "mtime_ns": 1790835879163868743,
+            "sha256": "914f2a2b6a58bd597b05de3ba4981736541006e2e4097de8b0a6c9a8eb7ec4f5",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835882385013629,
+            "inode": 25928103,
+            "mtime_ns": 1790835882385013629,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835882385013587,
+            "inode": 25928122,
+            "mtime_ns": 1790835882384879046,
+            "sha256": "242275a4c60796fca565c126eca22b0e75483c0604aca8d936bd86600722e60f",
+            "size": 55912,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.lock": {
+            "ctime_ns": 1790835882375835895,
+            "inode": 25928121,
+            "mtime_ns": 1790835882375791687,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835882375990228,
+            "inode": 25928105,
+            "mtime_ns": 1790835882375990228,
+            "sha256": "4afb906bc3a42bf095f75fccc889f9644d995ad3d576d26a4925e57f7700d389",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835882385753294,
+            "inode": 25928107,
+            "mtime_ns": 1790835882385753294,
+            "sha256": "9b5d15d8786cf54c66c475d09646f112b5eb79453eb762f36a61c88f6ca44193",
+            "size": 312,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125643229,
+            "inode": 25928080,
+            "mtime_ns": 1790835671229609520,
+            "sha256": "6162f185d7170ff354cd9b04ed04a8ef1f0850be78e9ad7995dc2bb81da45a2e",
+            "size": 74,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125769645,
+            "inode": 25928081,
+            "mtime_ns": 1790835879125769645,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "b": {
+          ".lake": {
+            "ctime_ns": 1790835881707533304,
+            "inode": 25928108,
+            "mtime_ns": 1790835881707533304,
+            "sha256": null,
+            "size": 96,
+            "type": "dir"
+          },
+          ".lake/config": {
+            "ctime_ns": 1790835882018496579,
+            "inode": 25928109,
+            "mtime_ns": 1790835882018496579,
+            "sha256": null,
+            "size": 160,
+            "type": "dir"
+          },
+          ".lake/config/0": {
+            "ctime_ns": 1790835882009096220,
+            "inode": 25928110,
+            "mtime_ns": 1790835882009096220,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/0/lakefile.olean": {
+            "ctime_ns": 1790835882009096179,
+            "inode": 25928112,
+            "mtime_ns": 1790835882008974471,
+            "sha256": "7bcfc8ccf8ea98db27cfcee325e0c7cc34d1802bb43d82ac72c8641f178c59fe",
+            "size": 76704,
+            "type": "file"
+          },
+          ".lake/config/0/lakefile.olean.trace": {
+            "ctime_ns": 1790835881707744595,
+            "inode": 25928111,
+            "mtime_ns": 1790835881707744595,
+            "sha256": "01ae6fa36466a599906135908fad01e77dbc440fa22b1521f9fe7bcc4f17a03c",
+            "size": 184,
+            "type": "file"
+          },
+          ".lake/config/1": {
+            "ctime_ns": 1790835882017919038,
+            "inode": 25928113,
+            "mtime_ns": 1790835882017919038,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/1/lakefile.olean": {
+            "ctime_ns": 1790835882017918996,
+            "inode": 25928116,
+            "mtime_ns": 1790835882017776538,
+            "sha256": "f72e02b16fb4b5f8ec44b82c5bb6339897d2fbda2cdb6a79da85681e7818cc67",
+            "size": 55912,
+            "type": "file"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "ctime_ns": 1790835882010385968,
+            "inode": 25928115,
+            "mtime_ns": 1790835882010385968,
+            "sha256": "08d4a277dd86f95c06acd9fc9d7da08142467115b32ecf395e4078a94199d8b8",
+            "size": 179,
+            "type": "file"
+          },
+          ".lake/config/2": {
+            "ctime_ns": 1790835882026011148,
+            "inode": 25928117,
+            "mtime_ns": 1790835882026011148,
+            "sha256": null,
+            "size": 128,
+            "type": "dir"
+          },
+          ".lake/config/2/lakefile.olean": {
+            "ctime_ns": 1790835882026011148,
+            "inode": 25928119,
+            "mtime_ns": 1790835882025892274,
+            "sha256": "321118c853d6df493c9ba90e65c3a6e818f054568ed84ba3b458c10521ac34b7",
+            "size": 56072,
+            "type": "file"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "ctime_ns": 1790835882018668120,
+            "inode": 25928118,
+            "mtime_ns": 1790835882018668120,
+            "sha256": "5c9bf313df6dcd985f71010f055a44cbae0a55fe8ae94ca42ff9156b2bc35c89",
+            "size": 179,
+            "type": "file"
+          },
+          "lake-manifest.json": {
+            "ctime_ns": 1790835882026640356,
+            "inode": 25928120,
+            "mtime_ns": 1790835882026640356,
+            "sha256": "ec4e499e4e40439f9e2cd91f2cbbfa577257bb91d6c4d0dc5fe954a3b5a72000",
+            "size": 489,
+            "type": "file"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879126051686,
+            "inode": 25928083,
+            "mtime_ns": 1790835866992518047,
+            "sha256": "7d903489f4c559e0ae97c30ef3136dbd8b795bd0b349804834161bed57bbffa6",
+            "size": 107,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126148395,
+            "inode": 25928084,
+            "mtime_ns": 1790835879126148395,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "filler": {
+          ".lake": {
+            "ctime_ns": 1790835882010289343,
+            "inode": 25928114,
+            "mtime_ns": 1790835882010262343,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879125276105,
+            "inode": 25928077,
+            "mtime_ns": 1790835671229160812,
+            "sha256": "6df238ac3c3dbdbd29e5e6a776904b8abdd4a5fbd3b0ceb316e44f51927b752f",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125371354,
+            "inode": 25928078,
+            "mtime_ns": 1790835879125371354,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "shared": {
+          ".lake": {
+            "ctime_ns": 1790835881648512410,
+            "inode": 25928104,
+            "mtime_ns": 1790835881648489201,
+            "sha256": null,
+            "size": 64,
+            "type": "dir"
+          },
+          "lakefile.lean": {
+            "ctime_ns": 1790835879124936022,
+            "inode": 25928074,
+            "mtime_ns": 1790835671228591397,
+            "sha256": "71b268ceae3ecd779d3493697ac650441f2c232419124fadc5a550a8b1a588d1",
+            "size": 41,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879125045646,
+            "inode": 25928075,
+            "mtime_ns": 1790835879125045646,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        },
+        "t": {
+          "lakefile.toml": {
+            "ctime_ns": 1790835879126402102,
+            "inode": 25928086,
+            "mtime_ns": 1790835671230240560,
+            "sha256": "6ebdbd4916cc6fe7f5b69dd4e4c4b7df3d88f1885b827f46b1c6136b49d0979c",
+            "size": 63,
+            "type": "file"
+          },
+          "lean-toolchain": {
+            "ctime_ns": 1790835879126525686,
+            "inode": 25928087,
+            "mtime_ns": 1790835879126525686,
+            "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+            "size": 25,
+            "type": "file"
+          }
+        }
+      },
+      "reload-a-traces": {
+        "a": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "9dad7885bdb25c6d",
+            "idx": 0,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 1,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "b": {
+          ".lake/config/0/lakefile.olean.trace": {
+            "configHash": "e2f4a54282c13f82",
+            "idx": 0,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "[anonymous]",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/1/lakefile.olean.trace": {
+            "configHash": "a52fff8b45f64504",
+            "idx": 1,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "filler",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          },
+          ".lake/config/2/lakefile.olean.trace": {
+            "configHash": "9b5bc4980de63939",
+            "idx": 2,
+            "leanHash": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "name": "shared",
+            "options": {},
+            "platform": "arm64-apple-darwin24.6.0"
+          }
+        },
+        "filler": {},
+        "shared": {},
+        "t": {}
+      }
+    }
+  },
+  "status": "completed"
+}

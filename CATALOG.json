@@ -14573,6 +14573,35 @@
         "lake/concurrency"
       ]
     },
+    "lake-configuration-ownership-431-434-runtime-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "component": "Lake",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "version": "v4.31.0"
+          },
+          "name": "Lake compiled Lean configuration ownership at 4.31.0"
+        },
+        {
+          "identity": {
+            "component": "Lake",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lake compiled Lean configuration ownership at 4.34.1"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lean/configuration",
+        "lean/workspaces",
+        "lean/version-difference"
+      ]
+    },
     "lake-configuration-ownership-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
