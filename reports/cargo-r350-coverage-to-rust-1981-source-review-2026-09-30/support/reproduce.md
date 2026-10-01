@@ -1,6 +1,6 @@
 # Source-only reproduction
 
-The R350 predecessor is frozen at `google/zerocopy@1b6f146d7951402e10102354a131b5cee9c5f855`. The working reference parent for this package is `1e87e9bf7b672c354b4c2903a372329ee61faf63`.
+The R350 predecessor is frozen at `google/zerocopy@1b6f146d7951402e10102354a131b5cee9c5f855`. The reference parent used to author this package is `1e87e9bf7b672c354b4c2903a372329ee61faf63`; the offline checker accepts that commit and its descendants, including the published report commit.
 
 From the reference checkout, use this **offline data validator**:
 

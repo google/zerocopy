@@ -4272,6 +4272,32 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v84": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "crosswalk_sha256": "43f16f6984d8b4eff1cfd42b042c4fb9f95b0d70b81e57aed152bfc91ee91f2c",
+            "inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+            "reference_parent": "e9350ecdba2279577957dc7892bd0bded34dd039",
+            "source_package_inventory_sha256": "aa21b7c08905163ed8be29eb6adfa38df1866138004d8b62e75123b8fd5c7a51"
+          },
+          "name": "Published v83 audit and current R350 checker-source refresh"
+        },
+        {
+          "identity": {
+            "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+            "v81_report": "anneal-3730-3731-final-coverage-audit-2026-09-30-v81"
+          },
+          "name": "Inherited v81 issue ledger and snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [

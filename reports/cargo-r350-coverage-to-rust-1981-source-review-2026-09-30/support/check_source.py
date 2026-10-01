@@ -27,7 +27,10 @@ def check(test: bool, label: str) -> None:
         raise AssertionError(label)
 
 def main() -> None:
-    check(subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT).decode().strip() == M['reference_parent_for_this_review'], 'parent HEAD')
+    check(subprocess.run(
+        ['git', 'merge-base', '--is-ancestor', M['reference_parent_for_this_review'], 'HEAD'],
+        cwd=ROOT, capture_output=True,
+    ).returncode == 0, 'frozen parent is an ancestor of HEAD')
     md = frozen(M['predecessor_report_md'])
     rj = frozen(M['predecessor_report_json'])
     check(sha(md) == M['predecessor_report_md_sha256'], 'predecessor markdown')

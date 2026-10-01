@@ -1,0 +1,13 @@
+# #3730/#3731 coverage audit v84: R350 checker-source refresh
+
+## Scope and lineage
+
+This candidate is based on published `reference@e9350ecdba2279577957dc7892bd0bded34dd039`. It preserves the published [v83 audit](../anneal-3730-3731-final-coverage-audit-2026-09-30-v83/REPORT.md)'s [361-row crosswalk](support/newer-version-crosswalk-v84.csv) **byte for byte**: 323 exact-claim source reviews, 38 contextual or paired-component source reviews, and zero unmapped rows across 11 cohorts. R350 remains exact-claim source coverage with no newer runtime execution; R443 remains static Lean AArch64 leantar evidence with no helper execution; R578 remains `no_newer_release` outside the selected 361 rows. No coverage status, issue disposition, gate, residual or prerequisite changes.
+
+The [v83 source inventory](../anneal-3730-3731-final-coverage-audit-2026-09-30-v83/support/source-package-inventory-v83.csv) freezes the R350 package bytes as they stood when v83 was authored. The R350 report has since been published, and a **two-file checker documentation fix is present in this working-tree candidate**: `support/check_source.py` accepts the frozen authoring parent as an ancestor of current HEAD, and `support/reproduce.md` explains the ancestor rule. Those two changes are not yet claimed as published at this frozen parent. The [v84 source inventory](support/source-package-inventory-v84.csv) hashes the complete current R350 working-tree package and the published v83 audit package. The [manifest](support/validation-v84.json) names the two changed paths and both historical and current hashes. All other R350 package files match v83's frozen source inventory.
+
+v83's checker correctly validates its **historical** package snapshot and therefore fails when pointed at the revised live R350 working-tree bytes. v84 is the current-tree successor: its checker accepts the two documented support-file changes and verifies the current bytes. The source-review findings and limits are unchanged. No Cargo, rustc, Charon, Aeneas, Lean, Anneal, build script, fixture or product path was run for this audit; source coverage does not prove newer executable or product behavior.
+
+## Preservation and verification
+
+The [159-row investigation ledger](support/investigation-final-v80.csv), [174-row suggestion crosswalk with 345 links](support/3730-crosswalk-final-v80.csv), [333-row challenge](support/row-challenge-v80.json), [issue snapshot](support/live-issue-snapshot-v80.json), and [581-row frozen inventory](support/version-inventory-ebcdcad-581.csv) are byte-identical to v83 and v81. No issue was fetched or edited. Run `python3 -B support/check.py` here and `python3 -B tools/reference.py check` at the reference root. Candidate only; no commit or push.
