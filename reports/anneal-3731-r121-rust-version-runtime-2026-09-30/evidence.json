@@ -1,0 +1,204 @@
+{
+  "compilers": {
+    "nightly_2026_05_31": {
+      "binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "runs": {
+        "baseline": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+            "--crate-type",
+            "lib",
+            "--emit",
+            "metadata",
+            "-o",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/nightly_2026_05_31-baseline.rmeta",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/baseline.rs"
+          ],
+          "exit": 0,
+          "metadata_exists": true,
+          "metadata_sha256": "d2cf111f7f2d4af205f9936b8775835fad7e97d0fdf2d7876729984f4702a6e5",
+          "stderr": "",
+          "stdout": ""
+        },
+        "rust_incomplete": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+            "--crate-type",
+            "lib",
+            "--emit",
+            "metadata",
+            "-o",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/nightly_2026_05_31-rust_incomplete.rmeta",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/rust_incomplete.rs"
+          ],
+          "exit": 1,
+          "metadata_exists": false,
+          "metadata_sha256": null,
+          "stderr": "error: this file contains an unclosed delimiter\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/rust_incomplete.rs:5:9\n  |\n1 | pub fn f( -> u32 { 7 }\n  |         - unclosed delimiter\n...\n5 | //% end\n  |        ^\n\nerror: aborting due to 1 previous error\n\n",
+          "stdout": ""
+        }
+      },
+      "version": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+          "-Vv"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n"
+      }
+    },
+    "nightly_2026_09_17": {
+      "binary_sha256": "25f765e04b0d2cea011e4e85b9d48e1587ea449786259e16b17f01cabc848c3b",
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-17-aarch64-apple-darwin/bin/rustc",
+      "runs": {
+        "baseline": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-17-aarch64-apple-darwin/bin/rustc",
+            "--crate-type",
+            "lib",
+            "--emit",
+            "metadata",
+            "-o",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/nightly_2026_09_17-baseline.rmeta",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/baseline.rs"
+          ],
+          "exit": 0,
+          "metadata_exists": true,
+          "metadata_sha256": "6732ef6efc99d51fa837fbc9c0da59d093774fc44cfd57e6718360795928f99f",
+          "stderr": "",
+          "stdout": ""
+        },
+        "rust_incomplete": {
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-17-aarch64-apple-darwin/bin/rustc",
+            "--crate-type",
+            "lib",
+            "--emit",
+            "metadata",
+            "-o",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/nightly_2026_09_17-rust_incomplete.rmeta",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/rust_incomplete.rs"
+          ],
+          "exit": 1,
+          "metadata_exists": false,
+          "metadata_sha256": null,
+          "stderr": "error: this file contains an unclosed delimiter\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/rust_incomplete.rs:5:9\n  |\n1 | pub fn f( -> u32 { 7 }\n  |         - unclosed delimiter\n...\n5 | //% end\n  |        ^\n\nerror: aborting due to 1 previous error\n\n",
+          "stdout": ""
+        }
+      },
+      "version": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-17-aarch64-apple-darwin/bin/rustc",
+          "-Vv"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": "rustc 1.100.0-nightly (923c95cdf 2026-09-16)\nbinary: rustc\ncommit-hash: 923c95cdf5ba65cea505aa2ea829f578e1506ed8\ncommit-date: 2026-09-16\nhost: aarch64-apple-darwin\nrelease: 1.100.0-nightly\nLLVM version: 23.1.1\n"
+      }
+    },
+    "stable_1_98_1": {
+      "binary_sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340",
+      "path": "/opt/homebrew/bin/rustc",
+      "runs": {
+        "baseline": {
+          "argv": [
+            "/opt/homebrew/bin/rustc",
+            "--crate-type",
+            "lib",
+            "--emit",
+            "metadata",
+            "-o",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/stable_1_98_1-baseline.rmeta",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/baseline.rs"
+          ],
+          "exit": 0,
+          "metadata_exists": true,
+          "metadata_sha256": "0d46fc3c78c03019d16012d1fd37413e73cfbcfcb2f9ea31f34dffafd515552b",
+          "stderr": "",
+          "stdout": ""
+        },
+        "rust_incomplete": {
+          "argv": [
+            "/opt/homebrew/bin/rustc",
+            "--crate-type",
+            "lib",
+            "--emit",
+            "metadata",
+            "-o",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/stable_1_98_1-rust_incomplete.rmeta",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/rust_incomplete.rs"
+          ],
+          "exit": 1,
+          "metadata_exists": false,
+          "metadata_sha256": null,
+          "stderr": "error: this file contains an unclosed delimiter\n --> /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/rust_incomplete.rs:5:9\n  |\n1 | pub fn f( -> u32 { 7 }\n  |         - unclosed delimiter\n...\n5 | //% end\n  |        ^\n\nerror: aborting due to 1 previous error\n\n",
+          "stdout": ""
+        }
+      },
+      "version": {
+        "argv": [
+          "/opt/homebrew/bin/rustc",
+          "-Vv"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": "rustc 1.98.1 (48a229cea 2026-09-01) (Homebrew)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8\n"
+      }
+    }
+  },
+  "fixtures": {
+    "baseline": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/baseline.rs",
+      "projection_sha256": "50563baaac37c3657259adb3659365b4c2857b3030a2a80a933e176f9aa6dd49",
+      "scanner_blocks": [
+        {
+          "complete": true,
+          "end": 133,
+          "id": "a",
+          "segments": [
+            [
+              42,
+              79
+            ],
+            [
+              83,
+              124
+            ]
+          ],
+          "start": 25
+        }
+      ],
+      "source_sha256": "74e1732c32004df0e0c6c9af6626f571235480fa47128a7e0db94a4a979d0aa5"
+    },
+    "rust_incomplete": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-r121-rust-version-runtime-2026-09-30/fixtures/rust_incomplete.rs",
+      "projection_sha256": "50563baaac37c3657259adb3659365b4c2857b3030a2a80a933e176f9aa6dd49",
+      "scanner_blocks": [
+        {
+          "complete": true,
+          "end": 132,
+          "id": "a",
+          "segments": [
+            [
+              41,
+              78
+            ],
+            [
+              82,
+              123
+            ]
+          ],
+          "start": 24
+        }
+      ],
+      "source_sha256": "41010e6f5c2229314abc201dc5f61eca18b4f66003ffcb11125a54b2b445ae02"
+    }
+  },
+  "original_raw_results_sha256": "dc81039a29949d647c4594a2ca1f73658a077378ce7acca87a654c9b0e036cbe",
+  "scanner": {
+    "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-annotation-gap-probes-2026-09-29/support/probe.py",
+    "sha256": "c80616ee85dcb6437eff17c18e1cf1a03b6f3037c61238ea7f47d1e5c5ee8b7b"
+  }
+}

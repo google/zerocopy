@@ -9828,6 +9828,43 @@
         "lean/tactic-state"
       ]
     },
+    "anneal-3731-r121-rust-version-runtime-2026-09-30": {
+      "observed_at": "2026-09-30",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "repository": "rust-lang/rust",
+            "rustc_binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly 2026-05-31"
+        },
+        {
+          "identity": {
+            "commit": "48a229ceaefd4985c50990b14116b6d856af0985",
+            "repository": "rust-lang/rust",
+            "rustc_binary_sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340",
+            "version": "1.98.1"
+          },
+          "name": "Rust stable 1.98.1 baseline compiler"
+        },
+        {
+          "identity": {
+            "commit": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+            "repository": "rust-lang/rust",
+            "rustc_binary_sha256": "25f765e04b0d2cea011e4e85b9d48e1587ea449786259e16b17f01cabc848c3b",
+            "version": "1.100.0-nightly (2026-09-16)"
+          },
+          "name": "Rust nightly 2026-09-17 newer target"
+        }
+      ],
+      "topics": [
+        "rust/compiler-diagnostics",
+        "anneal/annotation-parsing",
+        "version-comparison"
+      ]
+    },
     "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2": {
       "observed_at": "2026-09-29",
       "subjects": [
