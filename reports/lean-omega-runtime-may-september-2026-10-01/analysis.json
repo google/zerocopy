@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "all_three_stdout_pairs_identical": true,
+  "all_six_exit_codes_expected": true,
+  "outcomes": {
+    "linear": "eight examples accepted with exit 0 and no diagnostics",
+    "nonlinear": "commuted nonlinear product goal failed with same counterexample text",
+    "no-constraints": "uninterpreted proposition goal failed with same no-usable-constraints text"
+  }
+}

@@ -1,0 +1,17 @@
+# R470 `omega` batch behavior at Lean 4.30.0-rc2 and 4.34.1
+
+## Result
+
+The [published R470 source report](../lean-omega-behavior-v4-30-0-rc2/REPORT.md) (SHA-256 `b676545de3e8780f6a9e7f3b88e12ea4a39c6fdb068cae99fa925ba49089f000`) analyzed Lean 4.30.0-rc2 but ran no tactic fixture. This supplement uses three **new, reconstructed** [batch fixtures](fixture/) with the installed exact old Lean binary and Lean 4.34.1. There are no retained R470 executable fixture bytes to replay.
+
+The [linear fixture](fixture/linear.lean) has eight accepted `omega` examples: natural and integer linear inequalities/equality, disequality, constant divisibility/remainder, natural subtraction, `min`, `Int.natAbs`, and reuse of one opaque nonlinear product in a linear bound. Both Lean versions exit 0 with no diagnostic output. The [nonlinear fixture](fixture/nonlinear.lean) asks `omega` to prove a commuted product equality; both exit 1 with the same counterexample-shaped diagnostic that treats `a * b` and `b * a` as distinct terms. The [no-constraints fixture](fixture/no-constraints.lean) asks it to prove an arbitrary proposition; both exit 1 with the same “No usable constraints found” diagnostic. **All three corresponding stdout/stderr pairs are byte-identical** between versions at the recorded `lean --json` command and paths.
+
+This observed continuity is narrow. It does not establish completeness or incompleteness of the general algorithm, default configuration values, all split-option interactions, dark/grey shadow behavior, proof axiom dependencies, or other expression forms. Failure on a single nonlinear goal does not prove an algebraic identity false; it shows only that these tactic runs did not discharge it. This report does not claim the original source report's full source-level conclusions persist at 4.34.1.
+
+## Exact identities and execution
+
+The old tool is Lean 4.30.0-rc2, commit `3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc`, executable SHA-256 `b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997`. The new is Lean 4.34.1, commit `5045d0056413266e57c625dcd7c365b10e377c52`, SHA-256 `1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554`. Both are `arm64-apple-darwin24.6.0` release binaries. Exact `lean --version` strings, fixture hashes, argv, exit codes, streams, and resource admissions are in [results.json](results.json).
+
+The six `lean --json fixture/<case>.lean` processes ran serially and offline, without Lake, Mathlib, LSP/server, downloads, or installs. The runner [support/probe.py](support/probe.py) admitted each process only with >20% estimated reclaimable RAM, >1 GiB free disk, and <100 MB package bytes, and killed a child above 1 GiB sampled RSS or 30 seconds. Minimum recorded admission was **24.3732%** reclaimable RAM and **4,187,308,032** free disk bytes; maximum owned bytes at admission **11,570**, sampled RSS **663,696 KiB**, and duration **3.157 s**. Very short children could complete before an RSS sample, but none here did.
+
+The full [raw outputs](raw/) and [analysis.json](analysis.json) are retained. `python3 -B support/check.py` validates exact tool/fixture identities, command and raw hashes, resource-gate arithmetic, all success/failure and diagnostic assertions, and byte equality offline. It works after relocating this package. `python3 -B support/probe.py` reruns the guarded local matrix. These are batch compiler observations; no interactive Lean server, generated Anneal proof, or source-level implementation audit was run.

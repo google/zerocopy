@@ -1,0 +1,1 @@
+{"caption":"","data":"omega could not prove the goal:\na possible counterexample may satisfy the constraints\n  d ≥ 0\n  c ≥ 0\n  c - d ≥ 1\nwhere\n c := ↑b * ↑a\n d := ↑a * ↑b","endPos":{"column":47,"line":4},"fileName":"fixture/nonlinear.lean","isSilent":false,"keepFullRange":false,"kind":"[anonymous]","pos":{"column":42,"line":4},"severity":"error"}
