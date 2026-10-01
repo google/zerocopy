@@ -158,8 +158,10 @@ impl UiTestRunner {
         let repo_root = workspace_root.parent().expect("Zerocopy root should have a parent");
 
         let mut rlib_path = None;
+        let mut rmeta_path = None;
         let mut derive_lib_path = None;
         let mut static_assertions_path = None;
+        let mut static_assertions_rmeta_path = None;
         let mut zerocopy_features = None;
 
         let mut command = Command::new("cargo");
@@ -287,6 +289,8 @@ impl UiTestRunner {
                             }
                             rlib_path = Some(file);
                             zerocopy_features = Some(features.clone());
+                        } else if file.extension() == Some("rmeta") {
+                            rmeta_path = Some(file);
                         }
                     }
                 } else if artifact.target.name == "zerocopy-derive"
@@ -304,6 +308,8 @@ impl UiTestRunner {
                     for file in artifact.filenames {
                         if file.extension() == Some("rlib") {
                             static_assertions_path = Some(file);
+                        } else if file.extension() == Some("rmeta") {
+                            static_assertions_rmeta_path = Some(file);
                         }
                     }
                 }
@@ -311,9 +317,12 @@ impl UiTestRunner {
         }
 
         let rlib_path = rlib_path.expect("failed to find zerocopy.rlib");
+        let rmeta_path = rmeta_path.unwrap_or_else(|| rlib_path.clone());
         let derive_lib_path = derive_lib_path.expect("failed to find zerocopy_derive proc-macro");
         let static_assertions_path =
             static_assertions_path.expect("failed to find static_assertions rlib");
+        let static_assertions_rmeta_path =
+            static_assertions_rmeta_path.unwrap_or_else(|| static_assertions_path.clone());
         let zerocopy_features =
             zerocopy_features.expect("failed to find zerocopy artifact features");
         assert!(
@@ -377,8 +386,10 @@ impl UiTestRunner {
         }
 
         command.env("ZEROCOPY_RLIB_PATH", rlib_path);
+        command.env("ZEROCOPY_RMETA_PATH", rmeta_path);
         command.env("ZEROCOPY_DERIVE_LIB_PATH", derive_lib_path);
         command.env("ZEROCOPY_STATIC_ASSERTIONS_PATH", static_assertions_path);
+        command.env("ZEROCOPY_STATIC_ASSERTIONS_RMETA_PATH", static_assertions_rmeta_path);
         command.env("ZEROCOPY_WORKSPACE_ROOT", workspace_root.display().to_string());
 
         if let Some(ref t) = target {

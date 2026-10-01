@@ -28,7 +28,6 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
            and $OTHER_TYPES others
-   = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -59,7 +58,6 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
            and $OTHER_TYPES others
-   = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -90,7 +88,6 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
            and $OTHER_TYPES others
-   = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -121,7 +118,6 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
            and $OTHER_TYPES others
-   = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -152,7 +148,6 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
            and $OTHER_TYPES others
-   = help: see issue #48214
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -175,17 +170,14 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
              ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             AU16
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
+             Atomic<u16>
            and $OTHER_TYPES others
-   = help: see issue #48214
-   = note: the full name for the type has been written to '/long-type-HASH.txt'
-   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
@@ -207,14 +199,13 @@ help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocop
    = help: the following other types implement trait `zerocopy_renamed::IntoBytes`:
              ()
              AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
+             Atomic<bool>
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
            and $OTHER_TYPES others
-   = help: see issue #48214
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
@@ -235,15 +226,14 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
              ()
-             AtomicBool
-             AtomicI8
-             AtomicU8
+             Atomic<bool>
+             Atomic<i8>
+             Atomic<u8>
              Cell<T>
              F32<O>
              F64<O>
              I128<O>
            and $OTHER_TYPES others
-   = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
@@ -264,15 +254,14 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
              ()
-             AtomicBool
-             AtomicI8
-             AtomicU8
+             Atomic<bool>
+             Atomic<i8>
+             Atomic<u8>
              Cell<T>
              F32<O>
              F64<O>
              I128<O>
            and $OTHER_TYPES others
-   = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
@@ -293,15 +282,14 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
     = note: Consider adding `#[derive(Unaligned)]` to `AU16`
     = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
               ()
-              AtomicBool
-              AtomicI8
-              AtomicU8
+              Atomic<bool>
+              Atomic<i8>
+              Atomic<u8>
               Cell<T>
               F32<O>
               F64<O>
               I128<O>
             and $OTHER_TYPES others
-    = help: see issue #48214
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
@@ -322,26 +310,24 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
              ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             AU16
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
+             Atomic<u16>
            and $OTHER_TYPES others
 note: required for `FromBytes1` to implement `zerocopy_renamed::FromBytes`
   --> $DIR/late_compile_pass.rs:54:10
    |
 54 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |          ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::FromBytes`
 note: required by a bound in `_::_::<impl zerocopy_renamed::TryFromBytes for FromBytes1>::is_safe::assert_is_from_bytes`
   --> $DIR/late_compile_pass.rs:54:10
    |
 54 | #[derive(FromBytes)]
    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
-   = note: the full name for the type has been written to '/long-type-HASH.txt'
-   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 11 previous errors; 1 warning emitted

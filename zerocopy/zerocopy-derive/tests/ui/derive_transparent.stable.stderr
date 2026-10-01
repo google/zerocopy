@@ -24,12 +24,19 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
   --> $DIR/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                     ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::TryFromBytes`
+   = help: consider manually implementing `zerocopy_renamed::TryFromBytes` to avoid undesired bounds caused by "imperfect derives"
+   = note: to learn more, visit <https://github.com/rust-lang/rust/issues/26925>
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> $DIR/derive_transparent.rs:35:1
+  --> $DIR/../include.rs:74:17
+   |
+74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: $DIR/derive_transparent.rs:35:1
    |
 35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ------------------------------------------------------------------- in this macro invocation
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -60,12 +67,19 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
   --> $DIR/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                     ^^^^^^^^^ type parameter would need to implement `FromZeros`
+   = help: consider manually implementing `FromZeros` to avoid undesired bounds caused by "imperfect derives"
+   = note: to learn more, visit <https://github.com/rust-lang/rust/issues/26925>
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> $DIR/derive_transparent.rs:38:1
+  --> $DIR/../include.rs:74:17
+   |
+74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: $DIR/derive_transparent.rs:38:1
    |
 38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ---------------------------------------------------------------- in this macro invocation
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -84,26 +98,31 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
              ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             AU16
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
+             Atomic<u16>
            and $OTHER_TYPES others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::FromBytes`
   --> $DIR/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                     ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::FromBytes`
+   = help: consider manually implementing `zerocopy_renamed::FromBytes` to avoid undesired bounds caused by "imperfect derives"
+   = note: to learn more, visit <https://github.com/rust-lang/rust/issues/26925>
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> $DIR/derive_transparent.rs:41:1
+  --> $DIR/../include.rs:74:17
+   |
+74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: $DIR/derive_transparent.rs:41:1
    |
 41 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
-   = note: the full name for the type has been written to '/long-type-HASH.txt'
-   = note: consider using `--verbose` to print the full type name to the console
+   | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
@@ -121,23 +140,30 @@ help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocop
    = help: the following other types implement trait `zerocopy_renamed::IntoBytes`:
              ()
              AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
+             Atomic<bool>
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
            and $OTHER_TYPES others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::IntoBytes`
   --> $DIR/derive_transparent.rs:24:10
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |          ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::IntoBytes`
+   = help: consider manually implementing `zerocopy_renamed::IntoBytes` to avoid undesired bounds caused by "imperfect derives"
+   = note: to learn more, visit <https://github.com/rust-lang/rust/issues/26925>
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> $DIR/derive_transparent.rs:44:1
+  --> $DIR/../include.rs:74:17
+   |
+74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: $DIR/derive_transparent.rs:44:1
    |
 44 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `IntoBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::Unaligned` is not satisfied
@@ -154,9 +180,9 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `NotZerocop
    = note: Consider adding `#[derive(Unaligned)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
              ()
-             AtomicBool
-             AtomicI8
-             AtomicU8
+             Atomic<bool>
+             Atomic<i8>
+             Atomic<u8>
              Cell<T>
              F32<O>
              F64<O>
@@ -166,12 +192,19 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
   --> $DIR/derive_transparent.rs:24:32
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
-   |                                ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                                ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::Unaligned`
+   = help: consider manually implementing `zerocopy_renamed::Unaligned` to avoid undesired bounds caused by "imperfect derives"
+   = note: to learn more, visit <https://github.com/rust-lang/rust/issues/26925>
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> $DIR/derive_transparent.rs:47:1
+  --> $DIR/../include.rs:74:17
+   |
+74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: $DIR/derive_transparent.rs:47:1
    |
 47 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `Unaligned` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 5 previous errors
