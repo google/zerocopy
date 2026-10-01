@@ -1,0 +1,13 @@
+[toolchain]
+channel = "nightly-2026-09-17"
+components = [ "rustc-dev", "llvm-tools", "rust-src", "miri" ]
+targets = [
+    "aarch64-apple-darwin",
+    "aarch64-unknown-linux-gnu",
+    "i686-unknown-linux-gnu",
+    "powerpc64-unknown-linux-gnu",
+    "riscv64gc-unknown-none-elf",
+    "x86_64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]

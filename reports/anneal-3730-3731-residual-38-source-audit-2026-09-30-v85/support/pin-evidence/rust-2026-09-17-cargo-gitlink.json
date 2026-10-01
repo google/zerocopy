@@ -1,0 +1,17 @@
+{
+  "name": "cargo",
+  "path": "src/tools/cargo",
+  "sha": "495c385d0875c4ba51eb72ea0448a2d4c018b8d4",
+  "size": 0,
+  "url": "https://api.github.com/repos/rust-lang/rust/contents/src/tools/cargo?ref=923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+  "html_url": "https://github.com/rust-lang/cargo/tree/495c385d0875c4ba51eb72ea0448a2d4c018b8d4",
+  "git_url": "https://api.github.com/repos/rust-lang/cargo/git/trees/495c385d0875c4ba51eb72ea0448a2d4c018b8d4",
+  "download_url": null,
+  "type": "submodule",
+  "submodule_git_url": "https://github.com/rust-lang/cargo.git",
+  "_links": {
+    "self": "https://api.github.com/repos/rust-lang/rust/contents/src/tools/cargo?ref=923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+    "git": "https://api.github.com/repos/rust-lang/cargo/git/trees/495c385d0875c4ba51eb72ea0448a2d4c018b8d4",
+    "html": "https://github.com/rust-lang/cargo/tree/495c385d0875c4ba51eb72ea0448a2d4c018b8d4"
+  }
+}

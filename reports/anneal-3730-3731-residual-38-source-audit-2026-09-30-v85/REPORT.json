@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/architecture",
+    "research/coverage-audit",
+    "research/version-source-review"
+  ],
+  "subjects": [
+    {
+      "name": "Frozen 38-row residual claim and component source comparison",
+      "identity": {
+        "reference_parent": "6fe9f8ed36f1bfb474afe091a9799ee29016f667",
+        "claim_matrix_sha256": "59ab59955eb77d4388753f892beb025e76a669071f0401785590ba8f8a490b67",
+        "source_pairs_sha256": "b671d0f015ea7e0390ad8391c585c2ee62450c2ddee7a3f2c56b66a17bb13f01"
+      }
+    },
+    {
+      "name": "Newer compatible Aeneas/Charon/Lean/Rust source tuple",
+      "identity": {
+        "aeneas_revision": "0855ce1b8ed3958512b6c19de6bf3035b7acb552",
+        "charon_revision": "e435e5f341863a49a7e85d2fee9988bc0c687c82",
+        "lean_revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "rust_revision": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+        "cargo_revision": "495c385d0875c4ba51eb72ea0448a2d4c018b8d4"
+      }
+    },
+    {
+      "name": "Inherited v84 issue ledger and snapshot",
+      "identity": {
+        "v84_report": "anneal-3730-3731-final-coverage-audit-2026-09-30-v84",
+        "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

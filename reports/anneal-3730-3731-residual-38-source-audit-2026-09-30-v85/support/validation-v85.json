@@ -1,0 +1,32 @@
+{
+  "claim_matrix_sha256": "59ab59955eb77d4388753f892beb025e76a669071f0401785590ba8f8a490b67",
+  "coverage_status_counts": {
+    "contextual_or_paired_component_only": 5,
+    "exact_claim_source_review": 356
+  },
+  "crosswalk_sha256": "bef9cf444e187a6c11aabdf9b92c3c8d71633355164b0454d7ae300c5b257b6f",
+  "frozen_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "frozen_reference_parent": "6fe9f8ed36f1bfb474afe091a9799ee29016f667",
+  "inherited_sha256": {
+    "3730-crosswalk-final-v80.csv": "4f089ad58d470d407836acab57cdbdc04708a3f3ecccb7771008640dfc1bb57f",
+    "investigation-final-v80.csv": "8d41ffd4d9519f54b94d5d8e6d0755b466e5afb44751ffc22fa36dce8f75b9bc",
+    "live-issue-snapshot-v80.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v80.json": "73c1c314244c97efc8abe3889ffffd8edf73dfb5e2f73dc562674ccdd102c893",
+    "version-inventory-ebcdcad-581.csv": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98"
+  },
+  "pin_evidence_sha256": {
+    "channel-rust-nightly-2026-09-17.toml": "9cec46bc6224bd0ff346b0a01a951ba07f9ccb806f89842b897a5a182d0aaccd",
+    "rust-2026-09-17-cargo-gitlink.json": "660bb8eafdee7c3e4fab84c4d8400f25f8e744e11061d7b264ea2787c32abde4"
+  },
+  "prior_v84_crosswalk_sha256": "43f16f6984d8b4eff1cfd42b042c4fb9f95b0d70b81e57aed152bfc91ee91f2c",
+  "residual_row_count": 38,
+  "runtime_status": "target_version_runtime_unexecuted",
+  "source_classification_counts": {
+    "component not claim-relevant": 4,
+    "direct source-diff found": 33,
+    "direct sources unchanged": 1
+  },
+  "source_pair_count": 50,
+  "source_pairs_sha256": "b671d0f015ea7e0390ad8391c585c2ee62450c2ddee7a3f2c56b66a17bb13f01",
+  "version_pairs_sha256": "fbf5bd541af17bb647d69a35c6ec83729266114de13f43f6763eb58da0b23e7f"
+}

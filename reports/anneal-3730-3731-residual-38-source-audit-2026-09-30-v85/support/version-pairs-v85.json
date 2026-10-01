@@ -1,0 +1,24 @@
+{
+  "aeneas_old_new": [
+    "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "0855ce1b8ed3958512b6c19de6bf3035b7acb552"
+  ],
+  "cargo_old_revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+  "frozen_reference_parent": "6fe9f8ed36f1bfb474afe091a9799ee29016f667",
+  "inventory_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "lean_old_new": [
+    "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "68218e876d2a38b1985b8590fff244a83c321783"
+  ],
+  "paired_charon_old_new": [
+    "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "e435e5f341863a49a7e85d2fee9988bc0c687c82"
+  ],
+  "paired_rust_new_source_revision": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+  "paired_rust_new_toolchain": "nightly-2026-09-17",
+  "paired_rust_old_toolchain": "nightly-2026-05-31",
+  "rust_new_cargo_gitlink": "495c385d0875c4ba51eb72ea0448a2d4c018b8d4",
+  "rust_new_cargo_gitlink_response_sha256": "660bb8eafdee7c3e4fab84c4d8400f25f8e744e11061d7b264ea2787c32abde4",
+  "rust_new_channel_manifest_sha256": "9cec46bc6224bd0ff346b0a01a951ba07f9ccb806f89842b897a5a182d0aaccd",
+  "rust_new_channel_version": "1.100.0-nightly (923c95cdf 2026-09-16)"
+}
