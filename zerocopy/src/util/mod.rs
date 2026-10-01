@@ -152,6 +152,11 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 )]
 #[cfg_attr(not(zerocopy_inline_always), inline)]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
+///
+/// ```aeneas
+/// spec padding_lt_alignment
+///   ensures p => p.val < align.val.val
+/// ```
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
     #[cfg(kani)]
     #[kani::proof_for_contract(padding_needed_for)]
@@ -233,6 +238,12 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
         m.checked_add(align.get()).map(|next_mul| next_mul > n).unwrap_or(true)
     })
 )]
+///
+/// ```aeneas
+/// spec round_down_spec
+///   requires h : align.val.val.isPowerOfTwo
+///   ensures m => m.val ≤ n.val ∧ m.val % align.val.val = 0
+/// ```
 pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
     align: NonZeroUsize,
@@ -255,6 +266,11 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
 
 #[cfg_attr(not(zerocopy_inline_always), inline)]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
+///
+/// ```aeneas
+/// spec max_spec
+///   ensures r => r.val.val = Nat.max a.val.val b.val.val
+/// ```
 pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     if a.get() < b.get() {
         b
@@ -265,6 +281,11 @@ pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
 
 #[cfg_attr(not(zerocopy_inline_always), inline)]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
+///
+/// ```aeneas
+/// spec min_spec
+///   ensures r => r.val.val = Nat.min a.val.val b.val.val
+/// ```
 pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     if a.get() > b.get() {
         b
