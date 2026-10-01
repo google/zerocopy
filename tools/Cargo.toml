@@ -8,6 +8,7 @@
 
 [workspace]
 members = [
+    "aeneas-inline",
     "cargo-zerocopy",
     "generate-readme",
     "ui-runner",
