@@ -26,34 +26,23 @@ An Anneal claim identifies:
 - one or more **guarantees**, each with any **requirements** under which that
   guarantee applies.
 
-The scope determines what the claim is about. The requirements of a guarantee are
-hypotheses under which that guarantee applies. Thus, for every execution or
-context covered by the scope, Anneal claims that if a guarantee's requirements
-hold, then that guarantee holds.
-
-Different guarantees may have different requirements. A requirement for one
-guarantee does not become a requirement for another.
+The scope determines what the claim is about and which artifacts,
+configurations, executions, or contexts are covered. Within that scope, each
+guarantee is conditional on its own requirements. A requirement for one guarantee
+does not become a requirement for another.
 
 Requirements are part of the claim, not part of the TCB. Anneal may assume a
-guarantee's requirements when proving that guarantee. By contrast, an unchecked
-fact that Anneal itself relies upon to justify the implication from requirements
-to guarantee belongs in the TCB.
+guarantee's requirements when proving that guarantee. An assumption belongs in
+the TCB instead when Anneal relies on it to justify the claim without making the
+claim conditional on it.
 
 For example, a safe binary-search function may guarantee correct membership
 results when its input is sorted. Calling it with an unsorted slice makes that
 guarantee inapplicable; it does not invalidate Anneal's baseline well-definedness
 guarantee.
 
-The scope may describe one concrete build or a precisely defined family of
-artifacts, configurations, executions, or contexts. It must be precise enough to
-determine whether a particular artifact, configuration, execution, or context is
-covered before asking whether the requirements of any guarantee hold.
-
-Requirements must not be used merely to assume the behavior that a guarantee is
-supposed to establish. In particular, Anneal's baseline well-definedness guarantee
-cannot be made vacuous by requiring the covered subject itself to already be
-well-defined. Later sections further constrain the permissible requirements of
-that guarantee for whole programs and libraries.
+The scope must be precise enough to determine whether a particular artifact,
+configuration, execution, or context is covered.
 
 Proving a developer-defined guarantee establishes the property that was
 specified. It does not establish that the specification captures what its author
@@ -64,10 +53,9 @@ intended.
 For a requested claim and an applicable trust policy, Anneal distinguishes a
 **verification result** from a **tainted output**.
 
-A **verification result** is a claim-bearing artifact to which Anneal's normal
-correctness promise in [`PRINCIPLES.md`](PRINCIPLES.md) applies. A verification
-result makes the trust-policy and conditional-correctness assertions defined
-below and satisfies Anneal's project-wide verification requirements.
+A **verification result** is a claim-bearing artifact that satisfies Anneal's
+project-wide verification requirements and to which Anneal's normal correctness
+promise in [`PRINCIPLES.md`](PRINCIPLES.md) applies.
 
 A **tainted output** is a claim-bearing development artifact emitted even though
 the conditions for a verification result were deliberately bypassed. A tainted
@@ -97,23 +85,17 @@ Semantically, a verification result asserts both that:
 
 1. its TCB satisfies its trust policy; and
 2. if the trusted code in its TCB is correct and its trusted assumptions are
-   valid, then, for every guarantee in its claim, that guarantee holds throughout
-   its scope whenever that guarantee's requirements hold.
+   valid, then its claim holds.
 
 The first assertion establishes that the unchecked trust in the verification
-result is permitted. The second is the conditional correctness claim that Anneal
-has established about the program.
+result is permitted. The second establishes the claim under that trust.
 
-The meaning of a verification result must remain stable after it is produced.
-Everything whose identity can affect the claim, the TCB, or whether the TCB
-satisfies its trust policy must therefore be contained in the verification result
-or immutably referenced by it.
-
-Mutable names such as branches, profiles, named specifications, or named policies
-may be convenient inputs to verification. A verification result that depends on
-them must bind the specific identities or contents actually used. Later changes
-must not retroactively change what an existing verification result claims or
-whether its TCB satisfies its trust policy.
+The meaning of a verification result must remain stable after it is produced. It
+must therefore contain or immutably reference everything whose identity can
+affect its claim, its TCB, or whether its TCB satisfies its trust policy. Mutable
+names such as branches, profiles, named specifications, or named policies may be
+used as inputs, but the verification result must bind the specific identities or
+contents actually used.
 
 ### Trusted computing base
 
@@ -121,32 +103,21 @@ Every dependency on which Anneal relies without establishing it by checked
 evidence belongs in the TCB. This includes both trusted code and trusted
 assumptions.
 
-Moving an unchecked dependency into a translator, generated artifact, helper
-library, compiler, or other component does not remove it from the TCB while
-Anneal's claim still depends on its unchecked correctness.
-
-Every verification result must expose, or immutably reference, its complete TCB.
-Trusted code and assumptions must be identified precisely enough to determine
-what the verification result relies upon. The TCB may refer to other immutable,
-auditable manifests rather than duplicating their contents, but trust must not
-disappear behind an implementation boundary.
-
-At the logical level, trusted premises are simply premises. Why a premise is
-trusted does not change the conditional claim Anneal establishes, although its
-identity, role, and provenance may matter to the trust policy and to auditing.
+A verification result must identify its complete TCB precisely enough to audit
+what it relies upon, either directly or through immutable references. Moving an
+unchecked dependency into a translator, generated artifact, helper library,
+compiler, or other component does not remove it from the TCB while Anneal's claim
+still depends on its unchecked correctness.
 
 ### Trust policy
 
 A **trust policy** defines the permitted boundary between checked evidence and the
 TCB for a verification result.
 
-It may constrain which components or assumptions may be trusted, or which links
-in the reasoning from a reported guarantee back to Rust must instead be
+It may constrain which components or assumptions may remain trusted, or which
+links in the reasoning from a reported guarantee back to Rust must instead be
 established by checked evidence. Anything outside the permitted trust boundary
 must be checked rather than silently admitted into the TCB.
-
-Every verification result must contain or immutably reference the exact trust
-policy against which its TCB was evaluated.
 
 An unfinished proof, skipped analysis, unsupported operation, or failed tool does
 not itself authorize new trust. If Anneal needs the missing fact and the
@@ -159,8 +130,6 @@ applicable policy merely because verification under the original policy failed.
 
 Anneal's project-wide requirements constrain every trust policy. In particular,
 mandatory UB verification cannot be waived by choosing a more permissive policy.
-A development mode may bypass or downgrade that requirement only by producing a
-tainted output rather than a verification result.
 
 ## Guarantees apply to compiled Rust behavior
 
@@ -178,35 +147,26 @@ The required source-to-compiled relationship need not imply that source and
 compiled code have literally identical sets of behaviors. It must be strong
 enough to justify every guarantee Anneal reports.
 
-The scope of a claim may identify one compiled artifact or a precisely defined
-family of compiled realizations. A whole-program claim may, for example, cover a
-particular executable. A library claim may instead cover compiled realizations of
-the library when incorporated into downstream programs. A library verification
-result therefore need not name one final executable in advance.
-
-In every case, the scope must define the compilation domain precisely enough to
-determine whether a compiled realization is covered. Verifying one source or
+Accordingly, the claim's scope must identify the compiled realization or
+precisely defined family of compiled realizations to which its guarantees apply.
+It need not always identify a single final executable. Verifying one source or
 build must not bless a materially different compiled realization merely because
 both belong to the same nominal project or package.
 
-Every verification result includes a baseline guarantee that the covered compiled
-Rust behavior is well-defined whenever the requirements of that guarantee hold.
+## Baseline well-definedness
 
-## Whole programs and libraries
-
-Whole-program and library claims use the same claim model. They differ in what
-their scopes cover and in the requirements that Anneal permits for their
-guarantees.
+Every verification result includes a guarantee that its covered compiled Rust
+behavior is well-defined. Anneal's principles constrain the requirements under
+which this baseline guarantee may apply.
 
 ### Whole programs
 
-For a whole program, the scope covers the complete program and a set of
-whole-program executions.
+For a whole-program claim, each covered case is a complete execution of a covered
+compiled realization.
 
-The baseline well-definedness guarantee says that every covered execution
-satisfying its requirements is well-defined. Those requirements may constrain
-external inputs or environment where appropriate, but they must not assume
-well-definedness of the program behavior that Anneal is supposed to establish.
+The baseline well-definedness guarantee may require conditions on external inputs
+or environment, but it must not assume the well-definedness of the program
+behavior that Anneal is supposed to establish.
 
 Anneal may prove this guarantee using local proofs, component contracts,
 whole-program reasoning, or another sound method. Regardless of proof strategy,
@@ -218,71 +178,47 @@ by itself justify even a local Rust-level behavioral claim about an execution if
 another part of that execution may exhibit undefined behavior, because undefined
 behavior can invalidate the semantics of the entire execution.
 
-Developer-defined guarantees follow the same model. Each applies to the covered
-executions that satisfy its own requirements. A local fact must not be presented
-as a guarantee over a larger scope unless it actually establishes that guarantee.
-
 ### Libraries
 
-For a library, the scope covers the library implementation and a defined family
-of compiled realizations, surrounding contexts, and executions in which the
-library may be used.
+For a library claim, each covered case is a surrounding context and execution
+using a covered compiled realization of the library.
 
-The same conditional-guarantee model applies. A guarantee's requirements may
-constrain the caller or surrounding context. To rely on the guarantee, the caller
-must satisfy those requirements. When verifying the library implementation,
-Anneal may assume those requirements and must establish the corresponding
-guarantee. A caller satisfying them may then rely on that guarantee.
+Requirements on a library guarantee become caller or context obligations. Anneal
+may assume them when verifying the implementation, and a caller may rely on the
+corresponding guarantee when they hold.
 
-These are the proof roles induced by the generic claim model; they are not a
-separate notion of API contract.
+The baseline well-definedness guarantee has a contextual requirement: the
+surrounding execution must be well-defined when the library is replaced by its
+abstract API contract. Its guarantee is that the execution remains well-defined
+when the verified implementation is substituted.
 
-For the baseline well-definedness guarantee, Anneal must establish that replacing
-the abstract API contract with the verified implementation preserves
-well-definedness for every covered surrounding context satisfying that guarantee's
-requirements.
-
-The baseline requirements include that the surrounding context is itself
-well-defined when interacting with the abstract API contract. This constrains the
-context rather than assuming well-definedness of the implementation being
-verified. It therefore does not make the library's baseline guarantee circular.
-
-Other guarantees work the same way: each applies to the covered contexts and
-executions that satisfy its own requirements.
-
-The lower-level formal model may express this contextual relationship in
-different ways, but it must not depend on an informal judgment that undefined
-behavior was "caused by" or "attributable to" the library.
+This requirement constrains the surrounding context rather than assuming the
+well-definedness of the implementation being verified. The lower-level formal
+model may express the contextual relationship in different ways, but it must not
+depend on an informal judgment that undefined behavior was "caused by" or
+"attributable to" the library.
 
 #### Safe and unsafe APIs
 
-Rust's API conventions further constrain the requirements permitted for a
+Rust's API conventions further constrain the caller requirements permitted for a
 library's baseline well-definedness guarantee.
 
-For a safe API, the baseline guarantee must apply to every covered, type-correct
-use from an otherwise well-defined context that satisfies the API or library
-invariants Rust convention permits the implementation to rely upon.
+Among contexts satisfying the contextual requirement above, a safe API's baseline
+guarantee must cover every type-correct use satisfying the API or library
+invariants Rust convention permits the implementation to rely upon. It may impose
+no further caller requirement.
 
 Some such invariants are stronger than Rust's requirements for well-defined
 execution. For example, Rust libraries may assume that a `str` contains valid
 UTF-8 even though constructing a non-UTF-8 `str` is not itself immediate undefined
 behavior.
 
-A safe API may not impose any additional hidden caller requirement needed for its
-baseline well-definedness guarantee. A caller satisfying the conditions above
-must not be able to trigger undefined behavior merely because some additional
-unstated condition was false.
-
-Developer-defined guarantees may have additional requirements. Those requirements
-constrain only the corresponding guarantees; they do not narrow the baseline
-well-definedness guarantee of a safe API.
-
 For an unsafe API, the baseline well-definedness guarantee may additionally
 require the caller to satisfy the API's explicit safety requirements.
 
-Because the surrounding context must itself be well-defined under Rust semantics,
-an unsafe API cannot relax a condition whose violation is already undefined
-behavior.
+Because the contextual requirement already requires the surrounding execution to
+be well-defined under Rust semantics, an unsafe API cannot relax a condition whose
+violation is already undefined behavior.
 
 Stronger API or library invariants are different. Some unsafe APIs may need to
 accept values that violate invariants normally associated with their types.
@@ -291,7 +227,7 @@ that permission is expressed, remains unresolved.
 
 ## Open-ended guarantees and behaviors
 
-Well-definedness is mandatory, but developers must also be able to state and prove
+Beyond baseline well-definedness, developers must be able to state and prove
 additional correctness guarantees. Anneal must not fix today's anticipated
 guarantees as a closed universe.
 
