@@ -15522,6 +15522,33 @@
         "anneal/interactive-freshness"
       ]
     },
+    "lean-incremental-diagnostics-430rc2-to-4341-source-delta-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2 diagnostic publication baseline"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1 incremental diagnostic publication source"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/lsp",
+        "lean/diagnostics",
+        "lean/version-difference"
+      ]
+    },
     "lean-infotree-elaboration-info-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
