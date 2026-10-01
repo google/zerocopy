@@ -1,0 +1,699 @@
+{
+  "observed_at_utc": "2026-10-01T03:54:34.208313+00:00",
+  "refs": {
+    "AbsInt/CompCert": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/AbsInt/CompCert.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "66a9fd06ef88619cc94765ca995a1018f7259b5c",
+      "stderr": ""
+    },
+    "AeneasVerif/aeneas": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/AeneasVerif/aeneas.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "stderr": ""
+    },
+    "AeneasVerif/charon": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/AeneasVerif/charon.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "a5621da44833f2296bb3164524c63490baccbdf6",
+      "stderr": ""
+    },
+    "FStarLang/FStar": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/FStarLang/FStar.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "cd33b5dd8c5b38ea224339bd73bd259300f49c49",
+      "stderr": ""
+    },
+    "FStarLang/karamel": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/FStarLang/karamel.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "9abbb865b10a0cd5c557da81c024c3965cb6ff53",
+      "stderr": ""
+    },
+    "JetBrains/kotlin": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/JetBrains/kotlin.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "79b33f2836ef88425c100924bb8d29bcdf52bf48",
+      "stderr": ""
+    },
+    "NixOS/nix": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/NixOS/nix.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "9bc9ab32a57504f068847af4f8013417476cb1ec",
+      "stderr": ""
+    },
+    "NixOS/nixpkgs": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/NixOS/nixpkgs.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "c59305bab2065cfecc4944690d9eedbb56f3a9fa",
+      "stderr": ""
+    },
+    "asterinas/asterinas": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/asterinas/asterinas.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+      "stderr": ""
+    },
+    "boogie-org/boogie": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/boogie-org/boogie.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "fcecf73a49d11ad3ab16729abd03169e5ecfd938",
+      "stderr": ""
+    },
+    "charon-lang/charon": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/charon-lang/charon.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "182f3c17255f0e986db41238f081677883d2f1d1",
+      "stderr": ""
+    },
+    "composefs/tar-rs": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/composefs/tar-rs.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "2c19ee2fbd01a306127e027cb05a02568ccda1b3",
+      "stderr": ""
+    },
+    "dafny-lang/dafny": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/dafny-lang/dafny.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb",
+      "stderr": ""
+    },
+    "digama0/leangz": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/digama0/leangz.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "723d10eb049ce37db602821efd7a6ec690508b65",
+      "stderr": ""
+    },
+    "dotnet/roslyn": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/dotnet/roslyn.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "3f1006159791e2167a52debc4c303768d4b1e380",
+      "stderr": ""
+    },
+    "facebook/buck": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/facebook/buck.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "9c7c421e49f4d92d67321f18c6d1cd90974c77c4",
+      "stderr": ""
+    },
+    "facebook/buck2": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/facebook/buck2.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "2484d70a6f8a5b1f26cbdfdbd7758c9c5b746f49",
+      "stderr": ""
+    },
+    "fuchsia/fuchsia": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://fuchsia.googlesource.com/fuchsia",
+        "refs/heads/main"
+      ],
+      "exit": 0,
+      "head": "3297dfcea82a3be834bbd3d1cdc2894504cfcba9",
+      "stderr": ""
+    },
+    "golang/proposal": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/golang/proposal.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "0be13090fdb0cbae0d71641bb676d924bc1c94de",
+      "stderr": ""
+    },
+    "golang/tools": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/golang/tools.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "134264d72fba423ca1ad358683cd3c32699b010e",
+      "stderr": ""
+    },
+    "google/aeneas": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/google/aeneas.git",
+        "HEAD"
+      ],
+      "exit": 128,
+      "head": null,
+      "stderr": "remote: Repository not found.\nfatal: repository 'https://github.com/google/aeneas.git/' not found"
+    },
+    "google/zerocopy": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/google/zerocopy.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "stderr": ""
+    },
+    "hacl-star/hacl-star": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/hacl-star/hacl-star.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "504c2987452f87fe44bce9b9f12e19d6e051761f",
+      "stderr": ""
+    },
+    "haskell/ghcide": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/haskell/ghcide.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "3ef4ef99c4b9cde867d29180c32586947df64b9e",
+      "stderr": ""
+    },
+    "haskell/haskell-ide-engine": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/haskell/haskell-ide-engine.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "d84b84322ccac81bf4963983d55cc4e6e98ad418",
+      "stderr": ""
+    },
+    "haskell/haskell-language-server": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/haskell/haskell-language-server.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "1cd039d9e3916264724071068f8eb38c5ee7fa85",
+      "stderr": ""
+    },
+    "haskell/hie-bios": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/haskell/hie-bios.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "32dd07707423ffabb34e44af68fcbd027b60ded2",
+      "stderr": ""
+    },
+    "kubernetes-sigs/controller-runtime": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/kubernetes-sigs/controller-runtime.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "c3a38e5a40113ce2fb22265efbd1d4797c8c2e52",
+      "stderr": ""
+    },
+    "kubernetes/enhancements": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/kubernetes/enhancements.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "9ed4bac6e657e070c75acfc5614eb944aa1f69a8",
+      "stderr": ""
+    },
+    "kubernetes/kubernetes": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/kubernetes/kubernetes.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "6d805ebe018f428d503fdc01bb6d57bd9574f598",
+      "stderr": ""
+    },
+    "kubernetes/website": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/kubernetes/website.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "0d1ea254dc1ca517b5e5c112e29b7cf4f60c59f9",
+      "stderr": ""
+    },
+    "leanprover-community/mathlib4": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/leanprover-community/mathlib4.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+      "stderr": ""
+    },
+    "leanprover/lean4": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/leanprover/lean4.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "77f336f7ae6a60419d3882e0d5ca7ac3a2155528",
+      "stderr": ""
+    },
+    "llvm/clangd-www": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/llvm/clangd-www.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "ae5866d4552e30a173b8e9c3cec872a82e4c0120",
+      "stderr": ""
+    },
+    "llvm/llvm-project": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://llvm.googlesource.com/llvm-project",
+        "refs/heads/main"
+      ],
+      "exit": 0,
+      "head": "c4ff7a767a271c02dd37312999c80f404219dd30",
+      "stderr": ""
+    },
+    "mars-research/redleaf": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/mars-research/redleaf.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "7194295d1968c8013ae6b3d104a9192f03516449",
+      "stderr": ""
+    },
+    "microsoft/TypeScript": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/microsoft/TypeScript.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "edf7da4e93ab65e1f7766deae156c35132c0cde3",
+      "stderr": ""
+    },
+    "microsoft/TypeScript-wiki": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/microsoft/TypeScript-wiki.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d",
+      "stderr": ""
+    },
+    "mozilla/sccache": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/mozilla/sccache.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "54b6f72a5d3583e8ccb8b83d44e5d41400d8039c",
+      "stderr": ""
+    },
+    "ninja-build/ninja": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/ninja-build/ninja.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "4e4df1e567eb3c1475a51af261cba2bfff60b4be",
+      "stderr": ""
+    },
+    "project-everest/everest": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/project-everest/everest.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "2a3f67dab56be02d1793b2801ef08f368423a3ac",
+      "stderr": ""
+    },
+    "rocq-archive/coq-serapi": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rocq-archive/coq-serapi.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "6196f9f572ef9dd3749b885cabce7a57406cedb9",
+      "stderr": ""
+    },
+    "rocq-community/rocq-lsp": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rocq-community/rocq-lsp.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe",
+      "stderr": ""
+    },
+    "rust-lang/cargo": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/cargo.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "4f3fb2428282fb2467c4bb5be0163d2f42a31491",
+      "stderr": ""
+    },
+    "rust-lang/reference": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/reference.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "a286e1ecb8ce193d50056e4bb042eea9b23876ef",
+      "stderr": ""
+    },
+    "rust-lang/rfcs": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/rfcs.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "a8a4d67671ff19d67d32a81a39388b344a3f9cc6",
+      "stderr": ""
+    },
+    "rust-lang/rls": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/rls.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+      "stderr": ""
+    },
+    "rust-lang/rust": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/rust.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "6006fd03947bd7b04ae5cb5f7f9bb66b44dc8c6e",
+      "stderr": ""
+    },
+    "rust-lang/rust-analyzer": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/rust-analyzer.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "stderr": ""
+    },
+    "rust-lang/rustc-dev-guide": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/rustc-dev-guide.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "be8854f66df1b5450349061e45374ac072abd109",
+      "stderr": ""
+    },
+    "salsa-rs/salsa": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/salsa-rs/salsa.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "30b614d826d697c47bc0f21591fab218f2004032",
+      "stderr": ""
+    },
+    "seL4/l4v": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/seL4/l4v.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+      "stderr": ""
+    },
+    "seL4/verification-manifest": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/seL4/verification-manifest.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "37712ebe359e9b1b952df281c6d8c991de56d974",
+      "stderr": ""
+    },
+    "smtcoq/smtcoq": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/smtcoq/smtcoq.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "3187cf12412a244859d7396e8088e6f9de0568d1",
+      "stderr": ""
+    },
+    "swiftlang/sourcekit-lsp": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/swiftlang/sourcekit-lsp.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "045c18e9e9ea35b896857b6cb982aa2373fb5816",
+      "stderr": ""
+    },
+    "swiftlang/swift": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/swiftlang/swift.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "abcf002d12b0a44b15875774835c48bc90316026",
+      "stderr": ""
+    },
+    "tock/book": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/tock/book.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "760025b0d8a1d5ff14d6015c1c50ac4e30490923",
+      "stderr": ""
+    },
+    "tock/tock": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/tock/tock.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "cda923aabf483d4417ff901fc48f11507bc50087",
+      "stderr": ""
+    },
+    "torvalds/linux": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/torvalds/linux.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "551c722f40809618230001baccf219193e22fc5a",
+      "stderr": ""
+    },
+    "viperproject/carbon": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/viperproject/carbon.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2",
+      "stderr": ""
+    },
+    "viperproject/silicon": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/viperproject/silicon.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed",
+      "stderr": ""
+    },
+    "viperproject/silver": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/viperproject/silver.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "da1c8993b66feb39976e3609e2580a4661137a0f",
+      "stderr": ""
+    },
+    "viperproject/viperserver": {
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/viperproject/viperserver.git",
+        "HEAD"
+      ],
+      "exit": 0,
+      "head": "4cc5bbbe18d4a83e4b398da3904ba9696256611b",
+      "stderr": ""
+    }
+  },
+  "repository_count": 63
+}

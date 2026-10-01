@@ -1,0 +1,3272 @@
+[
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [],
+    "inventory_id": "R138",
+    "inventory_target": "Aeneas nightly-2026.09.30-0855ce1 with its paired Charon e435e5f and Lean 4.31.0; separate standalone Charon comparison.",
+    "original_report": "reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/REPORT.md",
+    "original_report_sha256": "42ee64ad1661045768f61d9a770d43f9a1280aa626af1acccacd2b8f13c840f8",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "june1_aeneas_source_commit": "f95a80abaf554d4612cb60ef9ec8e849139bec44",
+          "june1_charon_source_pin": "42836b36b666a980cbc9d438a8aed340ad3b848b",
+          "june3_aeneas_source_commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+          "june3_charon_source_pin": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+        },
+        "name": "two compatible cached Charon/Aeneas bundles"
+      },
+      {
+        "identity": {
+          "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+          "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+        },
+        "name": "Lean v4.30.0-rc2 local checker"
+      },
+      {
+        "identity": {
+          "file": "support/probe.py",
+          "fixture": "support/fixture/src/lib.rs",
+          "observations": "support/results.json"
+        },
+        "name": "two-bundle Rust-to-Lean replay and controls"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+        "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+        "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+        "review_report_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R182",
+    "inventory_target": "Lean/Lake stable v4.34.1; optional prerelease v4.35.0-rc3. Rebuild all OLean/native artifacts.",
+    "original_report": "reports/anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29/REPORT.md",
+    "original_report_sha256": "75cc09a5d1852e43e45cb69a49c24fb6b6e3574e4602a8061a84873548a368be",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "lake_binary_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+          "lean_binary_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+          "upstream_commit": "98dc76e3c0a9b856c9b98726b713fb04fab16740"
+        },
+        "name": "Lean and Lake v4.29.0"
+      },
+      {
+        "identity": {
+          "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+          "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+          "upstream_commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+        },
+        "name": "Lean and Lake v4.30.0-rc2"
+      },
+      {
+        "identity": {
+          "issue": "3731",
+          "repository": "google/zerocopy",
+          "scope_extension_comment_sha256": "2451c7f38f864676a5aa23b16d4eb25ba18f768318829fd68715f9b384c1f533"
+        },
+        "name": "google/zerocopy issue #3731"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+        "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+        "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+        "review_report_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R196",
+    "inventory_target": "Lean/Lake stable v4.34.1; optional prerelease v4.35.0-rc3. Rebuild all OLean/native artifacts.",
+    "original_report": "reports/anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29/REPORT.md",
+    "original_report_sha256": "0bff5986f511faf4fec14941f14f92957082e96f935c08dae93228aabd8a485f",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "lake_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+          "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+          "repository": "leanprover/lean4",
+          "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+          "version": "v4.29.0"
+        },
+        "name": "Lean 4 and Lake 4.29.0"
+      },
+      {
+        "identity": {
+          "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+          "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4 and Lake 4.30.0-rc2"
+      },
+      {
+        "identity": {
+          "artifact": "support/probe.py",
+          "sha256": "54d4478ab58cbb5665e19d41ef632c0a1ae79094f6dae6b0bfa32a71b2c1117e"
+        },
+        "name": "Transitive import and RPC fixture"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+        "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+        "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+        "review_report_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R255",
+    "inventory_target": "Lean/Lake stable v4.34.1; optional prerelease v4.35.0-rc3. Rebuild all OLean/native artifacts.",
+    "original_report": "reports/anneal-3731-i062-lean429-version-diff-2026-09-30/REPORT.md",
+    "original_report_sha256": "3c00adaffb6053186eaf6469fa16d4d716a83f2c178b58572017f2a9589c0e2c",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "architecture": "aarch64-darwin",
+          "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+          "toolchain": "leanprover/lean4 v4.29.0"
+        },
+        "name": "Observed local Lean 4.29.0 executable"
+      },
+      {
+        "identity": {
+          "baseline_lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+          "toolchain": "leanprover/lean4 v4.30.0-rc2"
+        },
+        "name": "Published Lean 4.30.0-rc2 comparison executable"
+      },
+      {
+        "identity": {
+          "baseline_results_sha256": "a81a7fbbecc428f1cf4ce91eea2f03d49185a4a4b694ca3b0b48c6f46ea38469",
+          "oracle_prelaunch_sha256": "7f7aac75610935a82f2382381ca0fbab519eaee9abb26767dcd90ab8cabe4cc7",
+          "original_sha256": "1c303b95f46f0971463bb85cba3bd56676efff5230ae514e6a720b9260be037a",
+          "patched_sha256": "8f21a693fb5e30fc4901f7644453e4d4e77c24674e7e21caccdc818e4c3e902f",
+          "results_sha256": "c9a890bacc174f34a4896d3b05bf5ba5ba6b54a8e16ec066e9fa19c999d036b5"
+        },
+        "name": "Identical Unicode fixture, oracle and guarded version comparison"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R306",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-archive-read-only-behavior-main-41f5b37/REPORT.md",
+    "original_report_sha256": "229067819b8b22b5013f47f189820c6e853c9cb0499deec306c72ea997477e4f",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/flake.nix",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal omnibus archive construction"
+      },
+      {
+        "identity": {
+          "path": "anneal/src/main.rs",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal v2 Exocrate setup and archive-cache reuse test"
+      },
+      {
+        "identity": {
+          "path": "exocrate/src",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Exocrate installer selected by Anneal"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R307",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-archive-timestamps-lake-reuse-v4-30-0-rc2/REPORT.md",
+    "original_report_sha256": "fd31416a417568752beb38fb66ce25b52cb7adf7254864266e2e4cf3c577a8c4",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "component": "Lake",
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lake modification-time fallback selected by Anneal"
+      },
+      {
+        "identity": {
+          "path": "anneal/flake.nix",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal archive timestamp normalization"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R308",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-cross-tool-error-provenance-specimens-v4-30-0-rc2/REPORT.md",
+    "original_report_sha256": "3ea78661c8771e2066812ca105e44100298d2ac60c62c2acef7e0f6dff3b768b",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "Zerocopy Anneal source"
+      },
+      {
+        "identity": {
+          "repository": "charon-lang/charon",
+          "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+        },
+        "name": "Charon"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R309",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-error-provenance-classification-nightly-2026-06-03-v4-30-0-rc2/REPORT.md",
+    "original_report_sha256": "f4569a35bcb8e259c04934dcfbe65235fa947060db5a36fd2a45a72513b70b66",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "rust-lang/rust",
+          "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+          "toolchain-date": "nightly-2026-05-31"
+        },
+        "name": "rustc diagnostic failure classes selected by Charon"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/charon",
+          "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+          "version": "0.1.210"
+        },
+        "name": "Charon process and translation failure channels selected by Aeneas"
+      },
+      {
+        "identity": {
+          "release": "nightly-2026.06.03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas translation and extraction failure channels selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean batch diagnostic failure channel selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Current Anneal authority"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R310",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-external-crate-diagnostic-source-recovery-nightly-2026-05-31-main-41f5b37/REPORT.md",
+    "original_report_sha256": "9c7da6a99fd71ac18caaea324d5067dbb5741d43b6b42cc79b191de9f99b6110",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "aeneas_release": "nightly-2026.06.03",
+          "aeneas_repository": "AeneasVerif/aeneas",
+          "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+          "anneal_repository": "google/zerocopy",
+          "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+          "charon_repository": "AeneasVerif/charon",
+          "charon_revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+          "charon_version": "0.1.210",
+          "rust_repository": "rust-lang/rust",
+          "rust_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+          "rust_toolchain": "nightly-2026-05-31"
+        },
+        "name": "External-crate source recovery for diagnostics across rustc and Charon/Aeneas"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R311",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-host-platform-matrix-main-41f5b37/REPORT.md",
+    "original_report_sha256": "dd2a012d81ca8b9701eaaf22384fbd1e2b599127d66003fb6dbc5274f5a7be44",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal current host-platform selection"
+      },
+      {
+        "identity": {
+          "release": "nightly-2026.06.03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas release selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/charon",
+          "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+          "version": "0.1.210"
+        },
+        "name": "Charon packaged by the selected Aeneas release"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean selected by Anneal"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R313",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-interactive-pipeline-invalidation-graph-main-41f5b37/REPORT.md",
+    "original_report_sha256": "8e89118498fb3ec2d63e537adc347fbb7d0e198d5d6b56a084fc6e649d562161",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal V2 design and current implementation"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/charon",
+          "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+          "version": "0.1.210"
+        },
+        "name": "Charon selected by Aeneas"
+      },
+      {
+        "identity": {
+          "release": "nightly-2026.06.03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean and Lake selected by Anneal"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R314",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-linux-elf-relocation-main-41f5b37/REPORT.md",
+    "original_report_sha256": "2356f8efcf8c7a0593689ffbee8731de719bf8959e91c49bcaedd20c91cbace8",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/flake.nix",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal Linux omnibus ELF relocation"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/charon",
+          "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+          "version": "0.1.210"
+        },
+        "name": "Charon portable Linux packaging selected by Aeneas"
+      },
+      {
+        "identity": {
+          "release": "nightly-2026.06.03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas release packaging selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "NixOS/nixpkgs",
+          "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+          "version": "patchelf-0.15.2"
+        },
+        "name": "PatchELF selected by Anneal's locked nixpkgs"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R315",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-macos-macho-relocation-main-41f5b37/REPORT.md",
+    "original_report_sha256": "50e58f976dfd553751653b23958b1bd396f18b7536311aa36c6adb13c8c3cd0d",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal macOS omnibus toolchain packaging"
+      },
+      {
+        "identity": {
+          "release": "nightly-2026.06.03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas release packaging selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/charon",
+          "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+          "version": "0.1.210"
+        },
+        "name": "Charon portable packaging selected through Aeneas"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R316",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-nix-fixed-output-downloads-main-41f5b37/REPORT.md",
+    "original_report_sha256": "d14d591355e8c04fe98161b319807cb62ef798b5d8b49f06a89fbf2d98b0c793",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/flake.nix",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal Nix fixed-output acquisition architecture"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R317",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-nix-ifd-version-extraction-main-41f5b37/REPORT.md",
+    "original_report_sha256": "e262b21b71282e1c02750bd3f82d329a1bbe2a083274cee2e5ad3243456ee089",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/flake.nix",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal import-from-derivation toolchain-version probe"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R318",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-nix-toolchain-tree-relocation-aarch64-darwin-2026-09-27/REPORT.md",
+    "original_report_sha256": "319703d28e4627e97d82a065da56fc5823997e6356238004aef35409acd8d024",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "output": "/nix/store/ms2vns33wg2qxzqdfdw37w6g9xay9jjc-rust-toolchain-aarch64-darwin-2026-05-31",
+          "path": "anneal/flake.nix",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+          "version": "nightly-2026-05-31"
+        },
+        "name": "Anneal Rust nightly toolchain fixed-output tree"
+      },
+      {
+        "identity": {
+          "anneal-repository": "google/zerocopy",
+          "anneal-revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+          "output": "/nix/store/wf1mr6pak9n88v5bwm6y749d8k19r0mw-lean-toolchain-aarch64-darwin-4.30.0-rc2",
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Anneal Lean toolchain fixed-output tree"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R319",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-offline-installation-execution-main-41f5b37/REPORT.md",
+    "original_report_sha256": "1d1eb8715d59369f28290a3accdc8771c05bb5d4436a1a7ac79763f64cc82cfd",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal offline installation and prepared-toolchain execution contract"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lake behavior selected by the Anneal toolchain"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R320",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-omnibus-archive-byte-reproducibility-main-41f5b37/REPORT.md",
+    "original_report_sha256": "f270138bd3b5e6e8e2a8a0eea6076c7a23390c0ccd8bf727f196cd9f46f199db",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/flake.nix",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal omnibus toolchain archive construction"
+      },
+      {
+        "identity": {
+          "package": "gnutar",
+          "repository": "NixOS/nixpkgs",
+          "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+          "version": "1.35"
+        },
+        "name": "GNU tar selected by Anneal's pinned nixpkgs"
+      },
+      {
+        "identity": {
+          "package": "zstd",
+          "repository": "NixOS/nixpkgs",
+          "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+          "version": "1.5.7"
+        },
+        "name": "Zstandard selected by Anneal's pinned nixpkgs"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R321",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-synthesized-scaffolding-diagnostic-provenance-main-41f5b37/REPORT.md",
+    "original_report_sha256": "50e36cab55b90117f716f3acdf256fadd2fdd843fda71364be0b8160c8d46796",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "current_design": "anneal redesign",
+          "historical_implementation": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Diagnostic provenance for synthesized Lean scaffolding in Anneal"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R322",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-toolchain-version-coupling-main-41f5b37/REPORT.md",
+    "original_report_sha256": "684b69d80c044de5eb5bddb1d2efd989b7eb4b87b8ef7e89a71c82c77a8d6cbb",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal current toolchain configuration"
+      },
+      {
+        "identity": {
+          "release": "nightly-2026.06.03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas release selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/charon",
+          "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+          "rust-toolchain": "nightly-2026-05-31",
+          "version": "0.1.210"
+        },
+        "name": "Charon pinned by the selected Aeneas release"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/charon",
+          "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+          "tag": "nightly-2026.06.03",
+          "version": "0.1.210"
+        },
+        "name": "Independent Charon library locked by Anneal Cargo"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean selected by Anneal and Aeneas"
+      },
+      {
+        "identity": {
+          "inputRev": "v4.30.0-rc2",
+          "repository": "leanprover-community/mathlib4",
+          "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+        },
+        "name": "Mathlib revision resolved by the Aeneas Lean manifest"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R323",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-abs-end-to-end-fail-closed-controls-2026-09-28/REPORT.md",
+    "original_report_sha256": "34e3ef3fc0106989ec09b26dfa13779064122d8bed4b6a5e00efaa346e50887a",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "Retained Anneal V1 implementation"
+      },
+      {
+        "identity": {
+          "binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+          "repository": "AeneasVerif/charon",
+          "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+          "version": "0.1.210"
+        },
+        "name": "Charon"
+      },
+      {
+        "identity": {
+          "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+        },
+        "name": "Aeneas"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4"
+      },
+      {
+        "identity": {
+          "repository": "leanprover-community/mathlib4",
+          "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+        },
+        "name": "mathlib4"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R324",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-annotation-diagnostics-history-2026-09-27/REPORT.md",
+    "original_report_sha256": "7e814d9cec59e33a9fa40f62f91b649ed467b92c3e82902049f9702d999925f5",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1/",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "zerocopy Anneal V1"
+      },
+      {
+        "identity": {
+          "branch": "G4ka5fwcrxku4rfg7rjpfswfmnqxqulql",
+          "repository": "google/zerocopy",
+          "revision": "dc12610c8"
+        },
+        "name": "historical parser experiment"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R325",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-clean-workspace-prebuilt-archive-41f5b37/REPORT.md",
+    "original_report_sha256": "244463dbebe81eaae9f691510a4355a56e53af720a9ee6b2d40bda27f30cce3a",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal V1 clean-workspace/prebuilt-archive contract"
+      },
+      {
+        "identity": {
+          "pull_request": "3450",
+          "repository": "google/zerocopy",
+          "revision": "f6aeb9bd14ee0196635f7e1e46bf0641b16950b6"
+        },
+        "name": "Anneal V1 symlink-free archive transition"
+      },
+      {
+        "identity": {
+          "pull_request": "3453",
+          "repository": "google/zerocopy",
+          "revision": "93cab05584dc15cf9f12236ec0ef24becd21beb0"
+        },
+        "name": "Anneal archive-reuse regression test introduction"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R326",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-contract-mutation-adequacy-2026-09-28/REPORT.md",
+    "original_report_sha256": "83567fd75f750c12681419ac72e2eb2121ea5047a3358b588690fe4cc21afbe8",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "binary_sha256": "9f8283296b0150fbfe1043bbe3633879c900067915bb46aa293e55711564aee8",
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "Retained Anneal V1 implementation"
+      },
+      {
+        "identity": {
+          "binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+          "repository": "AeneasVerif/charon",
+          "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+          "version": "0.1.210"
+        },
+        "name": "Charon"
+      },
+      {
+        "identity": {
+          "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+        },
+        "name": "Aeneas"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4"
+      },
+      {
+        "identity": {
+          "repository": "leanprover-community/mathlib4",
+          "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+        },
+        "name": "mathlib4"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R327",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-coverage-totality-holes-41f5b37/REPORT.md",
+    "original_report_sha256": "37bacb0da1bbe21f30bb250b411be21a3e44feb4787a7c41d3fdefc33d17443d",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Retained Anneal V1 coverage and annotation-totality behavior"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R328",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-end-to-end-pipeline-41f5b37/REPORT.md",
+    "original_report_sha256": "77ffeb63fe0a20230a1896cca1f86b2b9294f920c5a3fbfa02f5a306f469e3ac",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Retained Anneal V1 end-to-end verification implementation"
+      },
+      {
+        "identity": {
+          "pull_request": "3487",
+          "repository": "google/zerocopy",
+          "revision": "dbb81cc7759bb6b21b82a1ca98bb32e9676f8655"
+        },
+        "name": "Anneal V1/V2 reorganization boundary"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R329",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-generated-lean-abi-main-41f5b37/REPORT.md",
+    "original_report_sha256": "e409f669d6b08166bf37da03b238aca428de2748b1891c2b3eef749cf9d86df4",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Retained Anneal V1 generated-Lean integration"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/aeneas",
+          "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+        },
+        "name": "Aeneas revision consumed by retained Anneal V1"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R330",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-generated-workspace-relocation-probe-2026-09-28/REPORT.md",
+    "original_report_sha256": "089501660d8c5350b7d5b2ae2892da6f0e08ea9f74a04e900507c9d6984dba2c",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "Zerocopy V1 source"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R331",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-integration-test-disk-amplification-f98458e/REPORT.md",
+    "original_report_sha256": "0d7e1302bac8a88aca7b7ddce86a3d968b34dda9f5bd463930bf4fb7da84ae2b",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/tests/integration.rs",
+          "repository": "google/zerocopy",
+          "revision": "d410c162d51977635ca5afac67d99a3b10327a94"
+        },
+        "name": "Anneal integration-test worker-cache implementation before PR #3305"
+      },
+      {
+        "identity": {
+          "pull_request": "3305",
+          "repository": "google/zerocopy",
+          "revision": "f98458e7eaf54ff34b69e417ee34e79036f06547"
+        },
+        "name": "Anneal PR #3305 worker-cache removal"
+      },
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Current retained Anneal v1 implementation"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R332",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-interactive-dependency-invalidation-2026-09-28/REPORT.md",
+    "original_report_sha256": "fefafe0043a3a6beb2426587112e54830c9983b8dbb8175aa22c4b81f530999a",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "Zerocopy V1 source"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4 and Lake"
+      },
+      {
+        "identity": {
+          "repository": "google/aeneas",
+          "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+        },
+        "name": "Aeneas Lean library revision selected by the generated workspace"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R333",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-issafe-semantic-gaps-41f5b37/REPORT.md",
+    "original_report_sha256": "00389074b2c2e7d5f1b66edb19ee20306e00fc7445b0238642ff4539a8b6b6ed",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Retained Anneal V1 isSafe implementation"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R334",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-isvalid-unsoundness/REPORT.md",
+    "original_report_sha256": "4710b986716bec73e5859dc211e87b9441b875912141043bd1074c75a4554fae",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Historical Anneal V1 implementation retained on current zerocopy main"
+      },
+      {
+        "identity": {
+          "pull-request": "3179",
+          "repository": "google/zerocopy",
+          "revision": "ef0b8ebe7011311bce0e8fa2fe4a3aa5d95c1e6c"
+        },
+        "name": "Unmerged draft product/Option IsValid repair"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R335",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-lake-relocation-history-2026-09-27/REPORT.md",
+    "original_report_sha256": "8421686ad28442ceaa0b9410ecbe95e98c9924a94dd566907da38d31b9613838",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1/",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "zerocopy Anneal V1"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4 Lake"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R336",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-lifetime-erasure-soundness-main-41f5b37/REPORT.md",
+    "original_report_sha256": "8e472c75a4a6024cfcb7d55933658f75615daa225ab14382db372e4e5b6a8ffb",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Retained Anneal V1 lifetime and type translation"
+      },
+      {
+        "identity": {
+          "issue": "3053",
+          "repository": "google/zerocopy",
+          "revision": "c6b794933a8d49481b9dded6ed99bc339202b41d"
+        },
+        "name": "PtrInner lifetime-dependent invariant used by the historical soundness counterexample"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R337",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-orthogonal-progress-correctness-41f5b37/REPORT.md",
+    "original_report_sha256": "700d51ca65a5c26352c3cfa9775040f21de5afdd2d2a0756a728f67ca9eec128",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Retained Anneal V1 orthogonal progress/correctness proof architecture"
+      },
+      {
+        "identity": {
+          "path": "backends/lean/Aeneas/Std/WP.lean",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+        },
+        "name": "Aeneas WP Result semantics consumed by retained Anneal V1"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R338",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-proof-split-and-concat-slices-2026-09-27/REPORT.md",
+    "original_report_sha256": "e6a8f9860ad38d64bc01af08ec79b1b4ecc4ef8f3c9f0ec92116de824caaea39",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1/",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "zerocopy Anneal V1"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R339",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-source-scanner-versus-rustc-main-41f5b37/REPORT.md",
+    "original_report_sha256": "7df09c4bd6d1676f8cf30aeca4249e541b91fb59067308acf9ff560c0ca68fa8",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Retained Anneal V1 source scanner versus rustc/Charon compilation view"
+      },
+      {
+        "identity": {
+          "rust_source_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+          "toolchain": "nightly-2026-05-31"
+        },
+        "name": "Pinned Rust compilation semantics used by the Anneal/Aeneas/Charon chain"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R340",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v1-unsafe-axiom-semantics-41f5b37/REPORT.md",
+    "original_report_sha256": "2fe47c90b43e1c303ecc6f6f80055834722cf0a117b49613a81866bcb78fd353",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/v1",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Historical Anneal V1 unsafe(axiom) pipeline"
+      },
+      {
+        "identity": {
+          "path": "backends/lean/Aeneas/Std",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+        },
+        "name": "Aeneas WP/Result semantics used by historical Anneal V1"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R341",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v2-cargo-root-selection-multipackage-2026-09-29/REPORT.md",
+    "original_report_sha256": "3fdca2db16c54b9ba25ab97028413637f1fdc6f02d00c3c3ce2d268944d9da8a",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/src/resolve.rs",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+          "sha256": "6b36c1c5647d4bff5955799c02c6c764ee1b7e29455fd55a8c5d01f0462d23b4"
+        },
+        "name": "Anneal V2 checked-in Cargo resolver"
+      },
+      {
+        "identity": {
+          "fixture_tree_sha256": "b7e2f9a095f13f09b05ac95b35c3eb93661700630c371c75a294d4b37b931674"
+        },
+        "name": "Two-package Cargo subject fixture"
+      },
+      {
+        "identity": {
+          "cargo_revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+          "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+          "rustc_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+          "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+        },
+        "name": "Pinned local Rust and Cargo toolchain"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R342",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v2-current-source-surface-main-bd0956b-2026-09-29/REPORT.md",
+    "original_report_sha256": "8277543f99c36f099158038dbee22f1300d47e5cb067e2163625376106edc6f2",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "Anneal current redesign source"
+      },
+      {
+        "identity": {
+          "path": "reports/anneal-3730-3731-final-coverage-audit-2026-09-29-v21",
+          "reference_revision": "a5b4d034aa65aa44d85afc943c3caec26a5229ba",
+          "repository": "google/zerocopy"
+        },
+        "name": "#3730/#3731 coverage audit v21 crosswalk"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R343",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v2-feature-subject-slug-collision-2026-09-29/REPORT.md",
+    "original_report_sha256": "a7832adc7b1626897866e214d0c7537fdb0f60e7ba7e33e82136007de52609ef",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/src/scanner.rs",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+          "sha256": "6a347ef9b6b0afd624ace8794eec19fa2af9c5c6ceecd533b12bf52992f20567"
+        },
+        "name": "Anneal V2 checked-in artifact slug helper"
+      },
+      {
+        "identity": {
+          "manifest_sha256": "8a6d76f03342b43e1058f011572e64ae3f5b9c2265bb05dc540546a0718bd529",
+          "source_sha256": "dc0e1e46ad779f1dce18619763473163f4a30c38971a68bf9ab3413d8a5ad5fa"
+        },
+        "name": "Offline two-feature Rust library fixture"
+      },
+      {
+        "identity": {
+          "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+          "version": "0.1.210"
+        },
+        "name": "Cached Charon executable"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R344",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/anneal-v2-profile-cfg-subject-slug-collision-2026-09-29/REPORT.md",
+    "original_report_sha256": "f6c027ab45138a2f7659f257656723ce20e09a1ad2bf3f4355447ab2f2d0aa01",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "scanner_sha256": "6a347ef9b6b0afd624ace8794eec19fa2af9c5c6ceecd533b12bf52992f20567",
+          "source_commit": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "Checked-in Anneal V2 artifact slug helper"
+      },
+      {
+        "identity": {
+          "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+          "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+          "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+          "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+        },
+        "name": "Pinned Charon/Cargo/rustc toolchain"
+      },
+      {
+        "identity": {
+          "fixture_source_sha256": "990beab58abb9a04f48c119fdcea2918865232730e278de3def35e15831b123d",
+          "probe_sha256": "d3f5c0efcf646c2c288a3b2ed5d3b5540cfbafd51357d8804fc04375f3a0a99a"
+        },
+        "name": "Dependency-free profile/cfg fixture and probe"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/buck2-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "0259f8998775d3b1f5a51a496ee977b76104037ad7e0f4fc750ba3c3bac91e17",
+        "review_report": "reports/buck2-current-source-review/REPORT.md",
+        "review_report_sha256": "7dbf54839ec28471927febb6d520d2d29ff8ade274acc0d854be518827d0e5f7",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R346",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/buck-to-buck2-one-graph-rewrite-2013-2026/REPORT.md",
+    "original_report_sha256": "f495a6028d763e485ee93f60769b83925c15e6e5d031dc44297e61904ee91df9",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "benefits-doc-blob": "296661b09239357fa870a55192dff6c5d54c25ca",
+          "dice-index-blob": "46897b9bd66a7bd055bbad8db7f363558347d4f0",
+          "modern-dice-doc-blob": "04a9950e2b077cdfdf91ca3e6e6ede68df508580",
+          "repository": "facebook/buck2",
+          "revision": "738e69a6c5f1efb6a015645228e7a19ee9b1d9c0",
+          "why-doc-blob": "6799f38df279cc03f1806b1d0d447fb19570bcfa"
+        },
+        "name": "Buck2 architecture and DICE"
+      },
+      {
+        "identity": {
+          "readme-blob": "59e9fda6c885670ebb3e0ce1b799ea8f9e97cf9c",
+          "repository": "facebook/buck",
+          "revision": "9c7c421e49f4d92d67321f18c6d1cd90974c77c4"
+        },
+        "name": "Buck1 archived implementation"
+      },
+      {
+        "identity": {
+          "published": "2023-04-06",
+          "publisher": "Meta Engineering",
+          "url": "https://engineering.fb.com/2023/04/06/open-source/buck2-open-source-large-scale-build-system/"
+        },
+        "name": "Buck2 public launch account"
+      },
+      {
+        "identity": {
+          "authors": "Andrey Mokhov; Neil Mitchell; Simon Peyton Jones",
+          "doi": "10.1145/3236774",
+          "publication": "PACMPL 2 (ICFP), Article 79",
+          "year": "2018"
+        },
+        "name": "Build Systems \u00e0 la Carte"
+      },
+      {
+        "identity": {
+          "design-blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+          "principles-blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design constraints"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R351",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/cargo-rustc-cache-reuse-extraction-boundaries-2016-2026/REPORT.md",
+    "original_report_sha256": "8ee45f873a60b74920ed9a3c018088c5d7c7a9934a9d67d0edd71d8e6221b548",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "rust-lang/cargo",
+          "revision": "f3865b2a4d1acc5276f6b3c67d0e057f4dab3928"
+        },
+        "name": "Cargo"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rust",
+          "revision": "7d2cd0fbc092625ea371da704f15f80216d2220e"
+        },
+        "name": "Rust compiler"
+      },
+      {
+        "identity": {
+          "repository": "mozilla/sccache",
+          "revision": "54b6f72a5d3583e8ccb8b83d44e5d41400d8039c"
+        },
+        "name": "sccache"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/charon",
+          "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+          "version": "0.1.210"
+        },
+        "name": "Charon selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design authority"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [],
+    "inventory_id": "R368",
+    "inventory_target": "Aeneas nightly-2026.09.30-0855ce1 with its paired Charon e435e5f and Lean 4.31.0; separate standalone Charon comparison.",
+    "original_report": "reports/charon-llbc-output-goldens-and-revision-diffs-2026-09-27/REPORT.md",
+    "original_report_sha256": "9c72f749067c270d74814687258d0726c0e5402209f9672c178f01629f97cdb0",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "release": "nightly-2026.06.03",
+          "repository": "AeneasVerif/charon",
+          "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+        },
+        "name": "Charon"
+      },
+      {
+        "identity": {
+          "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+          "release": "nightly-2026.06.03",
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rust",
+          "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+          "version": "1.98.0-nightly"
+        },
+        "name": "rustc"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+        "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+        "review_report_sha256": "5156bc18b65bf0bf04dfeccb337abd4612e36092680e5b91f19d718bc38bfca9",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R383",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/clangd-authority-freshness-2017-2026/REPORT.md",
+    "original_report_sha256": "7b40734a30b69382807680f13f8d11ce0fdc0309127424946c544e23f745ff4d",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "llvm/llvm-project",
+          "revision": "ded546ad82656ce6605ee2f2aa60c78dec70d95f"
+        },
+        "name": "clangd current implementation"
+      },
+      {
+        "identity": {
+          "repository": "llvm/clangd-www",
+          "revision": "ae5866d4552e30a173b8e9c3cec872a82e4c0120"
+        },
+        "name": "clangd current design documentation"
+      },
+      {
+        "identity": {
+          "differential": "D39843",
+          "repository": "llvm/llvm-project",
+          "revision": "e9eb7f0cb815641827fa3d031c38190c10900c14"
+        },
+        "name": "clangd preamble storage tradeoff"
+      },
+      {
+        "identity": {
+          "differential": "D53651",
+          "repository": "llvm/llvm-project",
+          "revision": "6675be87477395658f6d3859b028ab8dee81ba19"
+        },
+        "name": "clangd background indexing thread-pool design"
+      },
+      {
+        "identity": {
+          "differential": "D54746",
+          "repository": "llvm/llvm-project",
+          "revision": "a2b048bc4bdf9320249d0ff512fab6f16c2e6e47"
+        },
+        "name": "clangd TUScheduler cancellation policy"
+      },
+      {
+        "identity": {
+          "differential": "D75602",
+          "repository": "llvm/llvm-project",
+          "revision": "c627b120eb8b7add3f9cf893721335c367d9f037"
+        },
+        "name": "clangd update-invalidated request policy"
+      },
+      {
+        "identity": {
+          "differential": "D148088",
+          "repository": "llvm/llvm-project",
+          "revision": "a8ad413f0d18c07a4adaa0d547e0096874d809c5"
+        },
+        "name": "clangd asynchronous preamble indexing change and design discussion"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/rocq-serapi-fleche-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "ced7cee63edadeb761d45efbf93fe8ded3761d92899ea872e819fe0c29d016d9",
+        "review_report": "reports/rocq-serapi-fleche-current-source-review/REPORT.md",
+        "review_report_sha256": "2740c055550f6664bdc721901b6090efd57135dae2d10d316690eff89b2c0deb",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R386",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/coq-rocq-stm-serapi-fleche-architecture-2013-2026/REPORT.md",
+    "original_report_sha256": "9af670719de07700e601d65010dd05ef637fea52b98af7a3302b83a3aca005e1",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "arxiv": "1506.05605",
+          "doi": "10.1007/978-3-319-22102-1_4",
+          "publication": "Barras, Tankink, Tassi, Asynchronous Processing of Coq Documents: From the Kernel up to the User Interface",
+          "year": "2015"
+        },
+        "name": "Coq State Transaction Machine and asynchronous document processing"
+      },
+      {
+        "identity": {
+          "repository": "rocq-archive/coq-serapi",
+          "revision": "6196f9f572ef9dd3749b885cabce7a57406cedb9"
+        },
+        "name": "SerAPI document-control and serialization interface"
+      },
+      {
+        "identity": {
+          "repository": "rocq-community/rocq-lsp",
+          "revision": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"
+        },
+        "name": "Rocq LSP and Fl\u00e8che document engine"
+      },
+      {
+        "identity": {
+          "paths": "anneal/PRINCIPLES.md;anneal/DESIGN.md",
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design contract used for applicability analysis"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/dafny-boogie-viper-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "5a4a6ff55d945d113fbb3a465879c84b10dbb6f76b8fdab016e2b01502b14c0e",
+        "review_report": "reports/dafny-boogie-viper-current-source-review/REPORT.md",
+        "review_report_sha256": "2cbd8a1c3adb89ce701d33c504e00b32fde0807fc881aeabac0b2960508ca7e2",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R389",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/dafny-boogie-viper-obligation-boundaries-2005-2026/REPORT.md",
+    "original_report_sha256": "3410b4eec2fa9d01d5130d921048f7a7491771059a1e11883e1e884ae3a94bfd",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "Source/DafnyCore/Verifier/BoogieGenerator.cs",
+          "repository": "dafny-lang/dafny",
+          "revision": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb"
+        },
+        "name": "Dafny verifier and Dafny-to-Boogie translation"
+      },
+      {
+        "identity": {
+          "path": "README.md",
+          "repository": "boogie-org/boogie",
+          "revision": "fcecf73a49d11ad3ab16729abd03169e5ecfd938"
+        },
+        "name": "Boogie intermediate verification language and verifier"
+      },
+      {
+        "identity": {
+          "path": "src/main/scala/viper/silver/verifier/VerificationResult.scala",
+          "repository": "viperproject/silver",
+          "revision": "da1c8993b66feb39976e3609e2580a4661137a0f"
+        },
+        "name": "Viper Silver error and result interface"
+      },
+      {
+        "identity": {
+          "path": "README.md",
+          "repository": "viperproject/silicon",
+          "revision": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed"
+        },
+        "name": "Viper Silicon symbolic-execution backend"
+      },
+      {
+        "identity": {
+          "path": "README.md",
+          "repository": "viperproject/carbon",
+          "revision": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2"
+        },
+        "name": "Viper Carbon verification-condition backend"
+      },
+      {
+        "identity": {
+          "path": "README.md",
+          "repository": "viperproject/viperserver",
+          "revision": "4cc5bbbe18d4a83e4b398da3904ba9696256611b"
+        },
+        "name": "ViperServer verification service boundary"
+      },
+      {
+        "identity": {
+          "path": "anneal/DESIGN.md",
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design contract"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R393",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/exocrate-archive-extraction-security-main-41f5b37/REPORT.md",
+    "original_report_sha256": "9d121c4b9326dbb070c373782744b4ef7e5e6a793c861301c87dc261f18e0d29",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "exocrate/src",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Exocrate installer selected by current Anneal"
+      },
+      {
+        "identity": {
+          "path": "anneal/src/main.rs",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal v2 setup path"
+      },
+      {
+        "identity": {
+          "repository": "composefs/tar-rs",
+          "revision": "fc459c149f83bf4daceaa52e17d351989002e1a9",
+          "version": "0.4.46"
+        },
+        "name": "tar crate resolved by Anneal"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R394",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/exocrate-atomic-staging-rename-main-41f5b37/REPORT.md",
+    "original_report_sha256": "3ac5fb3515c3f68b406043c5dbba79e1f31afdb20e690376b423bb630eb0c21c",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "exocrate",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Exocrate installer used by current Anneal"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R395",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/exocrate-cache-version-identity-main-41f5b37/REPORT.md",
+    "original_report_sha256": "e555969189f1cf643b26f4450e5de15f0708194aa5a0ce0833a7e92b701187d6",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "anneal/src/main.rs",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal Exocrate configuration"
+      },
+      {
+        "identity": {
+          "path": "exocrate/src",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Exocrate installation path and versioning implementation used by Anneal"
+      },
+      {
+        "identity": {
+          "crate": "dirs",
+          "crates.io-sha256": "c3e8aa94d75141228480295a7d0e7feb620b1a5ad9f12bc40be62411e38cce4e",
+          "version": "6.0.0"
+        },
+        "name": "dirs cache-directory dependency resolved by Anneal"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R396",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/exocrate-install-state-machine-source-review-2026-09-27/REPORT.md",
+    "original_report_sha256": "52c46087ca38744288ebf2ec64ea8f53ff49a7033b2e32581cdd84506af9098b",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "crate_version": "0.1.0",
+          "path": "exocrate/",
+          "repository": "google/zerocopy",
+          "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+        },
+        "name": "Exocrate in zerocopy"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R397",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/exocrate-local-archive-trust-checksum-main-41f5b37/REPORT.md",
+    "original_report_sha256": "4dbe28a0255e14bd37cb19ae103005ee18eaa08d8e0ed7e6936ef8eceb7554a9",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "exocrate/src/lib.rs",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Exocrate local-archive installation path selected by Anneal"
+      },
+      {
+        "identity": {
+          "path": "anneal/src/main.rs",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal setup local-archive override"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R398",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/exocrate-remote-archive-checksum-main-41f5b37/REPORT.md",
+    "original_report_sha256": "57d734e257b779a98ecd0b9a9b97dbbc1f5aba59938fbf6323b4f85e5390fd5e",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "path": "exocrate/src/lib.rs",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Exocrate remote archive checksum path selected by Anneal"
+      },
+      {
+        "identity": {
+          "path": "anneal",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal v2 remote archive metadata and setup wiring"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/fstar-20260927-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "54a5478a72a8c4a1fa0fb97cf5d1d40f2efd0d511dfeae339840c14936cc3521",
+        "review_report": "reports/fstar-20260927-current-source-review/REPORT.md",
+        "review_report_sha256": "80e3114611101e2208d28a898945b73a5920135ac1e8505cac1d4deb3aceef62",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R400",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/fstar-extensible-proof-automation-trust-boundaries-2019-2026/REPORT.md",
+    "original_report_sha256": "35772b8b08b48417a090ef4b1d9995090f6ed476f66c629ac669e50392733566",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "FStarLang/FStar",
+          "revision": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+          "version_txt": "2026.09.27"
+        },
+        "name": "F* and Meta-F* current tactic/SMT/native-plugin architecture"
+      },
+      {
+        "identity": {
+          "doi": "10.1007/978-3-030-17184-1_2",
+          "first_online": "2019-04-06",
+          "publication": "ESOP 2019"
+        },
+        "name": "Meta-F*: Proof Automation with SMT, Tactics, and Metaprograms"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean tactic and trust behavior selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "smtcoq/smtcoq",
+          "revision": "3187cf12412a244859d7396e8088e6f9de0568d1"
+        },
+        "name": "SMTCoq proof-witness checking"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal principles and design contract"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+        "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+        "review_report_sha256": "5156bc18b65bf0bf04dfeccb337abd4612e36092680e5b91f19d718bc38bfca9",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R404",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/gopls-snapshots-views-workspace-evolution-2018-2026/REPORT.md",
+    "original_report_sha256": "369178d72906f7be8808dc0b3725e832407113811c20b68aec2484f89a8f2620",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "golang/tools",
+          "revision": "98444708d405557b5ddd6179be1a6abc14150d5f"
+        },
+        "name": "gopls current workspace, view, snapshot, and invalidation architecture"
+      },
+      {
+        "identity": {
+          "release": "gopls/v0.11.0",
+          "repository": "golang/tools",
+          "revision": "611cff71b9afeb81ae6eb16c5ce9376c051b1828"
+        },
+        "name": "gopls pre-scalability architecture"
+      },
+      {
+        "identity": {
+          "release": "gopls/v0.12.0",
+          "repository": "golang/tools",
+          "revision": "236850463aea0b1949167349b44c37f97aefd9c5"
+        },
+        "name": "gopls separate-compilation transition"
+      },
+      {
+        "identity": {
+          "release": "gopls/v0.15.0",
+          "repository": "golang/tools",
+          "revision": "50e6ff28fb47219a23c4d0ed12da704b94087f76"
+        },
+        "name": "gopls zero-config workspace release"
+      },
+      {
+        "identity": {
+          "path": "design/37720-gopls-workspaces.md",
+          "repository": "golang/proposal",
+          "revision": "0be13090fdb0cbae0d71641bb676d924bc1c94de"
+        },
+        "name": "Multi-project gopls workspace proposal"
+      },
+      {
+        "identity": {
+          "path": "anneal/DESIGN.md",
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal current design contract"
+      },
+      {
+        "identity": {
+          "branch": "reference",
+          "repository": "google/zerocopy",
+          "revision": "ebfeac694e945da0b52e09c6a185d857f982f4f3"
+        },
+        "name": "Anneal reference evidence at analysis time"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/haskell-hls-hie-bios-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "6df08ec3d2216318ddc84815814622fa2431fe7ea949ce8f4d641eb1153e3be3",
+        "review_report": "reports/haskell-hls-hie-bios-current-source-review/REPORT.md",
+        "review_report_sha256": "96c3036954c1c8fad677c4096b1fd177496eb369d9ac83f51fc1787204d5e325",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R405",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/haskell-ide-lineage-environment-graph-boundaries-2017-2026/REPORT.md",
+    "original_report_sha256": "1063d2ce2cbce06371f2e0adac9c2fd8c7af4a96a3fb7a442c9230622512023b",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "haskell/haskell-ide-engine",
+          "revision": "d84b84322ccac81bf4963983d55cc4e6e98ad418"
+        },
+        "name": "Haskell IDE Engine archive"
+      },
+      {
+        "identity": {
+          "repository": "haskell/ghcide",
+          "revision": "3ef4ef99c4b9cde867d29180c32586947df64b9e"
+        },
+        "name": "ghcide archive"
+      },
+      {
+        "identity": {
+          "repository": "haskell/haskell-language-server",
+          "revision": "187fcd4a685c220caabb72999565604b3287aff2"
+        },
+        "name": "Haskell Language Server"
+      },
+      {
+        "identity": {
+          "repository": "haskell/hie-bios",
+          "revision": "32dd07707423ffabb34e44af68fcbd027b60ded2"
+        },
+        "name": "hie-bios"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/kotlin-swift-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "4fb94543e86351e783d967ea75e07aeaf96c7322309e0b8eda06a88cd6b9058f",
+        "review_report": "reports/kotlin-swift-current-source-review/REPORT.md",
+        "review_report_sha256": "25c957729ccbc6921c7fdb5532493a78d719d9e496e7d035fcab0fa55388e42e",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R410",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/kotlin-swift-compiler-backed-ide-boundaries-2021-2026/REPORT.md",
+    "original_report_sha256": "01d2b6ee09d3e81566e584c8c4636d19ef9648deb1892630ec0307832cf7291f",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "JetBrains/kotlin",
+          "revision": "bce49f3701fb8dc461fb98240fdc7c3c81c592f2"
+        },
+        "name": "Kotlin compiler FIR and Analysis API"
+      },
+      {
+        "identity": {
+          "repository": "swiftlang/sourcekit-lsp",
+          "revision": "045c18e9e9ea35b896857b6cb982aa2373fb5816"
+        },
+        "name": "Swift SourceKit-LSP"
+      },
+      {
+        "identity": {
+          "repository": "swiftlang/swift",
+          "revision": "f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d"
+        },
+        "name": "Swift compiler SourceKit"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal V2 design contract"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [],
+    "inventory_id": "R423",
+    "inventory_target": "Lean/Lake stable v4.34.1; optional prerelease v4.35.0-rc3. Rebuild all OLean/native artifacts.",
+    "original_report": "reports/lake-configuration-ownership-v4-31-0/REPORT.md",
+    "original_report_sha256": "310453f7f24d6d60e7d3fd268edb7c9a04e221a2d116464622957c92f1744a53",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+          "version": "v4.31.0"
+        },
+        "name": "Lake configuration ownership after the Lean 4.31 hoisting change"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+        "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+        "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+        "review_report_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R447",
+    "inventory_target": "Lean/Lake stable v4.34.1; optional prerelease v4.35.0-rc3. Rebuild all OLean/native artifacts.",
+    "original_report": "reports/lean-compilation-reproducibility-cross-version-v4-29-v4-30/REPORT.md",
+    "original_report_sha256": "6734079581bf197b868b54c5cbf2676d7cd76454ec203859d26ed744e6078c5b",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+          "version": "v4.29.0"
+        },
+        "name": "Lean 4"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+        "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+        "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+        "review_report_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R456",
+    "inventory_target": "Lean/Lake stable v4.34.1; optional prerelease v4.35.0-rc3. Rebuild all OLean/native artifacts.",
+    "original_report": "reports/lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.md",
+    "original_report_sha256": "a754514da9d7c689efa5d12bf4f681cb407437d1a76cfde003bea7781d8729cf",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "executable_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+          "local_executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+          "repository": "leanprover/lean4",
+          "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+          "version": "v4.29.0"
+        },
+        "name": "Lean 4"
+      },
+      {
+        "identity": {
+          "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+          "local_executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4"
+      },
+      {
+        "identity": {
+          "launch_mode": "lean --server with LEAN_PATH",
+          "v429_probe_sha256": "d269f82a96279482f4e0fc82f3bf1434fcd2dd0b86e8414cfa3e5a6193334717",
+          "v430_probe_sha256": "d269f82a96279482f4e0fc82f3bf1434fcd2dd0b86e8414cfa3e5a6193334717"
+        },
+        "name": "Lean direct server fixture"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+        "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+        "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+        "review_report_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R462",
+    "inventory_target": "Lean/Lake stable v4.34.1; optional prerelease v4.35.0-rc3. Rebuild all OLean/native artifacts.",
+    "original_report": "reports/lean-lsp-cross-version-goal-completion-v4-30-0-rc2/REPORT.md",
+    "original_report_sha256": "3ea61f60be21676483f1c8392950929be9424ef992b3a055f43f2fb212cda69e",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "lean-binary-sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4 language server and batch checker"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [],
+    "inventory_id": "R491",
+    "inventory_target": "Compare leantar bundled with Lean v4.34.1, optionally v4.35.0-rc3; verify its component version.",
+    "original_report": "reports/leantar-archive-format-v0-1-16-v0-1-19/REPORT.md",
+    "original_report_sha256": "135c33f6460e9a437d1e52ebfdec7e4f0f033c22b60dc242487b6ebeffaf2974",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "component": "leantar",
+          "repository": "digama0/leangz",
+          "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+          "version": "v0.1.16"
+        },
+        "name": "leantar used directly by current Anneal Mathlib-cache unpacking"
+      },
+      {
+        "identity": {
+          "component": "leantar",
+          "repository": "digama0/leangz",
+          "revision": "bc36c619c90ae72572daad8498631d02bf45e488",
+          "version": "v0.1.19"
+        },
+        "name": "leantar selected by Lean v4.30.0-rc2 source and Mathlib sysroot lookup"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean toolchain source selected by Aeneas"
+      },
+      {
+        "identity": {
+          "component": "Cache",
+          "repository": "leanprover-community/mathlib4",
+          "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Mathlib cache consumer selected by Aeneas"
+      },
+      {
+        "identity": {
+          "path": "anneal/flake.nix",
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Current Anneal packaging and Mathlib-cache extraction"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/ninja-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "d796c5c750043394742142fdd244a9ffc0f17831df134e81ca2c5ddf8a653d00",
+        "review_report": "reports/ninja-current-source-review/REPORT.md",
+        "review_report_sha256": "de2a0cd8f661113207d587efae30e9bafdce58d2b9a8e89322bdae8a9264d732",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R494",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/make-ninja-narrow-build-tool-boundaries-1979-2026/REPORT.md",
+    "original_report_sha256": "21d1a9b9f828ad2ddd9f1b4f31e089a9ef0e9821ef444ffc83ba92a786a195f2",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "doi": "10.1002/spe.4380090402",
+          "publication": "Software: Practice and Experience 9(4):255-265",
+          "year": "1979"
+        },
+        "name": "Make \u2014 a program for maintaining computer programs"
+      },
+      {
+        "identity": {
+          "release": "4.4.1",
+          "release-date": "2023-02-26",
+          "release-tarball-md5": "c8469a3713cbbe04d955d4ae4be23eeb"
+        },
+        "name": "GNU Make 4.4.1 manual and release"
+      },
+      {
+        "identity": {
+          "repository": "ninja-build/ninja",
+          "revision": "4e4df1e567eb3c1475a51af261cba2bfff60b4be"
+        },
+        "name": "Ninja build system"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design contract"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/netstack3-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "663a6f334a2e6f7991accd6af4d34072333d86ef91bbe0ecbc193ed8d075e969",
+        "review_report": "reports/netstack3-current-source-review/REPORT.md",
+        "review_report_sha256": "9cc1252705b231bc31bc7437a88a7e018781581af49e5d8584eeeabbc669ee1e",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R501",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/netstack3-architecture-evolution-2019-2026/REPORT.md",
+    "original_report_sha256": "a77943ab37ac1394c30fff32c76959f15aeab06d669b8a08c691594ba2cbae0b",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "fuchsia/fuchsia",
+          "revision": "c480400b0e6cb9a9b36384935639fb3e6566bd68"
+        },
+        "name": "Current Fuchsia Netstack3 architecture and design documentation"
+      },
+      {
+        "identity": {
+          "repository": "fuchsia/fuchsia",
+          "revision": "4ccfe9e3c10662b8dea3ccbf020553ebfa179ff3"
+        },
+        "name": "Netstack3 UDP socket identity consolidation"
+      },
+      {
+        "identity": {
+          "repository": "fuchsia/fuchsia",
+          "revision": "40ce8a08f2ffa1e9babc8e5b6aaa14cf486c0c6d"
+        },
+        "name": "Netstack3 TCP handshake-status ownership migration"
+      },
+      {
+        "identity": {
+          "repository": "fuchsia/fuchsia",
+          "revision": "1e9fb101ed58968f5b4cf0b67a439f8cb0479b9d"
+        },
+        "name": "Netstack3 multicast-forwarding state design"
+      },
+      {
+        "identity": {
+          "repository": "fuchsia/fuchsia",
+          "revision": "09c560576ca357ffc0853c6251048af2a61b1543"
+        },
+        "name": "Netstack3 2026 resource-reference and socket-destruction implementation"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/nix-guix-2352-source-review/support/matrix.json",
+        "review_matrix_sha256": "fa3608400b5e619731f758cc4481249a1b04712df58dee6c7d4bbbc703d6e281",
+        "review_report": "reports/nix-guix-2352-source-review/REPORT.md",
+        "review_report_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R502",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/nix-guix-functional-deployment-roots-2007-2026/REPORT.md",
+    "original_report_sha256": "f4539cd747ba794061b449368b590aa6dff2aef2a0ec0d70c507acec1ef4d847",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "derivation-outputs": "https://nix.dev/manual/nix/2.35/store/derivation/outputs/index.html",
+          "garbage-collection": "https://nix.dev/manual/nix/2.35/command-ref/nix-store/gc.html",
+          "manual-version": "2.35.2",
+          "profiles": "https://nix.dev/manual/nix/2.35/command-ref/files/profiles.html"
+        },
+        "name": "Nix 2.35.2 deployment and store model"
+      },
+      {
+        "identity": {
+          "authors": "Eelco Dolstra; Armijn Hemel",
+          "paper": "Purely Functional System Configuration Management",
+          "url": "https://www.usenix.org/legacy/event/hotos07/tech/full_papers/dolstra/dolstra_html/",
+          "venue": "HotOS XI",
+          "year": "2007"
+        },
+        "name": "NixOS functional system configuration"
+      },
+      {
+        "identity": {
+          "arxiv": "1305.4584v1",
+          "author": "Ludovic Court\u00e8s",
+          "paper": "Functional Package Management with Guix",
+          "submitted": "2013-05-20",
+          "venue": "European Lisp Symposium 2013"
+        },
+        "name": "GNU Guix functional package management"
+      },
+      {
+        "identity": {
+          "announcement": "https://lists.gnu.org/archive/html/info-gnu/2026-01/msg00004.html",
+          "release": "1.5.0",
+          "released": "2026-01-23"
+        },
+        "name": "GNU Guix stable release"
+      },
+      {
+        "identity": {
+          "design-blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+          "principles-blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design constraints"
+      },
+      {
+        "identity": {
+          "archive-reproducibility-report-blob": "3bf9a589b81b0fdba5648b78a0b7a3dba842ecf9",
+          "catalog-blob": "5ecf20dfa8bbedeb898d1b9c251cbf6e2216e977",
+          "fixed-output-report-blob": "5f5142381dca9d2c38dbcde41c6d0f77d15b1f7a",
+          "reference-revision": "30b9d5749aed6049d949f4f582dd64c70088d07a",
+          "relocation-report-blob": "262a141a145a2532745aaad71289896b5b3af1b2",
+          "repository": "google/zerocopy"
+        },
+        "name": "Anneal current Nix and archive reference evidence"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/nix-guix-2352-source-review/support/matrix.json",
+        "review_matrix_sha256": "fa3608400b5e619731f758cc4481249a1b04712df58dee6c7d4bbbc703d6e281",
+        "review_report": "reports/nix-guix-2352-source-review/REPORT.md",
+        "review_report_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R503",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/nix-guix-immutable-closures-mutable-roots-2004-2026/REPORT.md",
+    "original_report_sha256": "1ff2025d1c675af336c4b545ff205bed0e11a9f17409825fdb7d297090d103d8",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "NixOS/nix",
+          "revision": "9bc9ab32a57504f068847af4f8013417476cb1ec"
+        },
+        "name": "Nix functional deployment architecture and current store/profile semantics"
+      },
+      {
+        "identity": {
+          "repository": "NixOS/nixpkgs",
+          "revision": "6cb205c37b7c0c39b643163d1b7721b5f9bc0913"
+        },
+        "name": "NixOS system switching and activation semantics"
+      },
+      {
+        "identity": {
+          "arxiv": "1305.4584",
+          "manual": "GNU Guix Reference Manual devel, observed 2026-09-30",
+          "paper": "Functional Package Management with Guix"
+        },
+        "name": "GNU Guix functional package management and current operational model"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal current design authority"
+      },
+      {
+        "identity": {
+          "branch": "reference",
+          "repository": "google/zerocopy",
+          "revision": "30b9d5749aed6049d949f4f582dd64c70088d07a"
+        },
+        "name": "Anneal current reference corpus"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R506",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/persistent-data-structures-snapshot-space-costs-1989-2026/REPORT.md",
+    "original_report_sha256": "67f844e0fc159342365932e91075ee60bf1a233c1da539eb59cc2f648a5e39a0",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "doi": "10.1016/0022-0000(89)90034-2",
+          "publication": "Journal of Computer and System Sciences 38(1)",
+          "year": "1989"
+        },
+        "name": "Making Data Structures Persistent"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4 persistent collections and maximal-sharing machinery"
+      },
+      {
+        "identity": {
+          "documentation": "Copy-on-Write; Snapshots, Clones and Bookmarks",
+          "observed": "2026-09-30",
+          "project": "OpenZFS"
+        },
+        "name": "OpenZFS copy-on-write snapshots"
+      },
+      {
+        "identity": {
+          "crate": "typed-arena",
+          "version": "2.0.2"
+        },
+        "name": "typed_arena arena lifetime semantics"
+      },
+      {
+        "identity": {
+          "package": "fix",
+          "release": "20250919"
+        },
+        "name": "fix weak hash-consing implementation"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design authority"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/sel4-compcert-everest-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "c787f8db46daa4682cca92da571d9e12ff2743639a22ced446206743cc839635",
+        "review_report": "reports/sel4-compcert-everest-current-source-review/REPORT.md",
+        "review_report_sha256": "bd093266a98fa8ac45766cc0c69555bc75daffe6af6d30242fd7d9dfa0f28b04",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R507",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/proof-maintenance-architectures-sel4-compcert-everest-2009-2026/REPORT.md",
+    "original_report_sha256": "d85b993bfc8ea691c47690b99e8765329681d1e4b1d225afa1cdc6276bb79808",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "seL4/l4v",
+          "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+        },
+        "name": "seL4 L4.verified proof corpus"
+      },
+      {
+        "identity": {
+          "repository": "seL4/verification-manifest",
+          "revision": "f1f7a4289585e9610733ea041c1849e46af9701b"
+        },
+        "name": "seL4 verification manifest"
+      },
+      {
+        "identity": {
+          "repository": "AbsInt/CompCert",
+          "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+          "version": "3.18"
+        },
+        "name": "CompCert 3.18 semantic-preservation development"
+      },
+      {
+        "identity": {
+          "repository": "hacl-star/hacl-star",
+          "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f"
+        },
+        "name": "HACL* verified cryptographic library"
+      },
+      {
+        "identity": {
+          "repository": "FStarLang/karamel",
+          "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53"
+        },
+        "name": "KaRaMeL extraction compiler"
+      },
+      {
+        "identity": {
+          "repository": "project-everest/everest",
+          "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac"
+        },
+        "name": "Project Everest integration repository"
+      },
+      {
+        "identity": {
+          "doi": "10.1145/3607844",
+          "publication": "PACMPL 7 (ICFP 2023)"
+        },
+        "name": "Modularity, Code Specialization, and Zero-Cost Abstractions for Program Verification"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/reconciliation-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "4cbafb67e6a5fac98ad17398f624fa5b05e8f52f050fcb6b84791be710e69224",
+        "review_report": "reports/reconciliation-current-source-review/REPORT.md",
+        "review_report_sha256": "4790e30980e3be2b0a3bba10caf3e8af7222e274b9b055c071d3282af5e3f3ac",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R510",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/reconciliation-event-hints-repair-loops-2005-2026/REPORT.md",
+    "original_report_sha256": "1e3c6993b22e218350b5385f414feab4f4abf81db5925452105c9b600c9c4a1a",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "kubernetes-sigs/controller-runtime",
+          "revision": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"
+        },
+        "name": "Kubernetes controller-runtime"
+      },
+      {
+        "identity": {
+          "repository": "kubernetes/kubernetes",
+          "revision": "6d1d025050cb63ae5b8e53037aced205e6a28410"
+        },
+        "name": "Kubernetes client-go Reflector"
+      },
+      {
+        "identity": {
+          "repository": "kubernetes/enhancements",
+          "revision": "914ed6950576832c8579899f092909d27623492e"
+        },
+        "name": "Kubernetes WatchList KEP 3157"
+      },
+      {
+        "identity": {
+          "repository": "kubernetes/website",
+          "revision": "367a7a21bbef6b2d3c57d5fe113bee9bdb658889"
+        },
+        "name": "Kubernetes controller and API documentation"
+      },
+      {
+        "identity": {
+          "page": "inotify(7)",
+          "project": "Linux man-pages",
+          "release": "6.19",
+          "release_date": "2026-02-14"
+        },
+        "name": "Linux inotify manual"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal redesign"
+      },
+      {
+        "identity": {
+          "package": "anneal-3730-editor-save-format-watch-loop-2026-09-29",
+          "report_blob": "ca2c4e0f92eb9432002b240a986073417a177b48",
+          "repository": "google/zerocopy",
+          "revision": "2cec790eeec883e83ac66dcfa021c51ad65ad4f1"
+        },
+        "name": "Anneal direct save/format/watch-loop reference report"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/redleaf-linux-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "d00e92c82176d2bce4bb5b6ae856945e26cd561c68bfbbe26af123dbe410ba29",
+        "review_report": "reports/redleaf-linux-current-source-review/REPORT.md",
+        "review_report_sha256": "e5b7897642409e07d02d46878847c72d1fea041ca36a4453b50a862f2eb84471",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R511",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/redleaf-mixed-language-isolation-boundaries-2020-2026/REPORT.md",
+    "original_report_sha256": "0a5070f9647b65af86cdcc4c00e2819f130ccb75e6da17a2b4cf386a3426eb02",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "publication": "RedLeaf: Isolation and Communication in a Safe Operating System, 14th USENIX Symposium on Operating Systems Design and Implementation (OSDI 20), pages 21-39",
+          "usenix-paper-id": "258949",
+          "year": "2020"
+        },
+        "name": "RedLeaf isolation architecture"
+      },
+      {
+        "identity": {
+          "branch-observed": "osdi20_camera_ready",
+          "commit-date": "2021-02-20",
+          "repository": "mars-research/redleaf",
+          "revision": "08753faee652495f55fc8cbb420e5123a183affc"
+        },
+        "name": "RedLeaf paper-associated source corroboration"
+      },
+      {
+        "identity": {
+          "repository": "torvalds/linux",
+          "revision": "551c722f40809618230001baccf219193e22fc5a"
+        },
+        "name": "Linux Rust abstraction and foreign-ownership boundary"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design authority"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+        "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+        "review_report_sha256": "5156bc18b65bf0bf04dfeccb337abd4612e36092680e5b91f19d718bc38bfca9",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R513",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/REPORT.md",
+    "original_report_sha256": "c175a94489839f3e679619da20df9e8d450dae8044a244a86f514861cb41b572",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "rust-lang/rls",
+          "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+        },
+        "name": "Rust Language Server architecture at archived repository head"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rfcs",
+          "revision": "4e4c756e6df95167dda553251cc37a75a294f002",
+          "rfc": "1317"
+        },
+        "name": "RFC 1317 Rust Language Server accepted text"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rfcs",
+          "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+          "rfc": "2912"
+        },
+        "name": "RFC 2912 rust-analyzer transition accepted text"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rust-analyzer",
+          "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+        },
+        "name": "rust-analyzer current architecture"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rustc-dev-guide",
+          "revision": "0fb89036f8e46a80ee815ed99ff7d9dae9d172ae"
+        },
+        "name": "rustc developer guide current rust-analyzer sharing account"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+        "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+        "review_report_sha256": "5156bc18b65bf0bf04dfeccb337abd4612e36092680e5b91f19d718bc38bfca9",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R514",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/rls-rust-analyzer-architecture-transition-2015-2026/REPORT.md",
+    "original_report_sha256": "34b704140b8cda146cc211eaf6c0194c5bcfb1205388af8318a5d77530fa3190",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "rust-lang/rls",
+          "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+        },
+        "name": "Rust Language Server (RLS) archived repository"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rust-analyzer",
+          "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+        },
+        "name": "rust-analyzer current architecture"
+      },
+      {
+        "identity": {
+          "path": "text/1317-ide.md",
+          "repository": "rust-lang/rfcs",
+          "revision": "82d48b36568286b93fc2ce55f89594024f421a3b"
+        },
+        "name": "RFC 1317: Rust Language Server"
+      },
+      {
+        "identity": {
+          "path": "text/2912-rust-analyzer.md",
+          "repository": "rust-lang/rfcs",
+          "revision": "b6fffdf18f8b867648de0d95657cc13a64cae4e2"
+        },
+        "name": "RFC 2912: Transition to rust-analyzer"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+        "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+        "review_report_sha256": "5156bc18b65bf0bf04dfeccb337abd4612e36092680e5b91f19d718bc38bfca9",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R515",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/REPORT.md",
+    "original_report_sha256": "00f967001d4a2b3fad3c8291d4bd274107b31dc7cbc169f734c9e3cd9d153a1a",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "architecture_blob": "a7bde5799d73cbaf7319dad2773fd58a89a978a8",
+          "repository": "rust-lang/rls",
+          "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+          "rfc": "1317"
+        },
+        "name": "Rust Language Server design and archived implementation"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rfcs",
+          "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+          "rfc": "2912",
+          "rfc_blob": "9f5986eeacafbea1ad99c6cbc4c24d2eab278c99"
+        },
+        "name": "rust-analyzer adoption decision"
+      },
+      {
+        "identity": {
+          "architecture_blob": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c",
+          "repository": "rust-lang/rust-analyzer",
+          "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+        },
+        "name": "Current rust-analyzer architecture"
+      },
+      {
+        "identity": {
+          "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+          "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design authority used for applicability analysis"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/roslyn-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "eebbcbcb52039de1f5ae677dd2808ed713431da6f012c6f67f6d49a492218b87",
+        "review_report": "reports/roslyn-current-source-review/REPORT.md",
+        "review_report_sha256": "2dc8c283c7c1ecaf13a13c507896110c63e81dffc6a21d93bc2942a79ecd2564",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R516",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/roslyn-immutable-snapshots-workspace-boundaries-2012-2026/REPORT.md",
+    "original_report_sha256": "7a5109278efcdfaa790f993844dde111a76e6ee20359ce989578edec0f4792dc",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "dotnet/roslyn",
+          "revision": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b"
+        },
+        "name": "Roslyn current workspace, compilation, syntax, and remote-synchronization architecture"
+      },
+      {
+        "identity": {
+          "path": "Roslyn-Overview.md",
+          "repository": "dotnet/roslyn",
+          "revision": "4a74095f0e3598e514f3147479beee208c0ad7ed"
+        },
+        "name": "Roslyn overview as first imported into the public GitHub repository"
+      },
+      {
+        "identity": {
+          "repository": "dotnet/roslyn",
+          "revision": "c141605a972871644cc43f2caec597c88e9662db"
+        },
+        "name": "Roslyn initial out-of-process workspace integration commit"
+      },
+      {
+        "identity": {
+          "published": "2012-06-08",
+          "url": "https://ericlippert.com/2012/06/08/red-green-trees/"
+        },
+        "name": "Eric Lippert's Roslyn red/green-tree design account"
+      },
+      {
+        "identity": {
+          "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md",
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design authority used for transfer analysis"
+      }
+    ]
+  },
+  {
+    "classification": "prior_comparison",
+    "existing_source_reviews": [],
+    "inventory_id": "R533",
+    "inventory_target": "Aeneas nightly-2026.09.30-0855ce1 with its paired Charon e435e5f and Lean 4.31.0; separate standalone Charon comparison.",
+    "original_report": "reports/rust-llbc-lean-golden-and-aeneas-revision-probes-2026-09-28/REPORT.md",
+    "original_report_sha256": "c62486ea15051d168d09e89a64fdfb3eae9e4622549beb59ad51e725a8cc5504",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "AeneasVerif/aeneas",
+          "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+        },
+        "name": "Aeneas June 3"
+      },
+      {
+        "identity": {
+          "repository": "AeneasVerif/aeneas",
+          "revision": "f95a80abaf554d4612cb60ef9ec8e849139bec44"
+        },
+        "name": "Aeneas June 1"
+      },
+      {
+        "identity": {
+          "repository": "charon-lang/charon",
+          "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+        },
+        "name": "Charon June 3"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean 4"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/salsa-rustc-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "3585ea9addde0f11697c742ce6f5274175dc4e6036226497e23f7cc49dd5e07e",
+        "review_report": "reports/salsa-rustc-current-source-review/REPORT.md",
+        "review_report_sha256": "2a77d867b4d6ace618db7fe928d10e5d8dc8b2a8eeb6e378769b237f1d9c1d50",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R566",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/salsa-rustc-query-granularity-2016-2026/REPORT.md",
+    "original_report_sha256": "b12e101c115e24f5e63991bb28ee1fb454c0756bd5b2e4235fbef44f353a882c",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "salsa-rs/salsa",
+          "revision": "a7f8c558555f179ca02f6bdf7397d1317f91aa43"
+        },
+        "name": "Salsa query framework"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rustc-dev-guide",
+          "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85"
+        },
+        "name": "rustc developer guide query and incremental-compilation model"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design authority"
+      },
+      {
+        "identity": {
+          "blob": "966b5953644d8c9a766ae900e8b137616c501be8",
+          "path": "reports/aeneas-incremental-translation-feasibility-nightly-2026-06-03/REPORT.md",
+          "repository": "google/zerocopy"
+        },
+        "name": "Aeneas incremental-translation feasibility reference evidence"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/tock-asterinas-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "6b1be08cb9a5e1b0daaf77332fa3a9b61283d03d9d98c43a752fbbcd352a2112",
+        "review_report": "reports/tock-asterinas-current-source-review/REPORT.md",
+        "review_report_sha256": "7b05bdda22d860bcddd6820aad9d137d4e38808a768e8e9f8727fb6155977fd0",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R571",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/tock-asterinas-safe-interface-boundaries-2015-2026/REPORT.md",
+    "original_report_sha256": "9af3d5bcccf6620b7f7ce745a5f11c1a9064659a34f83a11ede961ad2b096faf",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "tock/tock",
+          "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb"
+        },
+        "name": "Tock current kernel and capsule boundary"
+      },
+      {
+        "identity": {
+          "doi": "10.1145/3731569.3764828",
+          "publication": "SOSP 2025",
+          "year": "2025"
+        },
+        "name": "Tock: From Research to Securing 10 Million Computers"
+      },
+      {
+        "identity": {
+          "repository": "asterinas/asterinas",
+          "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+        },
+        "name": "Asterinas current OSTD/framekernel boundary"
+      },
+      {
+        "identity": {
+          "isbn": "978-1-939133-48-9",
+          "pages": "307-323",
+          "publication": "USENIX ATC 2025",
+          "year": "2025"
+        },
+        "name": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/tock-asterinas-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "6b1be08cb9a5e1b0daaf77332fa3a9b61283d03d9d98c43a752fbbcd352a2112",
+        "review_report": "reports/tock-asterinas-current-source-review/REPORT.md",
+        "review_report_sha256": "7b05bdda22d860bcddd6820aad9d137d4e38808a768e8e9f8727fb6155977fd0",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R572",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/tock-asterinas-safe-interface-boundaries-2017-2026/REPORT.md",
+    "original_report_sha256": "7ffc5e18b640849259d4e539844ca1e0bc265b7d0c0eb2f9b7cec880d82628b9",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "tock/tock",
+          "revision": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73"
+        },
+        "name": "Tock current kernel source"
+      },
+      {
+        "identity": {
+          "repository": "tock/book",
+          "revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923"
+        },
+        "name": "Tock current architecture and threat-model documentation"
+      },
+      {
+        "identity": {
+          "doi": "10.1145/3132747.3132786",
+          "publication": "SOSP 2017"
+        },
+        "name": "Tock SOSP 2017 architecture paper"
+      },
+      {
+        "identity": {
+          "doi": "10.1145/3731569.3764828",
+          "publication": "SOSP 2025"
+        },
+        "name": "Tock SOSP 2025 retrospective"
+      },
+      {
+        "identity": {
+          "repository": "asterinas/asterinas",
+          "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+        },
+        "name": "Asterinas current source and architecture documentation"
+      },
+      {
+        "identity": {
+          "paper": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB",
+          "publication": "2025 USENIX Annual Technical Conference"
+        },
+        "name": "Asterinas USENIX ATC 2025 paper"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/tock-asterinas-current-source-review/support/matrix.json",
+        "review_matrix_sha256": "6b1be08cb9a5e1b0daaf77332fa3a9b61283d03d9d98c43a752fbbcd352a2112",
+        "review_report": "reports/tock-asterinas-current-source-review/REPORT.md",
+        "review_report_sha256": "7b05bdda22d860bcddd6820aad9d137d4e38808a768e8e9f8727fb6155977fd0",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R573",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/REPORT.md",
+    "original_report_sha256": "18f7fb1a7894f1f1aa5fa69cf6ea91ad4de389cea6ceb6e93e5934186ce1870e",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "book_repository": "tock/book",
+          "book_revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923",
+          "period": "2017-2026",
+          "repository": "tock/tock",
+          "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "sosp_2017_doi": "10.1145/3132747.3132786",
+          "sosp_2025_doi": "10.1145/3731569.3764828"
+        },
+        "name": "Tock trusted-core, capsule, and process boundaries"
+      },
+      {
+        "identity": {
+          "arxiv": "2506.03876",
+          "repository": "asterinas/asterinas",
+          "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "usenix_atc_year": "2025",
+          "version": "0.18.1"
+        },
+        "name": "Asterinas 0.18.1 framekernel and OSTD boundary"
+      },
+      {
+        "identity": {
+          "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+          "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal redesign trust and abstraction constraints"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R574",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/toolchain-archive-semantic-equivalence-procedure-main-41f5b37/REPORT.md",
+    "original_report_sha256": "78046b8fed8d3c9ab93492bcf5f2473edd46aff6f2f0fb0508eb3763ad195a86",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "Anneal omnibus toolchain archive comparison procedure"
+      },
+      {
+        "identity": {
+          "repository": "leanprover/lean4",
+          "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "version": "v4.30.0-rc2"
+        },
+        "name": "Lean and Lake artifact semantics selected by Anneal"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [
+      {
+        "review_matrix": "reports/typescript-602-to-702-source-review/support/matrix.json",
+        "review_matrix_sha256": "a2010dae33cb05542d0bd84c80ff85b9a94e3e4c23d8b998361469e1d018405f",
+        "review_report": "reports/typescript-602-to-702-source-review/REPORT.md",
+        "review_report_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785",
+        "row_present_in_matrix": true
+      }
+    ],
+    "inventory_id": "R576",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/typescript-host-owned-language-world-2014-2026/REPORT.md",
+    "original_report_sha256": "ea2f8c312b4fa368a0f80a04422362b2b39dfba2fed00c0e9265a3dbe29f1624",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "microsoft/TypeScript",
+          "revision": "607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+          "version": "6.0.2"
+        },
+        "name": "TypeScript 6.0.2 compiler and language-service architecture"
+      },
+      {
+        "identity": {
+          "path": "Using-the-Language-Service-API.md",
+          "repository": "microsoft/TypeScript-wiki",
+          "revision": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d"
+        },
+        "name": "TypeScript language-service design guide"
+      },
+      {
+        "identity": {
+          "date": "2026-07-08",
+          "release": "TypeScript 7.0",
+          "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/"
+        },
+        "name": "TypeScript 7.0 native transition"
+      },
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+        },
+        "name": "Anneal design authority"
+      }
+    ]
+  },
+  {
+    "classification": "source_revision_recheck",
+    "existing_source_reviews": [],
+    "inventory_id": "R580",
+    "inventory_target": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+    "original_report": "reports/zerocopy-ffi-primitives-main-41f5b37/REPORT.md",
+    "original_report_sha256": "6c2c6fad214a54676858f5fcf92d645857d982aba2fadeb85c4827848c9d3ad8",
+    "pinned_subjects": [
+      {
+        "identity": {
+          "repository": "google/zerocopy",
+          "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+        },
+        "name": "zerocopy production source"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/rust",
+          "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+          "toolchain": "nightly-2026-05-31"
+        },
+        "name": "Rust compiler and core library selected by Anneal"
+      },
+      {
+        "identity": {
+          "repository": "rust-lang/reference",
+          "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+        },
+        "name": "Rust Reference paired with the selected compiler"
+      }
+    ]
+  }
+]

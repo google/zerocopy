@@ -1,0 +1,374 @@
+{
+  "R138": [],
+  "R182": [
+    {
+      "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+      "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+      "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "source_result": null,
+      "target_identity": {
+        "lake_source_same_repository": true,
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight"
+      }
+    }
+  ],
+  "R196": [
+    {
+      "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+      "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+      "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "source_result": null,
+      "target_identity": {
+        "lake_source_same_repository": true,
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight"
+      }
+    }
+  ],
+  "R255": [
+    {
+      "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+      "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+      "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "source_result": null,
+      "target_identity": {
+        "lake_source_same_repository": true,
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight"
+      }
+    }
+  ],
+  "R306": [],
+  "R307": [],
+  "R308": [],
+  "R309": [],
+  "R310": [],
+  "R311": [],
+  "R313": [],
+  "R314": [],
+  "R315": [],
+  "R316": [],
+  "R317": [],
+  "R318": [],
+  "R319": [],
+  "R320": [],
+  "R321": [],
+  "R322": [],
+  "R323": [],
+  "R324": [],
+  "R325": [],
+  "R326": [],
+  "R327": [],
+  "R328": [],
+  "R329": [],
+  "R330": [],
+  "R331": [],
+  "R332": [],
+  "R333": [],
+  "R334": [],
+  "R335": [],
+  "R336": [],
+  "R337": [],
+  "R338": [],
+  "R339": [],
+  "R340": [],
+  "R341": [],
+  "R342": [],
+  "R343": [],
+  "R344": [],
+  "R346": [
+    {
+      "review_matrix": "reports/buck2-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "0259f8998775d3b1f5a51a496ee977b76104037ad7e0f4fc750ba3c3bac91e17",
+      "review_report": "reports/buck2-current-source-review/REPORT.md",
+      "source_result": "mapped_docs_unchanged_adjacent_dice_api_delta_no_architecture_or_behavior_conclusion",
+      "target_identity": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df"
+    }
+  ],
+  "R351": [],
+  "R368": [],
+  "R383": [
+    {
+      "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+      "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "target_identity": "229b9b2f4e20840a8280174fa08385fd9e36844b"
+    }
+  ],
+  "R386": [
+    {
+      "review_matrix": "reports/rocq-serapi-fleche-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "ced7cee63edadeb761d45efbf93fe8ded3761d92899ea872e819fe0c29d016d9",
+      "review_report": "reports/rocq-serapi-fleche-current-source-review/REPORT.md",
+      "source_result": "both_default_branches_same_as_pins_zero_forward_comparison",
+      "target_identity": null
+    }
+  ],
+  "R389": [
+    {
+      "review_matrix": "reports/dafny-boogie-viper-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "5a4a6ff55d945d113fbb3a465879c84b10dbb6f76b8fdab016e2b01502b14c0e",
+      "review_report": "reports/dafny-boogie-viper-current-source-review/REPORT.md",
+      "source_result": "six_default_branches_equal_exact_report_pins_zero_forward_source_range",
+      "target_identity": null
+    }
+  ],
+  "R393": [],
+  "R394": [],
+  "R395": [],
+  "R396": [],
+  "R397": [],
+  "R398": [],
+  "R400": [
+    {
+      "review_matrix": "reports/fstar-20260927-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "54a5478a72a8c4a1fa0fb97cf5d1d40f2efd0d511dfeae339840c14936cc3521",
+      "review_report": "reports/fstar-20260927-current-source-review/REPORT.md",
+      "source_result": "no_newer_official_source_or_release_to_recheck",
+      "target_identity": null
+    }
+  ],
+  "R404": [
+    {
+      "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+      "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "target_identity": "134264d72fba423ca1ad358683cd3c32699b010e"
+    }
+  ],
+  "R405": [
+    {
+      "review_matrix": "reports/haskell-hls-hie-bios-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "6df08ec3d2216318ddc84815814622fa2431fe7ea949ce8f4d641eb1153e3be3",
+      "review_report": "reports/haskell-hls-hie-bios-current-source-review/REPORT.md",
+      "source_result": "both_default_branches_equal_their_original_pins_no_forward_comparison",
+      "target_identity": null
+    }
+  ],
+  "R410": [
+    {
+      "review_matrix": "reports/kotlin-swift-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "4fb94543e86351e783d967ea75e07aeaf96c7322309e0b8eda06a88cd6b9058f",
+      "review_report": "reports/kotlin-swift-current-source-review/REPORT.md",
+      "source_result": "claim_mapped_blobs_unchanged_broader_behavior_unresolved",
+      "target_identity": null
+    }
+  ],
+  "R423": [],
+  "R447": [
+    {
+      "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+      "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+      "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "source_result": null,
+      "target_identity": {
+        "lake_source_same_repository": true,
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight"
+      }
+    }
+  ],
+  "R456": [
+    {
+      "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+      "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+      "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "source_result": null,
+      "target_identity": {
+        "lake_source_same_repository": true,
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight"
+      }
+    }
+  ],
+  "R462": [
+    {
+      "review_matrix": "reports/lean-429-430-comparison-to-4341-source-review/support/matrix.json",
+      "review_matrix_sha256": "3d13fbb09848b0a209f5d7089a8d5f95f73551e77d5b2bd6a601741bc852a90f",
+      "review_report": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "source_result": "waitForDiagnostics uses requested-version <= current-document-version and PlainGoalParams remains unversioned TextDocumentPositionParams",
+      "target_identity": {
+        "lake_source_same_repository": true,
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "tag": "v4.34.1",
+        "tag_ref_type": "lightweight"
+      }
+    }
+  ],
+  "R491": [],
+  "R494": [
+    {
+      "review_matrix": "reports/ninja-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "d796c5c750043394742142fdd244a9ffc0f17831df134e81ca2c5ddf8a653d00",
+      "review_report": "reports/ninja-current-source-review/REPORT.md",
+      "source_result": "master_same_pinned_commit_no_forward_source_comparison_latest_release_diverged",
+      "target_identity": null
+    }
+  ],
+  "R501": [
+    {
+      "review_matrix": "reports/netstack3-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "663a6f334a2e6f7991accd6af4d34072333d86ef91bbe0ecbc193ed8d075e969",
+      "review_report": "reports/netstack3-current-source-review/REPORT.md",
+      "source_result": "three_changed_netstack3_blobs_narrow_claim_adjacent_no_architectural_conclusion",
+      "target_identity": "955de750a2aae45faa99e02e29715b794dd3b544"
+    }
+  ],
+  "R502": [
+    {
+      "review_matrix": "reports/nix-guix-2352-source-review/support/matrix.json",
+      "review_matrix_sha256": "fa3608400b5e619731f758cc4481249a1b04712df58dee6c7d4bbbc703d6e281",
+      "review_report": "reports/nix-guix-2352-source-review/REPORT.md",
+      "source_result": "already_current_at_pinned_manual_no_newer_version_delta",
+      "target_identity": "same verified Nix manual 2.35.2; same verified Guix stable 1.5.0"
+    }
+  ],
+  "R503": [
+    {
+      "review_matrix": "reports/nix-guix-2352-source-review/support/matrix.json",
+      "review_matrix_sha256": "fa3608400b5e619731f758cc4481249a1b04712df58dee6c7d4bbbc703d6e281",
+      "review_report": "reports/nix-guix-2352-source-review/REPORT.md",
+      "source_result": "selected_nix_documentation_continuity_full_claim_unresolved",
+      "target_identity": "Nix 2.35.2 release source 2c73b59da29606068c0c98db015dd3a66955525d; Guix stable 1.5.0"
+    }
+  ],
+  "R506": [],
+  "R507": [
+    {
+      "review_matrix": "reports/sel4-compcert-everest-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "c787f8db46daa4682cca92da571d9e12ff2743639a22ced446206743cc839635",
+      "review_report": "reports/sel4-compcert-everest-current-source-review/REPORT.md",
+      "source_result": "five_repos_same_pin_compcert_four_commit_forward_range_mapped_blobs_unchanged",
+      "target_identity": null
+    }
+  ],
+  "R510": [
+    {
+      "review_matrix": "reports/reconciliation-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "4cbafb67e6a5fac98ad17398f624fa5b05e8f52f050fcb6b84791be710e69224",
+      "review_report": "reports/reconciliation-current-source-review/REPORT.md",
+      "source_result": "controller_runtime_same_pin_reflector_mapped_blob_unchanged_broader_behavior_unresolved",
+      "target_identity": null
+    }
+  ],
+  "R511": [
+    {
+      "review_matrix": "reports/redleaf-linux-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "d00e92c82176d2bce4bb5b6ae856945e26cd561c68bfbbe26af123dbe410ba29",
+      "review_report": "reports/redleaf-linux-current-source-review/REPORT.md",
+      "source_result": null,
+      "target_identity": null
+    }
+  ],
+  "R513": [
+    {
+      "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+      "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "target_identity": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+    }
+  ],
+  "R514": [
+    {
+      "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+      "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "target_identity": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+    }
+  ],
+  "R515": [
+    {
+      "review_matrix": "reports/editor-engines-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "03a667b421d2a1a6ff0d44c959c203ac9268ac65e13cbec26e0a5de9701ac0b3",
+      "review_report": "reports/editor-engines-current-source-review/REPORT.md",
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "target_identity": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+    }
+  ],
+  "R516": [
+    {
+      "review_matrix": "reports/roslyn-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "eebbcbcb52039de1f5ae677dd2808ed713431da6f012c6f67f6d49a492218b87",
+      "review_report": "reports/roslyn-current-source-review/REPORT.md",
+      "source_result": "no_observable_drift_in_mapped_paths_on_main",
+      "target_identity": null
+    }
+  ],
+  "R533": [],
+  "R566": [
+    {
+      "review_matrix": "reports/salsa-rustc-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "3585ea9addde0f11697c742ce6f5274175dc4e6036226497e23f7cc49dd5e07e",
+      "review_report": "reports/salsa-rustc-current-source-review/REPORT.md",
+      "source_result": {
+        "rustc_dev_guide": "twenty_seven_commit_forward_range_two_pinned_docs_unchanged_adjacent_query_doc_formatting_only",
+        "salsa": "three_commit_forward_range_one_mapped_cycle_doc_changed_related_cycle_implementation_changed"
+      },
+      "target_identity": null
+    }
+  ],
+  "R571": [
+    {
+      "review_matrix": "reports/tock-asterinas-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "6b1be08cb9a5e1b0daaf77332fa3a9b61283d03d9d98c43a752fbbcd352a2112",
+      "review_report": "reports/tock-asterinas-current-source-review/REPORT.md",
+      "source_result": "mapped_source_paths_unchanged_broader_claim_unresolved",
+      "target_identity": null
+    }
+  ],
+  "R572": [
+    {
+      "review_matrix": "reports/tock-asterinas-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "6b1be08cb9a5e1b0daaf77332fa3a9b61283d03d9d98c43a752fbbcd352a2112",
+      "review_report": "reports/tock-asterinas-current-source-review/REPORT.md",
+      "source_result": "tock_mapped_kernel_lib_lint_delta_no_safety_conclusion",
+      "target_identity": null
+    }
+  ],
+  "R573": [
+    {
+      "review_matrix": "reports/tock-asterinas-current-source-review/support/matrix.json",
+      "review_matrix_sha256": "6b1be08cb9a5e1b0daaf77332fa3a9b61283d03d9d98c43a752fbbcd352a2112",
+      "review_report": "reports/tock-asterinas-current-source-review/REPORT.md",
+      "source_result": "mapped_source_paths_unchanged_broader_claim_unresolved",
+      "target_identity": null
+    }
+  ],
+  "R574": [],
+  "R576": [
+    {
+      "review_matrix": "reports/typescript-602-to-702-source-review/support/matrix.json",
+      "review_matrix_sha256": "a2010dae33cb05542d0bd84c80ff85b9a94e3e4c23d8b998361469e1d018405f",
+      "review_report": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "source_result": "unresolved_at_target",
+      "target_identity": {
+        "mirrored_commit": "1e4744d68260a7cb91b62b12edc3f6a2187faaf1",
+        "mirrored_repository": "microsoft/TypeScript",
+        "mirrored_tag": "v7.0.2",
+        "mirrored_tag_ref_type": "lightweight",
+        "original_native_commit": "2bd066d87f5bafd315be9f40889d0a60b9e58e0b",
+        "original_native_repository": "microsoft/typescript-go",
+        "original_native_tag": "typescript/v7.0.2",
+        "original_native_tag_ref_type": "lightweight",
+        "release": "7.0.2"
+      }
+    }
+  ],
+  "R580": []
+}

@@ -10042,6 +10042,56 @@
         "lean/interactive-goals"
       ]
     },
+    "anneal-3731-version-source-audit-83-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "581-row version inventory; 83-row selector in report evidence",
+            "repository": "google/zerocopy",
+            "revision": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837"
+          },
+          "name": "#3731 frozen version inventory and 83 selected rows"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+          },
+          "name": "google/zerocopy source snapshot"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1 source"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "0855ce1b8ed3958512b6c19de6bf3035b7acb552",
+            "version": "nightly 2026.09.30"
+          },
+          "name": "Aeneas nightly source"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "e435e5f341863a49a7e85d2fee9988bc0c687c82"
+          },
+          "name": "paired Charon source"
+        }
+      ],
+      "topics": [
+        "anneal/version-audit",
+        "zerocopy/source-comparison",
+        "lean",
+        "aeneas",
+        "charon"
+      ]
+    },
     "anneal-archive-read-only-behavior-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
