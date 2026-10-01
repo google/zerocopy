@@ -11,7 +11,7 @@ those terms. -->
 This document derives semantic constraints from Anneal's
 [`PRINCIPLES.md`](PRINCIPLES.md). The principles define Anneal's promises,
 beliefs, and rules for making decisions. This document defines what Anneal's
-results must mean in order to uphold them.
+outputs and claims must mean in order to uphold them.
 
 The principles are authoritative. If this document conflicts with them, this
 document must be corrected. It constrains semantics, not the mechanisms used to
@@ -44,23 +44,52 @@ Proving a developer-defined guarantee establishes the property that was
 specified. It does not establish that the specification captures what its author
 intended.
 
-## What a successful result establishes
+## Verification outputs
 
-An ordinary successful Anneal result fixes:
+Anneal distinguishes a **verification result** from a **tainted output**.
+
+A **verification result** is a claim-bearing artifact to which Anneal's normal
+correctness promise applies. Unless stated otherwise, this document uses
+*result* to mean a verification result.
+
+A **tainted output** is a development artifact emitted despite bypassing an
+obligation required for a verification result. A tainted output is not a
+verification result and must not be interpreted as one. When Anneal bypasses UB
+checks or turns them into warnings, both the resulting output and its TCB audit
+log must be clearly labeled as tainted or irreparably untrustworthy, as required
+by [`PRINCIPLES.md`](PRINCIPLES.md).
+
+If Anneal cannot establish a requested claim under the conditions required for a
+verification result, verification of that claim fails. Anneal may still emit
+diagnostics, partial checked evidence, proof state, or other development
+artifacts. Those outputs do not acquire verification-result semantics merely
+because Anneal produced them.
+
+This taxonomy describes the meaning of output artifacts, not necessarily the
+status of an entire invocation. An invocation may process multiple claims, and
+those claims need not all have the same outcome.
+
+## What a verification result records
+
+A verification result fixes:
 
 - the exact **claim** Anneal established;
 - the complete **trusted computing base (TCB)** on which that claim depends; and
-- the exact **assurance policy** under which that TCB was accepted.
+- the exact **trust policy** that its TCB satisfies.
 
-These must have stable meaning. Everything whose identity can affect the claim or
-whether the result qualifies as successful must be contained in the result or
-immutably referenced by it.
+Semantically, the result asserts that if the trusted code in its TCB is correct
+and its trusted assumptions are valid, then its claim holds.
 
-Mutable names such as branches, profiles, or named policies may be convenient
-inputs to verification. The result must bind the specific artifacts,
-specifications, configurations, policies, and other relevant inputs that were
-actually used. Later changes to those inputs must not change the meaning or
-success status of an existing result.
+The meaning of a verification result must remain stable after it is produced.
+Everything whose identity can affect the claim or whether its TCB satisfies the
+trust policy must therefore be contained in the result or immutably referenced
+by it.
+
+Mutable names such as branches, profiles, named specifications, or named policies
+may be convenient inputs to verification. A result that depends on them must bind
+the specific identities or contents that were actually used. Later changes must
+not retroactively change what an existing result claims or whether its TCB was
+acceptable.
 
 ### The TCB contains all unchecked trust
 
@@ -71,49 +100,48 @@ An unchecked assumption does not stop being trusted because it is encapsulated
 inside a translator, generated artifact, helper library, compiler, or another
 component.
 
-Every successful result must expose, or immutably reference, its complete TCB.
-Trusted code and assumptions must be identified precisely enough to determine
-what the result relies upon. The TCB may refer to other immutable, auditable
-manifests rather than duplicating their contents, but trust must not disappear
-behind an implementation boundary.
+Every result must expose, or immutably reference, its complete TCB. Trusted code
+and assumptions must be identified precisely enough to determine what the result
+relies upon. The TCB may refer to other immutable, auditable manifests rather
+than duplicating their contents, but trust must not disappear behind an
+implementation boundary.
 
 At the logical level, trusted premises are simply premises. Why a premise is
 trusted does not change the conditional claim Anneal establishes, although its
 identity and provenance may matter when deciding whether that trust is acceptable.
 
-### The assurance policy constrains acceptable trust
+### The trust policy constrains acceptable trust
 
-Recording every unchecked premise is not enough to make verification successful.
+Recording every unchecked premise is not enough to produce a verification result.
 Otherwise Anneal could fail to prove an obligation, add that obligation to the
-TCB, and report success.
+TCB, and claim to have verified the program.
 
-The assurance policy defines which unchecked premises may appear in the TCB while
-the result still counts as successful. It may identify trusted components,
-semantic boundaries, classes of assumptions, guarantees that must be established
-by checked evidence, or other principled trust boundaries.
+A **trust policy** defines which unchecked dependencies may appear in the TCB of
+a verification result. Anything that the policy does not permit Anneal to trust
+must instead be established by checked evidence.
 
-A successful result must contain or immutably reference the exact assurance
-policy against which its TCB was evaluated. A mutable policy name may select that
-policy before verification, but changing the name's definition later must not
-change an existing result.
+A trust policy may identify trusted components, semantic boundaries, classes of
+assumptions, guarantees that must be established by checked evidence, or other
+principled trust boundaries.
+
+Every result must contain or immutably reference the exact trust policy against
+which its TCB was evaluated. A mutable policy name may select a policy before
+verification, but changing that name's definition later must not change an
+existing result.
 
 An unfinished proof, skipped analysis, unsupported operation, or failed tool does
-not itself authorize new trust. If the resulting unchecked premise is not
-permitted by the applicable assurance policy, Anneal has not produced a successful
-result.
+not itself authorize new trust. If Anneal needs the missing fact and the trust
+policy does not permit it to be trusted, Anneal cannot issue a verification
+result for that claim.
 
-Anneal's principles also impose minimum assurance requirements that a policy
-cannot weaken. In particular, a required UB obligation cannot become ordinary
-verification success merely by moving it into the TCB.
+Anneal's project-wide requirements constrain every trust policy. In particular,
+mandatory UB verification cannot be waived by choosing a more permissive policy.
+A development mode may bypass or downgrade that obligation, but any resulting
+claim-bearing artifact is a tainted output rather than a verification result.
 
-Anneal may provide development-only modes that bypass UB checks or turn them into
-warnings. Such outputs are not ordinary successful verification results and must
-clearly label both the result and its TCB audit log as tainted or irreparably
-untrustworthy, as required by [`PRINCIPLES.md`](PRINCIPLES.md).
+## Every verification result makes an end-to-end Rust claim
 
-## Every successful result makes an end-to-end Rust claim
-
-Every ordinary successful result establishes at least that:
+Every verification result establishes at least that:
 
 1. the Rust executions within its scope are well-defined; and
 2. the behavior of the compiled artifact corresponds to the Rust source semantics
@@ -136,7 +164,7 @@ merely because both belong to the same nominal project or package.
 ## Well-definedness depends on what is being verified
 
 Anneal's baseline well-definedness guarantee has the same purpose for closed
-programs and libraries, but their scopes differ.
+programs and libraries, but its interpretation depends on the scope of the claim.
 
 ### Closed programs
 
@@ -225,7 +253,7 @@ when the same intended behavior can be expressed in a supported way. When
 practical, it should give the programmer actionable guidance toward such a form.
 
 Adding support for new guarantees or behaviors must preserve the meaning of
-existing successful results.
+existing verification results.
 
 ## The ordinary interface is Rust-oriented
 
