@@ -50,11 +50,10 @@ intended.
 For a requested claim and an applicable trust policy, Anneal distinguishes a
 **verification result** from a **tainted output**.
 
-A **verification result** is a claim-bearing artifact whose complete TCB satisfies
-its trust policy and Anneal's project-wide verification requirements. Anneal's
-normal correctness promise in [`PRINCIPLES.md`](PRINCIPLES.md) applies to it.
-Unless stated otherwise, this document uses *result* to mean a verification
-result.
+A **verification result** is a claim-bearing artifact to which Anneal's normal
+correctness promise in [`PRINCIPLES.md`](PRINCIPLES.md) applies. A verification
+result makes the trust-policy and conditional-correctness assertions defined
+below and satisfies Anneal's project-wide verification requirements.
 
 A **tainted output** is a claim-bearing development artifact emitted even though
 the conditions for a verification result were deliberately bypassed. A tainted
@@ -81,18 +80,26 @@ A verification result fixes:
 - the complete **trusted computing base (TCB)** on which that claim depends; and
 - the exact **trust policy** that the TCB satisfies.
 
-Semantically, the result asserts that if the trusted code in its TCB is correct
-and its trusted assumptions are valid, then its claim holds.
+Semantically, a verification result asserts both that:
 
-The meaning of a result must remain stable after it is produced. Everything whose
-identity can affect the claim, the TCB, or whether the TCB satisfies its trust
-policy must therefore be contained in the result or immutably referenced by it.
+1. its TCB satisfies its trust policy; and
+2. if the trusted code in its TCB is correct and its trusted assumptions are
+   valid, then its claim holds.
+
+These assertions play different roles. The first establishes that the unchecked
+trust in the verification result is permitted. The second states the conditional
+correctness guarantee that follows from that trust.
+
+The meaning of a verification result must remain stable after it is produced.
+Everything whose identity can affect the claim, the TCB, or whether the TCB
+satisfies its trust policy must therefore be contained in the verification result
+or immutably referenced by it.
 
 Mutable names such as branches, profiles, named specifications, or named policies
-may be convenient inputs to verification. A result that depends on them must bind
-the specific identities or contents actually used. Later changes must not
-retroactively change what an existing result claims or whether its trust boundary
-was acceptable.
+may be convenient inputs to verification. A verification result that depends on
+them must bind the specific identities or contents actually used. Later changes
+must not retroactively change what an existing verification result claims or
+whether its TCB satisfies its trust policy.
 
 ### Trusted computing base
 
@@ -104,11 +111,11 @@ Moving an unchecked dependency into a translator, generated artifact, helper
 library, compiler, or other component does not remove it from the TCB while
 Anneal's claim still depends on its unchecked correctness.
 
-Every result must expose, or immutably reference, its complete TCB. Trusted code
-and assumptions must be identified precisely enough to determine what the result
-relies upon. The TCB may refer to other immutable, auditable manifests rather
-than duplicating their contents, but trust must not disappear behind an
-implementation boundary.
+Every verification result must expose, or immutably reference, its complete TCB.
+Trusted code and assumptions must be identified precisely enough to determine
+what the verification result relies upon. The TCB may refer to other immutable,
+auditable manifests rather than duplicating their contents, but trust must not
+disappear behind an implementation boundary.
 
 At the logical level, trusted premises are simply premises. Why a premise is
 trusted does not change the conditional claim Anneal establishes, although its
@@ -124,8 +131,8 @@ in the reasoning from the reported guarantee back to Rust must instead be
 established by checked evidence. Anything outside the permitted trust boundary
 must be checked rather than silently admitted into the TCB.
 
-Every result must contain or immutably reference the exact trust policy against
-which its TCB was evaluated.
+Every verification result must contain or immutably reference the exact trust
+policy against which its TCB was evaluated.
 
 An unfinished proof, skipped analysis, unsupported operation, or failed tool does
 not itself authorize new trust. If Anneal needs the missing fact and the
