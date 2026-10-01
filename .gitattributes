@@ -1,0 +1,4 @@
+# Preserve complete generated Lean snapshots, including literal bytes. Aeneas's
+# pretty printer can emit trailing code spaces; the conservative comparison and
+# independent proof builds check these files instead of hand-formatting them.
+verification/aeneas/golden/*.lean whitespace=-blank-at-eol
