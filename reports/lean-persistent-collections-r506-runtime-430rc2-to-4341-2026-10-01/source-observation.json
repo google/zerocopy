@@ -1,0 +1,15 @@
+{
+  "PersistentArray.lean": {
+    "old_blob": "516fb0ce50651c1ef39cccdca48663335dac7790",
+    "new_blob": "e252526851a5eb4bb988d67dd8854b90a2cf970c",
+    "old_sha256": "1e38605e412156471817a8645f9ec35f16967b43b2014f209ecca04efe62398a",
+    "new_sha256": "a69fed319f385ca93450a873d4cbffdced0d6eba3bc241caef26ae8690b1f4a8"
+  },
+  "PersistentHashMap.lean": {
+    "old_blob": "f963f3a3f3cfc8c262e14bfcf56d21fc3a55442d",
+    "new_blob": "e4d81c5cc33ac8d6e67ad217402ec8688b11486e",
+    "old_sha256": "e6efb4ab038fc1203152daf0ea1988a49d2707dba9284096da8f4e35a9fba79e",
+    "new_sha256": "d63a21b3bdc0c616417d75c32c3e104cc185667229a8a899de3769c1a4252af4"
+  },
+  "patch_sha256": "abd77a703cc6376b8fb2121b383ca392e8979e3b3b2cc6b680728a36e05943c0"
+}

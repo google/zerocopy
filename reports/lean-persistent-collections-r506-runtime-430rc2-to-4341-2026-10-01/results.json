@@ -1,0 +1,1313 @@
+{
+  "fixture_sha256": "aaf55ee060a0f63127af3cfd8f5a0a5cf8df5bdece56042cab709ce46832e87c",
+  "tools": {
+    "old": {
+      "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+      "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+      "executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+    },
+    "new": {
+      "lean_version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+      "lean_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+      "executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
+    }
+  },
+  "cells": [
+    {
+      "version": "old",
+      "mode": "array-retained",
+      "n": 8192,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 24.036788940429688,
+        "disk_free_bytes": 4727693312,
+        "owned_raw_bytes": 0
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 1.5947047090157866,
+      "peak_sampled_rss_bytes": 395722752,
+      "rss_polls": 43,
+      "stdout_sha256": "ec7814761879aaf02cbe05d5703cea0f93156659c35d70c28a1a0c0267cd0f92",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-retained",
+      "n": 8192,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.69403839111328,
+        "disk_free_bytes": 4726136832,
+        "owned_raw_bytes": 38
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.23278341628611088,
+      "peak_sampled_rss_bytes": 393150464,
+      "rss_polls": 6,
+      "stdout_sha256": "ec7814761879aaf02cbe05d5703cea0f93156659c35d70c28a1a0c0267cd0f92",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-retained",
+      "n": 8192,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 24.108314514160156,
+        "disk_free_bytes": 4725252096,
+        "owned_raw_bytes": 76
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.22534479200839996,
+      "peak_sampled_rss_bytes": 391774208,
+      "rss_polls": 6,
+      "stdout_sha256": "ec7814761879aaf02cbe05d5703cea0f93156659c35d70c28a1a0c0267cd0f92",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-discarded",
+      "n": 8192,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 24.128150939941406,
+        "disk_free_bytes": 4725248000,
+        "owned_raw_bytes": 114
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.23226558323949575,
+      "peak_sampled_rss_bytes": 393003008,
+      "rss_polls": 6,
+      "stdout_sha256": "48a6677a91b3fda70db2686a0fbf6c90bca6ce9a3acb037dc5b67863ac6386f4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 30,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-discarded",
+      "n": 8192,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.760414123535156,
+        "disk_free_bytes": 4725211136,
+        "owned_raw_bytes": 144
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2328453748486936,
+      "peak_sampled_rss_bytes": 393674752,
+      "rss_polls": 6,
+      "stdout_sha256": "48a6677a91b3fda70db2686a0fbf6c90bca6ce9a3acb037dc5b67863ac6386f4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 30,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-discarded",
+      "n": 8192,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.775100708007812,
+        "disk_free_bytes": 4725190656,
+        "owned_raw_bytes": 174
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.23346787504851818,
+      "peak_sampled_rss_bytes": 393019392,
+      "rss_polls": 6,
+      "stdout_sha256": "48a6677a91b3fda70db2686a0fbf6c90bca6ce9a3acb037dc5b67863ac6386f4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 30,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-retained",
+      "n": 8192,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.679161071777344,
+        "disk_free_bytes": 4725174272,
+        "owned_raw_bytes": 204
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27093049976974726,
+      "peak_sampled_rss_bytes": 397131776,
+      "rss_polls": 7,
+      "stdout_sha256": "5bf3d0c07c0b3c57517b2e9bb54c33eac6cee1eca012994f3e7d4118a9e99e0a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 56,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-retained",
+      "n": 8192,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.65131378173828,
+        "disk_free_bytes": 4725157888,
+        "owned_raw_bytes": 260
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.26870495919138193,
+      "peak_sampled_rss_bytes": 397754368,
+      "rss_polls": 7,
+      "stdout_sha256": "5bf3d0c07c0b3c57517b2e9bb54c33eac6cee1eca012994f3e7d4118a9e99e0a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 56,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-retained",
+      "n": 8192,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.664283752441406,
+        "disk_free_bytes": 4725137408,
+        "owned_raw_bytes": 316
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2707237498834729,
+      "peak_sampled_rss_bytes": 397606912,
+      "rss_polls": 7,
+      "stdout_sha256": "5bf3d0c07c0b3c57517b2e9bb54c33eac6cee1eca012994f3e7d4118a9e99e0a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 56,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-discarded",
+      "n": 8192,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.669815063476562,
+        "disk_free_bytes": 4725116928,
+        "owned_raw_bytes": 372
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.26360783306881785,
+      "peak_sampled_rss_bytes": 397213696,
+      "rss_polls": 7,
+      "stdout_sha256": "2218d53dc71cb2127c3c1591bbc300980d06c930b1b486c4bb5c968942e3be55",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-discarded",
+      "n": 8192,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.721694946289062,
+        "disk_free_bytes": 4725104640,
+        "owned_raw_bytes": 410
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27061083260923624,
+      "peak_sampled_rss_bytes": 397164544,
+      "rss_polls": 7,
+      "stdout_sha256": "2218d53dc71cb2127c3c1591bbc300980d06c930b1b486c4bb5c968942e3be55",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-discarded",
+      "n": 8192,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.72112274169922,
+        "disk_free_bytes": 4725084160,
+        "owned_raw_bytes": 448
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27131537487730384,
+      "peak_sampled_rss_bytes": 397869056,
+      "rss_polls": 7,
+      "stdout_sha256": "2218d53dc71cb2127c3c1591bbc300980d06c930b1b486c4bb5c968942e3be55",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-retained",
+      "n": 8192,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.724937438964844,
+        "disk_free_bytes": 4725063680,
+        "owned_raw_bytes": 486
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 1.8253481672145426,
+      "peak_sampled_rss_bytes": 423542784,
+      "rss_polls": 49,
+      "stdout_sha256": "ec7814761879aaf02cbe05d5703cea0f93156659c35d70c28a1a0c0267cd0f92",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-retained",
+      "n": 8192,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 22.50957489013672,
+        "disk_free_bytes": 4723027968,
+        "owned_raw_bytes": 524
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.23202129220589995,
+      "peak_sampled_rss_bytes": 420495360,
+      "rss_polls": 6,
+      "stdout_sha256": "ec7814761879aaf02cbe05d5703cea0f93156659c35d70c28a1a0c0267cd0f92",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-retained",
+      "n": 8192,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.13709259033203,
+        "disk_free_bytes": 4723019776,
+        "owned_raw_bytes": 562
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2318534580990672,
+      "peak_sampled_rss_bytes": 422248448,
+      "rss_polls": 6,
+      "stdout_sha256": "ec7814761879aaf02cbe05d5703cea0f93156659c35d70c28a1a0c0267cd0f92",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-discarded",
+      "n": 8192,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.104476928710938,
+        "disk_free_bytes": 4723007488,
+        "owned_raw_bytes": 600
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2320332918316126,
+      "peak_sampled_rss_bytes": 421478400,
+      "rss_polls": 6,
+      "stdout_sha256": "48a6677a91b3fda70db2686a0fbf6c90bca6ce9a3acb037dc5b67863ac6386f4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 30,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-discarded",
+      "n": 8192,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.079299926757812,
+        "disk_free_bytes": 4722978816,
+        "owned_raw_bytes": 630
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.23187604174017906,
+      "peak_sampled_rss_bytes": 421363712,
+      "rss_polls": 6,
+      "stdout_sha256": "48a6677a91b3fda70db2686a0fbf6c90bca6ce9a3acb037dc5b67863ac6386f4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 30,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-discarded",
+      "n": 8192,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.26526641845703,
+        "disk_free_bytes": 4722823168,
+        "owned_raw_bytes": 660
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2503194999881089,
+      "peak_sampled_rss_bytes": 425902080,
+      "rss_polls": 7,
+      "stdout_sha256": "48a6677a91b3fda70db2686a0fbf6c90bca6ce9a3acb037dc5b67863ac6386f4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 30,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-retained",
+      "n": 8192,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.19469451904297,
+        "disk_free_bytes": 4722769920,
+        "owned_raw_bytes": 690
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27033216692507267,
+      "peak_sampled_rss_bytes": 427360256,
+      "rss_polls": 7,
+      "stdout_sha256": "5bf3d0c07c0b3c57517b2e9bb54c33eac6cee1eca012994f3e7d4118a9e99e0a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 56,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-retained",
+      "n": 8192,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.182106018066406,
+        "disk_free_bytes": 4722765824,
+        "owned_raw_bytes": 746
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27037012530490756,
+      "peak_sampled_rss_bytes": 427393024,
+      "rss_polls": 7,
+      "stdout_sha256": "5bf3d0c07c0b3c57517b2e9bb54c33eac6cee1eca012994f3e7d4118a9e99e0a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 56,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-retained",
+      "n": 8192,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.114395141601562,
+        "disk_free_bytes": 4722749440,
+        "owned_raw_bytes": 802
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2700503752566874,
+      "peak_sampled_rss_bytes": 427393024,
+      "rss_polls": 7,
+      "stdout_sha256": "5bf3d0c07c0b3c57517b2e9bb54c33eac6cee1eca012994f3e7d4118a9e99e0a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 56,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-discarded",
+      "n": 8192,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.11534881591797,
+        "disk_free_bytes": 4722712576,
+        "owned_raw_bytes": 858
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.26842366717755795,
+      "peak_sampled_rss_bytes": 427212800,
+      "rss_polls": 7,
+      "stdout_sha256": "2218d53dc71cb2127c3c1591bbc300980d06c930b1b486c4bb5c968942e3be55",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-discarded",
+      "n": 8192,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.11573028564453,
+        "disk_free_bytes": 4722708480,
+        "owned_raw_bytes": 896
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27028025034815073,
+      "peak_sampled_rss_bytes": 427409408,
+      "rss_polls": 7,
+      "stdout_sha256": "2218d53dc71cb2127c3c1591bbc300980d06c930b1b486c4bb5c968942e3be55",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-discarded",
+      "n": 8192,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "8192"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.082733154296875,
+        "disk_free_bytes": 4722696192,
+        "owned_raw_bytes": 934
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2700637090019882,
+      "peak_sampled_rss_bytes": 427147264,
+      "rss_polls": 7,
+      "stdout_sha256": "2218d53dc71cb2127c3c1591bbc300980d06c930b1b486c4bb5c968942e3be55",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 38,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-retained",
+      "n": 65536,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.12164306640625,
+        "disk_free_bytes": 4722810880,
+        "owned_raw_bytes": 972
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.8348557502031326,
+      "peak_sampled_rss_bytes": 395231232,
+      "rss_polls": 22,
+      "stdout_sha256": "98c566f1589851261a5b29d09b561273593b52b68fe430c36e75ad1e4c8288d5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 41,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-retained",
+      "n": 65536,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.21319580078125,
+        "disk_free_bytes": 4722786304,
+        "owned_raw_bytes": 1013
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.261502583976835,
+      "peak_sampled_rss_bytes": 397590528,
+      "rss_polls": 7,
+      "stdout_sha256": "98c566f1589851261a5b29d09b561273593b52b68fe430c36e75ad1e4c8288d5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 41,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-retained",
+      "n": 65536,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.41442108154297,
+        "disk_free_bytes": 4722774016,
+        "owned_raw_bytes": 1054
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27123200008645654,
+      "peak_sampled_rss_bytes": 398032896,
+      "rss_polls": 7,
+      "stdout_sha256": "98c566f1589851261a5b29d09b561273593b52b68fe430c36e75ad1e4c8288d5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 41,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-discarded",
+      "n": 65536,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.39000701904297,
+        "disk_free_bytes": 4722765824,
+        "owned_raw_bytes": 1095
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.26203112537041306,
+      "peak_sampled_rss_bytes": 397312000,
+      "rss_polls": 7,
+      "stdout_sha256": "21832c9c49a3026a2632dc9f79af9cfe370d49a8848c58c91667a62156c86a2b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 32,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-discarded",
+      "n": 65536,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.351669311523438,
+        "disk_free_bytes": 4722745344,
+        "owned_raw_bytes": 1127
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2661370001733303,
+      "peak_sampled_rss_bytes": 397721600,
+      "rss_polls": 7,
+      "stdout_sha256": "21832c9c49a3026a2632dc9f79af9cfe370d49a8848c58c91667a62156c86a2b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 32,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "array-discarded",
+      "n": 65536,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.38848114013672,
+        "disk_free_bytes": 4722712576,
+        "owned_raw_bytes": 1159
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2715209168381989,
+      "peak_sampled_rss_bytes": 397819904,
+      "rss_polls": 7,
+      "stdout_sha256": "21832c9c49a3026a2632dc9f79af9cfe370d49a8848c58c91667a62156c86a2b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 32,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-retained",
+      "n": 65536,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.39630126953125,
+        "disk_free_bytes": 4722679808,
+        "owned_raw_bytes": 1191
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5334342918358743,
+      "peak_sampled_rss_bytes": 408764416,
+      "rss_polls": 14,
+      "stdout_sha256": "1cee3ab02f74e93de58cc2cf6ee72d028633074cbf7b8b2c4d9589ec5903de11",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 59,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-retained",
+      "n": 65536,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.482131958007812,
+        "disk_free_bytes": 4722667520,
+        "owned_raw_bytes": 1250
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5328120840713382,
+      "peak_sampled_rss_bytes": 409190400,
+      "rss_polls": 14,
+      "stdout_sha256": "1cee3ab02f74e93de58cc2cf6ee72d028633074cbf7b8b2c4d9589ec5903de11",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 59,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-retained",
+      "n": 65536,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.453140258789062,
+        "disk_free_bytes": 4722622464,
+        "owned_raw_bytes": 1309
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5253442502580583,
+      "peak_sampled_rss_bytes": 408518656,
+      "rss_polls": 14,
+      "stdout_sha256": "1cee3ab02f74e93de58cc2cf6ee72d028633074cbf7b8b2c4d9589ec5903de11",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 59,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-discarded",
+      "n": 65536,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.4283447265625,
+        "disk_free_bytes": 4722601984,
+        "owned_raw_bytes": 1368
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5330353751778603,
+      "peak_sampled_rss_bytes": 402817024,
+      "rss_polls": 14,
+      "stdout_sha256": "ea6a2a77c4ad6a88432d5c1c1be07cf05243d5754dfb87bd3ec1f0ffd0fb2fdf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 40,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-discarded",
+      "n": 65536,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.366737365722656,
+        "disk_free_bytes": 4722561024,
+        "owned_raw_bytes": 1408
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5268194586969912,
+      "peak_sampled_rss_bytes": 403177472,
+      "rss_polls": 14,
+      "stdout_sha256": "ea6a2a77c4ad6a88432d5c1c1be07cf05243d5754dfb87bd3ec1f0ffd0fb2fdf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 40,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "old",
+      "mode": "map-discarded",
+      "n": 65536,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.377418518066406,
+        "disk_free_bytes": 4722552832,
+        "owned_raw_bytes": 1448
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.533778749871999,
+      "peak_sampled_rss_bytes": 402767872,
+      "rss_polls": 14,
+      "stdout_sha256": "ea6a2a77c4ad6a88432d5c1c1be07cf05243d5754dfb87bd3ec1f0ffd0fb2fdf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 40,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-retained",
+      "n": 65536,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.379135131835938,
+        "disk_free_bytes": 4722401280,
+        "owned_raw_bytes": 1488
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 1.1401989171281457,
+      "peak_sampled_rss_bytes": 428179456,
+      "rss_polls": 30,
+      "stdout_sha256": "98c566f1589851261a5b29d09b561273593b52b68fe430c36e75ad1e4c8288d5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 41,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-retained",
+      "n": 65536,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.022079467773438,
+        "disk_free_bytes": 4722393088,
+        "owned_raw_bytes": 1529
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27265241695567966,
+      "peak_sampled_rss_bytes": 428212224,
+      "rss_polls": 7,
+      "stdout_sha256": "98c566f1589851261a5b29d09b561273593b52b68fe430c36e75ad1e4c8288d5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 41,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-retained",
+      "n": 65536,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.34423065185547,
+        "disk_free_bytes": 4722376704,
+        "owned_raw_bytes": 1570
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27085950039327145,
+      "peak_sampled_rss_bytes": 427737088,
+      "rss_polls": 7,
+      "stdout_sha256": "98c566f1589851261a5b29d09b561273593b52b68fe430c36e75ad1e4c8288d5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 41,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-discarded",
+      "n": 65536,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.31104278564453,
+        "disk_free_bytes": 4722360320,
+        "owned_raw_bytes": 1611
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.27106725005432963,
+      "peak_sampled_rss_bytes": 427376640,
+      "rss_polls": 7,
+      "stdout_sha256": "21832c9c49a3026a2632dc9f79af9cfe370d49a8848c58c91667a62156c86a2b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 32,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-discarded",
+      "n": 65536,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.291778564453125,
+        "disk_free_bytes": 4722352128,
+        "owned_raw_bytes": 1643
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.26512274984270334,
+      "peak_sampled_rss_bytes": 427196416,
+      "rss_polls": 7,
+      "stdout_sha256": "21832c9c49a3026a2632dc9f79af9cfe370d49a8848c58c91667a62156c86a2b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 32,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "array-discarded",
+      "n": 65536,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "array-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.29540252685547,
+        "disk_free_bytes": 4722327552,
+        "owned_raw_bytes": 1675
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.2617671671323478,
+      "peak_sampled_rss_bytes": 427163648,
+      "rss_polls": 7,
+      "stdout_sha256": "21832c9c49a3026a2632dc9f79af9cfe370d49a8848c58c91667a62156c86a2b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 32,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-retained",
+      "n": 65536,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.317527770996094,
+        "disk_free_bytes": 4722315264,
+        "owned_raw_bytes": 1707
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5262649999931455,
+      "peak_sampled_rss_bytes": 439009280,
+      "rss_polls": 14,
+      "stdout_sha256": "1cee3ab02f74e93de58cc2cf6ee72d028633074cbf7b8b2c4d9589ec5903de11",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 59,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-retained",
+      "n": 65536,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.159408569335938,
+        "disk_free_bytes": 4722302976,
+        "owned_raw_bytes": 1766
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5309651251882315,
+      "peak_sampled_rss_bytes": 438796288,
+      "rss_polls": 14,
+      "stdout_sha256": "1cee3ab02f74e93de58cc2cf6ee72d028633074cbf7b8b2c4d9589ec5903de11",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 59,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-retained",
+      "n": 65536,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-retained",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.162841796875,
+        "disk_free_bytes": 4722286592,
+        "owned_raw_bytes": 1825
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5320957088842988,
+      "peak_sampled_rss_bytes": 438550528,
+      "rss_polls": 14,
+      "stdout_sha256": "1cee3ab02f74e93de58cc2cf6ee72d028633074cbf7b8b2c4d9589ec5903de11",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 59,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-discarded",
+      "n": 65536,
+      "repeat": 0,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.147201538085938,
+        "disk_free_bytes": 4722262016,
+        "owned_raw_bytes": 1884
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5531084579415619,
+      "peak_sampled_rss_bytes": 433291264,
+      "rss_polls": 15,
+      "stdout_sha256": "ea6a2a77c4ad6a88432d5c1c1be07cf05243d5754dfb87bd3ec1f0ffd0fb2fdf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 40,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-discarded",
+      "n": 65536,
+      "repeat": 1,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.159217834472656,
+        "disk_free_bytes": 4722245632,
+        "owned_raw_bytes": 1924
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.526338208001107,
+      "peak_sampled_rss_bytes": 432914432,
+      "rss_polls": 14,
+      "stdout_sha256": "ea6a2a77c4ad6a88432d5c1c1be07cf05243d5754dfb87bd3ec1f0ffd0fb2fdf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 40,
+      "stderr_bytes": 0
+    },
+    {
+      "version": "new",
+      "mode": "map-discarded",
+      "n": 65536,
+      "repeat": 2,
+      "command": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "--run",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r506-lean-persistent-runtime-20261001/fixture/Probe.lean",
+        "map-discarded",
+        "65536"
+      ],
+      "admission": {
+        "reclaimable_percent": 23.170852661132812,
+        "disk_free_bytes": 4722233344,
+        "owned_raw_bytes": 1964
+      },
+      "exit_code": 0,
+      "terminated": null,
+      "elapsed_s": 0.5210709581151605,
+      "peak_sampled_rss_bytes": 432652288,
+      "rss_polls": 14,
+      "stdout_sha256": "ea6a2a77c4ad6a88432d5c1c1be07cf05243d5754dfb87bd3ec1f0ffd0fb2fdf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 40,
+      "stderr_bytes": 0
+    }
+  ]
+}

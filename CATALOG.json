@@ -16199,6 +16199,34 @@
         "lean/trust"
       ]
     },
+    "lean-persistent-collections-r506-runtime-430rc2-to-4341-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2 persistent collections"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4.34.1 persistent collections"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/persistent-array",
+        "lean/persistent-hash-map",
+        "lean/snapshot-retention",
+        "lean/version-difference"
+      ]
+    },
     "lean-pretty-printing-roundtrip-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
