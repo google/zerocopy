@@ -1,0 +1,20 @@
+{
+  "observed_at": "2026-10-01",
+  "method": "Read-only public GitHub issue pages",
+  "issues": [
+    {
+      "number": 3731,
+      "url": "https://github.com/google/zerocopy/issues/3731",
+      "title": "[anneal][reference] Validate the batch/LSP/MCP design: 159 consolidated investigations",
+      "status": "Open",
+      "visible_body_excerpt": "Consolidated with #3730: This issue contains 159 investigations. Read I001–I144 below together with the merged scope extensions, I145–I159, and complete 174-entry crosswalk. All original suggestions are retained; #3730 is superseded as a separate backlog."
+    },
+    {
+      "number": 3730,
+      "url": "https://github.com/google/zerocopy/issues/3730",
+      "title": "[anneal][reference] Research backlog for interactive LSP/MCP architecture",
+      "status": "Closed as not planned"
+    }
+  ],
+  "limitations": "Visible title/state and one relevant body excerpt only; no complete fresh issue export or issue mutation."
+}

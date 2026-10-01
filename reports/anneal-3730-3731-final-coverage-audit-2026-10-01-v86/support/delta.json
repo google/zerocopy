@@ -1,0 +1,37 @@
+{
+  "admission": {
+    "decision": "admission_denied",
+    "estimated_reclaimable_percent": 25.7875,
+    "free_disk_bytes": 12654592000,
+    "snapshot": "support/runtime-admission.json",
+    "snapshot_sha256": "8a9023e0db5cb43e643acbc8d70d3ba5e500c2c3fd25517f0d41f68c2188de7e",
+    "lean_server_launched": false,
+    "minimum_free_disk_bytes": 10737418240,
+    "minimum_reclaimable_percent_exclusive": 30.0,
+    "provenance": "Raw machine-readable prelaunch admission record, preserved with this addendum."
+  },
+  "inherited_counts": {
+    "challenge_rows": 333,
+    "investigations": 159,
+    "suggestion_links": 345,
+    "suggestions": 174,
+    "version_inventory": 581
+  },
+  "issue_observation_sha256": "54f09355deff0b5fed62c17edc0f007623f859a31203efe3d0762aa5018864ee",
+  "lean_delta": {
+    "package": "lean-incremental-diagnostics-430rc2-to-4341-source-delta-2026-10-01",
+    "publication_revision": "46b7576360aec884a259666c5bb67d8a87ce48da",
+    "report_sha256": "80f8b4cdf8745b13e1225b9ccbed2123c3963898cc2423ea88e4c28ffe5cf331",
+    "tree": "d5087609d4f5c522b833fb50a483d38355bb781c"
+  },
+  "observed_at": "2026-10-01",
+  "reference_head": "46b7576360aec884a259666c5bb67d8a87ce48da",
+  "schema": 1,
+  "v85": {
+    "package": "anneal-3730-3731-final-coverage-audit-2026-10-01-v85",
+    "publication_revision": "6d02a803cbe2e26a1b7881d98245f7eb48e2b309",
+    "report_sha256": "ab343a0c07bee64e6e5addbb8050b3092e5c55f0f7a457d3beedbca1b9bfbc33",
+    "tree": "166a173721ec7545136bd92e3b0e870a5a5511af",
+    "validation_sha256": "bef49b55bcf3a2b5d42cb2bc593699a61d96a128f0b879b852c270ce9fc6e48e"
+  }
+}

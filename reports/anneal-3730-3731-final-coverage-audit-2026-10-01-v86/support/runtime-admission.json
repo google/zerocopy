@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-01T05:27:20.775788+00:00",
+  "memory_fraction": 0.2578754425048828,
+  "memory_pages": {
+    "free": 7019,
+    "inactive": 126699,
+    "speculative": 1483
+  },
+  "page_bytes": 16384,
+  "total_bytes": 8589934592,
+  "disk_free_bytes": 12654592000,
+  "admission_memory_threshold": 0.3,
+  "admission_disk_threshold_bytes": 10737418240,
+  "status": "admission_denied",
+  "server_launched": false
+}

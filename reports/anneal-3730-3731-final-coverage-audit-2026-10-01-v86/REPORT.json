@@ -1,0 +1,22 @@
+{
+  "topics": ["anneal/issue-3730-3731", "anneal/architecture", "research/coverage-audit", "lean/version-difference"],
+  "subjects": [
+    {
+      "name": "Published reference coverage audit v85",
+      "identity": {
+        "repository": "google/zerocopy",
+        "publication_revision": "6d02a803cbe2e26a1b7881d98245f7eb48e2b309",
+        "report_tree": "166a173721ec7545136bd92e3b0e870a5a5511af"
+      }
+    },
+    {
+      "name": "Lean incremental diagnostic source delta",
+      "identity": {
+        "repository": "google/zerocopy",
+        "publication_revision": "46b7576360aec884a259666c5bb67d8a87ce48da",
+        "report_tree": "d5087609d4f5c522b833fb50a483d38355bb781c"
+      }
+    }
+  ],
+  "observed_at": "2026-10-01"
+}

@@ -4333,6 +4333,33 @@
         "research/version-source-review"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-10-01-v86": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "publication_revision": "6d02a803cbe2e26a1b7881d98245f7eb48e2b309",
+            "report_tree": "166a173721ec7545136bd92e3b0e870a5a5511af",
+            "repository": "google/zerocopy"
+          },
+          "name": "Published reference coverage audit v85"
+        },
+        {
+          "identity": {
+            "publication_revision": "46b7576360aec884a259666c5bb67d8a87ce48da",
+            "report_tree": "d5087609d4f5c522b833fb50a483d38355bb781c",
+            "repository": "google/zerocopy"
+          },
+          "name": "Lean incremental diagnostic source delta"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit",
+        "lean/version-difference"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
