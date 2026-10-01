@@ -1,0 +1,508 @@
+{
+  "cells": [
+    {
+      "admission": {
+        "disk_free_bytes": 8584966144,
+        "reclaimable_fraction": 0.2240734100341797,
+        "scratch_bytes": 6990
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-05-31-json-w40",
+        "--error-format=json",
+        "--diagnostic-width=40"
+      ],
+      "elapsed_seconds": 0.29153,
+      "mode": "json",
+      "output_files": {
+        "nightly-2026-05-31-json-w40/width_probe.long-type-9546713936795586472.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-05-31-json-w40.stderr",
+      "stderr_sha256": "bc9b905ffed29ffd85edb995945f1c57f41376a7f63ed1ec00f11b2b9f7fbc73",
+      "stdout_path": "raw/nightly-2026-05-31-json-w40.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-05-31",
+      "width": 40
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584921088,
+        "reclaimable_fraction": 0.22502708435058594,
+        "scratch_bytes": 33554
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-05-31-json-w100",
+        "--error-format=json",
+        "--diagnostic-width=100"
+      ],
+      "elapsed_seconds": 0.0272,
+      "mode": "json",
+      "output_files": {
+        "nightly-2026-05-31-json-w100/width_probe.long-type-2711196189461846154.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-05-31-json-w100.stderr",
+      "stderr_sha256": "c51e2f9d52a7785e4bc604bb3f4402f955c71fafaf76ce857d27ac32f2574bdd",
+      "stdout_path": "raw/nightly-2026-05-31-json-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-05-31",
+      "width": 100
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584777728,
+        "reclaimable_fraction": 0.22492599487304688,
+        "scratch_bytes": 60593
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-05-31-human-w40",
+        "--error-format=human",
+        "--diagnostic-width=40",
+        "--color=never"
+      ],
+      "elapsed_seconds": 0.02569,
+      "mode": "human",
+      "output_files": {
+        "nightly-2026-05-31-human-w40/width_probe.long-type-175832375633816293.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-05-31-human-w40.stderr",
+      "stderr_sha256": "d3bb87600d16d97ae61ef664ca9f86b872ab4d63bf2af8e62c604d62b34ac7cb",
+      "stdout_path": "raw/nightly-2026-05-31-human-w40.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-05-31",
+      "width": 40
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584765440,
+        "reclaimable_fraction": 0.22479820251464844,
+        "scratch_bytes": 66752
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-05-31-human-w100",
+        "--error-format=human",
+        "--diagnostic-width=100",
+        "--color=never"
+      ],
+      "elapsed_seconds": 0.02561,
+      "mode": "human",
+      "output_files": {
+        "nightly-2026-05-31-human-w100/width_probe.long-type-17728397094115733887.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-05-31-human-w100.stderr",
+      "stderr_sha256": "f5604b1f7b4b5053ba4b4463ea0945465a68a6157f07d948fb69f2ebab05eeec",
+      "stdout_path": "raw/nightly-2026-05-31-human-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-05-31",
+      "width": 100
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584749056,
+        "reclaimable_fraction": 0.2249279022216797,
+        "scratch_bytes": 73296
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-05-31-json-short-w100",
+        "--error-format=json",
+        "--diagnostic-width=100",
+        "--json=diagnostic-short"
+      ],
+      "elapsed_seconds": 0.02557,
+      "mode": "json-short",
+      "output_files": {
+        "nightly-2026-05-31-json-short-w100/width_probe.long-type-7652420508647197778.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-05-31-json-short-w100.stderr",
+      "stderr_sha256": "d4bd94cc53f608d73e9528af2da32e4138c88b24d8c72731e175606d87c0e7ed",
+      "stdout_path": "raw/nightly-2026-05-31-json-short-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-05-31",
+      "width": 100
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584716288,
+        "reclaimable_fraction": 0.22522544860839844,
+        "scratch_bytes": 96674
+      },
+      "argv": [
+        "/opt/homebrew/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/stable-1.98.1-json-w40",
+        "--error-format=json",
+        "--diagnostic-width=40"
+      ],
+      "elapsed_seconds": 0.30696,
+      "mode": "json",
+      "output_files": {
+        "stable-1.98.1-json-w40/width_probe.long-type-712151225651183917.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/stable-1.98.1-json-w40.stderr",
+      "stderr_sha256": "f325b76b4fe2d59df54278fc39c0453a95f787d0ccf042a16ee5afb2c856faa5",
+      "stdout_path": "raw/stable-1.98.1-json-w40.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "stable-1.98.1",
+      "width": 40
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584679424,
+        "reclaimable_fraction": 0.2244129180908203,
+        "scratch_bytes": 123101
+      },
+      "argv": [
+        "/opt/homebrew/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/stable-1.98.1-json-w100",
+        "--error-format=json",
+        "--diagnostic-width=100"
+      ],
+      "elapsed_seconds": 0.032,
+      "mode": "json",
+      "output_files": {
+        "stable-1.98.1-json-w100/width_probe.long-type-16278209999538931462.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/stable-1.98.1-json-w100.stderr",
+      "stderr_sha256": "5f4022f003932a2d351b538388fa76aec674bb62b0f6eb591bfff9e37502aac4",
+      "stdout_path": "raw/stable-1.98.1-json-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "stable-1.98.1",
+      "width": 100
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584634368,
+        "reclaimable_fraction": 0.2243824005126953,
+        "scratch_bytes": 150007
+      },
+      "argv": [
+        "/opt/homebrew/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/stable-1.98.1-human-w40",
+        "--error-format=human",
+        "--diagnostic-width=40",
+        "--color=never"
+      ],
+      "elapsed_seconds": 0.03134,
+      "mode": "human",
+      "output_files": {
+        "stable-1.98.1-human-w40/width_probe.long-type-1354655120885657991.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/stable-1.98.1-human-w40.stderr",
+      "stderr_sha256": "b1258ceb44c77a83d3b222779e49028bf64401421eedfe424d400bd41a334b9c",
+      "stdout_path": "raw/stable-1.98.1-human-w40.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "stable-1.98.1",
+      "width": 40
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584613888,
+        "reclaimable_fraction": 0.2242870330810547,
+        "scratch_bytes": 156038
+      },
+      "argv": [
+        "/opt/homebrew/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/stable-1.98.1-human-w100",
+        "--error-format=human",
+        "--diagnostic-width=100",
+        "--color=never"
+      ],
+      "elapsed_seconds": 0.03166,
+      "mode": "human",
+      "output_files": {
+        "stable-1.98.1-human-w100/width_probe.long-type-4331464823525945710.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/stable-1.98.1-human-w100.stderr",
+      "stderr_sha256": "c25375f5360bf13992def120ca1dc09d713567d8d146b952b7606b5f8c80f03f",
+      "stdout_path": "raw/stable-1.98.1-human-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "stable-1.98.1",
+      "width": 100
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584597504,
+        "reclaimable_fraction": 0.22492599487304688,
+        "scratch_bytes": 162450
+      },
+      "argv": [
+        "/opt/homebrew/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/stable-1.98.1-json-short-w100",
+        "--error-format=json",
+        "--diagnostic-width=100",
+        "--json=diagnostic-short"
+      ],
+      "elapsed_seconds": 0.03203,
+      "mode": "json-short",
+      "output_files": {
+        "stable-1.98.1-json-short-w100/width_probe.long-type-10181237177258461181.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/stable-1.98.1-json-short-w100.stderr",
+      "stderr_sha256": "25475b2f8d85a6b8b36122be3e6f85a264f7570f868157a3baa6273b4100b7a4",
+      "stdout_path": "raw/stable-1.98.1-json-short-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "stable-1.98.1",
+      "width": 100
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584552448,
+        "reclaimable_fraction": 0.22512054443359375,
+        "scratch_bytes": 185702
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-09-30-json-w40",
+        "--error-format=json",
+        "--diagnostic-width=40"
+      ],
+      "elapsed_seconds": 0.31767,
+      "mode": "json",
+      "output_files": {
+        "nightly-2026-09-30-json-w40/width_probe.long-type-4897684932064409858.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-09-30-json-w40.stderr",
+      "stderr_sha256": "d179665a197f8d70e9acd6d8d9feb037187bb6cacb517cd362af2c1fdcc68d5e",
+      "stdout_path": "raw/nightly-2026-09-30-json-w40.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-09-30",
+      "width": 40
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584384512,
+        "reclaimable_fraction": 0.22470474243164062,
+        "scratch_bytes": 212256
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-09-30-json-w100",
+        "--error-format=json",
+        "--diagnostic-width=100"
+      ],
+      "elapsed_seconds": 0.03185,
+      "mode": "json",
+      "output_files": {
+        "nightly-2026-09-30-json-w100/width_probe.long-type-13510892022261814812.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-09-30-json-w100.stderr",
+      "stderr_sha256": "eee1f22a9bd8e4cfec1b70d6bb497cc5c1b2c4eb222a69fc4978c6b84e5bf2fa",
+      "stdout_path": "raw/nightly-2026-09-30-json-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-09-30",
+      "width": 100
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584351744,
+        "reclaimable_fraction": 0.22473716735839844,
+        "scratch_bytes": 239288
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-09-30-human-w40",
+        "--error-format=human",
+        "--diagnostic-width=40",
+        "--color=never"
+      ],
+      "elapsed_seconds": 0.0309,
+      "mode": "human",
+      "output_files": {
+        "nightly-2026-09-30-human-w40/width_probe.long-type-455618780982327646.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-09-30-human-w40.stderr",
+      "stderr_sha256": "19a435745f7023a065babaf886b86b70cbe3fbcf1300e3a049e33d8e04a86f85",
+      "stdout_path": "raw/nightly-2026-09-30-human-w40.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-09-30",
+      "width": 40
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584339456,
+        "reclaimable_fraction": 0.22442245483398438,
+        "scratch_bytes": 245441
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-09-30-human-w100",
+        "--error-format=human",
+        "--diagnostic-width=100",
+        "--color=never"
+      ],
+      "elapsed_seconds": 0.03137,
+      "mode": "human",
+      "output_files": {
+        "nightly-2026-09-30-human-w100/width_probe.long-type-6763755081817683300.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-09-30-human-w100.stderr",
+      "stderr_sha256": "74138fc87a9b5195183f965a7664e5902737fa5da4149bf72d6f8aca5b86fed0",
+      "stdout_path": "raw/nightly-2026-09-30-human-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-09-30",
+      "width": 100
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 8584318976,
+        "reclaimable_fraction": 0.22447586059570312,
+        "scratch_bytes": 251978
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs",
+        "--crate-name",
+        "width_probe",
+        "--edition=2021",
+        "--emit=metadata",
+        "--out-dir",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-09-30-json-short-w100",
+        "--error-format=json",
+        "--diagnostic-width=100",
+        "--json=diagnostic-short"
+      ],
+      "elapsed_seconds": 0.03091,
+      "mode": "json-short",
+      "output_files": {
+        "nightly-2026-09-30-json-short-w100/width_probe.long-type-3664069502090670538.txt": "418d61bad0480bf3967be5eaf012601200468a4f097621225a00491775581813"
+      },
+      "returncode": 1,
+      "stderr_path": "raw/nightly-2026-09-30-json-short-w100.stderr",
+      "stderr_sha256": "be629bb99791b72035a18fdfc1894e95341088036e39c16bc9a74d45591fd88a",
+      "stdout_path": "raw/nightly-2026-09-30-json-short-w100.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "nightly-2026-09-30",
+      "width": 100
+    }
+  ],
+  "compiler_paths": {
+    "nightly-2026-05-31": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+    "nightly-2026-09-30": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+    "stable-1.98.1": "/opt/homebrew/Cellar/rust/1.98.1/bin/rustc"
+  },
+  "compiler_sha256": {
+    "nightly-2026-05-31": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "nightly-2026-09-30": "29f8ccc9aa7b0d8798eda854fa7f0e4ba3867c8c336b87d52dbb3b24b3f0878d",
+    "stable-1.98.1": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340"
+  },
+  "compiler_versions": {
+    "nightly-2026-05-31": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n",
+    "nightly-2026-09-30": "rustc 1.101.0-nightly (5c543b0b8 2026-09-29)\nbinary: rustc\ncommit-hash: 5c543b0b8c73c7b72bc8284ced4fb22ead15734d\ncommit-date: 2026-09-29\nhost: aarch64-apple-darwin\nrelease: 1.101.0-nightly\nLLVM version: 23.1.1\n",
+    "stable-1.98.1": "rustc 1.98.1 (48a229cea 2026-09-01) (Homebrew)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8\n"
+  },
+  "fixture_sha256": "bea482777178bbd3f510e1612d31a5b08cf028eb0e205e515da5ec4da4c0bc7c",
+  "fixture_status": "reconstructed_not_original_ui_bytes",
+  "guard": {
+    "max_scratch_bytes": 104857600,
+    "min_disk_bytes": 1073741824,
+    "min_memory_fraction": 0.2,
+    "timeout_s": 10
+  },
+  "initial_admission": {
+    "disk_free_bytes": 8584843264,
+    "reclaimable_fraction": 0.2234668731689453,
+    "scratch_bytes": 274342
+  },
+  "schema": 1,
+  "status": "completed"
+}

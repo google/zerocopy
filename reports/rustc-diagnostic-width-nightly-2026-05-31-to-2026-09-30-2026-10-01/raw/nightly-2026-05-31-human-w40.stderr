@@ -1,0 +1,115 @@
+error[E0308]: mismatched types
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:11:10
+   |
+11 |         (1u8, 2u8, 3u8, 4u8, 5u8...
+   |          ^^^ expected `u64`, found `u8`
+   |
+help: change the type of the numeric literal from `u8` to `u64`
+   |
+11 -         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+11 +         (1u64, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+   |
+
+error[E0308]: mismatched types
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:11:15
+   |
+11 |         (1u8, 2u8, 3u8, 4u8, 5u8...
+   |               ^^^ expected `u64`, found `u8`
+   |
+help: change the type of the numeric literal from `u8` to `u64`
+   |
+11 -         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+11 +         (1u8, 2u64, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+   |
+
+error[E0308]: mismatched types
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:11:20
+   |
+11 | ...(1u8, 2u8, 3u8, 4u8, 5u8, 6u8...
+   |               ^^^ expected `u64`, found `u8`
+   |
+help: change the type of the numeric literal from `u8` to `u64`
+   |
+11 -         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+11 +         (1u8, 2u8, 3u64, 4u8, 5u8, 6u8, 7u8, 8u8);
+   |
+
+error[E0308]: mismatched types
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:11:25
+   |
+11 | ... 2u8, 3u8, 4u8, 5u8, 6u8, 7u8...
+   |               ^^^ expected `u64`, found `u8`
+   |
+help: change the type of the numeric literal from `u8` to `u64`
+   |
+11 -         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+11 +         (1u8, 2u8, 3u8, 4u64, 5u8, 6u8, 7u8, 8u8);
+   |
+
+error[E0308]: mismatched types
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:11:30
+   |
+11 | ... 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+   |               ^^^ expected `u64`, found `u8`
+   |
+help: change the type of the numeric literal from `u8` to `u64`
+   |
+11 -         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+11 +         (1u8, 2u8, 3u8, 4u8, 5u64, 6u8, 7u8, 8u8);
+   |
+
+error[E0308]: mismatched types
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:11:35
+   |
+11 | ... 4u8, 5u8, 6u8, 7u8, 8u8);
+   |               ^^^ expected `u64`, found `u8`
+   |
+help: change the type of the numeric literal from `u8` to `u64`
+   |
+11 -         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+11 +         (1u8, 2u8, 3u8, 4u8, 5u8, 6u64, 7u8, 8u8);
+   |
+
+error[E0308]: mismatched types
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:11:40
+   |
+11 | ... 5u8, 6u8, 7u8, 8u8);
+   |               ^^^ expected `u64`, found `u8`
+   |
+help: change the type of the numeric literal from `u8` to `u64`
+   |
+11 -         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+11 +         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u64, 8u8);
+   |
+
+error[E0308]: mismatched types
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:11:45
+   |
+11 | ... 6u8, 7u8, 8u8);
+   |               ^^^ expected `u64`, found `u8`
+   |
+help: change the type of the numeric literal from `u8` to `u64`
+   |
+11 -         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8);
+11 +         (1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u64);
+   |
+
+error[E0277]: `Vec<...>` is not an iterator
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:12:22
+   |
+12 |     wants_iterator::<Vec<Long>>();
+   |                      ^^^^^^^^^ `Vec<...>` is not an iterator
+   |
+   = help: the trait `Iterator` is not implemented for `Vec<...>`
+note: required by a bound in `wants_iterator`
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/fixture/Width.rs:7:22
+   |
+ 7 | ...T: Iterator<Item = Long>>() {}
+   |       ^^^^^^^^^^^^^^^^^^^^^ required by this bound in `wants_iterator`
+   = note: the full name for the type has been written to '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r562-rustc-diagnostic-width-20261001/out/nightly-2026-05-31-human-w40/width_probe.long-type-175832375633816293.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error: aborting due to 9 previous errors
+
+Some errors have detailed explanations: E0277, E0308.
+For more information about an error, try `rustc --explain E0277`.
