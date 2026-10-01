@@ -1052,6 +1052,71 @@ jobs:
           name: ${{ env.ZC_CI_IMAGE_ARCHIVE }}
           path: ${{ runner.temp }}/${{ env.ZC_CI_IMAGE_ARCHIVE }}
 
+  aeneas:
+    name: Aeneas translation and Lean proofs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      # Charon uses its own pinned Rust compiler. Keep the ordinary Rust CI
+      # flags (including randomized layouts) out of this extraction.
+      RUSTFLAGS: ""
+      RUSTDOCFLAGS: ""
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install rustup
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: stable
+
+      - name: Install Nix for the pinned Aeneas source build
+        uses: DeterminateSystems/determinate-nix-action@8d87e8d5e5b8a8309d4281094560f127d9a265f1 # v3.22.5
+
+      - name: Install the pinned Aeneas, Charon, Rust, and Lean bundle
+        run: bash verification/aeneas/setup.sh
+
+      - name: Test Rust syntax ownership, discovery, and golden comparison
+        run: |
+          source verification/aeneas/toolchain.sh
+          export CARGO_TARGET_DIR="$PWD/target/aeneas/annotation-tool"
+          cargo +"$AENEAS_RUST_TOOLCHAIN" test --locked --manifest-path tools/Cargo.toml -p aeneas-inline
+          cargo +"$AENEAS_RUST_TOOLCHAIN" build --locked --manifest-path tools/Cargo.toml -p aeneas-inline
+          python3 -B -m unittest discover -s verification/aeneas/tests
+
+      - name: Check nominal type extraction and upstream compatibility
+        run: bash verification/aeneas/tests/nominal-tuples.sh
+
+      # run.sh checks the same contracts against two definition sets. Keep
+      # negative controls after this positive baseline: a missing dependency
+      # or an already broken proof cannot count as rejection of a mutation.
+      - name: Compare live extraction with goldens and prove both models
+        run: bash verification/aeneas/run.sh
+
+      - name: Test compiled effective-spec inspection
+        run: |
+          source verification/aeneas/toolchain.sh
+          export PATH="${AENEAS_TOOLCHAIN_DIR:-$PWD/target/aeneas/toolchain}/lean/bin:$PATH"
+          export AENEAS_INSPECTION_PROJECT="$PWD/target/aeneas/verification"
+          python3 -B -m unittest discover -s verification/aeneas/tests -p test_inspect.py
+
+      - name: Verify that admissions and incorrect code fail
+        env:
+          LEAN_NUM_THREADS: "2"
+        run: |
+          # Each suite mutates only its own generated project. Collect both
+          # statuses so a failure cannot leave the other suite unobserved.
+          bash verification/aeneas/negative-controls.sh golden-verification > target/aeneas/golden-controls.log 2>&1 &
+          golden_pid=$!
+          bash verification/aeneas/negative-controls.sh verification > target/aeneas/live-controls.log 2>&1 &
+          live_pid=$!
+          status=0
+          wait "$golden_pid" || status=1
+          wait "$live_pid" || status=1
+          cat target/aeneas/golden-controls.log target/aeneas/live-controls.log
+          exit "$status"
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
       # WARNING: This name is load-bearing! It's how GitHub's settings UI configures which jobs
@@ -1062,7 +1127,7 @@ jobs:
       # success in branch protection, so this aggregation must fail closed.
       if: ${{ always() }}
       runs-on: ubuntu-latest
-      needs: [build_test, miri, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
+      needs: [aeneas, build_test, miri, codegen, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, check_stale_stderr, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor, build_docker_env]
       steps:
         - name: Reject workflow cancellation
           if: ${{ cancelled() }}
