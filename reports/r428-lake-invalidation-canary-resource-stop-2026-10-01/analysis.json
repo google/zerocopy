@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "corrected_old_build_succeeded": true,
+  "corrected_new_build_killed_at_rss_cap": true,
+  "invalidation_matrix_cases_executed": 0,
+  "preliminary_setup_failure_excluded": true,
+  "requested_matrix_status": "blocked by >1 GiB process-group sampled RSS on initial Lean 4.34.1 Lake canary",
+  "old_module_outputs": ["Dep.olean", "Dep.ilean", "Dep.trace", "Core.olean", "Core.ilean", "Core.trace", "Main.olean", "Main.ilean", "Main.trace"],
+  "new_module_outputs": []
+}

@@ -1,0 +1,124 @@
+{
+  "admission": {
+    "disk_free_bytes": 19375308800,
+    "memory_bytes": 8589934592,
+    "owned_bytes": 478814,
+    "page_bytes": 16384,
+    "pages": {
+      "free": 8128,
+      "inactive": 115087,
+      "speculative": 3962
+    },
+    "reclaimable_percent": 24.25708770751953
+  },
+  "after": {
+    "consumer/.lake/config/0/lakefile.olean": {
+      "mtime_ns": 1790861706319084227,
+      "sha256": "2faf0e8dd19eff7e11f7462d1390a46e9b94bc7c0a5afede9c3287a3f3d034d6",
+      "size": 123352
+    },
+    "consumer/.lake/config/0/lakefile.olean.trace": {
+      "mtime_ns": 1790861703004472472,
+      "sha256": "77950639bb0ca5d6e66f56234241626d1a2d78966e5a0c498968297bc10d3630",
+      "size": 184
+    },
+    "consumer/.lake/config/1/lakefile.olean": {
+      "mtime_ns": 1790861706346716714,
+      "sha256": "fd5ca37c1d641271660df257ac637322b21ebe6904ed2a11c04361c4f16e5b87",
+      "size": 97584
+    },
+    "consumer/.lake/config/1/lakefile.olean.trace": {
+      "mtime_ns": 1790861706322283919,
+      "sha256": "1ca09ed1f8d95610d8565a00fdc169d84ecd0cd2bf6533bdf6c1021a3975f310",
+      "size": 182
+    },
+    "consumer/Core.lean": {
+      "mtime_ns": 1790861275268426040,
+      "sha256": "0b27ffb285fb439814312032273008727f90544f40cd69b5bc34a2f8c7b53e46",
+      "size": 48
+    },
+    "consumer/Main.lean": {
+      "mtime_ns": 1790861275268618997,
+      "sha256": "e3894c80f4b2a5bab80f01fe77b9b659445818d88fb611a0b4aa85c860f41c57",
+      "size": 50
+    },
+    "consumer/lake-manifest.json": {
+      "mtime_ns": 1790861706348077249,
+      "sha256": "c99b707a19ab76438c7c16d83bb7a95d700e05627a1c54c84aa69fa101cb61a6",
+      "size": 321
+    },
+    "consumer/lakefile.lean": {
+      "mtime_ns": 1790861621514551634,
+      "sha256": "2e1a83822f3363d0df76133db306b0ce739f3050cbbf058836ff44c74a32871b",
+      "size": 127
+    },
+    "dep/.lake/build/ir/Dep.setup.json": {
+      "mtime_ns": 1790861706351119817,
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      "size": 127
+    },
+    "dep/Dep.lean": {
+      "mtime_ns": 1790861275267855876,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "size": 24
+    },
+    "dep/lakefile.lean": {
+      "mtime_ns": 1790861275267435962,
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "size": 75
+    }
+  },
+  "argv": [
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+    "--no-cache",
+    "-v",
+    "build",
+    "Core",
+    "Main"
+  ],
+  "before": {
+    "consumer/Core.lean": {
+      "mtime_ns": 1790861275268426040,
+      "sha256": "0b27ffb285fb439814312032273008727f90544f40cd69b5bc34a2f8c7b53e46",
+      "size": 48
+    },
+    "consumer/Main.lean": {
+      "mtime_ns": 1790861275268618997,
+      "sha256": "e3894c80f4b2a5bab80f01fe77b9b659445818d88fb611a0b4aa85c860f41c57",
+      "size": 50
+    },
+    "consumer/lakefile.lean": {
+      "mtime_ns": 1790861621514551634,
+      "sha256": "2e1a83822f3363d0df76133db306b0ce739f3050cbbf058836ff44c74a32871b",
+      "size": 127
+    },
+    "dep/Dep.lean": {
+      "mtime_ns": 1790861275267855876,
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "size": 24
+    },
+    "dep/lakefile.lean": {
+      "mtime_ns": 1790861275267435962,
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "size": 75
+    }
+  },
+  "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/new/consumer",
+  "elapsed_s": 3.8379042502492666,
+  "env": {
+    "LAKE_ARTIFACT_CACHE": "false",
+    "LAKE_CACHE_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/raw/new/lake-cache",
+    "PATH_prefix": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin"
+  },
+  "exit_code": -9,
+  "lake_sha256": "c8c24f1398162ab4004e2a869952d8469f54293651151feaad4526f2b8474c6e",
+  "lake_version": "Lake version 5.0.0-src+5045d00 (Lean version 4.34.1)",
+  "role": "new",
+  "rss_polls": 58,
+  "sampled_peak_group_rss_kib": 1096880,
+  "stderr_bytes": 356,
+  "stderr_sha256": "fb0f92cd3139719a0f4de599a7f8ba10cfb8f44abbac8347e120cc6ad0896b7c",
+  "stdout_bytes": 101,
+  "stdout_sha256": "60c3254da9135c67d127cfb64fd19e52da760d22624d87a8d7c728ea039e5194",
+  "terminated": "process-group RSS >1 GiB"
+}

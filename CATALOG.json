@@ -17741,6 +17741,33 @@
         "verification/proof-artifacts"
       ]
     },
+    "r428-lake-invalidation-canary-resource-stop-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Lake 5.0.0-src+3dc1a08 with Lean 4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "lake_sha256": "c8c24f1398162ab4004e2a869952d8469f54293651151feaad4526f2b8474c6e",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lake 5.0.0-src+5045d00 with Lean 4.34.1"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lake",
+        "lake/invalidation",
+        "anneal/resource-admission"
+      ]
+    },
     "reasoning-about-nontermination-compcert-aeneas-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [

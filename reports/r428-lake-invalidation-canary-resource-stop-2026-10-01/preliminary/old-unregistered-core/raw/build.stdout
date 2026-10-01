@@ -1,0 +1,14 @@
+✔ [0/3] Ran job computation
+✔ [1/3] Ran probe_consumer:extraDep
+✖ [2/3] Building Main (118ms)
+trace: .> LEAN_PATH=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/dep/.lake/build/lib/lean:/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/consumer/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/consumer/Main.lean -o /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/consumer/.lake/build/lib/lean/Main.olean -i /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/consumer/.lake/build/lib/lean/Main.ilean -c /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/consumer/.lake/build/ir/Main.c --setup /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/consumer/.lake/build/ir/Main.setup.json --json
+error: Main.lean:1:0: unknown module prefix 'Core'
+
+No directory 'Core' or file 'Core.olean' in the search path entries:
+/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/dep/.lake/build/lib/lean
+/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/consumer/.lake/build/lib/lean
+/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean
+error: Lean exited with code 1
+✔ [3/3] Ran probe_consumer/Main:default
+Some required targets logged failures:
+- Main

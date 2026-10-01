@@ -1,0 +1,11 @@
+{"plugins": [],
+ "package": "probe_consumer",
+ "options": {},
+ "name": "Main",
+ "isModule": false,
+ "importArts":
+ {"Dep":
+  ["/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/dep/.lake/build/lib/lean/Dep.olean"],
+  "Core":
+  ["/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/consumer/.lake/build/lib/lean/Core.olean"]},
+ "dynlibs": []}

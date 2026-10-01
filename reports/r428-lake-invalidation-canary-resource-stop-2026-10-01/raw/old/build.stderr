@@ -1,0 +1,4 @@
+info: probe_consumer: no previous manifest, creating one from scratch
+trace: probe_consumer: updating 'probe_dep' with {}
+info: toolchain not updated; no toolchain information found
+warning: probe_dep: ignoring missing manifest '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r428-lake-invalidation-20261001/runs/old/dep/lake-manifest.json'
