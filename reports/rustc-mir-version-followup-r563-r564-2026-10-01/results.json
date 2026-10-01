@@ -1,0 +1,1021 @@
+{
+  "cells": {
+    "new/r563/opt0": {
+      "admission": {
+        "disk_free_bytes": 4078940160,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 76690,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 4324,
+          "inactive": 131301,
+          "speculative": 882
+        },
+        "reclaimable_percent": 26.036643981933594
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r563",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=0",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/new/r563/opt0.mir",
+        "fixture/r563.rs"
+      ],
+      "artifact_bytes": 1908,
+      "artifact_sha256": "6925ee66e5972ec34427c68ead13a6be796c1ef1339ef1d1b38049b66303d908",
+      "dump_files": {},
+      "elapsed_s": 0.2463617087341845,
+      "exit_code": 0,
+      "mode": "opt0",
+      "role": "new",
+      "rss_polls": 8,
+      "sampled_peak_rss_kib": 85920,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r563",
+      "terminated": null
+    },
+    "new/r563/opt2": {
+      "admission": {
+        "disk_free_bytes": 4078931968,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 80095,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5410,
+          "inactive": 131254,
+          "speculative": 1185
+        },
+        "reclaimable_percent": 26.29261016845703
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r563",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=2",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/new/r563/opt2.mir",
+        "fixture/r563.rs"
+      ],
+      "artifact_bytes": 1019,
+      "artifact_sha256": "a8fff7b320428fd880a34ddb87983d1bd909f4a2e331ad7df29eead3401ef9bd",
+      "dump_files": {},
+      "elapsed_s": 0.031145166605710983,
+      "exit_code": 0,
+      "mode": "opt2",
+      "role": "new",
+      "rss_polls": 1,
+      "sampled_peak_rss_kib": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r563",
+      "terminated": null
+    },
+    "new/r563/simplify-dump": {
+      "admission": {
+        "disk_free_bytes": 4078923776,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 82609,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5326,
+          "inactive": 131255,
+          "speculative": 1191
+        },
+        "reclaimable_percent": 26.277923583984375
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r563",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=0",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/new/r563/simplify-dump.mir",
+        "-Zdump-mir=SimplifyCfg",
+        "-Zdump-mir-dir=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/new/r563/simplify-dump-dumps",
+        "fixture/r563.rs"
+      ],
+      "artifact_bytes": 1908,
+      "artifact_sha256": "6925ee66e5972ec34427c68ead13a6be796c1ef1339ef1d1b38049b66303d908",
+      "dump_files": {
+        "raw/new/r563/simplify-dump-dumps/r563.after_diverge.1-1-007.SimplifyCfg-initial.after.mir": {
+          "bytes": 292,
+          "sha256": "71999f723987d7e92df9d24de11ede4a6dbf9731b6c49c83dc7c52e1cff6410e"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_diverge.1-1-007.SimplifyCfg-initial.before.mir": {
+          "bytes": 512,
+          "sha256": "9e9d7b6e71e819a56d44ae4bf32f48d849640f524dadf1a3c6a5d72b69b0f8f9"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_diverge.1-1-010.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 299,
+          "sha256": "c23ef23251aad7c51cef670b83a2f00436044b0d50afd4f18c0b7ba6b18be282"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_diverge.1-1-010.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 300,
+          "sha256": "3532fa16c229c5800c3c6e72e6759053680554527f5bb71a6adc9a9e7af792fd"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_diverge.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 266,
+          "sha256": "3f1c9d0e2dd6f53e785ee6bd5f3d397832c04f1f185333823c25860cac7fc399"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_diverge.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 311,
+          "sha256": "a845c73b38814ba8872f48932ce7ddef2f25584f945f1106e7fd7f7bd841f049"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_diverge.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 270,
+          "sha256": "88057ccabf9209bf0b506a6d2aac5d18c9edaeddad5af344662d064351fe1bcf"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_diverge.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 271,
+          "sha256": "8923796fe382e36ac613ece09f65228af10f2c7d37583dbe670d438765e8c013"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_return.1-1-007.SimplifyCfg-initial.after.mir": {
+          "bytes": 213,
+          "sha256": "14aa4521d3109d163caa39e956d31e11412333d6144402c35b70a7e7e7bb0519"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_return.1-1-007.SimplifyCfg-initial.before.mir": {
+          "bytes": 535,
+          "sha256": "3d0ec0a65275e0b1439ab03a798fa79569a1ce3e1385ebac963710fe9c18b77f"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_return.1-1-010.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 220,
+          "sha256": "310def541ae43c0589e476bae30a8b237365e243e9b2bacb74bc0509bffc35cf"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_return.1-1-010.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 221,
+          "sha256": "34c6b93e79b9f4851d7cde6d244e24481eca571ed3ed76721a329f170edd72f3"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_return.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 219,
+          "sha256": "c6846fbf614cefa1294d8364b192e05281ade8cd41134cba6fd0cb0bf93c64e0"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_return.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 220,
+          "sha256": "cd067d2a6253fde75397aa732be9b886a19439aac07b2653a697e705c87cd1e6"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_return.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 223,
+          "sha256": "b801bd5883c4c1f6a995a27e0a0cb2303fced921a151b3cdb7697dbfddf79263"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.after_return.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 224,
+          "sha256": "328195f5a84196dfc52f76cef727bcf38e09eaee2a4259e24eae4bdf5c63dbc8"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.constant_branch.1-1-007.SimplifyCfg-initial.after.mir": {
+          "bytes": 618,
+          "sha256": "d3a26019865c21cdb0579d66cf8f36bb0239fb0d3faef617e81335c122d63aad"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.constant_branch.1-1-007.SimplifyCfg-initial.before.mir": {
+          "bytes": 658,
+          "sha256": "f440341b7b5e1a622c0f6313e65de2a70d0446bf9de26bf0a98e21b0553c13e4"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.constant_branch.1-1-010.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 625,
+          "sha256": "2f3b3abccb1f1abf6821634c556adaaeb769a2b40e2e521f04d7a6c2c1eb2eda"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.constant_branch.1-1-010.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 626,
+          "sha256": "c3b78dfb5f4459708374195f8afed3144f29b00898d621ee3f50a488d427a06d"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.constant_branch.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 584,
+          "sha256": "367bb19c80fd522aaca9909151ebe5e440aef4f3c2509fc9e187728ee415419d"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.constant_branch.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 629,
+          "sha256": "ca63d678b89182f3b17fc265c5b265bbe530e6e4122e461e8218e18ece991f32"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.constant_branch.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 588,
+          "sha256": "550fdf784612523df6ab363d800c0d7ae6753f14edc7d52c80c8c6d6f2e5926e"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.constant_branch.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 589,
+          "sha256": "e00f20da85bfc9e141d4e580e0814f7df2c437da5c53d2fd9a8b2139df48d072"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.diverges.1-1-007.SimplifyCfg-initial.after.mir": {
+          "bytes": 323,
+          "sha256": "d0ebbd90cdd064241e4637244a8340ffef55bbbe7a4ddcf706d73f8ea705e9ee"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.diverges.1-1-007.SimplifyCfg-initial.before.mir": {
+          "bytes": 358,
+          "sha256": "5850f4951ddd60168b23b39a7a1f13feca250b69f9f21ade96c960ce4a6f845d"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.diverges.1-1-010.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 330,
+          "sha256": "47d45867a0f78a09323a607c1afa842e8c34b5ea008e49c2de59c32d2c532d64"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.diverges.1-1-010.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 331,
+          "sha256": "a5a7508fde1345931168f4bb37fa9ef66c6e76e3bdbbf78c804353c7cce8f133"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.diverges.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 218,
+          "sha256": "6902f991dab09309c9f75b35daca61feaf08ea2f526b0c2ebcb606cca66b7d34"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.diverges.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 302,
+          "sha256": "5ae2d5c1640a78ac5f382760975ba57ee9dae755c016e282f1fc395815575033"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.diverges.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 222,
+          "sha256": "7dd4d818b9d643b7fa0053bd915f2ecf3c32b6a96d5c90b3a46a851d4ec5898a"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.diverges.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 223,
+          "sha256": "5a29abe9166b893750019af8099dad038bccac14e29f577be37f9a629c37388a"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.dynamic_branch.1-1-007.SimplifyCfg-initial.after.mir": {
+          "bytes": 639,
+          "sha256": "3d4aec09027ecb3ced2fc446c13996540869d91ded948cfd881d1aac8ad8242c"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.dynamic_branch.1-1-007.SimplifyCfg-initial.before.mir": {
+          "bytes": 679,
+          "sha256": "ccebf362d11614ac651aa4e3c86ddafc67eb4707e4a8d37519f8070122870fb7"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.dynamic_branch.1-1-010.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 646,
+          "sha256": "e6b1201ab067e4e6ef0a24c85cb9f90b77561dd975dc24c85f4162217c291aeb"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.dynamic_branch.1-1-010.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 647,
+          "sha256": "11f4065517bcb25733f22144ad802d739c2cc2c1d00e2dde508b21cb3d122bc1"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.dynamic_branch.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 605,
+          "sha256": "5161c0cd6ec977541949499058a102438a52b4c9ff25f0b0d280d387ad2e490a"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.dynamic_branch.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 650,
+          "sha256": "9a2e6f82e9aa5a4790d8dd35dd607023da2f8aa2d908ac9c92e5c6daa872a8ad"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.dynamic_branch.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 609,
+          "sha256": "de58323b6b3e9ebb9191cde7f212401839bce4a29832d20b3e56bfe84632504b"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.dynamic_branch.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 610,
+          "sha256": "db077b9e0f53def99d93e775e3a0175f0159023ccfa0436b8a18b14a7f49e47f"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.marker.1-1-007.SimplifyCfg-initial.after.mir": {
+          "bytes": 146,
+          "sha256": "b1acc61fd30f66fa853a041ce809563de4359b27e2ccc24c147b51efc1672dd8"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.marker.1-1-007.SimplifyCfg-initial.before.mir": {
+          "bytes": 147,
+          "sha256": "91823f62028303b3cb1d9656e59d324cb4f1c6c304cc2f73cc00e67389433a31"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.marker.1-1-010.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 153,
+          "sha256": "708b0a5844b97db7881e5c729da00817d2a5f2a3bcce92aeb007ec9b10f62fb1"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.marker.1-1-010.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 154,
+          "sha256": "b0196feb6397b922e4d0af6967a71b99ebf150e2936376bb20b34b7314bbe53c"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.marker.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 152,
+          "sha256": "7549b00ba02af12f6c9501e9d14ae21d5759eea53f480be982313855c8908a4e"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.marker.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 153,
+          "sha256": "d0571586c365062374e71953e646f4997438417f44f93a4a920b19dc358fdc7c"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.marker.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 156,
+          "sha256": "f2d661d4cf662f3417e5244bcf61a6d70c582fc569e6e5e80242d47f9ceb26e9"
+        },
+        "raw/new/r563/simplify-dump-dumps/r563.marker.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 157,
+          "sha256": "33bf5dd88cc5e97c0bde630c86cc1c0680fe0e57ea7acd0ad9e13de5f2978122"
+        }
+      },
+      "elapsed_s": 0.0311875413171947,
+      "exit_code": 0,
+      "mode": "simplify-dump",
+      "role": "new",
+      "rss_polls": 1,
+      "sampled_peak_rss_kib": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r563",
+      "terminated": null
+    },
+    "new/r564/intrinsic-dump": {
+      "admission": {
+        "disk_free_bytes": 4078661632,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 128512,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5497,
+          "inactive": 131299,
+          "speculative": 871
+        },
+        "reclaimable_percent": 26.257896423339844
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r564",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=0",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/new/r564/intrinsic-dump.mir",
+        "-Zdump-mir=LowerIntrinsics",
+        "-Zdump-mir-dir=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/new/r564/intrinsic-dump-dumps",
+        "fixture/r564.rs"
+      ],
+      "artifact_bytes": 6397,
+      "artifact_sha256": "0d10911856ab2eff3bc1c6e3efe055bc0809d8a14c56efcc88f74436c94fcedb",
+      "dump_files": {
+        "raw/new/r564/intrinsic-dump-dumps/r564.COUNTER.3-1-001.LowerIntrinsics.after.mir": {
+          "bytes": 155,
+          "sha256": "5a1182b0ee2eae906c805cdf5ac7ad3aed13ebc0a4105eee14d0e991e2694fce"
+        },
+        "raw/new/r564/intrinsic-dump-dumps/r564.COUNTER.3-1-001.LowerIntrinsics.before.mir": {
+          "bytes": 156,
+          "sha256": "ea58b03500a6b3d79e903076f84c61994ab22f4bee7f916a2fc13ab8d46c7465"
+        },
+        "raw/new/r564/intrinsic-dump-dumps/r564.copy_one.3-1-001.LowerIntrinsics.after.mir": {
+          "bytes": 611,
+          "sha256": "64b5201d2031475ba7d5bf83de1b70e17ff9663417b9b510ff28b275ffc6be45"
+        },
+        "raw/new/r564/intrinsic-dump-dumps/r564.copy_one.3-1-001.LowerIntrinsics.before.mir": {
+          "bytes": 612,
+          "sha256": "30b330cfdcdc8fc92d4fe661a4b0f8b33cfc26422031c5ac7c3fa2c30519ac6e"
+        },
+        "raw/new/r564/intrinsic-dump-dumps/r564.operations.3-1-001.LowerIntrinsics.after.mir": {
+          "bytes": 2496,
+          "sha256": "a3a4162e01673f5a9102d8a6963a2aa805d95d2c85a771023ca51f3f263b5a09"
+        },
+        "raw/new/r564/intrinsic-dump-dumps/r564.operations.3-1-001.LowerIntrinsics.before.mir": {
+          "bytes": 2497,
+          "sha256": "d3bb577b5b91067adc5da295857e0b2a9ea8c441cf6d9465e5f3d8794d0c0552"
+        },
+        "raw/new/r564/intrinsic-dump-dumps/r564.unsafe_add.3-1-001.LowerIntrinsics.after.mir": {
+          "bytes": 525,
+          "sha256": "b4bcae7450a9c6dead7627942aeee8e458eda07e534ab70a738bde77b8b2515f"
+        },
+        "raw/new/r564/intrinsic-dump-dumps/r564.unsafe_add.3-1-001.LowerIntrinsics.before.mir": {
+          "bytes": 526,
+          "sha256": "330128001dc8e170ff3400967c76fad3ad872301ecaf517756e3ee49ff5e598d"
+        }
+      },
+      "elapsed_s": 0.03187258308753371,
+      "exit_code": 0,
+      "mode": "intrinsic-dump",
+      "role": "new",
+      "rss_polls": 1,
+      "sampled_peak_rss_kib": 79936,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r564",
+      "terminated": null
+    },
+    "new/r564/opt0": {
+      "admission": {
+        "disk_free_bytes": 4078678016,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 115377,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5404,
+          "inactive": 131300,
+          "speculative": 1194
+        },
+        "reclaimable_percent": 26.301956176757812
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r564",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=0",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/new/r564/opt0.mir",
+        "fixture/r564.rs"
+      ],
+      "artifact_bytes": 6397,
+      "artifact_sha256": "0d10911856ab2eff3bc1c6e3efe055bc0809d8a14c56efcc88f74436c94fcedb",
+      "dump_files": {},
+      "elapsed_s": 0.1075607081875205,
+      "exit_code": 0,
+      "mode": "opt0",
+      "role": "new",
+      "rss_polls": 3,
+      "sampled_peak_rss_kib": 97680,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r564",
+      "terminated": null
+    },
+    "new/r564/opt2": {
+      "admission": {
+        "disk_free_bytes": 4078669824,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 123273,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5530,
+          "inactive": 131298,
+          "speculative": 870
+        },
+        "reclaimable_percent": 26.263809204101562
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r564",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=2",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/new/r564/opt2.mir",
+        "fixture/r564.rs"
+      ],
+      "artifact_bytes": 3743,
+      "artifact_sha256": "37dd638b25bf7bf9ab92d2f8859f35099a1db064150f933d886a6b6554d65da4",
+      "dump_files": {},
+      "elapsed_s": 0.031366290990263224,
+      "exit_code": 0,
+      "mode": "opt2",
+      "role": "new",
+      "rss_polls": 1,
+      "sampled_peak_rss_kib": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r564",
+      "terminated": null
+    },
+    "old/r563/opt0": {
+      "admission": {
+        "disk_free_bytes": 4079562752,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 6923,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 3964,
+          "inactive": 132513,
+          "speculative": 585
+        },
+        "reclaimable_percent": 26.142501831054688
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r563",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=0",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/old/r563/opt0.mir",
+        "fixture/r563.rs"
+      ],
+      "artifact_bytes": 1908,
+      "artifact_sha256": "6925ee66e5972ec34427c68ead13a6be796c1ef1339ef1d1b38049b66303d908",
+      "dump_files": {},
+      "elapsed_s": 0.23535720771178603,
+      "exit_code": 0,
+      "mode": "opt0",
+      "role": "old",
+      "rss_polls": 7,
+      "sampled_peak_rss_kib": 78576,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r563",
+      "terminated": null
+    },
+    "old/r563/opt2": {
+      "admission": {
+        "disk_free_bytes": 4079558656,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 10330,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5289,
+          "inactive": 130819,
+          "speculative": 905
+        },
+        "reclaimable_percent": 26.133155822753906
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r563",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=2",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/old/r563/opt2.mir",
+        "fixture/r563.rs"
+      ],
+      "artifact_bytes": 1019,
+      "artifact_sha256": "a8fff7b320428fd880a34ddb87983d1bd909f4a2e331ad7df29eead3401ef9bd",
+      "dump_files": {},
+      "elapsed_s": 0.024134499952197075,
+      "exit_code": 0,
+      "mode": "opt2",
+      "role": "old",
+      "rss_polls": 0,
+      "sampled_peak_rss_kib": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r563",
+      "terminated": null
+    },
+    "old/r563/simplify-dump": {
+      "admission": {
+        "disk_free_bytes": 4079550464,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 12844,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5202,
+          "inactive": 130835,
+          "speculative": 916
+        },
+        "reclaimable_percent": 26.12171173095703
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r563",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=0",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/old/r563/simplify-dump.mir",
+        "-Zdump-mir=SimplifyCfg",
+        "-Zdump-mir-dir=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/old/r563/simplify-dump-dumps",
+        "fixture/r563.rs"
+      ],
+      "artifact_bytes": 1908,
+      "artifact_sha256": "6925ee66e5972ec34427c68ead13a6be796c1ef1339ef1d1b38049b66303d908",
+      "dump_files": {
+        "raw/old/r563/simplify-dump-dumps/r563.after_diverge.1-1-005.SimplifyCfg-initial.after.mir": {
+          "bytes": 292,
+          "sha256": "71999f723987d7e92df9d24de11ede4a6dbf9731b6c49c83dc7c52e1cff6410e"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_diverge.1-1-005.SimplifyCfg-initial.before.mir": {
+          "bytes": 512,
+          "sha256": "9e9d7b6e71e819a56d44ae4bf32f48d849640f524dadf1a3c6a5d72b69b0f8f9"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_diverge.1-1-008.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 299,
+          "sha256": "c23ef23251aad7c51cef670b83a2f00436044b0d50afd4f18c0b7ba6b18be282"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_diverge.1-1-008.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 300,
+          "sha256": "3532fa16c229c5800c3c6e72e6759053680554527f5bb71a6adc9a9e7af792fd"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_diverge.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 266,
+          "sha256": "3f1c9d0e2dd6f53e785ee6bd5f3d397832c04f1f185333823c25860cac7fc399"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_diverge.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 311,
+          "sha256": "a845c73b38814ba8872f48932ce7ddef2f25584f945f1106e7fd7f7bd841f049"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_diverge.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 270,
+          "sha256": "88057ccabf9209bf0b506a6d2aac5d18c9edaeddad5af344662d064351fe1bcf"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_diverge.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 271,
+          "sha256": "8923796fe382e36ac613ece09f65228af10f2c7d37583dbe670d438765e8c013"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_return.1-1-005.SimplifyCfg-initial.after.mir": {
+          "bytes": 213,
+          "sha256": "14aa4521d3109d163caa39e956d31e11412333d6144402c35b70a7e7e7bb0519"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_return.1-1-005.SimplifyCfg-initial.before.mir": {
+          "bytes": 535,
+          "sha256": "3d0ec0a65275e0b1439ab03a798fa79569a1ce3e1385ebac963710fe9c18b77f"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_return.1-1-008.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 220,
+          "sha256": "310def541ae43c0589e476bae30a8b237365e243e9b2bacb74bc0509bffc35cf"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_return.1-1-008.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 221,
+          "sha256": "34c6b93e79b9f4851d7cde6d244e24481eca571ed3ed76721a329f170edd72f3"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_return.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 219,
+          "sha256": "c6846fbf614cefa1294d8364b192e05281ade8cd41134cba6fd0cb0bf93c64e0"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_return.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 220,
+          "sha256": "cd067d2a6253fde75397aa732be9b886a19439aac07b2653a697e705c87cd1e6"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_return.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 223,
+          "sha256": "b801bd5883c4c1f6a995a27e0a0cb2303fced921a151b3cdb7697dbfddf79263"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.after_return.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 224,
+          "sha256": "328195f5a84196dfc52f76cef727bcf38e09eaee2a4259e24eae4bdf5c63dbc8"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.constant_branch.1-1-005.SimplifyCfg-initial.after.mir": {
+          "bytes": 618,
+          "sha256": "d3a26019865c21cdb0579d66cf8f36bb0239fb0d3faef617e81335c122d63aad"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.constant_branch.1-1-005.SimplifyCfg-initial.before.mir": {
+          "bytes": 658,
+          "sha256": "f440341b7b5e1a622c0f6313e65de2a70d0446bf9de26bf0a98e21b0553c13e4"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.constant_branch.1-1-008.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 625,
+          "sha256": "2f3b3abccb1f1abf6821634c556adaaeb769a2b40e2e521f04d7a6c2c1eb2eda"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.constant_branch.1-1-008.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 626,
+          "sha256": "c3b78dfb5f4459708374195f8afed3144f29b00898d621ee3f50a488d427a06d"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.constant_branch.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 584,
+          "sha256": "367bb19c80fd522aaca9909151ebe5e440aef4f3c2509fc9e187728ee415419d"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.constant_branch.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 629,
+          "sha256": "ca63d678b89182f3b17fc265c5b265bbe530e6e4122e461e8218e18ece991f32"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.constant_branch.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 588,
+          "sha256": "550fdf784612523df6ab363d800c0d7ae6753f14edc7d52c80c8c6d6f2e5926e"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.constant_branch.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 589,
+          "sha256": "e00f20da85bfc9e141d4e580e0814f7df2c437da5c53d2fd9a8b2139df48d072"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.diverges.1-1-005.SimplifyCfg-initial.after.mir": {
+          "bytes": 323,
+          "sha256": "d0ebbd90cdd064241e4637244a8340ffef55bbbe7a4ddcf706d73f8ea705e9ee"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.diverges.1-1-005.SimplifyCfg-initial.before.mir": {
+          "bytes": 358,
+          "sha256": "5850f4951ddd60168b23b39a7a1f13feca250b69f9f21ade96c960ce4a6f845d"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.diverges.1-1-008.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 330,
+          "sha256": "47d45867a0f78a09323a607c1afa842e8c34b5ea008e49c2de59c32d2c532d64"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.diverges.1-1-008.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 331,
+          "sha256": "a5a7508fde1345931168f4bb37fa9ef66c6e76e3bdbbf78c804353c7cce8f133"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.diverges.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 218,
+          "sha256": "6902f991dab09309c9f75b35daca61feaf08ea2f526b0c2ebcb606cca66b7d34"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.diverges.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 302,
+          "sha256": "5ae2d5c1640a78ac5f382760975ba57ee9dae755c016e282f1fc395815575033"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.diverges.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 222,
+          "sha256": "7dd4d818b9d643b7fa0053bd915f2ecf3c32b6a96d5c90b3a46a851d4ec5898a"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.diverges.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 223,
+          "sha256": "5a29abe9166b893750019af8099dad038bccac14e29f577be37f9a629c37388a"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.dynamic_branch.1-1-005.SimplifyCfg-initial.after.mir": {
+          "bytes": 639,
+          "sha256": "3d4aec09027ecb3ced2fc446c13996540869d91ded948cfd881d1aac8ad8242c"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.dynamic_branch.1-1-005.SimplifyCfg-initial.before.mir": {
+          "bytes": 679,
+          "sha256": "ccebf362d11614ac651aa4e3c86ddafc67eb4707e4a8d37519f8070122870fb7"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.dynamic_branch.1-1-008.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 646,
+          "sha256": "e6b1201ab067e4e6ef0a24c85cb9f90b77561dd975dc24c85f4162217c291aeb"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.dynamic_branch.1-1-008.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 647,
+          "sha256": "11f4065517bcb25733f22144ad802d739c2cc2c1d00e2dde508b21cb3d122bc1"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.dynamic_branch.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 605,
+          "sha256": "5161c0cd6ec977541949499058a102438a52b4c9ff25f0b0d280d387ad2e490a"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.dynamic_branch.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 650,
+          "sha256": "9a2e6f82e9aa5a4790d8dd35dd607023da2f8aa2d908ac9c92e5c6daa872a8ad"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.dynamic_branch.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 609,
+          "sha256": "de58323b6b3e9ebb9191cde7f212401839bce4a29832d20b3e56bfe84632504b"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.dynamic_branch.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 610,
+          "sha256": "db077b9e0f53def99d93e775e3a0175f0159023ccfa0436b8a18b14a7f49e47f"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.marker.1-1-005.SimplifyCfg-initial.after.mir": {
+          "bytes": 146,
+          "sha256": "b1acc61fd30f66fa853a041ce809563de4359b27e2ccc24c147b51efc1672dd8"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.marker.1-1-005.SimplifyCfg-initial.before.mir": {
+          "bytes": 147,
+          "sha256": "91823f62028303b3cb1d9656e59d324cb4f1c6c304cc2f73cc00e67389433a31"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.marker.1-1-008.SimplifyCfg-promote-consts.after.mir": {
+          "bytes": 153,
+          "sha256": "708b0a5844b97db7881e5c729da00817d2a5f2a3bcce92aeb007ec9b10f62fb1"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.marker.1-1-008.SimplifyCfg-promote-consts.before.mir": {
+          "bytes": 154,
+          "sha256": "b0196feb6397b922e4d0af6967a71b99ebf150e2936376bb20b34b7314bbe53c"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.marker.2-1-004.SimplifyCfg-post-analysis.after.mir": {
+          "bytes": 152,
+          "sha256": "7549b00ba02af12f6c9501e9d14ae21d5759eea53f480be982313855c8908a4e"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.marker.2-1-004.SimplifyCfg-post-analysis.before.mir": {
+          "bytes": 153,
+          "sha256": "d0571586c365062374e71953e646f4997438417f44f93a4a920b19dc358fdc7c"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.marker.3-1-003.SimplifyCfg-pre-optimizations.after.mir": {
+          "bytes": 156,
+          "sha256": "f2d661d4cf662f3417e5244bcf61a6d70c582fc569e6e5e80242d47f9ceb26e9"
+        },
+        "raw/old/r563/simplify-dump-dumps/r563.marker.3-1-003.SimplifyCfg-pre-optimizations.before.mir": {
+          "bytes": 157,
+          "sha256": "33bf5dd88cc5e97c0bde630c86cc1c0680fe0e57ea7acd0ad9e13de5f2978122"
+        }
+      },
+      "elapsed_s": 0.029062749817967415,
+      "exit_code": 0,
+      "mode": "simplify-dump",
+      "role": "old",
+      "rss_polls": 1,
+      "sampled_peak_rss_kib": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r563",
+      "terminated": null
+    },
+    "old/r564/intrinsic-dump": {
+      "admission": {
+        "disk_free_bytes": 4079292416,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 58746,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5401,
+          "inactive": 130393,
+          "speculative": 1226
+        },
+        "reclaimable_percent": 26.134490966796875
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r564",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=0",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/old/r564/intrinsic-dump.mir",
+        "-Zdump-mir=LowerIntrinsics",
+        "-Zdump-mir-dir=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/old/r564/intrinsic-dump-dumps",
+        "fixture/r564.rs"
+      ],
+      "artifact_bytes": 6397,
+      "artifact_sha256": "0d10911856ab2eff3bc1c6e3efe055bc0809d8a14c56efcc88f74436c94fcedb",
+      "dump_files": {
+        "raw/old/r564/intrinsic-dump-dumps/r564.COUNTER.3-1-001.LowerIntrinsics.after.mir": {
+          "bytes": 155,
+          "sha256": "5a1182b0ee2eae906c805cdf5ac7ad3aed13ebc0a4105eee14d0e991e2694fce"
+        },
+        "raw/old/r564/intrinsic-dump-dumps/r564.COUNTER.3-1-001.LowerIntrinsics.before.mir": {
+          "bytes": 156,
+          "sha256": "ea58b03500a6b3d79e903076f84c61994ab22f4bee7f916a2fc13ab8d46c7465"
+        },
+        "raw/old/r564/intrinsic-dump-dumps/r564.copy_one.3-1-001.LowerIntrinsics.after.mir": {
+          "bytes": 611,
+          "sha256": "64b5201d2031475ba7d5bf83de1b70e17ff9663417b9b510ff28b275ffc6be45"
+        },
+        "raw/old/r564/intrinsic-dump-dumps/r564.copy_one.3-1-001.LowerIntrinsics.before.mir": {
+          "bytes": 612,
+          "sha256": "30b330cfdcdc8fc92d4fe661a4b0f8b33cfc26422031c5ac7c3fa2c30519ac6e"
+        },
+        "raw/old/r564/intrinsic-dump-dumps/r564.operations.3-1-001.LowerIntrinsics.after.mir": {
+          "bytes": 2496,
+          "sha256": "a3a4162e01673f5a9102d8a6963a2aa805d95d2c85a771023ca51f3f263b5a09"
+        },
+        "raw/old/r564/intrinsic-dump-dumps/r564.operations.3-1-001.LowerIntrinsics.before.mir": {
+          "bytes": 2497,
+          "sha256": "d3bb577b5b91067adc5da295857e0b2a9ea8c441cf6d9465e5f3d8794d0c0552"
+        },
+        "raw/old/r564/intrinsic-dump-dumps/r564.unsafe_add.3-1-001.LowerIntrinsics.after.mir": {
+          "bytes": 525,
+          "sha256": "b4bcae7450a9c6dead7627942aeee8e458eda07e534ab70a738bde77b8b2515f"
+        },
+        "raw/old/r564/intrinsic-dump-dumps/r564.unsafe_add.3-1-001.LowerIntrinsics.before.mir": {
+          "bytes": 526,
+          "sha256": "330128001dc8e170ff3400967c76fad3ad872301ecaf517756e3ee49ff5e598d"
+        }
+      },
+      "elapsed_s": 0.0290460423566401,
+      "exit_code": 0,
+      "mode": "intrinsic-dump",
+      "role": "old",
+      "rss_polls": 1,
+      "sampled_peak_rss_kib": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r564",
+      "terminated": null
+    },
+    "old/r564/opt0": {
+      "admission": {
+        "disk_free_bytes": 4079304704,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 45612,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5188,
+          "inactive": 130875,
+          "speculative": 924
+        },
+        "reclaimable_percent": 26.128196716308594
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r564",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=0",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/old/r564/opt0.mir",
+        "fixture/r564.rs"
+      ],
+      "artifact_bytes": 6397,
+      "artifact_sha256": "0d10911856ab2eff3bc1c6e3efe055bc0809d8a14c56efcc88f74436c94fcedb",
+      "dump_files": {},
+      "elapsed_s": 0.09688441688194871,
+      "exit_code": 0,
+      "mode": "opt0",
+      "role": "old",
+      "rss_polls": 3,
+      "sampled_peak_rss_kib": 90480,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r564",
+      "terminated": null
+    },
+    "old/r564/opt2": {
+      "admission": {
+        "disk_free_bytes": 4079296512,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 53507,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5564,
+          "inactive": 130386,
+          "speculative": 1159
+        },
+        "reclaimable_percent": 26.151466369628906
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "r564",
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Adead_code",
+        "-Aunreachable_code",
+        "-Zmir-opt-level=2",
+        "--emit=mir",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r563-r564-rust-mir-nightly-20261001/raw/old/r564/opt2.mir",
+        "fixture/r564.rs"
+      ],
+      "artifact_bytes": 3743,
+      "artifact_sha256": "37dd638b25bf7bf9ab92d2f8859f35099a1db064150f933d886a6b6554d65da4",
+      "dump_files": {},
+      "elapsed_s": 0.028779083862900734,
+      "exit_code": 0,
+      "mode": "opt2",
+      "role": "old",
+      "rss_polls": 1,
+      "sampled_peak_rss_kib": 0,
+      "stderr_bytes": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "suite": "r564",
+      "terminated": null
+    }
+  },
+  "fixtures": {
+    "r563": "503640d29885c906d2a51bfd5ae6c8134638441086969e825d5497d79a5a307b",
+    "r564": "fc3992f976b1cfed1439bcaffd600c64d0d4017bb01c1ce2d2cf8f063bd0ea4d"
+  },
+  "schema": 1,
+  "tools": {
+    "new": {
+      "executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+      "sha256": "29f8ccc9aa7b0d8798eda854fa7f0e4ba3867c8c336b87d52dbb3b24b3f0878d",
+      "version_verbose": "rustc 1.101.0-nightly (5c543b0b8 2026-09-29)\nbinary: rustc\ncommit-hash: 5c543b0b8c73c7b72bc8284ced4fb22ead15734d\ncommit-date: 2026-09-29\nhost: aarch64-apple-darwin\nrelease: 1.101.0-nightly\nLLVM version: 23.1.1\n"
+    },
+    "old": {
+      "executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "version_verbose": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n"
+    }
+  }
+}

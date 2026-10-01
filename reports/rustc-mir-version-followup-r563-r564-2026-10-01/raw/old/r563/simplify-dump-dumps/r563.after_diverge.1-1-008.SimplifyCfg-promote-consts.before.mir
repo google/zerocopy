@@ -1,0 +1,19 @@
+// MIR for `after_diverge` before SimplifyCfg-promote-consts
+
+fn after_diverge() -> () {
+    let mut _0: ();
+    let mut _1: !;
+    let _2: !;
+    let _3: ();
+    scope 1 {
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = diverges() -> bb1;
+    }
+
+    bb1 (cleanup): {
+        resume;
+    }
+}

@@ -1,0 +1,40 @@
+// MIR for `after_return` before SimplifyCfg-initial
+
+fn after_return() -> () {
+    let mut _0: ();
+    let mut _1: !;
+    let _2: ();
+    scope 1 {
+    }
+
+    bb0: {
+        _0 = const ();
+        goto -> bb4;
+    }
+
+    bb1: {
+        StorageLive(_2);
+        _2 = marker() -> [return: bb2, unwind: bb6];
+    }
+
+    bb2: {
+        StorageDead(_2);
+        unreachable;
+    }
+
+    bb3: {
+        goto -> bb5;
+    }
+
+    bb4: {
+        goto -> bb5;
+    }
+
+    bb5: {
+        return;
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "all_12_exit_zero": true,
+  "six_emitted_mir_pairs_equal": true,
+  "r563_48_stage_dump_pairs_equal_after_pass_number_normalization": true,
+  "r564_8_stage_dump_pairs_equal": true,
+  "r563": {
+    "initial_simplify_removes_post_return_marker": true,
+    "initial_simplify_removes_post_diverge_marker": true,
+    "constant_false_branch_present_with_switch_at_opt0": true,
+    "constant_false_branch_absent_at_opt2": true,
+    "dynamic_branch_retains_switch_and_marker_at_opt2": true
+  },
+  "r564": {
+    "opt0_raw_borrow_visible": true,
+    "opt0_raw_dereference_generic_syntax_visible": true,
+    "opt0_union_field_generic_syntax_visible": true,
+    "opt0_unsafe_call_ordinary_call_syntax_visible": true,
+    "opt0_inline_asm_visible": true,
+    "copy_nonoverlapping_wrapper_call_remains_after_selected_lower_intrinsics_dump": true,
+    "explicit_source_safety_authorization_not_proved_absent_by_text_dump": true
+  }
+}

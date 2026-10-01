@@ -1,0 +1,14 @@
+// MIR for `after_return` after SimplifyCfg-pre-optimizations
+
+fn after_return() -> () {
+    let mut _0: ();
+    let mut _1: !;
+    let _2: ();
+    scope 1 {
+    }
+
+    bb0: {
+        _0 = const ();
+        return;
+    }
+}

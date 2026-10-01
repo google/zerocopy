@@ -1,0 +1,42 @@
+// MIR for `constant_branch` before SimplifyCfg-initial
+
+fn constant_branch() -> () {
+    let mut _0: ();
+    let mut _1: bool;
+    let _2: ();
+
+    bb0: {
+        StorageLive(_1);
+        _1 = const false;
+        switchInt(move _1) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        StorageLive(_2);
+        _2 = marker() -> [return: bb3, unwind: bb6];
+    }
+
+    bb2: {
+        goto -> bb4;
+    }
+
+    bb3: {
+        StorageDead(_2);
+        _0 = const ();
+        goto -> bb5;
+    }
+
+    bb4: {
+        _0 = const ();
+        goto -> bb5;
+    }
+
+    bb5: {
+        StorageDead(_1);
+        return;
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}

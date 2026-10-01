@@ -1,0 +1,39 @@
+// MIR for `dynamic_branch` after SimplifyCfg-promote-consts
+
+fn dynamic_branch(_1: bool) -> () {
+    debug x => _1;
+    let mut _0: ();
+    let mut _2: bool;
+    let _3: ();
+
+    bb0: {
+        StorageLive(_2);
+        _2 = copy _1;
+        switchInt(move _2) -> [0: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        _3 = marker() -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        StorageDead(_3);
+        _0 = const ();
+        goto -> bb4;
+    }
+
+    bb3: {
+        _0 = const ();
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+}

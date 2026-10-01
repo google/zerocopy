@@ -1,0 +1,99 @@
+// MIR for `operations` after LowerIntrinsics
+
+fn operations(_1: *const u32, _2: &u32) -> u32 {
+    debug p => _1;
+    debug q => _2;
+    let mut _0: u32;
+    let _3: *const u32;
+    let mut _6: Bits;
+    let mut _7: u32;
+    let mut _9: u32;
+    let mut _11: *mut u32;
+    let _12: ();
+    let _13: ();
+    let mut _14: u32;
+    let mut _15: u32;
+    let mut _16: (u32, bool);
+    scope 1 {
+        debug raw => _3;
+        let _4: u32;
+        scope 2 {
+            debug loaded => _4;
+            let _5: u32;
+            scope 3 {
+                debug unioned => _5;
+                let _8: u32;
+                scope 4 {
+                    debug called => _8;
+                    let _10: u32;
+                    scope 5 {
+                        debug static_value => _10;
+                        scope 6 {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _3 = &raw const (*_2);
+        StorageLive(_4);
+        _4 = copy (*_1);
+        StorageLive(_5);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy _4;
+        _6 = Bits { word: move _7 };
+        StorageDead(_7);
+        _5 = copy (_6.0: u32);
+        StorageDead(_6);
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = copy _5;
+        _8 = unsafe_add(move _9) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_9);
+        StorageLive(_10);
+        StorageLive(_11);
+        _11 = const {alloc1: *mut u32};
+        _10 = copy (*_11);
+        StorageDead(_11);
+        StorageLive(_12);
+        StorageLive(_13);
+        _13 = const ();
+        asm!("nop", options()) -> [return: bb2, unwind unreachable];
+    }
+
+    bb2: {
+        StorageDead(_13);
+        _12 = const ();
+        StorageDead(_12);
+        PlaceMention(_3);
+        StorageLive(_14);
+        _14 = copy _8;
+        StorageLive(_15);
+        _15 = copy _10;
+        _16 = AddWithOverflow(copy _14, copy _15);
+        assert(!move (_16.1: bool), "attempt to compute `{} + {}`, which would overflow", move _14, move _15) -> [success: bb3, unwind continue];
+    }
+
+    bb3: {
+        _0 = move (_16.0: u32);
+        StorageDead(_15);
+        StorageDead(_14);
+        StorageDead(_10);
+        StorageDead(_8);
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_3);
+        return;
+    }
+}
+
+alloc1 (static: COUNTER, size: 4, align: 4) {
+    07 00 00 00                                     │ ....
+}

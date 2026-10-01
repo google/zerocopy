@@ -1,0 +1,34 @@
+// MIR for `after_diverge` before SimplifyCfg-initial
+
+fn after_diverge() -> () {
+    let mut _0: ();
+    let mut _1: !;
+    let _2: !;
+    let _3: ();
+    scope 1 {
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = diverges() -> bb4;
+    }
+
+    bb1: {
+        StorageDead(_2);
+        StorageLive(_3);
+        _3 = marker() -> [return: bb2, unwind: bb4];
+    }
+
+    bb2: {
+        StorageDead(_3);
+        unreachable;
+    }
+
+    bb3: {
+        return;
+    }
+
+    bb4 (cleanup): {
+        resume;
+    }
+}

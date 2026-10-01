@@ -1,0 +1,133 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+const Bits::bytes::{constant#0}: usize = const 4_usize;
+
+static mut COUNTER: u32 = {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 7_u32;
+        return;
+    }
+}
+
+fn unsafe_add(_1: u32) -> u32 {
+    debug x => _1;
+    let mut _0: u32;
+    let mut _2: (u32, bool);
+
+    bb0: {
+        _2 = AddWithOverflow(copy _1, const 1_u32);
+        assert(!move (_2.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _1, const 1_u32) -> [success: bb1, unwind continue];
+    }
+
+    bb1: {
+        _0 = move (_2.0: u32);
+        return;
+    }
+}
+
+fn operations(_1: *const u32, _2: &u32) -> u32 {
+    debug p => _1;
+    debug q => _2;
+    let mut _0: u32;
+    let mut _6: *mut u32;
+    let mut _7: (u32, bool);
+    scope 1 {
+        debug raw => _2;
+        let _3: u32;
+        let mut _11: usize;
+        let mut _12: usize;
+        let mut _13: bool;
+        let mut _14: bool;
+        let mut _15: bool;
+        scope 2 {
+            debug loaded => _3;
+            scope 3 {
+                debug unioned => _3;
+                let _4: u32;
+                scope 4 {
+                    debug called => _4;
+                    let _5: u32;
+                    let mut _8: usize;
+                    let mut _9: usize;
+                    let mut _10: bool;
+                    let mut _16: bool;
+                    let mut _17: bool;
+                    scope 5 {
+                        debug static_value => _5;
+                        scope 6 {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        _11 = copy _1 as usize (Transmute);
+        _12 = BitAnd(copy _11, const 3_usize);
+        _13 = Eq(copy _12, const 0_usize);
+        assert(copy _13, "misaligned pointer dereference: address must be a multiple of {} but is {}", const 4_usize, copy _11) -> [success: bb5, unwind unreachable];
+    }
+
+    bb1: {
+        _6 = const {alloc1: *mut u32};
+        _8 = const {alloc1: *mut u32} as usize (Transmute);
+        _9 = BitAnd(copy _8, const 3_usize);
+        _10 = Eq(copy _9, const 0_usize);
+        assert(copy _10, "misaligned pointer dereference: address must be a multiple of {} but is {}", const 4_usize, copy _8) -> [success: bb4, unwind unreachable];
+    }
+
+    bb2: {
+        _7 = AddWithOverflow(copy _4, copy _5);
+        assert(!move (_7.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _4, copy _5) -> [success: bb3, unwind continue];
+    }
+
+    bb3: {
+        _0 = move (_7.0: u32);
+        return;
+    }
+
+    bb4: {
+        _16 = Eq(copy _8, const 0_usize);
+        _17 = Not(copy _16);
+        assert(copy _17, "null pointer dereference occurred") -> [success: bb7, unwind unreachable];
+    }
+
+    bb5: {
+        _14 = Eq(copy _11, const 0_usize);
+        _15 = Not(copy _14);
+        assert(copy _15, "null pointer dereference occurred") -> [success: bb6, unwind unreachable];
+    }
+
+    bb6: {
+        _3 = copy (*_1);
+        _4 = unsafe_add(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb7: {
+        _5 = copy (*_6);
+        asm!("nop", options()) -> [return: bb2, unwind unreachable];
+    }
+}
+
+alloc1 (static: COUNTER, size: 4, align: 4) {
+    07 00 00 00                                     │ ....
+}
+
+fn copy_one(_1: *const u8, _2: *mut u8) -> () {
+    debug src => _1;
+    debug dst => _2;
+    let mut _0: ();
+    let _3: ();
+
+    bb0: {
+        _3 = std::ptr::copy_nonoverlapping::<u8>(move _1, move _2, const 1_usize) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}

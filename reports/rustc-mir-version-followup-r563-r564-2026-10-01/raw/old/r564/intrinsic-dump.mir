@@ -1,0 +1,216 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+const Bits::bytes::{constant#0}: usize = const 4_usize;
+
+static mut COUNTER: u32 = {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 7_u32;
+        return;
+    }
+}
+
+fn unsafe_add(_1: u32) -> u32 {
+    debug x => _1;
+    let mut _0: u32;
+    let mut _2: u32;
+    let mut _3: (u32, bool);
+
+    bb0: {
+        StorageLive(_2);
+        _2 = copy _1;
+        _3 = AddWithOverflow(copy _2, const 1_u32);
+        assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", move _2, const 1_u32) -> [success: bb1, unwind continue];
+    }
+
+    bb1: {
+        _0 = move (_3.0: u32);
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn operations(_1: *const u32, _2: &u32) -> u32 {
+    debug p => _1;
+    debug q => _2;
+    let mut _0: u32;
+    let _3: *const u32;
+    let mut _6: Bits;
+    let mut _7: u32;
+    let mut _9: u32;
+    let mut _11: *mut u32;
+    let _12: ();
+    let _13: ();
+    let mut _14: u32;
+    let mut _15: u32;
+    let mut _16: (u32, bool);
+    scope 1 {
+        debug raw => _3;
+        let _4: u32;
+        let mut _22: *const ();
+        let mut _23: usize;
+        let mut _24: usize;
+        let mut _25: usize;
+        let mut _26: bool;
+        let mut _27: *const ();
+        let mut _28: usize;
+        let mut _29: bool;
+        let mut _30: bool;
+        let mut _31: bool;
+        let mut _32: bool;
+        scope 2 {
+            debug loaded => _4;
+            let _5: u32;
+            scope 3 {
+                debug unioned => _5;
+                let _8: u32;
+                scope 4 {
+                    debug called => _8;
+                    let _10: u32;
+                    let mut _17: *const ();
+                    let mut _18: usize;
+                    let mut _19: usize;
+                    let mut _20: usize;
+                    let mut _21: bool;
+                    let mut _33: *const ();
+                    let mut _34: usize;
+                    let mut _35: bool;
+                    let mut _36: bool;
+                    let mut _37: bool;
+                    let mut _38: bool;
+                    scope 5 {
+                        debug static_value => _10;
+                        scope 6 {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _3 = &raw const (*_2);
+        StorageLive(_4);
+        _22 = copy _1 as *const () (PtrToPtr);
+        _23 = copy _22 as usize (Transmute);
+        _24 = Sub(const <u32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _25 = BitAnd(copy _23, copy _24);
+        _26 = Eq(copy _25, const 0_usize);
+        assert(copy _26, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <u32 as std::mem::SizedTypeProperties>::ALIGN, copy _23) -> [success: bb5, unwind unreachable];
+    }
+
+    bb1: {
+        StorageDead(_9);
+        StorageLive(_10);
+        StorageLive(_11);
+        _11 = const {alloc1: *mut u32};
+        _17 = copy _11 as *const () (PtrToPtr);
+        _18 = copy _17 as usize (Transmute);
+        _19 = Sub(const <u32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _20 = BitAnd(copy _18, copy _19);
+        _21 = Eq(copy _20, const 0_usize);
+        assert(copy _21, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <u32 as std::mem::SizedTypeProperties>::ALIGN, copy _18) -> [success: bb4, unwind unreachable];
+    }
+
+    bb2: {
+        StorageDead(_13);
+        _12 = const ();
+        StorageDead(_12);
+        StorageLive(_14);
+        _14 = copy _8;
+        StorageLive(_15);
+        _15 = copy _10;
+        _16 = AddWithOverflow(copy _14, copy _15);
+        assert(!move (_16.1: bool), "attempt to compute `{} + {}`, which would overflow", move _14, move _15) -> [success: bb3, unwind continue];
+    }
+
+    bb3: {
+        _0 = move (_16.0: u32);
+        StorageDead(_15);
+        StorageDead(_14);
+        StorageDead(_10);
+        StorageDead(_8);
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_3);
+        return;
+    }
+
+    bb4: {
+        _33 = copy _11 as *const () (PtrToPtr);
+        _34 = copy _33 as usize (Transmute);
+        _35 = Ne(const <u32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _36 = Eq(copy _34, const 0_usize);
+        _37 = BitAnd(copy _36, copy _35);
+        _38 = Not(copy _37);
+        assert(copy _38, "null pointer dereference occurred") -> [success: bb7, unwind unreachable];
+    }
+
+    bb5: {
+        _27 = copy _1 as *const () (PtrToPtr);
+        _28 = copy _27 as usize (Transmute);
+        _29 = Ne(const <u32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _30 = Eq(copy _28, const 0_usize);
+        _31 = BitAnd(copy _30, copy _29);
+        _32 = Not(copy _31);
+        assert(copy _32, "null pointer dereference occurred") -> [success: bb6, unwind unreachable];
+    }
+
+    bb6: {
+        _4 = copy (*_1);
+        StorageLive(_5);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy _4;
+        _6 = Bits { word: move _7 };
+        StorageDead(_7);
+        _5 = copy (_6.0: u32);
+        StorageDead(_6);
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = copy _5;
+        _8 = unsafe_add(move _9) -> [return: bb1, unwind continue];
+    }
+
+    bb7: {
+        _10 = copy (*_11);
+        StorageDead(_11);
+        StorageLive(_12);
+        StorageLive(_13);
+        _13 = const ();
+        asm!("nop", options()) -> [return: bb2, unwind unreachable];
+    }
+}
+
+alloc1 (static: COUNTER, size: 4, align: 4) {
+    07 00 00 00                                     │ ....
+}
+
+fn copy_one(_1: *const u8, _2: *mut u8) -> () {
+    debug src => _1;
+    debug dst => _2;
+    let mut _0: ();
+    let _3: ();
+    let mut _4: *const u8;
+    let mut _5: *mut u8;
+
+    bb0: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = copy _1;
+        StorageLive(_5);
+        _5 = copy _2;
+        _3 = std::ptr::copy_nonoverlapping::<u8>(move _4, move _5, const 1_usize) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_3);
+        _0 = const ();
+        return;
+    }
+}

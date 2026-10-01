@@ -1,0 +1,27 @@
+// MIR for `copy_one` after LowerIntrinsics
+
+fn copy_one(_1: *const u8, _2: *mut u8) -> () {
+    debug src => _1;
+    debug dst => _2;
+    let mut _0: ();
+    let _3: ();
+    let mut _4: *const u8;
+    let mut _5: *mut u8;
+
+    bb0: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = copy _1;
+        StorageLive(_5);
+        _5 = copy _2;
+        _3 = std::ptr::copy_nonoverlapping::<u8>(move _4, move _5, const 1_usize) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_3);
+        _0 = const ();
+        return;
+    }
+}

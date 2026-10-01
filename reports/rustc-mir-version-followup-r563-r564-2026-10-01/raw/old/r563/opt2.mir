@@ -1,0 +1,69 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn marker() -> () {
+    let mut _0: ();
+
+    bb0: {
+        return;
+    }
+}
+
+fn constant_branch() -> () {
+    let mut _0: ();
+
+    bb0: {
+        return;
+    }
+}
+
+fn after_return() -> () {
+    let mut _0: ();
+    scope 1 {
+    }
+
+    bb0: {
+        return;
+    }
+}
+
+fn diverges() -> ! {
+    let mut _0: !;
+
+    bb0: {
+        goto -> bb1;
+    }
+
+    bb1: {
+        goto -> bb1;
+    }
+}
+
+fn after_diverge() -> () {
+    let mut _0: ();
+    let _1: !;
+    scope 1 {
+    }
+
+    bb0: {
+        _1 = diverges() -> unwind continue;
+    }
+}
+
+fn dynamic_branch(_1: bool) -> () {
+    debug x => _1;
+    let mut _0: ();
+    let _2: ();
+
+    bb0: {
+        switchInt(copy _1) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        _2 = marker() -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        return;
+    }
+}
