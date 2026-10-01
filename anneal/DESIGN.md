@@ -94,31 +94,39 @@ identify a logically minimal set of assumptions.
 
 A **trust policy** specifies which unchecked dependencies and evidence mechanisms
 Anneal may use in establishing a claim. Its authorization rules and the checks or
-evidence required to establish compliance must have precise meanings.
+evidence required to establish compliance must have precise meanings. A trust
+policy cannot waive Anneal's project-wide verification requirements, including
+mandatory UB verification.
 
-For example, a policy may authorize particular axiom declarations, component
-contracts, or external checking mechanisms and forbid other admissions. Checking
-that a proof uses only authorized dependencies establishes compliance with those
-rules. It does not establish that the authorized assumptions are true,
-consistent, semantically independent of the conclusion, or useful to the user.
+Without such rules, a failed proof could become apparent verification simply by
+replacing the missing step with an assumption. Suppose a policy requires checked
+evidence that a buffer operation is safe. Declaring its safety as an axiom does
+not satisfy that requirement. Importing a helper theorem that relies on the same
+axiom does not satisfy it either: the unchecked dependency remains, so the policy
+must reject both uses.
 
-An assumption's location in a proof graph or a separate module does not by itself
-make the assumption legitimate. Conversely, an explicitly authorized external
-verifier may establish an entire proposition. Acceptability depends on the
-specified authorization and evidence requirements, not on the size of the local
-proof or whether a dependency looks sufficiently "external."
+The policy may also permit Anneal to delegate proof work. For example, it may
+authorize a particular external verifier and specify the evidence needed to
+accept its answer. That verifier may establish the entire proposition. Anneal
+may then rely on its answer if the acceptance conditions are met and any
+unchecked reliance on the verifier is included in the TCB.
+
+Both cases can leave a short local proof citing a declaration of the same
+proposition. The difference is the evidence and authorization for relying on that
+declaration. Anneal must check those conditions and the declaration's unchecked
+dependencies, rather than infer compliance from proof length or module placement.
 
 An unfinished proof, skipped analysis, unsupported operation, or failed tool does
-not authorize a new unchecked dependency. Anneal must enforce the applicable
-policy rather than silently weaken it after verification fails. Explicitly
-selecting another permitted policy changes the verification being requested; it
-does not establish that the original request was satisfied.
+not by itself authorize a new unchecked dependency. Anneal must enforce the
+applicable policy rather than silently weaken it after verification fails.
+Explicitly selecting another permitted policy changes the verification being
+requested; it does not establish that the original request was satisfied.
 
-A trust policy cannot waive Anneal's project-wide verification requirements. In
-particular, mandatory UB verification cannot be bypassed by admitting an
-unfinished obligation. The permitted checking and trust mechanisms for that
-verification must be specified, rather than relying on a general test for
-whether an assumption is a disguised restatement of the conclusion.
+Authorized trust remains trust. A policy may permit reliance on a component's
+contract without proving that the component satisfies it. Policy compliance
+therefore establishes compliance with the declared rules, not that the permitted
+assumptions are true, consistent, semantically independent of the conclusion, or
+useful to the user.
 
 ## Evidence must establish the requested claim
 
@@ -135,18 +143,25 @@ in the TCB.
 Anneal's mandatory baseline contract must specify the required Rust safety
 proposition, including its permitted caller and environmental conditions. The
 formal obligations must be justified as establishing that proposition. Proof
-construction must not satisfy the request by changing a definition, excluding an
-unproved case, or adding a requirement that weakens the baseline contract.
+construction must not report the request as satisfied after weakening the
+baseline contract by changing a definition, excluding an unproved case, or adding
+a requirement.
 
 For example, evidence that binary search is UB-free on sorted inputs does not
 establish UB-freedom for all inputs. Moving sortedness into the claim's scope does
 not change this mismatch. Anneal must not substitute an empty domain or assume
 the required safety conclusion in place of discharging the requested obligation.
 
-This is a requirement to preserve and justify the specified baseline, not a
-promise that Anneal can recognize every semantically vacuous specification.
-Specifications may be developed alongside implementations or extracted from them;
-their origin does not excuse a mismatch between the requested and proved claims.
+This requirement applies whether a specification is written by a developer,
+extracted from code, or revised alongside an implementation. For example, an
+analysis might generate a specification describing only the paths it successfully
+handled. A proof of that specification must not be presented as establishing
+safety for every execution the original request covers.
+
+Checking that evidence establishes the requested claim is distinct from checking
+whether that claim has useful content. In particular, it does not establish that
+the requested claim has satisfiable requirements. The consequences of that limit
+are described under [Vacuity, consistency, and specification adequacy](#vacuity-consistency-and-specification-adequacy).
 
 ## Verification outcomes
 
@@ -202,9 +217,10 @@ A package name alone cannot bind evidence to the code it justifies.
 
 ### Execution models and physical systems
 
-The claim must state which execution semantics and environmental contracts it
-uses. There is no model-independent boundary between "input," "environment," and
-"context" that makes a condition legitimate merely by assigning it a label.
+The claim must state its execution semantics and environmental contracts so that
+users can determine when its guarantees apply. Describing a condition as an input
+constraint, an environmental contract, or a context obligation does not remove
+the need to state and justify its role in the claim.
 
 Applying a formal guarantee to a physical execution also depends on the relevant
 system realizing the modeled semantics. For example, a hardware defect may
@@ -252,8 +268,7 @@ Additional guarantees apply under their corresponding requirements.
 
 A caller must establish the requirements of a guarantee before relying on it.
 When verifying the implementation, Anneal may assume those requirements and must
-establish the guarantee. This is the library specialization of the conditional
-claim model, not an additional notion of proof success.
+establish the guarantee.
 
 The formal account must justify that its permitted contexts include the clients
 the API policy promises to support. Conditions on a context must account for its
@@ -298,6 +313,13 @@ promise of automatic inference from existing implementations.
 
 ## Vacuity, consistency, and specification adequacy
 
+An additional guarantee can be proved exactly as requested without applying to
+any possible input. For example, a function may be specified to return `42`
+whenever its integer argument is both positive and negative. Proving that
+implication says nothing about the return value for any possible call. The proof
+matches the request, but the requested condition is impossible. This does not
+remove the separate obligation to establish the mandatory baseline guarantee.
+
 Establishing a conditional claim does not also establish that its requirements
 are satisfiable, that a covered case occurs, or that the specification expresses
 what its author intended. A verification request may require additional evidence
@@ -315,9 +337,10 @@ interpretation used to connect the claim to the program and its environment.
 Consistency alone is weaker: assumptions may be consistent without correctly
 describing the intended program or physical system.
 
-Anneal must not treat admission of axioms, failure to find a contradiction, or
-acceptance of a conditional proof as evidence that the trusted assumptions are
-jointly true or consistent. A policy may require a model, a witness, or other
+Admitting axioms or finding no contradiction does not by itself establish that
+the trusted assumptions are jointly true or consistent. Accepting a proof
+establishes its stated proposition under its assumptions, not a general guarantee
+about those assumptions. A policy may require a model, a witness, or other
 evidence for specified consistency or applicability claims. The force of such
 evidence remains relative to the foundations and checking machinery used.
 Foundational soundness that has not been established remains part of the trust
