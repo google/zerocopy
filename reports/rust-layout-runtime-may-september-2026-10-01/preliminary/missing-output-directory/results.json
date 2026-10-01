@@ -1,0 +1,49 @@
+{
+  "cells": {
+    "old/compile": {
+      "admission": {
+        "disk_free_bytes": 4190658560,
+        "memory_bytes": 8589934592,
+        "owned_bytes": 6588,
+        "page_bytes": 16384,
+        "pages": {
+          "free": 4214,
+          "inactive": 121115,
+          "speculative": 2128
+        },
+        "reclaimable_percent": 24.31049346923828
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "layout_probe",
+        "--edition",
+        "2024",
+        "-C",
+        "opt-level=0",
+        "-Zprint-type-sizes",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r530-rust-layout-nightly-20261001/raw/old/layout-probe",
+        "fixture/layout.rs"
+      ],
+      "elapsed_s": 0.2947195419110358,
+      "exit_code": 1,
+      "rss_polls": 9,
+      "sampled_peak_rss_kib": 91216,
+      "stderr_bytes": 241,
+      "stderr_sha256": "fe11f29ee7864b3011ae25c053b88fc607c9ee4a1a79044fe2954e4675eabd5a",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "terminated": null
+    }
+  },
+  "fixture_sha256": "1614b1015dd9323d5c445eb11f6d9d3e36c94843c9d2aa42ef3c52a7ccb9fede",
+  "schema": 1,
+  "tools": {
+    "old": {
+      "executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "version_verbose": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n"
+    }
+  }
+}

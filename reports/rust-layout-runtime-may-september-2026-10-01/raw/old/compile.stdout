@@ -1,0 +1,98 @@
+print-type-size type: `CControl`: 24 bytes, alignment: 8 bytes
+print-type-size     field `.a`: 1 bytes
+print-type-size     padding: 7 bytes
+print-type-size     field `.b`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.c`: 2 bytes
+print-type-size     end padding: 6 bytes
+print-type-size type: `std::fmt::Formatter<'_>`: 24 bytes, alignment: 8 bytes
+print-type-size     field `.buf`: 16 bytes
+print-type-size     field `.options`: 8 bytes
+print-type-size type: `Payload`: 16 bytes, alignment: 8 bytes
+print-type-size     discriminant: 1 bytes
+print-type-size     variant `Data`: 15 bytes
+print-type-size         field `.1`: 1 bytes
+print-type-size         padding: 6 bytes
+print-type-size         field `.0`: 8 bytes, alignment: 8 bytes
+print-type-size     variant `Pair`: 7 bytes
+print-type-size         padding: 1 bytes
+print-type-size         field `.0`: 2 bytes, alignment: 2 bytes
+print-type-size         field `.1`: 4 bytes
+print-type-size     variant `Empty`: 0 bytes
+print-type-size type: `Reordered`: 16 bytes, alignment: 8 bytes
+print-type-size     field `.b`: 8 bytes
+print-type-size     field `.c`: 2 bytes
+print-type-size     field `.a`: 1 bytes
+print-type-size     end padding: 5 bytes
+print-type-size type: `core::fmt::rt::Argument<'_>`: 16 bytes, alignment: 8 bytes
+print-type-size     field `.ty`: 16 bytes
+print-type-size type: `core::fmt::rt::ArgumentType<'_>`: 16 bytes, alignment: 8 bytes
+print-type-size     variant `Placeholder`: 16 bytes
+print-type-size         field `.value`: 8 bytes
+print-type-size         field `.formatter`: 8 bytes
+print-type-size         field `._lifetime`: 0 bytes
+print-type-size     variant `Count`: 10 bytes
+print-type-size         padding: 8 bytes
+print-type-size         field `.0`: 2 bytes, alignment: 2 bytes
+print-type-size type: `std::fmt::Arguments<'_>`: 16 bytes, alignment: 8 bytes
+print-type-size     field `.template`: 8 bytes
+print-type-size     field `.args`: 8 bytes
+print-type-size type: `CUnion`: 8 bytes, alignment: 8 bytes
+print-type-size     variant `CUnion`: 8 bytes
+print-type-size         field `.word`: 8 bytes
+print-type-size         field `.bytes`: 8 bytes, offset: 0 bytes, alignment: 1 bytes
+print-type-size type: `std::fmt::FormattingOptions`: 8 bytes, alignment: 4 bytes
+print-type-size     field `.flags`: 4 bytes
+print-type-size     field `.width`: 2 bytes
+print-type-size     field `.precision`: 2 bytes
+print-type-size type: `std::option::Option<&u8>`: 8 bytes, alignment: 8 bytes
+print-type-size     variant `Some`: 8 bytes
+print-type-size         field `.0`: 8 bytes
+print-type-size     variant `None`: 0 bytes
+print-type-size type: `std::ptr::DynMetadata<dyn Trait>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `._vtable_ptr`: 8 bytes
+print-type-size     field `._phantom`: 0 bytes
+print-type-size type: `std::ptr::DynMetadata<dyn std::fmt::Write>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `._vtable_ptr`: 8 bytes
+print-type-size     field `._phantom`: 0 bytes
+print-type-size type: `std::ptr::DynMetadata<dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `._vtable_ptr`: 8 bytes
+print-type-size     field `._phantom`: 0 bytes
+print-type-size type: `std::ptr::NonNull<()>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.pointer`: 8 bytes
+print-type-size type: `std::ptr::NonNull<core::fmt::rt::Argument<'_>>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.pointer`: 8 bytes
+print-type-size type: `std::ptr::NonNull<std::ptr::metadata::VTable>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.pointer`: 8 bytes
+print-type-size type: `std::ptr::NonNull<u8>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.pointer`: 8 bytes
+print-type-size type: `{closure@std::rt::lang_start<()>::{closure#0}}`: 8 bytes, alignment: 8 bytes
+print-type-size     end padding: 8 bytes
+print-type-size type: `Datum`: 4 bytes, alignment: 4 bytes
+print-type-size     field `.0`: 4 bytes
+print-type-size type: `unwind::libunwind::_Unwind_Reason_Code`: 4 bytes, alignment: 4 bytes
+print-type-size     discriminant: 4 bytes
+print-type-size     variant `_URC_NO_REASON`: 0 bytes
+print-type-size     variant `_URC_FOREIGN_EXCEPTION_CAUGHT`: 0 bytes
+print-type-size     variant `_URC_FATAL_PHASE2_ERROR`: 0 bytes
+print-type-size     variant `_URC_FATAL_PHASE1_ERROR`: 0 bytes
+print-type-size     variant `_URC_NORMAL_STOP`: 0 bytes
+print-type-size     variant `_URC_END_OF_STACK`: 0 bytes
+print-type-size     variant `_URC_HANDLER_FOUND`: 0 bytes
+print-type-size     variant `_URC_INSTALL_CONTEXT`: 0 bytes
+print-type-size     variant `_URC_CONTINUE_UNWIND`: 0 bytes
+print-type-size     variant `_URC_FAILURE`: 0 bytes
+print-type-size type: `std::process::ExitCode`: 1 bytes, alignment: 1 bytes
+print-type-size     field `.0`: 1 bytes
+print-type-size type: `std::result::Result<(), std::fmt::Error>`: 1 bytes, alignment: 1 bytes
+print-type-size     discriminant: 1 bytes
+print-type-size     variant `Ok`: 0 bytes
+print-type-size         field `.0`: 0 bytes
+print-type-size     variant `Err`: 0 bytes
+print-type-size         field `.0`: 0 bytes
+print-type-size type: `std::sys::process::unix::common::ExitCode`: 1 bytes, alignment: 1 bytes
+print-type-size     field `.0`: 1 bytes
+print-type-size type: `std::fmt::Error`: 0 bytes, alignment: 1 bytes
+print-type-size type: `std::marker::PhantomData<&()>`: 0 bytes, alignment: 1 bytes
+print-type-size type: `std::marker::PhantomData<dyn Trait>`: 0 bytes, alignment: 1 bytes
+print-type-size type: `std::marker::PhantomData<dyn std::fmt::Write>`: 0 bytes, alignment: 1 bytes
+print-type-size type: `std::marker::PhantomData<dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe>`: 0 bytes, alignment: 1 bytes

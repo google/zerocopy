@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "run_stdout_byte_equal": true,
+  "selected_host_layout_equal": true,
+  "compiler_stdout_line_count_per_version": 98,
+  "compiler_stdout_differing_lines": 1,
+  "compiler_stdout_delta": {
+    "old": "print-type-size type: `unwind::libunwind::_Unwind_Reason_Code`: 4 bytes, alignment: 4 bytes",
+    "new": "print-type-size type: `unwind::types::_Unwind_Reason_Code`: 4 bytes, alignment: 4 bytes"
+  }
+}

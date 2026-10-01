@@ -1,0 +1,12 @@
+Reordered size=16 align=8 offsets=10,0,8
+CControl size=24 align=8 offsets=0,8,16
+CUnion size=8 align=8
+Payload size=16 align=8
+OptionRef size=8 align=8
+RefU8 size=8 align=8
+slice_pointer size=16 align=8
+str_pointer size=16 align=8
+trait_pointer size=16 align=8
+slice_value size=6 align=2
+str_value size=3 align=1
+trait_value size=4 align=4 value=7
