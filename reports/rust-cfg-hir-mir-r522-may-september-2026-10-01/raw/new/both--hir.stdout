@@ -1,0 +1,1639 @@
+DefId(0:0 ~ cfg_probe[a083]) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Crate(
+            Mod {
+                spans: ModSpans {
+                    inner_span: fixture/main.rs:1:1: 35:2 (#0),
+                    inject_use_span: fixture/main.rs:3:1: 3:1 (#0),
+                },
+                item_ids: [
+                    ItemId {
+                        owner_id: DefId(0:1 ~ cfg_probe[a083]::std),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:2 ~ cfg_probe[a083]::{use#0}),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:3 ~ cfg_probe[a083]::feature_a_only),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:5 ~ cfg_probe[a083]::selected),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:8 ~ cfg_probe[a083]::emit_cfg_item),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:11 ~ cfg_probe[a083]::macro_a_only),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:9 ~ cfg_probe[a083]::cfg_control),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:10 ~ cfg_probe[a083]::selected_value),
+                    },
+                ],
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+    ],
+    bodies: {},
+    opt_hash: Some(
+        Fingerprint(
+            10539497268519321384,
+            9853778724544945888,
+        ),
+    ),
+}
+DefId(0:1 ~ cfg_probe[a083]::std) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:1 ~ cfg_probe[a083]::std),
+                kind: ExternCrate(
+                    None,
+                    std#1,
+                ),
+                span: no-location (#1),
+                vis_span: no-location (#1),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+    ],
+    bodies: {},
+    opt_hash: Some(
+        Fingerprint(
+            10037769201026572490,
+            8902869191054390049,
+        ),
+    ),
+}
+DefId(0:2 ~ cfg_probe[a083]::{use#0}) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:2 ~ cfg_probe[a083]::{use#0}),
+                kind: Use(
+                    UseTree {
+                        prefix: Path {
+                            span: no-location (#1),
+                            res: PerNS {
+                                value_ns: Some(
+                                    Err,
+                                ),
+                                type_ns: Some(
+                                    Err,
+                                ),
+                                macro_ns: Some(
+                                    Err,
+                                ),
+                            },
+                            segments: [
+                                PathSegment {
+                                    ident: std#1,
+                                    hir_id: HirId(DefId(0:2 ~ cfg_probe[a083]::{use#0}).1),
+                                    res: Err,
+                                    args: None,
+                                    infer_args: false,
+                                    delegation_child_segment: false,
+                                },
+                                PathSegment {
+                                    ident: prelude#1,
+                                    hir_id: HirId(DefId(0:2 ~ cfg_probe[a083]::{use#0}).2),
+                                    res: Err,
+                                    args: None,
+                                    infer_args: false,
+                                    delegation_child_segment: false,
+                                },
+                                PathSegment {
+                                    ident: rust_2024#1,
+                                    hir_id: HirId(DefId(0:2 ~ cfg_probe[a083]::{use#0}).3),
+                                    res: Err,
+                                    args: None,
+                                    infer_args: false,
+                                    delegation_child_segment: false,
+                                },
+                            ],
+                        },
+                        kind: Glob,
+                    },
+                ),
+                span: no-location (#1),
+                vis_span: no-location (#1),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 0),
+        (2, 0),
+        (3, 0),
+    ],
+    bodies: {},
+    opt_hash: Some(
+        Fingerprint(
+            4412116507399705023,
+            10914265429158961677,
+        ),
+    ),
+}
+DefId(0:3 ~ cfg_probe[a083]::feature_a_only) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:3 ~ cfg_probe[a083]::feature_a_only),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:3 ~ cfg_probe[a083]::feature_a_only).4),
+                                    span: fixture/main.rs:4:28: 4:31 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: fixture/main.rs:4:28: 4:31 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:3 ~ cfg_probe[a083]::feature_a_only).5),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: fixture/main.rs:4:1: 4:31 (#0),
+                    },
+                    ident: feature_a_only#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: fixture/main.rs:4:31: 4:31 (#0),
+                        span: fixture/main.rs:4:22: 4:22 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:3 ~ cfg_probe[a083]::feature_a_only).3),
+                    },
+                    has_body: true,
+                },
+                span: fixture/main.rs:4:1: 4:38 (#0),
+                vis_span: fixture/main.rs:4:1: 4:4 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 3),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (5, 4),
+    ],
+    bodies: {
+        3: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:3 ~ cfg_probe[a083]::feature_a_only).3),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:3 ~ cfg_probe[a083]::feature_a_only).2),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                10,
+                                            ),
+                                            Unsuffixed,
+                                        ),
+                                        span: fixture/main.rs:4:34: 4:36 (#0),
+                                    },
+                                ),
+                                span: fixture/main.rs:4:34: 4:36 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:3 ~ cfg_probe[a083]::feature_a_only).1),
+                        rules: DefaultBlock,
+                        span: fixture/main.rs:4:32: 4:38 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: fixture/main.rs:4:32: 4:38 (#0),
+            },
+        },
+    },
+    opt_hash: Some(
+        Fingerprint(
+            9407178540480983047,
+            1747881134343706827,
+        ),
+    ),
+}
+DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only).4),
+                                    span: fixture/main.rs:10:29: 10:32 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: fixture/main.rs:10:29: 10:32 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only).5),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: fixture/main.rs:10:1: 10:32 (#0),
+                    },
+                    ident: custom_cfg_only#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: fixture/main.rs:10:32: 10:32 (#0),
+                        span: fixture/main.rs:10:23: 10:23 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only).3),
+                    },
+                    has_body: true,
+                },
+                span: fixture/main.rs:10:1: 10:39 (#0),
+                vis_span: fixture/main.rs:10:1: 10:4 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 3),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (5, 4),
+    ],
+    bodies: {
+        3: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only).3),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only).2),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                30,
+                                            ),
+                                            Unsuffixed,
+                                        ),
+                                        span: fixture/main.rs:10:35: 10:37 (#0),
+                                    },
+                                ),
+                                span: fixture/main.rs:10:35: 10:37 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:4 ~ cfg_probe[a083]::custom_cfg_only).1),
+                        rules: DefaultBlock,
+                        span: fixture/main.rs:10:33: 10:39 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: fixture/main.rs:10:33: 10:39 (#0),
+            },
+        },
+    },
+    opt_hash: Some(
+        Fingerprint(
+            13155022478548205458,
+            3042576409140612074,
+        ),
+    ),
+}
+DefId(0:5 ~ cfg_probe[a083]::selected) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:5 ~ cfg_probe[a083]::selected),
+                kind: Mod(
+                    selected#0,
+                    Mod {
+                        spans: ModSpans {
+                            inner_span: fixture/selected_a.rs:1:1: 2:40 (#0),
+                            inject_use_span: fixture/selected_a.rs:1:1: 1:1 (#0),
+                        },
+                        item_ids: [
+                            ItemId {
+                                owner_id: DefId(0:6 ~ cfg_probe[a083]::selected::value),
+                            },
+                            ItemId {
+                                owner_id: DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only),
+                            },
+                        ],
+                    },
+                ),
+                span: fixture/main.rs:17:1: 17:18 (#0),
+                vis_span: fixture/main.rs:17:1: 17:4 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+    ],
+    bodies: {},
+    opt_hash: Some(
+        Fingerprint(
+            14913386765662342393,
+            6894037063378966831,
+        ),
+    ),
+}
+DefId(0:6 ~ cfg_probe[a083]::selected::value) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:6 ~ cfg_probe[a083]::selected::value),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:6 ~ cfg_probe[a083]::selected::value).4),
+                                    span: fixture/selected_a.rs:1:19: 1:22 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: fixture/selected_a.rs:1:19: 1:22 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:6 ~ cfg_probe[a083]::selected::value).5),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: fixture/selected_a.rs:1:1: 1:22 (#0),
+                    },
+                    ident: value#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: fixture/selected_a.rs:1:22: 1:22 (#0),
+                        span: fixture/selected_a.rs:1:13: 1:13 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:6 ~ cfg_probe[a083]::selected::value).3),
+                    },
+                    has_body: true,
+                },
+                span: fixture/selected_a.rs:1:1: 1:30 (#0),
+                vis_span: fixture/selected_a.rs:1:1: 1:4 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 3),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (5, 4),
+    ],
+    bodies: {
+        3: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:6 ~ cfg_probe[a083]::selected::value).3),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:6 ~ cfg_probe[a083]::selected::value).2),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                101,
+                                            ),
+                                            Unsuffixed,
+                                        ),
+                                        span: fixture/selected_a.rs:1:25: 1:28 (#0),
+                                    },
+                                ),
+                                span: fixture/selected_a.rs:1:25: 1:28 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:6 ~ cfg_probe[a083]::selected::value).1),
+                        rules: DefaultBlock,
+                        span: fixture/selected_a.rs:1:23: 1:30 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: fixture/selected_a.rs:1:23: 1:30 (#0),
+            },
+        },
+    },
+    opt_hash: Some(
+        Fingerprint(
+            17313340107332680424,
+            5239533084761691452,
+        ),
+    ),
+}
+DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only).4),
+                                    span: fixture/selected_a.rs:2:29: 2:32 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: fixture/selected_a.rs:2:29: 2:32 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only).5),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: fixture/selected_a.rs:2:1: 2:32 (#0),
+                    },
+                    ident: selected_a_only#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: fixture/selected_a.rs:2:32: 2:32 (#0),
+                        span: fixture/selected_a.rs:2:23: 2:23 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only).3),
+                    },
+                    has_body: true,
+                },
+                span: fixture/selected_a.rs:2:1: 2:40 (#0),
+                vis_span: fixture/selected_a.rs:2:1: 2:4 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 3),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (5, 4),
+    ],
+    bodies: {
+        3: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only).3),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only).2),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                102,
+                                            ),
+                                            Unsuffixed,
+                                        ),
+                                        span: fixture/selected_a.rs:2:35: 2:38 (#0),
+                                    },
+                                ),
+                                span: fixture/selected_a.rs:2:35: 2:38 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:7 ~ cfg_probe[a083]::selected::selected_a_only).1),
+                        rules: DefaultBlock,
+                        span: fixture/selected_a.rs:2:33: 2:40 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: fixture/selected_a.rs:2:33: 2:40 (#0),
+            },
+        },
+    },
+    opt_hash: Some(
+        Fingerprint(
+            10198622690285880717,
+            6363737418905522266,
+        ),
+    ),
+}
+DefId(0:8 ~ cfg_probe[a083]::emit_cfg_item) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:8 ~ cfg_probe[a083]::emit_cfg_item),
+                kind: Macro(
+                    emit_cfg_item#0,
+                    MacroDef {
+                        body: DelimArgs {
+                            dspan: DelimSpan {
+                                open: fixture/main.rs:19:28: 19:29 (#0),
+                                close: fixture/main.rs:26:1: 26:2 (#0),
+                            },
+                            delim: Brace,
+                            tokens: TokenStream(
+                                [
+                                    Delimited(
+                                        DelimSpan {
+                                            open: fixture/main.rs:20:5: 20:6 (#0),
+                                            close: fixture/main.rs:20:6: 20:7 (#0),
+                                        },
+                                        DelimSpacing {
+                                            open: JointHidden,
+                                            close: Alone,
+                                        },
+                                        Parenthesis,
+                                        TokenStream(
+                                            [],
+                                        ),
+                                    ),
+                                    Token(
+                                        Token {
+                                            kind: FatArrow,
+                                            span: fixture/main.rs:20:8: 20:10 (#0),
+                                        },
+                                        Alone,
+                                    ),
+                                    Delimited(
+                                        DelimSpan {
+                                            open: fixture/main.rs:20:11: 20:12 (#0),
+                                            close: fixture/main.rs:25:5: 25:6 (#0),
+                                        },
+                                        DelimSpacing {
+                                            open: Alone,
+                                            close: Joint,
+                                        },
+                                        Brace,
+                                        TokenStream(
+                                            [
+                                                Token(
+                                                    Token {
+                                                        kind: Pound,
+                                                        span: fixture/main.rs:21:9: 21:10 (#0),
+                                                    },
+                                                    JointHidden,
+                                                ),
+                                                Delimited(
+                                                    DelimSpan {
+                                                        open: fixture/main.rs:21:10: 21:11 (#0),
+                                                        close: fixture/main.rs:21:29: 21:30 (#0),
+                                                    },
+                                                    DelimSpacing {
+                                                        open: JointHidden,
+                                                        close: Alone,
+                                                    },
+                                                    Bracket,
+                                                    TokenStream(
+                                                        [
+                                                            Token(
+                                                                Token {
+                                                                    kind: Ident(
+                                                                        "cfg",
+                                                                        Normal,
+                                                                    ),
+                                                                    span: fixture/main.rs:21:11: 21:14 (#0),
+                                                                },
+                                                                JointHidden,
+                                                            ),
+                                                            Delimited(
+                                                                DelimSpan {
+                                                                    open: fixture/main.rs:21:14: 21:15 (#0),
+                                                                    close: fixture/main.rs:21:28: 21:29 (#0),
+                                                                },
+                                                                DelimSpacing {
+                                                                    open: JointHidden,
+                                                                    close: JointHidden,
+                                                                },
+                                                                Parenthesis,
+                                                                TokenStream(
+                                                                    [
+                                                                        Token(
+                                                                            Token {
+                                                                                kind: Ident(
+                                                                                    "feature",
+                                                                                    Normal,
+                                                                                ),
+                                                                                span: fixture/main.rs:21:15: 21:22 (#0),
+                                                                            },
+                                                                            Alone,
+                                                                        ),
+                                                                        Token(
+                                                                            Token {
+                                                                                kind: Eq,
+                                                                                span: fixture/main.rs:21:23: 21:24 (#0),
+                                                                            },
+                                                                            Alone,
+                                                                        ),
+                                                                        Token(
+                                                                            Token {
+                                                                                kind: Literal(
+                                                                                    Lit {
+                                                                                        kind: Str,
+                                                                                        symbol: "a",
+                                                                                        suffix: None,
+                                                                                    },
+                                                                                ),
+                                                                                span: fixture/main.rs:21:25: 21:28 (#0),
+                                                                            },
+                                                                            JointHidden,
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ),
+                                                        ],
+                                                    ),
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "pub",
+                                                            Normal,
+                                                        ),
+                                                        span: fixture/main.rs:22:9: 22:12 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "fn",
+                                                            Normal,
+                                                        ),
+                                                        span: fixture/main.rs:22:13: 22:15 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "macro_a_only",
+                                                            Normal,
+                                                        ),
+                                                        span: fixture/main.rs:22:16: 22:28 (#0),
+                                                    },
+                                                    JointHidden,
+                                                ),
+                                                Delimited(
+                                                    DelimSpan {
+                                                        open: fixture/main.rs:22:28: 22:29 (#0),
+                                                        close: fixture/main.rs:22:29: 22:30 (#0),
+                                                    },
+                                                    DelimSpacing {
+                                                        open: JointHidden,
+                                                        close: Alone,
+                                                    },
+                                                    Parenthesis,
+                                                    TokenStream(
+                                                        [],
+                                                    ),
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: RArrow,
+                                                        span: fixture/main.rs:22:31: 22:33 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "u32",
+                                                            Normal,
+                                                        ),
+                                                        span: fixture/main.rs:22:34: 22:37 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Delimited(
+                                                    DelimSpan {
+                                                        open: fixture/main.rs:22:38: 22:39 (#0),
+                                                        close: fixture/main.rs:22:43: 22:44 (#0),
+                                                    },
+                                                    DelimSpacing {
+                                                        open: Alone,
+                                                        close: Alone,
+                                                    },
+                                                    Brace,
+                                                    TokenStream(
+                                                        [
+                                                            Token(
+                                                                Token {
+                                                                    kind: Literal(
+                                                                        Lit {
+                                                                            kind: Integer,
+                                                                            symbol: "50",
+                                                                            suffix: None,
+                                                                        },
+                                                                    ),
+                                                                    span: fixture/main.rs:22:40: 22:42 (#0),
+                                                                },
+                                                                Alone,
+                                                            ),
+                                                        ],
+                                                    ),
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Pound,
+                                                        span: fixture/main.rs:23:9: 23:10 (#0),
+                                                    },
+                                                    JointHidden,
+                                                ),
+                                                Delimited(
+                                                    DelimSpan {
+                                                        open: fixture/main.rs:23:10: 23:11 (#0),
+                                                        close: fixture/main.rs:23:34: 23:35 (#0),
+                                                    },
+                                                    DelimSpacing {
+                                                        open: JointHidden,
+                                                        close: Alone,
+                                                    },
+                                                    Bracket,
+                                                    TokenStream(
+                                                        [
+                                                            Token(
+                                                                Token {
+                                                                    kind: Ident(
+                                                                        "cfg",
+                                                                        Normal,
+                                                                    ),
+                                                                    span: fixture/main.rs:23:11: 23:14 (#0),
+                                                                },
+                                                                JointHidden,
+                                                            ),
+                                                            Delimited(
+                                                                DelimSpan {
+                                                                    open: fixture/main.rs:23:14: 23:15 (#0),
+                                                                    close: fixture/main.rs:23:33: 23:34 (#0),
+                                                                },
+                                                                DelimSpacing {
+                                                                    open: JointHidden,
+                                                                    close: JointHidden,
+                                                                },
+                                                                Parenthesis,
+                                                                TokenStream(
+                                                                    [
+                                                                        Token(
+                                                                            Token {
+                                                                                kind: Ident(
+                                                                                    "not",
+                                                                                    Normal,
+                                                                                ),
+                                                                                span: fixture/main.rs:23:15: 23:18 (#0),
+                                                                            },
+                                                                            JointHidden,
+                                                                        ),
+                                                                        Delimited(
+                                                                            DelimSpan {
+                                                                                open: fixture/main.rs:23:18: 23:19 (#0),
+                                                                                close: fixture/main.rs:23:32: 23:33 (#0),
+                                                                            },
+                                                                            DelimSpacing {
+                                                                                open: JointHidden,
+                                                                                close: JointHidden,
+                                                                            },
+                                                                            Parenthesis,
+                                                                            TokenStream(
+                                                                                [
+                                                                                    Token(
+                                                                                        Token {
+                                                                                            kind: Ident(
+                                                                                                "feature",
+                                                                                                Normal,
+                                                                                            ),
+                                                                                            span: fixture/main.rs:23:19: 23:26 (#0),
+                                                                                        },
+                                                                                        Alone,
+                                                                                    ),
+                                                                                    Token(
+                                                                                        Token {
+                                                                                            kind: Eq,
+                                                                                            span: fixture/main.rs:23:27: 23:28 (#0),
+                                                                                        },
+                                                                                        Alone,
+                                                                                    ),
+                                                                                    Token(
+                                                                                        Token {
+                                                                                            kind: Literal(
+                                                                                                Lit {
+                                                                                                    kind: Str,
+                                                                                                    symbol: "a",
+                                                                                                    suffix: None,
+                                                                                                },
+                                                                                            ),
+                                                                                            span: fixture/main.rs:23:29: 23:32 (#0),
+                                                                                        },
+                                                                                        JointHidden,
+                                                                                    ),
+                                                                                ],
+                                                                            ),
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ),
+                                                        ],
+                                                    ),
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "pub",
+                                                            Normal,
+                                                        ),
+                                                        span: fixture/main.rs:24:9: 24:12 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "fn",
+                                                            Normal,
+                                                        ),
+                                                        span: fixture/main.rs:24:13: 24:15 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "macro_off_only",
+                                                            Normal,
+                                                        ),
+                                                        span: fixture/main.rs:24:16: 24:30 (#0),
+                                                    },
+                                                    JointHidden,
+                                                ),
+                                                Delimited(
+                                                    DelimSpan {
+                                                        open: fixture/main.rs:24:30: 24:31 (#0),
+                                                        close: fixture/main.rs:24:31: 24:32 (#0),
+                                                    },
+                                                    DelimSpacing {
+                                                        open: JointHidden,
+                                                        close: Alone,
+                                                    },
+                                                    Parenthesis,
+                                                    TokenStream(
+                                                        [],
+                                                    ),
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: RArrow,
+                                                        span: fixture/main.rs:24:33: 24:35 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "u32",
+                                                            Normal,
+                                                        ),
+                                                        span: fixture/main.rs:24:36: 24:39 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Delimited(
+                                                    DelimSpan {
+                                                        open: fixture/main.rs:24:40: 24:41 (#0),
+                                                        close: fixture/main.rs:24:45: 24:46 (#0),
+                                                    },
+                                                    DelimSpacing {
+                                                        open: Alone,
+                                                        close: Alone,
+                                                    },
+                                                    Brace,
+                                                    TokenStream(
+                                                        [
+                                                            Token(
+                                                                Token {
+                                                                    kind: Literal(
+                                                                        Lit {
+                                                                            kind: Integer,
+                                                                            symbol: "60",
+                                                                            suffix: None,
+                                                                        },
+                                                                    ),
+                                                                    span: fixture/main.rs:24:42: 24:44 (#0),
+                                                                },
+                                                                Alone,
+                                                            ),
+                                                        ],
+                                                    ),
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                    Token(
+                                        Token {
+                                            kind: Semi,
+                                            span: fixture/main.rs:25:6: 25:7 (#0),
+                                        },
+                                        Alone,
+                                    ),
+                                ],
+                            ),
+                        },
+                        macro_rules: true,
+                        eii_declaration: None,
+                    },
+                    MacroKinds(
+                        1,
+                    ),
+                ),
+                span: fixture/main.rs:19:1: 26:2 (#0),
+                vis_span: fixture/main.rs:19:1: 19:1 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+    ],
+    bodies: {},
+    opt_hash: Some(
+        Fingerprint(
+            1444870874327558478,
+            4760218064378266575,
+        ),
+    ),
+}
+DefId(0:11 ~ cfg_probe[a083]::macro_a_only) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:11 ~ cfg_probe[a083]::macro_a_only),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:11 ~ cfg_probe[a083]::macro_a_only).4),
+                                    span: fixture/main.rs:22:34: 22:37 (#4),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: fixture/main.rs:22:34: 22:37 (#4),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#4,
+                                                        hir_id: HirId(DefId(0:11 ~ cfg_probe[a083]::macro_a_only).5),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: fixture/main.rs:22:9: 22:37 (#4),
+                    },
+                    ident: macro_a_only#4,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: fixture/main.rs:22:37: 22:37 (#4),
+                        span: fixture/main.rs:22:28: 22:28 (#4),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:11 ~ cfg_probe[a083]::macro_a_only).3),
+                    },
+                    has_body: true,
+                },
+                span: fixture/main.rs:22:9: 22:44 (#4),
+                vis_span: fixture/main.rs:22:9: 22:12 (#4),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 3),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (5, 4),
+    ],
+    bodies: {
+        3: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:11 ~ cfg_probe[a083]::macro_a_only).3),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:11 ~ cfg_probe[a083]::macro_a_only).2),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                50,
+                                            ),
+                                            Unsuffixed,
+                                        ),
+                                        span: fixture/main.rs:22:40: 22:42 (#4),
+                                    },
+                                ),
+                                span: fixture/main.rs:22:40: 22:42 (#4),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:11 ~ cfg_probe[a083]::macro_a_only).1),
+                        rules: DefaultBlock,
+                        span: fixture/main.rs:22:38: 22:44 (#4),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: fixture/main.rs:22:38: 22:44 (#4),
+            },
+        },
+    },
+    opt_hash: Some(
+        Fingerprint(
+            15435609535060353177,
+            4267825606954275576,
+        ),
+    ),
+}
+DefId(0:9 ~ cfg_probe[a083]::cfg_control) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:9 ~ cfg_probe[a083]::cfg_control),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).11),
+                                    span: fixture/main.rs:29:25: 29:28 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: fixture/main.rs:29:25: 29:28 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).12),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: fixture/main.rs:29:1: 29:28 (#0),
+                    },
+                    ident: cfg_control#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: fixture/main.rs:29:28: 29:28 (#0),
+                        span: fixture/main.rs:29:19: 29:19 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).10),
+                    },
+                    has_body: true,
+                },
+                span: fixture/main.rs:29:1: 31:2 (#0),
+                vis_span: fixture/main.rs:29:1: 29:4 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 10),
+        (2, 1),
+        (3, 2),
+        (4, 6),
+        (5, 4),
+        (6, 2),
+        (7, 2),
+        (8, 7),
+        (9, 8),
+        (10, 0),
+        (11, 0),
+        (12, 11),
+    ],
+    bodies: {
+        10: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).10),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).2),
+                                kind: If(
+                                    Expr {
+                                        hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).3),
+                                        kind: Lit(
+                                            Spanned {
+                                                node: Bool(
+                                                    true,
+                                                ),
+                                                span: fixture/main.rs:30:8: 30:27 (#5),
+                                            },
+                                        ),
+                                        span: fixture/main.rs:30:8: 30:27 (#5),
+                                    },
+                                    Expr {
+                                        hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).6),
+                                        kind: Block(
+                                            Block {
+                                                stmts: [],
+                                                expr: Some(
+                                                    Expr {
+                                                        hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).5),
+                                                        kind: Lit(
+                                                            Spanned {
+                                                                node: Int(
+                                                                    Pu128(
+                                                                        70,
+                                                                    ),
+                                                                    Unsuffixed,
+                                                                ),
+                                                                span: fixture/main.rs:30:30: 30:32 (#0),
+                                                            },
+                                                        ),
+                                                        span: fixture/main.rs:30:30: 30:32 (#0),
+                                                    },
+                                                ),
+                                                hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).4),
+                                                rules: DefaultBlock,
+                                                span: fixture/main.rs:30:28: 30:34 (#0),
+                                                targeted_by_break: false,
+                                            },
+                                            None,
+                                        ),
+                                        span: fixture/main.rs:30:28: 30:34 (#0),
+                                    },
+                                    Some(
+                                        Expr {
+                                            hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).7),
+                                            kind: Block(
+                                                Block {
+                                                    stmts: [],
+                                                    expr: Some(
+                                                        Expr {
+                                                            hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).9),
+                                                            kind: Lit(
+                                                                Spanned {
+                                                                    node: Int(
+                                                                        Pu128(
+                                                                            80,
+                                                                        ),
+                                                                        Unsuffixed,
+                                                                    ),
+                                                                    span: fixture/main.rs:30:42: 30:44 (#0),
+                                                                },
+                                                            ),
+                                                            span: fixture/main.rs:30:42: 30:44 (#0),
+                                                        },
+                                                    ),
+                                                    hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).8),
+                                                    rules: DefaultBlock,
+                                                    span: fixture/main.rs:30:40: 30:46 (#0),
+                                                    targeted_by_break: false,
+                                                },
+                                                None,
+                                            ),
+                                            span: fixture/main.rs:30:40: 30:46 (#0),
+                                        },
+                                    ),
+                                ),
+                                span: fixture/main.rs:30:5: 30:46 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:9 ~ cfg_probe[a083]::cfg_control).1),
+                        rules: DefaultBlock,
+                        span: fixture/main.rs:29:29: 31:2 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: fixture/main.rs:29:29: 31:2 (#0),
+            },
+        },
+    },
+    opt_hash: Some(
+        Fingerprint(
+            11139223121709577920,
+            16617294783329121430,
+        ),
+    ),
+}
+DefId(0:10 ~ cfg_probe[a083]::selected_value) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:10 ~ cfg_probe[a083]::selected_value),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).7),
+                                    span: fixture/main.rs:33:28: 33:31 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: fixture/main.rs:33:28: 33:31 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).8),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: fixture/main.rs:33:1: 33:31 (#0),
+                    },
+                    ident: selected_value#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: fixture/main.rs:33:31: 33:31 (#0),
+                        span: fixture/main.rs:33:22: 33:22 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).6),
+                    },
+                    has_body: true,
+                },
+                span: fixture/main.rs:33:1: 35:2 (#0),
+                vis_span: fixture/main.rs:33:1: 33:4 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 6),
+        (2, 1),
+        (3, 2),
+        (4, 3),
+        (5, 3),
+        (6, 0),
+        (7, 0),
+        (8, 7),
+    ],
+    bodies: {
+        6: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).6),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).2),
+                                kind: Call(
+                                    Expr {
+                                        hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).3),
+                                        kind: Path(
+                                            Resolved(
+                                                None,
+                                                Path {
+                                                    span: fixture/main.rs:34:5: 34:20 (#0),
+                                                    res: Def(
+                                                        Fn,
+                                                        DefId(0:6 ~ cfg_probe[a083]::selected::value),
+                                                    ),
+                                                    segments: [
+                                                        PathSegment {
+                                                            ident: selected#0,
+                                                            hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).4),
+                                                            res: Def(
+                                                                Mod,
+                                                                DefId(0:5 ~ cfg_probe[a083]::selected),
+                                                            ),
+                                                            args: None,
+                                                            infer_args: true,
+                                                            delegation_child_segment: false,
+                                                        },
+                                                        PathSegment {
+                                                            ident: value#0,
+                                                            hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).5),
+                                                            res: Def(
+                                                                Fn,
+                                                                DefId(0:6 ~ cfg_probe[a083]::selected::value),
+                                                            ),
+                                                            args: None,
+                                                            infer_args: true,
+                                                            delegation_child_segment: false,
+                                                        },
+                                                    ],
+                                                },
+                                            ),
+                                        ),
+                                        span: fixture/main.rs:34:5: 34:20 (#0),
+                                    },
+                                    [],
+                                ),
+                                span: fixture/main.rs:34:5: 34:22 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:10 ~ cfg_probe[a083]::selected_value).1),
+                        rules: DefaultBlock,
+                        span: fixture/main.rs:33:32: 35:2 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: fixture/main.rs:33:32: 35:2 (#0),
+            },
+        },
+    },
+    opt_hash: Some(
+        Fingerprint(
+            17631908394914167032,
+            8297749738952449053,
+        ),
+    ),
+}

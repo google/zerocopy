@@ -1,0 +1,261 @@
+{
+  "schema": 1,
+  "cells": {
+    "old/neither": {
+      "hir_owners": [
+        "",
+        "std",
+        "{use#0}",
+        "feature_off_only",
+        "no_custom_cfg_only",
+        "selected",
+        "selected::value",
+        "selected::selected_b_only",
+        "emit_cfg_item",
+        "macro_off_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_a_source_spans": 0,
+      "selected_b_source_spans": 24,
+      "mir_functions": [
+        "feature_off_only",
+        "no_custom_cfg_only",
+        "value",
+        "selected_b_only",
+        "macro_off_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_value_constant": 201,
+      "cfg_control_boolean": [
+        "false"
+      ],
+      "mir_has_both_cfg_control_arms": true
+    },
+    "old/feature": {
+      "hir_owners": [
+        "",
+        "std",
+        "{use#0}",
+        "feature_a_only",
+        "no_custom_cfg_only",
+        "selected",
+        "selected::value",
+        "selected::selected_a_only",
+        "emit_cfg_item",
+        "macro_a_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_a_source_spans": 24,
+      "selected_b_source_spans": 0,
+      "mir_functions": [
+        "feature_a_only",
+        "no_custom_cfg_only",
+        "value",
+        "selected_a_only",
+        "macro_a_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_value_constant": 101,
+      "cfg_control_boolean": [
+        "true"
+      ],
+      "mir_has_both_cfg_control_arms": true
+    },
+    "old/custom": {
+      "hir_owners": [
+        "",
+        "std",
+        "{use#0}",
+        "feature_off_only",
+        "custom_cfg_only",
+        "selected",
+        "selected::value",
+        "selected::selected_b_only",
+        "emit_cfg_item",
+        "macro_off_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_a_source_spans": 0,
+      "selected_b_source_spans": 24,
+      "mir_functions": [
+        "feature_off_only",
+        "custom_cfg_only",
+        "value",
+        "selected_b_only",
+        "macro_off_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_value_constant": 201,
+      "cfg_control_boolean": [
+        "false"
+      ],
+      "mir_has_both_cfg_control_arms": true
+    },
+    "old/both": {
+      "hir_owners": [
+        "",
+        "std",
+        "{use#0}",
+        "feature_a_only",
+        "custom_cfg_only",
+        "selected",
+        "selected::value",
+        "selected::selected_a_only",
+        "emit_cfg_item",
+        "macro_a_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_a_source_spans": 24,
+      "selected_b_source_spans": 0,
+      "mir_functions": [
+        "feature_a_only",
+        "custom_cfg_only",
+        "value",
+        "selected_a_only",
+        "macro_a_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_value_constant": 101,
+      "cfg_control_boolean": [
+        "true"
+      ],
+      "mir_has_both_cfg_control_arms": true
+    },
+    "new/neither": {
+      "hir_owners": [
+        "",
+        "std",
+        "{use#0}",
+        "feature_off_only",
+        "no_custom_cfg_only",
+        "selected",
+        "selected::value",
+        "selected::selected_b_only",
+        "emit_cfg_item",
+        "macro_off_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_a_source_spans": 0,
+      "selected_b_source_spans": 24,
+      "mir_functions": [
+        "feature_off_only",
+        "no_custom_cfg_only",
+        "value",
+        "selected_b_only",
+        "macro_off_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_value_constant": 201,
+      "cfg_control_boolean": [
+        "false"
+      ],
+      "mir_has_both_cfg_control_arms": true
+    },
+    "new/feature": {
+      "hir_owners": [
+        "",
+        "std",
+        "{use#0}",
+        "feature_a_only",
+        "no_custom_cfg_only",
+        "selected",
+        "selected::value",
+        "selected::selected_a_only",
+        "emit_cfg_item",
+        "macro_a_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_a_source_spans": 24,
+      "selected_b_source_spans": 0,
+      "mir_functions": [
+        "feature_a_only",
+        "no_custom_cfg_only",
+        "value",
+        "selected_a_only",
+        "macro_a_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_value_constant": 101,
+      "cfg_control_boolean": [
+        "true"
+      ],
+      "mir_has_both_cfg_control_arms": true
+    },
+    "new/custom": {
+      "hir_owners": [
+        "",
+        "std",
+        "{use#0}",
+        "feature_off_only",
+        "custom_cfg_only",
+        "selected",
+        "selected::value",
+        "selected::selected_b_only",
+        "emit_cfg_item",
+        "macro_off_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_a_source_spans": 0,
+      "selected_b_source_spans": 24,
+      "mir_functions": [
+        "feature_off_only",
+        "custom_cfg_only",
+        "value",
+        "selected_b_only",
+        "macro_off_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_value_constant": 201,
+      "cfg_control_boolean": [
+        "false"
+      ],
+      "mir_has_both_cfg_control_arms": true
+    },
+    "new/both": {
+      "hir_owners": [
+        "",
+        "std",
+        "{use#0}",
+        "feature_a_only",
+        "custom_cfg_only",
+        "selected",
+        "selected::value",
+        "selected::selected_a_only",
+        "emit_cfg_item",
+        "macro_a_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_a_source_spans": 24,
+      "selected_b_source_spans": 0,
+      "mir_functions": [
+        "feature_a_only",
+        "custom_cfg_only",
+        "value",
+        "selected_a_only",
+        "macro_a_only",
+        "cfg_control",
+        "selected_value"
+      ],
+      "selected_value_constant": 101,
+      "cfg_control_boolean": [
+        "true"
+      ],
+      "mir_has_both_cfg_control_arms": true
+    }
+  }
+}

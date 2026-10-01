@@ -1,0 +1,85 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn feature_off_only() -> u32 {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 20_u32;
+        return;
+    }
+}
+
+fn no_custom_cfg_only() -> u32 {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 40_u32;
+        return;
+    }
+}
+
+fn value() -> u32 {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 201_u32;
+        return;
+    }
+}
+
+fn selected_b_only() -> u32 {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 202_u32;
+        return;
+    }
+}
+
+fn macro_off_only() -> u32 {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 60_u32;
+        return;
+    }
+}
+
+fn cfg_control() -> u32 {
+    let mut _0: u32;
+    let mut _1: bool;
+
+    bb0: {
+        StorageLive(_1);
+        _1 = const false;
+        switchInt(move _1) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        _0 = const 70_u32;
+        goto -> bb3;
+    }
+
+    bb2: {
+        _0 = const 80_u32;
+        goto -> bb3;
+    }
+
+    bb3: {
+        StorageDead(_1);
+        return;
+    }
+}
+
+fn selected_value() -> u32 {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = value() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
