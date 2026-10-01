@@ -15315,6 +15315,37 @@
         "anneal/evidence-oracles"
       ]
     },
+    "lean-batch-diagnostics-r444-r448-430rc2-to-4341-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2 batch compiler"
+        },
+        {
+          "identity": {
+            "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4.34.1 batch compiler"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/diagnostics",
+        "lean/reproducibility",
+        "lean/pretty-printing",
+        "lean/version-difference",
+        "anneal/evidence-oracles"
+      ]
+    },
     "lean-cli-entry-points-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [

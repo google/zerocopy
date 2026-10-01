@@ -1,0 +1,8 @@
+{
+  "topics": ["lean", "lean/diagnostics", "lean/reproducibility", "lean/pretty-printing", "lean/version-difference", "anneal/evidence-oracles"],
+  "subjects": [
+    {"name": "Lean 4.30.0-rc2 batch compiler", "identity": {"repository": "leanprover/lean4", "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc", "version": "4.30.0-rc2", "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"}},
+    {"name": "Lean 4.34.1 batch compiler", "identity": {"repository": "leanprover/lean4", "revision": "5045d0056413266e57c625dcd7c365b10e377c52", "version": "4.34.1", "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"}}
+  ],
+  "observed_at": "2026-10-01"
+}

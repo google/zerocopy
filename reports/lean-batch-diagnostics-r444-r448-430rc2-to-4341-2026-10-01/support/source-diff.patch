@@ -1,0 +1,690 @@
+diff --git a/src/Init/Data/Format/Basic.lean b/src/Init/Data/Format/Basic.lean
+index e0dbb5fa8b..310cea7dfd 100644
+--- a/src/Init/Data/Format/Basic.lean
++++ b/src/Init/Data/Format/Basic.lean
+@@ -90,7 +90,7 @@ inductive Format where
+   ```lean example
+   open Std Format in
+   def fmtList (l : List Format) : Format :=
+-    let f := joinSep l  (", " ++ Format.line)
++    let f := joinSep l  ("," ++ Format.line)
+     group (nest 1 <| "[" ++ f ++ "]")
+   ```
+ 
+@@ -370,7 +370,7 @@ Creates the format `"[" ++ f ++ "]"` with a flattening group, nesting by one spa
+ /--
+ Creates a format `l ++ f ++ r` with a flattening group, nesting the contents by the length of `l`.
+ 
+-The group's `FlattenBehavior` is `fill`; for `allOrNone` use `Std.Format.bracketFill`.
++The group's `FlattenBehavior` is `fill`; for `allOrNone` use `Std.Format.bracket`.
+ -/
+ @[inline] def bracketFill (l : String) (f : Format) (r : String) : Format :=
+   fill (nest (String.Internal.length l) $ l ++ f ++ r)
+diff --git a/src/Lean/Data/Format.lean b/src/Lean/Data/Format.lean
+index 9bcb44e2ce..ff82cfbcd4 100644
+--- a/src/Lean/Data/Format.lean
++++ b/src/Lean/Data/Format.lean
+@@ -12,7 +12,9 @@ public import Init.Data.Format.Instances
+ public section
+ universe u v
+ 
+-namespace Std
++open Std.Format
++
++namespace Lean.Std
+ namespace Format
+ open Lean
+ 
+@@ -35,20 +37,19 @@ register_builtin_option format.indent : Nat := {
+   descr    := "indentation"
+ }
+ 
+-def pretty' (f : Format) (o : Options := {}) : String :=
++def pretty' (f : _root_.Std.Format) (o : Options := {}) : String :=
+   pretty f (format.width.get o)
+ 
+ end Format
+-end Std
++end Lean.Std
+ 
+ namespace Lean
+-open Std
+ 
+-export Std
+-  (Format ToFormat Format.nest Format.nil Format.joinSep Format.line
++export _root_.Std
++  (Format ToFormat Format.nest Format.nil Format.joinSep Format.line Format.text
+    Format.sbracket Format.bracket Format.group Format.tag Format.pretty
+    Format.fill Format.paren Format.join Format.align)
+-export ToFormat (format)
++export _root_.Std.ToFormat (format)
+ 
+ instance : ToFormat Name where
+   format n := n.toString
+diff --git a/src/Lean/Language/Basic.lean b/src/Lean/Language/Basic.lean
+index 08f9b688fc..4a579f0cb5 100644
+--- a/src/Lean/Language/Basic.lean
++++ b/src/Lean/Language/Basic.lean
+@@ -13,6 +13,7 @@ module
+ prelude
+ public import Lean.Parser.Types
+ public import Lean.Util.Trace
++import Lean.Elab.InfoTree.Basic
+ 
+ public section
+ 
+@@ -67,7 +68,9 @@ structure Snapshot where
+   `diagnostics`) occurred that prevents processing of the remainder of the file.
+   -/
+   isFatal := false
+-deriving Inhabited
++
++instance : Inhabited Snapshot where
++  default := { desc := "", diagnostics := default }
+ 
+ /-- Range that is marked as being processed by the server while a task is running. -/
+ inductive SnapshotTask.ReportingRange where
+@@ -210,20 +213,122 @@ structure SnapshotTree where
+   children : Array (SnapshotTask SnapshotTree)
+ deriving Inhabited, TypeName
+ 
++/--
++Transformation to be applied while walking a snapshot tree; applied implicitly on untyped walk
++in `toSnapshotTreeM`. Used so that snapshot trees inside the transformation stay identical across
++certain edits and thus allow for elab reuse.
++
++More transformation elements may be added in the future.
++-/
++structure SnapshotTreeTransform where
++  /-- Whitespace to be appended to contained syntax. -/
++  addTrailing : Substring.Raw := "".toRawSubstring
++deriving Inhabited
++
++/-- Whether the transformation is the identity transformation. -/
++def SnapshotTreeTransform.isIdentity (trans : SnapshotTreeTransform) : Bool :=
++  trans.addTrailing.isEmpty
++
++/-- Applies the transformation to the given syntax tree. -/
++def SnapshotTreeTransform.transformSyntax (trans : SnapshotTreeTransform) (stx : Syntax) : Syntax :=
++  stx.addTrailing trans.addTrailing
++
++/-- Applies the transformation to the given info tree. -/
++def SnapshotTreeTransform.transformInfoTree (trans : SnapshotTreeTransform) (t : Elab.InfoTree) : Elab.InfoTree :=
++  t.addTrailing trans.addTrailing
++
++/-- Applies the transformation to the given info tree; `none` if the tree is unchanged. -/
++def SnapshotTreeTransform.transformInfoTree? (trans : SnapshotTreeTransform) (t : Elab.InfoTree) :
++    Option Elab.InfoTree :=
++  t.addTrailing? trans.addTrailing
++
++/-- Composes two `SnapshotTreeTransform`s, applying `inner` first and then `outer`. -/
++def SnapshotTreeTransform.compose (outer inner : SnapshotTreeTransform) : SnapshotTreeTransform where
++  addTrailing :=
++    if inner.addTrailing.stopPos == outer.addTrailing.startPos then
++      { inner.addTrailing with stopPos := outer.addTrailing.stopPos }
++    else inner.addTrailing
++
++/-- Reader monad threading a `SnapshotTreeTransform` through `SnapshotTree` construction. -/
++abbrev ToSnapshotTreeM (α : Type) := ReaderT SnapshotTreeTransform Id α
++
++/-- Applies the current `SnapshotTreeTransform` to a `Snapshot`. -/
++def Snapshot.transform (s : Snapshot) : ToSnapshotTreeM Snapshot := do
++  if (← read).isIdentity then
++    return s
++  match s.infoTree?.bind ((← read).transformInfoTree? ·) with
++  | some t => return { s with infoTree? := some t }
++  | none   => return s
++
++/-- Applies the current `SnapshotTreeTransform` to a `SnapshotTree` and recursively to its children. -/
++partial def SnapshotTree.transform (t : SnapshotTree) : ToSnapshotTreeM SnapshotTree := do
++  if (← read).isIdentity then
++    return t
++  let element ← Snapshot.transform t.element
++  let trans ← read
++  let children := t.children.map (·.map (sync := true) (·.transform trans))
++  return { element, children }
++
+ /--
+   Helper class for projecting a heterogeneous hierarchy of snapshot classes to a homogeneous
+   representation. -/
+ class ToSnapshotTree (α : Type) where
+   /-- Transforms a language-specific snapshot to a homogeneous snapshot tree. -/
+-  toSnapshotTree : α → SnapshotTree
+-export ToSnapshotTree (toSnapshotTree)
++  toSnapshotTreeM : α → ToSnapshotTreeM SnapshotTree
++export ToSnapshotTree (toSnapshotTreeM)
++
++/--
++Converts a typed snapshot to a `SnapshotTree` using the default (identity) transformation.
++
++`toSnapshotTreeM` must be used instead when in context of a transformation, e.g. when implementing
++`ToSnapshotTree`.
++-/
++def toSnapshotTree [ToSnapshotTree α] (a : α) : SnapshotTree :=
++  toSnapshotTreeM a |>.run default
++
++/-- A typed snapshot paired with a `SnapshotTreeTransform`. -/
++structure TransformedSnap (α : Type) where
++  /--
++  Untransformed snapshot; should be accessed with care so as not to present untransformed data. Use
++  a corresponding `applyTransform` function to access transformed data instead.
++  -/
++  raw     : α
++  /-- Transformation to be applied to the snapshot. -/
++  transform : SnapshotTreeTransform := default
++
++instance [Inhabited α] : Inhabited (TransformedSnap α) where
++  default := { raw := default }
++
++instance [ToSnapshotTree α] : ToSnapshotTree (TransformedSnap α) where
++  toSnapshotTreeM s := do
++    withReader (·.compose s.transform) do
++      toSnapshotTreeM s.raw
++
++/-- Composes an outer transformation with a snapshot-transform pair. -/
++def TransformedSnap.compose (outer : SnapshotTreeTransform) (s : TransformedSnap α) : TransformedSnap α :=
++  { s with transform := outer.compose s.transform }
++
++/--
++Lifts a typed snapshot inside a task to a `SnapshotTree` task by mapping with `f`, propagating the
++current transform. Useful in recursive `ToSnapshotTree` instances, where the typeclass instance for
++the recursive type is not yet available and `f` is the local recursive function.
++-/
++def SnapshotTask.transformWith (t : SnapshotTask α)
++    (f : α → ToSnapshotTreeM SnapshotTree) :
++    ToSnapshotTreeM (SnapshotTask SnapshotTree) :=
++  return t.map (sync := true) (f · |>.run (← read))
++
++/-- Lifts a typed snapshot inside a task to a `SnapshotTree` task via `ToSnapshotTree`. -/
++def SnapshotTask.transform [ToSnapshotTree α] (t : SnapshotTask α) :
++    ToSnapshotTreeM (SnapshotTask SnapshotTree) :=
++  t.transformWith toSnapshotTreeM
+ 
+ instance : ToSnapshotTree SnapshotTree where
+-  toSnapshotTree s := s
++  toSnapshotTreeM s := s.transform
+ 
+ instance [ToSnapshotTree α] : ToSnapshotTree (Option α) where
+-  toSnapshotTree
+-    | some a => toSnapshotTree a
++  toSnapshotTreeM
++    | some a => toSnapshotTreeM a
+     | none   => default
+ 
+ /--
+@@ -236,30 +341,28 @@ partial def SnapshotTask.cancelRec [ToSnapshotTree α] (t : SnapshotTask α) : B
+ 
+ /-- Snapshot type without child nodes. -/
+ structure SnapshotLeaf extends Snapshot
+-deriving Inhabited, TypeName
++deriving TypeName
++
++instance : Inhabited SnapshotLeaf where
++  default := { toSnapshot := default }
+ 
+ instance : ToSnapshotTree SnapshotLeaf where
+-  toSnapshotTree s := SnapshotTree.mk s.toSnapshot #[]
++  toSnapshotTreeM s := return SnapshotTree.mk (← s.toSnapshot.transform) #[]
+ 
+ /-- Arbitrary snapshot type, used for extensibility. -/
+ structure DynamicSnapshot where
+   /-- Concrete snapshot value as `Dynamic`. -/
+   val  : Dynamic
+-  /--
+-  Snapshot tree retrieved from `val` before erasure. We do thunk even the first level as accessing
+-  it too early can create some unnecessary tasks from `toSnapshotTree` that are otherwise avoided by
+-  `(sync := true)` when accessing only after elaboration has finished. Early access can even lead to
+-  deadlocks when later forcing these unnecessary tasks on a starved thread pool.
+-  -/
+-  tree : Thunk SnapshotTree
++  /-- Snapshot tree accessor retrieved from `val` before erasure. -/
++  toSnapshotTreeM : ToSnapshotTreeM SnapshotTree
+ 
+ instance : ToSnapshotTree DynamicSnapshot where
+-  toSnapshotTree s := s.tree.get
++  toSnapshotTreeM s := s.toSnapshotTreeM
+ 
+ /-- Creates a `DynamicSnapshot` from a typed snapshot value. -/
+ def DynamicSnapshot.ofTyped [TypeName α] [ToSnapshotTree α] (val : α) : DynamicSnapshot where
+   val := .mk val
+-  tree := ToSnapshotTree.toSnapshotTree val
++  toSnapshotTreeM := ToSnapshotTree.toSnapshotTreeM val
+ 
+ /-- Returns the original snapshot value if it is of the given type. -/
+ def DynamicSnapshot.toTyped? (α : Type) [TypeName α] (snap : DynamicSnapshot) :
+@@ -312,15 +415,18 @@ private def reportMessages (msgLog : MessageLog) (opts : Options)
+     (json : Bool) (severityOverrides : NameMap MessageSeverity) (numErrors : Nat) : IO Nat := do
+   let includeEndPos := printMessageEndPos.get opts
+   msgLog.unreported.foldlM (init := numErrors) fun numErrors msg => do
++    let msg : Message :=
++      if let some severity := severityOverrides.find? msg.kind then
++        {msg with severity}
++      else
++        msg
+     let numErrors := numErrors + (if msg.severity matches .error then 1 else 0)
+     let maxErrorsReached := maxErrors.get opts != 0 && numErrors > maxErrors.get opts
+     let msg : Message :=
+       if maxErrorsReached then { msg with
+         data := s!"maximum number of errors ({maxErrors.get opts}; from option `maxErrors`) reached, exiting"
+         severity := .error
+-      } else if let some severity := severityOverrides.find? msg.kind then
+-        {msg with severity}
+-      else
++      } else
+         msg
+     unless msg.isSilent do
+       if json then
+diff --git a/src/Lean/Message.lean b/src/Lean/Message.lean
+index a7f76198c5..5e2281389f 100644
+--- a/src/Lean/Message.lean
++++ b/src/Lean/Message.lean
+@@ -14,6 +14,7 @@ public import Lean.Util.Sorry
+ import Init.Data.String.Search
+ import Init.Data.Format.Macro
+ import Init.Data.Iterators.Consumers.Collect
++import Init.Data.String.Length
+ 
+ public section
+ 
+@@ -83,6 +84,12 @@ inductive TraceResult where
+   | error
+   deriving Inhabited, BEq, Repr
+ 
++/-- Convert a `TraceResult` to its emoji representation. -/
++def TraceResult.toEmoji : TraceResult → String
++  | .success => "✅️"
++  | .failure => "❌️"
++  | .error   => "💥️"
++
+ structure TraceData where
+   /-- Trace class, e.g. `Elab.step`. -/
+   cls       : Name
+@@ -142,6 +149,10 @@ inductive MessageData where
+   `hasSyntheticSorry` should return `true`.
+   This is used to filter out certain messages. -/
+   | ofLazy (f : Option PPContext → BaseIO Dynamic) (hasSyntheticSorry : MetavarContext → Bool)
++  /--
++  Preserves the originating syntax of the message.
++  -/
++  | ofOriginatingSyntax : Syntax → MessageData → MessageData
+   deriving Inhabited, TypeName
+ 
+ namespace MessageData
+@@ -172,14 +183,15 @@ of interest (like those added by `logLinter`) are expected to be near the root
+ of the `MessageData`, and not hidden inside `.ofLazy`.
+ -/
+ partial def hasTag : MessageData → Bool
+-  | withContext _ msg       => hasTag msg
+-  | withNamingContext _ msg => hasTag msg
+-  | nest _ msg              => hasTag msg
+-  | group msg               => hasTag msg
+-  | compose msg₁ msg₂       => hasTag msg₁ || hasTag msg₂
+-  | tagged n msg            => p n || hasTag msg
+-  | trace data msg msgs     => p data.cls || hasTag msg || msgs.any hasTag
+-  | _                       => false
++  | withContext _ msg           => hasTag msg
++  | withNamingContext _ msg     => hasTag msg
++  | nest _ msg                  => hasTag msg
++  | group msg                   => hasTag msg
++  | compose msg₁ msg₂           => hasTag msg₁ || hasTag msg₂
++  | tagged n msg                => p n || hasTag msg
++  | trace data msg msgs         => p data.cls || hasTag msg || msgs.any hasTag
++  | ofOriginatingSyntax _ msg    => hasTag msg
++  | _                           => false
+ 
+ /--
+ Returns the top-level tag of the message.
+@@ -189,27 +201,35 @@ This does not descend into message subtrees (e.g., `.compose`, `.ofLazy`).
+ The message kind is expected to describe the whole message.
+ -/
+ def kind : MessageData → Name
+-  | withContext _ msg       => kind msg
+-  | withNamingContext _ msg => kind msg
+-  | tagged n _              => n
+-  | _                       => .anonymous
++  | withContext _ msg         => kind msg
++  | withNamingContext _ msg   => kind msg
++  | tagged n _                => n
++  | trace data _ _            => data.cls
++  | ofOriginatingSyntax _ msg  => kind msg
++  | _                         => .anonymous
++
++def originatingSyntax? : MessageData → Option Syntax × MessageData
++  | ofOriginatingSyntax stx msg => (some stx, msg)
++  | msg => (none, msg)
+ 
+ def isTrace : MessageData → Bool
+-  | withContext _ msg       => msg.isTrace
+-  | withNamingContext _ msg => msg.isTrace
+-  | tagged _ msg            => msg.isTrace
+-  | .trace _ _ _            => true
+-  | _                       => false
++  | withContext _ msg         => msg.isTrace
++  | withNamingContext _ msg   => msg.isTrace
++  | tagged _ msg              => msg.isTrace
++  | .trace _ _ _              => true
++  | ofOriginatingSyntax _ msg  => msg.isTrace
++  | _                         => false
+ 
+ /--
+ `composePreservingKind msg msg'` appends the contents of `msg'` to the end of `msg` but ensures that
+ the resulting message preserves the kind (as given by `MessageData.kind`) of `msg`.
+ -/
+ def composePreservingKind : MessageData → MessageData → MessageData
+-  | withContext ctx msg     , msg' => withContext ctx (composePreservingKind msg msg')
+-  | withNamingContext nc msg, msg' => withNamingContext nc (composePreservingKind msg msg')
+-  | tagged t msg            , msg' => tagged t (compose msg msg')
+-  | msg                     , msg' => compose msg msg'
++  | withContext ctx msg         , msg' => withContext ctx (composePreservingKind msg msg')
++  | withNamingContext nc msg    , msg' => withNamingContext nc (composePreservingKind msg msg')
++  | tagged t msg                , msg' => tagged t (compose msg msg')
++  | ofOriginatingSyntax stx msg  , msg' => ofOriginatingSyntax stx (composePreservingKind msg msg')
++  | msg                         , msg' => compose msg msg'
+ 
+ /-- An empty message. -/
+ def nil : MessageData :=
+@@ -244,7 +264,7 @@ def ofLevel (l : Level) : MessageData :=
+   .ofLazy
+     (fun ctx? => do
+       let msg ← ofFormat <$> match ctx? with
+-        | .none => pure (format l)
++        | .none => pure (l.format true (fun _ => none))
+         | .some ctx => ppLevel ctx l
+       return Dynamic.mk msg)
+     (fun _ => false)
+@@ -274,19 +294,73 @@ def ofConstName (constName : Name) (fullNames : Bool := false) : MessageData :=
+       return Dynamic.mk msg)
+     (fun _ => false)
+ 
++/--
++Creates message data wrapping `fmt` that gives information about `expr` when hovered over.
++
++Options:
++- `location?` overrides what "go to definition" does
++- `docString?` allows overriding the docstring for the expression
++- `mkDocString?` allows generating a dynamic docstring; if this is provided, `docString?` is ignored
++- `explicit` makes the hover pretty print the head application in explicit mode;
++  the default value is `false` (note: delaboration expression hovers normally set this to `true`,
++  since their purpose is to get more information about a given expression)
++-/
++def withExprHover (fmt : Format) (expr : Expr) (lctx : LocalContext)
++    (location? : Option DeclarationLocation := none)
++    (docString? : Option String := none)
++    (mkDocString? : Option (PPContext → IO String) := none)
++    (explicit : Bool := false) : MessageData :=
++  .ofFormatWithInfos {
++      fmt := .tag 0 fmt
++      infos :=
++        .ofList [(0, Elab.Info.ofDelabTermInfo {
++          expr, lctx, location?, explicit,
++          stx := .missing, -- unused for delaborator hovers
++          expectedType? := none, -- unused for delaborator hovers
++          elaborator := `Delab.withExprHover,
++          mkDocString? := mkDocString? <|> docString?.map (fun _ => pure ·)
++        })]
++  }
++
++/--
++Calls `withExprHover`, but uses the current local context if one is not given.
++See `withExprHover` for a description of each parameter.
++-/
++def withExprHoverM {m} [Monad m] [MonadLCtx m]
++    (fmt : Format) (expr : Expr) (lctx? : Option LocalContext := none)
++    (location? : Option DeclarationLocation := none)
++    (docString? : Option String := none)
++    (mkDocString? : Option (PPContext → IO String) := none)
++    (explicit : Bool := false) : m MessageData := do
++  let lctx ← lctx?.getDM getLCtx
++  return withExprHover fmt expr lctx location? docString? mkDocString? explicit
++
++/--
++Render `userName` as `MessageData`, attaching hover information for the local declaration with
++that user-facing name if it is bound in the current `LocalContext`. The lookup uses `userName`
++verbatim (so macro scopes are preserved for matching) and the rendered name uses
++`userName.simpMacroScopes`. Falls back to plain text when the variable is not in scope.
++-/
++def ofUserName {m} [Monad m] [MonadLCtx m] (userName : Name) : m MessageData := do
++  let display := userName.simpMacroScopes
++  match (← getLCtx).findFromUserName? userName with
++  | some decl => withExprHoverM (format display) (.fvar decl.fvarId)
++  | none => pure (ofName display)
++
+ partial def hasSyntheticSorry (msg : MessageData) : Bool :=
+   visit none msg
+ where
+   visit (mctx? : Option MetavarContext) : MessageData → Bool
+-  | ofLazy _ f              => f (mctx?.getD {})
+-  | withContext ctx msg     => visit ctx.mctx msg
+-  | withNamingContext _ msg => visit mctx? msg
+-  | nest _ msg              => visit mctx? msg
+-  | group msg               => visit mctx? msg
+-  | compose msg₁ msg₂       => visit mctx? msg₁ || visit mctx? msg₂
+-  | tagged _ msg            => visit mctx? msg
+-  | trace _ msg msgs        => visit mctx? msg || msgs.any (visit mctx?)
+-  | _                       => false
++  | ofLazy _ f                => f (mctx?.getD {})
++  | withContext ctx msg       => visit ctx.mctx msg
++  | withNamingContext _ msg   => visit mctx? msg
++  | nest _ msg                => visit mctx? msg
++  | group msg                 => visit mctx? msg
++  | compose msg₁ msg₂         => visit mctx? msg₁ || visit mctx? msg₂
++  | tagged _ msg              => visit mctx? msg
++  | ofOriginatingSyntax _ msg  => visit mctx? msg
++  | trace _ msg msgs          => visit mctx? msg || msgs.any (visit mctx?)
++  | _                         => false
+ 
+ /--
+ Maximum number of trace node children to display by default to prevent slowdowns from rendering. In
+@@ -305,6 +379,7 @@ partial def formatAux : NamingContext → Option MessageDataContext → MessageD
+   | nCtx, _,         withContext ctx d        => formatAux nCtx ctx d
+   | _,    ctx,       withNamingContext nCtx d => formatAux nCtx ctx d
+   | nCtx, ctx,       tagged _ d               => formatAux nCtx ctx d
++  | nCtx, ctx,       ofOriginatingSyntax _ d              => formatAux nCtx ctx d
+   | nCtx, ctx,       nest n d                 => Format.nest n <$> formatAux nCtx ctx d
+   | nCtx, ctx,       compose d₁ d₂            => return (← formatAux nCtx ctx d₁) ++ (← formatAux nCtx ctx d₂)
+   | nCtx, ctx,       group d                  => Format.group <$> formatAux nCtx ctx d
+@@ -317,7 +392,11 @@ partial def formatAux : NamingContext → Option MessageDataContext → MessageD
+     let mut msg := f!"[{data.cls}]"
+     if data.startTime != 0 then
+       msg := f!"{msg} [{data.stopTime - data.startTime}]"
+-    msg := f!"{msg} {(← formatAux nCtx ctx header).nest 2}"
++    let headerFmt ← formatAux nCtx ctx header
++    let headerFmt := match data.result? with
++      | some r => f!"{r.toEmoji} {headerFmt}"
++      | none => headerFmt
++    msg := f!"{msg} {headerFmt.nest 2}"
+     let mut children := children
+     if let some maxNum := ctx.map (maxTraceChildren.get ·.opts) then
+       if maxNum > 0 && children.size > maxNum then
+@@ -484,6 +563,7 @@ def MessageData.stripNestedTags : MessageData → MessageData
+   | .withContext ctx msg => .withContext ctx msg.stripNestedTags
+   | .withNamingContext ctx msg => .withNamingContext ctx msg.stripNestedTags
+   | .tagged n msg => .tagged (stripNestedNamePrefix n) msg
++  | ofOriginatingSyntax stx msg => ofOriginatingSyntax stx msg.stripNestedTags
+   | msg => msg
+ where
+   stripNestedNamePrefix : Name → Name
+@@ -688,7 +768,7 @@ def inlineExpr (e : Expr) (maxInlineLength := 30) : MessageData :=
+     (fun ctx => do
+       let msg := MessageData.ofExpr e
+       let render ← msg.formatExpensively ctx
+-      if render.length > maxInlineLength || render.any (· == '\n') then
++      if render.positions.length > maxInlineLength || render.any (· == '\n') then
+         return indentD msg ++ "\n"
+       else
+         return " `" ++ msg ++ "` ")
+@@ -704,7 +784,7 @@ def inlineExprTrailing (e : Expr) (maxInlineLength := 30) : MessageData :=
+     (fun ctx => do
+       let msg := MessageData.ofExpr e
+       let render ← msg.formatExpensively ctx
+-      if render.length > maxInlineLength || render.any (· == '\n') then
++      if render.positions.length > maxInlineLength || render.any (· == '\n') then
+         return indentD msg
+       else
+         return " `" ++ msg ++ "`")
+@@ -809,7 +889,7 @@ def toMessageData (e : Kernel.Exception) (opts : Options) : MessageData :=
+   | other msg                           => m!"(kernel) {msg}"
+   | deterministicTimeout                => "(kernel) deterministic timeout"
+   | excessiveMemory                     => "(kernel) excessive memory consumption detected"
+-  | deepRecursion                       => "(kernel) deep recursion detected"
++  | deepRecursion                       => "(kernel) deep recursion detected, use `set_option maxRecDepth <num>` to increase the limit"
+   | interrupted                         => "(kernel) interrupted"
+ 
+ end Kernel.Exception
+diff --git a/src/Lean/PrettyPrinter/Formatter.lean b/src/Lean/PrettyPrinter/Formatter.lean
+index 2067634ee5..cf52cecbaa 100644
+--- a/src/Lean/PrettyPrinter/Formatter.lean
++++ b/src/Lean/PrettyPrinter/Formatter.lean
+@@ -346,6 +346,10 @@ def node.formatter (k : SyntaxNodeKind) (p : Formatter) : Formatter := do
+ @[combinator_formatter withFn, expose]
+ def withFn.formatter (_ : ParserFn → ParserFn) (p : Formatter) : Formatter := p
+ 
++@[combinator_formatter withForbiddens, expose]
++def withForbiddens.formatter (tks : Array Token) (p : Formatter) (_h : tks.toList.Nodup) :
++    Formatter := p
++
+ @[combinator_formatter trailingNode, expose]
+ def trailingNode.formatter (k : SyntaxNodeKind) (_ _ : Nat) (p : Formatter) : Formatter := do
+   checkKind k
+diff --git a/src/Lean/Shell.lean b/src/Lean/Shell.lean
+index 2ff5c4b0c8..3f73f6fe35 100644
+--- a/src/Lean/Shell.lean
++++ b/src/Lean/Shell.lean
+@@ -12,6 +12,7 @@ import Lean.Server.Watchdog
+ import Lean.Server.FileWorker
+ import Lean.Compiler.LCNF.EmitC
+ import Init.System.Platform
++import Lean.Compiler.Options
+ 
+ /-  Lean companion to  `shell.cpp` -/
+ 
+@@ -165,7 +166,7 @@ def displayHelp (useStderr : Bool) : IO Unit := do
+     out.putStrLn  "  -s, --tstack=num       thread stack size in Kb"
+     out.putStrLn  "      --server           start lean in server mode"
+     out.putStrLn  "      --worker           start lean in server-worker mode"
+-  out.putStrLn    "      --plugin=file      load and initialize Lean shared library for registering linters etc."
++  out.putStrLn    "      --plugin=file[=fn] load and initialize Lean shared library for registering linters etc."
+   out.putStrLn    "      --load-dynlib=file load shared library to make its symbols available to the interpreter"
+   out.putStrLn    "      --setup=file       JSON file with module setup data (supersedes the file's header)"
+   out.putStrLn    "      --json             report Lean output (e.g., messages) as JSON (one per line)"
+@@ -176,6 +177,10 @@ def displayHelp (useStderr : Bool) : IO Unit := do
+   out.putStrLn    "      --print-libdir     print the installation directory for Lean's built-in libraries and exit"
+   out.putStrLn    "      --profile          display elaboration/type checking time for each definition/theorem"
+   out.putStrLn    "      --stats            display environment statistics"
++  out.putStrLn    "      --incr-save=file   EXPERIMENTAL: save a full incremental snapshot of post-elaboration state at end of run"
++  out.putStrLn    "      --incr-load=file   EXPERIMENTAL: reuse a snapshot saved by `--incr-(header-)save` at start of run"
++  out.putStrLn    "      --incr-header-save=file"
++  out.putStrLn    "                         EXPERIMENTAL: like `--incr-save`, but save only the header (state after importing)"
+   if Internal.isDebug () then
+     out.putStrLn  "      --debug=tag        enable assertions with the given tag"
+   out.putStrLn    "      -D name=value      set a configuration option (see set_option command)"
+@@ -194,12 +199,9 @@ private builtin_initialize timeout : Lean.Option Nat ←
+ private builtin_initialize verbose : Lean.Option Bool ←
+   Lean.Option.register `verbose {defValue := Internal.getDefaultVerbose ()}
+ 
+-/--
+-Returns the default options Lean was built with
+-(i.e., those set in `stdlib_flags.h`).
+--/
+-@[extern "lean_internal_get_default_options"]
+-opaque Internal.getDefaultOptions (_ : Unit) : Options
++/-- Returns any option overrides Lean was built with (i.e., those set in `stdlib_flags.h`). -/
++@[extern "lean_internal_get_option_overrides"]
++opaque Internal.getOptionOverrides (_ : Unit) : Options
+ 
+ /--
+ Returns the believer trust level of the Lean environment (i.e., `LEAN_BELIEVER_TRUST_LEVEL`).
+@@ -214,18 +216,14 @@ opaque Internal.getBelieverTrustLevel (_ : Unit) : UInt32
+ def defaultTrustLevel : UInt32 :=
+   Internal.getBelieverTrustLevel () + 1
+ 
+-/-- Returns the platform's native concurrency limit. -/
+-@[extern "lean_internal_get_hardware_concurrency"]
+-opaque Internal.getHardwareCurrency (_ : Unit) : UInt32
+-
+ /-- Returns the default number of threads for the shell's task manager. -/
+ def defaultNumThreads : UInt32 :=
+   if Internal.isMultiThread () then
+-    Internal.getHardwareCurrency ()
++    Platform.Internal.getHardwareConcurrency ()
+   else 0
+ 
+ structure ShellOptions where
+-  leanOpts : Options := Internal.getDefaultOptions ()
++  leanOpts : Options := {}
+   forwardedArgs : Array String := #[]
+   component : ShellComponent := .frontend
+   printPrefix : Bool := false
+@@ -247,6 +245,9 @@ structure ShellOptions where
+   errorOnKinds : Array Name := #[]
+   printStats : Bool := false
+   run : Bool := false
++  incrSaveFileName? : Option System.FilePath := none
++  incrLoadFileName? : Option System.FilePath := none
++  incrHeaderSaveFileName? : Option System.FilePath := none
+ 
+ @[export lean_shell_options_mk]
+ def mkShellOptions (_ : Unit) : ShellOptions := {}
+@@ -340,7 +341,10 @@ def ShellOptions.process (opts : ShellOptions)
+   | 'I' => -- `-I, --stdin`
+     return {opts with useStdin := true}
+   | 'r' => -- `--run`
+-    return {opts with run := true}
++    return {opts with
++      run := true
++      -- can't get IR if it's postponed
++      leanOpts := Compiler.compiler.postponeCompile.set opts.leanOpts false }
+   | 'o' => -- `--o, olean=fname`
+     return {opts with oleanFileName? := ← checkOptArg "o" optArg?}
+   | 'i' => -- `--i, ilean=fname`
+@@ -406,9 +410,17 @@ def ShellOptions.process (opts : ShellOptions)
+       Internal.enableDebug arg
+       return opts
+     -- if not `LEAN_DEBUG`, fall through to unknown option
+-  | 'p' => -- `--plugin=file`
++  | 'p' => -- `--plugin=file[=fn]`
+     let arg ← checkOptArg "p" optArg?
+-    Lean.loadPlugin arg
++    let (path, fn?) :=
++      let pos := arg.find '='
++      if h : pos.IsAtEnd then
++        (FilePath.mk arg, none)
++      else
++        let path := arg.sliceTo pos
++        let initFn := arg.sliceFrom (pos.next h)
++        (FilePath.mk path.copy, some initFn.copy)
++    Lean.loadPlugin path fn?
+     let forwardedArgs := opts.forwardedArgs.push s!"-p{arg}"
+     return {opts with forwardedArgs}
+   | 'l' => -- `--load-dynlib=file`
+@@ -422,6 +434,12 @@ def ShellOptions.process (opts : ShellOptions)
+     let arg ← checkOptArg "E" optArg?
+     let errorOnKinds := opts.errorOnKinds.push arg.toName
+     return {opts with errorOnKinds}
++  | 'Y' => -- `--incr-save=file`
++    return {opts with incrSaveFileName? := ← checkOptArg "Y" optArg?}
++  | 'Z' => -- `--incr-load=file`
++    return {opts with incrLoadFileName? := ← checkOptArg "Z" optArg?}
++  | 'H' => -- `--incr-header-save=file`
++    return {opts with incrHeaderSaveFileName? := ← checkOptArg "H" optArg?}
+   | _ =>
+     pure ()
+   eprint "Unknown command line option\n"
+@@ -448,6 +466,7 @@ where
+ 
+ @[export lean_shell_main]
+ def shellMain (args : List String) (opts : ShellOptions) : IO UInt32 := do
++  let opts := { opts with leanOpts := opts.leanOpts.mergeBy (fun _ _ v => v) (Internal.getOptionOverrides ()) }
+   if opts.printPrefix then
+     IO.println (← getBuildDir)
+     return 0
+@@ -533,6 +552,9 @@ def shellMain (args : List String) (opts : ShellOptions) : IO UInt32 := do
+   let env? ← Elab.runFrontend contents opts.leanOpts fileName mainModuleName
+     opts.trustLevel opts.oleanFileName? opts.ileanFileName? opts.jsonOutput opts.errorOnKinds
+     #[] opts.printStats setup?
++    (incrSaveFileName? := opts.incrSaveFileName?)
++    (incrLoadFileName? := opts.incrLoadFileName?)
++    (incrHeaderSaveFileName? := opts.incrHeaderSaveFileName?)
+   if let some env := env? then
+     if opts.run then
+       return ← runMain env opts.leanOpts args

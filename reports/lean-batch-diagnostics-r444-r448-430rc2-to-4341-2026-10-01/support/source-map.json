@@ -1,0 +1,45 @@
+{
+  "blobs": {
+    "src/Init/Data/Format/Basic.lean": {
+      "new": "310cea7dfdad9f9bd709caf781450a2e16770c94",
+      "old": "e0dbb5fa8be5578f8904e0e5a36decbcdf3fbec4"
+    },
+    "src/Init/Data/ToString/Basic.lean": {
+      "new": "505aa15ca363d66f70f850134b008d98c93df184",
+      "old": "505aa15ca363d66f70f850134b008d98c93df184"
+    },
+    "src/Lean/Data/Format.lean": {
+      "new": "ff82cfbcd4419a8a3c9ae0e6213902c60f4466cf",
+      "old": "9bcb44e2ce7c6848dd1f1d7a3f2801ccc54b4f42"
+    },
+    "src/Lean/Language/Basic.lean": {
+      "new": "4a579f0cb536096f0815bd245a64a8151f01937f",
+      "old": "08f9b688fc869224c316175220403c2aeb5eb415"
+    },
+    "src/Lean/Message.lean": {
+      "new": "5e2281389fe25ed6d76c50e2d78bed7a16b3ab36",
+      "old": "a7f76198c582d1d2032bb24d13ad4cb7a272fa57"
+    },
+    "src/Lean/PrettyPrinter/Formatter.lean": {
+      "new": "cf52cecbaacdc784d434ad37e4917b878d7e0a4e",
+      "old": "2067634ee568e8e1480cece32b51eb197d04468c"
+    },
+    "src/Lean/Shell.lean": {
+      "new": "3f73f6fe35d11cbccd9b6effe1bafad030fdbdce",
+      "old": "2ff5c4b0c82f876ddd4384c9c20dcaefebc1b90e"
+    },
+    "tests/elab/ppOneline.lean": {
+      "new": "9430dfef1427cce3a76f4c707f6a0babc44b950e",
+      "old": "9430dfef1427cce3a76f4c707f6a0babc44b950e"
+    },
+    "tests/elab/ppUnicode.lean": {
+      "new": "0fa450fe5dfa6ad5d4e405c9e1681f13d07fbd86",
+      "old": "0fa450fe5dfa6ad5d4e405c9e1681f13d07fbd86"
+    }
+  },
+  "diff_sha256": "9501d5c3a96f8d782bc8c677ee0a3cb97d5657776d59f8d677d06a069c922bb5",
+  "revisions": {
+    "new": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "old": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+  }
+}

@@ -1,0 +1,10 @@
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10] : List Nat
+fun x1 x2 x3 => x1 + x2 + x3 : Nat → Nat → Nat → Nat
+fun x => x : ?m.1 → ?m.1
+True ∧ False : Prop
+True → False : Prop
+fun x =>
+  let y := x + 1;
+  let z := y + 2;
+  z + x : Nat → Nat
+support/r448/Format.lean:10:7: error(lean.unknownIdentifier): Unknown identifier `missingForDiagnosticPosition`

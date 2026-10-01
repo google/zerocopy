@@ -1,0 +1,2 @@
+{"caption":"","data":"arithmetic : 2 + 2 = 4","endPos":{"column":6,"line":3},"fileName":"support/r444/query/Query.lean","isSilent":false,"keepFullRange":false,"kind":"[anonymous]","pos":{"column":0,"line":3},"severity":"information"}
+{"caption":"","data":"'arithmetic' does not depend on any axioms","endPos":{"column":6,"line":4},"fileName":"support/r444/query/Query.lean","isSilent":false,"keepFullRange":false,"kind":"[anonymous]","pos":{"column":0,"line":4},"severity":"information"}
