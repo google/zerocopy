@@ -1,0 +1,10 @@
+{"synthetic": true,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["bb6642e24ae3290f.olean"],
+  "m": false,
+  "i": "834835f90cae5e82.ilean",
+  "c": "e1cacea8d484dd8e.c"},
+ "log": [],
+ "inputs": [],
+ "depHash": "22a5342b4cb3f025"}

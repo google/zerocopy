@@ -1,0 +1,32 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["c478365929d67ada.olean"],
+  "m": false,
+  "i": "834835f90cae5e82.ilean",
+  "c": "7503ebd952acded4.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/Probe/Base.lean -o /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/lib/lean/Probe/Base.olean -i /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/lib/lean/Probe/Base.ilean -c /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/ir/Probe/Base.c --setup /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/ir/Probe/Base.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Probe.Base:deps",
+   [["deps",
+     [["compilation_probe/Probe:extraDep",
+       [["@compilation_probe:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/Probe/Base.lean",
+   "20cd4f8b22bdd787"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Probe.Base", "8837bbfaa3dd0531"],
+  ["Package.id?: (some compilation_probe)", "239e0ac49efd9969"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "31d6c2d627ba0f1b"}

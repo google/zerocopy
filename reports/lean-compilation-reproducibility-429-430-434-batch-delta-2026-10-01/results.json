@@ -1,0 +1,4338 @@
+{
+  "calls": [
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13366939648,
+        "reclaimable_fraction": 0.24557876586914062,
+        "scratch_bytes": 12562
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 3.8467,
+      "label": "clean-1",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13366939648,
+          "group_rss_kib": 23152,
+          "reclaimable_fraction": 0.2446746826171875,
+          "scratch_bytes": 12562
+        },
+        {
+          "disk_free_bytes": 13366939648,
+          "group_rss_kib": 47360,
+          "reclaimable_fraction": 0.24509620666503906,
+          "scratch_bytes": 12562
+        },
+        {
+          "disk_free_bytes": 13366935552,
+          "group_rss_kib": 64768,
+          "reclaimable_fraction": 0.2433147430419922,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366935552,
+          "group_rss_kib": 80960,
+          "reclaimable_fraction": 0.2489471435546875,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366833152,
+          "group_rss_kib": 99200,
+          "reclaimable_fraction": 0.24816513061523438,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366759424,
+          "group_rss_kib": 114848,
+          "reclaimable_fraction": 0.2460918426513672,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366579200,
+          "group_rss_kib": 134448,
+          "reclaimable_fraction": 0.24315261840820312,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366534144,
+          "group_rss_kib": 151152,
+          "reclaimable_fraction": 0.24161720275878906,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366456320,
+          "group_rss_kib": 172864,
+          "reclaimable_fraction": 0.240509033203125,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366403072,
+          "group_rss_kib": 216896,
+          "reclaimable_fraction": 0.2405376434326172,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366296576,
+          "group_rss_kib": 263008,
+          "reclaimable_fraction": 0.23917007446289062,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366108160,
+          "group_rss_kib": 301584,
+          "reclaimable_fraction": 0.2390880584716797,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366108160,
+          "group_rss_kib": 336720,
+          "reclaimable_fraction": 0.23877906799316406,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13365874688,
+          "group_rss_kib": 369600,
+          "reclaimable_fraction": 0.23831748962402344,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366104064,
+          "group_rss_kib": 407856,
+          "reclaimable_fraction": 0.2369403839111328,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366104064,
+          "group_rss_kib": 434768,
+          "reclaimable_fraction": 0.2361278533935547,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366104064,
+          "group_rss_kib": 463680,
+          "reclaimable_fraction": 0.23523712158203125,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366005760,
+          "group_rss_kib": 488128,
+          "reclaimable_fraction": 0.2347583770751953,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366005760,
+          "group_rss_kib": 507424,
+          "reclaimable_fraction": 0.23496437072753906,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366005760,
+          "group_rss_kib": 525664,
+          "reclaimable_fraction": 0.23440933227539062,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366005760,
+          "group_rss_kib": 552752,
+          "reclaimable_fraction": 0.234375,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13366005760,
+          "group_rss_kib": 581152,
+          "reclaimable_fraction": 0.23419189453125,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13365129216,
+          "group_rss_kib": 619216,
+          "reclaimable_fraction": 0.23409271240234375,
+          "scratch_bytes": 12746
+        },
+        {
+          "disk_free_bytes": 13362008064,
+          "group_rss_kib": 697728,
+          "reclaimable_fraction": 0.23329544067382812,
+          "scratch_bytes": 107264
+        },
+        {
+          "disk_free_bytes": 13361930240,
+          "group_rss_kib": 989056,
+          "reclaimable_fraction": 0.22857666015625,
+          "scratch_bytes": 107264
+        },
+        {
+          "disk_free_bytes": 13361852416,
+          "group_rss_kib": 891920,
+          "reclaimable_fraction": 0.23048019409179688,
+          "scratch_bytes": 119917
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (221ms)\n\u2139 [3/4] Built Probe (197ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "d5ebe87d49fc280aa5fc65047d7cba1647b6ef4edce691f748dc964007b5a856",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13361733632,
+        "reclaimable_fraction": 0.23635482788085938,
+        "scratch_bytes": 154555
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.4402,
+      "label": "clean-1-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13361733632,
+          "group_rss_kib": 126768,
+          "reclaimable_fraction": 0.23598861694335938,
+          "scratch_bytes": 154555
+        },
+        {
+          "disk_free_bytes": 13361733632,
+          "group_rss_kib": 594592,
+          "reclaimable_fraction": 0.23297691345214844,
+          "scratch_bytes": 154555
+        },
+        {
+          "disk_free_bytes": 13361680384,
+          "group_rss_kib": 614512,
+          "reclaimable_fraction": 0.23259544372558594,
+          "scratch_bytes": 154555
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project/.lake/build/lib/lean/Probe/Base.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "08f7eb5f521d6f268066860dacb76b4b1ad62692f4f9ae8ce1af3d45c157c122",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13361680384,
+        "reclaimable_fraction": 0.23963546752929688,
+        "scratch_bytes": 156334
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.6067,
+      "label": "clean-1-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13361680384,
+          "group_rss_kib": 126384,
+          "reclaimable_fraction": 0.23834991455078125,
+          "scratch_bytes": 156334
+        },
+        {
+          "disk_free_bytes": 13361680384,
+          "group_rss_kib": 596176,
+          "reclaimable_fraction": 0.23330307006835938,
+          "scratch_bytes": 156334
+        },
+        {
+          "disk_free_bytes": 13361631232,
+          "group_rss_kib": 616672,
+          "reclaimable_fraction": 0.2327117919921875,
+          "scratch_bytes": 156334
+        },
+        {
+          "disk_free_bytes": 13361631232,
+          "group_rss_kib": 947312,
+          "reclaimable_fraction": 0.23027801513671875,
+          "scratch_bytes": 156334
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13361811456,
+        "reclaimable_fraction": 0.2393512725830078,
+        "scratch_bytes": 43217
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.8036,
+      "label": "clean-2",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13361803264,
+          "group_rss_kib": 125216,
+          "reclaimable_fraction": 0.2373504638671875,
+          "scratch_bytes": 43401
+        },
+        {
+          "disk_free_bytes": 13361803264,
+          "group_rss_kib": 595648,
+          "reclaimable_fraction": 0.2294902801513672,
+          "scratch_bytes": 43401
+        },
+        {
+          "disk_free_bytes": 13361684480,
+          "group_rss_kib": 716880,
+          "reclaimable_fraction": 0.2296619415283203,
+          "scratch_bytes": 137919
+        },
+        {
+          "disk_free_bytes": 13361643520,
+          "group_rss_kib": 661936,
+          "reclaimable_fraction": 0.23006439208984375,
+          "scratch_bytes": 150572
+        },
+        {
+          "disk_free_bytes": 13361643520,
+          "group_rss_kib": 978784,
+          "reclaimable_fraction": 0.22773361206054688,
+          "scratch_bytes": 150572
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (206ms)\n\u2139 [3/4] Built Probe (190ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "0d37ab7d2488da6706ea6d0c93e2ee0aa98bac68a8b44a318869b5cc848d89bd",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13361532928,
+        "reclaimable_fraction": 0.2352733612060547,
+        "scratch_bytes": 181331
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.441,
+      "label": "clean-2-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13361524736,
+          "group_rss_kib": 127648,
+          "reclaimable_fraction": 0.23384857177734375,
+          "scratch_bytes": 181331
+        },
+        {
+          "disk_free_bytes": 13361524736,
+          "group_rss_kib": 595936,
+          "reclaimable_fraction": 0.2304973602294922,
+          "scratch_bytes": 181331
+        },
+        {
+          "disk_free_bytes": 13361524736,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.22973060607910156,
+          "scratch_bytes": 181331
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project/.lake/build/lib/lean/Probe/Base.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "08f7eb5f521d6f268066860dacb76b4b1ad62692f4f9ae8ce1af3d45c157c122",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13361524736,
+        "reclaimable_fraction": 0.2346019744873047,
+        "scratch_bytes": 183102
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.5279,
+      "label": "clean-2-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13361512448,
+          "group_rss_kib": 123872,
+          "reclaimable_fraction": 0.23419761657714844,
+          "scratch_bytes": 183102
+        },
+        {
+          "disk_free_bytes": 13361512448,
+          "group_rss_kib": 591120,
+          "reclaimable_fraction": 0.23137283325195312,
+          "scratch_bytes": 183102
+        },
+        {
+          "disk_free_bytes": 13361512448,
+          "group_rss_kib": 703408,
+          "reclaimable_fraction": 0.22967910766601562,
+          "scratch_bytes": 183102
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13361684480,
+        "reclaimable_fraction": 0.2350177764892578,
+        "scratch_bytes": 69798
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.8063,
+      "label": "cache-seed",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13361680384,
+          "group_rss_kib": 127088,
+          "reclaimable_fraction": 0.23397064208984375,
+          "scratch_bytes": 69982
+        },
+        {
+          "disk_free_bytes": 13361672192,
+          "group_rss_kib": 594480,
+          "reclaimable_fraction": 0.22935104370117188,
+          "scratch_bytes": 69982
+        },
+        {
+          "disk_free_bytes": 13361565696,
+          "group_rss_kib": 715104,
+          "reclaimable_fraction": 0.22674560546875,
+          "scratch_bytes": 164500
+        },
+        {
+          "disk_free_bytes": 13360975872,
+          "group_rss_kib": 659152,
+          "reclaimable_fraction": 0.2293701171875,
+          "scratch_bytes": 187405
+        },
+        {
+          "disk_free_bytes": 13360975872,
+          "group_rss_kib": 981328,
+          "reclaimable_fraction": 0.22698020935058594,
+          "scratch_bytes": 187405
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (197ms)\n\u2139 [3/4] Built Probe (186ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "021627cb8f849ea99dabb35dd204a8e93bafdabb361569c7ac728f29ff6ba7ec",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360865280,
+        "reclaimable_fraction": 0.23443603515625,
+        "scratch_bytes": 223780
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.4407,
+      "label": "cache-seed-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360861184,
+          "group_rss_kib": 122800,
+          "reclaimable_fraction": 0.23456573486328125,
+          "scratch_bytes": 223780
+        },
+        {
+          "disk_free_bytes": 13360861184,
+          "group_rss_kib": 594912,
+          "reclaimable_fraction": 0.2316303253173828,
+          "scratch_bytes": 223780
+        },
+        {
+          "disk_free_bytes": 13360861184,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.23053741455078125,
+          "scratch_bytes": 223780
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/cache/artifacts/5c51d05011527ce1.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "eae7a958c8ea2e7a2bbdb6515aa8edb2578c492c4c3bba1124d196288c50222b",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360857088,
+        "reclaimable_fraction": 0.23564720153808594,
+        "scratch_bytes": 225546
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.5056,
+      "label": "cache-seed-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360857088,
+          "group_rss_kib": 144112,
+          "reclaimable_fraction": 0.23413848876953125,
+          "scratch_bytes": 225546
+        },
+        {
+          "disk_free_bytes": 13360857088,
+          "group_rss_kib": 612896,
+          "reclaimable_fraction": 0.2291584014892578,
+          "scratch_bytes": 225546
+        },
+        {
+          "disk_free_bytes": 13360832512,
+          "group_rss_kib": 912288,
+          "reclaimable_fraction": 0.22212600708007812,
+          "scratch_bytes": 225546
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360984064,
+        "reclaimable_fraction": 0.2287311553955078,
+        "scratch_bytes": 112252
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.4776,
+      "label": "cache-reuse-1",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360979968,
+          "group_rss_kib": 122128,
+          "reclaimable_fraction": 0.22728347778320312,
+          "scratch_bytes": 112436
+        },
+        {
+          "disk_free_bytes": 13360979968,
+          "group_rss_kib": 591776,
+          "reclaimable_fraction": 0.2253589630126953,
+          "scratch_bytes": 112436
+        },
+        {
+          "disk_free_bytes": 13360861184,
+          "group_rss_kib": 641392,
+          "reclaimable_fraction": 0.22367095947265625,
+          "scratch_bytes": 208166
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "3fc3f74f95f21bc2b7e9ea5621ad893ac30381e24c9dc36f4fd4dfd741f2dfa8",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360832512,
+        "reclaimable_fraction": 0.228515625,
+        "scratch_bytes": 211090
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.4383,
+      "label": "cache-reuse-1-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360832512,
+          "group_rss_kib": 145088,
+          "reclaimable_fraction": 0.22780609130859375,
+          "scratch_bytes": 211090
+        },
+        {
+          "disk_free_bytes": 13360832512,
+          "group_rss_kib": 613072,
+          "reclaimable_fraction": 0.22397232055664062,
+          "scratch_bytes": 211090
+        },
+        {
+          "disk_free_bytes": 13360832512,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.2311725616455078,
+          "scratch_bytes": 211090
+        }
+      ],
+      "returncode": 0,
+      "stderr": "\u2714 [2/3] Fetched Probe.Base\n",
+      "stderr_sha256": "236fd66e09f838226e15b4a38bf36784b3289a954bea3e3c767a6a7e00ba919f",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/cache/artifacts/5c51d05011527ce1.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "eae7a958c8ea2e7a2bbdb6515aa8edb2578c492c4c3bba1124d196288c50222b",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360832512,
+        "reclaimable_fraction": 0.23106765747070312,
+        "scratch_bytes": 212887
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.3889,
+      "label": "cache-reuse-1-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360824320,
+          "group_rss_kib": 149008,
+          "reclaimable_fraction": 0.2292633056640625,
+          "scratch_bytes": 212887
+        },
+        {
+          "disk_free_bytes": 13360820224,
+          "group_rss_kib": 612736,
+          "reclaimable_fraction": 0.22707366943359375,
+          "scratch_bytes": 212887
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist\",\"endPos\":null,\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "df4bbe8080f92801a55bb40c7363752b63ffe55588b8dc2f04ab99e993c78888",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360934912,
+        "reclaimable_fraction": 0.22765541076660156,
+        "scratch_bytes": 118696
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.4684,
+      "label": "cache-reuse-2",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360930816,
+          "group_rss_kib": 125632,
+          "reclaimable_fraction": 0.22574806213378906,
+          "scratch_bytes": 118880
+        },
+        {
+          "disk_free_bytes": 13360930816,
+          "group_rss_kib": 593312,
+          "reclaimable_fraction": 0.2224254608154297,
+          "scratch_bytes": 118880
+        },
+        {
+          "disk_free_bytes": 13360816128,
+          "group_rss_kib": 641088,
+          "reclaimable_fraction": 0.22449874877929688,
+          "scratch_bytes": 214610
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "3fc3f74f95f21bc2b7e9ea5621ad893ac30381e24c9dc36f4fd4dfd741f2dfa8",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360787456,
+        "reclaimable_fraction": 0.23030471801757812,
+        "scratch_bytes": 217535
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.407,
+      "label": "cache-reuse-2-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360787456,
+          "group_rss_kib": 146000,
+          "reclaimable_fraction": 0.22945213317871094,
+          "scratch_bytes": 217535
+        },
+        {
+          "disk_free_bytes": 13360787456,
+          "group_rss_kib": 612720,
+          "reclaimable_fraction": 0.2262134552001953,
+          "scratch_bytes": 217535
+        }
+      ],
+      "returncode": 0,
+      "stderr": "\u2714 [2/3] Fetched Probe.Base\n",
+      "stderr_sha256": "236fd66e09f838226e15b4a38bf36784b3289a954bea3e3c767a6a7e00ba919f",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/cache/artifacts/5c51d05011527ce1.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "eae7a958c8ea2e7a2bbdb6515aa8edb2578c492c4c3bba1124d196288c50222b",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360787456,
+        "reclaimable_fraction": 0.2310028076171875,
+        "scratch_bytes": 219157
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.4084,
+      "label": "cache-reuse-2-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360779264,
+          "group_rss_kib": 138992,
+          "reclaimable_fraction": 0.23633766174316406,
+          "scratch_bytes": 219157
+        },
+        {
+          "disk_free_bytes": 13360779264,
+          "group_rss_kib": 612416,
+          "reclaimable_fraction": 0.23119163513183594,
+          "scratch_bytes": 219157
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist\",\"endPos\":null,\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "df4bbe8080f92801a55bb40c7363752b63ffe55588b8dc2f04ab99e993c78888",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360762880,
+        "reclaimable_fraction": 0.2334308624267578,
+        "scratch_bytes": 233310
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.4346,
+      "label": "cache-goal-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360762880,
+          "group_rss_kib": 127520,
+          "reclaimable_fraction": 0.2325592041015625,
+          "scratch_bytes": 233310
+        },
+        {
+          "disk_free_bytes": 13360762880,
+          "group_rss_kib": 600800,
+          "reclaimable_fraction": 0.22852325439453125,
+          "scratch_bytes": 233310
+        },
+        {
+          "disk_free_bytes": 13360762880,
+          "group_rss_kib": 613664,
+          "reclaimable_fraction": 0.22794342041015625,
+          "scratch_bytes": 233310
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project/.lake/build/lib/lean/Probe.olean' of module Probe does not exist\",\"endPos\":null,\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "10691ca7c2a62b891f42c255d008aed41911359ca0ac0896232da41ac942d97c",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360762880,
+        "reclaimable_fraction": 0.23345184326171875,
+        "scratch_bytes": 235198
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.7827,
+      "label": "materialize",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360762880,
+          "group_rss_kib": 123312,
+          "reclaimable_fraction": 0.2324848175048828,
+          "scratch_bytes": 235198
+        },
+        {
+          "disk_free_bytes": 13360762880,
+          "group_rss_kib": 590800,
+          "reclaimable_fraction": 0.23010826110839844,
+          "scratch_bytes": 235198
+        },
+        {
+          "disk_free_bytes": 13360750592,
+          "group_rss_kib": 704848,
+          "reclaimable_fraction": 0.22754287719726562,
+          "scratch_bytes": 234851
+        },
+        {
+          "disk_free_bytes": 13360721920,
+          "group_rss_kib": 668368,
+          "reclaimable_fraction": 0.2273998260498047,
+          "scratch_bytes": 246875
+        },
+        {
+          "disk_free_bytes": 13360721920,
+          "group_rss_kib": 961424,
+          "reclaimable_fraction": 0.22595977783203125,
+          "scratch_bytes": 246875
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (197ms)\n\u2139 [3/4] Built Probe (204ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "8886fd7f38cfb35b6b9d281fd7436c8b4d871e7c1e7a6639f77987af9cc3e112",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360619520,
+        "reclaimable_fraction": 0.23290634155273438,
+        "scratch_bytes": 279973
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.5044,
+      "label": "materialized-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360607232,
+          "group_rss_kib": 127936,
+          "reclaimable_fraction": 0.231689453125,
+          "scratch_bytes": 279973
+        },
+        {
+          "disk_free_bytes": 13360607232,
+          "group_rss_kib": 597808,
+          "reclaimable_fraction": 0.22831153869628906,
+          "scratch_bytes": 279973
+        },
+        {
+          "disk_free_bytes": 13360607232,
+          "group_rss_kib": 814496,
+          "reclaimable_fraction": 0.2272510528564453,
+          "scratch_bytes": 279973
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360603136,
+        "reclaimable_fraction": 0.2327747344970703,
+        "scratch_bytes": 281975
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.5091,
+      "label": "materialized-goal-v1-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360590848,
+          "group_rss_kib": 129616,
+          "reclaimable_fraction": 0.23192596435546875,
+          "scratch_bytes": 281975
+        },
+        {
+          "disk_free_bytes": 13360590848,
+          "group_rss_kib": 600496,
+          "reclaimable_fraction": 0.22855377197265625,
+          "scratch_bytes": 281975
+        },
+        {
+          "disk_free_bytes": 13360590848,
+          "group_rss_kib": 841056,
+          "reclaimable_fraction": 0.22710418701171875,
+          "scratch_bytes": 281975
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":50,\"line\":2},\"severity\":\"error\"}\n",
+      "stdout_sha256": "1628d1b60d1ff9749de0b57fffe13393f32bf3e8f8414ffdcecba5aa83c86c6b",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360590848,
+        "reclaimable_fraction": 0.23270797729492188,
+        "scratch_bytes": 284096
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_29_0/project",
+      "elapsed_s": 0.5065,
+      "label": "materialized-goal-v2-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360590848,
+          "group_rss_kib": 131344,
+          "reclaimable_fraction": 0.2317962646484375,
+          "scratch_bytes": 284096
+        },
+        {
+          "disk_free_bytes": 13360590848,
+          "group_rss_kib": 600464,
+          "reclaimable_fraction": 0.2274932861328125,
+          "scratch_bytes": 284096
+        },
+        {
+          "disk_free_bytes": 13360582656,
+          "group_rss_kib": 869536,
+          "reclaimable_fraction": 0.22567176818847656,
+          "scratch_bytes": 284096
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "v4.29.0"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13360553984,
+        "reclaimable_fraction": 0.23218917846679688,
+        "scratch_bytes": 286156
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 3.8835,
+      "label": "clean-1",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13360553984,
+          "group_rss_kib": 29264,
+          "reclaimable_fraction": 0.22905921936035156,
+          "scratch_bytes": 286156
+        },
+        {
+          "disk_free_bytes": 13360545792,
+          "group_rss_kib": 54640,
+          "reclaimable_fraction": 0.22647666931152344,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360480256,
+          "group_rss_kib": 71984,
+          "reclaimable_fraction": 0.2254467010498047,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360443392,
+          "group_rss_kib": 89808,
+          "reclaimable_fraction": 0.2242908477783203,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360267264,
+          "group_rss_kib": 107232,
+          "reclaimable_fraction": 0.22313880920410156,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360267264,
+          "group_rss_kib": 123680,
+          "reclaimable_fraction": 0.22755050659179688,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360267264,
+          "group_rss_kib": 140560,
+          "reclaimable_fraction": 0.22538375854492188,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360250880,
+          "group_rss_kib": 159968,
+          "reclaimable_fraction": 0.2243480682373047,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360230400,
+          "group_rss_kib": 195328,
+          "reclaimable_fraction": 0.22401809692382812,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360230400,
+          "group_rss_kib": 238320,
+          "reclaimable_fraction": 0.22279739379882812,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360230400,
+          "group_rss_kib": 289248,
+          "reclaimable_fraction": 0.22308349609375,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360230400,
+          "group_rss_kib": 331760,
+          "reclaimable_fraction": 0.22226333618164062,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360230400,
+          "group_rss_kib": 370208,
+          "reclaimable_fraction": 0.21988677978515625,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360230400,
+          "group_rss_kib": 407472,
+          "reclaimable_fraction": 0.2170238494873047,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360230400,
+          "group_rss_kib": 443456,
+          "reclaimable_fraction": 0.21570587158203125,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360173056,
+          "group_rss_kib": 474064,
+          "reclaimable_fraction": 0.21386337280273438,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360173056,
+          "group_rss_kib": 501040,
+          "reclaimable_fraction": 0.2135601043701172,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360173056,
+          "group_rss_kib": 521120,
+          "reclaimable_fraction": 0.2136058807373047,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360173056,
+          "group_rss_kib": 541328,
+          "reclaimable_fraction": 0.21326637268066406,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360173056,
+          "group_rss_kib": 568112,
+          "reclaimable_fraction": 0.21358489990234375,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360435200,
+          "group_rss_kib": 592496,
+          "reclaimable_fraction": 0.2134075164794922,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13360435200,
+          "group_rss_kib": 637104,
+          "reclaimable_fraction": 0.21242904663085938,
+          "scratch_bytes": 286340
+        },
+        {
+          "disk_free_bytes": 13341921280,
+          "group_rss_kib": 664720,
+          "reclaimable_fraction": 0.21283340454101562,
+          "scratch_bytes": 383162
+        },
+        {
+          "disk_free_bytes": 13341921280,
+          "group_rss_kib": 997088,
+          "reclaimable_fraction": 0.20873451232910156,
+          "scratch_bytes": 383162
+        },
+        {
+          "disk_free_bytes": 13341872128,
+          "group_rss_kib": 738576,
+          "reclaimable_fraction": 0.2114105224609375,
+          "scratch_bytes": 396715
+        },
+        {
+          "disk_free_bytes": 13341835264,
+          "group_rss_kib": 660320,
+          "reclaimable_fraction": 0.21201324462890625,
+          "scratch_bytes": 405592
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (242ms)\n\u2139 [3/4] Built Probe (194ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "3703e16c495ece1bca6fa395e9229ef5f54ad3eca91f9595afc3ae1dd3efa6ec",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13341724672,
+        "reclaimable_fraction": 0.21699142456054688,
+        "scratch_bytes": 434157
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4473,
+      "label": "clean-1-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13341577216,
+          "group_rss_kib": 130608,
+          "reclaimable_fraction": 0.21636390686035156,
+          "scratch_bytes": 434157
+        },
+        {
+          "disk_free_bytes": 13341577216,
+          "group_rss_kib": 621008,
+          "reclaimable_fraction": 0.21299362182617188,
+          "scratch_bytes": 434157
+        },
+        {
+          "disk_free_bytes": 13341577216,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.2105388641357422,
+          "scratch_bytes": 434157
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/lib/lean/Probe/Base.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "68d682129bedffc7b566850a2357d2b855a7a17c19c0a5909bad8e61e5693119",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13341573120,
+        "reclaimable_fraction": 0.2277698516845703,
+        "scratch_bytes": 435946
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.5072,
+      "label": "clean-1-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13341564928,
+          "group_rss_kib": 135808,
+          "reclaimable_fraction": 0.2196025848388672,
+          "scratch_bytes": 435946
+        },
+        {
+          "disk_free_bytes": 13341564928,
+          "group_rss_kib": 625232,
+          "reclaimable_fraction": 0.21118545532226562,
+          "scratch_bytes": 435946
+        },
+        {
+          "disk_free_bytes": 13341483008,
+          "group_rss_kib": 934912,
+          "reclaimable_fraction": 0.20911407470703125,
+          "scratch_bytes": 435946
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13341667328,
+        "reclaimable_fraction": 0.2165203094482422,
+        "scratch_bytes": 318523
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.8089,
+      "label": "clean-2",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13341663232,
+          "group_rss_kib": 127584,
+          "reclaimable_fraction": 0.21621131896972656,
+          "scratch_bytes": 318707
+        },
+        {
+          "disk_free_bytes": 13341663232,
+          "group_rss_kib": 615328,
+          "reclaimable_fraction": 0.21115875244140625,
+          "scratch_bytes": 318707
+        },
+        {
+          "disk_free_bytes": 13341556736,
+          "group_rss_kib": 744032,
+          "reclaimable_fraction": 0.2097606658935547,
+          "scratch_bytes": 415529
+        },
+        {
+          "disk_free_bytes": 13341515776,
+          "group_rss_kib": 711680,
+          "reclaimable_fraction": 0.2118968963623047,
+          "scratch_bytes": 429082
+        },
+        {
+          "disk_free_bytes": 13341478912,
+          "group_rss_kib": 661392,
+          "reclaimable_fraction": 0.20902252197265625,
+          "scratch_bytes": 437959
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (183ms)\n\u2139 [3/4] Built Probe (174ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "9dd20578e05332c9d83f0ca024c86b982b95b36d9d86f0841297d262a5e7ed5d",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13341388800,
+        "reclaimable_fraction": 0.2178974151611328,
+        "scratch_bytes": 462609
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4501,
+      "label": "clean-2-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13341298688,
+          "group_rss_kib": 141232,
+          "reclaimable_fraction": 0.21677207946777344,
+          "scratch_bytes": 462609
+        },
+        {
+          "disk_free_bytes": 13341298688,
+          "group_rss_kib": 632416,
+          "reclaimable_fraction": 0.21307945251464844,
+          "scratch_bytes": 462609
+        },
+        {
+          "disk_free_bytes": 13341294592,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.21221351623535156,
+          "scratch_bytes": 462609
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/lib/lean/Probe/Base.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "68d682129bedffc7b566850a2357d2b855a7a17c19c0a5909bad8e61e5693119",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13341294592,
+        "reclaimable_fraction": 0.2174205780029297,
+        "scratch_bytes": 464398
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4936,
+      "label": "clean-2-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13341151232,
+          "group_rss_kib": 142384,
+          "reclaimable_fraction": 0.215301513671875,
+          "scratch_bytes": 464398
+        },
+        {
+          "disk_free_bytes": 13341151232,
+          "group_rss_kib": 636256,
+          "reclaimable_fraction": 0.2089385986328125,
+          "scratch_bytes": 464398
+        },
+        {
+          "disk_free_bytes": 13341089792,
+          "group_rss_kib": 967440,
+          "reclaimable_fraction": 0.20876502990722656,
+          "scratch_bytes": 464398
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13341274112,
+        "reclaimable_fraction": 0.21631431579589844,
+        "scratch_bytes": 346973
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.8122,
+      "label": "cache-seed",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13341253632,
+          "group_rss_kib": 122608,
+          "reclaimable_fraction": 0.21394729614257812,
+          "scratch_bytes": 347157
+        },
+        {
+          "disk_free_bytes": 13340200960,
+          "group_rss_kib": 608752,
+          "reclaimable_fraction": 0.20962905883789062,
+          "scratch_bytes": 347157
+        },
+        {
+          "disk_free_bytes": 13340094464,
+          "group_rss_kib": 735760,
+          "reclaimable_fraction": 0.21073532104492188,
+          "scratch_bytes": 443979
+        },
+        {
+          "disk_free_bytes": 13340045312,
+          "group_rss_kib": 685440,
+          "reclaimable_fraction": 0.21088600158691406,
+          "scratch_bytes": 468648
+        },
+        {
+          "disk_free_bytes": 13340045312,
+          "group_rss_kib": 1027088,
+          "reclaimable_fraction": 0.20802688598632812,
+          "scratch_bytes": 468648
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (189ms)\n\u2139 [3/4] Built Probe (185ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "90e3684402b605ef0c4ea919cf8b9a4a3d5335c0d920ad9ed16ebef3ddaf866f",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339914240,
+        "reclaimable_fraction": 0.21715164184570312,
+        "scratch_bytes": 508693
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4505,
+      "label": "cache-seed-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339897856,
+          "group_rss_kib": 148512,
+          "reclaimable_fraction": 0.2160015106201172,
+          "scratch_bytes": 508693
+        },
+        {
+          "disk_free_bytes": 13339897856,
+          "group_rss_kib": 636768,
+          "reclaimable_fraction": 0.2114582061767578,
+          "scratch_bytes": 508693
+        },
+        {
+          "disk_free_bytes": 13339897856,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.21799087524414062,
+          "scratch_bytes": 508693
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/cache/artifacts/c478365929d67ada.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "1250f2dbbfcbe837c40da1a22625f54625b9a834c56052fe9036a2de9348282e",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339893760,
+        "reclaimable_fraction": 0.21811866760253906,
+        "scratch_bytes": 510477
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4988,
+      "label": "cache-seed-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339852800,
+          "group_rss_kib": 142752,
+          "reclaimable_fraction": 0.2156810760498047,
+          "scratch_bytes": 510477
+        },
+        {
+          "disk_free_bytes": 13339852800,
+          "group_rss_kib": 636928,
+          "reclaimable_fraction": 0.21094131469726562,
+          "scratch_bytes": 510477
+        },
+        {
+          "disk_free_bytes": 13339852800,
+          "group_rss_kib": 970432,
+          "reclaimable_fraction": 0.20781707763671875,
+          "scratch_bytes": 510477
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339963392,
+        "reclaimable_fraction": 0.2167224884033203,
+        "scratch_bytes": 393065
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4775,
+      "label": "cache-reuse-1",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339959296,
+          "group_rss_kib": 122176,
+          "reclaimable_fraction": 0.21544265747070312,
+          "scratch_bytes": 393249
+        },
+        {
+          "disk_free_bytes": 13339959296,
+          "group_rss_kib": 611952,
+          "reclaimable_fraction": 0.2129993438720703,
+          "scratch_bytes": 393249
+        },
+        {
+          "disk_free_bytes": 13339840512,
+          "group_rss_kib": 661344,
+          "reclaimable_fraction": 0.2104969024658203,
+          "scratch_bytes": 491311
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "3fc3f74f95f21bc2b7e9ea5621ad893ac30381e24c9dc36f4fd4dfd741f2dfa8",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339811840,
+        "reclaimable_fraction": 0.219329833984375,
+        "scratch_bytes": 494274
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4539,
+      "label": "cache-reuse-1-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339811840,
+          "group_rss_kib": 145552,
+          "reclaimable_fraction": 0.2182178497314453,
+          "scratch_bytes": 494274
+        },
+        {
+          "disk_free_bytes": 13339811840,
+          "group_rss_kib": 636624,
+          "reclaimable_fraction": 0.21596145629882812,
+          "scratch_bytes": 494274
+        },
+        {
+          "disk_free_bytes": 13339811840,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.21954345703125,
+          "scratch_bytes": 494274
+        }
+      ],
+      "returncode": 0,
+      "stderr": "\u2714 [2/3] Fetched Probe.Base\n",
+      "stderr_sha256": "236fd66e09f838226e15b4a38bf36784b3289a954bea3e3c767a6a7e00ba919f",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/cache/artifacts/c478365929d67ada.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "1250f2dbbfcbe837c40da1a22625f54625b9a834c56052fe9036a2de9348282e",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339807744,
+        "reclaimable_fraction": 0.22309303283691406,
+        "scratch_bytes": 496090
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4085,
+      "label": "cache-reuse-1-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339783168,
+          "group_rss_kib": 144016,
+          "reclaimable_fraction": 0.22235488891601562,
+          "scratch_bytes": 496090
+        },
+        {
+          "disk_free_bytes": 13339783168,
+          "group_rss_kib": 636640,
+          "reclaimable_fraction": 0.21894454956054688,
+          "scratch_bytes": 496090
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist\",\"endPos\":null,\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "e564ee490b89db084d043c0b28e0ae4372dd5b16312c8fe53dd548bb789eff2d",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339901952,
+        "reclaimable_fraction": 0.2226123809814453,
+        "scratch_bytes": 399584
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4753,
+      "label": "cache-reuse-2",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339897856,
+          "group_rss_kib": 125584,
+          "reclaimable_fraction": 0.2217082977294922,
+          "scratch_bytes": 399768
+        },
+        {
+          "disk_free_bytes": 13339897856,
+          "group_rss_kib": 617648,
+          "reclaimable_fraction": 0.219268798828125,
+          "scratch_bytes": 399768
+        },
+        {
+          "disk_free_bytes": 13339779072,
+          "group_rss_kib": 660800,
+          "reclaimable_fraction": 0.21703147888183594,
+          "scratch_bytes": 497830
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "3fc3f74f95f21bc2b7e9ea5621ad893ac30381e24c9dc36f4fd4dfd741f2dfa8",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339742208,
+        "reclaimable_fraction": 0.2225799560546875,
+        "scratch_bytes": 500792
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4538,
+      "label": "cache-reuse-2-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339742208,
+          "group_rss_kib": 143824,
+          "reclaimable_fraction": 0.22131919860839844,
+          "scratch_bytes": 500792
+        },
+        {
+          "disk_free_bytes": 13339742208,
+          "group_rss_kib": 637120,
+          "reclaimable_fraction": 0.21763992309570312,
+          "scratch_bytes": 500792
+        },
+        {
+          "disk_free_bytes": 13339742208,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.2222766876220703,
+          "scratch_bytes": 500792
+        }
+      ],
+      "returncode": 0,
+      "stderr": "\u2714 [2/3] Fetched Probe.Base\n",
+      "stderr_sha256": "236fd66e09f838226e15b4a38bf36784b3289a954bea3e3c767a6a7e00ba919f",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/cache/artifacts/c478365929d67ada.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "1250f2dbbfcbe837c40da1a22625f54625b9a834c56052fe9036a2de9348282e",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339742208,
+        "reclaimable_fraction": 0.22255706787109375,
+        "scratch_bytes": 502612
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4034,
+      "label": "cache-reuse-2-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339717632,
+          "group_rss_kib": 144144,
+          "reclaimable_fraction": 0.22153091430664062,
+          "scratch_bytes": 502612
+        },
+        {
+          "disk_free_bytes": 13339717632,
+          "group_rss_kib": 636240,
+          "reclaimable_fraction": 0.21812057495117188,
+          "scratch_bytes": 502612
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist\",\"endPos\":null,\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "e564ee490b89db084d043c0b28e0ae4372dd5b16312c8fe53dd548bb789eff2d",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339701248,
+        "reclaimable_fraction": 0.22224998474121094,
+        "scratch_bytes": 516784
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4005,
+      "label": "cache-goal-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339701248,
+          "group_rss_kib": 147360,
+          "reclaimable_fraction": 0.22170639038085938,
+          "scratch_bytes": 516784
+        },
+        {
+          "disk_free_bytes": 13339701248,
+          "group_rss_kib": 636448,
+          "reclaimable_fraction": 0.21761703491210938,
+          "scratch_bytes": 516784
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project/.lake/build/lib/lean/Probe.olean' of module Probe does not exist\",\"endPos\":null,\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "eb73c238ea748cf66063154d4943599f8c885560eb7601b39621f455d96a5f01",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339701248,
+        "reclaimable_fraction": 0.22269821166992188,
+        "scratch_bytes": 518503
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.7482,
+      "label": "materialize",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339701248,
+          "group_rss_kib": 147296,
+          "reclaimable_fraction": 0.22151947021484375,
+          "scratch_bytes": 518503
+        },
+        {
+          "disk_free_bytes": 13339701248,
+          "group_rss_kib": 636880,
+          "reclaimable_fraction": 0.2177581787109375,
+          "scratch_bytes": 518503
+        },
+        {
+          "disk_free_bytes": 13339697152,
+          "group_rss_kib": 987184,
+          "reclaimable_fraction": 0.21593666076660156,
+          "scratch_bytes": 518156
+        },
+        {
+          "disk_free_bytes": 13339664384,
+          "group_rss_kib": 891952,
+          "reclaimable_fraction": 0.21677780151367188,
+          "scratch_bytes": 531066
+        },
+        {
+          "disk_free_bytes": 13339635712,
+          "group_rss_kib": 639360,
+          "reclaimable_fraction": 0.2179393768310547,
+          "scratch_bytes": 539693
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (175ms)\n\u2139 [3/4] Built Probe (182ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "4037123318b3205e30c3822fe3b04779d175901e4db1f74a4c8eb7b5d2a063d1",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339545600,
+        "reclaimable_fraction": 0.22249221801757812,
+        "scratch_bytes": 566914
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4827,
+      "label": "materialized-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339529216,
+          "group_rss_kib": 146864,
+          "reclaimable_fraction": 0.22130775451660156,
+          "scratch_bytes": 566914
+        },
+        {
+          "disk_free_bytes": 13339529216,
+          "group_rss_kib": 636864,
+          "reclaimable_fraction": 0.21762466430664062,
+          "scratch_bytes": 566914
+        },
+        {
+          "disk_free_bytes": 13339529216,
+          "group_rss_kib": 980560,
+          "reclaimable_fraction": 0.21577072143554688,
+          "scratch_bytes": 566914
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339521024,
+        "reclaimable_fraction": 0.22228622436523438,
+        "scratch_bytes": 568934
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4835,
+      "label": "materialized-goal-v1-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339475968,
+          "group_rss_kib": 146240,
+          "reclaimable_fraction": 0.22163963317871094,
+          "scratch_bytes": 568934
+        },
+        {
+          "disk_free_bytes": 13339475968,
+          "group_rss_kib": 636672,
+          "reclaimable_fraction": 0.2183074951171875,
+          "scratch_bytes": 568934
+        },
+        {
+          "disk_free_bytes": 13339475968,
+          "group_rss_kib": 980640,
+          "reclaimable_fraction": 0.21580886840820312,
+          "scratch_bytes": 568934
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":50,\"line\":2},\"severity\":\"error\"}\n",
+      "stdout_sha256": "1628d1b60d1ff9749de0b57fffe13393f32bf3e8f8414ffdcecba5aa83c86c6b",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339475968,
+        "reclaimable_fraction": 0.22256088256835938,
+        "scratch_bytes": 571067
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_30_0_rc2/project",
+      "elapsed_s": 0.4936,
+      "label": "materialized-goal-v2-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339475968,
+          "group_rss_kib": 146928,
+          "reclaimable_fraction": 0.22158241271972656,
+          "scratch_bytes": 571067
+        },
+        {
+          "disk_free_bytes": 13339475968,
+          "group_rss_kib": 636624,
+          "reclaimable_fraction": 0.2169322967529297,
+          "scratch_bytes": 571067
+        },
+        {
+          "disk_free_bytes": 13339475968,
+          "group_rss_kib": 975840,
+          "reclaimable_fraction": 0.21425247192382812,
+          "scratch_bytes": 571067
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13339443200,
+        "reclaimable_fraction": 0.22226524353027344,
+        "scratch_bytes": 573136
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 4.7727,
+      "label": "clean-1",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13339443200,
+          "group_rss_kib": 32,
+          "reclaimable_fraction": 0.21987152099609375,
+          "scratch_bytes": 573136
+        },
+        {
+          "disk_free_bytes": 13339373568,
+          "group_rss_kib": 144,
+          "reclaimable_fraction": 0.2182769775390625,
+          "scratch_bytes": 573136
+        },
+        {
+          "disk_free_bytes": 13339373568,
+          "group_rss_kib": 144,
+          "reclaimable_fraction": 0.21651268005371094,
+          "scratch_bytes": 573136
+        },
+        {
+          "disk_free_bytes": 13339308032,
+          "group_rss_kib": 22640,
+          "reclaimable_fraction": 0.21384620666503906,
+          "scratch_bytes": 573136
+        },
+        {
+          "disk_free_bytes": 13339308032,
+          "group_rss_kib": 51376,
+          "reclaimable_fraction": 0.2104320526123047,
+          "scratch_bytes": 573136
+        },
+        {
+          "disk_free_bytes": 13338988544,
+          "group_rss_kib": 70352,
+          "reclaimable_fraction": 0.2091541290283203,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13338988544,
+          "group_rss_kib": 87392,
+          "reclaimable_fraction": 0.2170238494873047,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13338988544,
+          "group_rss_kib": 105200,
+          "reclaimable_fraction": 0.2147808074951172,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13338439680,
+          "group_rss_kib": 128512,
+          "reclaimable_fraction": 0.21239852905273438,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13338198016,
+          "group_rss_kib": 144640,
+          "reclaimable_fraction": 0.21160125732421875,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337481216,
+          "group_rss_kib": 159296,
+          "reclaimable_fraction": 0.2117137908935547,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337485312,
+          "group_rss_kib": 175056,
+          "reclaimable_fraction": 0.21087265014648438,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337485312,
+          "group_rss_kib": 196208,
+          "reclaimable_fraction": 0.211029052734375,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 233344,
+          "reclaimable_fraction": 0.21097183227539062,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 281936,
+          "reclaimable_fraction": 0.21097183227539062,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 333696,
+          "reclaimable_fraction": 0.2110576629638672,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 373952,
+          "reclaimable_fraction": 0.20923995971679688,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 409456,
+          "reclaimable_fraction": 0.2094097137451172,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 444736,
+          "reclaimable_fraction": 0.2087688446044922,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 469168,
+          "reclaimable_fraction": 0.20843505859375,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 498896,
+          "reclaimable_fraction": 0.20745277404785156,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337071616,
+          "group_rss_kib": 531264,
+          "reclaimable_fraction": 0.20712852478027344,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337034752,
+          "group_rss_kib": 551856,
+          "reclaimable_fraction": 0.20717811584472656,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337034752,
+          "group_rss_kib": 572160,
+          "reclaimable_fraction": 0.20705413818359375,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337034752,
+          "group_rss_kib": 599616,
+          "reclaimable_fraction": 0.20708847045898438,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337034752,
+          "group_rss_kib": 623920,
+          "reclaimable_fraction": 0.20516586303710938,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13337034752,
+          "group_rss_kib": 666544,
+          "reclaimable_fraction": 0.20458412170410156,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13336928256,
+          "group_rss_kib": 704416,
+          "reclaimable_fraction": 0.20355606079101562,
+          "scratch_bytes": 573320
+        },
+        {
+          "disk_free_bytes": 13336924160,
+          "group_rss_kib": 1059984,
+          "reclaimable_fraction": 0.2016010284423828,
+          "scratch_bytes": 671422
+        },
+        {
+          "disk_free_bytes": 13336879104,
+          "group_rss_kib": 782960,
+          "reclaimable_fraction": 0.20158004760742188,
+          "scratch_bytes": 685268
+        },
+        {
+          "disk_free_bytes": 13336862720,
+          "group_rss_kib": 704608,
+          "reclaimable_fraction": 0.19890594482421875,
+          "scratch_bytes": 685268
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (242ms)\n\u2139 [3/4] Built Probe (217ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "e9a859dee6f0732c58d3a3289034afebc29d890dbfdb01b040404471bc06dacc",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336756224,
+        "reclaimable_fraction": 0.21030616760253906,
+        "scratch_bytes": 724505
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.4635,
+      "label": "clean-1-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336743936,
+          "group_rss_kib": 154448,
+          "reclaimable_fraction": 0.2095012664794922,
+          "scratch_bytes": 724505
+        },
+        {
+          "disk_free_bytes": 13336743936,
+          "group_rss_kib": 656080,
+          "reclaimable_fraction": 0.20799827575683594,
+          "scratch_bytes": 724505
+        },
+        {
+          "disk_free_bytes": 13336743936,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.2049102783203125,
+          "scratch_bytes": 724505
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project/.lake/build/lib/lean/Probe/Base.olean\"]]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "6f4e73953a2fcc6e1bd4ea92e4ed3f920d774cf165c9c6e8ea647b7a7839f151",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336739840,
+        "reclaimable_fraction": 0.21456146240234375,
+        "scratch_bytes": 726279
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.5429,
+      "label": "clean-1-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336731648,
+          "group_rss_kib": 157056,
+          "reclaimable_fraction": 0.20907974243164062,
+          "scratch_bytes": 726279
+        },
+        {
+          "disk_free_bytes": 13336731648,
+          "group_rss_kib": 667552,
+          "reclaimable_fraction": 0.20323562622070312,
+          "scratch_bytes": 726279
+        },
+        {
+          "disk_free_bytes": 13336731648,
+          "group_rss_kib": 796288,
+          "reclaimable_fraction": 0.2014293670654297,
+          "scratch_bytes": 726279
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336915968,
+        "reclaimable_fraction": 0.2092151641845703,
+        "scratch_bytes": 606976
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.8504,
+      "label": "clean-2",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336907776,
+          "group_rss_kib": 126080,
+          "reclaimable_fraction": 0.2082386016845703,
+          "scratch_bytes": 607160
+        },
+        {
+          "disk_free_bytes": 13336899584,
+          "group_rss_kib": 599056,
+          "reclaimable_fraction": 0.204254150390625,
+          "scratch_bytes": 607160
+        },
+        {
+          "disk_free_bytes": 13336797184,
+          "group_rss_kib": 756960,
+          "reclaimable_fraction": 0.20493698120117188,
+          "scratch_bytes": 705262
+        },
+        {
+          "disk_free_bytes": 13336797184,
+          "group_rss_kib": 1089920,
+          "reclaimable_fraction": 0.20072555541992188,
+          "scratch_bytes": 705262
+        },
+        {
+          "disk_free_bytes": 13336727552,
+          "group_rss_kib": 860064,
+          "reclaimable_fraction": 0.20325660705566406,
+          "scratch_bytes": 719108
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (218ms)\n\u2139 [3/4] Built Probe (204ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "987892de0c429db9e07099b7ce2e5c32edecd59de4a81e651b9735872f33d0c8",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336604672,
+        "reclaimable_fraction": 0.21155738830566406,
+        "scratch_bytes": 753508
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.4517,
+      "label": "clean-2-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336600576,
+          "group_rss_kib": 155360,
+          "reclaimable_fraction": 0.21085548400878906,
+          "scratch_bytes": 753508
+        },
+        {
+          "disk_free_bytes": 13336600576,
+          "group_rss_kib": 663488,
+          "reclaimable_fraction": 0.20874786376953125,
+          "scratch_bytes": 753508
+        },
+        {
+          "disk_free_bytes": 13336600576,
+          "group_rss_kib": 683312,
+          "reclaimable_fraction": 0.2090606689453125,
+          "scratch_bytes": 753508
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project/.lake/build/lib/lean/Probe/Base.olean\"]]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "6f4e73953a2fcc6e1bd4ea92e4ed3f920d774cf165c9c6e8ea647b7a7839f151",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336600576,
+        "reclaimable_fraction": 0.21393203735351562,
+        "scratch_bytes": 755288
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.5381,
+      "label": "clean-2-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336600576,
+          "group_rss_kib": 149952,
+          "reclaimable_fraction": 0.21295928955078125,
+          "scratch_bytes": 755288
+        },
+        {
+          "disk_free_bytes": 13336600576,
+          "group_rss_kib": 665056,
+          "reclaimable_fraction": 0.20858001708984375,
+          "scratch_bytes": 755288
+        },
+        {
+          "disk_free_bytes": 13336592384,
+          "group_rss_kib": 801904,
+          "reclaimable_fraction": 0.2060985565185547,
+          "scratch_bytes": 755288
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336772608,
+        "reclaimable_fraction": 0.2127552032470703,
+        "scratch_bytes": 635985
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.8341,
+      "label": "cache-seed",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336764416,
+          "group_rss_kib": 129616,
+          "reclaimable_fraction": 0.2133197784423828,
+          "scratch_bytes": 636169
+        },
+        {
+          "disk_free_bytes": 13336743936,
+          "group_rss_kib": 629216,
+          "reclaimable_fraction": 0.20682525634765625,
+          "scratch_bytes": 636169
+        },
+        {
+          "disk_free_bytes": 13336641536,
+          "group_rss_kib": 762096,
+          "reclaimable_fraction": 0.2040081024169922,
+          "scratch_bytes": 734271
+        },
+        {
+          "disk_free_bytes": 13336641536,
+          "group_rss_kib": 1099904,
+          "reclaimable_fraction": 0.2024974822998047,
+          "scratch_bytes": 734271
+        },
+        {
+          "disk_free_bytes": 13336588288,
+          "group_rss_kib": 1032112,
+          "reclaimable_fraction": 0.20549392700195312,
+          "scratch_bytes": 759602
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (218ms)\n\u2139 [3/4] Built Probe (197ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "7854e80bba80b9ab764f4a9ec678ea6b779c37abfb7f11eefb09b728c61e571a",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336457216,
+        "reclaimable_fraction": 0.21256256103515625,
+        "scratch_bytes": 800886
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.4651,
+      "label": "cache-seed-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336449024,
+          "group_rss_kib": 152976,
+          "reclaimable_fraction": 0.21063995361328125,
+          "scratch_bytes": 800886
+        },
+        {
+          "disk_free_bytes": 13336449024,
+          "group_rss_kib": 662928,
+          "reclaimable_fraction": 0.2064685821533203,
+          "scratch_bytes": 800886
+        },
+        {
+          "disk_free_bytes": 13336449024,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.20492935180664062,
+          "scratch_bytes": 800886
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/cache/artifacts/bb6642e24ae3290f.olean\"]]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "796fa0d35a1ad9303d30558a73d0b681b46c331bdf1abc0a210580284e24b2d1",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336449024,
+        "reclaimable_fraction": 0.21098899841308594,
+        "scratch_bytes": 802657
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.5414,
+      "label": "cache-seed-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336420352,
+          "group_rss_kib": 154096,
+          "reclaimable_fraction": 0.20827293395996094,
+          "scratch_bytes": 802657
+        },
+        {
+          "disk_free_bytes": 13336420352,
+          "group_rss_kib": 668112,
+          "reclaimable_fraction": 0.20466232299804688,
+          "scratch_bytes": 802657
+        },
+        {
+          "disk_free_bytes": 13336420352,
+          "group_rss_kib": 799760,
+          "reclaimable_fraction": 0.20919036865234375,
+          "scratch_bytes": 802657
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336563712,
+        "reclaimable_fraction": 0.21547317504882812,
+        "scratch_bytes": 683365
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.5125,
+      "label": "cache-reuse-1",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336559616,
+          "group_rss_kib": 132224,
+          "reclaimable_fraction": 0.2147064208984375,
+          "scratch_bytes": 683549
+        },
+        {
+          "disk_free_bytes": 13336559616,
+          "group_rss_kib": 631888,
+          "reclaimable_fraction": 0.2153034210205078,
+          "scratch_bytes": 683549
+        },
+        {
+          "disk_free_bytes": 13336440832,
+          "group_rss_kib": 706624,
+          "reclaimable_fraction": 0.21198654174804688,
+          "scratch_bytes": 782891
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Build completed successfully (4 jobs).\n",
+      "stdout_sha256": "aee3d70d3b2c9bacc17719f0f81462902128b1735583320360093bc2f7ae9f37",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336416256,
+        "reclaimable_fraction": 0.2173633575439453,
+        "scratch_bytes": 785782
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.4634,
+      "label": "cache-reuse-1-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336416256,
+          "group_rss_kib": 154112,
+          "reclaimable_fraction": 0.2166156768798828,
+          "scratch_bytes": 785782
+        },
+        {
+          "disk_free_bytes": 13336416256,
+          "group_rss_kib": 663104,
+          "reclaimable_fraction": 0.2118663787841797,
+          "scratch_bytes": 785782
+        },
+        {
+          "disk_free_bytes": 13336416256,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.2110424041748047,
+          "scratch_bytes": 785782
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/cache/artifacts/bb6642e24ae3290f.olean\"]]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "796fa0d35a1ad9303d30558a73d0b681b46c331bdf1abc0a210580284e24b2d1",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336412160,
+        "reclaimable_fraction": 0.21767425537109375,
+        "scratch_bytes": 787553
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.4881,
+      "label": "cache-reuse-1-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336399872,
+          "group_rss_kib": 152224,
+          "reclaimable_fraction": 0.2157745361328125,
+          "scratch_bytes": 787553
+        },
+        {
+          "disk_free_bytes": 13336399872,
+          "group_rss_kib": 656192,
+          "reclaimable_fraction": 0.21109580993652344,
+          "scratch_bytes": 787553
+        },
+        {
+          "disk_free_bytes": 13336399872,
+          "group_rss_kib": 782928,
+          "reclaimable_fraction": 0.207977294921875,
+          "scratch_bytes": 787553
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist\",\"endPos\":null,\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "7334309d82bcb42bc9282571bec5dbd449dd01fce55e2fe987537a8162e7b3d9",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336522752,
+        "reclaimable_fraction": 0.21713638305664062,
+        "scratch_bytes": 689935
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.5179,
+      "label": "cache-reuse-2",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336514560,
+          "group_rss_kib": 130288,
+          "reclaimable_fraction": 0.21542930603027344,
+          "scratch_bytes": 690119
+        },
+        {
+          "disk_free_bytes": 13336514560,
+          "group_rss_kib": 619056,
+          "reclaimable_fraction": 0.2122802734375,
+          "scratch_bytes": 690119
+        },
+        {
+          "disk_free_bytes": 13336399872,
+          "group_rss_kib": 706896,
+          "reclaimable_fraction": 0.20632171630859375,
+          "scratch_bytes": 789461
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Build completed successfully (4 jobs).\n",
+      "stdout_sha256": "aee3d70d3b2c9bacc17719f0f81462902128b1735583320360093bc2f7ae9f37",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336367104,
+        "reclaimable_fraction": 0.2169647216796875,
+        "scratch_bytes": 792350
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.4626,
+      "label": "cache-reuse-2-setup",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336367104,
+          "group_rss_kib": 154736,
+          "reclaimable_fraction": 0.2154064178466797,
+          "scratch_bytes": 792350
+        },
+        {
+          "disk_free_bytes": 13336367104,
+          "group_rss_kib": 667520,
+          "reclaimable_fraction": 0.21503829956054688,
+          "scratch_bytes": 792350
+        },
+        {
+          "disk_free_bytes": 13336367104,
+          "group_rss_kib": 0,
+          "reclaimable_fraction": 0.2136554718017578,
+          "scratch_bytes": 792350
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[[\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/cache/artifacts/bb6642e24ae3290f.olean\"]]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+      "stdout_sha256": "796fa0d35a1ad9303d30558a73d0b681b46c331bdf1abc0a210580284e24b2d1",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336367104,
+        "reclaimable_fraction": 0.21880722045898438,
+        "scratch_bytes": 794122
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.4636,
+      "label": "cache-reuse-2-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336358912,
+          "group_rss_kib": 155232,
+          "reclaimable_fraction": 0.2172679901123047,
+          "scratch_bytes": 794122
+        },
+        {
+          "disk_free_bytes": 13336358912,
+          "group_rss_kib": 665168,
+          "reclaimable_fraction": 0.21468353271484375,
+          "scratch_bytes": 794122
+        },
+        {
+          "disk_free_bytes": 13336358912,
+          "group_rss_kib": 799360,
+          "reclaimable_fraction": 0.2122211456298828,
+          "scratch_bytes": 794122
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist\",\"endPos\":null,\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "7334309d82bcb42bc9282571bec5dbd449dd01fce55e2fe987537a8162e7b3d9",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336342528,
+        "reclaimable_fraction": 0.21859359741210938,
+        "scratch_bytes": 808459
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.4545,
+      "label": "cache-goal-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336342528,
+          "group_rss_kib": 156992,
+          "reclaimable_fraction": 0.21735572814941406,
+          "scratch_bytes": 808459
+        },
+        {
+          "disk_free_bytes": 13336342528,
+          "group_rss_kib": 669040,
+          "reclaimable_fraction": 0.21431350708007812,
+          "scratch_bytes": 808459
+        },
+        {
+          "disk_free_bytes": 13336342528,
+          "group_rss_kib": 681920,
+          "reclaimable_fraction": 0.21284866333007812,
+          "scratch_bytes": 808459
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"object file '/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project/.lake/build/lib/lean/Probe.olean' of module Probe does not exist\",\"endPos\":null,\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stdout_sha256": "80f4d6665e679ae4ada30b9e7356c4bd99bb31abd6eb2805cbc8810e4e3dc719",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336342528,
+        "reclaimable_fraction": 0.21819686889648438,
+        "scratch_bytes": 810349
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.7697,
+      "label": "materialize",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336342528,
+          "group_rss_kib": 155664,
+          "reclaimable_fraction": 0.21695327758789062,
+          "scratch_bytes": 810349
+        },
+        {
+          "disk_free_bytes": 13336338432,
+          "group_rss_kib": 668208,
+          "reclaimable_fraction": 0.21421241760253906,
+          "scratch_bytes": 810349
+        },
+        {
+          "disk_free_bytes": 13336330240,
+          "group_rss_kib": 842656,
+          "reclaimable_fraction": 0.21203041076660156,
+          "scratch_bytes": 810002
+        },
+        {
+          "disk_free_bytes": 13336297472,
+          "group_rss_kib": 764304,
+          "reclaimable_fraction": 0.2121562957763672,
+          "scratch_bytes": 823205
+        },
+        {
+          "disk_free_bytes": 13336268800,
+          "group_rss_kib": 683632,
+          "reclaimable_fraction": 0.21307945251464844,
+          "scratch_bytes": 832128
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "\u2714 [2/4] Built Probe.Base (200ms)\n\u2139 [3/4] Built Probe (196ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stdout_sha256": "96176be56ea8be5fdd2a94f9a4632a5f1954d39ae4e3630eb6897cfcf66cba5c",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336182784,
+        "reclaimable_fraction": 0.217681884765625,
+        "scratch_bytes": 859927
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.5339,
+      "label": "materialized-probe-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336174592,
+          "group_rss_kib": 156592,
+          "reclaimable_fraction": 0.2172565460205078,
+          "scratch_bytes": 859927
+        },
+        {
+          "disk_free_bytes": 13336170496,
+          "group_rss_kib": 668832,
+          "reclaimable_fraction": 0.21381568908691406,
+          "scratch_bytes": 859927
+        },
+        {
+          "disk_free_bytes": 13336170496,
+          "group_rss_kib": 831312,
+          "reclaimable_fraction": 0.21240615844726562,
+          "scratch_bytes": 859927
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stdout_sha256": "82d71d657035be1b239be7e69dde57d790b1910b8ac3e4744b261968ff3ec112",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336166400,
+        "reclaimable_fraction": 0.2177867889404297,
+        "scratch_bytes": 861932
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.536,
+      "label": "materialized-goal-v1-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336137728,
+          "group_rss_kib": 155664,
+          "reclaimable_fraction": 0.21727752685546875,
+          "scratch_bytes": 861932
+        },
+        {
+          "disk_free_bytes": 13336137728,
+          "group_rss_kib": 668960,
+          "reclaimable_fraction": 0.21429824829101562,
+          "scratch_bytes": 861932
+        },
+        {
+          "disk_free_bytes": 13336137728,
+          "group_rss_kib": 847808,
+          "reclaimable_fraction": 0.21278953552246094,
+          "scratch_bytes": 861932
+        }
+      ],
+      "returncode": 1,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":50,\"line\":2},\"severity\":\"error\"}\n",
+      "stdout_sha256": "1628d1b60d1ff9749de0b57fffe13393f32bf3e8f8414ffdcecba5aa83c86c6b",
+      "version": "v4.34.1"
+    },
+    {
+      "abort": null,
+      "admission": {
+        "disk_free_bytes": 13336137728,
+        "reclaimable_fraction": 0.21810531616210938,
+        "scratch_bytes": 864052
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Goal.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r447-lean-batch-429-430-434-20261001/runs/v4_34_1/project",
+      "elapsed_s": 0.5367,
+      "label": "materialized-goal-v2-json",
+      "live_samples": [
+        {
+          "disk_free_bytes": 13336137728,
+          "group_rss_kib": 157088,
+          "reclaimable_fraction": 0.21747970581054688,
+          "scratch_bytes": 864052
+        },
+        {
+          "disk_free_bytes": 13336137728,
+          "group_rss_kib": 669024,
+          "reclaimable_fraction": 0.21421051025390625,
+          "scratch_bytes": 864052
+        },
+        {
+          "disk_free_bytes": 13336137728,
+          "group_rss_kib": 879200,
+          "reclaimable_fraction": 0.2124042510986328,
+          "scratch_bytes": 864052
+        }
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "version": "v4.34.1"
+    }
+  ],
+  "fixture_sha256": {
+    "Goal.lean": "ca72613130b63f3ceedde54104312a54adc4949b1295b2ae0ee6f2f545799ced",
+    "Probe.lean": "1c6efbb5aafdec02b3f8c876307a6ac18fa59c18875960411ae2d22d932564ba",
+    "Probe/Base.lean": "353b9ceb04f5f739703468c468023da3d3c201a9d3a5398dae5bfa0119b57088",
+    "lake-manifest.json": "e00985d61f56efe3f912003a1628166119c495ce8c94ede0f09b56436e896072",
+    "lakefile.lean": "ba744b92c5524c6c8096aaa38f57da7c1944d7162546945300206027ba7a3674"
+  },
+  "guard": {
+    "disk_bytes": 10737418240,
+    "live_memory": 0.18,
+    "rss_kib": 1228800,
+    "scratch_bytes": 104857600,
+    "start_memory": 0.2,
+    "timeout_s": 30
+  },
+  "identities": {
+    "v4.29.0": {
+      "lake_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+      "lake_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+      "lean_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+      "lean_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37"
+    },
+    "v4.30.0-rc2": {
+      "lake_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+      "lean_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    },
+    "v4.34.1": {
+      "lake_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+      "lake_sha256": "c8c24f1398162ab4004e2a869952d8469f54293651151feaad4526f2b8474c6e",
+      "lean_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+      "lean_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+    }
+  },
+  "initial_admission": {
+    "disk_free_bytes": 13366972416,
+    "reclaimable_fraction": 0.2454662322998047,
+    "scratch_bytes": 9718
+  },
+  "schema": 1,
+  "status": "completed",
+  "versions": {
+    "v4.29.0": {
+      "build_cells": {
+        "cache-reuse-1": {
+          "artifacts": {
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 220,
+              "sha256": "937831192a3cc0d9890dd85c39ba8378e253ef84ed493dee037817214a842552"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 220,
+              "sha256": "90277ece634e193ca4b73b29914be46d587be8471153faa57f5b1829ae81f0d3"
+            }
+          },
+          "build_returncode": 0
+        },
+        "cache-reuse-2": {
+          "artifacts": {
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 220,
+              "sha256": "937831192a3cc0d9890dd85c39ba8378e253ef84ed493dee037817214a842552"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 220,
+              "sha256": "90277ece634e193ca4b73b29914be46d587be8471153faa57f5b1829ae81f0d3"
+            }
+          },
+          "build_returncode": 0
+        },
+        "cache-seed": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1129,
+              "sha256": "1baff1af41be5a3676dc979be9f24dd4fd0ffa100f6068f227e0f11a52e00d50"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "25c87c166df06d7e08fa7a899c0d0b576c7b37e13501162adb811972335c0883"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 307,
+              "sha256": "6ee20878711aca705872127326694d30e1095f0eb54587a5c5469ef6f23d3977"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1518,
+              "sha256": "e6363db68a19eef24fb0c3866154304a6c93ffb72fba9d957ec1f718c44b2b27"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "5e98b7ec8d200fd1e52922959df3ac28000ff1622b75c7519016c6bb42a96f98"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 3968,
+              "sha256": "fdd42592a11e7c790d04c7ee0ea27e1b755a856c12593d3c63147e620ce7a0f8"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "9df9e3a81824d9f1d40cb8acbd20cdc4297928910a1d96bcd78317de4be00090"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2413,
+              "sha256": "9316dd8a9a3f1672c1d97e1611e6d57199cd8c8b8382febd3aafa5f6916853f2"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 8096,
+              "sha256": "8b244ce6a0af768005398408c9ff9f2c493f7faefb4d028b07d2b5492bec3ebf"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "897b71b5b0e39acac109a1421ffcd930e05cd0e64c7be5062d8c78ec99d20216"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2188,
+              "sha256": "465f9ae28e6f3259f3f991bca445b4350328418f1129123b628abae21da2a2b6"
+            }
+          },
+          "build_returncode": 0
+        },
+        "clean-1": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1129,
+              "sha256": "1baff1af41be5a3676dc979be9f24dd4fd0ffa100f6068f227e0f11a52e00d50"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "25c87c166df06d7e08fa7a899c0d0b576c7b37e13501162adb811972335c0883"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 314,
+              "sha256": "162470611d33b648ef333b1f62f26ab30a82bf1bab3c20d8d9426ae6759781f9"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1518,
+              "sha256": "e6363db68a19eef24fb0c3866154304a6c93ffb72fba9d957ec1f718c44b2b27"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "5e98b7ec8d200fd1e52922959df3ac28000ff1622b75c7519016c6bb42a96f98"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 3968,
+              "sha256": "fdd42592a11e7c790d04c7ee0ea27e1b755a856c12593d3c63147e620ce7a0f8"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "9df9e3a81824d9f1d40cb8acbd20cdc4297928910a1d96bcd78317de4be00090"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2413,
+              "sha256": "9316dd8a9a3f1672c1d97e1611e6d57199cd8c8b8382febd3aafa5f6916853f2"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 8096,
+              "sha256": "8b244ce6a0af768005398408c9ff9f2c493f7faefb4d028b07d2b5492bec3ebf"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "897b71b5b0e39acac109a1421ffcd930e05cd0e64c7be5062d8c78ec99d20216"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2188,
+              "sha256": "465f9ae28e6f3259f3f991bca445b4350328418f1129123b628abae21da2a2b6"
+            }
+          },
+          "build_returncode": 0
+        },
+        "clean-2": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1129,
+              "sha256": "1baff1af41be5a3676dc979be9f24dd4fd0ffa100f6068f227e0f11a52e00d50"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "25c87c166df06d7e08fa7a899c0d0b576c7b37e13501162adb811972335c0883"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 314,
+              "sha256": "162470611d33b648ef333b1f62f26ab30a82bf1bab3c20d8d9426ae6759781f9"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1518,
+              "sha256": "e6363db68a19eef24fb0c3866154304a6c93ffb72fba9d957ec1f718c44b2b27"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "5e98b7ec8d200fd1e52922959df3ac28000ff1622b75c7519016c6bb42a96f98"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 3968,
+              "sha256": "fdd42592a11e7c790d04c7ee0ea27e1b755a856c12593d3c63147e620ce7a0f8"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "9df9e3a81824d9f1d40cb8acbd20cdc4297928910a1d96bcd78317de4be00090"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2413,
+              "sha256": "9316dd8a9a3f1672c1d97e1611e6d57199cd8c8b8382febd3aafa5f6916853f2"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 8096,
+              "sha256": "8b244ce6a0af768005398408c9ff9f2c493f7faefb4d028b07d2b5492bec3ebf"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "897b71b5b0e39acac109a1421ffcd930e05cd0e64c7be5062d8c78ec99d20216"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2188,
+              "sha256": "465f9ae28e6f3259f3f991bca445b4350328418f1129123b628abae21da2a2b6"
+            }
+          },
+          "build_returncode": 0
+        }
+      },
+      "cache_snapshot": {
+        "artifacts/3c827fe79a56b74d.olean": {
+          "bytes": 3968,
+          "sha256": "fdd42592a11e7c790d04c7ee0ea27e1b755a856c12593d3c63147e620ce7a0f8"
+        },
+        "artifacts/4d05caa0c8ec5623.ilean": {
+          "bytes": 393,
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+        },
+        "artifacts/5c51d05011527ce1.olean": {
+          "bytes": 8096,
+          "sha256": "8b244ce6a0af768005398408c9ff9f2c493f7faefb4d028b07d2b5492bec3ebf"
+        },
+        "artifacts/7c75e4f9775d4db2.c": {
+          "bytes": 1518,
+          "sha256": "e6363db68a19eef24fb0c3866154304a6c93ffb72fba9d957ec1f718c44b2b27"
+        },
+        "artifacts/834835f90cae5e82.ilean": {
+          "bytes": 489,
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+        },
+        "artifacts/d968f6bf4ffb1c6a.c": {
+          "bytes": 1129,
+          "sha256": "1baff1af41be5a3676dc979be9f24dd4fd0ffa100f6068f227e0f11a52e00d50"
+        },
+        "outputs/compilation_probe/63ee257081e47bf4.json": {
+          "bytes": 156,
+          "sha256": "1bca0cab1163dd9e6ef951dd22fb92de1e73ea47177688ab002d7edb55ef5066"
+        },
+        "outputs/compilation_probe/97228db68887fd57.json": {
+          "bytes": 156,
+          "sha256": "1b9875b26f5b51ac737cec8916cd29c05dd0ca1ab703b395566dd74181e04768"
+        }
+      },
+      "materialized_artifacts": {
+        "ir/Probe.c": {
+          "bytes": 1129,
+          "sha256": "1baff1af41be5a3676dc979be9f24dd4fd0ffa100f6068f227e0f11a52e00d50"
+        },
+        "ir/Probe.c.hash": {
+          "bytes": 16,
+          "sha256": "25c87c166df06d7e08fa7a899c0d0b576c7b37e13501162adb811972335c0883"
+        },
+        "ir/Probe.setup.json": {
+          "bytes": 314,
+          "sha256": "162470611d33b648ef333b1f62f26ab30a82bf1bab3c20d8d9426ae6759781f9"
+        },
+        "ir/Probe/Base.c": {
+          "bytes": 1518,
+          "sha256": "e6363db68a19eef24fb0c3866154304a6c93ffb72fba9d957ec1f718c44b2b27"
+        },
+        "ir/Probe/Base.c.hash": {
+          "bytes": 16,
+          "sha256": "5e98b7ec8d200fd1e52922959df3ac28000ff1622b75c7519016c6bb42a96f98"
+        },
+        "ir/Probe/Base.setup.json": {
+          "bytes": 142,
+          "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+        },
+        "lib/lean/Probe.ilean": {
+          "bytes": 393,
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+        },
+        "lib/lean/Probe.ilean.hash": {
+          "bytes": 16,
+          "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+        },
+        "lib/lean/Probe.olean": {
+          "bytes": 3968,
+          "sha256": "fdd42592a11e7c790d04c7ee0ea27e1b755a856c12593d3c63147e620ce7a0f8"
+        },
+        "lib/lean/Probe.olean.hash": {
+          "bytes": 16,
+          "sha256": "9df9e3a81824d9f1d40cb8acbd20cdc4297928910a1d96bcd78317de4be00090"
+        },
+        "lib/lean/Probe.trace": {
+          "bytes": 2413,
+          "sha256": "9316dd8a9a3f1672c1d97e1611e6d57199cd8c8b8382febd3aafa5f6916853f2"
+        },
+        "lib/lean/Probe/Base.ilean": {
+          "bytes": 489,
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+        },
+        "lib/lean/Probe/Base.ilean.hash": {
+          "bytes": 16,
+          "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+        },
+        "lib/lean/Probe/Base.olean": {
+          "bytes": 8096,
+          "sha256": "8b244ce6a0af768005398408c9ff9f2c493f7faefb4d028b07d2b5492bec3ebf"
+        },
+        "lib/lean/Probe/Base.olean.hash": {
+          "bytes": 16,
+          "sha256": "897b71b5b0e39acac109a1421ffcd930e05cd0e64c7be5062d8c78ec99d20216"
+        },
+        "lib/lean/Probe/Base.trace": {
+          "bytes": 2188,
+          "sha256": "465f9ae28e6f3259f3f991bca445b4350328418f1129123b628abae21da2a2b6"
+        }
+      }
+    },
+    "v4.30.0-rc2": {
+      "build_cells": {
+        "cache-reuse-1": {
+          "artifacts": {
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 234,
+              "sha256": "b95c6a7c6ed49b07d1cb2a71c59681c29c08f9d8e847206b44f0cdf68c1ee17e"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 234,
+              "sha256": "3954562edd00621f47c311fc00c7d15856ef03d14da098e51b6ce774e8d3063d"
+            }
+          },
+          "build_returncode": 0
+        },
+        "cache-reuse-2": {
+          "artifacts": {
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 234,
+              "sha256": "b95c6a7c6ed49b07d1cb2a71c59681c29c08f9d8e847206b44f0cdf68c1ee17e"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 234,
+              "sha256": "3954562edd00621f47c311fc00c7d15856ef03d14da098e51b6ce774e8d3063d"
+            }
+          },
+          "build_returncode": 0
+        },
+        "cache-seed": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1297,
+              "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 311,
+              "sha256": "78a135b1638babaaa6128b5b8304822d5940400c5ff84bfb106951c37a200503"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1744,
+              "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 4680,
+              "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2459,
+              "sha256": "388f533264496adeec5f99919280426df5110546eb73ef20df1f2af9d4c0db70"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 8720,
+              "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2234,
+              "sha256": "d3dc1b51ac8f06f0ea77ae88d47bd9aacb29cbd82a37fa9bcf123e5d2bd9c53d"
+            }
+          },
+          "build_returncode": 0
+        },
+        "clean-1": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1297,
+              "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 318,
+              "sha256": "781af9ad7865ee20db53a3dfe7e3deaa01b2eb33afd784641ca9178674062106"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1744,
+              "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 4680,
+              "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2459,
+              "sha256": "388f533264496adeec5f99919280426df5110546eb73ef20df1f2af9d4c0db70"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 8720,
+              "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2234,
+              "sha256": "d3dc1b51ac8f06f0ea77ae88d47bd9aacb29cbd82a37fa9bcf123e5d2bd9c53d"
+            }
+          },
+          "build_returncode": 0
+        },
+        "clean-2": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1297,
+              "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 318,
+              "sha256": "781af9ad7865ee20db53a3dfe7e3deaa01b2eb33afd784641ca9178674062106"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1744,
+              "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 4680,
+              "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2459,
+              "sha256": "388f533264496adeec5f99919280426df5110546eb73ef20df1f2af9d4c0db70"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 8720,
+              "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2234,
+              "sha256": "d3dc1b51ac8f06f0ea77ae88d47bd9aacb29cbd82a37fa9bcf123e5d2bd9c53d"
+            }
+          },
+          "build_returncode": 0
+        }
+      },
+      "cache_snapshot": {
+        "artifacts/4d05caa0c8ec5623.ilean": {
+          "bytes": 393,
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+        },
+        "artifacts/4f64576591449c04.olean": {
+          "bytes": 4680,
+          "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431"
+        },
+        "artifacts/7503ebd952acded4.c": {
+          "bytes": 1744,
+          "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae"
+        },
+        "artifacts/834835f90cae5e82.ilean": {
+          "bytes": 489,
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+        },
+        "artifacts/c478365929d67ada.olean": {
+          "bytes": 8720,
+          "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+        },
+        "artifacts/e7d2a913bb134275.c": {
+          "bytes": 1297,
+          "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db"
+        },
+        "outputs/compilation_probe/31d6c2d627ba0f1b.json": {
+          "bytes": 170,
+          "sha256": "3dbee9c4bf9e26199dc8236d33694950f5d995adbf38773755c5f08a88514168"
+        },
+        "outputs/compilation_probe/32a504246f4b1c06.json": {
+          "bytes": 170,
+          "sha256": "602368cb5b02942c49ac0dd3c94e571898f1cb90720d3df1a883edb53b1ddb99"
+        }
+      },
+      "materialized_artifacts": {
+        "ir/Probe.c": {
+          "bytes": 1297,
+          "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db"
+        },
+        "ir/Probe.c.hash": {
+          "bytes": 16,
+          "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538"
+        },
+        "ir/Probe.setup.json": {
+          "bytes": 318,
+          "sha256": "781af9ad7865ee20db53a3dfe7e3deaa01b2eb33afd784641ca9178674062106"
+        },
+        "ir/Probe/Base.c": {
+          "bytes": 1744,
+          "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae"
+        },
+        "ir/Probe/Base.c.hash": {
+          "bytes": 16,
+          "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a"
+        },
+        "ir/Probe/Base.setup.json": {
+          "bytes": 142,
+          "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+        },
+        "lib/lean/Probe.ilean": {
+          "bytes": 393,
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+        },
+        "lib/lean/Probe.ilean.hash": {
+          "bytes": 16,
+          "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+        },
+        "lib/lean/Probe.olean": {
+          "bytes": 4680,
+          "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431"
+        },
+        "lib/lean/Probe.olean.hash": {
+          "bytes": 16,
+          "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199"
+        },
+        "lib/lean/Probe.trace": {
+          "bytes": 2459,
+          "sha256": "388f533264496adeec5f99919280426df5110546eb73ef20df1f2af9d4c0db70"
+        },
+        "lib/lean/Probe/Base.ilean": {
+          "bytes": 489,
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+        },
+        "lib/lean/Probe/Base.ilean.hash": {
+          "bytes": 16,
+          "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+        },
+        "lib/lean/Probe/Base.olean": {
+          "bytes": 8720,
+          "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+        },
+        "lib/lean/Probe/Base.olean.hash": {
+          "bytes": 16,
+          "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236"
+        },
+        "lib/lean/Probe/Base.trace": {
+          "bytes": 2234,
+          "sha256": "d3dc1b51ac8f06f0ea77ae88d47bd9aacb29cbd82a37fa9bcf123e5d2bd9c53d"
+        }
+      }
+    },
+    "v4.34.1": {
+      "build_cells": {
+        "cache-reuse-1": {
+          "artifacts": {
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 234,
+              "sha256": "af7c39c08f3bd30526c58a9bf5a46cf25fd53fd4d22d30f707710d1b4f3738d6"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 234,
+              "sha256": "2f7bd5321205f0e2e066f361e0156f82a18ffd4c2c7ac12df2072d3303c28c27"
+            }
+          },
+          "build_returncode": 0
+        },
+        "cache-reuse-2": {
+          "artifacts": {
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 234,
+              "sha256": "af7c39c08f3bd30526c58a9bf5a46cf25fd53fd4d22d30f707710d1b4f3738d6"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 234,
+              "sha256": "2f7bd5321205f0e2e066f361e0156f82a18ffd4c2c7ac12df2072d3303c28c27"
+            }
+          },
+          "build_returncode": 0
+        },
+        "cache-seed": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1370,
+              "sha256": "7fdabb2c21faf9be090a9573b273aa90a51f59d607eaf7522cb60d60abc872b4"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "0333a882b2ee624323671bc7b0c294b5ea57c57e866b5dd77cf00fd370801c8b"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 309,
+              "sha256": "e8f2616d56c0cb06fc67ed6bd011e3c5eb68fde650fb11c6575686663c38fdde"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1817,
+              "sha256": "4c10214dbdf41f34094bc92e2f31b4be4f9eed68055b642807af86d48e45a25a"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "fc7e7637511732b6ae216a9469768e422bcf5ffc030954b5c2eb1c04e26bd061"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 4976,
+              "sha256": "a5e4aae94caef6c85fb8d542b81ed681bf2439bf7526647f2adf4f59e65fe80d"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "05016dc90e8d49961c9c0ef3f8f07240bdc2b955c4d519cf23de977f31d09ff6"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2386,
+              "sha256": "c0ab4ee5e6775d4d6f815bf7aae0849407606fabe06baea7bc526a731a36a93f"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 9016,
+              "sha256": "4a10a7913dfa1861f30eb846d3e8e99ed52809007b4fa954b238d215a9447140"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "db2399ec3bf4bd68615767d21dc072683e7e0a997b7276fe3a7509fc2d50831e"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2160,
+              "sha256": "de6b077e16eb35c04e28463fe0130b1e899fb9f4a2e157eac4da1c248ee64b6a"
+            }
+          },
+          "build_returncode": 0
+        },
+        "clean-1": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1370,
+              "sha256": "7fdabb2c21faf9be090a9573b273aa90a51f59d607eaf7522cb60d60abc872b4"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "0333a882b2ee624323671bc7b0c294b5ea57c57e866b5dd77cf00fd370801c8b"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 316,
+              "sha256": "33f79137d55bffc63a9ccb9907b90fc7e72d9e63bdb551dfd3183276a286b60c"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1817,
+              "sha256": "4c10214dbdf41f34094bc92e2f31b4be4f9eed68055b642807af86d48e45a25a"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "fc7e7637511732b6ae216a9469768e422bcf5ffc030954b5c2eb1c04e26bd061"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 4976,
+              "sha256": "a5e4aae94caef6c85fb8d542b81ed681bf2439bf7526647f2adf4f59e65fe80d"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "05016dc90e8d49961c9c0ef3f8f07240bdc2b955c4d519cf23de977f31d09ff6"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2386,
+              "sha256": "c0ab4ee5e6775d4d6f815bf7aae0849407606fabe06baea7bc526a731a36a93f"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 9016,
+              "sha256": "4a10a7913dfa1861f30eb846d3e8e99ed52809007b4fa954b238d215a9447140"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "db2399ec3bf4bd68615767d21dc072683e7e0a997b7276fe3a7509fc2d50831e"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2160,
+              "sha256": "de6b077e16eb35c04e28463fe0130b1e899fb9f4a2e157eac4da1c248ee64b6a"
+            }
+          },
+          "build_returncode": 0
+        },
+        "clean-2": {
+          "artifacts": {
+            "ir/Probe.c": {
+              "bytes": 1370,
+              "sha256": "7fdabb2c21faf9be090a9573b273aa90a51f59d607eaf7522cb60d60abc872b4"
+            },
+            "ir/Probe.c.hash": {
+              "bytes": 16,
+              "sha256": "0333a882b2ee624323671bc7b0c294b5ea57c57e866b5dd77cf00fd370801c8b"
+            },
+            "ir/Probe.setup.json": {
+              "bytes": 316,
+              "sha256": "33f79137d55bffc63a9ccb9907b90fc7e72d9e63bdb551dfd3183276a286b60c"
+            },
+            "ir/Probe/Base.c": {
+              "bytes": 1817,
+              "sha256": "4c10214dbdf41f34094bc92e2f31b4be4f9eed68055b642807af86d48e45a25a"
+            },
+            "ir/Probe/Base.c.hash": {
+              "bytes": 16,
+              "sha256": "fc7e7637511732b6ae216a9469768e422bcf5ffc030954b5c2eb1c04e26bd061"
+            },
+            "ir/Probe/Base.setup.json": {
+              "bytes": 142,
+              "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+            },
+            "lib/lean/Probe.ilean": {
+              "bytes": 393,
+              "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+            },
+            "lib/lean/Probe.ilean.hash": {
+              "bytes": 16,
+              "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+            },
+            "lib/lean/Probe.olean": {
+              "bytes": 4976,
+              "sha256": "a5e4aae94caef6c85fb8d542b81ed681bf2439bf7526647f2adf4f59e65fe80d"
+            },
+            "lib/lean/Probe.olean.hash": {
+              "bytes": 16,
+              "sha256": "05016dc90e8d49961c9c0ef3f8f07240bdc2b955c4d519cf23de977f31d09ff6"
+            },
+            "lib/lean/Probe.trace": {
+              "bytes": 2386,
+              "sha256": "c0ab4ee5e6775d4d6f815bf7aae0849407606fabe06baea7bc526a731a36a93f"
+            },
+            "lib/lean/Probe/Base.ilean": {
+              "bytes": 489,
+              "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+            },
+            "lib/lean/Probe/Base.ilean.hash": {
+              "bytes": 16,
+              "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+            },
+            "lib/lean/Probe/Base.olean": {
+              "bytes": 9016,
+              "sha256": "4a10a7913dfa1861f30eb846d3e8e99ed52809007b4fa954b238d215a9447140"
+            },
+            "lib/lean/Probe/Base.olean.hash": {
+              "bytes": 16,
+              "sha256": "db2399ec3bf4bd68615767d21dc072683e7e0a997b7276fe3a7509fc2d50831e"
+            },
+            "lib/lean/Probe/Base.trace": {
+              "bytes": 2160,
+              "sha256": "de6b077e16eb35c04e28463fe0130b1e899fb9f4a2e157eac4da1c248ee64b6a"
+            }
+          },
+          "build_returncode": 0
+        }
+      },
+      "cache_snapshot": {
+        "artifacts/4d05caa0c8ec5623.ilean": {
+          "bytes": 393,
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+        },
+        "artifacts/591772be26f96ab9.c": {
+          "bytes": 1370,
+          "sha256": "7fdabb2c21faf9be090a9573b273aa90a51f59d607eaf7522cb60d60abc872b4"
+        },
+        "artifacts/834835f90cae5e82.ilean": {
+          "bytes": 489,
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+        },
+        "artifacts/acd4169372452176.olean": {
+          "bytes": 4976,
+          "sha256": "a5e4aae94caef6c85fb8d542b81ed681bf2439bf7526647f2adf4f59e65fe80d"
+        },
+        "artifacts/bb6642e24ae3290f.olean": {
+          "bytes": 9016,
+          "sha256": "4a10a7913dfa1861f30eb846d3e8e99ed52809007b4fa954b238d215a9447140"
+        },
+        "artifacts/e1cacea8d484dd8e.c": {
+          "bytes": 1817,
+          "sha256": "4c10214dbdf41f34094bc92e2f31b4be4f9eed68055b642807af86d48e45a25a"
+        },
+        "outputs/compilation_probe/22a5342b4cb3f025.json": {
+          "bytes": 170,
+          "sha256": "47924188be31136b282bc8b1798065a76cf40c9236c24c6c40e801d3e8a5e67f"
+        },
+        "outputs/compilation_probe/92b80f217421324a.json": {
+          "bytes": 170,
+          "sha256": "67cd93dda33b9d706e6f6344fe999d3ddc901f886fd9ce4648658adc142d8e90"
+        }
+      },
+      "materialized_artifacts": {
+        "ir/Probe.c": {
+          "bytes": 1370,
+          "sha256": "7fdabb2c21faf9be090a9573b273aa90a51f59d607eaf7522cb60d60abc872b4"
+        },
+        "ir/Probe.c.hash": {
+          "bytes": 16,
+          "sha256": "0333a882b2ee624323671bc7b0c294b5ea57c57e866b5dd77cf00fd370801c8b"
+        },
+        "ir/Probe.setup.json": {
+          "bytes": 316,
+          "sha256": "33f79137d55bffc63a9ccb9907b90fc7e72d9e63bdb551dfd3183276a286b60c"
+        },
+        "ir/Probe/Base.c": {
+          "bytes": 1817,
+          "sha256": "4c10214dbdf41f34094bc92e2f31b4be4f9eed68055b642807af86d48e45a25a"
+        },
+        "ir/Probe/Base.c.hash": {
+          "bytes": 16,
+          "sha256": "fc7e7637511732b6ae216a9469768e422bcf5ffc030954b5c2eb1c04e26bd061"
+        },
+        "ir/Probe/Base.setup.json": {
+          "bytes": 142,
+          "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738"
+        },
+        "lib/lean/Probe.ilean": {
+          "bytes": 393,
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421"
+        },
+        "lib/lean/Probe.ilean.hash": {
+          "bytes": 16,
+          "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b"
+        },
+        "lib/lean/Probe.olean": {
+          "bytes": 4976,
+          "sha256": "a5e4aae94caef6c85fb8d542b81ed681bf2439bf7526647f2adf4f59e65fe80d"
+        },
+        "lib/lean/Probe.olean.hash": {
+          "bytes": 16,
+          "sha256": "05016dc90e8d49961c9c0ef3f8f07240bdc2b955c4d519cf23de977f31d09ff6"
+        },
+        "lib/lean/Probe.trace": {
+          "bytes": 2386,
+          "sha256": "c0ab4ee5e6775d4d6f815bf7aae0849407606fabe06baea7bc526a731a36a93f"
+        },
+        "lib/lean/Probe/Base.ilean": {
+          "bytes": 489,
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20"
+        },
+        "lib/lean/Probe/Base.ilean.hash": {
+          "bytes": 16,
+          "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab"
+        },
+        "lib/lean/Probe/Base.olean": {
+          "bytes": 9016,
+          "sha256": "4a10a7913dfa1861f30eb846d3e8e99ed52809007b4fa954b238d215a9447140"
+        },
+        "lib/lean/Probe/Base.olean.hash": {
+          "bytes": 16,
+          "sha256": "db2399ec3bf4bd68615767d21dc072683e7e0a997b7276fe3a7509fc2d50831e"
+        },
+        "lib/lean/Probe/Base.trace": {
+          "bytes": 2160,
+          "sha256": "de6b077e16eb35c04e28463fe0130b1e899fb9f4a2e157eac4da1c248ee64b6a"
+        }
+      }
+    }
+  }
+}

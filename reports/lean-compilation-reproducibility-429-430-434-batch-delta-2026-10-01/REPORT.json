@@ -1,0 +1,9 @@
+{
+  "topics": ["lean", "lean/compilation", "lean/determinism", "lean/lake", "lean/version-difference"],
+  "subjects": [
+    {"name":"Lean/Lake two-module batch fixture at 4.29.0","identity":{"repository":"leanprover/lean4","revision":"98dc76e3c0a9b856c9b98726b713fb04fab16740","version":"v4.29.0"}},
+    {"name":"Lean/Lake two-module batch fixture at 4.30.0-rc2","identity":{"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","version":"v4.30.0-rc2"}},
+    {"name":"Lean/Lake two-module batch fixture at 4.34.1","identity":{"repository":"leanprover/lean4","revision":"5045d0056413266e57c625dcd7c365b10e377c52","version":"v4.34.1"}}
+  ],
+  "observed_at": "2026-10-01"
+}

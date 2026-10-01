@@ -1,0 +1,33 @@
+# R447: two-module Lean batch compilation at 4.29, 4.30-rc2, and 4.34.1
+
+## Result
+
+The published [R447 predecessor](../lean-compilation-reproducibility-cross-version-v4-29-v4-30/REPORT.md) compared Lean/Lake 4.29.0 with 4.30.0-rc2 on a two-module fixture. This batch-only replay used the **same five source/config files**, added installed Lean/Lake **4.34.1**, and reran all three versions under one sequential harness. Each version's two clean builds produced the same 16 artifact paths and byte-identical contents. Each version's two cache reuse builds matched each other across six project-local files, omitted both `.olean` files, and passed `lake build Probe`; `lake env lean --json Probe.lean` then failed to import `Probe.Base` from the absent local `.olean`. A no-cache materialization restored the 16 clean artifact hashes and batch import success. This narrow cache/import distinction persists in 4.34.1.
+
+One directly observed **newer-version interface difference** is the JSON shape returned by `lake setup-file Probe.lean`: `importArts["Probe.Base"]` is a one-element **flat string array** in 4.29/4.30, but a **nested array of string arrays** in 4.34.1, in both clean and cache reuse states. In cache reuse, the selected path is under the private cache in all three versions. The 4.34.1 cache reuse build also prints only `Build completed successfully (4 jobs).` where both earlier versions print `Fetched Probe.Base` and `Fetched Probe`; that is a logging difference in these cells, not evidence that caching did not occur.
+
+The selected `lean --json` results are unchanged at the compared semantic projection: after materialization, `Probe.lean` exits 0 and reports `5` and no axioms for `Probe.inc_four`; the unsolved `Goal.lean` exits 1 with the same `Elab.synthPlaceholder` and `Tactic.unsolvedGoals` records (severity, position, and text); the solved variant exits 0 with no diagnostics. This does not compare transient LSP diagnostics, RPC capabilities, or server behavior. **No Lean server was launched.**
+
+## Fixture and execution
+
+The [fixture](fixture/) copies the predecessor's `lakefile.lean`, relative `lake-manifest.json`, `Probe/Base.lean`, `Probe.lean`, and `Goal.lean` byte for byte. Their five SHA-256 values are checked by [the probe](support/probe.py) against the predecessor report. Only the `lean-toolchain` file changes per version. The two modules define `Probe.inc`, prove `inc_zero` and `inc_four`, evaluate `inc 4`, and print axioms; the separate goal has `exact ?_`, then a controlled `simpa using h` variant. There are no external package dependencies or network downloads. The harness used `LAKE_NO_NET=1`, `LEAN_NUM_THREADS=1`, `LAKE_JOBS=1`, `--keep-toolchain`, and a separate cache/project for each version.
+
+| Toolchain | Exact Lean commit | `lean` SHA-256 | `lake` SHA-256 | Clean `Probe.olean` SHA-256 |
+| --- | --- | --- | --- | --- |
+| 4.29.0 | `98dc76e3c0a9b856c9b98726b713fb04fab16740` | `2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37` | `0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b` | `fdd42592a11e7c790d04c7ee0ea27e1b755a856c12593d3c63147e620ce7a0f8` |
+| 4.30.0-rc2 | `3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc` | `b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997` | `9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb` | `0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431` |
+| 4.34.1 | `5045d0056413266e57c625dcd7c365b10e377c52` | `1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554` | `c8c24f1398162ab4004e2a869952d8469f54293651151feaad4526f2b8474c6e` | `a5e4aae94caef6c85fb8d542b81ed681bf2439bf7526647f2adf4f59e65fe80d` |
+
+The `lean`/`lake --version` strings and exact binary hashes are in [toolchain-identities.json](support/toolchain-identities.json). For each version the harness removed only its project `.lake` tree before clean-1, clean-2, cache-seed, cache-reuse-1, and cache-reuse-2. It invoked `lake --keep-toolchain --no-cache --old build Probe` for clean cells and `lake --keep-toolchain --old build Probe` with `LAKE_ARTIFACT_CACHE=true` and a private `LAKE_CACHE_DIR` for cache cells. It then invoked `setup-file` and `lake env lean --json Probe.lean` after each build. Following reuse-2, it ran the cache-mode goal batch, rebuilt without the cache, and ran the materialized Probe and both goal variants. All commands, stdout, stderr, return codes, resource samples, and artifact hashes are in [results.json](results.json). Each build snapshot is retained in [runs](runs/) so the [offline checker](support/check.py) can rehash it.
+
+Across versions, exactly five of 16 clean artifact hashes match between each older version and 4.34.1: the two `.ilean`, their two `.hash` files, and `ir/Probe/Base.setup.json`. The `.olean`, `.trace`, generated `.c`, and associated hashes differ. Within each version, the cache-seed build differs from its clean snapshot only at `ir/Probe.setup.json`, whose import artifact path points at the selected cache location.
+
+## Resource bounds and limits
+
+Fresh batch admission recorded **24.55%** estimated reclaimable RAM and **13,366,972,416** free disk bytes. Each child launched only above 20% RAM and 10 GiB disk; live sampling used an 18% RAM stop, 1.2 GiB summed process-group RSS cap, 100 MiB scratch cap, and 30-second timeout. Among 60 sequential commands, none hit a guard. Minimum sampled reclaimable RAM was **19.89%**, minimum disk **13,336,137,728** bytes, maximum sampled process-group RSS **1,099,904 KiB**, and maximum sampled scratch **864,052** bytes; the longest command took **4.7727 seconds**. These are samples, not unsampled peaks or unique physical-memory totals. The separate >30% admission needed for a Lean-server comparison did not pass, so the predecessor's LSP/RPC observations were not rechecked at 4.34.1.
+
+This is one two-module, one-import-edge fixture. It does not characterize Mathlib, arbitrary caches, remote transport, native linking, parallel builds, all warning controls, or general proof equivalence. The nested `importArts` shape is a direct command output difference; the experiment does not identify which Lake source change introduced it or prove every caller can consume it.
+
+## Revalidation
+
+Run `python3 -B support/check.py` for an offline check of retained source bytes, artifacts, JSON projections, and guard records. An active rerun requires the three exact cached toolchain binaries: `python3 -B support/probe.py --toolchains-root /path/to/elan/toolchains`. It resets only its own `runs/` tree and writes `results.json`; it neither installs packages nor starts a server. Record a new admission before interpreting any fresh run.
