@@ -1,0 +1,9 @@
+{
+  "topics": ["lean/leantar", "lean/artifacts", "mathlib/ltar", "anneal/toolchain-bundling", "lean/version-difference"],
+  "subjects": [
+    {"name": "Anneal direct leantar helper", "identity": {"repository": "digama0/leangz", "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55", "version": "v0.1.16", "component": "leantar", "binary_sha256": "74b681d647b5f288b7e3ba89b562808de656abcde72771e97170bc377137e20a"}},
+    {"name": "Lean 4.30.0-rc2 bundled leantar", "identity": {"repository": "leanprover/lean4", "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc", "version": "v4.30.0-rc2", "component": "leantar 0.1.19", "binary_sha256": "9bddd23bcddf44b27cf3a79e38dde45c53278721980695abdc76587fc3c89d41"}},
+    {"name": "Lean 4.34.1 bundled leantar", "identity": {"repository": "leanprover/lean4", "revision": "5045d0056413266e57c625dcd7c365b10e377c52", "version": "v4.34.1", "component": "leantar 0.1.20", "binary_sha256": "97ddd119805f7d020bb823f818140b078eb37057b1b53174899c0d9aff0ea6c7"}}
+  ],
+  "observed_at": "2026-10-01"
+}

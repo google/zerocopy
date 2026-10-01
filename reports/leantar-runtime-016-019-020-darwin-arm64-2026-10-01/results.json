@@ -1,0 +1,551 @@
+{
+  "archives": {
+    "0.1.16": {
+      "magic": "LTAR",
+      "sha256": "be5e94042c7f4c245ffeb92c4266c6e15f136539dbd5d3451906e4dd03f94f16",
+      "size": 101
+    },
+    "0.1.19": {
+      "magic": "LTAR",
+      "sha256": "be5e94042c7f4c245ffeb92c4266c6e15f136539dbd5d3451906e4dd03f94f16",
+      "size": 101
+    },
+    "0.1.20": {
+      "magic": "LTAR",
+      "sha256": "be5e94042c7f4c245ffeb92c4266c6e15f136539dbd5d3451906e4dd03f94f16",
+      "size": 101
+    }
+  },
+  "binary_paths": {
+    "0.1.16": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/leantar",
+    "0.1.19": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/leantar",
+    "0.1.20": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/leantar"
+  },
+  "binary_sha256": {
+    "0.1.16": "74b681d647b5f288b7e3ba89b562808de656abcde72771e97170bc377137e20a",
+    "0.1.19": "9bddd23bcddf44b27cf3a79e38dde45c53278721980695abdc76587fc3c89d41",
+    "0.1.20": "97ddd119805f7d020bb823f818140b078eb37057b1b53174899c0d9aff0ea6c7"
+  },
+  "calls": [
+    {
+      "admission": {
+        "disk_free_bytes": 15403859968,
+        "reclaimable_fraction": 0.2541637420654297
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/leantar",
+        "--version"
+      ],
+      "elapsed_seconds": 0.003254,
+      "label": "version-016",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "94bcd5128b7a81d2bbfc4b035ca72dcf3562b053529eb685519f17934779b080",
+      "stdout_utf8": "leantar 0.1.16\n"
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403859968,
+        "reclaimable_fraction": 0.2539196014404297
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/leantar",
+        "--version"
+      ],
+      "elapsed_seconds": 0.002777,
+      "label": "version-019",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "7bf8a64009ac9e777998d32ebceb7ac7d9ec57e2e808c599a18177e8648f2de8",
+      "stdout_utf8": "leantar 0.1.19\n"
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403859968,
+        "reclaimable_fraction": 0.2536640167236328
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/leantar",
+        "--version"
+      ],
+      "elapsed_seconds": 0.002784,
+      "label": "version-020",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "317c13b99390931e27ff31bf00299bc18bcf87f64f62ccceb3f6781113f90ce5",
+      "stdout_utf8": "leantar 0.1.20\n"
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403859968,
+        "reclaimable_fraction": 0.2537555694580078
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/leantar",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-016.ltar",
+        "fixture/build.trace",
+        "fixture/artifact.txt"
+      ],
+      "elapsed_seconds": 0.033425,
+      "label": "pack-016",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403855872,
+        "reclaimable_fraction": 0.26086997985839844
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-016-with-016",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-016.ltar"
+      ],
+      "elapsed_seconds": 0.003099,
+      "label": "unpack-016-016",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403847680,
+        "reclaimable_fraction": 0.2608146667480469
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-016-with-019",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-016.ltar"
+      ],
+      "elapsed_seconds": 0.003401,
+      "label": "unpack-016-019",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403831296,
+        "reclaimable_fraction": 0.2608623504638672
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-016-with-020",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-016.ltar"
+      ],
+      "elapsed_seconds": 0.003343,
+      "label": "unpack-016-020",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403819008,
+        "reclaimable_fraction": 0.2608222961425781
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/leantar",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-019.ltar",
+        "fixture/build.trace",
+        "fixture/artifact.txt"
+      ],
+      "elapsed_seconds": 0.02877,
+      "label": "pack-019",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403814912,
+        "reclaimable_fraction": 0.26163482666015625
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-019-with-016",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-019.ltar"
+      ],
+      "elapsed_seconds": 0.002957,
+      "label": "unpack-019-016",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403806720,
+        "reclaimable_fraction": 0.26146507263183594
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-019-with-019",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-019.ltar"
+      ],
+      "elapsed_seconds": 0.003038,
+      "label": "unpack-019-019",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403794432,
+        "reclaimable_fraction": 0.2614326477050781
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-019-with-020",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-019.ltar"
+      ],
+      "elapsed_seconds": 0.002999,
+      "label": "unpack-019-020",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403786240,
+        "reclaimable_fraction": 0.26163291931152344
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/leantar",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-020.ltar",
+        "fixture/build.trace",
+        "fixture/artifact.txt"
+      ],
+      "elapsed_seconds": 0.027776,
+      "label": "pack-020",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403778048,
+        "reclaimable_fraction": 0.2623252868652344
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-020-with-016",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-020.ltar"
+      ],
+      "elapsed_seconds": 0.002863,
+      "label": "unpack-020-016",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403769856,
+        "reclaimable_fraction": 0.26213836669921875
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-020-with-019",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-020.ltar"
+      ],
+      "elapsed_seconds": 0.003182,
+      "label": "unpack-020-019",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403761664,
+        "reclaimable_fraction": 0.26209449768066406
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-020-with-020",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/by-020.ltar"
+      ],
+      "elapsed_seconds": 0.003052,
+      "label": "unpack-020-020",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403749376,
+        "reclaimable_fraction": 0.262176513671875
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/leantar",
+        "-s",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/stripped-020.ltar",
+        "fixture/build.trace",
+        "fixture/artifact.txt"
+      ],
+      "elapsed_seconds": 0.030293,
+      "label": "pack-stripped-020",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403745280,
+        "reclaimable_fraction": 0.26323509216308594
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-stripped-with-016",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/stripped-020.ltar"
+      ],
+      "elapsed_seconds": 0.002493,
+      "label": "unpack-stripped-016",
+      "returncode": 1,
+      "stderr_sha256": "8156971dc9f4f772c3e64a5f747e506f65bddf1e4705f4628727f0e5c1b28668",
+      "stderr_utf8": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/stripped-020.ltar: bad .ltar file\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403745280,
+        "reclaimable_fraction": 0.2633247375488281
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-stripped-with-019",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/stripped-020.ltar"
+      ],
+      "elapsed_seconds": 0.002427,
+      "label": "unpack-stripped-019",
+      "returncode": 1,
+      "stderr_sha256": "8156971dc9f4f772c3e64a5f747e506f65bddf1e4705f4628727f0e5c1b28668",
+      "stderr_utf8": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/stripped-020.ltar: bad .ltar file\n",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    },
+    {
+      "admission": {
+        "disk_free_bytes": 15403745280,
+        "reclaimable_fraction": 0.26320648193359375
+      },
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/leantar",
+        "-d",
+        "-f",
+        "--jobs",
+        "1",
+        "-C",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r491-leantar-runtime-20261001/work/unpack-stripped-with-020",
+        "-j",
+        "-"
+      ],
+      "elapsed_seconds": 0.002973,
+      "label": "unpack-stripped-020",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_utf8": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_utf8": ""
+    }
+  ],
+  "extractions": [
+    {
+      "consumer": "0.1.16",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.16",
+      "returncode": 0
+    },
+    {
+      "consumer": "0.1.19",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.16",
+      "returncode": 0
+    },
+    {
+      "consumer": "0.1.20",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.16",
+      "returncode": 0
+    },
+    {
+      "consumer": "0.1.16",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.19",
+      "returncode": 0
+    },
+    {
+      "consumer": "0.1.19",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.19",
+      "returncode": 0
+    },
+    {
+      "consumer": "0.1.20",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.19",
+      "returncode": 0
+    },
+    {
+      "consumer": "0.1.16",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.20",
+      "returncode": 0
+    },
+    {
+      "consumer": "0.1.19",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.20",
+      "returncode": 0
+    },
+    {
+      "consumer": "0.1.20",
+      "files_sha256": {
+        "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+        "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+      },
+      "producer": "0.1.20",
+      "returncode": 0
+    }
+  ],
+  "fixture_sha256": {
+    "artifact.txt": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+    "build.trace": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+  },
+  "guard": {
+    "minimum_disk_bytes": 10737418240,
+    "minimum_memory_fraction": 0.2
+  },
+  "schema": 1,
+  "status": "completed",
+  "stripped": {
+    "0.1.16": {
+      "output_files": [],
+      "returncode": 1
+    },
+    "0.1.19": {
+      "output_files": [],
+      "returncode": 1
+    },
+    "0.1.20": {
+      "artifact_sha256": "a487b49ea78925c36ffb0c824d21e9c3ee050cc85d4b53df8452bbc6d88a544f",
+      "request_sha256": "e847225bdafb9c8d5231273e11631ef0bb7202f7606c7c493a145022332939c3",
+      "returncode": 0,
+      "trace_sha256": "06f3a772200febb441d712efd1b234ad5d1d89d2b9c7e8c3fe466b692fc4cc66",
+      "trace_utf8": "{\"depHash\":\"00000000075bcd15\",\"schemaVersion\":\"2025-09-10\"}"
+    },
+    "archive": {
+      "magic": "LTR4",
+      "sha256": "f95e6fe5f7a351259f87af14838bebecc33fbd2789bbbb94d4e42971f1f1cd52",
+      "size": 143
+    }
+  }
+}

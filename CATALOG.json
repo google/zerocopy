@@ -16526,6 +16526,48 @@
         "anneal/toolchain-bundling"
       ]
     },
+    "leantar-runtime-016-019-020-darwin-arm64-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "74b681d647b5f288b7e3ba89b562808de656abcde72771e97170bc377137e20a",
+            "component": "leantar",
+            "repository": "digama0/leangz",
+            "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+            "version": "v0.1.16"
+          },
+          "name": "Anneal direct leantar helper"
+        },
+        {
+          "identity": {
+            "binary_sha256": "9bddd23bcddf44b27cf3a79e38dde45c53278721980695abdc76587fc3c89d41",
+            "component": "leantar 0.1.19",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2 bundled leantar"
+        },
+        {
+          "identity": {
+            "binary_sha256": "97ddd119805f7d020bb823f818140b078eb37057b1b53174899c0d9aff0ea6c7",
+            "component": "leantar 0.1.20",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1 bundled leantar"
+        }
+      ],
+      "topics": [
+        "lean/leantar",
+        "lean/artifacts",
+        "mathlib/ltar",
+        "anneal/toolchain-bundling",
+        "lean/version-difference"
+      ]
+    },
     "library-versus-closed-program-verification-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
