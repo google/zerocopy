@@ -26,60 +26,31 @@ An Anneal claim identifies:
 - one or more **guarantees**, each with any **requirements** under which that
   guarantee applies.
 
-The scope determines what the claim is about and which artifacts,
-configurations, executions, or contexts are covered. Within that scope, each
-guarantee is conditional on its own requirements. A requirement for one guarantee
-does not become a requirement for another.
-
-Requirements are part of the claim, not part of the TCB. Anneal may assume a
-guarantee's requirements when proving that guarantee. An assumption belongs in
-the TCB instead when Anneal relies on it to justify the claim without making the
-claim conditional on it.
+The scope must determine precisely which artifacts, configurations, executions,
+or contexts are covered. Within that scope, each guarantee is conditional on its
+own requirements. A requirement for one guarantee does not become a requirement
+for another.
 
 For example, a safe binary-search function may guarantee correct membership
 results when its input is sorted. Calling it with an unsorted slice makes that
 guarantee inapplicable; it does not invalidate Anneal's baseline well-definedness
 guarantee.
 
-The scope must be precise enough to determine whether a particular artifact,
-configuration, execution, or context is covered.
-
 Proving a developer-defined guarantee establishes the property that was
 specified. It does not establish that the specification captures what its author
 intended.
 
-## Verification outcomes
-
-For a requested claim and an applicable trust policy, Anneal distinguishes a
-**verification result** from a **tainted output**.
+## Verification results
 
 A **verification result** is a claim-bearing artifact that satisfies Anneal's
 project-wide verification requirements and to which Anneal's normal correctness
 promise in [`PRINCIPLES.md`](PRINCIPLES.md) applies.
 
-A **tainted output** is a claim-bearing development artifact emitted even though
-the conditions for a verification result were deliberately bypassed. A tainted
-output is not a verification result and must not be interpreted as one. In
-particular, when Anneal bypasses mandatory UB verification or turns it into a
-warning, both the output and its TCB audit log must be clearly labeled as tainted
-or irreparably untrustworthy.
-
-If Anneal cannot establish a requested claim with a TCB permitted by the
-applicable trust policy, it cannot issue a verification result for that claim
-under that policy. It may still emit diagnostics, partial checked evidence, proof
-state, or other development artifacts. Those artifacts do not acquire
-verification-result semantics merely because Anneal produced them.
-
-This distinction applies to individual claims. One invocation may process
-multiple claims with different outcomes.
-
-## Verification results
-
 A verification result fixes:
 
 - the exact **claim** Anneal established;
 - the complete **trusted computing base (TCB)** on which that claim depends; and
-- the exact **trust policy** that the TCB satisfies.
+- the exact **trust policy** against which that TCB was evaluated.
 
 Semantically, a verification result asserts both that:
 
@@ -102,6 +73,11 @@ contents actually used.
 Every dependency on which Anneal relies without establishing it by checked
 evidence belongs in the TCB. This includes both trusted code and trusted
 assumptions.
+
+A guarantee's stated requirements are not TCB assumptions merely because Anneal
+assumes them when proving that guarantee. They are hypotheses stated by the claim
+itself. By contrast, an unchecked premise belongs in the TCB when Anneal relies on
+it to justify the claim without making the claim conditional on that premise.
 
 A verification result must identify its complete TCB precisely enough to audit
 what it relies upon, either directly or through immutable references. Moving an
@@ -128,8 +104,29 @@ Selecting a different, permitted trust policy explicitly changes the verificatio
 being requested; it is not itself a bypass. Anneal must not silently weaken the
 applicable policy merely because verification under the original policy failed.
 
-Anneal's project-wide requirements constrain every trust policy. In particular,
-mandatory UB verification cannot be waived by choosing a more permissive policy.
+A trust policy cannot waive Anneal's project-wide verification requirements. In
+particular, mandatory UB verification cannot be waived by choosing a more
+permissive policy.
+
+## Verification outcomes
+
+For a requested claim and trust policy, Anneal cannot issue a verification result
+unless it can establish the claim with a TCB that satisfies the policy while also
+meeting Anneal's project-wide verification requirements.
+
+When Anneal cannot do so, it may still emit diagnostics, partial checked evidence,
+proof state, or other development artifacts. Those artifacts do not acquire
+verification-result semantics merely because Anneal produced them.
+
+If Anneal deliberately bypasses a condition required for a verification result
+and emits a claim-bearing development artifact, that artifact is a **tainted
+output**. A tainted output is not a verification result and must not be interpreted
+as one. In particular, when Anneal bypasses mandatory UB verification or turns it
+into a warning, both the output and its TCB audit log must be clearly labeled as
+tainted or irreparably untrustworthy.
+
+These outcomes apply to individual claims. One invocation may process multiple
+claims with different outcomes.
 
 ## Guarantees apply to compiled Rust behavior
 
@@ -137,11 +134,9 @@ Anneal may state specifications in terms of Rust source and may prove them using
 intermediate semantic models. The guarantees in a verification result must
 nevertheless apply to the covered behavior of code produced by `rustc`.
 
-Anneal must therefore establish, or include in the TCB, every connection needed
-to carry each guarantee from the Rust source and any intermediate models to the
-compiled behavior covered by the claim. A theorem about an intermediate model
-does not support a Rust-level guarantee unless the required connection to Rust is
-also justified.
+Every connection needed to carry a guarantee from the Rust source or an
+intermediate model to the compiled behavior covered by the claim must itself be
+established by checked evidence or included in the TCB.
 
 The required source-to-compiled relationship need not imply that source and
 compiled code have literally identical sets of behaviors. It must be strong
@@ -161,8 +156,8 @@ which this baseline guarantee may apply.
 
 ### Whole programs
 
-For a whole-program claim, each covered case is a complete execution of a covered
-compiled realization.
+The scope of a whole-program claim ranges over complete executions of covered
+compiled realizations.
 
 The baseline well-definedness guarantee may require conditions on external inputs
 or environment, but it must not assume the well-definedness of the program
@@ -180,12 +175,12 @@ behavior can invalidate the semantics of the entire execution.
 
 ### Libraries
 
-For a library claim, each covered case is a surrounding context and execution
-using a covered compiled realization of the library.
+The scope of a library claim ranges over executions in surrounding contexts that
+use covered compiled realizations of the library.
 
-Requirements on a library guarantee become caller or context obligations. Anneal
-may assume them when verifying the implementation, and a caller may rely on the
-corresponding guarantee when they hold.
+A library guarantee's requirements may constrain its caller or surrounding
+context. Anneal may assume those requirements when verifying the implementation,
+and a caller may rely on the corresponding guarantee when they hold.
 
 The baseline well-definedness guarantee has a contextual requirement: the
 surrounding execution must be well-defined when the library is replaced by its
