@@ -1,0 +1,9 @@
+{
+  "topics": ["cargo", "cargo/metadata", "cargo/unit-graph", "cargo/feature-resolution", "cargo/rustc-invocation", "cargo/version-difference"],
+  "subjects": [
+    {"name":"Pinned Cargo compilation-subject/runtime baseline","identity":{"repository":"rust-lang/cargo","revision":"fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef","toolchain-date":"nightly-2026-05-31"}},
+    {"name":"Stable Cargo comparison","identity":{"repository":"rust-lang/cargo","revision":"797e8a9bca276c1c9f9f738d2a20f484fa4eea9d","version":"1.98.1"}},
+    {"name":"Newer Cargo comparison","identity":{"repository":"rust-lang/cargo","revision":"3d7cf6e937d6127d0f49881bf689c560b36d35c4","toolchain-date":"nightly-2026-09-30"}}
+  ],
+  "observed_at": "2026-10-01"
+}

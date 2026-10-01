@@ -1,0 +1,22 @@
+[package]
+name = "probe-app"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[features]
+with-opt = ["dep:probe-opt"]
+
+[dependencies]
+probe-dep = { path = "../dep", features = ["normal"] }
+probe-opt = { path = "../opt", optional = true }
+
+[build-dependencies]
+probe-dep = { path = "../dep", features = ["host"] }
+
+[dev-dependencies]
+probe-dep = { path = "../dep", features = ["dev"] }
+
+[target.'cfg(windows)'.dependencies]
+probe-dep = { path = "../dep", features = ["targeted"] }
+
