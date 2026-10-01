@@ -4387,6 +4387,33 @@
         "anneal/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-10-01-v89": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "6fe9f8ed36f1bfb474afe091a9799ee29016f667"
+          },
+          "name": "Frozen #3731 investigation and version inventory"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "604a61e3bafe184b09587a4d0cfde5477977f638"
+          },
+          "name": "v89 published local version-supplement set plus R428 canary"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/issue-3731",
+        "anneal/version-review",
+        "anneal/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
