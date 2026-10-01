@@ -4298,6 +4298,41 @@
         "research/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-10-01-v85": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "manifest_sha256": "bef49b55bcf3a2b5d42cb2bc593699a61d96a128f0b879b852c270ce9fc6e48e",
+            "package_inventory_sha256": "9f9873af06f963e0269071727783e34e3218c2446f868957e3b92328d0669c3a",
+            "reference_revision": "f6287f7169c5185623c32c3f6922aa40f59644a0",
+            "repository": "google/zerocopy"
+          },
+          "name": "Published reference coverage and dated delta"
+        },
+        {
+          "identity": {
+            "inventory_reference_revision": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+            "newer_crosswalk_sha256": "bef9cf444e187a6c11aabdf9b92c3c8d71633355164b0454d7ae300c5b257b6f",
+            "version_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98"
+          },
+          "name": "Frozen issue and version inventory"
+        },
+        {
+          "identity": {
+            "r121_publication_revision": "b7e455374bce8b656204a81571643808e60c7aea",
+            "source_83_publication_revision": "f6287f7169c5185623c32c3f6922aa40f59644a0"
+          },
+          "name": "Published R121 and 83-row source reports"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730-3731",
+        "anneal/architecture",
+        "research/coverage-audit",
+        "research/version-source-review"
+      ]
+    },
     "anneal-3730-3731-gap-audit-interim-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [

@@ -1,0 +1,54 @@
+{
+  "counts": {
+    "challenge_rows": 333,
+    "investigations": 159,
+    "newer_version_rows": 361,
+    "newer_version_source_status": {
+      "contextual_or_paired_component_only": 5,
+      "exact_claim_source_review": 356
+    },
+    "prior_comparison_rows": 11,
+    "source_83_relations": {
+      "changed": 21,
+      "unavailable": 7,
+      "unchanged": 55
+    },
+    "source_revision_rows": 72,
+    "suggestion_links": 345,
+    "suggestions": 174,
+    "version_inventory": 581
+  },
+  "inherited_from": "anneal-3730-3731-final-coverage-audit-2026-09-30-v84",
+  "live_issue_observation_sha256": "79848dcc83da0746756d9224317dec080b9cbc7f8b8bbb987e33d44c027f2f99",
+  "newer_crosswalk_from": "anneal-3730-3731-residual-38-source-audit-2026-09-30-v85",
+  "observed_at": "2026-10-01",
+  "package_inventory_rows": 150,
+  "package_inventory_sha256": "9f9873af06f963e0269071727783e34e3218c2446f868957e3b92328d0669c3a",
+  "package_names": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-30-v84",
+    "anneal-3730-3731-residual-38-source-audit-2026-09-30-v85",
+    "anneal-3731-r121-rust-version-runtime-2026-09-30",
+    "anneal-3731-version-source-audit-83-2026-10-01"
+  ],
+  "preserved_file_sha256": {
+    "3730-crosswalk-final-v80.csv": "4f089ad58d470d407836acab57cdbdc04708a3f3ecccb7771008640dfc1bb57f",
+    "claim-applicability-matrix-v85.csv": "59ab59955eb77d4388753f892beb025e76a669071f0401785590ba8f8a490b67",
+    "investigation-final-v80.csv": "8d41ffd4d9519f54b94d5d8e6d0755b466e5afb44751ffc22fa36dce8f75b9bc",
+    "live-issue-observation-2026-10-01.json": "79848dcc83da0746756d9224317dec080b9cbc7f8b8bbb987e33d44c027f2f99",
+    "live-issue-snapshot-v80.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "newer-version-crosswalk-v85.csv": "bef9cf444e187a6c11aabdf9b92c3c8d71633355164b0454d7ae300c5b257b6f",
+    "row-challenge-v80.json": "73c1c314244c97efc8abe3889ffffd8edf73dfb5e2f73dc562674ccdd102c893",
+    "version-inventory-ebcdcad-581.csv": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98"
+  },
+  "r121_report_sha256": "20e10b0376f68a513d59cc720df03eec336d3b2b05a2cce2d366dd6f6944a967",
+  "reference_head": "f6287f7169c5185623c32c3f6922aa40f59644a0",
+  "required_ancestors": [
+    "6fe9f8ed36f1bfb474afe091a9799ee29016f667",
+    "d565370c695a188531bbfdfdd1c5556bc832f1ab",
+    "b7e455374bce8b656204a81571643808e60c7aea",
+    "f6287f7169c5185623c32c3f6922aa40f59644a0"
+  ],
+  "schema": 1,
+  "source_83_report_sha256": "011506124aaae2e52618e77471c8f368ea289ad5501a9fb1eb920904fe379009",
+  "source_83_status_sha256": "1ccc2a49f0dd982a04554c97e3c83163c86c7102494222a2e03f2c1e9b25ab9e"
+}
