@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "anneal/issue-3730-3731",
+    "anneal/architecture",
+    "research/coverage-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Frozen newer-version inventory and source-review matrices",
+      "identity": {
+        "reference_parent": "d16440e5a6e12e004a3849938cc75202da82bb6f",
+        "inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+        "crosswalk_sha256": "90f010e1a8d6dd690cd8cdbfb1e849f2b6b30defb579ba93f57238432ec48cd1"
+      }
+    },
+    {
+      "name": "Inherited v80 issue ledger and snapshot",
+      "identity": {
+        "v80_report": "anneal-3730-3731-final-coverage-audit-2026-09-30-v80",
+        "snapshot_sha256": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

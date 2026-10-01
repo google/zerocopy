@@ -1,0 +1,27 @@
+{
+  "coverage_status_counts": {
+    "contextual_or_paired_component_only": 39,
+    "exact_claim_source_review": 319,
+    "unmapped": 3
+  },
+  "crosswalk_sha256": "90f010e1a8d6dd690cd8cdbfb1e849f2b6b30defb579ba93f57238432ec48cd1",
+  "frozen_reference_parent": "d16440e5a6e12e004a3849938cc75202da82bb6f",
+  "inherited_v80_sha256": {
+    "3730-crosswalk-final-v80.csv": "4f089ad58d470d407836acab57cdbdc04708a3f3ecccb7771008640dfc1bb57f",
+    "investigation-final-v80.csv": "8d41ffd4d9519f54b94d5d8e6d0755b466e5afb44751ffc22fa36dce8f75b9bc",
+    "live-issue-snapshot-v80.json": "2ee70de6c25dab244b5a9f4e113f797b2d0aedb53a17d293738ab23e3061293d",
+    "row-challenge-v80.json": "73c1c314244c97efc8abe3889ffffd8edf73dfb5e2f73dc562674ccdd102c893"
+  },
+  "inventory_rows": 581,
+  "inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "matrix_paths": {
+    "aeneas": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/support/claim-matrix-ebcdcad-169.csv",
+    "charon": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/support/frozen-cohort.csv",
+    "lean": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/support/frozen-cohort.csv",
+    "lean-previous": "reports/lean-429-430-comparison-to-4341-source-review/support/frozen-cohort.csv",
+    "mathlib": "reports/mathlib-430rc2-to-4341-cache-source-review/support/frozen-cohort.csv",
+    "rust-cargo": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/support/frozen-cohort.csv"
+  },
+  "newer_version_rows": 361,
+  "r578_classification": "no_newer_release"
+}
