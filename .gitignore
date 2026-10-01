@@ -10,6 +10,27 @@
 target
 lcov.info
 
+# Generated inputs and caches for the native Aeneas proof development project.
+verification/aeneas/__pycache__/
+verification/aeneas/lean/.lake/
+verification/aeneas/lean/lakefile.lean
+verification/aeneas/lean/lake-manifest.json
+verification/aeneas/lean/lean-toolchain
+verification/aeneas/lean/Specs.lean
+verification/aeneas/lean/ModelShapes.lean
+verification/aeneas/lean/Models.lean
+verification/aeneas/lean/Required.lean
+verification/aeneas/lean/Specs.source-map.json
+verification/aeneas/lean/ModelShapes.source-map.json
+verification/aeneas/lean/Models.source-map.json
+verification/aeneas/lean/Specs.sources.sha256
+verification/aeneas/lean/bindings.json
+verification/aeneas/lean/proof-dependencies.json
+verification/aeneas/lean/Zerocopy/Types.lean
+verification/aeneas/lean/Zerocopy/Funs.lean
+verification/aeneas/lean/Zerocopy/TypesExternal_Template.lean
+verification/aeneas/lean/Zerocopy/FunsExternal_Template.lean
+
 # VSCode workspace files
 *.code-workspace
 
