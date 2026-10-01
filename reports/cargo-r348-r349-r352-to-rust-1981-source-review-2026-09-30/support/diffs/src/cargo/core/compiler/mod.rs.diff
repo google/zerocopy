@@ -1,0 +1,132 @@
+--- old/src/cargo/core/compiler/mod.rs
++++ new/src/cargo/core/compiler/mod.rs
+@@ -51,7 +51,7 @@
+ mod unit;
+ pub mod unit_dependencies;
+ pub mod unit_graph;
+-mod unused_deps;
++pub mod unused_deps;
+ 
+ use std::borrow::Cow;
+ use std::cell::OnceCell;
+@@ -815,9 +815,6 @@
+     if build_runner.bcx.gctx.cli_unstable().checksum_freshness {
+         base.arg("-Z").arg("checksum-hash-algorithm=blake3");
+     }
+-    if gctx.shell().verbosity() == Verbosity::Verbose && unit.is_local() {
+-        base.arg("--verbose");
+-    }
+ 
+     if is_primary {
+         base.env("CARGO_PRIMARY_PACKAGE", "1");
+@@ -1478,6 +1475,12 @@
+             .env("RUSTC_BOOTSTRAP", "1");
+     }
+ 
++    if let Some(version) = unit.pkg.manifest().rust_version()
++        && bcx.gctx.cli_unstable().hint_msrv
++    {
++        cmd.arg("-Z").arg(format!("hint-msrv={version}"));
++    }
++
+     Ok(())
+ }
+ 
+@@ -1511,11 +1514,11 @@
+     // feature gate was checked during manifest/config parsing.
+     cmd.arg("-Zunstable-options");
+ 
+-    // Order of `--remap-path-prefix` flags is important for `-Zbuild-std`.
+-    // We want to show `/rustc/<hash>/library/std` instead of `std-0.0.0`.
+-    cmd.arg(package_remap(build_runner, unit));
+-    cmd.arg(build_dir_remap(build_runner));
+-    cmd.arg(sysroot_remap(build_runner, unit));
++    for pair in trim_paths_remap(build_runner, unit) {
++        let mut arg = OsString::from("--remap-path-prefix=");
++        arg.push(pair);
++        cmd.arg(arg);
++    }
+ 
+     Ok(())
+ }
+@@ -1538,13 +1541,27 @@
+     // feature gate was checked during manifest/config parsing.
+     cmd.arg(format!("--remap-path-scope={trim_paths}"));
+ 
+-    // Order of `--remap-path-prefix` flags is important for `-Zbuild-std`.
+-    // We want to show `/rustc/<hash>/library/std` instead of `std-0.0.0`.
+-    cmd.arg(package_remap(build_runner, unit));
+-    cmd.arg(build_dir_remap(build_runner));
+-    cmd.arg(sysroot_remap(build_runner, unit));
++    for pair in trim_paths_remap(build_runner, unit) {
++        let mut arg = OsString::from("--remap-path-prefix=");
++        arg.push(pair);
++        cmd.arg(arg);
++    }
+ 
+     Ok(())
++}
++
++/// Computes the `<from>=<to>` path remap pairs for [RFC 3127] trim-paths.
++///
++/// Order of `--remap-path-prefix` flags is important for `-Zbuild-std`.
++/// We want to show `/rustc/<hash>/library/std` instead of `std-0.0.0`.
++///
++/// [RFC 3127]: https://rust-lang.github.io/rfcs/3127-trim-paths.html
++pub(crate) fn trim_paths_remap(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> [OsString; 3] {
++    [
++        package_remap(build_runner, unit),
++        build_dir_remap(build_runner),
++        sysroot_remap(build_runner, unit),
++    ]
+ }
+ 
+ /// Path prefix remap rules for sysroot.
+@@ -1552,7 +1569,7 @@
+ /// This remap logic aligns with rustc:
+ /// <https://github.com/rust-lang/rust/blob/c2ef3516/src/bootstrap/src/lib.rs#L1113-L1116>
+ fn sysroot_remap(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> OsString {
+-    let mut remap = OsString::from("--remap-path-prefix=");
++    let mut remap = OsString::new();
+     remap.push({
+         // See also `detect_sysroot_src_path()`.
+         let mut sysroot = build_runner.bcx.target_data.info(unit.kind).sysroot.clone();
+@@ -1582,7 +1599,7 @@
+ fn package_remap(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> OsString {
+     let pkg_root = unit.pkg.root();
+     let ws_root = build_runner.bcx.ws.root();
+-    let mut remap = OsString::from("--remap-path-prefix=");
++    let mut remap = OsString::new();
+     let source_id = unit.pkg.package_id().source_id();
+     if source_id.is_git() {
+         remap.push(
+@@ -1629,7 +1646,7 @@
+ ///   files (dwp and dwo).
+ fn build_dir_remap(build_runner: &BuildRunner<'_, '_>) -> OsString {
+     let build_dir = build_runner.bcx.ws.build_dir();
+-    let mut remap = OsString::from("--remap-path-prefix=");
++    let mut remap = OsString::new();
+     remap.push(build_dir.as_path_unlocked());
+     remap.push("=/cargo/build-dir");
+     remap
+@@ -1806,12 +1823,15 @@
+     build_runner: &'b BuildRunner<'b, '_>,
+     unit: &'a Unit,
+ ) {
+-    if map.contains_key(&unit) {
+-        return;
+-    }
+-    map.insert(&unit, build_runner.files().deps_dir(&unit));
+-
+     for dep in build_runner.unit_deps(unit) {
++        // Don't include build script out dir in the args to reduce rustc command bloat.
++        if dep.unit.target.is_custom_build() {
++            continue;
++        }
++        if map.contains_key(&dep.unit) {
++            continue;
++        }
++        map.insert(&dep.unit, build_runner.files().deps_dir(&dep.unit));
+         add_dep_arg(map, build_runner, &dep.unit);
+     }
+ }

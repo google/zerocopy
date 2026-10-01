@@ -1,0 +1,63 @@
+--- old/src/cargo/ops/cargo_compile/mod.rs
++++ new/src/cargo/ops/cargo_compile/mod.rs
+@@ -143,12 +143,13 @@
+     options: &CompileOptions,
+     exec: &Arc<dyn Executor>,
+ ) -> CargoResult<Compilation<'a>> {
+-    crate::diagnostics::passes::emit_parse_diagnostics(
++    let parse_pass_output = crate::diagnostics::passes::emit_parse_diagnostics(
+         ws,
+         crate::diagnostics::rules::PARSE_PASS_RULES,
+     )?;
+     let compilation = compile_ws(ws, options, exec)?;
+-    if ws.gctx().warning_handling()? == WarningHandling::Deny && compilation.lint_warning_count > 0
++    if ws.gctx().warning_handling()? == WarningHandling::Deny
++        && (compilation.lint_warning_count + parse_pass_output.lint_warning_count) > 0
+     {
+         anyhow::bail!("warnings are denied by `build.warnings` configuration")
+     }
+@@ -157,7 +158,7 @@
+ 
+ /// Like [`compile_with_exec`] but without warnings from manifest parsing.
+ #[tracing::instrument(skip_all)]
+-pub fn compile_ws<'a>(
++fn compile_ws<'a>(
+     ws: &Workspace<'a>,
+     options: &CompileOptions,
+     exec: &Arc<dyn Executor>,
+@@ -312,7 +313,7 @@
+     let dry_run = false;
+ 
+     if let Some(logger) = logger {
+-        let elapsed = ws.gctx().creation_time().elapsed().as_secs_f64();
++        let elapsed = ws.gctx().invocation_instant().elapsed().as_secs_f64();
+         logger.log(LogMessage::ResolutionStarted { elapsed });
+     }
+ 
+@@ -334,7 +335,7 @@
+     } = resolve;
+ 
+     if let Some(logger) = logger {
+-        let elapsed = ws.gctx().creation_time().elapsed().as_secs_f64();
++        let elapsed = ws.gctx().invocation_instant().elapsed().as_secs_f64();
+         logger.log(LogMessage::ResolutionFinished { elapsed });
+     }
+ 
+@@ -422,7 +423,7 @@
+     let mut scrape_units = Vec::new();
+ 
+     if let Some(logger) = logger {
+-        let elapsed = ws.gctx().creation_time().elapsed().as_secs_f64();
++        let elapsed = ws.gctx().invocation_instant().elapsed().as_secs_f64();
+         logger.log(LogMessage::UnitGraphStarted { elapsed });
+     }
+ 
+@@ -571,7 +572,7 @@
+                 dependencies,
+             });
+         }
+-        let elapsed = ws.gctx().creation_time().elapsed().as_secs_f64();
++        let elapsed = ws.gctx().invocation_instant().elapsed().as_secs_f64();
+         logger.log(LogMessage::UnitGraphFinished { elapsed });
+     }
+ 

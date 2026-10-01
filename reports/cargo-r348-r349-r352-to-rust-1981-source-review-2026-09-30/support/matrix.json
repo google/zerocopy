@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "frozen_reference_commit": "1b6f146d7951402e10102354a131b5cee9c5f855",
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "baseline_count": 581,
+  "frozen_report_count": 622,
+  "rows": [
+    {
+      "inventory_id": "R348",
+      "title": "Cargo compilation-subject identity at the Anneal-era 2026-05-31 toolchain",
+      "cohort": "Cargo/rustc nightly-2026-05-31",
+      "report_md": "reports/cargo-compilation-subject-identity-2026-05-31/REPORT.md",
+      "report_json": "reports/cargo-compilation-subject-identity-2026-05-31/REPORT.json",
+      "report_md_sha256": "f769ebb13dc475e44d55668e91931785a3b9dbdc9e59ec8f0207f34bf4cf1870",
+      "report_json_sha256": "bfb278e0f3c55fc86ab4d40367a1c08eca992cc9118ced4d9a82f65289728ac8",
+      "frozen_subjects_exact": [
+        {
+          "name": "Cargo source",
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          }
+        },
+        {
+          "name": "Rust source integration",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "cargo-submodule": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          }
+        },
+        {
+          "name": "Anneal configuration",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        },
+        {
+          "name": "Charon toolchain pin",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "inventory_claim_excerpt_normalized": "Cargo does not identify a compilation subject by package name, target name, source file, feature set, target triple, or profile alone. At rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef, Cargo's internal Unit is the object that represents one build unit. Its source documentation says that a unit has enough information for Cargo to know how to build it, and its equality/hash identity includes the package, Cargo target, effective profile, host-versus-target compilation",
+      "claim_heading": "## Summary",
+      "full_summary_exact": "Cargo does not identify a compilation subject by package name, target name, source\nfile, feature set, target triple, or profile alone. At\n`rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef`, Cargo's internal\n`Unit` is the object that represents one build unit. Its source documentation says\nthat a unit has enough information for Cargo to know how to build it, and its\nequality/hash identity includes the package, Cargo target, effective profile,\nhost-versus-target compilation kind, compilation mode, activated features,\nper-unit rustc/rustdoc flags, native-link overrides, standard-library status,\ndependency identity, and artifact-related state.\n\nThis means a Cargo *target* is not a compilation subject. The same library target\ncan participate in several distinct units in one command: for example, a normal\nlibrary build and a `--test` library build have different compilation modes and\ncan have different effective profiles and dependency/feature contexts. Under\nresolver version 2 or 3, the same dependency package can also be compiled more\nthan once with different features when its normal, build/proc-macro, target, or\ndevelopment contexts differ.\n\nCargo's stable `cargo metadata` output is therefore insufficient to identify the\nactual compiler units for a particular build. Cargo's own documentation says that\nmetadata cannot represent the relationship between features of different\ndependency kinds once feature resolution depends on the command, selected\npackages, and selected targets.\n\nThe closest machine-readable representation is the nightly-only\n`--unit-graph -Z unstable-options` output. Version 1 of that JSON exposes each\nunit's package ID, Cargo target, effective profile, host/target platform,\ncompilation mode, per-unit features, standard-library marker, dependencies, and\nthe graph roots selected by the command. Cargo documents each unit in this graph\nas corresponding to a compiler execution, with the representation also containing\n`run-custom-build` units for build-script execution.\n\nThe unit-graph JSON is not a stable or complete serialization of Cargo's internal\n`Unit`. It is explicitly unstable, and the serializer omits fields that\nparticipate in internal unit identity, including rustc/rustdoc flags, link\noverrides, the dependency hash used to distinguish otherwise-equal units with\ndifferent dependencies, and artifact-specific state. Consequently this Cargo\nrevision exposes no stable canonical external identifier for an exact compilation\nsubject. An external tool that needs Cargo-equivalent subject identity must\npreserve enough context to distinguish the dimensions in the internal `Unit`;\npackage + target, or even the current unit-graph projection alone, is not the full\ninternal identity.\n\nNo fresh Cargo execution was performed for this report. The conclusions above are\nestablished from the exact Cargo source and its checked-in reference\ndocumentation. A small executable unit-graph matrix is described under\n**Revalidation** for confirming observable behavior on a later toolchain.",
+      "claim_clauses": [
+        {
+          "paragraph": 1,
+          "exact_excerpt": "Cargo does not identify a compilation subject by package name, target name, source\nfile, feature set, target triple, or profile alone. At\n`rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef`, Cargo's internal\n`Unit` is the object that represents one build unit. Its source documentation says\nthat a unit has enough information for Cargo to know how to build it, and its\nequality/hash identity includes the package, Cargo target, effective profile,\nhost-versus-target compilation kind, compilation mode, activated features,\nper-unit rustc/rustdoc flags, native-link overrides, standard-library status,\ndependency identity, and artifact-related state.",
+          "source_status": "source_continuity_mapped_unit_identity",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 2,
+          "exact_excerpt": "This means a Cargo *target* is not a compilation subject. The same library target\ncan participate in several distinct units in one command: for example, a normal\nlibrary build and a `--test` library build have different compilation modes and\ncan have different effective profiles and dependency/feature contexts. Under\nresolver version 2 or 3, the same dependency package can also be compiled more\nthan once with different features when its normal, build/proc-macro, target, or\ndevelopment contexts differ.",
+          "source_status": "source_continuity_mapped_unit_and_feature_paths",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 3,
+          "exact_excerpt": "Cargo's stable `cargo metadata` output is therefore insufficient to identify the\nactual compiler units for a particular build. Cargo's own documentation says that\nmetadata cannot represent the relationship between features of different\ndependency kinds once feature resolution depends on the command, selected\npackages, and selected targets.",
+          "source_status": "source_continuity_mapped_metadata_clause",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 4,
+          "exact_excerpt": "The closest machine-readable representation is the nightly-only\n`--unit-graph -Z unstable-options` output. Version 1 of that JSON exposes each\nunit's package ID, Cargo target, effective profile, host/target platform,\ncompilation mode, per-unit features, standard-library marker, dependencies, and\nthe graph roots selected by the command. Cargo documents each unit in this graph\nas corresponding to a compiler execution, with the representation also containing\n`run-custom-build` units for build-script execution.",
+          "source_status": "source_continuity_unit_graph_schema",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 5,
+          "exact_excerpt": "The unit-graph JSON is not a stable or complete serialization of Cargo's internal\n`Unit`. It is explicitly unstable, and the serializer omits fields that\nparticipate in internal unit identity, including rustc/rustdoc flags, link\noverrides, the dependency hash used to distinguish otherwise-equal units with\ndifferent dependencies, and artifact-specific state. Consequently this Cargo\nrevision exposes no stable canonical external identifier for an exact compilation\nsubject. An external tool that needs Cargo-equivalent subject identity must\npreserve enough context to distinguish the dimensions in the internal `Unit`;\npackage + target, or even the current unit-graph projection alone, is not the full\ninternal identity.",
+          "source_status": "source_continuity_mapped_projection_with_broad_negative_unresolved",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 6,
+          "exact_excerpt": "No fresh Cargo execution was performed for this report. The conclusions above are\nestablished from the exact Cargo source and its checked-in reference\ndocumentation. A small executable unit-graph matrix is described under\n**Revalidation** for confirming observable behavior on a later toolchain.",
+          "source_status": "historical_no_runtime",
+          "runtime_status": "unexecuted_in_this_review"
+        }
+      ],
+      "mapped_source_paths": [
+        "src/cargo/core/compiler/unit.rs",
+        "src/cargo/core/compiler/unit_graph.rs",
+        "src/cargo/core/resolver/features.rs",
+        "src/cargo/ops/cargo_compile/unit_generator.rs",
+        "src/cargo/ops/cargo_output_metadata.rs",
+        "src/doc/src/commands/cargo-metadata.md",
+        "src/doc/src/reference/unstable.md"
+      ],
+      "runtime_status": "unexecuted_in_this_review",
+      "product_status": "unassessed",
+      "crosswalk_status": "not_updated"
+    },
+    {
+      "inventory_id": "R349",
+      "title": "Cargo feature resolution and metadata at fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+      "cohort": "Cargo/rustc nightly-2026-05-31",
+      "report_md": "reports/cargo-metadata-feature-resolution-2026-05-31/REPORT.md",
+      "report_json": "reports/cargo-metadata-feature-resolution-2026-05-31/REPORT.json",
+      "report_md_sha256": "e4a54ca1996cad67cb56462716ad5c68296623d53c3232cf27c42391e74756e4",
+      "report_json_sha256": "904530b2a4602c172e69d717c55877c8caf5833420d8558835215ce6e05db9ff",
+      "frozen_subjects_exact": [
+        {
+          "name": "Cargo source",
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          }
+        }
+      ],
+      "inventory_claim_excerpt_normalized": "At rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef, the feature set used to compile a crate is not, in general, a single property of a package. Cargo's command-specific feature resolver can distinguish the same package when it is used as a normal/dev dependency, a host build-dependency or proc macro, or an artifact dependency for a particular target. Resolver versions 2 and 3 use those distinctions to avoid several kinds of feature unification that resolver 1 perform",
+      "claim_heading": "## Summary",
+      "full_summary_exact": "At `rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef`, the feature set used to compile a crate is not, in general, a single property of a package. Cargo's command-specific feature resolver can distinguish the same package when it is used as a normal/dev dependency, a host build-dependency or proc macro, or an artifact dependency for a particular target. Resolver versions 2 and 3 use those distinctions to avoid several kinds of feature unification that resolver 1 performs.\n\nThat distinction makes `cargo metadata` useful but insufficient for reconstructing every active compilation unit. Metadata format 1 emits manifest feature definitions, requested dependency features, and one `resolve.nodes[].features` list per package. It does not serialize Cargo's contextual `ResolvedFeatures` map or its `FeaturesFor` key. A package that must be compiled twice with different host and target feature sets can therefore have two unit-level feature configurations even though metadata has only one package-level resolved feature list.\n\nCargo's unit construction path consumes the contextual feature resolver directly. Root units select a `FeaturesFor` context, dependency units derive one from the dependency edge, and the resulting feature vector becomes part of the unit. The unstable unit-graph output serializes `unit.features`, so it is a closer representation of a command's planned compilation configurations than `cargo metadata`. It is still a planned graph, not proof that every unit was executed; Cargo may reuse a fresh artifact instead of invoking rustc.\n\nOptional and target-specific dependencies are also command-sensitive. Optional dependencies are explicit activation state in `ResolvedFeatures`; target predicates are checked against the relevant host or target compile kind. Resolver 2/3 ignore features from target-specific dependencies for targets not being built, separate host-side build/proc-macro features from normal dependency features, and separate dev-dependency features when no dev unit is being built.\n\nNo fresh Cargo or rustc execution was performed. This report is based on exact pinned Cargo source and documentation. It establishes the feature-resolution and metadata representations at that revision, not an empirical transcript of a particular build.",
+      "claim_clauses": [
+        {
+          "paragraph": 1,
+          "exact_excerpt": "At `rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef`, the feature set used to compile a crate is not, in general, a single property of a package. Cargo's command-specific feature resolver can distinguish the same package when it is used as a normal/dev dependency, a host build-dependency or proc macro, or an artifact dependency for a particular target. Resolver versions 2 and 3 use those distinctions to avoid several kinds of feature unification that resolver 1 performs.",
+          "source_status": "source_continuity_mapped_resolver",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 2,
+          "exact_excerpt": "That distinction makes `cargo metadata` useful but insufficient for reconstructing every active compilation unit. Metadata format 1 emits manifest feature definitions, requested dependency features, and one `resolve.nodes[].features` list per package. It does not serialize Cargo's contextual `ResolvedFeatures` map or its `FeaturesFor` key. A package that must be compiled twice with different host and target feature sets can therefore have two unit-level feature configurations even though metadata has only one package-level resolved feature list.",
+          "source_status": "source_continuity_mapped_metadata_representation",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 3,
+          "exact_excerpt": "Cargo's unit construction path consumes the contextual feature resolver directly. Root units select a `FeaturesFor` context, dependency units derive one from the dependency edge, and the resulting feature vector becomes part of the unit. The unstable unit-graph output serializes `unit.features`, so it is a closer representation of a command's planned compilation configurations than `cargo metadata`. It is still a planned graph, not proof that every unit was executed; Cargo may reuse a fresh artifact instead of invoking rustc.",
+          "source_status": "source_continuity_mapped_unit_construction",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 4,
+          "exact_excerpt": "Optional and target-specific dependencies are also command-sensitive. Optional dependencies are explicit activation state in `ResolvedFeatures`; target predicates are checked against the relevant host or target compile kind. Resolver 2/3 ignore features from target-specific dependencies for targets not being built, separate host-side build/proc-macro features from normal dependency features, and separate dev-dependency features when no dev unit is being built.",
+          "source_status": "source_continuity_mapped_optional_target_rules",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 5,
+          "exact_excerpt": "No fresh Cargo or rustc execution was performed. This report is based on exact pinned Cargo source and documentation. It establishes the feature-resolution and metadata representations at that revision, not an empirical transcript of a particular build.",
+          "source_status": "historical_no_runtime",
+          "runtime_status": "unexecuted_in_this_review"
+        }
+      ],
+      "mapped_source_paths": [
+        "src/cargo/core/resolver/features.rs",
+        "src/cargo/ops/cargo_output_metadata.rs",
+        "src/cargo/ops/cargo_compile/unit_generator.rs",
+        "src/cargo/core/compiler/unit_dependencies.rs",
+        "src/cargo/core/compiler/unit_graph.rs",
+        "src/doc/src/commands/cargo-metadata.md",
+        "src/doc/src/reference/resolver.md",
+        "src/doc/src/reference/features.md"
+      ],
+      "runtime_status": "unexecuted_in_this_review",
+      "product_status": "unassessed",
+      "crosswalk_status": "not_updated"
+    },
+    {
+      "inventory_id": "R352",
+      "title": "Cargo unit graphs and rustc invocations at the Anneal-era 2026-05-31 toolchain",
+      "cohort": "Cargo/rustc nightly-2026-05-31",
+      "report_md": "reports/cargo-unit-graphs-rustc-invocations-2026-05-31/REPORT.md",
+      "report_json": "reports/cargo-unit-graphs-rustc-invocations-2026-05-31/REPORT.json",
+      "report_md_sha256": "ae18589159da8e99f12a58fe91d7da9dd3f6ca31b0fc668e93264689b090a31e",
+      "report_json_sha256": "ee13dcb157f4dfce9fe41d764df13daf962097fe2c12fffa044cbe18326c607e",
+      "frozen_subjects_exact": [
+        {
+          "name": "Cargo source",
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          }
+        }
+      ],
+      "inventory_claim_excerpt_normalized": "At rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef, Cargo turns command-selected targets into a recursive graph of compilation units. Roots only describe work requested directly. Cargo adds dependency libraries, same-package libraries for binaries/tests/examples, host procedural macros, and separate build-script compile and execution units. Cross builds therefore contain both host and target work.",
+      "claim_heading": "## Summary",
+      "full_summary_exact": "At `rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef`, Cargo turns command-selected targets into a recursive graph of compilation units. Roots only describe work requested directly. Cargo adds dependency libraries, same-package libraries for binaries/tests/examples, host procedural macros, and separate build-script compile and execution units. Cross builds therefore contain both host and target work.\n\nA Rust compilation unit becomes a `rustc` process in stages. Cargo selects the compiler and wrapper chain, adds unit-derived arguments, then adds dependency artifacts as search paths and `--extern` inputs. Some command state is delayed until execution because build-script output does not exist when Cargo constructs the unit graph. Build-script results can later add native search paths and libraries, compiler flags, and environment variables.\n\nThe unstable `--unit-graph` output is therefore a planned-work graph rather than a final compiler-command transcript. It exposes units, roots, platforms, modes, features, and dependency edges, including `run-custom-build` nodes, but not the complete final argv/environment. A planned unit can also be skipped when Cargo's fingerprint says its existing artifact is fresh.\n\nCompiler wrappers form another process boundary. With both wrapper mechanisms configured, Cargo documents the effective process as `$RUSTC_WRAPPER $RUSTC_WORKSPACE_WRAPPER $RUSTC ...` for workspace-member compilation.\n\nNo fresh Cargo, rustc, wrapper, build-script, or cross-target execution was performed. This package establishes the source-level graph and invocation construction at the exact pin. See [Findings](FINDINGS.md), [Boundaries](BOUNDARIES.md), [Evidence](EVIDENCE.md), and [Revalidation](REVALIDATION.md).",
+      "claim_clauses": [
+        {
+          "paragraph": 1,
+          "exact_excerpt": "At `rust-lang/cargo@fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef`, Cargo turns command-selected targets into a recursive graph of compilation units. Roots only describe work requested directly. Cargo adds dependency libraries, same-package libraries for binaries/tests/examples, host procedural macros, and separate build-script compile and execution units. Cross builds therefore contain both host and target work.",
+          "source_status": "source_continuity_mapped_graph_construction",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 2,
+          "exact_excerpt": "A Rust compilation unit becomes a `rustc` process in stages. Cargo selects the compiler and wrapper chain, adds unit-derived arguments, then adds dependency artifacts as search paths and `--extern` inputs. Some command state is delayed until execution because build-script output does not exist when Cargo constructs the unit graph. Build-script results can later add native search paths and libraries, compiler flags, and environment variables.",
+          "source_status": "source_delta_in_invocation_search_paths_and_build_script_environment",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 3,
+          "exact_excerpt": "The unstable `--unit-graph` output is therefore a planned-work graph rather than a final compiler-command transcript. It exposes units, roots, platforms, modes, features, and dependency edges, including `run-custom-build` nodes, but not the complete final argv/environment. A planned unit can also be skipped when Cargo's fingerprint says its existing artifact is fresh.",
+          "source_status": "source_continuity_unit_graph_section_runtime_unassessed",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 4,
+          "exact_excerpt": "Compiler wrappers form another process boundary. With both wrapper mechanisms configured, Cargo documents the effective process as `$RUSTC_WRAPPER $RUSTC_WORKSPACE_WRAPPER $RUSTC ...` for workspace-member compilation.",
+          "source_status": "source_continuity_mapped_wrapper_paths",
+          "runtime_status": "unexecuted_in_this_review"
+        },
+        {
+          "paragraph": 5,
+          "exact_excerpt": "No fresh Cargo, rustc, wrapper, build-script, or cross-target execution was performed. This package establishes the source-level graph and invocation construction at the exact pin. See [Findings](FINDINGS.md), [Boundaries](BOUNDARIES.md), [Evidence](EVIDENCE.md), and [Revalidation](REVALIDATION.md).",
+          "source_status": "historical_no_runtime",
+          "runtime_status": "unexecuted_in_this_review"
+        }
+      ],
+      "mapped_source_paths": [
+        "src/cargo/ops/cargo_compile/mod.rs",
+        "src/cargo/core/compiler/unit_dependencies.rs",
+        "src/cargo/core/compiler/unit_graph.rs",
+        "src/cargo/core/compiler/mod.rs",
+        "src/cargo/core/compiler/compilation.rs",
+        "src/cargo/core/compiler/custom_build.rs",
+        "src/cargo/util/rustc.rs",
+        "src/doc/src/reference/unstable.md",
+        "src/doc/src/reference/config.md",
+        "src/doc/src/reference/environment-variables.md"
+      ],
+      "runtime_status": "unexecuted_in_this_review",
+      "product_status": "unassessed",
+      "crosswalk_status": "not_updated",
+      "companion_files": [
+        {
+          "path": "reports/cargo-unit-graphs-rustc-invocations-2026-05-31/FINDINGS.md",
+          "sha256": "bd41aafde6e9c02f052becae38cc367a80105c8e1f71e4f84dea91c9e817fb51"
+        },
+        {
+          "path": "reports/cargo-unit-graphs-rustc-invocations-2026-05-31/FINDINGS-INVOCATIONS.md",
+          "sha256": "de20ebfca2df2d1071fe33cf18b43882a071ba7b059df68d89adc02c5507bb7d"
+        },
+        {
+          "path": "reports/cargo-unit-graphs-rustc-invocations-2026-05-31/EVIDENCE.md",
+          "sha256": "722e92cefed55534deb230017aba41e5a8994bfc5496656396ec2dec702dcdf4"
+        },
+        {
+          "path": "reports/cargo-unit-graphs-rustc-invocations-2026-05-31/BOUNDARIES.md",
+          "sha256": "367b482d14e91c823166af90f8ce8897be3e985da3a87a8bf4d5e1d0427d3889"
+        },
+        {
+          "path": "reports/cargo-unit-graphs-rustc-invocations-2026-05-31/REVALIDATION.md",
+          "sha256": "eb8ef070eae43e5cf28a939c7f64ec53cd8ee2439b88411fc965cd7cbc85f77b"
+        }
+      ]
+    }
+  ],
+  "old_rust_commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "new_rust_tag": "1.98.1",
+  "new_rust_tag_commit": "48a229ceaefd4985c50990b14116b6d856af0985",
+  "old_cargo_commit": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+  "new_cargo_commit": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+  "cargo_compare": {
+    "status": "ahead",
+    "ahead_by": 219,
+    "behind_by": 0,
+    "total_commits": 219,
+    "returned_file_count": 175,
+    "returned_commit_count": 219
+  },
+  "source_observation_sha256": "a0d067e0284a868a3b375dd7ec12f32df0e9ec711a3c55261181f518ada9c45f",
+  "runtime_status": "unexecuted_in_this_review",
+  "product_status": "unassessed",
+  "audit_disposition": "unchanged"
+}

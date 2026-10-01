@@ -1,0 +1,4 @@
+inventory_id,report_json,report_md
+R348,reports/cargo-compilation-subject-identity-2026-05-31/REPORT.json,reports/cargo-compilation-subject-identity-2026-05-31/REPORT.md
+R349,reports/cargo-metadata-feature-resolution-2026-05-31/REPORT.json,reports/cargo-metadata-feature-resolution-2026-05-31/REPORT.md
+R352,reports/cargo-unit-graphs-rustc-invocations-2026-05-31/REPORT.json,reports/cargo-unit-graphs-rustc-invocations-2026-05-31/REPORT.md
