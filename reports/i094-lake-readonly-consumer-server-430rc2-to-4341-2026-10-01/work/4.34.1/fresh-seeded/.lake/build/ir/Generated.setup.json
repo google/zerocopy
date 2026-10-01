@@ -1,0 +1,9 @@
+{"plugins": [],
+ "package": "probe_consumer",
+ "options": {},
+ "name": "Generated",
+ "isModule": false,
+ "importArts":
+ {"Dep":
+  [["/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/producer/.lake/build/lib/lean/Dep.olean"]]},
+ "dynlibs": []}

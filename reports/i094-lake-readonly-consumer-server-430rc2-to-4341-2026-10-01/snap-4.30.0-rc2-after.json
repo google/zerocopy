@@ -1,0 +1,152 @@
+{
+  ".": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869824841256319,
+    "sha256": null
+  },
+  ".lake": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869824843280008,
+    "sha256": null
+  },
+  ".lake/build": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869824843401132,
+    "sha256": null
+  },
+  ".lake/build/ir": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869825056221439,
+    "sha256": null
+  },
+  ".lake/build/ir/Dep.c": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825050339411,
+    "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+  },
+  ".lake/build/ir/Dep.c.hash": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825056264563,
+    "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274"
+  },
+  ".lake/build/ir/Dep.setup.json": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869824843658213,
+    "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+  },
+  ".lake/build/lib": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869824843357091,
+    "sha256": null
+  },
+  ".lake/build/lib/lean": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869825056457436,
+    "sha256": null
+  },
+  ".lake/build/lib/lean/Dep.ilean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825049133714,
+    "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+  },
+  ".lake/build/lib/lean/Dep.ilean.hash": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825056158439,
+    "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42"
+  },
+  ".lake/build/lib/lean/Dep.olean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825048075641,
+    "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+  },
+  ".lake/build/lib/lean/Dep.olean.hash": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825056035107,
+    "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479"
+  },
+  ".lake/build/lib/lean/Dep.trace": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825056494728,
+    "sha256": "e2f2678d8909781a2b55e31f3abaf03e67962c30ea15e414be496695318e3a71"
+  },
+  ".lake/config": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869825563317235,
+    "sha256": null
+  },
+  ".lake/config/[anonymous]": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869824838080641,
+    "sha256": null
+  },
+  ".lake/config/[anonymous]/lakefile.olean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869824837943226,
+    "sha256": "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5"
+  },
+  ".lake/config/[anonymous]/lakefile.olean.trace": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869821828369343,
+    "sha256": "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7"
+  },
+  ".lake/config/probe_dep": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869825590651558,
+    "sha256": null
+  },
+  ".lake/config/probe_dep/lakefile.olean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825590499268,
+    "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+  },
+  ".lake/config/probe_dep/lakefile.olean.trace": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869825563475275,
+    "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+  },
+  "Dep.lean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869761113807670,
+    "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+  },
+  "lake-manifest.json": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869824841311152,
+    "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10"
+  },
+  "lakefile.lean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869761113702380,
+    "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+  },
+  "lean-toolchain": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869761113577756,
+    "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+  }
+}

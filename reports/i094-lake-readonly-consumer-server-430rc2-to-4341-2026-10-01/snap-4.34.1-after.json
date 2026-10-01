@@ -1,0 +1,134 @@
+{
+  ".": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869770158081295,
+    "sha256": null
+  },
+  ".lake": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869770160080943,
+    "sha256": null
+  },
+  ".lake/build": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869770160199650,
+    "sha256": null
+  },
+  ".lake/build/ir": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869770382830655,
+    "sha256": null
+  },
+  ".lake/build/ir/Dep.c": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770376081344,
+    "sha256": "171ac430e7e079273e94d918d83d907fa643eb6704bc064cf3dc261ed1a03120"
+  },
+  ".lake/build/ir/Dep.c.hash": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770382868154,
+    "sha256": "f4f76624229143e0006c9e2e1d07263b9b9c96e465aeaab725e5931c2caa8df8"
+  },
+  ".lake/build/ir/Dep.setup.json": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770160624729,
+    "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+  },
+  ".lake/build/lib": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869770160156442,
+    "sha256": null
+  },
+  ".lake/build/lib/lean": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869770383139110,
+    "sha256": null
+  },
+  ".lake/build/lib/lean/Dep.ilean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770374299236,
+    "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+  },
+  ".lake/build/lib/lean/Dep.ilean.hash": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770382770280,
+    "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42"
+  },
+  ".lake/build/lib/lean/Dep.olean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770372867833,
+    "sha256": "0b530085d60d6a3ac9221cbd5762e8ae3e131ed84f3d21d94142c5d6a91bebb4"
+  },
+  ".lake/build/lib/lean/Dep.olean.hash": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770382667365,
+    "sha256": "7eb383537fbc31cbf90dec5f364b85b464be0fc206c3559d111edddd55a304b9"
+  },
+  ".lake/build/lib/lean/Dep.trace": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770383173235,
+    "sha256": "d392a2342202010e2303def4589faf45543520674f9ae381c147cc887f21eeb2"
+  },
+  ".lake/config": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869766736865666,
+    "sha256": null
+  },
+  ".lake/config/0": {
+    "kind": "dir",
+    "mode": "0o555",
+    "mtime_ns": 1790869770155005075,
+    "sha256": null
+  },
+  ".lake/config/0/lakefile.olean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770154899325,
+    "sha256": "9cdebf842643120eea6a655270c6a953ffa35f615309dcdd14936ec9176e9b3c"
+  },
+  ".lake/config/0/lakefile.olean.trace": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869766737113830,
+    "sha256": "60ec815af3d58dc6c33a2b09d3b3be33c679ef90cb4162a0259a4657973a3de5"
+  },
+  "Dep.lean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869761114623454,
+    "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+  },
+  "lake-manifest.json": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869770158127795,
+    "sha256": "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10"
+  },
+  "lakefile.lean": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869761114522163,
+    "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+  },
+  "lean-toolchain": {
+    "kind": "file",
+    "mode": "0o444",
+    "mtime_ns": 1790869761114417623,
+    "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b"
+  }
+}

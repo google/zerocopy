@@ -1,0 +1,16 @@
+{
+  "toolchain_root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains",
+  "4.30.0-rc2": {
+    "lake_version": "Lake version 5.0.0-src+3dc1a08 (Lean version 4.30.0-rc2)",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "4.34.1": {
+    "lake_version": "Lake version 5.0.0-src+5045d00 (Lean version 4.34.1)",
+    "lean_version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "lake_sha256": "c8c24f1398162ab4004e2a869952d8469f54293651151feaad4526f2b8474c6e",
+    "lean_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+  },
+  "identity_commands": ["shasum -a 256 <each absolute lake and lean binary>", "<each absolute lake binary> --version", "<each absolute lean binary> --version"]
+}

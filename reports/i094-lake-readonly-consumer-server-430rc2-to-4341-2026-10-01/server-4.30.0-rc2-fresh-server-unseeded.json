@@ -1,0 +1,271 @@
+{
+  "version": "4.30.0-rc2",
+  "cmd": [
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+    "--keep-toolchain",
+    "--no-cache",
+    "serve"
+  ],
+  "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded",
+  "env": {
+    "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+    "LEAN_NUM_THREADS": "1",
+    "LAKE_ARTIFACT_CACHE": "false",
+    "LAKE_CACHE_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/cache/4.30.0-rc2",
+    "MATHLIB_NO_CACHE_ON_UPDATE": "1",
+    "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/home"
+  },
+  "admission": {
+    "memory_pressure_free_pct": 47,
+    "disk_free_bytes": 17604038656,
+    "rss_kib": 0
+  },
+  "samples": [
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17603833856,
+      "rss_kib": 55952,
+      "seconds": 0.048
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17604005888,
+      "rss_kib": 387824,
+      "seconds": 0.325
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17603104768,
+      "rss_kib": 606336,
+      "seconds": 0.601
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602981888,
+      "rss_kib": 661280,
+      "seconds": 0.698
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602981888,
+      "rss_kib": 707984,
+      "seconds": 0.731
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602981888,
+      "rss_kib": 709040,
+      "seconds": 0.748
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602981888,
+      "rss_kib": 711744,
+      "seconds": 0.792
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602981888,
+      "rss_kib": 713056,
+      "seconds": 0.807
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602981888,
+      "rss_kib": 731072,
+      "seconds": 0.974
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602981888,
+      "rss_kib": 733504,
+      "seconds": 0.989
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602961408,
+      "rss_kib": 756336,
+      "seconds": 1.264
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602961408,
+      "rss_kib": 758784,
+      "seconds": 1.293
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602854912,
+      "rss_kib": 783552,
+      "seconds": 1.569
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602854912,
+      "rss_kib": 804192,
+      "seconds": 1.822
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602854912,
+      "rss_kib": 827840,
+      "seconds": 2.097
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602854912,
+      "rss_kib": 851984,
+      "seconds": 2.352
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602854912,
+      "rss_kib": 876064,
+      "seconds": 2.627
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602854912,
+      "rss_kib": 900880,
+      "seconds": 2.854
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602854912,
+      "rss_kib": 901280,
+      "seconds": 2.869
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17602846720,
+      "rss_kib": 940912,
+      "seconds": 3.145
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601794048,
+      "rss_kib": 956416,
+      "seconds": 3.4
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601794048,
+      "rss_kib": 956416,
+      "seconds": 3.7
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601794048,
+      "rss_kib": 956432,
+      "seconds": 3.949
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601794048,
+      "rss_kib": 956432,
+      "seconds": 4.252
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601794048,
+      "rss_kib": 956464,
+      "seconds": 4.469
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601794048,
+      "rss_kib": 956464,
+      "seconds": 4.769
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601794048,
+      "rss_kib": 956496,
+      "seconds": 4.966
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601794048,
+      "rss_kib": 956496,
+      "seconds": 4.992
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956496,
+      "seconds": 5.293
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 5.517
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 5.817
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 6.03
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 6.331
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 6.631
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 6.932
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 7.042
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 7.343
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 7.637
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601781760,
+      "rss_kib": 956512,
+      "seconds": 7.936
+    }
+  ],
+  "seconds": 8.345,
+  "exit": 0,
+  "abort": null,
+  "wire_in": [
+    "Content-Length: 261\r\n\r\n{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"processId\":null,\"rootUri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded\",\"capabilities\":{},\"workspaceFolders\":null}}",
+    "Content-Length: 52\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"initialized\",\"params\":{}}",
+    "Content-Length: 304\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/didOpen\",\"params\":{\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"languageId\":\"lean4\",\"version\":1,\"text\":\"import Dep\\n#eval depValue\\n\"}}}",
+    "Content-Length: 58\r\n\r\n{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"shutdown\",\"params\":null}",
+    "Content-Length: 47\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"exit\",\"params\":null}"
+  ],
+  "wire_out": "Content-Length: 1540\r\n\r\n{\"id\":1,\"jsonrpc\":\"2.0\",\"result\":{\"capabilities\":{\"callHierarchyProvider\":true,\"codeActionProvider\":{\"codeActionKinds\":[\"quickfix\",\"refactor\",\"source.organizeImports\"],\"resolveProvider\":true,\"workDoneProgress\":false},\"colorProvider\":{\"workDoneProgress\":false},\"completionProvider\":{\"resolveProvider\":true,\"triggerCharacters\":[\".\"]},\"declarationProvider\":true,\"definitionProvider\":true,\"documentHighlightProvider\":true,\"documentSymbolProvider\":true,\"experimental\":{\"moduleHierarchyProvider\":{},\"rpcProvider\":{\"highlightMatchesProvider\":{},\"rpcWireFormat\":\"v1\"}},\"foldingRangeProvider\":true,\"hoverProvider\":true,\"inlayHintProvider\":{\"resolveProvider\":false,\"workDoneProgress\":false},\"referencesProvider\":true,\"renameProvider\":{\"prepareProvider\":true},\"semanticTokensProvider\":{\"full\":true,\"legend\":{\"tokenModifiers\":[\"declaration\",\"definition\",\"readonly\",\"static\",\"deprecated\",\"abstract\",\"async\",\"modification\",\"documentation\",\"defaultLibrary\"],\"tokenTypes\":[\"keyword\",\"variable\",\"property\",\"function\",\"namespace\",\"type\",\"class\",\"enum\",\"interface\",\"struct\",\"typeParameter\",\"parameter\",\"enumMember\",\"event\",\"method\",\"macro\",\"modifier\",\"comment\",\"string\",\"number\",\"regexp\",\"operator\",\"decorator\",\"leanSorryLike\"]},\"range\":true},\"signatureHelpProvider\":{\"triggerCharacters\":[\" \"],\"workDoneProgress\":false},\"textDocumentSync\":{\"change\":2,\"openClose\":true,\"save\":{\"includeText\":true},\"willSave\":false,\"willSaveWaitUntil\":false},\"typeDefinitionProvider\":true,\"workspaceSymbolProvider\":true},\"serverInfo\":{\"name\":\"Lean 4 Server\",\"version\":\"0.3.0\"}}}Content-Length: 267\r\n\r\n{\"id\":\"register_lean_watcher\",\"jsonrpc\":\"2.0\",\"method\":\"client/registerCapability\",\"params\":{\"registrations\":[{\"id\":\"lean_watcher\",\"method\":\"workspace/didChangeWatchedFiles\",\"registerOptions\":{\"watchers\":[{\"globPattern\":\"**/*.lean\"},{\"globPattern\":\"**/*.ilean\"}]}}]}}Content-Length: 344\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[{\"kind\":1,\"range\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}}}],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 506\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[{\"fullRange\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}},\"message\":\"info: probe_consumer: no previous manifest, creating one from scratch\\n\",\"range\":{\"end\":{\"character\":0,\"line\":1},\"start\":{\"character\":0,\"line\":0}},\"severity\":3}],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 478\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[{\"fullRange\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}},\"message\":\"error: permission denied (error code: 13)\\n\",\"range\":{\"end\":{\"character\":0,\"line\":1},\"start\":{\"character\":0,\"line\":0}},\"severity\":3}],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 600\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[{\"fullRange\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}},\"message\":\"  file: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/producer/.lake/config/probe_dep/lakefile.olean.lock\\n\",\"range\":{\"end\":{\"character\":0,\"line\":1},\"start\":{\"character\":0,\"line\":0}},\"severity\":3}],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 532\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[{\"fullRange\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}},\"message\":\"Failed to configure the Lake workspace. Please restart the server after fixing the error above.\\n\",\"range\":{\"end\":{\"character\":0,\"line\":1},\"start\":{\"character\":0,\"line\":0}},\"severity\":3}],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 256\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 260\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 344\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[{\"kind\":2,\"range\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}}}],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 1118\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[{\"fullRange\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}},\"message\":\"`/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake setup-file /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean -` failed:\\n\\nstderr:\\ninfo: probe_consumer: no previous manifest, creating one from scratch\\nerror: permission denied (error code: 13)\\n  file: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/producer/.lake/config/probe_dep/lakefile.olean.lock\\nFailed to configure the Lake workspace. Please restart the server after fixing the error above.\\n\",\"range\":{\"end\":{\"character\":0,\"line\":1},\"start\":{\"character\":0,\"line\":0}},\"severity\":1,\"source\":\"Lean 4\"}],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 63\r\n\r\n{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":2,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 68\r\n\r\n{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"workspace/semanticTokens/refresh\"}Content-Length: 63\r\n\r\n{\"id\":4,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":5,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":6,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":7,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 68\r\n\r\n{\"id\":8,\"jsonrpc\":\"2.0\",\"method\":\"workspace/semanticTokens/refresh\"}Content-Length: 63\r\n\r\n{\"id\":9,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 64\r\n\r\n{\"id\":10,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 64\r\n\r\n{\"id\":11,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 69\r\n\r\n{\"id\":12,\"jsonrpc\":\"2.0\",\"method\":\"workspace/semanticTokens/refresh\"}Content-Length: 256\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 38\r\n\r\n{\"id\":2,\"jsonrpc\":\"2.0\",\"result\":null}",
+  "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.30.0-rc2/producer/.lake/config/probe_dep/lakefile.olean.lock\nwarning: package configuration has errors, falling back to plain `lean --server`\n"
+}

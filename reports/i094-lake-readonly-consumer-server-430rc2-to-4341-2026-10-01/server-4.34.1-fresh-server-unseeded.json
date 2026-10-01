@@ -1,0 +1,271 @@
+{
+  "version": "4.34.1",
+  "cmd": [
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lake",
+    "--keep-toolchain",
+    "--no-cache",
+    "serve"
+  ],
+  "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded",
+  "env": {
+    "ELAN_TOOLCHAIN": "leanprover/lean4:v4.34.1",
+    "LEAN_NUM_THREADS": "1",
+    "LAKE_ARTIFACT_CACHE": "false",
+    "LAKE_CACHE_DIR": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/cache/4.34.1",
+    "MATHLIB_NO_CACHE_ON_UPDATE": "1",
+    "HOME": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/home"
+  },
+  "admission": {
+    "memory_pressure_free_pct": 47,
+    "disk_free_bytes": 17601748992,
+    "rss_kib": 0
+  },
+  "samples": [
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601748992,
+      "rss_kib": 8800,
+      "seconds": 0.043
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601744896,
+      "rss_kib": 59840,
+      "seconds": 0.319
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601740800,
+      "rss_kib": 100448,
+      "seconds": 0.595
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601740800,
+      "rss_kib": 140144,
+      "seconds": 0.872
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601740800,
+      "rss_kib": 177328,
+      "seconds": 1.148
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601740800,
+      "rss_kib": 247840,
+      "seconds": 1.424
+    },
+    {
+      "memory_pressure_free_pct": 47,
+      "disk_free_bytes": 17601318912,
+      "rss_kib": 357792,
+      "seconds": 1.7
+    },
+    {
+      "memory_pressure_free_pct": 46,
+      "disk_free_bytes": 17601318912,
+      "rss_kib": 442080,
+      "seconds": 1.979
+    },
+    {
+      "memory_pressure_free_pct": 46,
+      "disk_free_bytes": 17601249280,
+      "rss_kib": 513504,
+      "seconds": 2.257
+    },
+    {
+      "memory_pressure_free_pct": 46,
+      "disk_free_bytes": 17601249280,
+      "rss_kib": 564512,
+      "seconds": 2.534
+    },
+    {
+      "memory_pressure_free_pct": 46,
+      "disk_free_bytes": 17601249280,
+      "rss_kib": 614800,
+      "seconds": 2.811
+    },
+    {
+      "memory_pressure_free_pct": 46,
+      "disk_free_bytes": 17601232896,
+      "rss_kib": 688400,
+      "seconds": 3.089
+    },
+    {
+      "memory_pressure_free_pct": 46,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 709072,
+      "seconds": 3.195
+    },
+    {
+      "memory_pressure_free_pct": 46,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 760352,
+      "seconds": 3.306
+    },
+    {
+      "memory_pressure_free_pct": 46,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 761568,
+      "seconds": 3.322
+    },
+    {
+      "memory_pressure_free_pct": 45,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 781376,
+      "seconds": 3.554
+    },
+    {
+      "memory_pressure_free_pct": 45,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 782144,
+      "seconds": 3.574
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 804400,
+      "seconds": 3.845
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 807728,
+      "seconds": 3.871
+    },
+    {
+      "memory_pressure_free_pct": 45,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 809168,
+      "seconds": 3.887
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 828704,
+      "seconds": 4.057
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601015808,
+      "rss_kib": 828976,
+      "seconds": 4.073
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 848784,
+      "seconds": 4.348
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 852512,
+      "seconds": 4.401
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 876064,
+      "seconds": 4.676
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 896768,
+      "seconds": 4.933
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 924880,
+      "seconds": 5.208
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 943408,
+      "seconds": 5.44
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 944944,
+      "seconds": 5.461
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 975728,
+      "seconds": 5.739
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1016640,
+      "seconds": 5.993
+    },
+    {
+      "memory_pressure_free_pct": 44,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1032000,
+      "seconds": 6.269
+    },
+    {
+      "memory_pressure_free_pct": 43,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1037776,
+      "seconds": 6.521
+    },
+    {
+      "memory_pressure_free_pct": 43,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1038272,
+      "seconds": 6.797
+    },
+    {
+      "memory_pressure_free_pct": 43,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1038960,
+      "seconds": 7.044
+    },
+    {
+      "memory_pressure_free_pct": 43,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1039248,
+      "seconds": 7.317
+    },
+    {
+      "memory_pressure_free_pct": 43,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1039248,
+      "seconds": 7.54
+    },
+    {
+      "memory_pressure_free_pct": 43,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1039248,
+      "seconds": 7.574
+    },
+    {
+      "memory_pressure_free_pct": 43,
+      "disk_free_bytes": 17601011712,
+      "rss_kib": 1039264,
+      "seconds": 7.849
+    }
+  ],
+  "seconds": 8.136,
+  "exit": 0,
+  "abort": null,
+  "wire_in": [
+    "Content-Length: 257\r\n\r\n{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"processId\":null,\"rootUri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded\",\"capabilities\":{},\"workspaceFolders\":null}}",
+    "Content-Length: 52\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"initialized\",\"params\":{}}",
+    "Content-Length: 300\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/didOpen\",\"params\":{\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"languageId\":\"lean4\",\"version\":1,\"text\":\"import Dep\\n#eval depValue\\n\"}}}",
+    "Content-Length: 58\r\n\r\n{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"shutdown\",\"params\":null}",
+    "Content-Length: 47\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"exit\",\"params\":null}"
+  ],
+  "wire_out": "Content-Length: 1540\r\n\r\n{\"id\":1,\"jsonrpc\":\"2.0\",\"result\":{\"capabilities\":{\"callHierarchyProvider\":true,\"codeActionProvider\":{\"codeActionKinds\":[\"quickfix\",\"refactor\",\"source.organizeImports\"],\"resolveProvider\":true,\"workDoneProgress\":false},\"colorProvider\":{\"workDoneProgress\":false},\"completionProvider\":{\"resolveProvider\":true,\"triggerCharacters\":[\".\"]},\"declarationProvider\":true,\"definitionProvider\":true,\"documentHighlightProvider\":true,\"documentSymbolProvider\":true,\"experimental\":{\"moduleHierarchyProvider\":{},\"rpcProvider\":{\"highlightMatchesProvider\":{},\"rpcWireFormat\":\"v1\"}},\"foldingRangeProvider\":true,\"hoverProvider\":true,\"inlayHintProvider\":{\"resolveProvider\":false,\"workDoneProgress\":false},\"referencesProvider\":true,\"renameProvider\":{\"prepareProvider\":true},\"semanticTokensProvider\":{\"full\":true,\"legend\":{\"tokenModifiers\":[\"declaration\",\"definition\",\"readonly\",\"static\",\"deprecated\",\"abstract\",\"async\",\"modification\",\"documentation\",\"defaultLibrary\"],\"tokenTypes\":[\"keyword\",\"variable\",\"property\",\"function\",\"namespace\",\"type\",\"class\",\"enum\",\"interface\",\"struct\",\"typeParameter\",\"parameter\",\"enumMember\",\"event\",\"method\",\"macro\",\"modifier\",\"comment\",\"string\",\"number\",\"regexp\",\"operator\",\"decorator\",\"leanSorryLike\"]},\"range\":true},\"signatureHelpProvider\":{\"triggerCharacters\":[\" \"],\"workDoneProgress\":false},\"textDocumentSync\":{\"change\":2,\"openClose\":true,\"save\":{\"includeText\":true},\"willSave\":false,\"willSaveWaitUntil\":false},\"typeDefinitionProvider\":true,\"workspaceSymbolProvider\":true},\"serverInfo\":{\"name\":\"Lean 4 Server\",\"version\":\"0.3.0\"}}}Content-Length: 267\r\n\r\n{\"id\":\"register_lean_watcher\",\"jsonrpc\":\"2.0\",\"method\":\"client/registerCapability\",\"params\":{\"registrations\":[{\"id\":\"lean_watcher\",\"method\":\"workspace/didChangeWatchedFiles\",\"registerOptions\":{\"watchers\":[{\"globPattern\":\"**/*.lean\"},{\"globPattern\":\"**/*.ilean\"}]}}]}}Content-Length: 340\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[{\"kind\":1,\"range\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}}}],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 340\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[{\"kind\":1,\"range\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":0}}}],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 252\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 63\r\n\r\n{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 252\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 426\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[{\"kind\":1,\"range\":{\"end\":{\"character\":14,\"line\":1},\"start\":{\"character\":0,\"line\":1}}},{\"kind\":1,\"range\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":2}}}],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 425\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[{\"kind\":1,\"range\":{\"end\":{\"character\":0,\"line\":1},\"start\":{\"character\":0,\"line\":1}}},{\"kind\":1,\"range\":{\"end\":{\"character\":0,\"line\":2},\"start\":{\"character\":0,\"line\":2}}}],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 450\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[{\"fullRange\":{\"end\":{\"character\":5,\"line\":1},\"start\":{\"character\":0,\"line\":1}},\"message\":\"7\",\"range\":{\"end\":{\"character\":5,\"line\":1},\"start\":{\"character\":0,\"line\":1}},\"severity\":3,\"source\":\"Lean 4\"}],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 256\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 256\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"$/lean/fileProgress\",\"params\":{\"processing\":[],\"textDocument\":{\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}}Content-Length: 63\r\n\r\n{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":2,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 68\r\n\r\n{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"workspace/semanticTokens/refresh\"}Content-Length: 63\r\n\r\n{\"id\":4,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":5,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":6,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 63\r\n\r\n{\"id\":7,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 68\r\n\r\n{\"id\":8,\"jsonrpc\":\"2.0\",\"method\":\"workspace/semanticTokens/refresh\"}Content-Length: 63\r\n\r\n{\"id\":9,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 64\r\n\r\n{\"id\":10,\"jsonrpc\":\"2.0\",\"method\":\"workspace/inlayHint/refresh\"}Content-Length: 252\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"textDocument/publishDiagnostics\",\"params\":{\"diagnostics\":[],\"uri\":\"file:///Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i094-lake-upgrade-20261001/work/4.34.1/fresh-server-unseeded/Generated.lean\",\"version\":1}}Content-Length: 38\r\n\r\n{\"id\":2,\"jsonrpc\":\"2.0\",\"result\":null}",
+  "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\n"
+}
