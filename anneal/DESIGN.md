@@ -26,10 +26,10 @@ An Anneal claim identifies:
 - one or more **guarantees**, each with any **requirements** under which that
   guarantee applies.
 
-The scope must determine precisely which artifacts, configurations, executions,
-or contexts are covered. Within that scope, each guarantee is conditional on its
-own requirements. A requirement for one guarantee does not become a requirement
-for another.
+The scope is shared by all guarantees in the claim and must determine precisely
+which artifacts, configurations, executions, or contexts are covered. Within that
+scope, each guarantee is conditional on its own requirements. A requirement for
+one guarantee does not become a requirement for another.
 
 For example, a safe binary-search function may guarantee correct membership
 results when its input is sorted. Calling it with an unsorted slice makes that
@@ -151,17 +151,18 @@ both belong to the same nominal project or package.
 ## Baseline well-definedness
 
 Every verification result includes a guarantee that its covered compiled Rust
-behavior is well-defined. Anneal's principles constrain the requirements under
-which this baseline guarantee may apply.
+behavior is well-defined. Because this guarantee is mandatory, neither the
+claim's scope nor the guarantee's requirements may be defined in terms of whether
+the behavior Anneal is supposed to establish is well-defined.
 
 ### Whole programs
 
-The scope of a whole-program claim ranges over complete executions of covered
-compiled realizations.
+The scope of a whole-program claim ranges over all complete executions of each
+covered compiled realization under the configurations and environments identified
+by the claim.
 
 The baseline well-definedness guarantee may require conditions on external inputs
-or environment, but it must not assume the well-definedness of the program
-behavior that Anneal is supposed to establish.
+or environment.
 
 Anneal may prove this guarantee using local proofs, component contracts,
 whole-program reasoning, or another sound method. Regardless of proof strategy,
@@ -187,11 +188,9 @@ surrounding execution must be well-defined when the library is replaced by its
 abstract API contract. Its guarantee is that the execution remains well-defined
 when the verified implementation is substituted.
 
-This requirement constrains the surrounding context rather than assuming the
-well-definedness of the implementation being verified. The lower-level formal
-model may express the contextual relationship in different ways, but it must not
-depend on an informal judgment that undefined behavior was "caused by" or
-"attributable to" the library.
+The lower-level formal model may express the contextual relationship in different
+ways, but it must not depend on an informal judgment that undefined behavior was
+"caused by" or "attributable to" the library.
 
 #### Safe and unsafe APIs
 
