@@ -1,0 +1,340 @@
+{
+  "schema": 1,
+  "fixtures": {
+    "original": "bb1204b54f7fd536e5b1c4875cf2440dc3005f14dd5c64f3fdf30fa549a36691",
+    "repaired": "60b03585f4dfaa34992882ba373ed38ab6a2cf495aee5d6c3ef685252eb4563b",
+    "shifted": "2216a525340fd405a744ed7967a8641c3c6cde6743fd4cdd57f94153298b725e"
+  },
+  "tools": {
+    "old": {
+      "executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+      "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "version_verbose": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n"
+    },
+    "new": {
+      "executable": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+      "sha256": "29f8ccc9aa7b0d8798eda854fa7f0e4ba3867c8c336b87d52dbb3b24b3f0878d",
+      "version_verbose": "rustc 1.101.0-nightly (5c543b0b8 2026-09-29)\nbinary: rustc\ncommit-hash: 5c543b0b8c73c7b72bc8284ced4fb22ead15734d\ncommit-date: 2026-09-29\nhost: aarch64-apple-darwin\nrelease: 1.101.0-nightly\nLLVM version: 23.1.1\n"
+    }
+  },
+  "cells": [
+    {
+      "role": "old",
+      "variant": "original",
+      "phase": "hir",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "-Zunpretty=hir-tree",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/original-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 14596,
+          "inactive": 112703,
+          "speculative": 3021
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 24.8565673828125,
+        "disk_free_bytes": 4242636800,
+        "owned_raw_bytes": 0
+      },
+      "exit_code": 1,
+      "elapsed_s": 0.11903175013139844,
+      "stdout_sha256": "713ccb573e5c00bf95add90c6fa9fd37f53284412d0d8a3c6b9758f2dc86cbd7",
+      "stderr_sha256": "f4a1bf3483a8d3c11d2c4a24e3dab155ac610eaf89956dba63650b7bca786b9a",
+      "stdout_bytes": 150539,
+      "stderr_bytes": 713
+    },
+    {
+      "role": "old",
+      "variant": "repaired",
+      "phase": "hir",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "-Zunpretty=hir-tree",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/repaired-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 12910,
+          "inactive": 113001,
+          "speculative": 3515
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 24.686050415039062,
+        "disk_free_bytes": 4242472960,
+        "owned_raw_bytes": 151252
+      },
+      "exit_code": 0,
+      "elapsed_s": 0.01888875011354685,
+      "stdout_sha256": "07432fde32bef8b52126e35e17274cc06f8da3141cb9939ef44c0c171854f4b3",
+      "stderr_sha256": "12edec1cfdb546b5614d7e42a6fce092ff6d80927c408e18272c028abde143bf",
+      "stdout_bytes": 150524,
+      "stderr_bytes": 496
+    },
+    {
+      "role": "old",
+      "variant": "repaired",
+      "phase": "metadata",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "--emit=metadata",
+        "-o",
+        "/dev/null",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/repaired-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 12922,
+          "inactive": 113070,
+          "speculative": 3525
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 24.703407287597656,
+        "disk_free_bytes": 4242317312,
+        "owned_raw_bytes": 302272
+      },
+      "exit_code": 1,
+      "elapsed_s": 0.09141520783305168,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "7ecb10d3e9645189c80b98f7bcf3b733e21f05fa4025fb17f89260088ecf52cd",
+      "stdout_bytes": 0,
+      "stderr_bytes": 628
+    },
+    {
+      "role": "old",
+      "variant": "shifted",
+      "phase": "hir",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "-Zunpretty=hir-tree",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 11434,
+          "inactive": 113322,
+          "speculative": 3944
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 24.547576904296875,
+        "disk_free_bytes": 4242309120,
+        "owned_raw_bytes": 302900
+      },
+      "exit_code": 0,
+      "elapsed_s": 0.018162500113248825,
+      "stdout_sha256": "07f63104febc5e756fb27d8f8dec720d7179634f8231bd01d1becb32f0dbcb87",
+      "stderr_sha256": "f9ce4feaf71fd968743e5b7d3da824c5883da7e0cdf44ea71e3502ccd7780e63",
+      "stdout_bytes": 170070,
+      "stderr_bytes": 495
+    },
+    {
+      "role": "old",
+      "variant": "shifted",
+      "phase": "metadata",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "--emit=metadata",
+        "-o",
+        "/dev/null",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 11518,
+          "inactive": 113342,
+          "speculative": 3955
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 24.56951141357422,
+        "disk_free_bytes": 4242128896,
+        "owned_raw_bytes": 473465
+      },
+      "exit_code": 1,
+      "elapsed_s": 0.019113833084702492,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "2e3de73f2f11c97742ae209e6708f628147a84d2a266d8181ff02359c37fd4eb",
+      "stdout_bytes": 0,
+      "stderr_bytes": 627
+    },
+    {
+      "role": "new",
+      "variant": "original",
+      "phase": "hir",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "-Zunpretty=hir-tree",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/original-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 8684,
+          "inactive": 113475,
+          "speculative": 5149
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 24.282073974609375,
+        "disk_free_bytes": 4242116608,
+        "owned_raw_bytes": 474092
+      },
+      "exit_code": 1,
+      "elapsed_s": 0.12666499987244606,
+      "stdout_sha256": "f16a1521ab69c671d89c4c91afe3398c54a5ddfb495b7ecbfe55b8294e89f880",
+      "stderr_sha256": "f4a1bf3483a8d3c11d2c4a24e3dab155ac610eaf89956dba63650b7bca786b9a",
+      "stdout_bytes": 152428,
+      "stderr_bytes": 713
+    },
+    {
+      "role": "new",
+      "variant": "repaired",
+      "phase": "hir",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "-Zunpretty=hir-tree",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/repaired-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 6561,
+          "inactive": 113988,
+          "speculative": 5718
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 24.083518981933594,
+        "disk_free_bytes": 4241952768,
+        "owned_raw_bytes": 627233
+      },
+      "exit_code": 0,
+      "elapsed_s": 0.022711625322699547,
+      "stdout_sha256": "9f5082f0d560fac8d4841666bc8a46b260493a6725650f983a33b193695482c5",
+      "stderr_sha256": "12edec1cfdb546b5614d7e42a6fce092ff6d80927c408e18272c028abde143bf",
+      "stdout_bytes": 152413,
+      "stderr_bytes": 496
+    },
+    {
+      "role": "new",
+      "variant": "repaired",
+      "phase": "metadata",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "--emit=metadata",
+        "-o",
+        "/dev/null",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/repaired-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 6481,
+          "inactive": 114118,
+          "speculative": 5747
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 24.098587036132812,
+        "disk_free_bytes": 4241784832,
+        "owned_raw_bytes": 780142
+      },
+      "exit_code": 1,
+      "elapsed_s": 0.10165874985978007,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "ba832f9580fc8e0a4cece0a876329bfae9d4ff15ea6869a659ff19ffacaeb24d",
+      "stdout_bytes": 0,
+      "stderr_bytes": 628
+    },
+    {
+      "role": "new",
+      "variant": "shifted",
+      "phase": "hir",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "-Zunpretty=hir-tree",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 4985,
+          "inactive": 114465,
+          "speculative": 6037
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 23.93474578857422,
+        "disk_free_bytes": 4241780736,
+        "owned_raw_bytes": 780770
+      },
+      "exit_code": 0,
+      "elapsed_s": 0.02324299979954958,
+      "stdout_sha256": "e99a74b39830b70270e42869553ddab5bf9a291dde31d09ab6d0c5222ce79c3d",
+      "stderr_sha256": "f9ce4feaf71fd968743e5b7d3da824c5883da7e0cdf44ea71e3502ccd7780e63",
+      "stdout_bytes": 172193,
+      "stderr_bytes": 495
+    },
+    {
+      "role": "new",
+      "variant": "shifted",
+      "phase": "metadata",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-09-30-aarch64-apple-darwin/bin/rustc",
+        "--crate-name",
+        "local_identity",
+        "--edition=2024",
+        "--emit=metadata",
+        "-o",
+        "/dev/null",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs"
+      ],
+      "admission": {
+        "page_bytes": 16384,
+        "pages": {
+          "free": 5071,
+          "inactive": 114485,
+          "speculative": 6060
+        },
+        "memory_bytes": 8589934592,
+        "reclaimable_percent": 23.9593505859375,
+        "disk_free_bytes": 4241600512,
+        "owned_raw_bytes": 953458
+      },
+      "exit_code": 1,
+      "elapsed_s": 0.023983582854270935,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "f17401aac63cefc70c1c69d58d1ce9cda0616aa1afd147786838eef5f0ce784d",
+      "stdout_bytes": 0,
+      "stderr_bytes": 627
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+warning: unnecessary braces around const expression
+  --> /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/repaired-local.rs:16:17
+   |
+16 |     let _: [u8; { 1 + 1 }] = [0; 2];
+   |                 ^^     ^^
+   |
+   = note: `#[warn(unused_braces)]` (part of `#[warn(unused)]`) on by default
+help: remove these braces
+   |
+16 -     let _: [u8; { 1 + 1 }] = [0; 2];
+16 +     let _: [u8; 1 + 1] = [0; 2];
+   |
+
+warning: 1 warning emitted
+

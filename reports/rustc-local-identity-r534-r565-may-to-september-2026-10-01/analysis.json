@@ -1,0 +1,404 @@
+{
+  "schema": 1,
+  "maps": {
+    "old": {
+      "repaired": {
+        "<crate>": {
+          "index": 0,
+          "crate_display": "18ae"
+        },
+        "std": {
+          "index": 1,
+          "crate_display": "18ae"
+        },
+        "{use#0}": {
+          "index": 2,
+          "crate_display": "18ae"
+        },
+        "local_generated": {
+          "index": 3,
+          "crate_display": "18ae"
+        },
+        "outer_a": {
+          "index": 4,
+          "crate_display": "18ae"
+        },
+        "outer_b": {
+          "index": 18,
+          "crate_display": "18ae"
+        },
+        "main": {
+          "index": 20,
+          "crate_display": "18ae"
+        },
+        "outer_a::T": {
+          "index": 5,
+          "crate_display": "18ae"
+        },
+        "outer_a::inner": {
+          "index": 6,
+          "crate_display": "18ae"
+        },
+        "outer_a::Local": {
+          "index": 8,
+          "crate_display": "18ae"
+        },
+        "outer_a::{impl#0}": {
+          "index": 11,
+          "crate_display": "18ae"
+        },
+        "outer_a::{closure#0}": {
+          "index": 13,
+          "crate_display": "18ae"
+        },
+        "outer_a::{closure#1}": {
+          "index": 14,
+          "crate_display": "18ae"
+        },
+        "outer_a::{constant#0}": {
+          "index": 15,
+          "crate_display": "18ae"
+        },
+        "outer_a::{constant#1}": {
+          "index": 16,
+          "crate_display": "18ae"
+        },
+        "outer_a::{constant#2}": {
+          "index": 17,
+          "crate_display": "18ae"
+        },
+        "outer_a::generated_local": {
+          "index": 21,
+          "crate_display": "18ae"
+        },
+        "outer_a::Local::{constructor#0}": {
+          "index": 9,
+          "crate_display": "18ae"
+        },
+        "outer_a::inner::U": {
+          "index": 7,
+          "crate_display": "18ae"
+        },
+        "outer_a::Local::0": {
+          "index": 10,
+          "crate_display": "18ae"
+        },
+        "outer_a::{impl#0}::method": {
+          "index": 12,
+          "crate_display": "18ae"
+        },
+        "outer_b::inner": {
+          "index": 19,
+          "crate_display": "18ae"
+        },
+        "outer_a::{impl#0}::method::'_": {
+          "index": 22,
+          "crate_display": "18ae"
+        }
+      },
+      "shifted": {
+        "<crate>": {
+          "index": 0,
+          "crate_display": "18ae"
+        },
+        "std": {
+          "index": 1,
+          "crate_display": "18ae"
+        },
+        "{use#0}": {
+          "index": 2,
+          "crate_display": "18ae"
+        },
+        "local_generated": {
+          "index": 3,
+          "crate_display": "18ae"
+        },
+        "outer_a": {
+          "index": 4,
+          "crate_display": "18ae"
+        },
+        "outer_b": {
+          "index": 20,
+          "crate_display": "18ae"
+        },
+        "main": {
+          "index": 22,
+          "crate_display": "18ae"
+        },
+        "outer_a::T": {
+          "index": 5,
+          "crate_display": "18ae"
+        },
+        "outer_a::inner": {
+          "index": 6,
+          "crate_display": "18ae"
+        },
+        "outer_a::Local": {
+          "index": 8,
+          "crate_display": "18ae"
+        },
+        "outer_a::{impl#0}": {
+          "index": 11,
+          "crate_display": "18ae"
+        },
+        "outer_a::{closure#0}": {
+          "index": 13,
+          "crate_display": "18ae"
+        },
+        "outer_a::{constant#0}": {
+          "index": 14,
+          "crate_display": "18ae"
+        },
+        "outer_a::{closure#1}": {
+          "index": 15,
+          "crate_display": "18ae"
+        },
+        "outer_a::{closure#2}": {
+          "index": 16,
+          "crate_display": "18ae"
+        },
+        "outer_a::{constant#1}": {
+          "index": 17,
+          "crate_display": "18ae"
+        },
+        "outer_a::{constant#2}": {
+          "index": 18,
+          "crate_display": "18ae"
+        },
+        "outer_a::{constant#3}": {
+          "index": 19,
+          "crate_display": "18ae"
+        },
+        "outer_a::generated_local": {
+          "index": 23,
+          "crate_display": "18ae"
+        },
+        "outer_a::Local::{constructor#0}": {
+          "index": 9,
+          "crate_display": "18ae"
+        },
+        "outer_a::inner::U": {
+          "index": 7,
+          "crate_display": "18ae"
+        },
+        "outer_a::Local::0": {
+          "index": 10,
+          "crate_display": "18ae"
+        },
+        "outer_a::{impl#0}::method": {
+          "index": 12,
+          "crate_display": "18ae"
+        },
+        "outer_b::inner": {
+          "index": 21,
+          "crate_display": "18ae"
+        },
+        "outer_a::{impl#0}::method::'_": {
+          "index": 24,
+          "crate_display": "18ae"
+        }
+      }
+    },
+    "new": {
+      "repaired": {
+        "<crate>": {
+          "index": 0,
+          "crate_display": "fcc1"
+        },
+        "std": {
+          "index": 1,
+          "crate_display": "fcc1"
+        },
+        "{use#0}": {
+          "index": 2,
+          "crate_display": "fcc1"
+        },
+        "local_generated": {
+          "index": 3,
+          "crate_display": "fcc1"
+        },
+        "outer_a": {
+          "index": 4,
+          "crate_display": "fcc1"
+        },
+        "outer_b": {
+          "index": 18,
+          "crate_display": "fcc1"
+        },
+        "main": {
+          "index": 20,
+          "crate_display": "fcc1"
+        },
+        "outer_a::T": {
+          "index": 5,
+          "crate_display": "fcc1"
+        },
+        "outer_a::inner": {
+          "index": 6,
+          "crate_display": "fcc1"
+        },
+        "outer_a::Local": {
+          "index": 8,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{impl#0}": {
+          "index": 11,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{closure#0}": {
+          "index": 13,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{closure#1}": {
+          "index": 14,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{constant#0}": {
+          "index": 15,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{constant#1}": {
+          "index": 16,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{constant#2}": {
+          "index": 17,
+          "crate_display": "fcc1"
+        },
+        "outer_a::generated_local": {
+          "index": 21,
+          "crate_display": "fcc1"
+        },
+        "outer_a::Local::{constructor#0}": {
+          "index": 9,
+          "crate_display": "fcc1"
+        },
+        "outer_a::inner::U": {
+          "index": 7,
+          "crate_display": "fcc1"
+        },
+        "outer_a::Local::0": {
+          "index": 10,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{impl#0}::method": {
+          "index": 12,
+          "crate_display": "fcc1"
+        },
+        "outer_b::inner": {
+          "index": 19,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{impl#0}::method::'_": {
+          "index": 22,
+          "crate_display": "fcc1"
+        }
+      },
+      "shifted": {
+        "<crate>": {
+          "index": 0,
+          "crate_display": "fcc1"
+        },
+        "std": {
+          "index": 1,
+          "crate_display": "fcc1"
+        },
+        "{use#0}": {
+          "index": 2,
+          "crate_display": "fcc1"
+        },
+        "local_generated": {
+          "index": 3,
+          "crate_display": "fcc1"
+        },
+        "outer_a": {
+          "index": 4,
+          "crate_display": "fcc1"
+        },
+        "outer_b": {
+          "index": 20,
+          "crate_display": "fcc1"
+        },
+        "main": {
+          "index": 22,
+          "crate_display": "fcc1"
+        },
+        "outer_a::T": {
+          "index": 5,
+          "crate_display": "fcc1"
+        },
+        "outer_a::inner": {
+          "index": 6,
+          "crate_display": "fcc1"
+        },
+        "outer_a::Local": {
+          "index": 8,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{impl#0}": {
+          "index": 11,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{closure#0}": {
+          "index": 13,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{constant#0}": {
+          "index": 14,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{closure#1}": {
+          "index": 15,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{closure#2}": {
+          "index": 16,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{constant#1}": {
+          "index": 17,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{constant#2}": {
+          "index": 18,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{constant#3}": {
+          "index": 19,
+          "crate_display": "fcc1"
+        },
+        "outer_a::generated_local": {
+          "index": 23,
+          "crate_display": "fcc1"
+        },
+        "outer_a::Local::{constructor#0}": {
+          "index": 9,
+          "crate_display": "fcc1"
+        },
+        "outer_a::inner::U": {
+          "index": 7,
+          "crate_display": "fcc1"
+        },
+        "outer_a::Local::0": {
+          "index": 10,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{impl#0}::method": {
+          "index": 12,
+          "crate_display": "fcc1"
+        },
+        "outer_b::inner": {
+          "index": 21,
+          "crate_display": "fcc1"
+        },
+        "outer_a::{impl#0}::method::'_": {
+          "index": 24,
+          "crate_display": "fcc1"
+        }
+      }
+    }
+  },
+  "same_display_paths_across_versions": true,
+  "same_defid_indices_across_versions": true,
+  "same_crate_display_across_versions": false
+}

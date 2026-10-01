@@ -19689,6 +19689,36 @@
         "rustc/version-difference"
       ]
     },
+    "rustc-local-identity-r534-r565-may-to-september-2026-10-01": {
+      "observed_at": "2026-10-01",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust nightly 2026-05-31 rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+            "rustc_sha256": "29f8ccc9aa7b0d8798eda854fa7f0e4ba3867c8c336b87d52dbb3b24b3f0878d",
+            "version": "1.101.0-nightly"
+          },
+          "name": "Rust nightly 2026-09-30 rustc"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rustc/local-items",
+        "rustc/defid",
+        "rustc/hir",
+        "rust/version-difference"
+      ]
+    },
     "rustc-mir-before-charon-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [

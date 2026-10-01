@@ -1,0 +1,2606 @@
+DefId(0:0 ~ local_identity[fcc1]) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Crate(
+            Mod {
+                spans: ModSpans {
+                    inner_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:1:1: 31:43 (#0),
+                    inject_use_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:3:1: 3:1 (#0),
+                },
+                item_ids: [
+                    ItemId {
+                        owner_id: DefId(0:1 ~ local_identity[fcc1]::std),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:2 ~ local_identity[fcc1]::{use#0}),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:3 ~ local_identity[fcc1]::local_generated),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:4 ~ local_identity[fcc1]::outer_a),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:20 ~ local_identity[fcc1]::outer_b),
+                    },
+                    ItemId {
+                        owner_id: DefId(0:22 ~ local_identity[fcc1]::main),
+                    },
+                ],
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+    ],
+    bodies: {},
+    opt_hash: None,
+}
+DefId(0:1 ~ local_identity[fcc1]::std) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:1 ~ local_identity[fcc1]::std),
+                kind: ExternCrate(
+                    None,
+                    std#1,
+                ),
+                span: no-location (#1),
+                vis_span: no-location (#1),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+    ],
+    bodies: {},
+    opt_hash: None,
+}
+DefId(0:2 ~ local_identity[fcc1]::{use#0}) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:2 ~ local_identity[fcc1]::{use#0}),
+                kind: Use(
+                    UseTree {
+                        prefix: Path {
+                            span: no-location (#1),
+                            res: PerNS {
+                                value_ns: Some(
+                                    Err,
+                                ),
+                                type_ns: Some(
+                                    Err,
+                                ),
+                                macro_ns: Some(
+                                    Err,
+                                ),
+                            },
+                            segments: [
+                                PathSegment {
+                                    ident: std#1,
+                                    hir_id: HirId(DefId(0:2 ~ local_identity[fcc1]::{use#0}).1),
+                                    res: Err,
+                                    args: None,
+                                    infer_args: false,
+                                    delegation_child_segment: false,
+                                },
+                                PathSegment {
+                                    ident: prelude#1,
+                                    hir_id: HirId(DefId(0:2 ~ local_identity[fcc1]::{use#0}).2),
+                                    res: Err,
+                                    args: None,
+                                    infer_args: false,
+                                    delegation_child_segment: false,
+                                },
+                                PathSegment {
+                                    ident: rust_2024#1,
+                                    hir_id: HirId(DefId(0:2 ~ local_identity[fcc1]::{use#0}).3),
+                                    res: Err,
+                                    args: None,
+                                    infer_args: false,
+                                    delegation_child_segment: false,
+                                },
+                            ],
+                        },
+                        kind: Glob,
+                    },
+                ),
+                span: no-location (#1),
+                vis_span: no-location (#1),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 0),
+        (2, 0),
+        (3, 0),
+    ],
+    bodies: {},
+    opt_hash: None,
+}
+DefId(0:3 ~ local_identity[fcc1]::local_generated) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:3 ~ local_identity[fcc1]::local_generated),
+                kind: Macro(
+                    local_generated#0,
+                    MacroDef {
+                        body: DelimArgs {
+                            dspan: DelimSpan {
+                                open: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:3:30: 3:31 (#0),
+                                close: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:7:1: 7:2 (#0),
+                            },
+                            delim: Brace,
+                            tokens: TokenStream(
+                                [
+                                    Delimited(
+                                        DelimSpan {
+                                            open: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:4:5: 4:6 (#0),
+                                            close: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:4:6: 4:7 (#0),
+                                        },
+                                        DelimSpacing {
+                                            open: JointHidden,
+                                            close: Alone,
+                                        },
+                                        Parenthesis,
+                                        TokenStream(
+                                            [],
+                                        ),
+                                    ),
+                                    Token(
+                                        Token {
+                                            kind: FatArrow,
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:4:8: 4:10 (#0),
+                                        },
+                                        Alone,
+                                    ),
+                                    Delimited(
+                                        DelimSpan {
+                                            open: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:4:11: 4:12 (#0),
+                                            close: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:6:5: 6:6 (#0),
+                                        },
+                                        DelimSpacing {
+                                            open: Alone,
+                                            close: Joint,
+                                        },
+                                        Brace,
+                                        TokenStream(
+                                            [
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "fn",
+                                                            Normal,
+                                                        ),
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:9: 5:11 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "generated_local",
+                                                            Normal,
+                                                        ),
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:12: 5:27 (#0),
+                                                    },
+                                                    JointHidden,
+                                                ),
+                                                Delimited(
+                                                    DelimSpan {
+                                                        open: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:27: 5:28 (#0),
+                                                        close: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:28: 5:29 (#0),
+                                                    },
+                                                    DelimSpacing {
+                                                        open: JointHidden,
+                                                        close: Alone,
+                                                    },
+                                                    Parenthesis,
+                                                    TokenStream(
+                                                        [],
+                                                    ),
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: RArrow,
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:30: 5:32 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Token(
+                                                    Token {
+                                                        kind: Ident(
+                                                            "u32",
+                                                            Normal,
+                                                        ),
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:33: 5:36 (#0),
+                                                    },
+                                                    Alone,
+                                                ),
+                                                Delimited(
+                                                    DelimSpan {
+                                                        open: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:37: 5:38 (#0),
+                                                        close: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:42: 5:43 (#0),
+                                                    },
+                                                    DelimSpacing {
+                                                        open: Alone,
+                                                        close: Alone,
+                                                    },
+                                                    Brace,
+                                                    TokenStream(
+                                                        [
+                                                            Token(
+                                                                Token {
+                                                                    kind: Literal(
+                                                                        Lit {
+                                                                            kind: Integer,
+                                                                            symbol: "10",
+                                                                            suffix: None,
+                                                                        },
+                                                                    ),
+                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:39: 5:41 (#0),
+                                                                },
+                                                                Alone,
+                                                            ),
+                                                        ],
+                                                    ),
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                    Token(
+                                        Token {
+                                            kind: Semi,
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:6:6: 6:7 (#0),
+                                        },
+                                        Alone,
+                                    ),
+                                ],
+                            ),
+                        },
+                        macro_rules: true,
+                        eii_declaration: None,
+                    },
+                    MacroKinds(
+                        1,
+                    ),
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:3:1: 7:2 (#0),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:3:1: 3:1 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+    ],
+    bodies: {},
+    opt_hash: None,
+}
+DefId(0:4 ~ local_identity[fcc1]::outer_a) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:4 ~ local_identity[fcc1]::outer_a),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: DefaultReturn(
+                                /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:16: 9:16 (#0),
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:1: 9:16 (#0),
+                    },
+                    ident: outer_a#0,
+                    generics: Generics {
+                        params: [
+                            GenericParam {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).90),
+                                def_id: DefId(0:5 ~ local_identity[fcc1]::outer_a::T),
+                                name: Plain(
+                                    T#0,
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:12: 9:13 (#0),
+                                pure_wrt_drop: false,
+                                kind: Type {
+                                    default: None,
+                                    synthetic: false,
+                                },
+                                colon_span: None,
+                                source: Generics,
+                            },
+                        ],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:16: 9:16 (#0),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:11: 9:14 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).89),
+                    },
+                    has_body: true,
+                },
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:1: 24:2 (#0),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:1: 9:1 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 89),
+        (2, 1),
+        (3, 1),
+        (4, 1),
+        (5, 1),
+        (6, 8),
+        (7, 6),
+        (8, 5),
+        (9, 8),
+        (10, 1),
+        (11, 16),
+        (12, 11),
+        (13, 12),
+        (14, 13),
+        (15, 14),
+        (16, 10),
+        (17, 16),
+        (18, 1),
+        (19, 25),
+        (20, 19),
+        (21, 20),
+        (22, 21),
+        (23, 19),
+        (24, 23),
+        (25, 18),
+        (26, 25),
+        (27, 1),
+        (28, 34),
+        (29, 28),
+        (30, 29),
+        (31, 30),
+        (32, 31),
+        (33, 30),
+        (34, 27),
+        (35, 34),
+        (36, 1),
+        (37, 39),
+        (38, 37),
+        (39, 36),
+        (40, 39),
+        (41, 1),
+        (42, 51),
+        (43, 42),
+        (44, 50),
+        (45, 44),
+        (46, 45),
+        (47, 46),
+        (48, 47),
+        (49, 47),
+        (50, 51),
+        (51, 57),
+        (52, 57),
+        (53, 52),
+        (54, 56),
+        (55, 54),
+        (56, 52),
+        (57, 41),
+        (58, 57),
+        (59, 1),
+        (60, 65),
+        (61, 60),
+        (62, 61),
+        (63, 62),
+        (64, 63),
+        (65, 59),
+        (66, 65),
+        (67, 1),
+        (68, 1),
+        (69, 87),
+        (70, 69),
+        (71, 70),
+        (72, 71),
+        (73, 69),
+        (74, 73),
+        (75, 74),
+        (76, 69),
+        (77, 76),
+        (78, 69),
+        (79, 78),
+        (80, 79),
+        (81, 69),
+        (82, 81),
+        (83, 81),
+        (84, 83),
+        (85, 84),
+        (86, 83),
+        (87, 68),
+        (88, 87),
+        (89, 0),
+        (90, 0),
+    ],
+    bodies: {
+        7: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).7),
+                kind: Lit(
+                    Spanned {
+                        node: Int(
+                            Pu128(
+                                0,
+                            ),
+                            Unsigned(
+                                u32,
+                            ),
+                        ),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:30: 14:34 (#0),
+                    },
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:30: 14:34 (#0),
+            },
+        },
+        13: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).13),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).15),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                0,
+                                            ),
+                                            Unsigned(
+                                                usize,
+                                            ),
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:15:33: 15:39 (#0),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:15:33: 15:39 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).14),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:15:31: 15:41 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:15:31: 15:41 (#0),
+            },
+        },
+        29: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).29),
+                kind: Call(
+                    Expr {
+                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).30),
+                        kind: Path(
+                            Resolved(
+                                None,
+                                Path {
+                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:17: 17:28 (#0),
+                                    res: Def(
+                                        Fn,
+                                        DefId(0:6 ~ local_identity[fcc1]::outer_a::inner),
+                                    ),
+                                    segments: [
+                                        PathSegment {
+                                            ident: inner#0,
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).33),
+                                            res: Def(
+                                                Fn,
+                                                DefId(0:6 ~ local_identity[fcc1]::outer_a::inner),
+                                            ),
+                                            args: Some(
+                                                GenericArgs {
+                                                    args: [
+                                                        Type(
+                                                            Ty {
+                                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).31),
+                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:25: 17:27 (#0),
+                                                                kind: Path(
+                                                                    Resolved(
+                                                                        None,
+                                                                        Path {
+                                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:25: 17:27 (#0),
+                                                                            res: PrimTy(
+                                                                                Uint(
+                                                                                    u8,
+                                                                                ),
+                                                                            ),
+                                                                            segments: [
+                                                                                PathSegment {
+                                                                                    ident: u8#0,
+                                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).32),
+                                                                                    res: PrimTy(
+                                                                                        Uint(
+                                                                                            u8,
+                                                                                        ),
+                                                                                    ),
+                                                                                    args: None,
+                                                                                    infer_args: false,
+                                                                                    delegation_child_segment: false,
+                                                                                },
+                                                                            ],
+                                                                        },
+                                                                    ),
+                                                                ),
+                                                            },
+                                                        ),
+                                                    ],
+                                                    constraints: [],
+                                                    parenthesized: No,
+                                                    span_ext: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:24: 17:28 (#0),
+                                                },
+                                            ),
+                                            infer_args: false,
+                                            delegation_child_segment: false,
+                                        },
+                                    ],
+                                },
+                            ),
+                        ),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:17: 17:28 (#0),
+                    },
+                    [],
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:17: 17:30 (#0),
+            },
+        },
+        38: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).38),
+                kind: Lit(
+                    Spanned {
+                        node: Int(
+                            Pu128(
+                                2,
+                            ),
+                            Unsigned(
+                                u32,
+                            ),
+                        ),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:22: 18:26 (#0),
+                    },
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:22: 18:26 (#0),
+            },
+        },
+        45: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).45),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).47),
+                                kind: Binary(
+                                    Spanned {
+                                        node: Add,
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:21: 19:22 (#0),
+                                    },
+                                    Expr {
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).48),
+                                        kind: Lit(
+                                            Spanned {
+                                                node: Int(
+                                                    Pu128(
+                                                        1,
+                                                    ),
+                                                    Unsuffixed,
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:19: 19:20 (#0),
+                                            },
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:19: 19:20 (#0),
+                                    },
+                                    Expr {
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).49),
+                                        kind: Lit(
+                                            Spanned {
+                                                node: Int(
+                                                    Pu128(
+                                                        1,
+                                                    ),
+                                                    Unsuffixed,
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:23: 19:24 (#0),
+                                            },
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:23: 19:24 (#0),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:19: 19:24 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).46),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:17: 19:26 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:17: 19:26 (#0),
+            },
+        },
+        55: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).55),
+                kind: Lit(
+                    Spanned {
+                        node: Int(
+                            Pu128(
+                                2,
+                            ),
+                            Unsuffixed,
+                        ),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:34: 19:35 (#0),
+                    },
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:34: 19:35 (#0),
+            },
+        },
+        62: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).62),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).64),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                3,
+                                            ),
+                                            Unsigned(
+                                                usize,
+                                            ),
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:20:21: 20:27 (#0),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:20:21: 20:27 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).63),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:20:19: 20:29 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:20:19: 20:29 (#0),
+            },
+        },
+        89: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).89),
+                kind: Block(
+                    Block {
+                        stmts: [
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).2),
+                                kind: Item(
+                                    ItemId {
+                                        owner_id: DefId(0:6 ~ local_identity[fcc1]::outer_a::inner),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:5: 10:31 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).3),
+                                kind: Item(
+                                    ItemId {
+                                        owner_id: DefId(0:8 ~ local_identity[fcc1]::outer_a::Local),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:5: 11:23 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).4),
+                                kind: Item(
+                                    ItemId {
+                                        owner_id: DefId(0:11 ~ local_identity[fcc1]::outer_a::{impl#0}),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:5: 12:54 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).5),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).9),
+                                            kind: Binding(
+                                                BindingMode(
+                                                    No,
+                                                    Not,
+                                                ),
+                                                HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).9),
+                                                earlier_closure#0,
+                                                None,
+                                            ),
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:9: 14:24 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: None,
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).6),
+                                                kind: Closure(
+                                                    Closure {
+                                                        def_id: DefId(0:13 ~ local_identity[fcc1]::outer_a::{closure#0}),
+                                                        binder: Default,
+                                                        constness: NotConst,
+                                                        capture_clause: Ref,
+                                                        bound_generic_params: [],
+                                                        fn_decl: FnDecl {
+                                                            inputs: [],
+                                                            output: DefaultReturn(
+                                                                /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:29: 14:29 (#0),
+                                                            ),
+                                                            fn_decl_kind: FnDeclFlags(
+                                                                "ImplicitSelfKind(None)",
+                                                                "NoLifetimeElision",
+                                                            ),
+                                                        },
+                                                        body: BodyId {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).7),
+                                                        },
+                                                        fn_decl_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:27: 14:29 (#0),
+                                                        fn_arg_span: Some(
+                                                            /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:27: 14:29 (#0),
+                                                        ),
+                                                        kind: Closure,
+                                                        explicit_captures: [],
+                                                    },
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:27: 14:34 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).8),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:5: 14:35 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:14:5: 14:35 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).10),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).17),
+                                            kind: Binding(
+                                                BindingMode(
+                                                    No,
+                                                    Not,
+                                                ),
+                                                HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).17),
+                                                earlier_const#0,
+                                                None,
+                                            ),
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:15:9: 15:22 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: None,
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).11),
+                                                kind: ConstBlock(
+                                                    ConstBlock {
+                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).12),
+                                                        def_id: DefId(0:14 ~ local_identity[fcc1]::outer_a::{constant#0}),
+                                                        body: BodyId {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).13),
+                                                        },
+                                                    },
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:15:25: 15:41 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).16),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:15:5: 15:42 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:15:5: 15:42 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).18),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).26),
+                                            kind: Wild,
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:9: 16:10 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: None,
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).19),
+                                                kind: Tup(
+                                                    [
+                                                        Expr {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).20),
+                                                            kind: Call(
+                                                                Expr {
+                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).21),
+                                                                    kind: Path(
+                                                                        Resolved(
+                                                                            None,
+                                                                            Path {
+                                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:14: 16:29 (#0),
+                                                                                res: Local(
+                                                                                    HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).9),
+                                                                                ),
+                                                                                segments: [
+                                                                                    PathSegment {
+                                                                                        ident: earlier_closure#0,
+                                                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).22),
+                                                                                        res: Local(
+                                                                                            HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).9),
+                                                                                        ),
+                                                                                        args: None,
+                                                                                        infer_args: true,
+                                                                                        delegation_child_segment: false,
+                                                                                    },
+                                                                                ],
+                                                                            },
+                                                                        ),
+                                                                    ),
+                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:14: 16:29 (#0),
+                                                                },
+                                                                [],
+                                                            ),
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:14: 16:31 (#0),
+                                                        },
+                                                        Expr {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).23),
+                                                            kind: Path(
+                                                                Resolved(
+                                                                    None,
+                                                                    Path {
+                                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:33: 16:46 (#0),
+                                                                        res: Local(
+                                                                            HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).17),
+                                                                        ),
+                                                                        segments: [
+                                                                            PathSegment {
+                                                                                ident: earlier_const#0,
+                                                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).24),
+                                                                                res: Local(
+                                                                                    HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).17),
+                                                                                ),
+                                                                                args: None,
+                                                                                infer_args: true,
+                                                                                delegation_child_segment: false,
+                                                                            },
+                                                                        ],
+                                                                    },
+                                                                ),
+                                                            ),
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:33: 16:46 (#0),
+                                                        },
+                                                    ],
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:13: 16:47 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).25),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:5: 16:48 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:16:5: 16:48 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).27),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).35),
+                                            kind: Binding(
+                                                BindingMode(
+                                                    No,
+                                                    Not,
+                                                ),
+                                                HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).35),
+                                                c1#0,
+                                                None,
+                                            ),
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:9: 17:11 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: None,
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).28),
+                                                kind: Closure(
+                                                    Closure {
+                                                        def_id: DefId(0:15 ~ local_identity[fcc1]::outer_a::{closure#1}),
+                                                        binder: Default,
+                                                        constness: NotConst,
+                                                        capture_clause: Ref,
+                                                        bound_generic_params: [],
+                                                        fn_decl: FnDecl {
+                                                            inputs: [],
+                                                            output: DefaultReturn(
+                                                                /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:16: 17:16 (#0),
+                                                            ),
+                                                            fn_decl_kind: FnDeclFlags(
+                                                                "ImplicitSelfKind(None)",
+                                                                "NoLifetimeElision",
+                                                            ),
+                                                        },
+                                                        body: BodyId {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).29),
+                                                        },
+                                                        fn_decl_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:14: 17:16 (#0),
+                                                        fn_arg_span: Some(
+                                                            /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:14: 17:16 (#0),
+                                                        ),
+                                                        kind: Closure,
+                                                        explicit_captures: [],
+                                                    },
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:14: 17:30 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).34),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:5: 17:31 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:17:5: 17:31 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).36),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).40),
+                                            kind: Binding(
+                                                BindingMode(
+                                                    No,
+                                                    Not,
+                                                ),
+                                                HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).40),
+                                                c2#0,
+                                                None,
+                                            ),
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:9: 18:11 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: None,
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).37),
+                                                kind: Closure(
+                                                    Closure {
+                                                        def_id: DefId(0:16 ~ local_identity[fcc1]::outer_a::{closure#2}),
+                                                        binder: Default,
+                                                        constness: NotConst,
+                                                        capture_clause: Value {
+                                                            move_kw: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:14: 18:18 (#0),
+                                                        },
+                                                        bound_generic_params: [],
+                                                        fn_decl: FnDecl {
+                                                            inputs: [],
+                                                            output: DefaultReturn(
+                                                                /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:21: 18:21 (#0),
+                                                            ),
+                                                            fn_decl_kind: FnDeclFlags(
+                                                                "ImplicitSelfKind(None)",
+                                                                "NoLifetimeElision",
+                                                            ),
+                                                        },
+                                                        body: BodyId {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).38),
+                                                        },
+                                                        fn_decl_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:14: 18:21 (#0),
+                                                        fn_arg_span: Some(
+                                                            /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:19: 18:21 (#0),
+                                                        ),
+                                                        kind: Closure,
+                                                        explicit_captures: [],
+                                                    },
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:14: 18:26 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).39),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:5: 18:27 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:18:5: 18:27 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).41),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).58),
+                                            kind: Wild,
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:9: 19:10 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: Some(
+                                            Ty {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).51),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:12: 19:27 (#0),
+                                                kind: Array(
+                                                    Ty {
+                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).42),
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:13: 19:15 (#0),
+                                                        kind: Path(
+                                                            Resolved(
+                                                                None,
+                                                                Path {
+                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:13: 19:15 (#0),
+                                                                    res: PrimTy(
+                                                                        Uint(
+                                                                            u8,
+                                                                        ),
+                                                                    ),
+                                                                    segments: [
+                                                                        PathSegment {
+                                                                            ident: u8#0,
+                                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).43),
+                                                                            res: PrimTy(
+                                                                                Uint(
+                                                                                    u8,
+                                                                                ),
+                                                                            ),
+                                                                            args: None,
+                                                                            infer_args: false,
+                                                                            delegation_child_segment: false,
+                                                                        },
+                                                                    ],
+                                                                },
+                                                            ),
+                                                        ),
+                                                    },
+                                                    ConstArg {
+                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).50),
+                                                        kind: Anon(
+                                                            AnonConst {
+                                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).44),
+                                                                def_id: DefId(0:17 ~ local_identity[fcc1]::outer_a::{constant#1}),
+                                                                body: BodyId {
+                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).45),
+                                                                },
+                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:17: 19:26 (#0),
+                                                            },
+                                                        ),
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:17: 19:26 (#0),
+                                                    },
+                                                ),
+                                            },
+                                        ),
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).52),
+                                                kind: Repeat(
+                                                    Expr {
+                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).53),
+                                                        kind: Lit(
+                                                            Spanned {
+                                                                node: Int(
+                                                                    Pu128(
+                                                                        0,
+                                                                    ),
+                                                                    Unsuffixed,
+                                                                ),
+                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:31: 19:32 (#0),
+                                                            },
+                                                        ),
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:31: 19:32 (#0),
+                                                    },
+                                                    ConstArg {
+                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).56),
+                                                        kind: Anon(
+                                                            AnonConst {
+                                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).54),
+                                                                def_id: DefId(0:18 ~ local_identity[fcc1]::outer_a::{constant#2}),
+                                                                body: BodyId {
+                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).55),
+                                                                },
+                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:34: 19:35 (#0),
+                                                            },
+                                                        ),
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:34: 19:35 (#0),
+                                                    },
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:30: 19:36 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).57),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:5: 19:37 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:19:5: 19:37 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).59),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).66),
+                                            kind: Binding(
+                                                BindingMode(
+                                                    No,
+                                                    Not,
+                                                ),
+                                                HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).66),
+                                                x#0,
+                                                None,
+                                            ),
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:20:9: 20:10 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: None,
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).60),
+                                                kind: ConstBlock(
+                                                    ConstBlock {
+                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).61),
+                                                        def_id: DefId(0:19 ~ local_identity[fcc1]::outer_a::{constant#3}),
+                                                        body: BodyId {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).62),
+                                                        },
+                                                    },
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:20:13: 20:29 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).65),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:20:5: 20:30 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:20:5: 20:30 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).67),
+                                kind: Item(
+                                    ItemId {
+                                        owner_id: DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:9: 5:43 (#4),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).68),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).88),
+                                            kind: Wild,
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:9: 23:10 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: None,
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).69),
+                                                kind: Tup(
+                                                    [
+                                                        Expr {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).70),
+                                                            kind: Call(
+                                                                Expr {
+                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).71),
+                                                                    kind: Path(
+                                                                        Resolved(
+                                                                            None,
+                                                                            Path {
+                                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:14: 23:16 (#0),
+                                                                                res: Local(
+                                                                                    HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).35),
+                                                                                ),
+                                                                                segments: [
+                                                                                    PathSegment {
+                                                                                        ident: c1#0,
+                                                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).72),
+                                                                                        res: Local(
+                                                                                            HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).35),
+                                                                                        ),
+                                                                                        args: None,
+                                                                                        infer_args: true,
+                                                                                        delegation_child_segment: false,
+                                                                                    },
+                                                                                ],
+                                                                            },
+                                                                        ),
+                                                                    ),
+                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:14: 23:16 (#0),
+                                                                },
+                                                                [],
+                                                            ),
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:14: 23:18 (#0),
+                                                        },
+                                                        Expr {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).73),
+                                                            kind: Call(
+                                                                Expr {
+                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).74),
+                                                                    kind: Path(
+                                                                        Resolved(
+                                                                            None,
+                                                                            Path {
+                                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:20: 23:22 (#0),
+                                                                                res: Local(
+                                                                                    HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).40),
+                                                                                ),
+                                                                                segments: [
+                                                                                    PathSegment {
+                                                                                        ident: c2#0,
+                                                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).75),
+                                                                                        res: Local(
+                                                                                            HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).40),
+                                                                                        ),
+                                                                                        args: None,
+                                                                                        infer_args: true,
+                                                                                        delegation_child_segment: false,
+                                                                                    },
+                                                                                ],
+                                                                            },
+                                                                        ),
+                                                                    ),
+                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:20: 23:22 (#0),
+                                                                },
+                                                                [],
+                                                            ),
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:20: 23:24 (#0),
+                                                        },
+                                                        Expr {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).76),
+                                                            kind: Path(
+                                                                Resolved(
+                                                                    None,
+                                                                    Path {
+                                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:26: 23:27 (#0),
+                                                                        res: Local(
+                                                                            HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).66),
+                                                                        ),
+                                                                        segments: [
+                                                                            PathSegment {
+                                                                                ident: x#0,
+                                                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).77),
+                                                                                res: Local(
+                                                                                    HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).66),
+                                                                                ),
+                                                                                args: None,
+                                                                                infer_args: true,
+                                                                                delegation_child_segment: false,
+                                                                            },
+                                                                        ],
+                                                                    },
+                                                                ),
+                                                            ),
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:26: 23:27 (#0),
+                                                        },
+                                                        Expr {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).78),
+                                                            kind: Call(
+                                                                Expr {
+                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).79),
+                                                                    kind: Path(
+                                                                        Resolved(
+                                                                            None,
+                                                                            Path {
+                                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:29: 23:44 (#0),
+                                                                                res: Def(
+                                                                                    Fn,
+                                                                                    DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local),
+                                                                                ),
+                                                                                segments: [
+                                                                                    PathSegment {
+                                                                                        ident: generated_local#0,
+                                                                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).80),
+                                                                                        res: Def(
+                                                                                            Fn,
+                                                                                            DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local),
+                                                                                        ),
+                                                                                        args: None,
+                                                                                        infer_args: true,
+                                                                                        delegation_child_segment: false,
+                                                                                    },
+                                                                                ],
+                                                                            },
+                                                                        ),
+                                                                    ),
+                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:29: 23:44 (#0),
+                                                                },
+                                                                [],
+                                                            ),
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:29: 23:46 (#0),
+                                                        },
+                                                        Expr {
+                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).81),
+                                                            kind: MethodCall(
+                                                                PathSegment {
+                                                                    ident: method#0,
+                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).82),
+                                                                    res: Err,
+                                                                    args: None,
+                                                                    infer_args: true,
+                                                                    delegation_child_segment: false,
+                                                                },
+                                                                Expr {
+                                                                    hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).83),
+                                                                    kind: Call(
+                                                                        Expr {
+                                                                            hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).84),
+                                                                            kind: Path(
+                                                                                Resolved(
+                                                                                    None,
+                                                                                    Path {
+                                                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:48: 23:53 (#0),
+                                                                                        res: Def(
+                                                                                            Ctor(
+                                                                                                Struct,
+                                                                                                Fn,
+                                                                                            ),
+                                                                                            DefId(0:9 ~ local_identity[fcc1]::outer_a::Local::{constructor#0}),
+                                                                                        ),
+                                                                                        segments: [
+                                                                                            PathSegment {
+                                                                                                ident: Local#0,
+                                                                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).85),
+                                                                                                res: Def(
+                                                                                                    Ctor(
+                                                                                                        Struct,
+                                                                                                        Fn,
+                                                                                                    ),
+                                                                                                    DefId(0:9 ~ local_identity[fcc1]::outer_a::Local::{constructor#0}),
+                                                                                                ),
+                                                                                                args: None,
+                                                                                                infer_args: true,
+                                                                                                delegation_child_segment: false,
+                                                                                            },
+                                                                                        ],
+                                                                                    },
+                                                                                ),
+                                                                            ),
+                                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:48: 23:53 (#0),
+                                                                        },
+                                                                        [
+                                                                            Expr {
+                                                                                hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).86),
+                                                                                kind: Lit(
+                                                                                    Spanned {
+                                                                                        node: Int(
+                                                                                            Pu128(
+                                                                                                4,
+                                                                                            ),
+                                                                                            Unsuffixed,
+                                                                                        ),
+                                                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:54: 23:55 (#0),
+                                                                                    },
+                                                                                ),
+                                                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:54: 23:55 (#0),
+                                                                            },
+                                                                        ],
+                                                                    ),
+                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:48: 23:56 (#0),
+                                                                },
+                                                                [],
+                                                                /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:57: 23:65 (#0),
+                                                            ),
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:48: 23:65 (#0),
+                                                        },
+                                                    ],
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:13: 23:66 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).87),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:5: 23:67 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:23:5: 23:67 (#0),
+                            },
+                        ],
+                        expr: None,
+                        hir_id: HirId(DefId(0:4 ~ local_identity[fcc1]::outer_a).1),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:17: 24:2 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:9:17: 24:2 (#0),
+            },
+        },
+    },
+    opt_hash: None,
+}
+DefId(0:6 ~ local_identity[fcc1]::outer_a::inner) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:6 ~ local_identity[fcc1]::outer_a::inner),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:6 ~ local_identity[fcc1]::outer_a::inner).5),
+                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:22: 10:25 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:22: 10:25 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:6 ~ local_identity[fcc1]::outer_a::inner).6),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:5: 10:25 (#0),
+                    },
+                    ident: inner#0,
+                    generics: Generics {
+                        params: [
+                            GenericParam {
+                                hir_id: HirId(DefId(0:6 ~ local_identity[fcc1]::outer_a::inner).4),
+                                def_id: DefId(0:7 ~ local_identity[fcc1]::outer_a::inner::U),
+                                name: Plain(
+                                    U#0,
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:14: 10:15 (#0),
+                                pure_wrt_drop: false,
+                                kind: Type {
+                                    default: None,
+                                    synthetic: false,
+                                },
+                                colon_span: None,
+                                source: Generics,
+                            },
+                        ],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:25: 10:25 (#0),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:13: 10:16 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:6 ~ local_identity[fcc1]::outer_a::inner).3),
+                    },
+                    has_body: true,
+                },
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:5: 10:31 (#0),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:5: 10:5 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 3),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (5, 0),
+        (6, 5),
+    ],
+    bodies: {
+        3: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:6 ~ local_identity[fcc1]::outer_a::inner).3),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:6 ~ local_identity[fcc1]::outer_a::inner).2),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                1,
+                                            ),
+                                            Unsuffixed,
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:28: 10:29 (#0),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:28: 10:29 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:6 ~ local_identity[fcc1]::outer_a::inner).1),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:26: 10:31 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:10:26: 10:31 (#0),
+            },
+        },
+    },
+    opt_hash: None,
+}
+DefId(0:8 ~ local_identity[fcc1]::outer_a::Local) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:8 ~ local_identity[fcc1]::outer_a::Local),
+                kind: Struct(
+                    Local#0,
+                    Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:22: 11:22 (#0),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:17: 11:17 (#0),
+                    },
+                    Tuple(
+                        [
+                            FieldDef {
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:18: 11:21 (#0),
+                                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:18: 11:18 (#0),
+                                mut_restriction: MutRestriction {
+                                    kind: Unrestricted,
+                                    span: no-location (#0),
+                                },
+                                ident: 0#0,
+                                hir_id: HirId(DefId(0:8 ~ local_identity[fcc1]::outer_a::Local).4),
+                                def_id: DefId(0:10 ~ local_identity[fcc1]::outer_a::Local::0),
+                                ty: Ty {
+                                    hir_id: HirId(DefId(0:8 ~ local_identity[fcc1]::outer_a::Local).2),
+                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:18: 11:21 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:18: 11:21 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:8 ~ local_identity[fcc1]::outer_a::Local).3),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                                safety: Safe,
+                                default: None,
+                            },
+                        ],
+                        HirId(DefId(0:8 ~ local_identity[fcc1]::outer_a::Local).1),
+                        DefId(0:9 ~ local_identity[fcc1]::outer_a::Local::{constructor#0}),
+                    ),
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:5: 11:23 (#0),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:11:5: 11:5 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 0),
+        (2, 4),
+        (3, 2),
+        (4, 0),
+    ],
+    bodies: {},
+    opt_hash: None,
+}
+DefId(0:11 ~ local_identity[fcc1]::outer_a::{impl#0}) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:11 ~ local_identity[fcc1]::outer_a::{impl#0}),
+                kind: Impl(
+                    Impl {
+                        generics: Generics {
+                            params: [],
+                            predicates: [],
+                            has_where_clause_predicates: false,
+                            where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:15: 12:15 (#0),
+                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:9: 12:9 (#0),
+                        },
+                        of_trait: None,
+                        self_ty: Ty {
+                            hir_id: HirId(DefId(0:11 ~ local_identity[fcc1]::outer_a::{impl#0}).1),
+                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:10: 12:15 (#0),
+                            kind: Path(
+                                Resolved(
+                                    None,
+                                    Path {
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:10: 12:15 (#0),
+                                        res: Def(
+                                            Struct,
+                                            DefId(0:8 ~ local_identity[fcc1]::outer_a::Local),
+                                        ),
+                                        segments: [
+                                            PathSegment {
+                                                ident: Local#0,
+                                                hir_id: HirId(DefId(0:11 ~ local_identity[fcc1]::outer_a::{impl#0}).2),
+                                                res: Def(
+                                                    Struct,
+                                                    DefId(0:8 ~ local_identity[fcc1]::outer_a::Local),
+                                                ),
+                                                args: None,
+                                                infer_args: false,
+                                                delegation_child_segment: false,
+                                            },
+                                        ],
+                                    },
+                                ),
+                            ),
+                        },
+                        items: [
+                            ImplItemId {
+                                owner_id: DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method),
+                            },
+                        ],
+                        constness: NotConst,
+                    },
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:5: 12:54 (#0),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:5: 12:5 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 0),
+        (2, 1),
+    ],
+    bodies: {},
+    opt_hash: None,
+}
+DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local).4),
+                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:33: 5:36 (#4),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:33: 5:36 (#4),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#4,
+                                                        hir_id: HirId(DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local).5),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:9: 5:36 (#4),
+                    },
+                    ident: generated_local#4,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:36: 5:36 (#4),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:27: 5:27 (#4),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local).3),
+                    },
+                    has_body: true,
+                },
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:9: 5:43 (#4),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:9: 5:9 (#4),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 3),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (5, 4),
+    ],
+    bodies: {
+        3: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local).3),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local).2),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                10,
+                                            ),
+                                            Unsuffixed,
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:39: 5:41 (#4),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:39: 5:41 (#4),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:23 ~ local_identity[fcc1]::outer_a::generated_local).1),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:37: 5:43 (#4),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:5:37: 5:43 (#4),
+            },
+        },
+    },
+    opt_hash: None,
+}
+DefId(0:20 ~ local_identity[fcc1]::outer_b) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:20 ~ local_identity[fcc1]::outer_b),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: DefaultReturn(
+                                /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:26:13: 26:13 (#0),
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:26:1: 26:13 (#0),
+                    },
+                    ident: outer_b#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:26:13: 26:13 (#0),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:26:11: 26:11 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).9),
+                    },
+                    has_body: true,
+                },
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:26:1: 29:2 (#0),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:26:1: 26:1 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 9),
+        (2, 1),
+        (3, 1),
+        (4, 7),
+        (5, 4),
+        (6, 5),
+        (7, 3),
+        (8, 7),
+        (9, 0),
+    ],
+    bodies: {
+        9: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).9),
+                kind: Block(
+                    Block {
+                        stmts: [
+                            Stmt {
+                                hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).2),
+                                kind: Item(
+                                    ItemId {
+                                        owner_id: DefId(0:21 ~ local_identity[fcc1]::outer_b::inner),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:5: 27:28 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).3),
+                                kind: Let(
+                                    LetStmt {
+                                        super_: None,
+                                        pat: Pat {
+                                            hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).8),
+                                            kind: Wild,
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:28:9: 28:10 (#0),
+                                            default_binding_modes: true,
+                                        },
+                                        ty: None,
+                                        init: Some(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).4),
+                                                kind: Call(
+                                                    Expr {
+                                                        hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).5),
+                                                        kind: Path(
+                                                            Resolved(
+                                                                None,
+                                                                Path {
+                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:28:13: 28:18 (#0),
+                                                                    res: Def(
+                                                                        Fn,
+                                                                        DefId(0:21 ~ local_identity[fcc1]::outer_b::inner),
+                                                                    ),
+                                                                    segments: [
+                                                                        PathSegment {
+                                                                            ident: inner#0,
+                                                                            hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).6),
+                                                                            res: Def(
+                                                                                Fn,
+                                                                                DefId(0:21 ~ local_identity[fcc1]::outer_b::inner),
+                                                                            ),
+                                                                            args: None,
+                                                                            infer_args: true,
+                                                                            delegation_child_segment: false,
+                                                                        },
+                                                                    ],
+                                                                },
+                                                            ),
+                                                        ),
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:28:13: 28:18 (#0),
+                                                    },
+                                                    [],
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:28:13: 28:20 (#0),
+                                            },
+                                        ),
+                                        els: None,
+                                        hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).7),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:28:5: 28:21 (#0),
+                                        source: Normal,
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:28:5: 28:21 (#0),
+                            },
+                        ],
+                        expr: None,
+                        hir_id: HirId(DefId(0:20 ~ local_identity[fcc1]::outer_b).1),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:26:14: 29:2 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:26:14: 29:2 (#0),
+            },
+        },
+    },
+    opt_hash: None,
+}
+DefId(0:21 ~ local_identity[fcc1]::outer_b::inner) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:21 ~ local_identity[fcc1]::outer_b::inner),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:21 ~ local_identity[fcc1]::outer_b::inner).4),
+                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:19: 27:22 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:19: 27:22 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:21 ~ local_identity[fcc1]::outer_b::inner).5),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:5: 27:22 (#0),
+                    },
+                    ident: inner#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:22: 27:22 (#0),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:13: 27:13 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:21 ~ local_identity[fcc1]::outer_b::inner).3),
+                    },
+                    has_body: true,
+                },
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:5: 27:28 (#0),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:5: 27:5 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 3),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (5, 4),
+    ],
+    bodies: {
+        3: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:21 ~ local_identity[fcc1]::outer_b::inner).3),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:21 ~ local_identity[fcc1]::outer_b::inner).2),
+                                kind: Lit(
+                                    Spanned {
+                                        node: Int(
+                                            Pu128(
+                                                5,
+                                            ),
+                                            Unsuffixed,
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:25: 27:26 (#0),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:25: 27:26 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:21 ~ local_identity[fcc1]::outer_b::inner).1),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:23: 27:28 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:27:23: 27:28 (#0),
+            },
+        },
+    },
+    opt_hash: None,
+}
+DefId(0:22 ~ local_identity[fcc1]::main) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: Item(
+            Item {
+                owner_id: DefId(0:22 ~ local_identity[fcc1]::main),
+                kind: Fn {
+                    sig: FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [],
+                            output: DefaultReturn(
+                                /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:10: 31:10 (#0),
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(None)",
+                                "NoLifetimeElision",
+                            ),
+                        },
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:1: 31:10 (#0),
+                    },
+                    ident: main#0,
+                    generics: Generics {
+                        params: [],
+                        predicates: [],
+                        has_where_clause_predicates: false,
+                        where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:10: 31:10 (#0),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:8: 31:8 (#0),
+                    },
+                    body: BodyId {
+                        hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).12),
+                    },
+                    has_body: true,
+                },
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:1: 31:43 (#0),
+                vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:1: 31:1 (#0),
+                eii: false,
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 12),
+        (2, 7),
+        (3, 2),
+        (4, 3),
+        (5, 4),
+        (6, 3),
+        (7, 1),
+        (8, 11),
+        (9, 8),
+        (10, 9),
+        (11, 1),
+        (12, 0),
+    ],
+    bodies: {
+        12: Body {
+            params: [],
+            value: Expr {
+                hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).12),
+                kind: Block(
+                    Block {
+                        stmts: [
+                            Stmt {
+                                hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).7),
+                                kind: Semi(
+                                    Expr {
+                                        hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).2),
+                                        kind: Call(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).3),
+                                                kind: Path(
+                                                    Resolved(
+                                                        None,
+                                                        Path {
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:13: 31:27 (#0),
+                                                            res: Def(
+                                                                Fn,
+                                                                DefId(0:4 ~ local_identity[fcc1]::outer_a),
+                                                            ),
+                                                            segments: [
+                                                                PathSegment {
+                                                                    ident: outer_a#0,
+                                                                    hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).6),
+                                                                    res: Def(
+                                                                        Fn,
+                                                                        DefId(0:4 ~ local_identity[fcc1]::outer_a),
+                                                                    ),
+                                                                    args: Some(
+                                                                        GenericArgs {
+                                                                            args: [
+                                                                                Type(
+                                                                                    Ty {
+                                                                                        hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).4),
+                                                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:23: 31:26 (#0),
+                                                                                        kind: Path(
+                                                                                            Resolved(
+                                                                                                None,
+                                                                                                Path {
+                                                                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:23: 31:26 (#0),
+                                                                                                    res: PrimTy(
+                                                                                                        Uint(
+                                                                                                            u16,
+                                                                                                        ),
+                                                                                                    ),
+                                                                                                    segments: [
+                                                                                                        PathSegment {
+                                                                                                            ident: u16#0,
+                                                                                                            hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).5),
+                                                                                                            res: PrimTy(
+                                                                                                                Uint(
+                                                                                                                    u16,
+                                                                                                                ),
+                                                                                                            ),
+                                                                                                            args: None,
+                                                                                                            infer_args: false,
+                                                                                                            delegation_child_segment: false,
+                                                                                                        },
+                                                                                                    ],
+                                                                                                },
+                                                                                            ),
+                                                                                        ),
+                                                                                    },
+                                                                                ),
+                                                                            ],
+                                                                            constraints: [],
+                                                                            parenthesized: No,
+                                                                            span_ext: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:22: 31:27 (#0),
+                                                                        },
+                                                                    ),
+                                                                    infer_args: false,
+                                                                    delegation_child_segment: false,
+                                                                },
+                                                            ],
+                                                        },
+                                                    ),
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:13: 31:27 (#0),
+                                            },
+                                            [],
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:13: 31:29 (#0),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:13: 31:30 (#0),
+                            },
+                            Stmt {
+                                hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).11),
+                                kind: Semi(
+                                    Expr {
+                                        hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).8),
+                                        kind: Call(
+                                            Expr {
+                                                hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).9),
+                                                kind: Path(
+                                                    Resolved(
+                                                        None,
+                                                        Path {
+                                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:31: 31:38 (#0),
+                                                            res: Def(
+                                                                Fn,
+                                                                DefId(0:20 ~ local_identity[fcc1]::outer_b),
+                                                            ),
+                                                            segments: [
+                                                                PathSegment {
+                                                                    ident: outer_b#0,
+                                                                    hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).10),
+                                                                    res: Def(
+                                                                        Fn,
+                                                                        DefId(0:20 ~ local_identity[fcc1]::outer_b),
+                                                                    ),
+                                                                    args: None,
+                                                                    infer_args: true,
+                                                                    delegation_child_segment: false,
+                                                                },
+                                                            ],
+                                                        },
+                                                    ),
+                                                ),
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:31: 31:38 (#0),
+                                            },
+                                            [],
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:31: 31:40 (#0),
+                                    },
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:31: 31:41 (#0),
+                            },
+                        ],
+                        expr: None,
+                        hir_id: HirId(DefId(0:22 ~ local_identity[fcc1]::main).1),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:11: 31:43 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:31:11: 31:43 (#0),
+            },
+        },
+    },
+    opt_hash: None,
+}
+DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method) => OwnerNodes {
+    node: ParentedNode {
+        parent: 4294967040,
+        node: ImplItem(
+            ImplItem {
+                ident: method#0,
+                owner_id: DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method),
+                generics: Generics {
+                    params: [
+                        GenericParam {
+                            hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).8),
+                            def_id: DefId(0:24 ~ local_identity[fcc1]::outer_a::{impl#0}::method::'_),
+                            name: Fresh,
+                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:28: 12:29 (#0),
+                            pure_wrt_drop: false,
+                            kind: Lifetime {
+                                kind: Elided(
+                                    Ampersand,
+                                ),
+                            },
+                            colon_span: None,
+                            source: Generics,
+                        },
+                    ],
+                    predicates: [],
+                    has_where_clause_predicates: false,
+                    where_clause_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:41: 12:41 (#0),
+                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:27: 12:27 (#0),
+                },
+                kind: Fn(
+                    FnSig {
+                        header: FnHeader {
+                            safety: Normal(
+                                Safe,
+                            ),
+                            constness: NotConst,
+                            asyncness: NotAsync,
+                            abi: Rust,
+                        },
+                        decl: FnDecl {
+                            inputs: [
+                                Ty {
+                                    hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).12),
+                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:28: 12:33 (#0),
+                                    kind: Ref(
+                                        Lifetime {
+                                            hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).9),
+                                            ident: '_#0,
+                                            kind: Param(
+                                                DefId(0:24 ~ local_identity[fcc1]::outer_a::{impl#0}::method::'_),
+                                            ),
+                                            source: Reference,
+                                            syntax: Implicit,
+                                        },
+                                        Ty {
+                                            hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).11),
+                                            span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:29: 12:33 (#0),
+                                            kind: Path(
+                                                Resolved(
+                                                    None,
+                                                    Path {
+                                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:29: 12:33 (#0),
+                                                        res: SelfTyAlias {
+                                                            alias_to: DefId(0:11 ~ local_identity[fcc1]::outer_a::{impl#0}),
+                                                            is_trait_impl: false,
+                                                        },
+                                                        segments: [
+                                                            PathSegment {
+                                                                ident: Self#0,
+                                                                hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).10),
+                                                                res: SelfTyAlias {
+                                                                    alias_to: DefId(0:11 ~ local_identity[fcc1]::outer_a::{impl#0}),
+                                                                    is_trait_impl: false,
+                                                                },
+                                                                args: None,
+                                                                infer_args: true,
+                                                                delegation_child_segment: false,
+                                                            },
+                                                        ],
+                                                    },
+                                                ),
+                                            ),
+                                        },
+                                        Not,
+                                    ),
+                                },
+                            ],
+                            output: Return(
+                                Ty {
+                                    hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).13),
+                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:38: 12:41 (#0),
+                                    kind: Path(
+                                        Resolved(
+                                            None,
+                                            Path {
+                                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:38: 12:41 (#0),
+                                                res: PrimTy(
+                                                    Uint(
+                                                        u32,
+                                                    ),
+                                                ),
+                                                segments: [
+                                                    PathSegment {
+                                                        ident: u32#0,
+                                                        hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).14),
+                                                        res: PrimTy(
+                                                            Uint(
+                                                                u32,
+                                                            ),
+                                                        ),
+                                                        args: None,
+                                                        infer_args: false,
+                                                        delegation_child_segment: false,
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                },
+                            ),
+                            fn_decl_kind: FnDeclFlags(
+                                "ImplicitSelfKind(RefImm)",
+                                "LifetimeElisionAllowed",
+                            ),
+                        },
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:18: 12:41 (#0),
+                    },
+                    BodyId {
+                        hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).7),
+                    },
+                ),
+                impl_kind: Inherent {
+                    vis_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:18: 12:18 (#0),
+                },
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:18: 12:52 (#0),
+            },
+        ),
+    },
+    parents: [
+        (0, 4294967040),
+        (1, 0),
+        (2, 1),
+        (3, 7),
+        (4, 3),
+        (5, 4),
+        (6, 5),
+        (7, 0),
+        (8, 0),
+        (9, 12),
+        (10, 11),
+        (11, 12),
+        (12, 0),
+        (13, 0),
+        (14, 13),
+    ],
+    bodies: {
+        7: Body {
+            params: [
+                Param {
+                    hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).1),
+                    pat: Pat {
+                        hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).2),
+                        kind: Binding(
+                            BindingMode(
+                                No,
+                                Not,
+                            ),
+                            HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).2),
+                            self#0,
+                            None,
+                        ),
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:28: 12:33 (#0),
+                        default_binding_modes: true,
+                    },
+                    ty_span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:28: 12:33 (#0),
+                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:28: 12:33 (#0),
+                },
+            ],
+            value: Expr {
+                hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).7),
+                kind: Block(
+                    Block {
+                        stmts: [],
+                        expr: Some(
+                            Expr {
+                                hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).4),
+                                kind: Field(
+                                    Expr {
+                                        hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).5),
+                                        kind: Path(
+                                            Resolved(
+                                                None,
+                                                Path {
+                                                    span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:44: 12:48 (#0),
+                                                    res: Local(
+                                                        HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).2),
+                                                    ),
+                                                    segments: [
+                                                        PathSegment {
+                                                            ident: self#0,
+                                                            hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).6),
+                                                            res: Local(
+                                                                HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).2),
+                                                            ),
+                                                            args: None,
+                                                            infer_args: true,
+                                                            delegation_child_segment: false,
+                                                        },
+                                                    ],
+                                                },
+                                            ),
+                                        ),
+                                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:44: 12:48 (#0),
+                                    },
+                                    0#0,
+                                ),
+                                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:44: 12:50 (#0),
+                            },
+                        ),
+                        hir_id: HirId(DefId(0:12 ~ local_identity[fcc1]::outer_a::{impl#0}::method).3),
+                        rules: DefaultBlock,
+                        span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:42: 12:52 (#0),
+                        targeted_by_break: false,
+                    },
+                    None,
+                ),
+                span: /Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/r534-r565-rust-local-identity-20261001/fixture/shifted-local.rs:12:42: 12:52 (#0),
+            },
+        },
+    },
+    opt_hash: None,
+}
