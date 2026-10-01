@@ -64,7 +64,15 @@ for version in commits:
     for name in ("a","b","t","shared","filler"):
         expected_tree={p:{"type":z["type"],"sha256":z["sha256"],**({"size":z["size"]} if z["type"]=="file" else {})}
                        for p,z in s["load-toml"][name].items()}
-        assert tree(run/name)==expected_tree,(version,name)
+        actual_tree=tree(run/name)
+        expected_files={p:z for p,z in expected_tree.items() if z["type"]=="file"}
+        actual_files={p:z for p,z in actual_tree.items() if z["type"]=="file"}
+        # Git worktrees omit empty directories; the raw snapshot above keeps
+        # evidence that the empty shared/.lake directory existed at runtime.
+        expected_dirs={p:z for p,z in expected_tree.items() if z["type"]=="dir"}
+        actual_dirs={p:z for p,z in actual_tree.items() if z["type"]=="dir"}
+        assert actual_files==expected_files,(version,name,"files")
+        assert all(expected_dirs.get(p)==z for p,z in actual_dirs.items()),(version,name,"dirs")
     expected={"v4.31.0":("716e38bf6d4d6b05927ab8359cf9a5ec46455a6fee53e81626e177926efc30f9","239465b996551391b07ff67b3f99a2a03e6170d38167034a244fdfdb47197ea1"),
               "v4.34.1":("4afb906bc3a42bf095f75fccc889f9644d995ad3d576d26a4925e57f7700d389","5c9bf313df6dcd985f71010f055a44cbae0a55fe8ae94ca42ff9156b2bc35c89")}[version]
     assert a[".lake/config/1/lakefile.olean.trace"]["sha256"]==expected[0]
