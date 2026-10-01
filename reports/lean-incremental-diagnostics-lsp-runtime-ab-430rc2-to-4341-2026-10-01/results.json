@@ -1,0 +1,1574 @@
+{
+  "old-absent": {
+    "summary": {
+      "label": "old-absent",
+      "clean": true,
+      "abort": null,
+      "peak_rss_kib": 293328,
+      "minimum_free_percent": 53,
+      "event_count": 43
+    },
+    "publications": [
+      {
+        "seq": 9,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": []
+      },
+      {
+        "seq": 11,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": []
+      },
+      {
+        "seq": 18,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownA`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 19,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownA`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 33,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "Nat.zero : Nat",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 38,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": []
+      }
+    ],
+    "final_open": [
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "message": "Unknown identifier `unknownA`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "final_edit": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "message": "Nat.zero : Nat",
+        "range": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "severity": 3,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "raw_frame_count": 25
+  },
+  "old-false": {
+    "summary": {
+      "label": "old-false",
+      "clean": true,
+      "abort": null,
+      "peak_rss_kib": 226688,
+      "minimum_free_percent": 53,
+      "event_count": 30
+    },
+    "publications": [
+      {
+        "seq": 9,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": []
+      },
+      {
+        "seq": 12,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownA`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 20,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "Nat.zero : Nat",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 25,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": []
+      }
+    ],
+    "final_open": [
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "message": "Unknown identifier `unknownA`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "final_edit": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "message": "Nat.zero : Nat",
+        "range": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "severity": 3,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "raw_frame_count": 16
+  },
+  "old-true": {
+    "summary": {
+      "label": "old-true",
+      "clean": true,
+      "abort": null,
+      "peak_rss_kib": 227248,
+      "minimum_free_percent": 53,
+      "event_count": 30
+    },
+    "publications": [
+      {
+        "seq": 9,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": []
+      },
+      {
+        "seq": 12,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownA`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 20,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "Nat.zero : Nat",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 25,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": []
+      }
+    ],
+    "final_open": [
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "message": "Unknown identifier `unknownA`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "final_edit": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "message": "Nat.zero : Nat",
+        "range": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "severity": 3,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "raw_frame_count": 16
+  },
+  "new-absent": {
+    "summary": {
+      "label": "new-absent",
+      "clean": true,
+      "abort": null,
+      "peak_rss_kib": 319024,
+      "minimum_free_percent": 50,
+      "event_count": 43
+    },
+    "publications": [
+      {
+        "seq": 9,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": []
+      },
+      {
+        "seq": 11,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": []
+      },
+      {
+        "seq": 20,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownA`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 21,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownA`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 33,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "Nat.zero : Nat",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 38,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": []
+      }
+    ],
+    "final_open": [
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "message": "Unknown identifier `unknownA`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "final_edit": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "message": "Nat.zero : Nat",
+        "range": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "severity": 3,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "raw_frame_count": 25
+  },
+  "new-false": {
+    "summary": {
+      "label": "new-false",
+      "clean": true,
+      "abort": null,
+      "peak_rss_kib": 248208,
+      "minimum_free_percent": 50,
+      "event_count": 30
+    },
+    "publications": [
+      {
+        "seq": 9,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": []
+      },
+      {
+        "seq": 12,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownA`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 20,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "Nat.zero : Nat",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 25,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": []
+      }
+    ],
+    "final_open": [
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "message": "Unknown identifier `unknownA`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "final_edit": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "message": "Nat.zero : Nat",
+        "range": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "severity": 3,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "raw_frame_count": 16
+  },
+  "new-true": {
+    "summary": {
+      "label": "new-true",
+      "clean": true,
+      "abort": null,
+      "peak_rss_kib": 248320,
+      "minimum_free_percent": 50,
+      "event_count": 30
+    },
+    "publications": [
+      {
+        "seq": 9,
+        "version": 1,
+        "isIncremental": "absent",
+        "diagnostics": []
+      },
+      {
+        "seq": 12,
+        "version": 1,
+        "isIncremental": false,
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "message": "Unknown identifier `unknownA`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 0
+              },
+              "start": {
+                "character": 7,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 20,
+        "version": 2,
+        "isIncremental": false,
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "Nat.zero : Nat",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `unknownB`",
+            "range": {
+              "end": {
+                "character": 15,
+                "line": 1
+              },
+              "start": {
+                "character": 7,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ]
+      },
+      {
+        "seq": 25,
+        "version": 2,
+        "isIncremental": "absent",
+        "diagnostics": []
+      }
+    ],
+    "final_open": [
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "message": "Unknown identifier `unknownA`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 0
+          },
+          "start": {
+            "character": 7,
+            "line": 0
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "final_edit": [
+      {
+        "fullRange": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "message": "Nat.zero : Nat",
+        "range": {
+          "end": {
+            "character": 6,
+            "line": 0
+          },
+          "start": {
+            "character": 0,
+            "line": 0
+          }
+        },
+        "severity": 3,
+        "source": "Lean 4"
+      },
+      {
+        "code": "lean.unknownIdentifier",
+        "fullRange": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "message": "Unknown identifier `unknownB`",
+        "range": {
+          "end": {
+            "character": 15,
+            "line": 1
+          },
+          "start": {
+            "character": 7,
+            "line": 1
+          }
+        },
+        "severity": 1,
+        "source": "Lean 4"
+      }
+    ],
+    "raw_frame_count": 16
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "time_ns": 1790868409183808000,
+  "remaining_probe_lean_processes": [],
+  "memory_pressure_output": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 52%\n",
+  "all_six_clean": true
+}

@@ -1,0 +1,2 @@
+Nat.zero : Nat
+/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/lean-incremental-diagnostics-430rc2-to-4341-source-delta-2026-10-01/fixture/Edited.lean:2:7: error(lean.unknownIdentifier): Unknown identifier `unknownB`

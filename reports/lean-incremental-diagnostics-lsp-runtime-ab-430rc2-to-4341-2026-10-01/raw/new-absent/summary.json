@@ -1,0 +1,8 @@
+{
+  "label": "new-absent",
+  "clean": true,
+  "abort": null,
+  "peak_rss_kib": 319024,
+  "minimum_free_percent": 50,
+  "event_count": 43
+}

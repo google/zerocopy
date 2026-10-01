@@ -1,0 +1,17 @@
+{
+  "version": "new",
+  "fixture": "Open",
+  "binary": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+  "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+  "source_sha256": "d42fbf3d79611aa442bb233680e4f20af6848dc8f1f0c7be3c3dd4df22b5dcc7",
+  "argv": [
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+    "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/lean-incremental-diagnostics-430rc2-to-4341-source-delta-2026-10-01/fixture/Open.lean"
+  ],
+  "returncode": 1,
+  "start_ns": 1790868012196107000,
+  "end_ns": 1790868014061215000,
+  "elapsed_ms": 1865.108,
+  "stdout_sha256": "9ba336b4b5111423445463dc42462716abe4e0ab5fc488ee1cf617e257c1a240",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
