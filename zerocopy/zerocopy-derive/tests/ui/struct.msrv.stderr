@@ -1,7 +1,267 @@
 error: this conflicts with another representation hint
    --> $DIR/struct.rs:210:11
     |
-210 | #[repr(C, C)] /$RUSTUP_TOOLCHAIN/lib/rustlib/src/rust/library/core/src/mem/mod.rs:303:22
+210 | #[repr(C, C)] // zerocopy-derive conservatively treats these as conflicting reprs
+    |           ^
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> $DIR/struct.rs:216:10
+    |
+216 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> $DIR/struct.rs:223:10
+    |
+223 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> $DIR/struct.rs:250:10
+    |
+250 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> $DIR/struct.rs:270:10
+    |
+270 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: cannot derive `Unaligned` on type with alignment greater than 1
+   --> $DIR/struct.rs:302:11
+    |
+302 | #[repr(C, align(2))]
+    |           ^^^^^
+
+error: this conflicts with another representation hint
+   --> $DIR/struct.rs:308:8
+    |
+308 | #[repr(transparent, align(2))]
+    |        ^^^^^^^^^^^
+
+error: this conflicts with another representation hint
+   --> $DIR/struct.rs:317:16
+    |
+317 | #[repr(packed, align(2))]
+    |                ^^^^^
+
+error: this conflicts with another representation hint
+   --> $DIR/struct.rs:324:18
+    |
+324 | #[repr(align(1), align(2))]
+    |                  ^^^^^
+
+error: this conflicts with another representation hint
+   --> $DIR/struct.rs:330:18
+    |
+330 | #[repr(align(2), align(4))]
+    |                  ^^^^^
+
+error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
+   --> $DIR/struct.rs:334:10
+    |
+334 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
+   --> $DIR/struct.rs:339:10
+    |
+339 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: this conflicts with another representation hint
+   --> $DIR/struct.rs:353:8
+    |
+353 | #[repr(C, packed(2))]
+    |        ^
+
+error: `crate` attribute requires a path as the value
+   --> $DIR/struct.rs:371:20
+    |
+371 | #[zerocopy(crate = "zerocopy_renamed"typo)]
+    |                    ^^^^^^^^^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:377:20
+    |
+377 | #[zerocopy(crate = "Self::foo")]
+    |                    ^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:383:20
+    |
+383 | #[zerocopy(crate = "::crate::foo")]
+    |                    ^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:389:20
+    |
+389 | #[zerocopy(crate = "foo::crate::bar")]
+    |                    ^^^^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:395:20
+    |
+395 | #[zerocopy(crate = "foo::super::bar")]
+    |                    ^^^^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:401:20
+    |
+401 | #[zerocopy(crate = "foo::Self::bar")]
+    |                    ^^^^^^^^^^^^^^^^
+
+error: `crate` attribute requires a valid module path
+   --> $DIR/struct.rs:407:20
+    |
+407 | #[zerocopy(crate = "foo::self")]
+    |                    ^^^^^^^^^^^
+
+error[E0692]: transparent struct cannot have other repr hints
+   --> $DIR/struct.rs:308:8
+    |
+308 | #[repr(transparent, align(2))]
+    |        ^^^^^^^^^^^  ^^^^^^^^
+
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+  --> $DIR/struct.rs:31:10
+   |
+31 | #[derive(KnownLayout)]
+   |          ^^^^^^^^^^^ doesn't have a size known at compile-time
+   |
+   = help: within `KL00`, the trait `Sized` is not implemented for `[u8]`
+note: required because it appears within the type `KL00`
+  --> $DIR/struct.rs:34:8
+   |
+34 | struct KL00(u8, NotKnownLayoutDst);
+   |        ^^^^
+   = help: see issue #48214
+   = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+  --> $DIR/struct.rs:38:10
+   |
+38 | #[derive(KnownLayout)]
+   |          ^^^^^^^^^^^ doesn't have a size known at compile-time
+   |
+   = help: within `KL02`, the trait `Sized` is not implemented for `[u8]`
+note: required because it appears within the type `KL02`
+  --> $DIR/struct.rs:41:8
+   |
+41 | struct KL02(u8, [u8]);
+   |        ^^^^
+   = help: see issue #48214
+   = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy_renamed::KnownLayout` is not satisfied
+  --> $DIR/struct.rs:45:10
+   |
+45 | #[derive(KnownLayout)]
+   |          ^^^^^^^^^^^ the trait `zerocopy_renamed::KnownLayout` is not implemented for `NotKnownLayoutDst`
+   |
+   = help: see issue #48214
+   = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotKnownLayout: zerocopy_renamed::KnownLayout` is not satisfied
+  --> $DIR/struct.rs:53:10
+   |
+53 | #[derive(KnownLayout)]
+   |          ^^^^^^^^^^^ the trait `zerocopy_renamed::KnownLayout` is not implemented for `NotKnownLayout`
+   |
+   = help: see issue #48214
+   = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is not satisfied
+  --> $DIR/struct.rs:63:10
+   |
+63 | #[derive(Immutable)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::Immutable` is not implemented for `UnsafeCell<()>`
+   |
+   = help: see issue #48214
+   = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy_renamed::Immutable` is not satisfied
+  --> $DIR/struct.rs:70:10
+   |
+70 | #[derive(Immutable)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::Immutable` is not implemented for `UnsafeCell<u8>`
+   |
+   = note: required because of the requirements on the impl of `zerocopy_renamed::Immutable` for `[UnsafeCell<u8>; 0]`
+   = help: see issue #48214
+   = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
+   --> $DIR/struct.rs:120:10
+    |
+120 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
+    |
+    = help: see issue #48214
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `(): PaddingFree<IntoBytes2, 1_usize>` is not satisfied
+   --> $DIR/struct.rs:129:10
+    |
+129 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes2, 1_usize>` is not implemented for `()`
+    |
+    = help: the following implementations were found:
+              <() as PaddingFree<T, 0_usize>>
+    = help: see issue #48214
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `(): PaddingFree<IntoBytes3, 1_usize>` is not satisfied
+   --> $DIR/struct.rs:139:10
+    |
+139 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes3, 1_usize>` is not implemented for `()`
+    |
+    = help: the following implementations were found:
+              <() as PaddingFree<T, 0_usize>>
+    = help: see issue #48214
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+   --> $DIR/struct.rs:158:10
+    |
+158 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ doesn't have a size known at compile-time
+    |
+    = help: within `IntoBytes4`, the trait `Sized` is not implemented for `[u8]`
+note: required because it appears within the type `IntoBytes4`
+   --> $DIR/struct.rs:163:8
+    |
+163 | struct IntoBytes4 {
+    |        ^^^^^^^^^^
+note: required by a bound in `std::mem::size_of`
+   --> $RUSTUP_TOOLCHAIN/lib/rustlib/src/rust/library/core/src/mem/mod.rs:303:22
+    |
+303 | pub const fn size_of<T>() -> usize {
+    |                      ^ required by this bound in `std::mem::size_of`
+    = note: this error originates in the macro `::zerocopy_renamed::struct_padding` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+   --> $DIR/struct.rs:165:8
+    |
+165 |     b: SliceU8,
+    |        ^^^^^^^ doesn't have a size known at compile-time
+    |
+    = help: the trait `Sized` is not implemented for `[u8]`
+note: required by a bound in `std::mem::size_of`
+   --> $RUSTUP_TOOLCHAIN/lib/rustlib/src/rust/library/core/src/mem/mod.rs:303:22
     |
 303 | pub const fn size_of<T>() -> usize {
     |                      ^ required by this bound in `std::mem::size_of`
