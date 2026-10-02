@@ -93,7 +93,7 @@ class WorkspaceTests(unittest.TestCase):
             old = work / 'Invariants.lean'
             mapping = work / 'Invariants.source-map.json'
             old.write_text(workspace.golden.HEADER + 'module\npublic import DeriveValidity\nnamespace Zerocopy.Invariants\nend Zerocopy.Invariants\n')
-            mapping.write_text('{"17": {"file": "zerocopy/src/layout.rs", "line": 42}}')
+            mapping.write_text('{"17": {"file": "zerocopy/src/layout/mod.rs", "line": 42}}')
             workspace.retire_generated(work)
             self.assertFalse(old.exists())
             self.assertFalse(mapping.exists())
@@ -137,7 +137,7 @@ class WorkspaceTests(unittest.TestCase):
                 work = root / 'project'
                 work.mkdir()
                 (work / f'{module}.source-map.json').write_text(json.dumps({
-                    '17': {'file': 'zerocopy/src/layout.rs', 'line': 42}}))
+                    '17': {'file': 'zerocopy/src/layout/mod.rs', 'line': 42}}))
                 output = io.StringIO()
                 message = f'{module}.lean:17:9: error: unknown identifier'
                 command = [sys.executable, '-c',
@@ -146,7 +146,7 @@ class WorkspaceTests(unittest.TestCase):
                         subprocess.CalledProcessError):
                     workspace.run_checked(command, root, work)
                 self.assertIn(message, output.getvalue())
-                self.assertIn(f'Inline {kind}: {root}/zerocopy/src/layout.rs:42',
+                self.assertIn(f'Inline {kind}: {root}/zerocopy/src/layout/mod.rs:42',
                               output.getvalue())
 
 
