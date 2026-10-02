@@ -67,4 +67,64 @@ theorem optionalSize_decode (raw : Option Usize) (value : Option (UnsignedWord .
       Option.some.injEq] at h <;>
     cases h <;> rfl
 
+/-- Padding's existing view retains every exact field observation required by
+its raw contract, including the size variant and the unpadded flag. -/
+theorem layout_pad_iff (self result : layout.DstLayout) :
+    layoutValue result = (layoutValue self).pad ↔
+      result.align = self.align ∧ match self.size_info with
+      | .Sized bytes => ∃ padded, result.size_info = .Sized padded ∧
+          padded.val = LayoutMath.roundUp bytes.val self.align.val.val ∧
+          result.statically_shallow_unpadded =
+            (self.statically_shallow_unpadded && decide (bytes.val % self.align.val.val = 0))
+      | .SliceDst tail => ∃ next, result.size_info = .SliceDst next ∧
+          trailingFormula next = (trailingFormula tail).pad self.align.val.val ∧
+          result.statically_shallow_unpadded = self.statically_shallow_unpadded := by
+  constructor
+  · intro h
+    have ha := congrArg LayoutMath.LayoutValue.align h
+    have hp := congrArg LayoutMath.LayoutValue.payload h
+    have hu := congrArg LayoutMath.LayoutValue.unpadded h
+    have align : result.align = self.align := by
+      have hv : result.align.val = self.align.val := UScalar.eq_of_val_eq ha
+      have ext : ∀ a b : NonZeroUsize, a.val = b.val → a = b := by
+        rintro ⟨a⟩ ⟨b⟩ h
+        cases h
+        rfl
+      exact ext result.align self.align hv
+    refine ⟨align, ?_⟩
+    cases hs : self.size_info <;> cases hr : result.size_info <;>
+      simp only [layoutValue, LayoutMath.LayoutValue.pad, hs, hr,
+        LayoutMath.Payload.fixed.injEq, LayoutMath.Payload.trailing.injEq,
+        reduceCtorEq] at hp hu ⊢
+    all_goals exact ⟨_, rfl, hp, hu⟩
+  · rintro ⟨ha, h⟩
+    cases hs : self.size_info with
+    | Sized bytes =>
+      simp only [hs] at h
+      rcases h with ⟨padded, hr, hp, hu⟩
+      simp only [layoutValue, LayoutMath.LayoutValue.pad, hs, hr, ha, hp, hu]
+    | SliceDst tail =>
+      simp only [hs] at h
+      rcases h with ⟨next, hr, hp, hu⟩
+      simp only [layoutValue, LayoutMath.LayoutValue.pad, hs, hr, ha, hp, hu]
+
+/-- Exact physical offset and stride remain observable through the padding view;
+equality of bounded words follows from equality of their numeric projections. -/
+theorem layout_pad_trailing_fields (self result : layout.DstLayout)
+    (tail : layout.TrailingSliceLayout Usize)
+    (hs : self.size_info = .SliceDst tail)
+    (h : layoutValue result = (layoutValue self).pad) :
+    ∃ next, result.size_info = .SliceDst next ∧
+      next.offset = tail.offset ∧ next.elem_size = tail.elem_size := by
+  have facts := (layout_pad_iff self result).mp h
+  simp only [hs] at facts
+  obtain ⟨next, hn, hf, _⟩ := facts.2
+  refine ⟨next, hn, UScalar.eq_of_val_eq ?_, UScalar.eq_of_val_eq ?_⟩
+  · have ho := congrArg LayoutMath.Formula.offset hf
+    dsimp only [LayoutMath.Formula.pad] at ho
+    split at ho <;> exact ho
+  · have he := congrArg LayoutMath.Formula.elem hf
+    dsimp only [LayoutMath.Formula.pad] at he
+    split at he <;> exact he
+
 end Zerocopy.Proofs
