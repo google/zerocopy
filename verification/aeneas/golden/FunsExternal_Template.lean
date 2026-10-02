@@ -42,6 +42,13 @@ axiom core.intrinsics.transmute {Src : Type} (Dst : Type) : Src → Result Dst
 @[rust_fun "core::mem::size_of"]
 axiom core.mem.size_of (T : Type) : Result Std.Usize
 
+/-- [core::mem::align_of]:
+    Source: '/rustc/library/core/src/mem/mod.rs', lines 543:0-543:35
+    Name pattern: [core::mem::align_of]
+    Visibility: public -/
+@[rust_fun "core::mem::align_of"]
+axiom core.mem.align_of (T : Type) : Result Std.Usize
+
 /-- [core::mem::zeroed]:
     Source: '/rustc/library/core/src/mem/mod.rs', lines 755:0-755:36
     Name pattern: [core::mem::zeroed]

@@ -11,6 +11,7 @@ public import Specs
 public import Proofs.Util
 public import Aeneas
 public import Loops
+public import LayoutModel
 public import RepresentationLaws
 public import LayoutMath
 import all Mathlib.Data.Nat.Log
