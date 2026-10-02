@@ -11,7 +11,7 @@ public import Zerocopy.Funs
 public import SpecPrelude
 public import SpecsSyntax
 public import Models
-public import Arithmetic
+public import LayoutModel
 @[expose] public section
 
 open Aeneas Aeneas.Std
@@ -121,6 +121,33 @@ spec set_u32_be_spec
   ensures r => r = n
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.set_u32_be_spec for Zerocopy.byteorder.verification.set_u32_be with 2
+
+check_model_inputs Zerocopy.layout.RoundingAlignAndPhase.new with 0 type parameters
+aeneas_spec_begin
+spec encoding_new_spec
+  for @Zerocopy.layout.RoundingAlignAndPhase.new with 0 type parameters
+  requires ha : (align : Nat).isPowerOfTwo
+  requires hp : (phase : Nat) < (align : Nat)
+  ensures encoded => encoded.align = (align : Nat) ∧ encoded.phase = (phase : Nat)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.encoding_new_spec for Zerocopy.layout.RoundingAlignAndPhase.new with 2
+
+check_model_inputs Zerocopy.layout.RoundingAlignAndPhase.components with 0 type parameters
+aeneas_spec_begin
+spec encoding_components_spec
+  for @Zerocopy.layout.RoundingAlignAndPhase.components with 0 type parameters
+  ensures (align, phase) =>
+    align.value = self.align ∧ phase.value = self.phase
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.encoding_components_spec for Zerocopy.layout.RoundingAlignAndPhase.components with 1
+
+check_model_inputs Zerocopy.layout.RoundingAlignAndPhase.align with 0 type parameters
+aeneas_spec_begin
+spec encoding_align_spec
+  for @Zerocopy.layout.RoundingAlignAndPhase.align with 0 type parameters
+  ensures align => (align : Nat) = self.align
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.encoding_align_spec for Zerocopy.layout.RoundingAlignAndPhase.align with 1
 
 check_model_inputs Zerocopy.util.bytewrite.exact with 0 type parameters
 aeneas_spec_begin
