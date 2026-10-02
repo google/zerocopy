@@ -15,53 +15,56 @@ namespace Zerocopy.Proofs
 
 theorem padding_lt_alignment : Zerocopy.Specs.padding_lt_alignment := by
   intro len align h
+  have hpos := Nat.pos_of_isPowerOfTwo h
   unfold util.padding_needed_for
   simp only [core.num.nonzero.NonZero.get, bind_ok]
   step
-  simp only [lift, bind_ok, WP.spec_ok, UScalar.val_and]
-  have hbound :
-      (~~~(core.num.Usize.wrapping_sub len 1#usize)).val &&& mask.val ≤ mask.val :=
-    Nat.and_le_right
-  omega
+  simp only [lift, bind_ok, WP.spec_ok]
+  have hbound : (~~~(core.num.Usize.wrapping_sub len 1#usize) &&& mask).val
+      < align.val.val := by
+    have := Nat.and_le_right (n := (~~~(core.num.Usize.wrapping_sub len 1#usize)).val)
+      (m := mask.val)
+    rw [UScalar.val_and]
+    omega
+  have haligned := Arithmetic.padding_mask_aligned len align.val mask h (by omega)
+  obtain ⟨hexact, hminimal, hzero⟩ :=
+    Arithmetic.padding_properties _ _ _ hpos hbound haligned
+  exact ⟨(UScalar.lt_equiv _ _).mpr hbound, hexact, haligned, hminimal, hzero⟩
 
 theorem round_down_spec : Zerocopy.Specs.round_down_spec := by
-  intro n align hpos h
+  intro n align h
+  have hpos := Nat.pos_of_isPowerOfTwo h
   unfold util.round_down_to_next_multiple_of_alignment
   simp only [core.num.nonzero.NonZero.get, bind_ok]
   step
   step
   step with UScalar.sub_bv_spec as ⟨mask, hval, hle, hbv⟩
   simp only [lift, bind_ok, WP.spec_ok]
-  constructor
-  · simp only [UScalar.val_and]
-    exact Nat.and_le_left
-  · have clear : (n &&& ~~~mask).val &&& mask.val = 0 := by
-      rw [← UScalar.val_and]
-      change ((n.bv &&& ~~~mask.bv) &&& mask.bv).toNat = 0
-      simp [BitVec.and_assoc]
-    unfold Nat.isPowerOfTwo at h
-    rcases h with ⟨k, hk⟩
-    rw [hval, hk, Nat.and_two_pow_sub_one_eq_mod] at clear
-    simpa only [hk] using clear
+  have hexact := Arithmetic.round_down_exact n align.val mask h hval
+  obtain ⟨hbound, haligned, hnext, hgreatest⟩ :=
+    Arithmetic.round_down_properties _ _ _ hpos hexact
+  exact ⟨(UScalar.le_equiv _ _).mpr hbound, hexact, haligned, hnext, hgreatest⟩
 
 theorem max_spec : Zerocopy.Specs.max_spec := by
   intro a b
-  apply WP.exists_imp_spec
-  simp only [util.max, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+  simp only [util.max, core.num.nonzero.NonZero.get, bind_ok]
   split
   · rename_i h
-    exact ⟨b, rfl, (Nat.max_eq_right (by omega)).symm⟩
+    exact WP.spec.ret ⟨(max_eq_right (le_of_lt h)).symm, Or.inr rfl,
+      le_of_lt h, le_rfl⟩
   · rename_i h
-    exact ⟨a, rfl, (Nat.max_eq_left (by omega)).symm⟩
+    exact WP.spec.ret ⟨(max_eq_left (le_of_not_gt h)).symm, Or.inl rfl,
+      le_rfl, le_of_not_gt h⟩
 
 theorem min_spec : Zerocopy.Specs.min_spec := by
   intro a b
-  apply WP.exists_imp_spec
-  simp only [util.min, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+  simp only [util.min, core.num.nonzero.NonZero.get, bind_ok]
   split
   · rename_i h
-    exact ⟨b, rfl, (Nat.min_eq_right (by omega)).symm⟩
+    exact WP.spec.ret ⟨(min_eq_right (le_of_lt h)).symm, Or.inr rfl,
+      le_of_lt h, le_rfl⟩
   · rename_i h
-    exact ⟨a, rfl, (Nat.min_eq_left (by omega)).symm⟩
+    exact WP.spec.ret ⟨(min_eq_left (le_of_not_gt h)).symm, Or.inl rfl,
+      le_rfl, le_of_not_gt h⟩
 
 end Zerocopy.Proofs

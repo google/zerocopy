@@ -15,26 +15,44 @@ The required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from these actual functions in `zerocopy/src/util/mod.rs`,
-including their dependencies; there is no copied Rust implementation:
+Extraction starts from these actual helpers in `zerocopy/src/util/mod.rs` and
+the method in `zerocopy/src/layout.rs`, including their dependencies; there is
+no copied Rust implementation:
 
 | Rust function | Checked property |
 | --- | --- |
-| `max` | Terminates successfully and returns the mathematical maximum. |
-| `min` | Terminates successfully and returns the mathematical minimum. |
-| `padding_needed_for` | For any positive alignment, succeeds with padding strictly below that alignment. |
-| `round_down_to_next_multiple_of_alignment` | For any positive power-of-two alignment, succeeds with a result no larger than the input and divisible by the alignment. |
+| `max` | Returns the mathematical maximum, selects an input, and bounds both inputs from above. |
+| `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
+| `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
+| `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
+| `DstLayout::pad_to_align` | For sized layouts, power-of-two alignment and an exact padded size that fits guarantee the least aligned size at least the input; alignment is preserved and the shallow-unpadded flag becomes its old value AND the input being aligned. All DST layouts return unchanged, with no arithmetic preconditions. |
 
 The theorems quantify over all values of the extracted unsigned integer model;
-these are not finite collections of test inputs. Aeneas's Hoare specification
-notation includes successful termination, rather than only a postcondition
-conditional on success. The min/max proofs explicitly exhibit the result.
+these are not finite collections of test inputs. All five inline specifications
+use `contract`, whose Aeneas Hoare specification includes successful termination,
+rather than only a postcondition conditional on success.
+
+`lean/Corollaries.lean` composes the inline theorems: min/max preserve any
+predicate shared by both inputs; round-down is monotone, is the identity on
+aligned inputs, and is idempotent; layout padding is the identity on aligned
+sized layouts and DSTs, and is idempotent. The idempotence contracts prove both
+calls succeed, including that the first result meets the second call's needs.
+The original `size + align - 1 <= usize::MAX` precondition is also checked as a
+sufficient condition for the layout contract's exact fit requirement.
+
+Comparisons use the unsigned scalar's existing order directly (`m ≤ n`,
+`p < align.val`, `min a.val b.val`). Arithmetic postconditions explicitly bind
+`Nat` values (`let N : Nat := n`) so addition and remainder are unbounded
+mathematical operations. The corresponding Rust scalar arithmetic operators
+return checked `Result` values and are not interchangeable with these formulas.
+`NonZero` still needs one `.val` to unwrap its stored scalar. Power-of-two
+requirements already imply positivity, so padding, round-down, and sized-layout
+contracts do not repeat a positive-alignment requirement.
 
 CI uses the default features, debug assertions, and the runner's native
 `x86_64-unknown-linux-gnu` target. Local replay also supports macOS arm64. This
-initial scope does not prove minimum padding, maximality of rounded results,
-all `DstLayout` operations, other feature/target combinations, or zerocopy's
-memory safety. Aeneas currently targets a safe Rust subset; compiling the whole
+scope does not prove all `DstLayout` operations, other feature/target
+combinations, or zerocopy's memory safety. Aeneas currently targets a safe Rust subset; compiling the whole
 unsafe crate to a complete verified model is a separate task.
 
 ## Reproduce
@@ -287,13 +305,16 @@ records but does not formally prove:
 - Rust MIR generation and Charon's LLBC extraction preserve these selected
   functions' semantics for the pinned configuration.
 - Aeneas's translation and the pinned integer, comparison, wrapping-subtraction,
-  bitwise, and assertion models represent those Rust operations faithfully.
+  checked-addition, bitwise, and assertion models represent those Rust
+  operations faithfully. The translated layout records and variants represent
+  their stored fields, not physical Rust layout or niche encoding.
 - The handwritten `NonZero` wrapper represents its stored value;
   `NonZero::get` succeeds with that value and `NonZeroUsizeInner::clone`
   succeeds with a copy. These models abstract values, not niche encoding,
   layout, validity, or memory operations. The wrapper over-approximates valid
-  Rust values by admitting zero; the alignment proofs explicitly require
-  positivity rather than assuming it through an axiom.
+  Rust values by admitting zero; the alignment proofs establish positivity
+  from their explicit power-of-two requirement rather than assuming it through
+  an axiom.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
