@@ -397,6 +397,32 @@ impl<E> TrailingSliceLayout<E> {
         offset == util::round_down_to_next_multiple_of_alignment(self.size_base, align) + phase
     }))]
     const fn size_offset(&self) -> usize {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayout.size_offset
+        //     {E : Type} (self : layout.TrailingSliceLayout E) : Result Std.Usize := do
+        //     let (size_align, size_phase) ←
+        //       layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+        //     let aligned_base ←
+        //       util.round_down_to_next_multiple_of_alignment self.size_base size_align
+        //     ok (aligned_base ||| size_phase)
+        // proof:
+        //   contract size_offset_spec {E : Type} (self : layout.TrailingSliceLayout E)
+        //     for layout.TrailingSliceLayout.size_offset self
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures offset =>
+        //       offset.val = self.size_base.val - self.size_base.val % (byteFormula self).align + (byteFormula self).phase
+        //     proof:
+        //       unfold layout.TrailingSliceLayout.size_offset
+        //       step with encoding_components_spec _ hn as ⟨a, p, ha, hp, hsum, halign, hphase⟩
+        //       step with round_down_spec self.size_base a ha as ⟨base, _, hb, hmod, _, _⟩
+        //       simp only [UScalar.val_or]
+        //       rw [LayoutMath.aligned_or _ _ _ ha hmod hp, hb]
+        //       simp only [byteFormula]
+        //       rw [← halign]
+        //       omega
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::<usize>::size_offset)]
         #[kani::solver(kissat)]
@@ -428,6 +454,115 @@ impl<E> TrailingSliceLayout<E> {
             .and_then(|rounded| rounded.checked_sub(phase))
     }))]
     const fn max_trailing_bytes(&self, available_bytes: usize) -> Option<usize> {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayout.max_trailing_bytes
+        //     {E : Type} (self : layout.TrailingSliceLayout E)
+        //     (available_bytes : Std.Usize) :
+        //     Result (Option Std.Usize)
+        //     := do
+        //     let (size_align, size_phase) ←
+        //       layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+        //     let rounded_phase ←
+        //       if size_phase = 0#usize
+        //       then ok 0#usize
+        //       else
+        //         core.num.nonzero.NonZero.get
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+        //     let o ← lift (Usize.checked_add self.size_base rounded_phase)
+        //     match o with
+        //     | none => ok none
+        //     | some size =>
+        //       let o1 ← lift (Usize.checked_sub available_bytes size)
+        //       match o1 with
+        //       | none => ok none
+        //       | some bytes =>
+        //         let aligned_bytes ←
+        //           util.round_down_to_next_multiple_of_alignment bytes size_align
+        //         let initial_padding ← rounded_phase - size_phase
+        //         let trailing_bytes ← lift (aligned_bytes ||| initial_padding)
+        //         ok (some trailing_bytes)
+        // proof:
+        //   contract max_trailing_bytes_spec {E : Type} (self : layout.TrailingSliceLayout E) (available : Usize)
+        //     for layout.TrailingSliceLayout.max_trailing_bytes self available
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures r => r.map UScalar.val = (byteFormula self).capacity available.val
+        //     proof:
+        //       unfold layout.TrailingSliceLayout.max_trailing_bytes
+        //       step with encoding_components_spec _ hn as ⟨a, p, ha, hp, hsum, halign, hphase⟩
+        //       have apos := Nat.pos_of_isPowerOfTwo ha
+        //       have hview : byteFormula self = ⟨self.size_base.val, p.val, a.val.val, 0, self.offset.val⟩ := by
+        //         unfold byteFormula
+        //         dsimp only
+        //         rw [← hphase, ← halign]
+        //       let rp : Usize := if p = 0#usize then 0#usize else a.val
+        //       have hrp : rp.val = LayoutMath.roundUp p.val a.val.val := by
+        //         rw [LayoutMath.roundUp_phase _ _ apos hp]
+        //         by_cases hz : p = 0#usize
+        //         · simp only [rp, hz, if_true]
+        //           rfl
+        //         · have hzero : p.val ≠ 0 := by
+        //             intro h
+        //             exact hz (UScalar.eq_of_val_eq (by simpa using h))
+        //           simp only [rp, hz, hzero, if_false]
+        //       have hrmod : rp.val % a.val.val = 0 := by rw [hrp]; exact (LayoutMath.roundUp_properties _ _ apos).2.2
+        //       have hrge : p.val ≤ rp.val := by rw [hrp]; exact (LayoutMath.roundUp_properties _ _ apos).1
+        //       have hrlt : rp.val - p.val < a.val.val := by
+        //         have := (LayoutMath.roundUp_properties p.val a.val.val apos).2.1
+        //         omega
+        //       have hbranch : (if p = 0#usize then Result.ok 0#usize else
+        //         core.num.nonzero.NonZero.get Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner a) = Result.ok rp := by
+        //         simp only [core.num.nonzero.NonZero.get]
+        //         by_cases h : p = 0#usize <;> simp only [h, if_true, if_false, rp]
+        //       rw [hbranch]
+        //       simp only [bind_ok]
+        //       step as ⟨checked, hadd⟩
+        //       cases checked with
+        //       | none =>
+        //         simp only [] at hadd
+        //         have hav : available.val ≤ Usize.max := by scalar_tac
+        //         have hmiss : ¬(byteFormula self).bytes 0 ≤ available.val := by
+        //           rw [hview]
+        //           simp only [LayoutMath.Formula.bytes, Nat.add_zero, ← hrp]
+        //           omega
+        //         simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.capacity, hmiss, if_false]
+        //       | some minimum =>
+        //         simp only [] at hadd
+        //         step as ⟨checked, hsub⟩
+        //         cases checked with
+        //         | none =>
+        //           simp only [] at hsub
+        //           simp only []
+        //           have hmiss : ¬(byteFormula self).bytes 0 ≤ available.val := by
+        //             rw [hview]
+        //             simp only [LayoutMath.Formula.bytes, Nat.add_zero, ← hrp]
+        //             omega
+        //           simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.capacity, hmiss, if_false]
+        //         | some extra =>
+        //           simp only [] at hsub
+        //           simp only []
+        //           step with round_down_spec extra a ha as ⟨aligned, hle, hal, hmod, _, _⟩
+        //           step with Usize.sub_spec hrge as ⟨padding, hpadding, _⟩
+        //           have hfit : (byteFormula self).bytes 0 ≤ available.val := by
+        //             rw [hview]
+        //             simp only [LayoutMath.Formula.bytes, Nat.add_zero, ← hrp]
+        //             omega
+        //           simp only [lift, bind_ok, WP.spec_ok, Option.map_some,
+        //             LayoutMath.Formula.capacity, hfit, if_true]
+        //           have hpl : padding.val < a.val.val := by
+        //             dsimp only [rp] at hrlt
+        //             omega
+        //           rw [UScalar.val_or, LayoutMath.aligned_or _ _ _ ha hmod hpl]
+        //           rw [hview]
+        //           dsimp only
+        //           have hbudget : available.val - self.size_base.val = rp.val + extra.val := by omega
+        //           rw [hbudget, LayoutMath.floor_shift _ _ _ hrmod]
+        //           congr 1
+        //           have hrem := Nat.mod_le extra.val a.val.val
+        //           dsimp only [rp] at *
+        //           omega
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::<usize>::max_trailing_bytes)]
         #[kani::solver(kissat)]
@@ -536,6 +671,71 @@ impl TrailingSliceLayout {
         padding == object_size.wrapping_sub(self.offset.wrapping_add(trailing_bytes))
     }))]
     pub(crate) const fn padding_for_elems(self, elems: usize) -> usize {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayoutUsize.padding_for_elems
+        //     (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
+        //     Result Std.Usize
+        //     := do
+        //     let (size_align, size_phase) ←
+        //       layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+        //     let i ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+        //     let size_mask ← i - 1#usize
+        //     let elem_remainder ← lift (self.elem_size &&& size_mask)
+        //     let i1 ← lift (core.num.Usize.wrapping_mul elems elem_remainder)
+        //     let trailing_remainder ← lift (i1 &&& size_mask)
+        //     let rounding_input ←
+        //       lift (core.num.Usize.wrapping_add size_phase trailing_remainder)
+        //     let rounding_padding ← util.padding_needed_for rounding_input size_align
+        //     let i2 ← lift (core.num.Usize.wrapping_add self.size_base size_phase)
+        //     let i3 ← lift (core.num.Usize.wrapping_sub i2 self.offset)
+        //     ok (core.num.Usize.wrapping_add i3 rounding_padding)
+        // proof:
+        //   contract padding_for_elems_spec (self : layout.TrailingSliceLayout Usize) (elems : Usize)
+        //     for layout.TrailingSliceLayoutUsize.padding_for_elems self elems
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures p => (p.val + self.offset.val + elems.val * self.elem_size.val) % UScalar.size .Usize =
+        //       (trailingFormula self).size elems.val % UScalar.size .Usize
+        //     proof:
+        //       unfold layout.TrailingSliceLayoutUsize.padding_for_elems
+        //       step with encoding_components_spec _ hn as ⟨a, r, ha, hr, hsum, halign, hphase⟩
+        //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //       have apos := Nat.pos_of_isPowerOfTwo ha
+        //       step with Usize.sub_spec (show (1#usize).val ≤ a.val.val by simpa using (show 1 ≤ a.val.val by omega)) as ⟨mask, hm, _⟩
+        //       simp only [lift, bind_ok]
+        //       have low (x : Usize) : (x &&& mask).val = x.val % a.val.val := by
+        //         obtain ⟨k, hk⟩ := ha
+        //         rw [UScalar.val_and, hm, hk, Nat.and_two_pow_sub_one_eq_mod]
+        //       let t := core.num.Usize.wrapping_mul elems (self.elem_size &&& mask) &&& mask
+        //       have ht : t.val = (elems.val * self.elem_size.val) % a.val.val := by
+        //         rw [low, core.num.Usize.wrapping_mul_val_eq, low,
+        //           Nat.mod_mod_of_dvd _ (Arithmetic.alignment_dvd_size a.val ha)]
+        //         rw [Nat.mul_mod, Nat.mod_mod, ← Nat.mul_mod]
+        //       let input := core.num.Usize.wrapping_add r t
+        //       have hi : input.val % a.val.val =
+        //           (r.val + elems.val * self.elem_size.val) % a.val.val := by
+        //         rw [core.num.Usize.wrapping_add_val_eq,
+        //           Nat.mod_mod_of_dvd _ (Arithmetic.alignment_dvd_size a.val ha), ht, Nat.add_mod_mod]
+        //       step with padding_lt_alignment input a ha as ⟨rp, _, hp, _, _, _⟩
+        //       have hp' : rp.val = (a.val.val - (r.val + elems.val * self.elem_size.val) % a.val.val) % a.val.val := by
+        //         rw [hi] at hp
+        //         exact hp
+        //       simp only [core.num.Usize.wrapping_add_val_eq, Nat.add_assoc, Nat.mod_add_mod]
+        //       rw [show
+        //         (core.num.Usize.wrapping_sub (core.num.Usize.wrapping_add self.size_base r) self.offset).val +
+        //           (rp.val + (self.offset.val + elems.val * self.elem_size.val)) =
+        //         ((core.num.Usize.wrapping_sub (core.num.Usize.wrapping_add self.size_base r) self.offset).val +
+        //           self.offset.val) + (elems.val * self.elem_size.val + rp.val) by omega,
+        //         ← Nat.mod_add_mod, wrapping_sub_cancel, core.num.Usize.wrapping_add_val_eq, Nat.mod_add_mod]
+        //       simp only [trailingFormula, byteFormula, LayoutMath.Formula.size, LayoutMath.Formula.bytes,
+        //         LayoutMath.roundUp]
+        //       rw [← hphase, ← halign, hp']
+        //       congr 1
+        //       omega
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::padding_for_elems)]
         #[kani::solver(kissat)]
@@ -603,6 +803,91 @@ impl TrailingSliceLayout {
             .and_then(|bytes| proofs::slice_dst_size_for_trailing_bytes(self, bytes))
     }))]
     pub(crate) const fn size_for_elems(self, elems: usize) -> Option<usize> {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayoutUsize.size_for_elems
+        //     (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
+        //     Result (Option Std.Usize)
+        //     := do
+        //     let o ←
+        //       layout.TrailingSliceLayout.max_trailing_bytes self core.num.Usize.MAX
+        //     match o with
+        //     | none => ok none
+        //     | some bytes =>
+        //       let o1 ← lift (Usize.checked_mul self.elem_size elems)
+        //       match o1 with
+        //       | none => ok none
+        //       | some bytes1 =>
+        //         if bytes1 > bytes
+        //         then ok none
+        //         else
+        //           let trailing_end ←
+        //             lift (core.num.Usize.wrapping_add self.offset bytes1)
+        //           let i ← layout.TrailingSliceLayoutUsize.padding_for_elems self elems
+        //           let size ← lift (core.num.Usize.wrapping_add trailing_end i)
+        //           ok (some size)
+        // proof:
+        //   contract size_for_elems_spec (self : layout.TrailingSliceLayout Usize) (elems : Usize)
+        //     for layout.TrailingSliceLayoutUsize.size_for_elems self elems
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures r => r.map UScalar.val = (trailingFormula self).checkedSize Usize.max elems.val
+        //     proof:
+        //       unfold layout.TrailingSliceLayoutUsize.size_for_elems
+        //       step with max_trailing_bytes_spec self core.num.Usize.MAX hn as ⟨cap, hc⟩
+        //       have hc' := LayoutMath.capacity_spec (byteFormula self) core.num.Usize.MAX.val
+        //         (show 0 < (byteFormula self).align from Nat.two_pow_pos _)
+        //       simp only [core.num.Usize.MAX, UScalar.ofNatCore_val_eq] at hc'
+        //       have hprod := trailing_product_le_size self elems.val
+        //       cases cap with
+        //       | none =>
+        //         simp only [Option.map_none] at hc
+        //         rw [← hc] at hc'
+        //         have hmiss := hc' (elems.val * self.elem_size.val)
+        //         change Usize.max < (trailingFormula self).size elems.val at hmiss
+        //         simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.checkedSize,
+        //           show ¬(trailingFormula self).size elems.val ≤ Usize.max by omega, if_false]
+        //       | some cap =>
+        //         simp only [Option.map_some] at hc
+        //         rw [← hc] at hc'
+        //         have hiff := hc' (elems.val * self.elem_size.val)
+        //         change (trailingFormula self).size elems.val ≤ Usize.max ↔
+        //           elems.val * self.elem_size.val ≤ cap.val at hiff
+        //         step as ⟨product, hm⟩
+        //         cases product with
+        //         | none =>
+        //           simp only [] at hm
+        //           have hmiss : ¬(trailingFormula self).size elems.val ≤ Usize.max := by
+        //             rw [Nat.mul_comm] at hm
+        //             omega
+        //           simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.checkedSize, hmiss, if_false]
+        //         | some bytes =>
+        //           simp only [] at hm
+        //           simp only [UScalar.lt_equiv]
+        //           split
+        //           · rename_i hbig
+        //             have hmiss : ¬(trailingFormula self).size elems.val ≤ Usize.max := by
+        //               rw [Nat.mul_comm] at hm
+        //               omega
+        //             simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.checkedSize, hmiss, if_false]
+        //           · rename_i hsmall
+        //             have hfit : (trailingFormula self).size elems.val ≤ Usize.max := by
+        //               apply hiff.mpr
+        //               rw [hm.2.1, Nat.mul_comm] at hsmall
+        //               omega
+        //             simp only [lift, bind_ok]
+        //             step with padding_for_elems_spec self elems hn as ⟨p, hp⟩
+        //             have hsz : Usize.size = UScalar.size .Usize := by
+        //               simp only [Usize.size, Usize.numBits, UScalarTy.Usize_numBits_eq, UScalar.size]
+        //             rw [hsz] at hp
+        //             simp only [Option.map_some,
+        //               LayoutMath.Formula.checkedSize, hfit, if_true,
+        //               core.num.Usize.wrapping_add_val_eq, Nat.mod_add_mod]
+        //             rw [hm.2.1, Nat.mul_comm]
+        //             rw [show self.offset.val + elems.val * self.elem_size.val + p.val =
+        //               p.val + self.offset.val + elems.val * self.elem_size.val by omega,
+        //               hp, word_mod_of_le _ hfit]
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::size_for_elems)]
         #[kani::solver(kissat)]

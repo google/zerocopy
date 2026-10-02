@@ -65,6 +65,10 @@ theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p
 
 @@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::align")@@
 
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::size_offset")@@
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::max_trailing_bytes")@@
+
 @@AENEAS_PROOF("zerocopy::layout::DstLayout::assume_shallow_unpadded")@@
 
 @@AENEAS_PROOF("zerocopy::layout::DstLayout::for_type")@@
@@ -76,6 +80,36 @@ theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p
 @@AENEAS_PROOF("zerocopy::layout::max_elems_for_bytes")@@
 
 @@AENEAS_PROOF("zerocopy::layout::DstLayout::requires_static_padding")@@
+
+theorem wrapping_sub_cancel (x y : Usize) :
+    ((core.num.Usize.wrapping_sub x y).val + y.val) % UScalar.size .Usize = x.val := by
+  rw [core.num.Usize.wrapping_sub_val_eq, Nat.mod_add_mod]
+  have hy := UScalar.hSize y
+  rw [show x.val + (UScalar.size .Usize - y.val) + y.val =
+    x.val + UScalar.size .Usize by omega, Nat.add_mod_right]
+  exact Nat.mod_eq_of_lt (UScalar.hSize x)
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::padding_for_elems")@@
+
+theorem trailing_align_pos (self : layout.TrailingSliceLayout Usize) :
+    0 < (trailingFormula self).align := Nat.two_pow_pos _
+
+theorem trailing_product_le_size (self : layout.TrailingSliceLayout Usize) (n : Nat) :
+    n * self.elem_size.val ≤ (trailingFormula self).size n := by
+  have h := (LayoutMath.roundUp_properties
+    ((trailingFormula self).phase + n * self.elem_size.val)
+    (trailingFormula self).align (trailing_align_pos self)).1
+  unfold trailingFormula byteFormula LayoutMath.Formula.size LayoutMath.Formula.bytes at *
+  dsimp only at *
+  omega
+
+theorem word_mod_of_le (n : Nat) (h : n ≤ Usize.max) : n % UScalar.size .Usize = n := by
+  apply Nat.mod_eq_of_lt
+  have hp := Nat.two_pow_pos System.Platform.numBits
+  simp only [Usize.max, Usize.numBits, UScalarTy.Usize_numBits_eq, UScalar.size] at h ⊢
+  omega
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::size_for_elems")@@
 
 @@AENEAS_PROOF("zerocopy::layout::SizeInfo::try_to_nonzero_elem_size")@@
 
