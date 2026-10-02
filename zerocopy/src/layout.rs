@@ -1287,6 +1287,29 @@ impl DstLayout {
     #[cfg_attr(kani, kani::ensures(|&result| {
         Some(result) == proofs::extended_layout(self, field, repr_packed)
     }))]
+    ///
+    /// ```aeneas
+    /// spec extend_spec (size : Usize)
+    ///   requires(raw) hs : self.size_info = .Sized size
+    ///   requires(raw) hself : self.align.val.val.isPowerOfTwo ∧ self.align.val.val ≤ 2 ^ 29
+    ///   requires(raw) hfield : field.align.val.val.isPowerOfTwo ∧ field.align.val.val ≤ 2 ^ 29
+    ///   requires(raw) hpacked : ∀ a ∈ repr_packed, a.val.val.isPowerOfTwo ∧ a.val.val ≤ 2 ^ 29
+    ///   requires(raw) hfit : match field.size_info with
+    ///     | .Sized field_size => placement size field repr_packed + field_size.val ≤ Usize.max
+    ///     | .SliceDst t => placement size field repr_packed + t.offset.val ≤ Usize.max ∧
+    ///       placement size field repr_packed + t.size_base.val ≤ Usize.max
+    ///   ensures(raw) r => r.align.val.val = max self.align.val.val (fieldAlignment field repr_packed) ∧
+    ///     r.statically_shallow_unpadded = (self.statically_shallow_unpadded &&
+    ///       field.statically_shallow_unpadded && decide (size.val % fieldAlignment field repr_packed = 0)) ∧
+    ///     match field.size_info with
+    ///     | .Sized field_size => ∃ s, r.size_info = .Sized s ∧
+    ///       s.val = placement size field repr_packed + field_size.val
+    ///     | .SliceDst t => ∃ u, r.size_info = .SliceDst u ∧
+    ///       u.offset.val = placement size field repr_packed + t.offset.val ∧
+    ///       u.size_base.val = placement size field repr_packed + t.size_base.val ∧
+    ///       u.elem_size = t.elem_size ∧
+    ///       u.size_rounding_align_and_phase = t.size_rounding_align_and_phase
+    /// ```
     pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::extend)]
@@ -1461,6 +1484,14 @@ impl DstLayout {
     #[inline]
     #[cfg_attr(kani, kani::requires(proofs::padded_layout(self).is_some()))]
     #[cfg_attr(kani, kani::ensures(|&result| Some(result) == proofs::padded_layout(self)))]
+    ///
+    /// ```aeneas
+    /// spec pad_to_align_spec
+    ///   requires ha : (self.align : Nat).isPowerOfTwo
+    ///   requires hfit : (ModelViews.layoutValue self).padFits Usize.max
+    ///   ensures result =>
+    ///     ModelViews.layoutValue result = (ModelViews.layoutValue self).pad
+    /// ```
     pub const fn pad_to_align(self) -> Self {
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::pad_to_align)]

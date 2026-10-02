@@ -63,6 +63,18 @@ attribute [contract_simps] encoding_decoder_admitted_iff trailing_decoder_admitt
   exact ⟨Nat.pos_of_isPowerOfTwo value.align_pow2, value.align_pow2, value.phase_lt,
     hraw.symm, hcanonical.1, hcanonical.2⟩
 
+@[contract_simps] theorem required_extend (provided : Specs.extend_spec) :
+    Obligations.extend_spec := by
+  intro self field packed size selfValid fieldValid packedValid hs ha hf hp fits
+  obtain ⟨selfModel, selfDecoded⟩ := (layout_valid_iff self).mpr selfValid
+  obtain ⟨fieldModel, fieldDecoded⟩ := (layout_valid_iff field).mpr fieldValid
+  have packedAccepted : isValid packed := by simpa using packedValid
+  obtain ⟨packedModel, packedDecoded⟩ := packedAccepted
+  apply WP.spec_mono (provided self field packed selfModel selfDecoded
+    fieldModel fieldDecoded packedModel packedDecoded size hs ha hf hp fits)
+  rintro result ⟨value, decoded, facts⟩
+  exact ⟨(layout_valid_iff result).mp ⟨value, decoded⟩, facts⟩
+
 @[contract_simps] theorem required_try_nonzero (provided : Specs.try_nonzero_spec) :
     Obligations.try_nonzero_spec := by
   intro self accepted
