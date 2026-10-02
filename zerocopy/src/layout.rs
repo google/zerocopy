@@ -2364,6 +2364,341 @@ mod padding_testutil {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::PointerMetadata as _;
+
+    /// Models the size of nested `repr(C)` structs ending in a slice.
+    ///
+    /// `leading` lists structs from outermost to innermost. Each tuple gives
+    /// the packing factor, minimum alignment, and prefix size before padding
+    /// for the final field. `trailing_elem_size` and `trailing_alignment` give
+    /// the slice element size and alignment. An empty `leading` describes the
+    /// slice itself.
+    ///
+    /// The returned closure maps a slice length to the complete size, including
+    /// padding at every nesting level. It returns `None` only on `usize`
+    /// overflow; sizes above `isize::MAX` are permitted by this arithmetic model.
+    /// Packing affects field placement, preserving each field's internal
+    /// padding, even for descriptors that Rust would reject as types.
+    ///
+    /// # Panics
+    ///
+    /// Panics if any alignment or packing factor is not a power of two, a
+    /// minimum alignment exceeds its packing factor, or the element size is
+    /// not a multiple of the slice alignment.
+    fn size_for_metadata_model(
+        leading: &[(NonZeroUsize, NonZeroUsize, usize)],
+        trailing_elem_size: usize,
+        trailing_alignment: NonZeroUsize,
+    ) -> impl Fn(usize) -> Option<usize> + '_ {
+        // Rust requires power-of-two alignments and sizes divisible by their
+        // alignment [1]; alignment modifiers also take powers of two [2].
+        //
+        // [1] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#size-and-alignment
+        // [2] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers
+        assert!(trailing_alignment.get().is_power_of_two());
+        assert_eq!(trailing_elem_size % trailing_alignment, 0);
+        for &(packed, align, _) in leading {
+            assert!(packed.get().is_power_of_two());
+            assert!(align.get().is_power_of_two());
+            // The descriptor requires its minimum to fit under the packing
+            // cap. It also models combinations that Rust forbids, including
+            // simultaneous `align` and `packed` modifiers [2].
+            assert!(align <= packed);
+        }
+
+        move |elems| {
+            // A slice shares its array section's layout [3]. Array size is
+            // element size times length, with the element's alignment [4].
+            //
+            // [3] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#slice-layout
+            // [4] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#array-layout
+            let mut size = trailing_elem_size.checked_mul(elems)?;
+            let mut alignment = trailing_alignment;
+
+            // Work outward with each field's complete size, including its
+            // trailing padding: an enclosing representation "does not change
+            // the layout of the fields themselves" [5]. Thus packing a nested
+            // field preserves the padding already included in `size`.
+            //
+            // [5] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#representations
+            for &(packed, align, prefix) in leading.iter().rev() {
+                // Packing caps the field's alignment for placement [2].
+                let field_align = alignment.min(packed);
+
+                // `repr(C)` places the next field at an aligned offset [6];
+                // packing requires the least sufficient inter-field padding
+                // [2]. Here `prefix` is the end of the preceding fields.
+                //
+                // [6] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#reprc-structs
+                let offset = prefix.checked_add(util::padding_needed_for(prefix, field_align))?;
+
+                // `repr(C)` uses the greatest field alignment [6], and an
+                // explicit alignment can only raise it [2]. Here `align`
+                // summarizes the minimum from the prefix and any explicit
+                // alignment. Both operands are <= `packed`, so their maximum
+                // also respects the packing cap.
+                alignment = align.max(field_align);
+
+                // Advance past the complete field, then round to the struct's
+                // alignment, following `repr(C)`'s final sizing steps [6].
+                size = offset.checked_add(size)?;
+                size = size.checked_add(util::padding_needed_for(size, alignment))?;
+            }
+            // Each enclosing size is at least its field's size. Thus any
+            // checked multiplication or addition that overflowed above would
+            // also make the final size unrepresentable in `usize`.
+            Some(size)
+        }
+    }
+
+    /// Computes [`size_for_metadata_model`]'s size function using `DstLayout`.
+    ///
+    /// Layout construction uses [`DstLayout::for_repr_c_struct`], and the
+    /// returned closure uses [`crate::PointerMetadata::size_for_metadata`].
+    ///
+    /// # Panics
+    ///
+    /// Panics for invalid descriptors as in [`size_for_metadata_model`], or if
+    /// `DstLayout` cannot construct the layout. This includes static size
+    /// overflow and, in debug builds, alignments or packing factors above
+    /// [`DstLayout::CURRENT_MAX_ALIGN`].
+    fn size_for_metadata_via_dst_layout(
+        leading: &[(NonZeroUsize, NonZeroUsize, usize)],
+        trailing_elem_size: usize,
+        trailing_alignment: NonZeroUsize,
+    ) -> impl Fn(usize) -> Option<usize> + '_ {
+        assert_eq!(trailing_elem_size % trailing_alignment, 0);
+        let mut layout = DstLayout {
+            align: trailing_alignment,
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                offset: 0,
+                elem_size: trailing_elem_size,
+                size_base: 0,
+                size_rounding_align_and_phase: RoundingAlignAndPhase::new(trailing_alignment, 0),
+            }),
+            statically_shallow_unpadded: true,
+        };
+        for &(packed, align, prefix) in leading.iter().rev() {
+            assert!(align <= packed);
+            let prefix = DstLayout {
+                align: DstLayout::MIN_ALIGN,
+                size_info: SizeInfo::Sized { size: prefix },
+                statically_shallow_unpadded: true,
+            };
+            layout = DstLayout::for_repr_c_struct(Some(align), Some(packed), &[prefix, layout]);
+        }
+        move |elems: usize| elems.size_for_metadata(layout)
+    }
+
+    #[test]
+    fn test_model_via_dst_layout() {
+        let nz = |n| NonZeroUsize::new(n).unwrap();
+        let cases: &[&[_]] = &[
+            &[],
+            &[(nz(8), nz(1), 3)],
+            &[(nz(8), nz(8), 3)],
+            &[(nz(2), nz(1), 1), (nz(8), nz(8), 3)],
+            &[(nz(8), nz(8), 1), (nz(2), nz(1), 3), (nz(8), nz(8), 5)],
+            &[(nz(1), nz(1), 1), (nz(2), nz(2), 3), (nz(8), nz(8), 5)],
+        ];
+        for &leading in cases {
+            for &(elem_size, alignment) in &[(0, 1), (0, 8), (1, 1), (2, 2), (3, 1), (8, 8)] {
+                let alignment = nz(alignment);
+                let expected = size_for_metadata_model(leading, elem_size, alignment);
+                let actual = size_for_metadata_via_dst_layout(leading, elem_size, alignment);
+                let max_elems = usize::MAX / elem_size.max(1);
+                for elems in (0..32).chain([
+                    max_elems - 1,
+                    max_elems,
+                    max_elems.saturating_add(1),
+                    usize::MAX,
+                ]) {
+                    assert_eq!(
+                        actual(elems),
+                        expected(elems),
+                        "leading: {:?}, trailing: {:?}, elems: {}",
+                        leading,
+                        (elem_size, alignment),
+                        elems,
+                    );
+                }
+            }
+        }
+
+        for prefix in [usize::MAX - 1, usize::MAX] {
+            let leading = [(nz(1), nz(1), prefix)];
+            let expected = size_for_metadata_model(&leading, 1, nz(1));
+            let actual = size_for_metadata_via_dst_layout(&leading, 1, nz(1));
+            for elems in [0, 1, 2] {
+                assert_eq!(actual(elems), expected(elems));
+            }
+        }
+    }
+
+    // This exercises arithmetic rather than unsafe operations; keep the
+    // smaller comparison test enabled under Miri instead of this large search.
+    #[test]
+    #[cfg_attr(miri, ignore)]
+    fn test_model_via_dst_layout_combinations() {
+        use rand::{rngs::SmallRng, Rng as _, SeedableRng as _};
+
+        fn check(
+            leading: &[(NonZeroUsize, NonZeroUsize, usize)],
+            trailing_elem_size: usize,
+            trailing_alignment: NonZeroUsize,
+        ) {
+            let expected = size_for_metadata_model(leading, trailing_elem_size, trailing_alignment);
+            assert!(
+                expected(0).is_some(),
+                "unrepresentable test layout: {:?}, {:?}",
+                leading,
+                (trailing_elem_size, trailing_alignment)
+            );
+            let actual = std::panic::catch_unwind(|| {
+                size_for_metadata_via_dst_layout(leading, trailing_elem_size, trailing_alignment)
+            })
+            .unwrap_or_else(|_| {
+                panic!(
+                    "DstLayout rejected leading: {:?}, trailing: {:?}",
+                    leading,
+                    (trailing_elem_size, trailing_alignment)
+                )
+            });
+            let compare = |elems| {
+                let expected = expected(elems);
+                assert_eq!(
+                    actual(elems),
+                    expected,
+                    "leading: {:?}, trailing: {:?}, elems: {}",
+                    leading,
+                    (trailing_elem_size, trailing_alignment),
+                    elems,
+                );
+                expected
+            };
+
+            let first_sixteen = 0..=16;
+            let pointer_width = (0..POINTER_WIDTH_BITS).step_by(4).flat_map(|shift| {
+                let elems = 1usize << shift;
+                [elems - 1, elems, elems + 1]
+            });
+            let last_two = (usize::MAX - 1)..=usize::MAX;
+            let elemses = first_sixteen.chain(pointer_width).chain(last_two);
+            for elems in elemses {
+                let _ = compare(elems);
+            }
+
+            // The modeled size is nondecreasing. Find the last fitting length,
+            // comparing every probe, then check both sides of that boundary.
+            // Zero-sized elements can remain representable at usize::MAX.
+            let (mut low, mut high) = (0, usize::MAX);
+            while low < high {
+                let distance = high - low;
+                let mid = low + distance / 2 + distance % 2;
+                if compare(mid).is_some() {
+                    low = mid;
+                } else {
+                    high = mid - 1;
+                }
+            }
+            assert!(compare(low).is_some());
+            if let Some(previous) = low.checked_sub(1) {
+                assert!(compare(previous).is_some());
+            }
+            if let Some(next) = low.checked_add(1) {
+                assert_eq!(compare(next), None);
+            }
+        }
+
+        let nz = |n| NonZeroUsize::new(n).unwrap();
+        let check_small_tails = |leading: &[_]| {
+            for alignment in [1, 2, 4, 8] {
+                for multiple in [0, 1, 2, 3, 7] {
+                    check(leading, multiple * alignment, nz(alignment));
+                }
+            }
+        };
+        let mut fragments = Vec::new();
+        for packed in [1, 2, 4] {
+            for align in [1, 2, 4].iter().copied().filter(|&align| align <= packed) {
+                for prefix in 0..=4 {
+                    fragments.push((nz(packed), nz(align), prefix));
+                }
+            }
+        }
+
+        // Exhaust every combination in this small domain at depths 0, 1, 2.
+        check_small_tails(&[]);
+        for &outer in &fragments {
+            check_small_tails(&[outer]);
+            for &inner in &fragments {
+                check_small_tails(&[outer, inner]);
+            }
+        }
+
+        let mut rng = SmallRng::seed_from_u64(0);
+        for depth in (0usize..=128).chain([256, 512, 1024]) {
+            // A small prefix adds at most 4 * max_align bytes per layer.
+            // Reserve half of usize::MAX for a large outermost prefix so
+            // construction remains representable even at the largest depth.
+            let align_limit =
+                DstLayout::CURRENT_MAX_ALIGN.get().min(usize::MAX / (8 * depth.max(1)));
+            let alignments: Vec<_> = (0..POINTER_WIDTH_BITS)
+                .map(|shift| 1usize << shift)
+                .take_while(|&align| align <= align_limit)
+                .collect();
+            let last = alignments.len() - 1;
+            let max_align = alignments[last];
+            for case in 0..40 {
+                let mut leading = Vec::with_capacity(depth);
+                for level in 0..depth {
+                    // Mix arbitrary modifiers, increasing and decreasing
+                    // alignments, alternating packing, and fully packed trees.
+                    let (packed, align) = match case / 8 {
+                        0 => {
+                            let packed = rng.gen_range(0..=last);
+                            (packed, rng.gen_range(0..=packed))
+                        }
+                        1 => (last, level % alignments.len()),
+                        2 => (last, last - level % alignments.len()),
+                        3 => {
+                            let index = if level % 2 == 0 { 0 } else { last };
+                            (index, index)
+                        }
+                        _ => (0, 0),
+                    };
+                    let (packed, align) = (alignments[packed], alignments[align]);
+                    let prefix = if level == 0 && case % 4 == 3 {
+                        usize::MAX / 2 + rng.gen_range(0..=2) - 1
+                    } else {
+                        match rng.gen_range(0..8) {
+                            0 => 0,
+                            1 => 1,
+                            2 => align - 1,
+                            3 => align,
+                            4 => align + 1,
+                            5 => packed - 1,
+                            6 => packed + 1,
+                            _ => rng.gen_range(0..=2 * max_align),
+                        }
+                    };
+                    leading.push((nz(packed), nz(align), prefix));
+                }
+                let alignment = alignments[rng.gen_range(0..=last)];
+                let elem_size = match case % 8 {
+                    0 => 0,
+                    1 => alignment,
+                    2 => 2 * alignment,
+                    3 => 3 * alignment,
+                    4 => 7 * alignment,
+                    5 => 15 * alignment,
+                    6 => (usize::MAX / 2 / alignment) * alignment,
+                    _ => (usize::MAX / alignment) * alignment,
+                };
+                check(&leading, elem_size, nz(alignment));
+            }
+        }
+    }
 
     const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_ALIGN: NonZeroUsize = match NonZeroUsize::new(8) {
         Some(align) => align,
