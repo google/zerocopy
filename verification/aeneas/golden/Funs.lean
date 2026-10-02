@@ -72,7 +72,7 @@ def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
   i * 8#usize
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
-    Source: 'src/layout.rs', lines 88:4-108:5 -/
+    Source: 'src/layout.rs', lines 88:4-107:5 -/
 def layout.RoundingAlignAndPhase.new
   (align : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
@@ -93,7 +93,7 @@ def layout.RoundingAlignAndPhase.new
   | some encoded1 => ok { _0 := encoded1 }
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
-    Source: 'src/layout.rs', lines 125:4-153:5 -/
+    Source: 'src/layout.rs', lines 124:4-151:5 -/
 def layout.RoundingAlignAndPhase.components
   (self : layout.RoundingAlignAndPhase) :
   Result ((core.num.nonzero.NonZero Std.Usize
@@ -121,7 +121,7 @@ def layout.RoundingAlignAndPhase.components
     ok (align1, phase)
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
-    Source: 'src/layout.rs', lines 166:4-176:5 -/
+    Source: 'src/layout.rs', lines 164:4-173:5 -/
 def layout.RoundingAlignAndPhase.align
   (self : layout.RoundingAlignAndPhase) :
   Result (core.num.nonzero.NonZero Std.Usize
@@ -148,7 +148,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<E>}::size_offset]:
-    Source: 'src/layout.rs', lines 256:4-270:5 -/
+    Source: 'src/layout.rs', lines 253:4-266:5 -/
 def layout.TrailingSliceLayout.size_offset
   {E : Type} (self : layout.TrailingSliceLayout E) : Result Std.Usize := do
   let (size_align, size_phase) ←
@@ -158,7 +158,7 @@ def layout.TrailingSliceLayout.size_offset
   ok (aligned_base ||| size_phase)
 
 /-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<E>}::max_trailing_bytes]:
-    Source: 'src/layout.rs', lines 293:4-383:5 -/
+    Source: 'src/layout.rs', lines 289:4-378:5 -/
 def layout.TrailingSliceLayout.max_trailing_bytes
   {E : Type} (self : layout.TrailingSliceLayout E)
   (available_bytes : Std.Usize) :
@@ -203,7 +203,7 @@ def util.padding_needed_for
   ok (i2 &&& mask)
 
 /-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::padding_for_elems]:
-    Source: 'src/layout.rs', lines 408:4-464:5 -/
+    Source: 'src/layout.rs', lines 403:4-458:5 -/
 def layout.TrailingSliceLayoutUsize.padding_for_elems
   (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
   Result Std.Usize
@@ -225,7 +225,7 @@ def layout.TrailingSliceLayoutUsize.padding_for_elems
   ok (core.num.Usize.wrapping_add i3 rounding_padding)
 
 /-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::size_for_elems]:
-    Source: 'src/layout.rs', lines 481:4-546:5 -/
+    Source: 'src/layout.rs', lines 475:4-539:5 -/
 def layout.TrailingSliceLayoutUsize.size_for_elems
   (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
   Result (Option Std.Usize)
@@ -249,7 +249,7 @@ def layout.TrailingSliceLayoutUsize.size_for_elems
         ok (some size)
 
 /-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::has_same_size_sequence]:
-    Source: 'src/layout.rs', lines 570:4-648:5 -/
+    Source: 'src/layout.rs', lines 563:4-640:5 -/
 def layout.TrailingSliceLayoutUsize.has_same_size_sequence
   (self : layout.TrailingSliceLayout Std.Usize)
   (other : layout.TrailingSliceLayout Std.Usize) :
@@ -296,7 +296,7 @@ def layout.TrailingSliceLayoutUsize.has_same_size_sequence
         else ok false
 
 /-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::advance]:
-    Source: 'src/layout.rs', lines 692:4-789:5 -/
+    Source: 'src/layout.rs', lines 684:4-780:5 -/
 def layout.TrailingSliceLayoutUsize.advance
   (self : layout.TrailingSliceLayout Std.Usize) (bytes : Std.Usize)
   (elem_size : Std.Usize) :
@@ -324,7 +324,7 @@ def layout.TrailingSliceLayoutUsize.advance
       { self with elem_size, size_base, size_rounding_align_and_phase := raap })
 
 /-- [zerocopy::layout::{zerocopy::layout::SizeInfo<usize>}::try_to_nonzero_elem_size]:
-    Source: 'src/layout.rs', lines 823:4-852:5 -/
+    Source: 'src/layout.rs', lines 814:4-842:5 -/
 def layout.SizeInfoUsize.try_to_nonzero_elem_size
   (self : layout.SizeInfo Std.Usize) :
   Result (Option (layout.SizeInfo (core.num.nonzero.NonZero Std.Usize
@@ -349,7 +349,7 @@ def layout.SizeInfoUsize.try_to_nonzero_elem_size
         }))
 
 /-- [zerocopy::layout::max_elems_for_bytes]:
-    Source: 'src/layout.rs', lines 880:0-896:1 -/
+    Source: 'src/layout.rs', lines 870:0-885:1 -/
 def layout.max_elems_for_bytes
   (bytes : Std.Usize)
   (elem_size : core.num.nonzero.NonZero Std.Usize
@@ -366,7 +366,7 @@ def layout.max_elems_for_bytes
   | some used => ok (elems, used)
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::MIN_ALIGN]
-    Source: 'src/layout.rs', lines 916:4-919:6 -/
+    Source: 'src/layout.rs', lines 905:4-908:6 -/
 @[global_simps, irreducible]
 def layout.DstLayout.MIN_ALIGN
   :
@@ -381,7 +381,7 @@ def layout.DstLayout.MIN_ALIGN
   | some min_align => ok min_align
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::THEORETICAL_MAX_ALIGN]
-    Source: 'src/layout.rs', lines 926:4-930:10 -/
+    Source: 'src/layout.rs', lines 915:4-919:10 -/
 @[global_simps, irreducible]
 def layout.DstLayout.THEORETICAL_MAX_ALIGN
   :
@@ -399,7 +399,7 @@ def layout.DstLayout.THEORETICAL_MAX_ALIGN
   | some max_align => ok max_align
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::CURRENT_MAX_ALIGN]
-    Source: 'src/layout.rs', lines 940:4-943:6 -/
+    Source: 'src/layout.rs', lines 929:4-932:6 -/
 @[global_simps, irreducible]
 def layout.DstLayout.CURRENT_MAX_ALIGN
   :
@@ -414,14 +414,20 @@ def layout.DstLayout.CURRENT_MAX_ALIGN
   | none => fail panic
   | some max_align => ok max_align
 
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::MAX_SIZE]
+    Source: 'src/layout.rs', lines 951:4-951:59 -/
+@[global_simps, irreducible]
+def layout.DstLayout.MAX_SIZE : Result Std.Usize :=
+  ok (IScalar.hcast .Usize core.num.Isize.MAX)
+
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::assume_shallow_unpadded]:
-    Source: 'src/layout.rs', lines 985:4-995:5 -/
+    Source: 'src/layout.rs', lines 974:4-983:5 -/
 def layout.DstLayout.assume_shallow_unpadded
   (self : layout.DstLayout) : Result layout.DstLayout := do
   ok { self with statically_shallow_unpadded := true }
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::new_zst]:
-    Source: 'src/layout.rs', lines 1024:4-1045:5
+    Source: 'src/layout.rs', lines 1012:4-1032:5
     Visibility: public -/
 def layout.DstLayout.new_zst
   (repr_align : Option (core.num.nonzero.NonZero Std.Usize
@@ -445,7 +451,7 @@ def layout.DstLayout.new_zst
     }
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_type]:
-    Source: 'src/layout.rs', lines 1069:4-1095:5
+    Source: 'src/layout.rs', lines 1056:4-1081:5
     Visibility: public -/
 def layout.DstLayout.for_type (T : Type) : Result layout.DstLayout := do
   let i ← core.mem.align_of T
@@ -464,7 +470,7 @@ def layout.DstLayout.for_type (T : Type) : Result layout.DstLayout := do
       }
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_unpadded_type]:
-    Source: 'src/layout.rs', lines 1125:4-1140:5
+    Source: 'src/layout.rs', lines 1111:4-1125:5
     Visibility: public -/
 def layout.DstLayout.for_unpadded_type
   (T : Type) : Result layout.DstLayout := do
@@ -472,7 +478,7 @@ def layout.DstLayout.for_unpadded_type
   layout.DstLayout.assume_shallow_unpadded dl
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_slice]:
-    Source: 'src/layout.rs', lines 1165:4-1202:5 -/
+    Source: 'src/layout.rs', lines 1150:4-1186:5 -/
 def layout.DstLayout.for_slice (T : Type) : Result layout.DstLayout := do
   let i ← core.mem.align_of T
   let o ←
@@ -496,6 +502,111 @@ def layout.DstLayout.for_slice (T : Type) : Result layout.DstLayout := do
             }),
         statically_shallow_unpadded := true
       }
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
+    Source: 'src/layout.rs', lines 1526:4-1616:5
+    Visibility: public -/
+def layout.DstLayout.pad_to_align
+  (self : layout.DstLayout) : Result layout.DstLayout := do
+  match self.size_info with
+  | layout.SizeInfo.Sized unpadded_size =>
+    let padding ← util.padding_needed_for unpadded_size self.align
+    let o ← lift (Usize.checked_add unpadded_size padding)
+    match o with
+    | none => fail panic
+    | some size =>
+      if self.statically_shallow_unpadded
+      then
+        ok
+          {
+            self
+              with
+              size_info := (layout.SizeInfo.Sized size),
+              statically_shallow_unpadded := (padding = 0#usize)
+          }
+      else ok { self with size_info := (layout.SizeInfo.Sized size) }
+  | layout.SizeInfo.SliceDst trailing =>
+    let (size_align, size_phase) ←
+      layout.RoundingAlignAndPhase.components
+        trailing.size_rounding_align_and_phase
+    let i ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+    let i1 ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner 
+        self.align
+    if i < i1
+    then
+      let base_padding ←
+        util.padding_needed_for trailing.size_base size_align
+      let o ← lift (Usize.checked_add trailing.size_base base_padding)
+      match o with
+      | none => fail panic
+      | some base =>
+        let o1 ← lift (Usize.checked_add base size_phase)
+        match o1 with
+        | none => fail panic
+        | some bytes =>
+          let i2 ← i1 - 1#usize
+          let phase ← lift (bytes &&& i2)
+          let size_base ←
+            util.round_down_to_next_multiple_of_alignment bytes self.align
+          let raap ← layout.RoundingAlignAndPhase.new self.align phase
+          if self.statically_shallow_unpadded
+          then
+            ok
+              {
+                self
+                  with
+                  size_info :=
+                    (layout.SizeInfo.SliceDst
+                      {
+                        trailing
+                          with
+                          size_base, size_rounding_align_and_phase := raap
+                      }),
+                  statically_shallow_unpadded := (0#usize = 0#usize)
+              }
+          else
+            ok
+              {
+                self
+                  with
+                  size_info :=
+                    (layout.SizeInfo.SliceDst
+                      {
+                        trailing
+                          with
+                          size_base, size_rounding_align_and_phase := raap
+                      })
+              }
+    else
+      let padding ← util.padding_needed_for trailing.size_base self.align
+      let o ← lift (Usize.checked_add trailing.size_base padding)
+      match o with
+      | none => fail panic
+      | some base =>
+        if self.statically_shallow_unpadded
+        then
+          ok
+            {
+              self
+                with
+                size_info :=
+                  (layout.SizeInfo.SliceDst
+                    { trailing with size_base := base }),
+                statically_shallow_unpadded := (0#usize = 0#usize)
+            }
+        else
+          ok
+            {
+              self
+                with
+                size_info :=
+                  (layout.SizeInfo.SliceDst
+                    { trailing with size_base := base })
+            }
 
 /-- [zerocopy::util::min]:
     Source: 'src/util/mod.rs', lines 303:0-309:1 -/
@@ -538,7 +649,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::extend]:
-    Source: 'src/layout.rs', lines 1335:4-1482:5
+    Source: 'src/layout.rs', lines 1332:4-1478:5
     Visibility: public -/
 def layout.DstLayout.extend
   (self : layout.DstLayout) (field : layout.DstLayout)
@@ -664,120 +775,64 @@ def layout.DstLayout.extend
                 }
   | layout.SizeInfo.SliceDst _ => fail panic
 
-/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
-    Source: 'src/layout.rs', lines 1530:4-1620:5
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_repr_c_struct]: loop body 0:
+    Source: 'src/layout.rs', lines 1253:8-1258:9
     Visibility: public -/
-def layout.DstLayout.pad_to_align
-  (self : layout.DstLayout) : Result layout.DstLayout := do
-  match self.size_info with
-  | layout.SizeInfo.Sized unpadded_size =>
-    let padding ← util.padding_needed_for unpadded_size self.align
-    let o ← lift (Usize.checked_add unpadded_size padding)
-    match o with
-    | none => fail panic
-    | some size =>
-      if self.statically_shallow_unpadded
-      then
-        ok
-          {
-            self
-              with
-              size_info := (layout.SizeInfo.Sized size),
-              statically_shallow_unpadded := (padding = 0#usize)
-          }
-      else ok { self with size_info := (layout.SizeInfo.Sized size) }
-  | layout.SizeInfo.SliceDst trailing =>
-    let (size_align, size_phase) ←
-      layout.RoundingAlignAndPhase.components
-        trailing.size_rounding_align_and_phase
-    let i ←
-      core.num.nonzero.NonZero.get
-        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
-    let i1 ←
-      core.num.nonzero.NonZero.get
-        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner 
-        self.align
-    if i < i1
-    then
-      let base_padding ←
-        util.padding_needed_for trailing.size_base size_align
-      let o ← lift (Usize.checked_add trailing.size_base base_padding)
-      match o with
-      | none => fail panic
-      | some base =>
-        let o1 ← lift (Usize.checked_add base size_phase)
-        match o1 with
-        | none => fail panic
-        | some bytes =>
-          let i2 ← i1 - 1#usize
-          let phase ← lift (bytes &&& i2)
-          let size_base ←
-            util.round_down_to_next_multiple_of_alignment bytes self.align
-          let raap ← layout.RoundingAlignAndPhase.new self.align phase
-          if self.statically_shallow_unpadded
-          then
-            ok
-              {
-                self
-                  with
-                  size_info :=
-                    (layout.SizeInfo.SliceDst
-                      {
-                        trailing
-                          with
-                          size_base, size_rounding_align_and_phase := raap
-                      }),
-                  statically_shallow_unpadded := (0#usize = 0#usize)
-              }
-          else
-            ok
-              {
-                self
-                  with
-                  size_info :=
-                    (layout.SizeInfo.SliceDst
-                      {
-                        trailing
-                          with
-                          size_base, size_rounding_align_and_phase := raap
-                      })
-              }
-    else
-      let padding ← util.padding_needed_for trailing.size_base self.align
-      let o ← lift (Usize.checked_add trailing.size_base padding)
-      match o with
-      | none => fail panic
-      | some base =>
-        if self.statically_shallow_unpadded
-        then
-          ok
-            {
-              self
-                with
-                size_info :=
-                  (layout.SizeInfo.SliceDst
-                    { trailing with size_base := base }),
-                statically_shallow_unpadded := (0#usize = 0#usize)
-            }
-        else
-          ok
-            {
-              self
-                with
-                size_info :=
-                  (layout.SizeInfo.SliceDst
-                    { trailing with size_base := base })
-            }
+@[rust_loop_body]
+def layout.DstLayout.for_repr_c_struct_loop.body
+  (repr_packed : Option (core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner)) (fields : Slice layout.DstLayout)
+  (result : layout.DstLayout) (i : Std.Usize) :
+  Result (ControlFlow (layout.DstLayout × Std.Usize) layout.DstLayout)
+  := do
+  let i1 := Slice.len fields
+  if i < i1
+  then
+    let field ← Slice.index_usize fields i
+    let result1 ← layout.DstLayout.extend result field repr_packed
+    let i2 ← i + 1#usize
+    ok (cont (result1, i2))
+  else ok (done result)
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_repr_c_struct]: loop 0:
+    Source: 'src/layout.rs', lines 1253:8-1258:9
+    Visibility: public -/
+@[rust_loop]
+def layout.DstLayout.for_repr_c_struct_loop
+  (repr_packed : Option (core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner)) (fields : Slice layout.DstLayout)
+  (result : layout.DstLayout) (i : Std.Usize) :
+  Result layout.DstLayout
+  := do
+  loop
+    (fun (result1, i1) => layout.DstLayout.for_repr_c_struct_loop.body
+      repr_packed fields result1 i1)
+    (result, i)
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_repr_c_struct]:
+    Source: 'src/layout.rs', lines 1231:4-1275:5
+    Visibility: public -/
+def layout.DstLayout.for_repr_c_struct
+  (repr_align : Option (core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner))
+  (repr_packed : Option (core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner)) (fields : Slice layout.DstLayout) :
+  Result layout.DstLayout
+  := do
+  let result ← layout.DstLayout.new_zst repr_align
+  let result1 ←
+    layout.DstLayout.for_repr_c_struct_loop repr_packed fields result 0#usize
+  layout.DstLayout.pad_to_align result1
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::requires_static_padding]:
-    Source: 'src/layout.rs', lines 1637:4-1647:5
+    Source: 'src/layout.rs', lines 1633:4-1642:5
     Visibility: public -/
 def layout.DstLayout.requires_static_padding
   (self : layout.DstLayout) : Result Bool := do
   ok (¬ self.statically_shallow_unpadded)
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::requires_dynamic_padding]:
-    Source: 'src/layout.rs', lines 1671:4-1698:5
+    Source: 'src/layout.rs', lines 1666:4-1692:5
     Visibility: public -/
 def layout.DstLayout.requires_dynamic_padding
   (self : layout.DstLayout) : Result Bool := do
@@ -802,7 +857,7 @@ def layout.DstLayout.requires_dynamic_padding
       else ok (¬ (i1 = 0#usize))
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::validate_cast_and_convert_metadata]:
-    Source: 'src/layout.rs', lines 1866:4-2014:5 -/
+    Source: 'src/layout.rs', lines 1859:4-2006:5 -/
 def layout.DstLayout.validate_cast_and_convert_metadata
   (self : layout.DstLayout) (addr : Std.Usize) (bytes_len : Std.Usize)
   (cast_type : layout.CastType) :
@@ -873,7 +928,7 @@ def layout.DstLayout.validate_cast_and_convert_metadata
             ok (core.result.Result.Ok (elems, split_at))
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::metadata_for_exact_size]:
-    Source: 'src/layout.rs', lines 1726:4-1750:5 -/
+    Source: 'src/layout.rs', lines 1720:4-1743:5 -/
 def layout.DstLayout.metadata_for_exact_size
   (self : layout.DstLayout) (size : Std.Usize) :
   Result (Option Std.Usize)
