@@ -172,6 +172,24 @@ attribute [contract_simps] option_valid_iff prod_valid_iff result_valid_iff
 @[contract_simps] theorem slice_admitted_iff {α : Type} [RustModel α] (x : Slice α) :
     (∃ value, RustModel.decode x = some value) ↔ ∀ v ∈ x.val, isValid v := slice_valid_iff x
 
+-- Normalize projections of the retained nominal providers to their named
+-- decoders before admission or decomposition. These equations fix the actual
+-- provider; they do not infer a provider from its mathematical carrier.
+@[simp, contract_simps] theorem rounding_model_decode_eq
+    (raw : layout.RoundingAlignAndPhase) :
+    RustModel.decode raw = layout.RoundingAlignAndPhase.decode raw := rfl
+
+@[simp, contract_simps] theorem trailing_model_decode_eq {E : Type} [RustModel E]
+    (raw : layout.TrailingSliceLayout E) :
+    RustModel.decode raw = layout.TrailingSliceLayout.decode E raw := rfl
+
+@[simp, contract_simps] theorem size_info_model_decode_eq {E : Type} [RustModel E]
+    (raw : layout.SizeInfo E) :
+    RustModel.decode raw = layout.SizeInfo.decode E raw := rfl
+
+@[simp, contract_simps] theorem layout_model_decode_eq (raw : layout.DstLayout) :
+    RustModel.decode raw = layout.DstLayout.decode raw := rfl
+
 -- A named decoder can also occur after a surrounding structural traversal
 -- exposes the retained dictionary. These are the same admission equivalences.
 @[contract_simps] theorem encoding_decoder_admitted_iff (raw : layout.RoundingAlignAndPhase) :
@@ -216,21 +234,4 @@ attribute [contract_simps] option_valid_iff prod_valid_iff result_valid_iff
 attribute [contract_simps] and_true true_and and_self true_implies forall_true_iff
 attribute [contract_simps] encodingValid trailingValid sizeInfoValid layoutValid
 
-@[simp, contract_simps] theorem rounding_model_decode_eq
-    (raw : layout.RoundingAlignAndPhase) :
-    RustModel.decode raw = layout.RoundingAlignAndPhase.decode raw := rfl
-
-@[simp, contract_simps] theorem trailing_model_decode_eq {E : Type} [RustModel E]
-    (raw : layout.TrailingSliceLayout E) :
-    RustModel.decode raw = layout.TrailingSliceLayout.decode E raw := rfl
-
-@[simp, contract_simps] theorem size_info_model_decode_eq {E : Type} [RustModel E]
-    (raw : layout.SizeInfo E) :
-    RustModel.decode raw = layout.SizeInfo.decode E raw := rfl
-
-@[simp, contract_simps] theorem layout_model_decode_eq (raw : layout.DstLayout) :
-    RustModel.decode raw = layout.DstLayout.decode raw := rfl
-
--- A named decoder can also occur after a surrounding structural traversal
--- exposes the retained dictionary. These are the same admission equivalences.
 end Zerocopy.Proofs
