@@ -39,4 +39,10 @@ structure core.num.nonzero.ZeroablePrimitive (Self : Type) (Self_NonZeroInner :
   markerCopyInst : core.marker.Copy Self
   innerCopyInst : core.marker.Copy Self_NonZeroInner
 
+/-- [zerocopy::layout::RoundingAlignAndPhase]
+    Source: 'src/layout/mod.rs', lines 78:0-78:54 -/
+structure layout.RoundingAlignAndPhase where
+  _0 : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+
 end Zerocopy
