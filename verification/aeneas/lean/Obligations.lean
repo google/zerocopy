@@ -125,6 +125,45 @@ def for_slice_spec : Prop :=
       t.offset = 0#usize ∧ t.elem_size = size ∧ t.size_base = 0#usize ∧
       t.size_rounding_align_and_phase.val.val = align.val
 
+def extend_spec : Prop :=
+  ∀ (self field : layout.DstLayout) (packing : Option NonZeroUsize) (size : Usize),
+    self.size_info = .Sized size →
+    (self.align.val.val.isPowerOfTwo ∧ self.align.val.val ≤ 2 ^ 29) →
+    (field.align.val.val.isPowerOfTwo ∧ field.align.val.val ≤ 2 ^ 29) →
+    (∀ a ∈ packing, a.val.val.isPowerOfTwo ∧ a.val.val ≤ 2 ^ 29) →
+    (match field.size_info with
+      | .Sized s => placement size field packing + s.val ≤ Usize.max
+      | .SliceDst t => placement size field packing + t.offset.val ≤ Usize.max ∧
+        placement size field packing + t.size_base.val ≤ Usize.max) →
+    layout.DstLayout.extend self field packing ⦃ r =>
+      r.align.val.val = Nat.max self.align.val.val (fieldAlignment field packing) ∧
+      r.statically_shallow_unpadded = (self.statically_shallow_unpadded &&
+        field.statically_shallow_unpadded && decide (size.val % fieldAlignment field packing = 0)) ∧
+      match field.size_info with
+      | .Sized s => ∃ bytes, r.size_info = .Sized bytes ∧ bytes.val = placement size field packing + s.val
+      | .SliceDst t => ∃ next, r.size_info = .SliceDst next ∧
+        next.offset.val = placement size field packing + t.offset.val ∧
+        next.size_base.val = placement size field packing + t.size_base.val ∧
+        next.elem_size = t.elem_size ∧ next.size_rounding_align_and_phase = t.size_rounding_align_and_phase ⦄
+
+def pad_to_align_spec : Prop :=
+  ∀ (self : layout.DstLayout), self.align.val.val.isPowerOfTwo →
+    (match self.size_info with
+      | .Sized bytes => LayoutMath.roundUp bytes.val self.align.val.val ≤ Usize.max
+      | .SliceDst t => 0 < t.size_rounding_align_and_phase.val.val ∧
+        (if (trailingFormula t).align < self.align.val.val then
+          LayoutMath.roundUp t.size_base.val (trailingFormula t).align + (trailingFormula t).phase ≤ Usize.max
+         else LayoutMath.roundUp t.size_base.val self.align.val.val ≤ Usize.max)) →
+    layout.DstLayout.pad_to_align self ⦃ r => r.align = self.align ∧
+      match self.size_info with
+      | .Sized bytes => ∃ padded, r.size_info = .Sized padded ∧
+        padded.val = LayoutMath.roundUp bytes.val self.align.val.val ∧
+        r.statically_shallow_unpadded =
+          (self.statically_shallow_unpadded && decide (bytes.val % self.align.val.val = 0))
+      | .SliceDst t => ∃ next, r.size_info = .SliceDst next ∧
+        trailingFormula next = (trailingFormula t).pad self.align.val.val ∧
+        r.statically_shallow_unpadded = self.statically_shallow_unpadded ⦄
+
 def requires_static_padding_spec : Prop :=
   ∀ (self : layout.DstLayout), ∃ r, layout.DstLayout.requires_static_padding self = .ok r ∧
     r = !self.statically_shallow_unpadded
