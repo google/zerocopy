@@ -128,7 +128,7 @@ impl DstLayout {
     ///   2<sup>29</sup>.
     #[cfg(not(kani))]
     #[cfg(not(target_pointer_width = "16"))]
-    pub(crate) const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 28) {
+    pub(crate) const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 29) {
         Some(max_align) => max_align,
         None => const_unreachable!(),
     };
@@ -459,18 +459,14 @@ impl DstLayout {
     }
 
     /// Like `Layout::pad_to_align`, this routine rounds the size of this layout
-    /// up to the nearest multiple of this type's alignment or `repr_packed`
-    /// (whichever is less). This method leaves DST layouts unchanged, since the
-    /// trailing padding of DSTs is computed at runtime.
-    ///
-    /// The accompanying boolean is `true` if the resulting composition of
-    /// fields necessitated static (as opposed to dynamic) padding; otherwise
-    /// `false`.
+    /// up to the nearest multiple of the alignment stored in this layout. This
+    /// method leaves DST layouts unchanged, since the trailing padding of DSTs
+    /// is computed at runtime.
     ///
     /// In order to match the layout of a `#[repr(C)]` struct, this method
     /// should be invoked after the invocations of [`DstLayout::extend`]. If
-    /// `self` corresponds to a type marked with `repr(packed(N))`, then
-    /// `repr_packed` should be set to `Some(N)`, otherwise `None`.
+    /// `self` corresponds to a packed type, its stored alignment must already
+    /// reflect the packing constraint.
     ///
     /// This method cannot be used to match the layout of a record with the
     /// default representation, as that representation is mostly unspecified.
@@ -480,7 +476,7 @@ impl DstLayout {
     /// If a (potentially hypothetical) valid `repr(C)` type begins with fields
     /// whose layout are `self` followed only by zero or more bytes of trailing
     /// padding (not included in `self`), then unsafe code may rely on
-    /// `self.pad_to_align(repr_packed)` producing a layout that correctly
+    /// `self.pad_to_align()` producing a layout that correctly
     /// encapsulates the layout of that type.
     ///
     /// We make no guarantees to the behavior of this method if `self` cannot
@@ -515,7 +511,11 @@ impl DstLayout {
         DstLayout { align: self.align, size_info, statically_shallow_unpadded }
     }
 
-    /// Produces `true` if `self` requires static padding; otherwise `false`.
+    /// Produces `true` unless this layout is known not to require static
+    /// padding.
+    ///
+    /// A `true` result is conservative: it can indicate either known padding
+    /// or that the layout analysis could not prove the absence of padding.
     #[must_use]
     #[inline(always)]
     pub const fn requires_static_padding(self) -> bool {
@@ -1105,16 +1105,28 @@ mod tests {
     use super::*;
 
     #[test]
+    #[cfg(not(target_pointer_width = "16"))]
+    fn test_current_max_align_boundary() {
+        assert_eq!(DstLayout::CURRENT_MAX_ALIGN.get(), 1 << 29);
+        let layout = DstLayout {
+            align: DstLayout::CURRENT_MAX_ALIGN,
+            size_info: SizeInfo::Sized { size: 1 },
+            statically_shallow_unpadded: true,
+        };
+        assert_eq!(layout.pad_to_align().size_info, SizeInfo::Sized { size: 1 << 29 });
+    }
+
+    #[test]
     fn test_dst_layout_for_slice() {
         let layout = DstLayout::for_slice::<u32>();
         match layout.size_info {
             SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
                 assert_eq!(offset, 0);
-                assert_eq!(elem_size, 4);
+                assert_eq!(elem_size, mem::size_of::<u32>());
             }
             _ => panic!("Expected SliceDst"),
         }
-        assert_eq!(layout.align.get(), 4);
+        assert_eq!(layout.align.get(), mem::align_of::<u32>());
     }
 
     /// Tests of when a sized `DstLayout` is extended with a sized field.
