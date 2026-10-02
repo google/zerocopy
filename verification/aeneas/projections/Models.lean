@@ -59,6 +59,15 @@ check_model_binding Zerocopy.byteorder.F32 with 1 type parameters
 derive_rust_model Zerocopy.byteorder.F64 with 1 type parameters with_physical 0
 check_model_binding Zerocopy.byteorder.F64 with 1 type parameters
 
+derive_rust_model Zerocopy.layout.composition_checks.ReferenceTail with 0 type parameters
+check_model_binding Zerocopy.layout.composition_checks.ReferenceTail with 0 type parameters
+
+derive_rust_model Zerocopy.layout.composition_checks.ReferenceSize with 0 type parameters
+check_model_binding Zerocopy.layout.composition_checks.ReferenceSize with 0 type parameters
+
+derive_rust_model Zerocopy.layout.composition_checks.ReferenceLayout with 0 type parameters
+check_model_binding Zerocopy.layout.composition_checks.ReferenceLayout with 0 type parameters
+
 derive_rust_model Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters decode self =>
   let word := self._0.value
   let align := 2 ^ Nat.log2 word

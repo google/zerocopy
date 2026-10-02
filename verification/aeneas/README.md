@@ -268,7 +268,7 @@ whole-program unsafe-code certification.
 
 ## Scope and proofs
 
-Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs), [primitive assertions](../../zerocopy/src/layout/primitive_checks.rs), [tail assertions](../../zerocopy/src/layout/tail_checks.rs).
+Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs), [primitive assertions](../../zerocopy/src/layout/primitive_checks.rs), [tail assertions](../../zerocopy/src/layout/tail_checks.rs), [composition assertions](../../zerocopy/src/layout/composition_checks.rs).
 
 Extraction starts from the function and nominal-type owners of every present
 `aeneas` fence in `zerocopy/src`, including their dependencies. The current
@@ -360,6 +360,9 @@ See [SEMANTICS.md](SEMANTICS.md) for the Rust correspondence premise.
 
 The checked trailing-size and padding contracts connect machine arithmetic
 to the independent recursive semantics.
+
+Extension and normalized padding preserve complete inner sizes, including
+padding inside packed fields.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
