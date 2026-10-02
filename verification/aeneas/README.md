@@ -93,73 +93,65 @@ zerocopy's unsafe pointer operations are sound.
 
 ## Scope and proofs
 
-Extraction starts from 26 actual functions in `zerocopy/src/util/mod.rs` and
-`zerocopy/src/layout.rs`,
-including their dependencies. The independent inventory selects the registered
-function scope. There is no copied Rust implementation.
+Extraction starts from 27 actual functions in `zerocopy/src/layout.rs` and
+`zerocopy/src/util/mod.rs`, including their dependencies. The inventory closes
+coverage over supported impls that directly name `DstLayout`,
+`TrailingSliceLayout`, `SizeInfo`, or `RoundingAlignAndPhase`; adding an
+unannotated method to such an impl fails before extraction, including under
+inactive `cfg` conditions. Extraction also checks active aliased and generated
+methods.
 
 | Functions | Checked property |
 | --- | --- |
 | `max`, `min`, padding, round-down | Exact extrema, least padding, greatest aligned predecessor, and bounds. |
 | Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
-| `DstLayout::{assume_shallow_unpadded,new_zst,for_type,for_unpadded_type,for_slice}` | Exact alignment, size-information fields, and recorded shallow-padding flags under explicit input premises. |
-| `SizeInfo::try_to_nonzero_elem_size`, `max_elems_for_bytes` | Exact zero handling, preserved representation fields, and greatest fitting element count. |
-| `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
-| Trailing size, padding, and capacity | Exact size-offset and capacity formulas, checked-size overflow, and wrapping padding; successful sizes and physical padding refine the independent recursive semantics. |
-| `DstLayout::{extend,pad_to_align}` | Exact field placement, alignment, padding flags, and normalized size formulas; outer padding preserves each field's complete inner size. |
-| Trailing advancement and size-sequence comparison | Exact byte advancement; a positive comparison establishes equal sizes for every natural metadata value. |
-| `DstLayout::requires_dynamic_padding` | Exact flag result and a mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
+| Trailing size, padding, capacity, and advancement | Independent unbounded size formulas, exact checked-size overflow, wrapping padding, and byte advancement. |
+| Size-sequence comparison | A positive answer establishes equal sizes for every natural metadata value. |
+| Zero-stride conversion and element capacity | Exact zero handling, preserved representation fields, and greatest fitting element count. |
+| `DstLayout` constructors, extension, and padding | Exact fields, field placement, alignment, flags, and normalized size formulas. The record constructor terminates for arbitrary field lists satisfying the independent construction domain. |
+| Static and dynamic padding queries | Exact flag result and the mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
 | Cast validation and exact-size metadata | Alignment/size error priority, greatest fitting metadata, exact prefix/suffix split, and rejection of unattainable sizes. |
 
-Every registered function uses total `spec`: accepted raw representations,
-supplied mathematical ghosts, and explicit requirements imply successful
-termination, successful output decoding, and the postconditions. These are
-quantified conditional contracts, not finite test inputs. Broader ordinary Raw
-lemmas retain useful representation-level domains.
+All registered specifications use total `spec`: accepted input representations
+and their stated requirements imply successful termination, a valid returned
+value, and their postconditions. Intentional panic for
+casting a zero-stride DST is checked separately. The size-sequence comparison
+is conservative: a negative result does not claim that the sequences differ.
 
-`Corollaries.lean` composes the arithmetic proofs: extrema preserve a shared
-predicate, and round-down is monotone, aligned and idempotent under its stated
-conditions.
+`LayoutMath.lean` defines an independent recursive layout semantics and proves
+normalization correct for every nesting depth and metadata value. The extracted
+contracts connect machine arithmetic and control flow to that mathematics.
+`LayoutModel.lean` supplies shared interpretation predicates, without using
+any function proof. `Corollaries.lean` connects checked sizes and physical
+padding to the recursive semantics, proves that outer padding preserves
+complete inner sizes, and connects the record constructor to direct
+per-metadata field placement.
+See [SEMANTICS.md](SEMANTICS.md) for the exact Rust premise and trust boundary.
 
-`LayoutMath.lean` supplies independent unbounded size and capacity formulas.
-
-The mathematical layout semantics proves normalization across arbitrary
-nesting and metadata values. These algebraic laws do not themselves verify
-a Rust layout method.
-
-The nominal rounding wrapper decodes to `RoundingValue`, a power-of-two
-alignment and bounded phase with machine-fit proofs. Ordinary representation
-laws establish acceptance of every positive stored word and exact reconstruction
-from that pair. Zero is rejected by the native NonZero child decoder.
-
-`LayoutModel.lean` supplies raw observations and projections of the recursively
-decoded records without function proofs. Layout models retain each field and
-the unpadded flag; realizability, alignment and fit conditions remain explicit.
-Generic size/alignment reads are external data inputs, not correctness axioms.
-See [SEMANTICS.md](SEMANTICS.md) for the Rust correspondence premise.
-
-The checked trailing-size and padding contracts connect machine arithmetic
-to the independent recursive semantics.
-
-Extension and normalized padding preserve complete inner sizes, including
-padding inside packed fields.
-
-A positive size-sequence comparison establishes equal sizes for every natural
-metadata value; a negative result does not assert that the sequences differ.
-
-Cast validation and exact metadata inference establish error priority, exact
-splits and rejection of unattainable sizes. Intentional zero-stride panic is
-checked separately.
+The constructor's requirements check field alignment, the independent prefix
+layout's overflow bounds, canonical encodings, and final padding bounds. These
+are predicates over the mathematical construction, not assumptions that the
+Rust constructor returned a correct result. Fragment operations have explicit
+fit requirements; arbitrary malformed internal layout records need not succeed.
+Generic size/alignment reads are explicit external data inputs, never axioms
+asserting layout correctness.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
-and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
-clauses preserve the extracted representation vocabulary while retaining
-automatic input and output decoding.
+and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
+raw fields. Binding `let N : Nat := n` makes addition and remainder ordinary
+unbounded mathematics. Explicit `(raw)` clauses retain the extracted scalar
+operations, whose checked arithmetic returns execution `Result` values.
+Operation-specific power-of-two alignment and overflow bounds remain explicit
+requirements.
 
-CI uses the default features, debug assertions and the runner's native target.
-Local replay also supports macOS arm64. These conditional contracts do not
-certify other extraction configurations, rustc, zerocopy's pointer safety or
-whole-crate unsafe behavior.
+CI uses the default features, debug assertions, and the runner's native
+`x86_64-unknown-linux-gnu` target. Local replay also supports macOS arm64. The
+proofs cover all registered layout methods under their stated domains;
+they do not certify other extraction configurations, a rustc implementation,
+or zerocopy's pointer safety. The explicit Rust premise connects the recursive
+semantics to an actual type's layout. Compiler regression tests challenge that
+premise independently of the Lean algebra. Aeneas currently targets a safe Rust
+subset; whole-crate unsafe verification is a separate task.
 
 ## Reproduce
 
@@ -452,6 +444,11 @@ exact-size metadata, the required outcomes spell out error priority, split
 positions, exact size, and greatest-fitting metadata independently of the
 predicates used by the inline specs. `OutcomeTests.lean` pins distinguishing
 fixed-size, suffix-alignment, and padded-size plateau examples.
+`LayoutModelDomainTests.lean` also establishes concrete admitted constructor
+inputs and exact views for an ordinary record and a nested packed DST. These
+bounded examples guard against vacuous preconditions; they do not establish
+that every Rust type meets the construction domain.
+
 `Check.lean` derives dependencies from elaborated theorem types and terms,
 following helpers across handwritten modules, including private helpers, and
 writes `proof-dependencies.json` in each proof workspace. It imports and audits all
@@ -601,7 +598,8 @@ regenerates specifications and builds both models in fresh isolated projects.
 Checked addition, subtraction, and multiplication already have upstream
 `step_pure` specifications. Use `step as ⟨result, facts⟩` and split the `Option`
 result to obtain both the exact successful value and the overflow condition.
-`SupportTests.lean` exercises all inputs, including overflow.
+`SupportTests.lean` exercises all inputs, including overflow. Layout proofs use
+these registrations directly, without naming bitvector specification lemmas.
 
 A contract may express equality through a pure mathematical view:
 
@@ -623,9 +621,12 @@ registry then lets callers use `step` without specifying the theorem manually.
 `AeneasContracts.indexed_loop_spec` specializes Aeneas's `loop.spec_decr_nat`
 to a state and `Usize` index. Supply a view, the mathematical value of each
 prefix, and a representation invariant. Each continuing body step must advance
-the index by exactly one and establish the next prefix; a completed step must
-be at the length. The adapter supplies bounds and the decreasing `length - index`
-termination measure. `SupportTests.lean` contains an independent example.
+the index by
+exactly one and establish the next prefix; a completed step must be at the
+length. The adapter supplies bounds and the decreasing `length - index`
+termination measure. The record constructor instantiates this rule; its body
+proof still establishes the arithmetic bounds needed to avoid Rust overflow.
+`SupportTests.lean` contains a smaller independent example.
 
 The specification syntax, examples, and required-contract proof terms
 participate in the axiom audit. Failure controls challenge an incorrect view,
@@ -665,7 +666,7 @@ additional generated files, changes to external-template signatures, and code
 changes fail with a normalized diff and require regeneration.
 
 CI compiles the checked-in model and the unmodified live model in separate fresh
-Lake workspaces. Both must prove all inline specifications and any checked-in composition
+Lake workspaces. Both must prove all inline specifications and composition
 corollaries and pass required checks and the complete axiom audit. The normalized
 text is used only for comparison, never compilation. This independently checks
 that accepted differences preserve the proved properties; it does not by itself
