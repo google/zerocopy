@@ -582,6 +582,397 @@ theorem new_zst_spec :
       exact Eq.mpr hb' trivial
     simp [massert, hbt, bind_ok, WP.spec_ok]
 
+theorem decoded_encoding (a p : Nat) (ha : a.isPowerOfTwo) (hp : p < a) :
+    2 ^ Nat.log2 (a + p) = a ∧ a + p - 2 ^ Nat.log2 (a + p) = p := by
+  obtain ⟨k, hk⟩ := ha
+  have hpos := Nat.two_pow_pos k
+  have hlog : Nat.log2 (a + p) = k := by
+    apply (Nat.log2_eq_iff (by omega)).mpr
+    rw [Nat.pow_succ]
+    omega
+  rw [hlog, ← hk]
+  omega
+
+theorem trailing_view (self : layout.TrailingSliceLayout Usize) (a p : Nat)
+    (ha : a.isPowerOfTwo) (hp : p < a)
+    (hn : self.size_rounding_align_and_phase._0.val.val = a + p) :
+    trailingFormula self = ⟨self.size_base.val, p, a, self.elem_size.val, self.offset.val⟩ := by
+  obtain ⟨hd, _⟩ := decoded_encoding a p ha hp
+  simp only [trailingFormula, byteFormula, hn, hd, Nat.add_sub_cancel_left]
+
+/- Preserve the inner complete-size calculation while adding outer padding. The
+proof separately tracks physical offset, normalized base/phase, alignment,
+and the unpadded flag; equal total sizes alone would be insufficient.
+-/
+theorem pad_to_align_spec :
+  ∀ (self : layout.DstLayout), ∀ (ha : (self.align.val.val.isPowerOfTwo : Prop)), ∀ (hfit : (match self.size_info with
+    | .Sized size => LayoutMath.roundUp size.val self.align.val.val ≤ Usize.max
+    | .SliceDst tail =>
+      0 < tail.size_rounding_align_and_phase._0.val.val ∧
+      (if (trailingFormula tail).align < self.align.val.val then
+        LayoutMath.roundUp tail.size_base.val (trailingFormula tail).align +
+          (trailingFormula tail).phase ≤ Usize.max
+       else LayoutMath.roundUp tail.size_base.val self.align.val.val ≤ Usize.max) : Prop)),
+    @Zerocopy.layout.DstLayout.pad_to_align self ⦃ r => canonicalLayout r ∧ r.align = self.align ∧ match self.size_info with
+    | .Sized size => ∃ padded,
+      r.size_info = .Sized padded ∧ padded.val = LayoutMath.roundUp size.val self.align.val.val ∧
+      r.statically_shallow_unpadded = (self.statically_shallow_unpadded && decide (size.val % self.align.val.val = 0))
+    | .SliceDst tail => ∃ t,
+      r.size_info = .SliceDst t ∧ trailingFormula t = (trailingFormula tail).pad self.align.val.val ∧
+      r.statically_shallow_unpadded = self.statically_shallow_unpadded ⦄ := by
+  intro self ha hfit
+  unfold layout.DstLayout.pad_to_align
+  cases hs : self.size_info with
+  | Sized size =>
+    simp only [hs] at hfit
+    step with Zerocopy.Proofs.Raw.padding_lt_alignment size self.align ha as ⟨p, _, hp, _, _, hz⟩
+    have hsum : size.val + p.val = LayoutMath.roundUp size.val self.align.val.val := by
+      rw [hp]
+      rfl
+    step as ⟨checked, hc⟩
+    cases checked with
+    | none => simp only [] at hc; omega
+    | some padded =>
+      simp only [] at hc
+      have hzero : (p = 0#usize) = (size.val % self.align.val.val = 0) := by
+        apply propext
+        simpa only [UScalar.eq_equiv, show (0#usize).val = 0 by simp] using hz
+      cases hb : self.statically_shallow_unpadded <;>
+        simp only [Bool.false_and, Bool.true_and, Bool.false_eq_true,
+          if_false, if_true, WP.spec_ok, canonicalLayout]
+      all_goals exact ⟨True.intro, by trivial, _, by trivial, by omega, by simp only [hzero]⟩
+  | SliceDst tail =>
+    simp only [hs] at hfit
+    step with encoding_components_spec _ hfit.1 as ⟨a, p, hap, hpa, henc, halign, hphase⟩
+    have hv := trailing_view tail a.val.val p.val hap hpa henc.symm
+    rw [hv] at hfit
+    dsimp only at hfit
+    simp only [core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+    split
+    · rename_i hab
+      have hbound := hfit.2
+      simp only [hab, if_true] at hbound
+      step with Zerocopy.Proofs.Raw.padding_lt_alignment tail.size_base a hap as ⟨bp, _, hbp, _, _, _⟩
+      have hb : tail.size_base.val + bp.val = LayoutMath.roundUp tail.size_base.val a.val.val := by rw [hbp]; rfl
+      step as ⟨checked, hc⟩
+      cases checked with
+      | none => simp only [] at hc; omega
+      | some base =>
+        simp only [] at hc
+        step as ⟨checked, hbytes⟩
+        cases checked with
+        | none => simp only [] at hbytes; omega
+        | some bytes =>
+          simp only [] at hbytes
+          simp only []
+          have apos := Nat.pos_of_isPowerOfTwo ha
+          step with Usize.sub_spec (show (1#usize).val ≤ self.align.val.val by simpa using (show 1 ≤ self.align.val.val by omega)) as ⟨mask, hm, _⟩
+          have hlow : (bytes &&& mask).val = bytes.val % self.align.val.val := by
+            obtain ⟨k, hk⟩ := ha
+            rw [UScalar.val_and, hm, hk, Nat.and_two_pow_sub_one_eq_mod]
+          simp only [lift, bind_ok]
+          step with round_down_spec bytes self.align ha as ⟨normalized, _, hnorm, _, _, _⟩
+          step with encoding_new_spec self.align (bytes &&& mask) ha (by rw [hlow]; exact Nat.mod_lt _ apos) as ⟨encoded, he⟩
+          have hencoded : encodingValid encoded := by
+            unfold encodingValid
+            rw [he]
+            omega
+          have hnew := trailing_view
+            ({ tail with size_base := normalized, size_rounding_align_and_phase := encoded })
+            self.align.val.val (bytes.val % self.align.val.val) ha (Nat.mod_lt _ apos)
+            (by rw [he, hlow])
+          cases hflag : self.statically_shallow_unpadded <;>
+            simp only [Bool.false_eq_true, decide_true,
+              if_true, if_false, WP.spec_ok, canonicalLayout]
+          all_goals
+            refine ⟨hencoded, by trivial, _, by trivial, ?_, by trivial⟩
+            rw [hnew, hv]
+            simp only [LayoutMath.Formula.pad, hab, if_true]
+            rw [hnorm, hbytes.2.1, hc.2.1, hb]
+    · rename_i hab
+      have hbound := hfit.2
+      simp only [hab, if_false] at hbound
+      step with Zerocopy.Proofs.Raw.padding_lt_alignment tail.size_base self.align ha as ⟨bp, _, hbp, _, _, _⟩
+      have hb : tail.size_base.val + bp.val = LayoutMath.roundUp tail.size_base.val self.align.val.val := by rw [hbp]; rfl
+      step as ⟨checked, hc⟩
+      cases checked with
+      | none => simp only [] at hc; omega
+      | some base =>
+        simp only [] at hc
+        have hnew := trailing_view ({ tail with size_base := base }) a.val.val p.val hap hpa henc.symm
+        cases hflag : self.statically_shallow_unpadded <;>
+          simp only [Bool.false_eq_true, decide_true,
+            if_true, if_false, WP.spec_ok, canonicalLayout]
+        all_goals
+          refine ⟨hfit.1, by trivial, _, by trivial, ?_, by trivial⟩
+          rw [hnew, hv]
+          simp only [LayoutMath.Formula.pad, hab, if_false]
+          rw [hc.2.1, hb]
+
+theorem current_max_align_spec :
+    layout.DstLayout.CURRENT_MAX_ALIGN
+      ⦃ a => a.val.val = 2 ^ 29 ⦄ := by
+  unfold layout.DstLayout.CURRENT_MAX_ALIGN
+  step as ⟨i, hi, _⟩
+  · have := System.Platform.numBits_eq
+    scalar_tac
+  · have hv : i.val = 2 ^ 29 := by
+      rw [Nat.shiftLeft_eq, Nat.one_mul] at hi
+      have hfit : 2 ^ 29 < Usize.size := by
+        rw [Usize.size, Usize.numBits, UScalarTy.Usize_numBits_eq]
+        rcases System.Platform.numBits_eq with h | h <;> rw [h] <;> decide
+      simpa only [Nat.mod_eq_of_lt hfit] using hi
+    have hnz : i ≠ 0#usize := by
+      intro h
+      have := congrArg UScalar.val h
+      rw [hv] at this
+      change 2 ^ 29 = 0 at this
+      omega
+    simp only [core.num.nonzero.NonZero.new, cast_eq, hnz,
+      ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+    exact hv
+
+theorem theoretical_max_align_spec :
+    layout.DstLayout.THEORETICAL_MAX_ALIGN
+      ⦃ a => a.val.val = 2 ^ (System.Platform.numBits - 1) ⦄ := by
+  unfold layout.DstLayout.THEORETICAL_MAX_ALIGN
+  step with pointer_width_spec as ⟨w, hw⟩
+  have hb : 32 ≤ System.Platform.numBits := by
+    rcases System.Platform.numBits_eq with h | h <;> omega
+  step with Usize.sub_spec (show (1#usize).val ≤ w.val by simpa only [show (1#usize).val = 1 by simp, hw] using (show 1 ≤ System.Platform.numBits by omega)) as ⟨shift, hs, _⟩
+  have hs' : shift.val = System.Platform.numBits - 1 := by
+    simpa only [hw, show (1#usize).val = 1 by simp] using hs
+  step with Usize.ShiftLeft_spec 1#usize shift (by rw [hs']; omega) as ⟨a, hav, _⟩
+  have hv : a.val = 2 ^ (System.Platform.numBits - 1) := by
+    rw [hs', Nat.shiftLeft_eq, Nat.one_mul] at hav
+    have hfit : 2 ^ (System.Platform.numBits - 1) < Usize.size := by
+      rw [Usize.size, Usize.numBits, UScalarTy.Usize_numBits_eq]
+      exact (Nat.pow_lt_pow_iff_right (by decide : 1 < 2)).mpr (by omega)
+    simpa only [Nat.mod_eq_of_lt hfit] using hav
+  have hnz : a ≠ 0#usize := by
+    intro h
+    have := congrArg UScalar.val h
+    rw [hv] at this
+    change 2 ^ (System.Platform.numBits - 1) = 0 at this
+    have := Nat.two_pow_pos (System.Platform.numBits - 1)
+    omega
+  simp only [core.num.nonzero.NonZero.new, cast_eq, hnz,
+    ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+  exact hv
+
+theorem packing_limit_spec (packed : Option NonZeroUsize)
+    (hp : ∀ a ∈ packed, a.val.val.isPowerOfTwo) :
+    (match packed with | none => layout.DstLayout.THEORETICAL_MAX_ALIGN | some a => Result.ok a)
+      ⦃ a => a.val.val = packingValue packed ∧ a.val.val.isPowerOfTwo ⦄ := by
+  cases packed with
+  | none =>
+    step with theoretical_max_align_spec as ⟨a, ha⟩
+    exact ⟨ha, ⟨_, ha⟩⟩
+  | some a =>
+    simp only [WP.spec_ok, packingValue, Option.map_some, Option.getD_some]
+    exact ⟨by trivial, hp a rfl⟩
+
+-- Aeneas shares a generated matcher with the alignment encoder. The model
+-- comparison checks that matcher; this proof deliberately names it.
+set_option linter.auxLemma false in
+
+/- Append a field at its effective packed alignment, retaining the field's
+complete inner layout. The canonical theorem then proves the concise
+mathematical extension equation and successful decoding of the returned
+record.
+-/
+theorem extend_spec :
+  ∀ (self field : layout.DstLayout) (repr_packed : Option NonZeroUsize) (size : Usize), ∀ (hs : (self.size_info = .Sized size : Prop)), ∀ (hself : (self.align.val.val.isPowerOfTwo ∧ self.align.val.val ≤ 2 ^ 29 : Prop)), ∀ (hfield : (field.align.val.val.isPowerOfTwo ∧ field.align.val.val ≤ 2 ^ 29 : Prop)), ∀ (hpacked : (∀ a ∈ repr_packed, a.val.val.isPowerOfTwo ∧ a.val.val ≤ 2 ^ 29 : Prop)), ∀ (hfit : (match field.size_info with
+    | .Sized field_size => placement size field repr_packed + field_size.val ≤ Usize.max
+    | .SliceDst t => placement size field repr_packed + t.offset.val ≤ Usize.max ∧
+      placement size field repr_packed + t.size_base.val ≤ Usize.max : Prop)),
+    @Zerocopy.layout.DstLayout.extend self field repr_packed ⦃ r => r.align.val.val = max self.align.val.val (fieldAlignment field repr_packed) ∧
+    r.statically_shallow_unpadded = (self.statically_shallow_unpadded &&
+      field.statically_shallow_unpadded && decide (size.val % fieldAlignment field repr_packed = 0)) ∧
+    match field.size_info with
+    | .Sized field_size => ∃ s, r.size_info = .Sized s ∧
+      s.val = placement size field repr_packed + field_size.val
+    | .SliceDst t => ∃ u, r.size_info = .SliceDst u ∧
+      u.offset.val = placement size field repr_packed + t.offset.val ∧
+      u.size_base.val = placement size field repr_packed + t.size_base.val ∧
+      u.elem_size = t.elem_size ∧
+      u.size_rounding_align_and_phase = t.size_rounding_align_and_phase ⦄ := by
+  intro self field packed size hs hself hfield hpacked hfit
+  unfold layout.DstLayout.extend
+  step with packing_limit_spec packed (fun a h => (hpacked a h).1) as ⟨limit, hl, hlpow⟩
+  simp only [core.num.nonzero.NonZero.get, bind_ok]
+  step as ⟨b, hb⟩
+  have hbt : b = true := by
+    have hb' : (b = true) = True := by simpa only [hlpow] using hb
+    exact Eq.mpr hb' trivial
+  simp only [massert, hbt, if_true, bind_ok]
+  step with current_max_align_spec as ⟨maximum, hmaximum⟩
+  have hsa : self.align.val ≤ maximum.val := (UScalar.le_equiv _ _).mpr (by omega)
+  have hfa : field.align.val ≤ maximum.val := (UScalar.le_equiv _ _).mpr (by omega)
+  simp only [hsa, hfa, if_true, bind_ok]
+  have hpackcheck : layout.RoundingAlignAndPhase.new.match_1
+    (fun _ => Result (Option NonZeroUsize)) packed (fun _ => Result.ok none)
+    (fun a => do
+      if a.val ≤ maximum.val then Result.ok () else Result.fail .assertionFailure
+      Result.ok packed) = Result.ok packed := by
+    cases packed with
+    | none => rfl
+    | some a =>
+      have ha : a.val ≤ maximum.val := (UScalar.le_equiv _ _).mpr (by
+        have := (hpacked a rfl).2
+        omega)
+      simp only [ha, if_true, bind_ok]
+  rw [hpackcheck]
+  simp only [bind_ok]
+  step with min_spec field.align limit as ⟨fa, hmin, hchoice, _, _⟩
+  have hfp : fa.val.val.isPowerOfTwo := by
+    rcases hchoice with h | h
+    · simpa only [h] using hfield.1
+    · simpa only [h] using hlpow
+  have hfv : fa.val.val = fieldAlignment field packed := by
+    rw [hmin, Arithmetic.coe_min, hl]
+    rfl
+  step with max_spec self.align fa as ⟨align, hmax, _, _, _⟩
+  have halign : align.val.val = max self.align.val.val (fieldAlignment field packed) := by
+    rw [hmax, Arithmetic.coe_max, hfv]
+  rw [hs]
+  step with Zerocopy.Proofs.Raw.padding_lt_alignment size fa hfp as ⟨pad, _, hpad, _, _, hzero⟩
+  have ho : size.val + pad.val = placement size field packed := by
+    rw [hpad, hfv]
+    rfl
+  have hzero' : (pad = 0#usize) = (size.val % fieldAlignment field packed = 0) := by
+    apply propext
+    simpa only [UScalar.eq_equiv, show (0#usize).val = 0 by simp, hfv] using hzero
+  step as ⟨checked, hsum⟩
+  cases checked with
+  | none =>
+    simp only [] at hsum
+    cases hf : field.size_info <;> simp only [hf] at hfit <;> omega
+  | some offset =>
+    simp only [] at hsum
+    have hoff : offset.val = placement size field packed := by omega
+    cases hf : field.size_info with
+    | Sized field_size =>
+      simp only [hf] at hfit
+      step as ⟨checked, hsized⟩
+      cases checked with
+      | none => simp only [] at hsized; omega
+      | some total =>
+        simp only [] at hsized
+        simp only []
+        cases self.statically_shallow_unpadded <;> cases field.statically_shallow_unpadded <;>
+          simp only [Bool.false_eq_true, Bool.false_and, Bool.true_and,
+            if_false, if_true, WP.spec_ok, hzero']
+        all_goals
+          exact ⟨halign, by trivial, total, by trivial, by omega⟩
+    | SliceDst tail =>
+      simp only [hf] at hfit
+      step as ⟨checked, hoffset⟩
+      cases checked with
+      | none => simp only [] at hoffset; omega
+      | some physical =>
+        simp only [] at hoffset
+        simp only []
+        step as ⟨checked, hbase⟩
+        cases checked with
+        | none => simp only [] at hbase; omega
+        | some base =>
+          simp only [] at hbase
+          simp only []
+          cases self.statically_shallow_unpadded <;> cases field.statically_shallow_unpadded <;>
+            simp only [Bool.false_eq_true, Bool.false_and, Bool.true_and,
+              if_false, if_true, WP.spec_ok, hzero']
+          all_goals
+            exact ⟨halign, by trivial, { tail with offset := physical, size_base := base },
+              by trivial, by dsimp only; omega, by dsimp only; omega, rfl, rfl⟩
+
+theorem power_dvd_of_le (a b : Nat) (ha : a.isPowerOfTwo) (hb : b.isPowerOfTwo)
+    (hle : a ≤ b) : a ∣ b := by
+  obtain ⟨i, hi⟩ := ha
+  obtain ⟨j, hj⟩ := hb
+  rw [hi, hj] at hle ⊢
+  exact Nat.pow_dvd_pow 2 ((Nat.pow_le_pow_iff_right (by decide : 1 < 2)).mp hle)
+
+/- Lift detailed raw extension facts to the independent fragment operation. This
+supplies the constructor loop's mathematical state transition.
+-/
+theorem extend_value_spec (self field : layout.DstLayout) (packed : Option NonZeroUsize)
+    (hself : alignmentDomain self.align.val.val)
+    (hfield : alignmentDomain field.align.val.val)
+    (hpacked : ∀ a ∈ packed, alignmentDomain a.val.val)
+    (hcanonical : canonicalLayout field)
+    (hfit : (layoutValue self).extendFits (layoutValue field) (packingValue packed) Usize.max) :
+    layout.DstLayout.extend self field packed
+      ⦃ r => layoutValue r = (layoutValue self).extend (layoutValue field) (packingValue packed) ∧ canonicalLayout r ⦄ := by
+  cases hs : self.size_info with
+  | SliceDst tail => simp [layoutValue, hs, LayoutMath.LayoutValue.extendFits] at hfit
+  | Sized size =>
+    have hf : match field.size_info with
+      | .Sized s => placement size field packed + s.val ≤ Usize.max
+      | .SliceDst t => placement size field packed + t.offset.val ≤ Usize.max ∧
+        placement size field packed + t.size_base.val ≤ Usize.max := by
+      cases hfs : field.size_info <;>
+        simpa only [layoutValue, hs, hfs, LayoutMath.LayoutValue.extendFits,
+          placement, fieldAlignment, trailingFormula, byteFormula] using hfit
+    apply WP.spec_mono (extend_spec self field packed size hs hself hfield hpacked hf)
+    rintro r ⟨ha, hu, hr⟩
+    cases hfs : field.size_info with
+    | Sized s =>
+      simp only [hfs] at hr
+      obtain ⟨bytes, hb, hv⟩ := hr
+      simp only [layoutValue, hb, hs, hfs, LayoutMath.LayoutValue.extend,
+        canonicalLayout, ha, hu, hv, placement, fieldAlignment]
+      exact ⟨rfl, trivial⟩
+    | SliceDst t =>
+      simp only [hfs] at hr
+      simp only [canonicalLayout, hfs] at hcanonical
+      obtain ⟨u, hsi, ho, hb, he, hc⟩ := hr
+      simp only [layoutValue, hsi, hs, hfs, LayoutMath.LayoutValue.extend,
+        canonicalLayout, ha, hu, trailingFormula, byteFormula, ho, hb, he, hc,
+        placement, fieldAlignment]
+      exact ⟨rfl, hcanonical⟩
+
+attribute [step] extend_value_spec
+
+/- Lift detailed raw padding facts to the fragment operation used after the
+loop.
+-/
+theorem pad_value_spec (self : layout.DstLayout)
+    (ha : self.align.val.val.isPowerOfTwo)
+    (hc : canonicalLayout self)
+    (hf : (layoutValue self).padFits Usize.max) :
+    layout.DstLayout.pad_to_align self
+      ⦃ r => layoutValue r = (layoutValue self).pad ∧ canonicalLayout r ⦄ := by
+  have hfit : match self.size_info with
+    | .Sized s => LayoutMath.roundUp s.val self.align.val.val ≤ Usize.max
+    | .SliceDst t => 0 < t.size_rounding_align_and_phase._0.val.val ∧
+      (if (trailingFormula t).align < self.align.val.val then
+        LayoutMath.roundUp t.size_base.val (trailingFormula t).align +
+          (trailingFormula t).phase ≤ Usize.max
+       else LayoutMath.roundUp t.size_base.val self.align.val.val ≤ Usize.max) := by
+    cases hs : self.size_info with
+    | Sized s => simpa only [layoutValue, hs, LayoutMath.LayoutValue.padFits] using hf
+    | SliceDst t =>
+      simp only [canonicalLayout, hs] at hc
+      simp only []
+      refine ⟨hc, ?_⟩
+      simpa only [layoutValue, hs, LayoutMath.LayoutValue.padFits,
+        trailingFormula, byteFormula] using hf
+  apply WP.spec_mono (pad_to_align_spec self ha hfit)
+  rintro r ⟨hcanonical, hr, hp⟩
+  refine ⟨?_, hcanonical⟩
+  cases hs : self.size_info with
+  | Sized s =>
+    simp only [hs] at hp
+    obtain ⟨p, hsi, hv, hu⟩ := hp
+    simp only [layoutValue, hsi, hs, LayoutMath.LayoutValue.pad, hr, hv, hu]
+  | SliceDst t =>
+    simp only [hs] at hp
+    obtain ⟨u, hsi, hv, hu⟩ := hp
+    simp only [layoutValue, hsi, hs, LayoutMath.LayoutValue.pad, hr, hv, hu]
+
+attribute [step] pad_value_spec
+
 end Zerocopy.Proofs.Raw
 
 namespace Zerocopy.Proofs
@@ -834,6 +1225,103 @@ theorem new_zst_spec : Zerocopy.Specs.new_zst_spec := by
   | some a => simpa only [Option.getD_some, and_true] using Nat.pos_of_isPowerOfTwo (hp a rfl)
 register_spec_step new_zst_spec
 
+/- Append a field at its effective packed alignment, retaining the field's
+complete inner layout. The canonical theorem then proves the concise
+mathematical extension equation and successful decoding of the returned
+record.
+-/
+theorem extend_spec : Zerocopy.Specs.extend_spec := by
+  intro self field packed value hvalue fieldValue hfieldValue packing hpacking
+    hself hfield hpacked hfit
+  have hvself := (layout_decoder_admitted_iff self).mp ⟨value, hvalue⟩
+  have hvfield := (layout_decoder_admitted_iff field).mp ⟨fieldValue, hfieldValue⟩
+  have hview := layoutValue_decode self value hvalue
+  have hfview := layoutValue_decode field fieldValue hfieldValue
+  have hpview := packingValue_decode packed packing hpacking
+  have halign : value.align.value = self.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align hview
+  have hfalign : fieldValue.align.value = field.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align hfview
+  have rawFits : (layoutValue self).extendFits (layoutValue field)
+      (packingValue packed) Usize.max := by
+    simpa only [hview, hfview, hpview] using hfit
+  have rawPacked : ∀ a ∈ packed, alignmentDomain a.val.val :=
+    (packing_alignment_decode packed packing hpacking).mp hpacked
+  have canonical : canonicalLayout field := by
+    cases hs : field.size_info with
+    | Sized _ => simp only [canonicalLayout, hs]
+    | SliceDst _ =>
+      simpa only [sizeInfoValid, trailingValid, encodingValid,
+        scalar_valid_iff, true_and, canonicalLayout, hs] using hvfield.2
+  apply WP.spec_mono (Raw.extend_value_spec self field packed
+    (by simpa only [alignmentDomain, halign] using hself)
+    (by simpa only [alignmentDomain, hfalign] using hfield) rawPacked canonical rawFits)
+  rintro result ⟨facts, hc⟩
+  have valid : layoutValid result := by
+    refine ⟨?_, ?_⟩
+    · cases hs : self.size_info with
+      | SliceDst _ => simp only [layoutValue, hs, LayoutMath.LayoutValue.extendFits] at rawFits
+      | Sized _ =>
+        have ha := congrArg LayoutMath.LayoutValue.align facts
+        simp only [layoutValue, hs, LayoutMath.LayoutValue.extend] at ha
+        have positive := hvself.1
+        rw [ha]
+        omega
+    · cases hs : result.size_info with
+      | Sized _ => trivial
+      | SliceDst _ =>
+        simpa only [sizeInfoValid, trailingValid, encodingValid, canonicalLayout,
+          scalar_valid_iff, true_and, hs] using hc
+  apply decoded_view_post layout.DstLayout.aeneasModel layoutValue
+    ModelViews.layoutValue layoutValue_decode
+    (fun r => r = (ModelViews.layoutValue value).extend
+      (ModelViews.layoutValue fieldValue) (ModelViews.packingValue packing)) result
+    ((layout_decoder_admitted_iff result).mpr valid)
+  simpa only [hview, hfview, hpview] using facts
+register_spec_step extend_spec
+
+/- Preserve the inner complete-size calculation while adding outer padding. The
+proof separately tracks physical offset, normalized base/phase, alignment,
+and the unpadded flag; equal total sizes alone would be insufficient.
+-/
+theorem pad_to_align_spec : Zerocopy.Specs.pad_to_align_spec := by
+  intro self value hvalue ha hfit
+  have hv := (layout_decoder_admitted_iff self).mp ⟨value, hvalue⟩
+  have hview := layoutValue_decode self value hvalue
+  have halign : value.align.value = self.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align hview
+  have fits : match self.size_info with
+      | .Sized bytes => LayoutMath.roundUp bytes.val self.align.val.val ≤ Usize.max
+      | .SliceDst tail => 0 < tail.size_rounding_align_and_phase._0.val.val ∧
+        (if (trailingFormula tail).align < self.align.val.val then
+          LayoutMath.roundUp tail.size_base.val (trailingFormula tail).align +
+            (trailingFormula tail).phase ≤ Usize.max
+         else LayoutMath.roundUp tail.size_base.val self.align.val.val ≤ Usize.max) := by
+    rw [hview] at hfit
+    cases hs : self.size_info with
+    | Sized _ => simpa only [LayoutMath.LayoutValue.padFits, layoutValue, hs] using hfit
+    | SliceDst tail =>
+      simp only [layoutValid, sizeInfoValid, trailingValid, encodingValid, scalar_valid_iff,
+        true_and, hs] at hv
+      exact ⟨hv.2, by simpa only [LayoutMath.LayoutValue.padFits, layoutValue, hs,
+        trailingFormula, byteFormula] using hfit⟩
+  apply WP.spec_mono (Raw.pad_to_align_spec self (by simpa only [halign] using ha) fits)
+  rintro result ⟨hc, facts⟩
+  have hrvalid : layoutValid result := by
+    refine ⟨?_, ?_⟩
+    · simpa only [facts.1] using hv.1
+    · cases hs : result.size_info with
+      | Sized _ => trivial
+      | SliceDst _ => simpa only [sizeInfoValid, trailingValid, encodingValid,
+          canonicalLayout, scalar_valid_iff, true_and, hs] using hc
+  apply decoded_view_post layout.DstLayout.aeneasModel layoutValue
+    ModelViews.layoutValue layoutValue_decode
+    (fun r => r = (ModelViews.layoutValue value).pad) result
+    ((layout_decoder_admitted_iff result).mpr hrvalid)
+  rw [hview]
+  exact (layout_pad_iff self result).mpr facts
+register_spec_step pad_to_align_spec
+
 /-- An arbitrary proof of the compact mathematical clause implies the separately
 maintained exact optional-size and overflow obligation. -/
 @[contract_simps] theorem size_for_elems_spec_implies_required
@@ -851,5 +1339,32 @@ maintained exact optional-size and overflow obligation. -/
   change decoded.map (fun size => (size : Nat)) = _ at hsize
   rw [optionalSize_decode result decoded hd, hformula, unsignedWord_value] at hsize
   exact hsize
+
+/-- The compact padding clause implies the independently stated admission,
+alignment, size-variant, exact payload and unpadded-flag guarantees. -/
+@[contract_simps] theorem pad_to_align_spec_implies_required
+    (self : layout.DstLayout) (run : Result layout.DstLayout)
+    (provided : Zerocopy.Specs.pad_to_align_spec_contract self run) :
+    Zerocopy.Obligations.pad_to_align_spec_contract self run := by
+  intro valid power fits
+  obtain ⟨value, hvalue⟩ := (layout_decoder_admitted_iff self).mpr valid
+  have hview := layoutValue_decode self value hvalue
+  have halign : value.align.value = self.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align hview
+  have hfit : (ModelViews.layoutValue value).padFits Usize.max := by
+    rw [hview]
+    cases hs : self.size_info with
+    | Sized _ => simpa only [LayoutMath.LayoutValue.padFits, layoutValue, hs] using fits
+    | SliceDst _ =>
+      simp only [hs] at fits
+      simpa only [LayoutMath.LayoutValue.padFits, layoutValue, hs,
+        trailingFormula, byteFormula] using fits.2
+  apply WP.spec_mono (provided value hvalue
+    (by simpa only [halign] using power) hfit)
+  rintro result ⟨decoded, hd, heq⟩
+  refine ⟨(layout_decoder_admitted_iff result).mp ⟨decoded, hd⟩, ?_⟩
+  change ModelViews.layoutValue decoded = (ModelViews.layoutValue value).pad at heq
+  rw [layoutValue_decode result decoded hd, hview] at heq
+  exact (layout_pad_iff self result).mp heq
 
 end Zerocopy.Proofs
