@@ -177,6 +177,12 @@ structure byteorder.F64 (O : Type) where
   _0 : Array Std.U8 8#usize
   _1 : core.marker.PhantomData O
 
+/-- [zerocopy::layout::RoundingAlignAndPhase]
+    Source: 'src/layout/mod.rs', lines 78:0-78:54 -/
+structure layout.RoundingAlignAndPhase where
+  _0 : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+
 /-- [zerocopy::wrappers::read_only_def::ReadOnly]
     Source: 'src/wrappers.rs', lines 630:4-634:5
     Visibility: public -/
