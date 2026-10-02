@@ -31,6 +31,39 @@ def fieldAlignment (field : layout.DstLayout) (packed : Option NonZeroUsize) : N
 def placement (size : Usize) (field : layout.DstLayout) (packed : Option NonZeroUsize) :=
   LayoutMath.roundUp size.val (fieldAlignment field packed)
 
+def castSide (cast : layout.CastType) (length : Nat) : Nat :=
+  match cast with | .Prefix => 0 | .Suffix => length
+
+def castSplit (cast : layout.CastType) (length size : Nat) : Nat :=
+  match cast with | .Prefix => size | .Suffix => length - size
+
+def castSpec (self : layout.DstLayout) (addr length : Nat) (cast : layout.CastType)
+    (result : core.result.Result (Usize × Usize) layout.MetadataCastError) : Prop :=
+  let anchor := addr + castSide cast length
+  match result with
+  | .Err .Alignment => anchor % self.align.val.val ≠ 0
+  | .Err .Size => anchor % self.align.val.val = 0 ∧
+    match self.size_info with
+    | .Sized size => length < size.val
+    | .SliceDst tail => ∀ n : Nat, length < (trailingFormula tail).size n
+  | .Ok (elems, split) => anchor % self.align.val.val = 0 ∧
+    match self.size_info with
+    | .Sized size => elems.val = 0 ∧ size.val ≤ length ∧
+      split.val = castSplit cast length size.val
+    | .SliceDst tail => (trailingFormula tail).size elems.val ≤ length ∧
+      (∀ n : Nat, (trailingFormula tail).size n ≤ length ↔ n ≤ elems.val) ∧
+      split.val = castSplit cast length ((trailingFormula tail).size elems.val)
+
+def metadataSpec (self : layout.DstLayout) (size : Nat) (r : Option Usize) : Prop :=
+  match self.size_info with
+  | .Sized _ => r = none
+  | .SliceDst tail =>
+    if tail.elem_size.val = 0 then r = none else
+    match r with
+    | none => ∀ n : Nat, (trailingFormula tail).size n ≠ size
+    | some elems => (trailingFormula tail).size elems.val = size ∧
+      (∀ n : Nat, (trailingFormula tail).size n ≤ size ↔ n ≤ elems.val)
+
 def layoutValue (self : layout.DstLayout) : LayoutMath.LayoutValue :=
   { align := self.align.val.val,
     payload := match self.size_info with
