@@ -15,6 +15,7 @@ open Zerocopy.Proofs
 abbrev NonZeroUsize :=
   core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
 
+-- Written independently of the specification expansions, using mathematical values.
 def max_spec : Prop :=
   ∀ (a b : NonZeroUsize), 0 < a.val.val → 0 < b.val.val → ∃ r, util.max a b = .ok r ∧ 0 < r.val.val ∧
     r.val.val = Nat.max a.val.val b.val.val ∧ (r = a ∨ r = b) ∧
@@ -41,6 +42,8 @@ def round_down_spec : Prop :=
       m.val % align.val.val = 0 ∧ n.val < m.val + align.val.val ∧
       (∀ q : Nat, q ≤ n.val → q % align.val.val = 0 → q ≤ m.val) ⦄
 
+-- These propositions are maintained separately from the specification macro and
+-- native proof modules. They fix successful termination and mathematical results.
 def encoding_new_spec : Prop :=
   ∀ (a : NonZeroUsize) (p : Usize), 0 < a.val.val → a.val.val.isPowerOfTwo → p.val < a.val.val →
     ∃ code, layout.RoundingAlignAndPhase.new a p = .ok code ∧ encodingValid code ∧ code._0.val.val = a.val.val + p.val
@@ -232,5 +235,18 @@ def metadata_exact_spec : Prop :=
         | none => ∀ n : Nat, (trailingFormula tail).size n ≠ size.val
         | some elems => (trailingFormula tail).size elems.val = size.val ∧
           (∀ n : Nat, (trailingFormula tail).size n ≤ size.val ↔ n ≤ elems.val)
+
+def for_repr_c_struct_spec : Prop :=
+  ∀ (a packed : Option NonZeroUsize) (fields : Slice layout.DstLayout),
+    (∀ x ∈ a, 0 < x.val.val) → (∀ x ∈ packed, 0 < x.val.val) →
+    (∀ field ∈ fields.val, layoutValid field) →
+    (∀ x ∈ a, alignmentDomain x.val.val) → (∀ x ∈ packed, alignmentDomain x.val.val) →
+    constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment a)) packed →
+    alignmentDomain (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a))
+      packed fields.val.length).align →
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a))
+      packed fields.val.length).padFits Usize.max →
+    ∃ r, layout.DstLayout.for_repr_c_struct a packed fields = .ok r ∧ layoutValid r ∧ layoutValue r =
+      (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a)) packed fields.val.length).pad
 
 end Zerocopy.Obligations

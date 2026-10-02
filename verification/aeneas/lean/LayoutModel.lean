@@ -79,6 +79,21 @@ def canonicalLayout (self : layout.DstLayout) : Prop :=
 
 def alignmentDomain (a : Nat) : Prop := a.isPowerOfTwo ∧ a ≤ 2 ^ 29
 
+def constructionPrefix (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) (i : Nat) : LayoutMath.LayoutValue :=
+  LayoutMath.LayoutValue.prefixValue (fields.val.map layoutValue) initial (packingValue packed) i
+
+def constructionDomain (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) : Prop :=
+  ∀ i (hi : i < fields.val.length),
+    alignmentDomain (constructionPrefix fields initial packed i).align ∧
+    alignmentDomain fields.val[i].align.val.val ∧ canonicalLayout fields.val[i] ∧
+    (constructionPrefix fields initial packed i).extendFits
+      (layoutValue fields.val[i]) (packingValue packed) Usize.max
+
+def initialAlignment (repr_align : Option NonZeroUsize) : Nat :=
+  (repr_align.map (fun a => a.val.val)).getD 1
+
 attribute [contract_simps] castSide castSplit castSpec metadataSpec
 
 end Zerocopy.Proofs
@@ -112,5 +127,13 @@ def layoutValue (self : layout.DstLayout.Fields) : LayoutMath.LayoutValue :=
       | .Sized size => .fixed size.value
       | .SliceDst tail => .trailing (trailingFormula tail),
     unpadded := self.statically_shallow_unpadded }
+
+def constructionPrefix (fields : List layout.DstLayout.Fields)
+    (initial : LayoutMath.LayoutValue) (packed : Option NonZeroUsizeValue)
+    (i : Nat) : LayoutMath.LayoutValue :=
+  LayoutMath.LayoutValue.prefixValue (fields.map layoutValue) initial (packingValue packed) i
+
+def initialAlignment (repr_align : Option NonZeroUsizeValue) : Nat :=
+  (repr_align.map (fun a => a.value)).getD 1
 
 end Zerocopy.ModelViews
