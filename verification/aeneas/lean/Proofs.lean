@@ -9,6 +9,7 @@ those terms. -/
 module
 public import Proofs.Contracts
 public import Proofs.Util
+public import Proofs.NestedReference
 @[expose] public section
 
 /-!
