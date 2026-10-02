@@ -248,8 +248,83 @@ def layout.TrailingSliceLayoutUsize.size_for_elems
         let size ← lift (core.num.Usize.wrapping_add trailing_end i)
         ok (some size)
 
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::has_same_size_sequence]:
+    Source: 'src/layout.rs', lines 555:4-639:5 -/
+def layout.TrailingSliceLayoutUsize.has_same_size_sequence
+  (self : layout.TrailingSliceLayout Std.Usize)
+  (other : layout.TrailingSliceLayout Std.Usize) :
+  Result Bool
+  := do
+  if self.elem_size != other.elem_size
+  then ok false
+  else
+    let o ← layout.TrailingSliceLayoutUsize.size_for_elems self 0#usize
+    let o1 ← layout.TrailingSliceLayoutUsize.size_for_elems other 0#usize
+    match o with
+    | none => ok false
+    | some self_size =>
+      match o1 with
+      | none => ok false
+      | some other_size =>
+        if self_size = other_size
+        then
+          let (self_align, self_phase) ←
+            layout.RoundingAlignAndPhase.components
+              self.size_rounding_align_and_phase
+          let (other_align, other_phase) ←
+            layout.RoundingAlignAndPhase.components
+              other.size_rounding_align_and_phase
+          let self_align1 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              self_align
+          let other_align1 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              other_align
+          let max_align ←
+            if self_align1 > other_align1
+            then ok self_align1
+            else ok other_align1
+          let i ← self.elem_size % max_align
+          if i = 0#usize
+          then ok true
+          else
+            if self_align1 != other_align1
+            then ok false
+            else ok (self_phase = other_phase)
+        else ok false
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::advance]:
+    Source: 'src/layout.rs', lines 675:4-780:5 -/
+def layout.TrailingSliceLayoutUsize.advance
+  (self : layout.TrailingSliceLayout Std.Usize) (bytes : Std.Usize)
+  (elem_size : Std.Usize) :
+  Result (Option (layout.TrailingSliceLayout Std.Usize))
+  := do
+  let (size_align, size_phase) ←
+    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+  let align_mask ← i - 1#usize
+  let i1 ← core.num.Usize.MAX - self.size_base
+  let phase_capacity ← lift (i1 ||| align_mask)
+  let max_advance ← phase_capacity - size_phase
+  if bytes > max_advance
+  then ok none
+  else
+    let advanced_phase ← size_phase + bytes
+    let normalized_phase ← lift (advanced_phase &&& align_mask)
+    let whole_bytes ←
+      util.round_down_to_next_multiple_of_alignment advanced_phase size_align
+    let size_base ← self.size_base + whole_bytes
+    let raap ← layout.RoundingAlignAndPhase.new size_align normalized_phase
+    ok (some
+      { self with elem_size, size_base, size_rounding_align_and_phase := raap })
+
 /-- [zerocopy::layout::{zerocopy::layout::SizeInfo<usize>}::try_to_nonzero_elem_size]:
-    Source: 'src/layout.rs', lines 786:4-826:5 -/
+    Source: 'src/layout.rs', lines 802:4-842:5 -/
 def layout.SizeInfoUsize.try_to_nonzero_elem_size
   (self : layout.SizeInfo Std.Usize) :
   Result (Option (layout.SizeInfo (core.num.nonzero.NonZero Std.Usize
@@ -274,7 +349,7 @@ def layout.SizeInfoUsize.try_to_nonzero_elem_size
         }))
 
 /-- [zerocopy::layout::max_elems_for_bytes]:
-    Source: 'src/layout.rs', lines 846:0-870:1 -/
+    Source: 'src/layout.rs', lines 862:0-886:1 -/
 def layout.max_elems_for_bytes
   (bytes : Std.Usize)
   (elem_size : core.num.nonzero.NonZero Std.Usize
@@ -291,7 +366,7 @@ def layout.max_elems_for_bytes
   | some used => ok (elems, used)
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::MIN_ALIGN]
-    Source: 'src/layout.rs', lines 890:4-893:6 -/
+    Source: 'src/layout.rs', lines 906:4-909:6 -/
 @[global_simps, irreducible]
 def layout.DstLayout.MIN_ALIGN
   :
@@ -306,7 +381,7 @@ def layout.DstLayout.MIN_ALIGN
   | some min_align => ok min_align
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::THEORETICAL_MAX_ALIGN]
-    Source: 'src/layout.rs', lines 900:4-904:10 -/
+    Source: 'src/layout.rs', lines 916:4-920:10 -/
 @[global_simps, irreducible]
 def layout.DstLayout.THEORETICAL_MAX_ALIGN
   :
@@ -324,7 +399,7 @@ def layout.DstLayout.THEORETICAL_MAX_ALIGN
   | some max_align => ok max_align
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::CURRENT_MAX_ALIGN]
-    Source: 'src/layout.rs', lines 914:4-917:6 -/
+    Source: 'src/layout.rs', lines 930:4-933:6 -/
 @[global_simps, irreducible]
 def layout.DstLayout.CURRENT_MAX_ALIGN
   :
@@ -340,13 +415,13 @@ def layout.DstLayout.CURRENT_MAX_ALIGN
   | some max_align => ok max_align
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::assume_shallow_unpadded]:
-    Source: 'src/layout.rs', lines 954:4-968:5 -/
+    Source: 'src/layout.rs', lines 970:4-984:5 -/
 def layout.DstLayout.assume_shallow_unpadded
   (self : layout.DstLayout) : Result layout.DstLayout := do
   ok { self with statically_shallow_unpadded := true }
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::new_zst]:
-    Source: 'src/layout.rs', lines 990:4-1017:5
+    Source: 'src/layout.rs', lines 1006:4-1033:5
     Visibility: public -/
 def layout.DstLayout.new_zst
   (repr_align : Option (core.num.nonzero.NonZero Std.Usize
@@ -370,7 +445,7 @@ def layout.DstLayout.new_zst
     }
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_type]:
-    Source: 'src/layout.rs', lines 1033:4-1066:5
+    Source: 'src/layout.rs', lines 1049:4-1082:5
     Visibility: public -/
 def layout.DstLayout.for_type (T : Type) : Result layout.DstLayout := do
   let i ← core.mem.align_of T
@@ -389,7 +464,7 @@ def layout.DstLayout.for_type (T : Type) : Result layout.DstLayout := do
       }
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_unpadded_type]:
-    Source: 'src/layout.rs', lines 1088:4-1110:5
+    Source: 'src/layout.rs', lines 1104:4-1126:5
     Visibility: public -/
 def layout.DstLayout.for_unpadded_type
   (T : Type) : Result layout.DstLayout := do
@@ -397,7 +472,7 @@ def layout.DstLayout.for_unpadded_type
   layout.DstLayout.assume_shallow_unpadded dl
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_slice]:
-    Source: 'src/layout.rs', lines 1124:4-1171:5 -/
+    Source: 'src/layout.rs', lines 1140:4-1187:5 -/
 def layout.DstLayout.for_slice (T : Type) : Result layout.DstLayout := do
   let i ← core.mem.align_of T
   let o ←
@@ -463,7 +538,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::extend]:
-    Source: 'src/layout.rs', lines 1281:4-1450:5
+    Source: 'src/layout.rs', lines 1297:4-1466:5
     Visibility: public -/
 def layout.DstLayout.extend
   (self : layout.DstLayout) (field : layout.DstLayout)
@@ -590,7 +665,7 @@ def layout.DstLayout.extend
   | layout.SizeInfo.SliceDst _ => fail panic
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
-    Source: 'src/layout.rs', lines 1478:4-1587:5
+    Source: 'src/layout.rs', lines 1494:4-1603:5
     Visibility: public -/
 def layout.DstLayout.pad_to_align
   (self : layout.DstLayout) : Result layout.DstLayout := do
@@ -695,10 +770,35 @@ def layout.DstLayout.pad_to_align
             }
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::requires_static_padding]:
-    Source: 'src/layout.rs', lines 1599:4-1613:5
+    Source: 'src/layout.rs', lines 1615:4-1629:5
     Visibility: public -/
 def layout.DstLayout.requires_static_padding
   (self : layout.DstLayout) : Result Bool := do
   ok (¬ self.statically_shallow_unpadded)
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::requires_dynamic_padding]:
+    Source: 'src/layout.rs', lines 1645:4-1682:5
+    Visibility: public -/
+def layout.DstLayout.requires_dynamic_padding
+  (self : layout.DstLayout) : Result Bool := do
+  match self.size_info with
+  | layout.SizeInfo.Sized _ => ok false
+  | layout.SizeInfo.SliceDst trailing_slice_layout =>
+    let o ←
+      layout.TrailingSliceLayoutUsize.size_for_elems trailing_slice_layout
+        0#usize
+    match o with
+    | none => ok true
+    | some initial_size =>
+      let nz ←
+        layout.RoundingAlignAndPhase.align
+          trailing_slice_layout.size_rounding_align_and_phase
+      let i ←
+        core.num.nonzero.NonZero.get
+          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner nz
+      let i1 ← trailing_slice_layout.elem_size % i
+      if initial_size != trailing_slice_layout.offset
+      then ok true
+      else ok (¬ (i1 = 0#usize))
 
 end Zerocopy
