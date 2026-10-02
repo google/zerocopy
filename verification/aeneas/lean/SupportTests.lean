@@ -1,0 +1,117 @@
+/- Copyright 2026 The Fuchsia Authors
+
+Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+<LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+This file may not be copied, modified, or distributed except according to
+those terms. -/
+
+module
+public import Contracts
+public import Loops
+public import RequiredContracts
+@[expose] public section
+open Aeneas Aeneas.Std AeneasContracts
+namespace SupportTests
+
+-- Use upstream checked-operation registrations, including overflow branches.
+contract add_spec (x y : Usize)
+  for lift (x.checked_add y)
+  ensures out => out.map UScalar.val =
+    if x.val + y.val ≤ Usize.max then some (x.val + y.val) else none
+  proof:
+    step as ⟨out, hout⟩
+    cases out <;> simp_all only [Option.map_none, Option.map_some]
+    all_goals scalar_tac +split
+
+contract sub_spec (x y : Usize)
+  for lift (x.checked_sub y)
+  ensures out => out.map UScalar.val =
+    if y ≤ x then some (x.val - y.val) else none
+  proof:
+    step as ⟨out, hout⟩
+    cases out <;> simp_all only [Option.map_none, Option.map_some]
+    all_goals scalar_tac +split
+
+contract mul_spec (x y : Usize)
+  for lift (x.checked_mul y)
+  ensures out => out.map UScalar.val =
+    if x.val * y.val ≤ Usize.max then some (x.val * y.val) else none
+  proof:
+    step as ⟨out, hout⟩
+    cases out <;> simp_all only [Option.map_none, Option.map_some]
+    all_goals scalar_tac +split
+
+def pair (n : Nat) : Result (Nat × Nat) := .ok (n, n + 1)
+
+contract pair_view_spec (n : Nat)
+  for pair n
+  refines Prod.fst to n
+  ensures r => r.2 = n + 1
+  proof:
+    exact WP.spec.ret ⟨rfl, rfl⟩
+
+attribute [step] pair_view_spec
+
+-- A caller uses the view theorem through Aeneas's existing spec registry.
+contract pair_caller_spec (n : Nat)
+  for (do let r ← pair n; Result.ok r.1)
+  refines id to n
+  proof:
+    step*
+    simp_all
+
+partial contract diverging_view_spec
+  for (Result.div : Result Nat)
+  refines Nat.succ to 0
+  ensures r => r = 9
+  proof:
+    exact WP.dspec.div _
+
+partial contract partial_view_spec (n : Nat)
+  for Result.ok n
+  refines Nat.succ to n + 1
+  proof:
+    exact WP.dspec.ret rfl
+
+-- Independently written propositions pin view equality, output facts, and
+-- the default requirement of successful termination.
+def pair_required : Prop := ∀ n : Nat,
+  ∃ r, pair n = .ok r ∧ r.1 = n ∧ r.2 = n + 1
+check_contract pair_required using pair_view_spec
+
+-- Already matching propositions need no conversion or normalization.
+def pair_required_again : Prop := pair_required
+check_contract pair_required_again using pair_required_checked
+
+example : ∀ n : Nat, WP.spec (do let r ← pair n; Result.ok r.1)
+    (fun r => r = n) := pair_caller_spec
+example : WP.dspec (Result.div : Result Nat)
+    (fun r => Nat.succ r = 0 ∧ r = 9) := diverging_view_spec
+example : ∀ n : Nat, WP.dspec (Result.ok n)
+    (fun r => Nat.succ r = n + 1) := partial_view_spec
+
+def counterBody (n : Usize) (s : Nat × Usize) :
+    Result (ControlFlow (Nat × Usize) Nat) := do
+  if s.2 < n then
+    let j ← s.2 + 1#usize
+    .ok (.cont (s.1 + 1, j))
+  else .ok (.done s.1)
+
+theorem counter_spec (n i : Usize) (hi : i ≤ n) :
+    loop (counterBody n) (i.val, i) ⦃ out => out = n.val ∧ True ⦄ := by
+  apply indexed_loop_spec n.val id (fun i => i) (fun _ => True)
+  · intro state idx hidx hv _
+    unfold counterBody
+    simp only [UScalar.lt_equiv]
+    split
+    · rename_i hlt
+      step as ⟨j, hj⟩
+      simp_all [id]
+    · rename_i hdone
+      exact WP.spec.ret ⟨by scalar_tac, hv, trivial⟩
+  · exact (UScalar.le_equiv _ _).mp hi
+  · rfl
+  · trivial
+
+end SupportTests

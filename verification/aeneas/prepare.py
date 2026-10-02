@@ -76,6 +76,10 @@ def share_manifest(workspace, backend):
         '@[default_target] lean_lib Zerocopy\n'
         'lean_lib Contracts\n'
         'lean_lib Arithmetic\n'
+        'lean_lib Loops\n'
+        'lean_lib ContractSimps\n'
+        'lean_lib RequiredContracts\n'
+        '@[default_target] lean_lib SupportTests\n'
         '@[default_target] lean_lib Corollaries\n'
         '@[default_target] lean_lib ContractTests\n'
         '@[default_target] lean_lib Proofs\n'
@@ -84,16 +88,20 @@ def share_manifest(workspace, backend):
     )
 
 
-def mathlib_imports(backend):
+def mathlib_imports(backend, proof_sources=None):
     pattern = re.compile(r"^(?:(?:public|private|protected|meta)\s+)*import\s+(.+)$")
     modules = set()
-    for path in backend.rglob("*.lean"):
-        if ".lake" in path.relative_to(backend).parts:
-            continue
-        for line in path.read_text().splitlines():
-            match = pattern.match(line.strip())
-            if match:
-                modules.update(m for m in match[1].split() if m.startswith("Mathlib."))
+    roots = [backend] if proof_sources is None else [backend, proof_sources]
+    for root in roots:
+        for path in root.rglob("*.lean*"):
+            if not (path.name.endswith(".lean") or path.name.endswith(".lean.in")):
+                continue
+            if ".lake" in path.relative_to(root).parts:
+                continue
+            for line in path.read_text().splitlines():
+                match = pattern.match(line.strip())
+                if match:
+                    modules.update(m for m in match[1].split() if m.startswith("Mathlib."))
     if not modules:
         raise ValueError("No Mathlib imports found in the pinned Aeneas backend")
     return sorted(modules)
@@ -104,11 +112,12 @@ def main():
     parser.add_argument("command", choices=["llbc", "prepare", "workspace", "mathlib-imports"])
     parser.add_argument("path", type=Path)
     parser.add_argument("--backend", type=Path)
+    parser.add_argument("--proof-sources", type=Path)
     args = parser.parse_args()
     if args.command == "llbc":
         check_llbc(args.path)
     elif args.command == "mathlib-imports":
-        print("\n".join(mathlib_imports(args.path)))
+        print("\n".join(mathlib_imports(args.path, args.proof_sources)))
     elif args.command == "prepare":
         types = args.path / "Zerocopy/Types.lean"
         funs = args.path / "Zerocopy/Funs.lean"

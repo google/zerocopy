@@ -48,12 +48,13 @@ tar --zstd -xf "$staging/lean.tar.zst" -C "$staging/toolchain/lean" --strip-comp
 rustup toolchain install "$AENEAS_RUST_TOOLCHAIN" --profile minimal \
     --component rustc-dev --component rust-src
 
-# Fetch only Mathlib modules imported by this backend, plus their dependencies.
+# Fetch Mathlib imports of the backend and our proof sources, with dependencies.
 # The bundle contains a manifest with pinned dependency revisions. Lake loads
 # it directly; do not run `lake update` and float the dependencies.
 export PATH="$staging/toolchain/lean/bin:$PATH"
 python3 verification/aeneas/prepare.py mathlib-imports \
-    "$staging/toolchain/backends/lean" > "$staging/mathlib-imports.txt"
+    "$staging/toolchain/backends/lean" --proof-sources verification/aeneas/lean \
+    > "$staging/mathlib-imports.txt"
 mathlib_modules=()
 while IFS= read -r module; do
     mathlib_modules+=("$module")

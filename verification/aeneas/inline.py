@@ -310,25 +310,13 @@ def assemble(root, annotations, work):
     if '@@AENEAS_' in wrapper:
         raise ValueError('Unexpanded Aeneas proof slot')
     (work / 'Proofs.lean').write_text(wrapper)
-    required = ['import Lean', 'import Proofs', 'import Obligations', 'open Lean', '']
+    required = ['import Lean', 'import Proofs', 'import Obligations',
+                'import RequiredContracts', 'open Lean',
+                'attribute [local contract_simps] Zerocopy.Arithmetic.coe_min', '']
     for a in annotations.values():
-        # Normalize total WP and scalar order to independently written arithmetic.
-        # Layout matchers have different declaration names in the two modules;
-        # check both branches explicitly instead of assuming definitional equality.
         name = a['theorem']
-        if name == 'pad_to_align_spec':
-            body = (f'  unfold Zerocopy.Obligations.{name}\n'
-                    '  intro self\n'
-                    '  cases hs : self.size_info <;>\n'
-                    '    simpa only [hs, Aeneas.Std.WP.spec_equiv_exists] '
-                    f'using Zerocopy.Proofs.{name} self')
-        else:
-            body = (f'  simpa only [Zerocopy.Obligations.{name}, '
-                    'Aeneas.Std.WP.spec_equiv_exists, Aeneas.Std.UScalar.eq_equiv, '
-                    'Aeneas.Std.UScalar.coe_max, Zerocopy.Arithmetic.coe_min, '
-                    'Aeneas.Std.UScalar.lt_equiv, Aeneas.Std.UScalar.le_equiv] '
-                    f'using Zerocopy.Proofs.{name}')
-        required.append(f'example : Zerocopy.Obligations.{name} := by\n{body}')
+        required.append(f'check_contract Zerocopy.Obligations.{name} '
+                        f'using @Zerocopy.Proofs.{name}')
     names = ', '.join(f'`Zerocopy.Proofs.{a["theorem"]}' for a in annotations.values())
     required.append(f'def requiredTheorems : Array Name := #[{names}]')
     edges = []

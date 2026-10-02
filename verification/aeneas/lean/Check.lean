@@ -8,6 +8,7 @@ those terms. -/
 
 import Required
 import ContractTests
+import SupportTests
 import Corollaries
 open Lean Elab Command
 run_elab do
@@ -48,11 +49,14 @@ run_elab do
       unless actual.contains used do
         throwError "{declName} has unused proof dependency {used}"
   logInfo m!"Checked proof dependencies of {proofDependencies.size} theorems"
-  let prefixes := #[`Zerocopy, `core.num, `AeneasContracts, `ContractTests]
+  let prefixes := #[`Zerocopy, `core.num, `AeneasContracts, `ContractTests, `SupportTests]
   let mut audited := 0
+  let some checksModule := env.getModuleIdxFor? `requiredTheorems
+    | throwError "Required contract checks must be imported from their own module"
   for (declName, _) in env.constants.toList do
     if prefixes.any (·.isPrefixOf (privateToUserName declName)) ||
-        env.getModuleIdxFor? declName == some proofModule then
+        env.getModuleIdxFor? declName == some proofModule ||
+        env.getModuleIdxFor? declName == some checksModule then
       let used ← collectAxioms declName
       for ax in used do
         unless #[`propext, `Classical.choice, `Quot.sound].contains ax do
