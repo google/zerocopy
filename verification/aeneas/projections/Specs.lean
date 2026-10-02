@@ -150,6 +150,41 @@ spec encoding_align_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.encoding_align_spec for Zerocopy.layout.RoundingAlignAndPhase.align with 1
 
+check_model_inputs Zerocopy.layout.TrailingSliceLayout.size_offset with 1 type parameters
+aeneas_spec_begin
+spec size_offset_spec
+  for @Zerocopy.layout.TrailingSliceLayout.size_offset with 1 type parameters
+  ensures(raw) offset =>
+    offset.val = self.size_base.val - self.size_base.val % (byteFormula self).align + (byteFormula self).phase
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.size_offset_spec for Zerocopy.layout.TrailingSliceLayout.size_offset with 2
+
+check_model_inputs Zerocopy.layout.TrailingSliceLayout.max_trailing_bytes with 1 type parameters
+aeneas_spec_begin
+spec max_trailing_bytes_spec
+  for @Zerocopy.layout.TrailingSliceLayout.max_trailing_bytes with 1 type parameters
+  ensures(raw) r => r.map UScalar.val = (byteFormula self).capacity available_bytes.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.max_trailing_bytes_spec for Zerocopy.layout.TrailingSliceLayout.max_trailing_bytes with 3
+
+check_model_inputs Zerocopy.layout.TrailingSliceLayoutUsize.padding_for_elems with 0 type parameters
+aeneas_spec_begin
+spec padding_for_elems_spec
+  for @Zerocopy.layout.TrailingSliceLayoutUsize.padding_for_elems with 0 type parameters
+  ensures(raw) p => (p.val + self.offset.val + elems.val * self.elem_size.val) % UScalar.size .Usize =
+    (trailingFormula self).size elems.val % UScalar.size .Usize
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.padding_for_elems_spec for Zerocopy.layout.TrailingSliceLayoutUsize.padding_for_elems with 2
+
+check_model_inputs Zerocopy.layout.TrailingSliceLayoutUsize.size_for_elems with 0 type parameters
+aeneas_spec_begin
+spec size_for_elems_spec
+  for @Zerocopy.layout.TrailingSliceLayoutUsize.size_for_elems with 0 type parameters
+  ensures result => result.map (fun size => (size : Nat)) =
+    (ModelViews.trailingFormula self).checkedSize Usize.max (elems : Nat)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.size_for_elems_spec for Zerocopy.layout.TrailingSliceLayoutUsize.size_for_elems with 2
+
 check_model_inputs Zerocopy.layout.SizeInfoUsize.try_to_nonzero_elem_size with 0 type parameters
 aeneas_spec_begin
 spec try_nonzero_spec
@@ -273,6 +308,14 @@ spec empty_layout_checks_spec
   ensures _ => True
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.empty_layout_checks_spec for Zerocopy.layout.primitive_checks.check_empty_layout with 1
+
+check_model_inputs Zerocopy.layout.tail_checks.trailing_arithmetic_check with 0 type parameters
+aeneas_spec_begin
+spec trailing_arithmetic_check_spec
+  for @Zerocopy.layout.tail_checks.trailing_arithmetic_check with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.trailing_arithmetic_check_spec for Zerocopy.layout.tail_checks.trailing_arithmetic_check with 5
 
 default_trait_body Zerocopy.FromZeros.new_zeroed.default for Zerocopy.FromZeros with 1 type parameters
 check_model_inputs Zerocopy.FromZeros.new_zeroed.default with 1 type parameters
