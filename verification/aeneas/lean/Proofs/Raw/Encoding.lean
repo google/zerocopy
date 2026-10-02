@@ -23,6 +23,7 @@ import all Init.Data.Nat.Power2.Basic
 open Aeneas Aeneas.Std
 namespace Zerocopy.Proofs.Raw
 
+-- Raw contract requirements intentionally retain their descriptive proof names.
 set_option linter.unusedVariables false
 /- Read the pinned platform's pointer width through its modeled primitive. This
 establishes the runtime constant used by encoding and packing arithmetic.
@@ -91,6 +92,7 @@ theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p
     rfl
   · rw [Nat.testBit_two_pow_of_ne (Ne.symm hi)]
     simp
+
 
 /- Prove the implementation's bit scan recovers the alignment and phase of every
 positive stored word, not only words built by the constructor.
