@@ -100,10 +100,34 @@ structure byteorder.U32 (O : Type) where
   _1 : core.marker.PhantomData O
 
 /-- [zerocopy::layout::RoundingAlignAndPhase]
-    Source: 'src/layout/mod.rs', lines 81:0-81:54 -/
+    Source: 'src/layout/mod.rs', lines 84:0-84:54 -/
 structure layout.RoundingAlignAndPhase where
   _0 : core.num.nonzero.NonZero Std.Usize
     core.num.niche_types.NonZeroUsizeInner
+
+/-- [zerocopy::layout::TrailingSliceLayout]
+    Source: 'src/layout/mod.rs', lines 191:0-245:1 -/
+structure layout.TrailingSliceLayout (E : Type) where
+  offset : Std.Usize
+  elem_size : E
+  size_base : Std.Usize
+  size_rounding_align_and_phase : layout.RoundingAlignAndPhase
+
+/-- [zerocopy::layout::SizeInfo]
+    Source: 'src/layout/mod.rs', lines 53:0-56:1 -/
+@[discriminant isize]
+inductive layout.SizeInfo (E : Type) where
+| Sized : Std.Usize → layout.SizeInfo E
+| SliceDst : layout.TrailingSliceLayout E → layout.SizeInfo E
+
+/-- [zerocopy::layout::DstLayout]
+    Source: 'src/layout/mod.rs', lines 40:0-48:1
+    Visibility: public -/
+structure layout.DstLayout where
+  align : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+  size_info : layout.SizeInfo Std.Usize
+  statically_shallow_unpadded : Bool
 
 /-- [zerocopy::layout::nested_reference::NestedLayer]
     Source: 'src/layout/nested_reference.rs', lines 27:0-31:1 -/
