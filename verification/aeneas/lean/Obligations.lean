@@ -41,6 +41,22 @@ def round_down_spec : Prop :=
       m.val % align.val.val = 0 ∧ n.val < m.val + align.val.val ∧
       (∀ q : Nat, q ≤ n.val → q % align.val.val = 0 → q ≤ m.val) ⦄
 
+-- These propositions are maintained separately from the specification macro and
+-- native proof modules. They fix successful termination and mathematical results.
+def encoding_new_spec : Prop :=
+  ∀ (a : NonZeroUsize) (p : Usize), a.val.val.isPowerOfTwo → p.val < a.val.val →
+    ∃ code, layout.RoundingAlignAndPhase.new a p = .ok code ∧ code.val.val = a.val.val + p.val
+
+def encoding_components_spec : Prop :=
+  ∀ (code : layout.RoundingAlignAndPhase), 0 < code.val.val →
+    layout.RoundingAlignAndPhase.components code ⦃ (a, p) =>
+      a.val.val.isPowerOfTwo ∧ p.val < a.val.val ∧ a.val.val + p.val = code.val.val ∧
+      a.val.val = 2 ^ code.val.val.log2 ∧ p.val = code.val.val - 2 ^ code.val.val.log2 ⦄
+
+def encoding_align_spec : Prop :=
+  ∀ (code : layout.RoundingAlignAndPhase), 0 < code.val.val →
+    ∃ a, layout.RoundingAlignAndPhase.align code = .ok a ∧ a.val.val = 2 ^ code.val.val.log2
+
 def pad_to_align_spec : Prop :=
   ∀ (self : layout.DstLayout)
     (_h : match self.size_info with
