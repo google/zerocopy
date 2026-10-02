@@ -100,9 +100,16 @@ structure byteorder.U32 (O : Type) where
   _1 : core.marker.PhantomData O
 
 /-- [zerocopy::layout::RoundingAlignAndPhase]
-    Source: 'src/layout/mod.rs', lines 78:0-78:54 -/
+    Source: 'src/layout/mod.rs', lines 81:0-81:54 -/
 structure layout.RoundingAlignAndPhase where
   _0 : core.num.nonzero.NonZero Std.Usize
     core.num.niche_types.NonZeroUsizeInner
+
+/-- [zerocopy::layout::nested_reference::NestedLayer]
+    Source: 'src/layout/nested_reference.rs', lines 27:0-31:1 -/
+structure layout.nested_reference.NestedLayer where
+  packed : Std.Usize
+  min_align : Std.Usize
+  prefix_bytes : Std.Usize
 
 end Zerocopy
