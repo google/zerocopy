@@ -7,10 +7,11 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 module
-public import Zerocopy.Funs
+public import LayoutModel
 @[expose] public section
 open Aeneas Aeneas.Std
 namespace Zerocopy.Obligations
+open Zerocopy.Proofs
 abbrev NonZeroUsize :=
   core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
 
@@ -57,25 +58,5 @@ def encoding_align_spec : Prop :=
   ∀ (code : layout.RoundingAlignAndPhase), 0 < code.val.val →
     ∃ a, layout.RoundingAlignAndPhase.align code = .ok a ∧ a.val.val = 2 ^ code.val.val.log2
 
-def pad_to_align_spec : Prop :=
-  ∀ (self : layout.DstLayout)
-    (_h : match self.size_info with
-      | layout.SizeInfo.Sized size =>
-        self.align.val.val.isPowerOfTwo ∧
-          size.val + (self.align.val.val - size.val % self.align.val.val)
-            % self.align.val.val ≤ Usize.max
-      | layout.SizeInfo.SliceDst _ => True),
-    layout.DstLayout.pad_to_align self ⦃ r => r.align = self.align ∧
-      match self.size_info with
-      | layout.SizeInfo.Sized size => ∃ padded,
-        r.size_info = layout.SizeInfo.Sized padded ∧
-        padded.val = size.val + (self.align.val.val - size.val % self.align.val.val)
-          % self.align.val.val ∧
-        size.val ≤ padded.val ∧ padded.val < size.val + self.align.val.val ∧
-        padded.val % self.align.val.val = 0 ∧
-        (∀ q : Nat, size.val ≤ q → q % self.align.val.val = 0 → padded.val ≤ q) ∧
-        r.statically_shallow_unpadded =
-          (self.statically_shallow_unpadded && decide (size.val % self.align.val.val = 0))
-      | layout.SizeInfo.SliceDst _ => r = self ⦄
 
 end Zerocopy.Obligations
