@@ -80,13 +80,21 @@ noncomputable def util.transmute_unchecked {Src : Type} (Dst : Type)
     {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
     (x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val
 
--- Extraction uses size_of only for usize to calculate its bit width. Other
--- types remain unsupported rather than receiving arbitrary layout values.
+-- Aeneas erases Rust's ABI information from a generic Type parameter. These
+-- two data parameters supply that information. They assert no propositions;
+-- every consumer must prove its contract under explicit size/alignment inputs.
+-- The axiom audit admits exactly these signatures, never arbitrary axioms.
+axiom Zerocopy.RustLayout.size (T : Type) : Usize
+axiom Zerocopy.RustLayout.align (T : Type) : Usize
+
 @[simp] noncomputable def core.mem.size_of (T : Type) : Result Usize := by
   classical
-  exact if T = Usize then
-    .ok { bv := BitVec.ofNat _ (System.Platform.numBits / 8) }
-  else .fail .panic
+  exact .ok (if T = Usize then
+    { bv := BitVec.ofNat _ (System.Platform.numBits / 8) }
+    else Zerocopy.RustLayout.size T)
+
+@[simp] noncomputable def core.mem.align_of (T : Type) : Result Usize :=
+  .ok (Zerocopy.RustLayout.align T)
 
 -- The extracted call sites instantiate this primitive only at Usize. Other
 -- types are unsupported, so the model cannot promise a recoverable panic.
