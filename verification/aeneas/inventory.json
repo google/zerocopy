@@ -30,6 +30,54 @@
       ]
     },
     {
+      "rust": "zerocopy::layout::TrailingSliceLayout::size_offset",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::size_offset",
+      "model": "layout.TrailingSliceLayout.size_offset",
+      "theorem": "size_offset_spec",
+      "golden": "layout.TrailingSliceLayout.size_offset.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::max_trailing_bytes",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::max_trailing_bytes",
+      "model": "layout.TrailingSliceLayout.max_trailing_bytes",
+      "theorem": "max_trailing_bytes_spec",
+      "golden": "layout.TrailingSliceLayout.max_trailing_bytes.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::padding_for_elems",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::padding_for_elems",
+      "model": "layout.TrailingSliceLayoutUsize.padding_for_elems",
+      "theorem": "padding_for_elems_spec",
+      "golden": "layout.TrailingSliceLayoutUsize.padding_for_elems.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::padding_needed_for"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::size_for_elems",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::size_for_elems",
+      "model": "layout.TrailingSliceLayoutUsize.size_for_elems",
+      "theorem": "size_for_elems_spec",
+      "golden": "layout.TrailingSliceLayoutUsize.size_for_elems.lean.in",
+      "depends_on": [
+        "zerocopy::layout::TrailingSliceLayout::max_trailing_bytes",
+        "zerocopy::layout::TrailingSliceLayout::padding_for_elems"
+      ]
+    },
+    {
       "rust": "zerocopy::layout::SizeInfo::try_to_nonzero_elem_size",
       "file": "zerocopy/src/layout.rs",
       "syntax": "SizeInfo::try_to_nonzero_elem_size",

@@ -83,16 +83,40 @@ def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
     Source: 'src/layout.rs', lines 296:4-325:5 -/
 @@AENEAS_GOLDEN("layout.RoundingAlignAndPhase.align.lean.in")@@
 
+/-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
+    Source: 'src/util/mod.rs', lines 279:0-336:1 -/
+@@AENEAS_GOLDEN("util.round_down_to_next_multiple_of_alignment.lean.in")@@
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<E>}::size_offset]:
+    Source: 'src/layout.rs', lines 399:4-438:5 -/
+@@AENEAS_GOLDEN("layout.TrailingSliceLayout.size_offset.lean.in")@@
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<E>}::max_trailing_bytes]:
+    Source: 'src/layout.rs', lines 456:4-654:5 -/
+@@AENEAS_GOLDEN("layout.TrailingSliceLayout.max_trailing_bytes.lean.in")@@
+
+/-- [zerocopy::util::padding_needed_for]:
+    Source: 'src/util/mod.rs', lines 156:0-258:1 -/
+@@AENEAS_GOLDEN("util.padding_needed_for.lean.in")@@
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::padding_for_elems]:
+    Source: 'src/layout.rs', lines 673:4-793:5 -/
+@@AENEAS_GOLDEN("layout.TrailingSliceLayoutUsize.padding_for_elems.lean.in")@@
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::size_for_elems]:
+    Source: 'src/layout.rs', lines 805:4-954:5 -/
+@@AENEAS_GOLDEN("layout.TrailingSliceLayoutUsize.size_for_elems.lean.in")@@
+
 /-- [zerocopy::layout::{zerocopy::layout::SizeInfo<usize>}::try_to_nonzero_elem_size]:
-    Source: 'src/layout.rs', lines 919:4-993:5 -/
+    Source: 'src/layout.rs', lines 1204:4-1278:5 -/
 @@AENEAS_GOLDEN("layout.SizeInfoUsize.try_to_nonzero_elem_size.lean.in")@@
 
 /-- [zerocopy::layout::max_elems_for_bytes]:
-    Source: 'src/layout.rs', lines 1013:0-1076:1 -/
+    Source: 'src/layout.rs', lines 1298:0-1361:1 -/
 @@AENEAS_GOLDEN("layout.max_elems_for_bytes.lean.in")@@
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::MIN_ALIGN]
-    Source: 'src/layout.rs', lines 1096:4-1099:6 -/
+    Source: 'src/layout.rs', lines 1381:4-1384:6 -/
 @[global_simps, irreducible]
 def layout.DstLayout.MIN_ALIGN
   :
@@ -107,40 +131,32 @@ def layout.DstLayout.MIN_ALIGN
   | some min_align => ok min_align
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::assume_shallow_unpadded]:
-    Source: 'src/layout.rs', lines 1160:4-1182:5 -/
+    Source: 'src/layout.rs', lines 1445:4-1467:5 -/
 @@AENEAS_GOLDEN("layout.DstLayout.assume_shallow_unpadded.lean.in")@@
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::new_zst]:
-    Source: 'src/layout.rs', lines 1204:4-1269:5
+    Source: 'src/layout.rs', lines 1489:4-1554:5
     Visibility: public -/
 @@AENEAS_GOLDEN("layout.DstLayout.new_zst.lean.in")@@
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_type]:
-    Source: 'src/layout.rs', lines 1285:4-1346:5
+    Source: 'src/layout.rs', lines 1570:4-1631:5
     Visibility: public -/
 @@AENEAS_GOLDEN("layout.DstLayout.for_type.lean.in")@@
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_unpadded_type]:
-    Source: 'src/layout.rs', lines 1368:4-1402:5
+    Source: 'src/layout.rs', lines 1653:4-1687:5
     Visibility: public -/
 @@AENEAS_GOLDEN("layout.DstLayout.for_unpadded_type.lean.in")@@
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_slice]:
-    Source: 'src/layout.rs', lines 1416:4-1503:5 -/
+    Source: 'src/layout.rs', lines 1701:4-1788:5 -/
 @@AENEAS_GOLDEN("layout.DstLayout.for_slice.lean.in")@@
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::requires_static_padding]:
-    Source: 'src/layout.rs', lines 1889:4-1912:5
+    Source: 'src/layout.rs', lines 2174:4-2197:5
     Visibility: public -/
 @@AENEAS_GOLDEN("layout.DstLayout.requires_static_padding.lean.in")@@
-
-/-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 156:0-258:1 -/
-@@AENEAS_GOLDEN("util.padding_needed_for.lean.in")@@
-
-/-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 279:0-336:1 -/
-@@AENEAS_GOLDEN("util.round_down_to_next_multiple_of_alignment.lean.in")@@
 
 /-- [zerocopy::util::max]:
     Source: 'src/util/mod.rs', lines 340:0-380:1 -/
