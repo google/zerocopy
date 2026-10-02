@@ -68,8 +68,9 @@ each tool answers a different question:
 
 The extracted model and the mathematical model have different purposes. The
 first represents the computation we prove properties about; the second supplies
-the vocabulary in which we state those properties. For example, a Rust nonzero word
-is interpreted as a natural number with machine bounds and a proof of positivity. Plain clauses use mathematical values; `(raw)`
+the vocabulary in which we state those properties. For example, Rust stores
+rounding alignment and phase in one nonzero word, while its mathematical model
+exposes two natural numbers. Plain clauses use mathematical values; `(raw)`
 clauses use extracted representations. Both execute the same extracted function
 on its original arguments and require the actual returned value to decode.
 
@@ -134,6 +135,7 @@ added without extending the specification set.
 | `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
 | `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
 | `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
+| Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
@@ -150,6 +152,11 @@ conditions.
 The mathematical layout semantics proves normalization across arbitrary
 nesting and metadata values. These algebraic laws do not themselves verify
 a Rust layout method.
+
+The nominal rounding wrapper decodes to `RoundingValue`, a power-of-two
+alignment and bounded phase with machine-fit proofs. Ordinary representation
+laws establish acceptance of every positive stored word and exact reconstruction
+from that pair. Zero is rejected by the native NonZero child decoder.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
@@ -336,7 +343,7 @@ comparison is part of the automatic-decoding audit.
 Generated modules follow the proof-construction dependency:
 
 ```text
-raw Types + ModelPrelude → ModelShapes → Models → Specs + Proofs
+raw Types + ModelPrelude → ModelShapes → ModelSupport → Models → Specs + Proofs
 ```
 
 `ModelShapes` declares nominal mathematical fields and inline model types in
@@ -472,14 +479,17 @@ modules must not create import cycles through generated `Required` or `Check`.
 Model fields declare ordinary Lean constraints. A decoder can supply only its
 data and use native `..` to omit proof fields:
 
-For a hypothetical type with a machine-word field `word`:
-
 ```lean
-model SuccessorValue where
-  value : Nat
-  positive : 0 < value
+model RoundingValue where
+  align : Nat
+  phase : Nat
+  align_pow2 : align.isPowerOfTwo
+  phase_lt : phase < align
+  fits : align + phase ≤ Usize.max
 decode self =>
-  { value := self.word.value + 1, .. }
+  let word := self._0.value
+  let align := 2 ^ Nat.log2 word
+  { align := align, phase := word - align, .. }
 ```
 
 Both `decode` and `decode?` implicitly use `model_value` completion on the whole
@@ -560,7 +570,7 @@ After a Lake build, inspect an effective compiled specification with:
 
 ```sh
 python3 -B verification/aeneas/workspace.py inspect verification/aeneas/lean \
-  --root "$PWD" --spec max_spec
+  --root "$PWD" --spec encoding_components_spec
 ```
 
 This reads compiled declarations without running another build. It displays the
