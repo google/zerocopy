@@ -38,7 +38,8 @@ run_elab do
         if used == declName then continue
         if required.contains used then
           unless actual.contains used do actual := actual.push used
-        else if env.getModuleIdxFor? used == some proofModule then
+        else if env.getModuleIdxFor? used == some proofModule ||
+            (`Zerocopy.Proofs).isPrefixOf (privateToUserName used) then
           pending := pending.push used
     for used in actual do
       unless declared.contains used do
