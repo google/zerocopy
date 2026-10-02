@@ -390,6 +390,10 @@ padding inside packed fields.
 A positive size-sequence comparison establishes equal sizes for every natural
 metadata value; a negative result does not assert that the sequences differ.
 
+Cast validation and exact metadata inference establish error priority, exact
+splits and rejection of unattainable sizes. Intentional zero-stride panic is
+checked separately.
+
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
 raw fields. Binding `let N : Nat := n` makes addition and remainder ordinary
