@@ -39,14 +39,39 @@ structure core.num.nonzero.ZeroablePrimitive (Self : Type) (Self_NonZeroInner :
   markerCopyInst : core.marker.Copy Self
   innerCopyInst : core.marker.Copy Self_NonZeroInner
 
+/-- [zerocopy::layout::composition_checks::ReferenceTail]
+    Source: 'src/layout/composition_checks.rs', lines 32:0-38:1 -/
+structure layout.composition_checks.ReferenceTail where
+  offset : Std.Usize
+  elem_size : Std.Usize
+  base : Std.Usize
+  round_align : Std.Usize
+  phase : Std.Usize
+
+/-- [zerocopy::layout::composition_checks::ReferenceSize]
+    Source: 'src/layout/composition_checks.rs', lines 42:0-45:1 -/
+@[discriminant isize]
+inductive layout.composition_checks.ReferenceSize where
+| Fixed : Std.Usize → layout.composition_checks.ReferenceSize
+| Tail :
+  layout.composition_checks.ReferenceTail →
+  layout.composition_checks.ReferenceSize
+
+/-- [zerocopy::layout::composition_checks::ReferenceLayout]
+    Source: 'src/layout/composition_checks.rs', lines 48:0-52:1 -/
+structure layout.composition_checks.ReferenceLayout where
+  align : Std.Usize
+  size : layout.composition_checks.ReferenceSize
+  unpadded : Bool
+
 /-- [zerocopy::layout::RoundingAlignAndPhase]
-    Source: 'src/layout/mod.rs', lines 87:0-87:54 -/
+    Source: 'src/layout/mod.rs', lines 90:0-90:54 -/
 structure layout.RoundingAlignAndPhase where
   _0 : core.num.nonzero.NonZero Std.Usize
     core.num.niche_types.NonZeroUsizeInner
 
 /-- [zerocopy::layout::TrailingSliceLayout]
-    Source: 'src/layout/mod.rs', lines 194:0-248:1 -/
+    Source: 'src/layout/mod.rs', lines 197:0-251:1 -/
 structure layout.TrailingSliceLayout (E : Type) where
   offset : Std.Usize
   elem_size : E
@@ -54,14 +79,14 @@ structure layout.TrailingSliceLayout (E : Type) where
   size_rounding_align_and_phase : layout.RoundingAlignAndPhase
 
 /-- [zerocopy::layout::SizeInfo]
-    Source: 'src/layout/mod.rs', lines 56:0-59:1 -/
+    Source: 'src/layout/mod.rs', lines 59:0-62:1 -/
 @[discriminant isize]
 inductive layout.SizeInfo (E : Type) where
 | Sized : Std.Usize → layout.SizeInfo E
 | SliceDst : layout.TrailingSliceLayout E → layout.SizeInfo E
 
 /-- [zerocopy::layout::DstLayout]
-    Source: 'src/layout/mod.rs', lines 43:0-51:1
+    Source: 'src/layout/mod.rs', lines 46:0-54:1
     Visibility: public -/
 structure layout.DstLayout where
   align : core.num.nonzero.NonZero Std.Usize
