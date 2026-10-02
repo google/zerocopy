@@ -1,0 +1,12 @@
+# Copyright 2026 The Fuchsia Authors
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+
+[package]
+name = "owned-transmute-probe"
+version = "0.0.0"
+edition = "2021"
+
+[workspace]
+
+[dependencies]
+zerocopy = { path = "../../../../../zerocopy", default-features = false }
