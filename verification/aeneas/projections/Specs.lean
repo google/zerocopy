@@ -201,6 +201,25 @@ spec size_for_elems_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.size_for_elems_spec for Zerocopy.layout.TrailingSliceLayoutUsize.size_for_elems with 2
 
+check_model_inputs Zerocopy.layout.TrailingSliceLayoutUsize.has_same_size_sequence with 0 type parameters
+aeneas_spec_begin
+spec same_size_sequence_spec
+  for @Zerocopy.layout.TrailingSliceLayoutUsize.has_same_size_sequence with 0 type parameters
+  ensures(raw) b => b = true → ∀ n : Nat, (trailingFormula self).size n = (trailingFormula other).size n
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.same_size_sequence_spec for Zerocopy.layout.TrailingSliceLayoutUsize.has_same_size_sequence with 2
+
+check_model_inputs Zerocopy.layout.TrailingSliceLayoutUsize.advance with 0 type parameters
+aeneas_spec_begin
+spec advance_spec
+  for @Zerocopy.layout.TrailingSliceLayoutUsize.advance with 0 type parameters
+  ensures(raw) result => match result with
+    | none => Usize.max < ((trailingFormula self).advance bytes.val elem_size.val).base
+    | some t => trailingFormula t = (trailingFormula self).advance bytes.val elem_size.val ∧
+      ((trailingFormula self).advance bytes.val elem_size.val).base ≤ Usize.max
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.advance_spec for Zerocopy.layout.TrailingSliceLayoutUsize.advance with 3
+
 check_model_inputs Zerocopy.layout.SizeInfoUsize.try_to_nonzero_elem_size with 0 type parameters
 aeneas_spec_begin
 spec try_nonzero_spec
@@ -315,6 +334,17 @@ spec requires_static_padding_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.requires_static_padding_spec for Zerocopy.layout.DstLayout.requires_static_padding with 1
 
+check_model_inputs Zerocopy.layout.DstLayout.requires_dynamic_padding with 0 type parameters
+aeneas_spec_begin
+spec requires_dynamic_padding_spec
+  for @Zerocopy.layout.DstLayout.requires_dynamic_padding with 0 type parameters
+  ensures(raw) r => (r = false ↔ match self.size_info with
+    | .Sized _ => True
+    | .SliceDst tail => (trailingFormula tail).size 0 = tail.offset.val ∧
+      tail.elem_size.val % (trailingFormula tail).align = 0)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.requires_dynamic_padding_spec for Zerocopy.layout.DstLayout.requires_dynamic_padding with 1
+
 check_model_inputs Zerocopy.layout.nested_reference.round_up with 0 type parameters
 aeneas_spec_begin
 spec nested_round_up_spec
@@ -358,6 +388,30 @@ spec trailing_arithmetic_check_spec
   ensures(raw) _ => True
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.trailing_arithmetic_check_spec for Zerocopy.layout.tail_checks.trailing_arithmetic_check with 5
+
+check_model_inputs Zerocopy.layout.tail_transform_checks.tail_transformations_check with 0 type parameters
+aeneas_spec_begin
+spec tail_transformations_check_spec
+  for @Zerocopy.layout.tail_transform_checks.tail_transformations_check with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.tail_transformations_check_spec for Zerocopy.layout.tail_transform_checks.tail_transformations_check with 6
+
+check_model_inputs Zerocopy.layout.tail_transform_checks.tail_size_sequence_check with 0 type parameters
+aeneas_spec_begin
+spec tail_size_sequence_check_spec
+  for @Zerocopy.layout.tail_transform_checks.tail_size_sequence_check with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.tail_size_sequence_check_spec for Zerocopy.layout.tail_transform_checks.tail_size_sequence_check with 7
+
+check_model_inputs Zerocopy.layout.tail_transform_checks.tail_dynamic_padding_check with 0 type parameters
+aeneas_spec_begin
+spec tail_dynamic_padding_check_spec
+  for @Zerocopy.layout.tail_transform_checks.tail_dynamic_padding_check with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.tail_dynamic_padding_check_spec for Zerocopy.layout.tail_transform_checks.tail_dynamic_padding_check with 3
 
 check_model_inputs Zerocopy.pointer_metadata_unit_from_elem_count with 0 type parameters
 aeneas_spec_begin
