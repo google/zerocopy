@@ -22,6 +22,7 @@ import golden
 MARKER = re.compile(r'`{2,}\s*([^\s`]+)')
 MODEL_SLOT = re.compile(r'@@AENEAS_MODEL\("([^"\n]+)"\)@@')
 GOLDEN_SLOT = re.compile(r'@@AENEAS_GOLDEN\("([^"\n]+)"\)@@')
+PROOF_SLOT = re.compile(r'@@AENEAS_PROOF\("([^"\n]+)"\)@@')
 
 
 def suspicious(text):
@@ -36,6 +37,19 @@ def read_source(path):
 
 def inventory(root):
     data = json.loads((root / 'verification/aeneas/inventory.json').read_text())
+    if set(data) - {'license', 'version', 'functions', 'covered_impls'}:
+        raise ValueError('Unknown proof inventory field')
+    scopes = data.get('covered_impls', [])
+    if (not isinstance(scopes, list)
+            or any(not isinstance(scope, dict) or set(scope) != {'file', 'type'}
+                   or not isinstance(scope['file'], str)
+                   or not scope['file'].startswith('zerocopy/src/')
+                   or '..' in Path(scope['file']).parts
+                   or not isinstance(scope['type'], str)
+                   or not re.fullmatch(r'[A-Za-z_][A-Za-z_0-9]*', scope['type'])
+                   for scope in scopes)
+            or len({(scope['file'], scope['type']) for scope in scopes}) != len(scopes)):
+        raise ValueError('Invalid or duplicate closed method coverage scope')
     if data['version'] != 1 or not data['functions']:
         raise ValueError('Unsupported or empty Aeneas proof inventory')
     entries = data['functions']
@@ -183,13 +197,35 @@ def parse_file(source, syntax):
     return found
 
 
-def discover(root, tool, entries):
+def check_coverage(entries, syntax, scopes):
+    """Require every source-defined inherent method in a covered impl."""
+    for scope in scopes:
+        if (set(scope) != {'file', 'type'} or scope['file'] not in syntax
+                or not re.fullmatch(r'[A-Za-z_][A-Za-z_0-9]*', scope['type'])):
+            raise ValueError('Invalid closed method coverage scope')
+        methods = [function for function in syntax[scope['file']]['functions']
+                   if function['method'] and function['inherent']
+                   and function['impl_type'] == scope['type']]
+        if not methods:
+            raise ValueError(f'Closed coverage scope has no methods: {scope}')
+        for function in methods:
+            if not function['supported']:
+                raise ValueError(f'Unsupported method in closed coverage scope: {function["path"]}')
+            matches = [e for e in entries if e['file'] == scope['file']
+                       and e['syntax'] == function['path']]
+            if len(matches) != 1:
+                raise ValueError(f'Missing method proof in closed coverage scope: {function["path"]}')
+
+
+def discover(root, tool, entries, scopes=()):
     paths = source_files(root, entries)
+    paths = sorted(set(paths) | {scope['file'] for scope in scopes})
     result = subprocess.run([str(tool)], cwd=root, input=json.dumps(paths),
                             text=True, capture_output=True)
     if result.returncode:
         raise ValueError(f'Rust syntax inspection failed: {result.stderr}')
     syntax = json.loads(result.stdout)
+    check_coverage(entries, syntax, scopes)
     annotations = {}
     for file in paths:
         try:
@@ -258,11 +294,22 @@ def render(root, annotations, destination):
 
 def assemble(root, annotations, work):
     wrapper = (root / 'verification/aeneas/lean/Proofs.lean.in').read_text()
-    if wrapper.count('@@AENEAS_PROOFS@@') != 1:
-        raise ValueError('Proof wrapper must have exactly one proof slot')
     ordered = proof_order(list(annotations.values()))
-    proofs = '\n'.join(a['proof_text'] for a in ordered)
-    (work / 'Proofs.lean').write_text(wrapper.replace('@@AENEAS_PROOFS@@', proofs))
+    if '@@AENEAS_PROOFS@@' in wrapper:
+        if wrapper.count('@@AENEAS_PROOFS@@') != 1 or PROOF_SLOT.search(wrapper):
+            raise ValueError('Proof wrapper must have exactly one proof slot')
+        proofs = '\n'.join(a['proof_text'] for a in ordered)
+        wrapper = wrapper.replace('@@AENEAS_PROOFS@@', proofs)
+    else:
+        # Named slots permit support lemmas between registered function proofs.
+        # Require the same bijection as the model and golden renderers.
+        used = PROOF_SLOT.findall(wrapper)
+        if sorted(used) != sorted(annotations):
+            raise ValueError('Every annotation must have exactly one proof slot')
+        wrapper = PROOF_SLOT.sub(lambda m: annotations[m[1]]['proof_text'].rstrip(), wrapper)
+    if '@@AENEAS_' in wrapper:
+        raise ValueError('Unexpanded Aeneas proof slot')
+    (work / 'Proofs.lean').write_text(wrapper)
     required = ['import Lean', 'import Proofs', 'import Obligations', 'open Lean', '']
     for a in annotations.values():
         # Normalize total WP and scalar order to independently written arithmetic.
@@ -340,9 +387,8 @@ def check_bindings(root, annotations, llbc):
         if set(implementation) != {'Ty'}:
             raise ValueError('Trait impl roots are unsupported')
         implementation = implementation['Ty']
-        if (implementation['kind'] != 'InherentImplBlock'
-                or any(implementation['params'].values())):
-            raise ValueError('Generic impl roots are unsupported')
+        if implementation['kind'] != 'InherentImplBlock':
+            raise ValueError('Only inherent impl roots are supported')
         wrapped = implementation['skip_binder']
         if set(wrapped) == {'Value'}:
             body = wrapped['Value'][1]
@@ -353,8 +399,8 @@ def check_bindings(root, annotations, llbc):
         if set(body) != {'Adt'}:
             raise ValueError('Inherent Self must resolve to a named type')
         adt = body['Adt']
-        if adt['builtin'] is not None or any(adt['generics'].values()):
-            raise ValueError('Generic or builtin Self roots are unsupported')
+        if adt['builtin'] is not None:
+            raise ValueError('Builtin Self roots are unsupported')
         self_name = identifiers(type_names.get(adt['id'], []))
         prefix = identifiers(name[:index])
         if not self_name or self_name[:-1] != prefix:
@@ -390,20 +436,17 @@ def split_live(source, entries):
     # This intentionally supports the pinned generator's root-declaration
     # layout only. Full-file comparison includes all remaining scaffolding;
     # unexpected layouts, missing/duplicate roots or new output fail closed.
-    starts = list(re.finditer(r'^/-- \[(zerocopy::[^\]\n]+)\]:\n', source, re.M))
+    starts = list(re.finditer(r'^/-- [^\n]*\n', source, re.M))
 
     def identity(display):
         if '{' not in display:
             return display
-        match = re.fullmatch(r'(.+::)\{([^{}]+)::([A-Za-z_][A-Za-z_0-9]*)\}::'
+        match = re.fullmatch(r'(.+::)\{([^{}]+)::([A-Za-z_][A-Za-z_0-9]*)(?:<[^{}]+>)?\}::'
                              r'([A-Za-z_][A-Za-z_0-9]*)', display)
         if not match or match[1] != match[2] + '::':
             raise ValueError('Unsupported generated inherent method identity')
         return match[1] + match[3] + '::' + match[4]
 
-    identities = [identity(m[1]) for m in starts]
-    if set(identities) != {e['rust'] for e in entries} or len(starts) != len(entries):
-        raise ValueError('Pinned Aeneas root declaration layout no longer matches inventory')
     by_rust = {e['rust']: e for e in entries}
     replacements = []
     models = {}
@@ -415,15 +458,30 @@ def split_live(source, entries):
             raise ValueError('Missing generated root documentation or namespace end')
         declaration_start = close + 3
         model = source[declaration_start:end].rstrip() + '\n'
-        rust = identities[index]
+        display = re.match(r'/-- \[(zerocopy::[^\]\n]+)\]:', match[0])
+        if not display:
+            continue
+        rust = identity(display[1])
+        if rust not in by_rust:
+            # Dependencies and constants remain in the full-file scaffolding.
+            continue
         entry = by_rust[rust]
         lines = golden.normalize(model)
+        # Loop helpers carry the owner's Rust identity; retain their generated
+        # definitions independently rather than substituting an inline body.
+        declaration = next((line for line in lines if line.startswith('def ')), '')
+        if re.match(rf'def {re.escape(entry["model"])}_loop(?:\.body)?(?=\s|\(|$)', declaration):
+            continue
         if not lines or not re.match(rf'def {re.escape(entry["model"])}(?=\s|\(|$)', lines[0]):
             raise ValueError('Unexpected generated Lean root identity')
         if any(line and not line[0].isspace() for line in lines[1:]):
             raise ValueError('Unsupported generated root declaration layout')
+        if rust in models:
+            raise ValueError('Duplicate generated Lean root identity')
         models[rust] = model
         replacements.append((declaration_start, end, f'@@AENEAS_GOLDEN("{entry["golden"]}")@@\n\n'))
+    if models.keys() != by_rust.keys():
+        raise ValueError('Pinned Aeneas root declaration layout no longer matches inventory')
     for start, end, replacement in reversed(replacements):
         source = source[:start] + replacement + source[end:]
     return models, source
@@ -460,7 +518,8 @@ def main():
     parser.add_argument('--work', type=Path, required=True)
     args = parser.parse_args()
     entries = inventory(args.root)
-    annotations = discover(args.root, args.tool, entries)
+    scopes = json.loads((args.root / 'verification/aeneas/inventory.json').read_text()).get('covered_impls', [])
+    annotations = discover(args.root, args.tool, entries, scopes)
     if args.command == 'bindings':
         check_bindings(args.root, annotations, args.work / 'zerocopy.llbc')
     elif args.command == 'update':

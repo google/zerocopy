@@ -71,12 +71,29 @@ class InlineTests(unittest.TestCase):
     def test_inherent_method_ownership_and_unsupported_impls(self):
         found = self.parse('mod m { impl S { fn f(self) {\n' + BLOCK + '} } }')
         self.assertEqual(found[0]['syntax'], 'm::S::f')
-        for implementation, method in [('impl<T> S<T>', 'fn f()'),
+        for implementation, method in [('impl S<u8>', 'fn f()'),
                                        ('impl Trait for S', 'fn f()'),
-                                       ('impl m::S', 'fn f()'),
-                                       ('impl S', 'fn f<T>()')]:
+                                       ('impl m::S', 'fn f()')]:
             with self.subTest(implementation=implementation, method=method), self.assertRaises(ValueError):
                 self.parse(implementation + ' { ' + method + ' {\n' + BLOCK + '} }')
+
+    def test_generic_methods_and_parameterized_self_have_exact_owners(self):
+        for declaration in ('impl<T> S<T> { fn f(self)', 'impl S { fn f<T>()'):
+            found = self.parse(declaration + ' {\n' + BLOCK + '} }')
+            self.assertEqual(found[0]['syntax'], 'S::f')
+
+    def test_closed_method_coverage_detects_unannotated_and_inactive_methods(self):
+        entry = {**ENTRY, 'syntax': 'S::f'}
+        scope = {'file': ENTRY['file'], 'type': 'S'}
+        good = syntax('impl<T> S<T> { fn f(self) { fn harness() {} } }')
+        inline.check_coverage([entry], {ENTRY['file']: good}, [scope])
+        for extra in ('fn missing() {}', '#[cfg(any())] fn inactive() {}'):
+            bad = syntax('impl S { fn f() {} ' + extra + ' }')
+            with self.assertRaisesRegex(ValueError, 'Missing method proof'):
+                inline.check_coverage([entry], {ENTRY['file']: bad}, [scope])
+        bad = syntax('impl S<u8> { fn f() {} }')
+        with self.assertRaisesRegex(ValueError, 'Unsupported method'):
+            inline.check_coverage([entry], {ENTRY['file']: bad}, [scope])
 
     def test_proof_dependency_order_is_independent_of_source_order(self):
         caller = {'rust': 'caller', 'depends_on': ['callee']}
@@ -116,6 +133,25 @@ class InlineTests(unittest.TestCase):
             self.assertLess(proof.index('theorem callee_spec'), proof.index('theorem caller_spec'))
             required = (work / 'Required.lean').read_text()
             self.assertIn('(`Zerocopy.Proofs.caller_spec, #[`Zerocopy.Proofs.callee_spec])', required)
+
+    def test_named_proof_slots_have_complete_bijective_coverage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            wrapper = root / 'verification/aeneas/lean/Proofs.lean.in'
+            wrapper.parent.mkdir(parents=True)
+            work = root / 'work'
+            work.mkdir()
+            proof = {'rust': 'caller', 'theorem': 'caller_spec',
+                     'proof_text': 'theorem caller_spec : True := by trivial\n'}
+            slot = '@@AENEAS_PROOF("caller")@@'
+            wrapper.write_text('theorem support : True := by trivial\n' + slot)
+            inline.assemble(root, {'caller': proof}, work)
+            self.assertIn(proof['proof_text'].rstrip(), (work / 'Proofs.lean').read_text())
+            for malformed in ('', slot + slot, slot.replace('caller', 'unknown'),
+                              '@@AENEAS_PROOFS@@' + slot):
+                with self.subTest(wrapper=malformed), self.assertRaises(ValueError):
+                    wrapper.write_text(malformed)
+                    inline.assemble(root, {'caller': proof}, work)
 
     def test_rejects_near_miss_guards_missing_sections_and_broken_fences(self):
         variants = [BLOCK.replace('```aeneas', '```Aeneas'),
@@ -304,7 +340,7 @@ class InlineTests(unittest.TestCase):
             llbc = root / 'crate.llbc'
             llbc.write_text(json.dumps(data))
             inline.check_bindings(root, annotations, llbc)
-            for kind in ('wrong_self', 'missing_self', 'generic', 'trait', 'cross_module'):
+            for kind in ('wrong_self', 'missing_self', 'trait', 'cross_module'):
                 bad = copy.deepcopy(data)
                 translated = bad['translated']
                 implementation = translated['fun_decls'][0]['item_meta']['name'][2]['Impl']
@@ -312,8 +348,6 @@ class InlineTests(unittest.TestCase):
                     translated['type_decls'][0]['item_meta']['name'][-1]['Ident'][0] = 'T'
                 elif kind == 'missing_self':
                     implementation['Ty']['skip_binder']['Deduplicated'] = 99
-                elif kind == 'generic':
-                    implementation['Ty']['params']['types'] = ['T']
                 elif kind == 'trait':
                     implementation.clear()
                     implementation['Trait'] = 0
@@ -332,6 +366,24 @@ class InlineTests(unittest.TestCase):
         self.assertIn(entry['rust'], models)
         with self.assertRaises(ValueError):
             inline.split_live(generated.replace('{zerocopy::util::S}', '{zerocopy::other::S}'), [entry])
+
+    def test_dependencies_constants_and_loop_helpers_remain_in_scaffolding(self):
+        generated = ('namespace Zerocopy\n'
+                     '/-- [zerocopy::util::f]: loop body 0:\n    Source: x -/\n'
+                     '@[rust_loop_body]\ndef util.f_loop.body := 1\n\n'
+                     '/-- [zerocopy::util::f]: loop 0:\n    Source: x -/\n'
+                     '@[rust_loop]\ndef util.f_loop := 2\n\n'
+                     '/-- [zerocopy::util::f]:\n    Source: x -/\n'
+                     'def util.f :=\n  util.f_loop\n\n'
+                     '/-- [zerocopy::util::CONSTANT]\n    Source: x -/\n'
+                     'def util.CONSTANT := 3\n\n'
+                     '/-- [zerocopy::util::dependency]:\n    Source: x -/\n'
+                     'def util.dependency := 4\n\nend Zerocopy\n')
+        models, scaffold = inline.split_live(generated, [ENTRY])
+        self.assertEqual(models[ENTRY['rust']], 'def util.f :=\n  util.f_loop\n')
+        for declaration in ('util.f_loop.body', 'util.f_loop', 'util.CONSTANT', 'util.dependency'):
+            self.assertIn('def ' + declaration, scaffold)
+        self.assertNotIn('def util.f :=', scaffold)
 
 
 if __name__ == '__main__':
