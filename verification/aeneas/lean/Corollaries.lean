@@ -83,6 +83,43 @@ theorem round_down_monotone (a b : Usize) (align : NonZeroUsize)
   apply (UScalar.le_equiv _ _).mpr
   exact hgreatest m.val ((UScalar.le_equiv _ _).mp (le_trans hbound hab)) haligned
 
+theorem pad_to_align_sized_headroom (self : layout.DstLayout) (size : Usize)
+    (hs : self.size_info = .Sized size)
+    (hpow : self.align.val.val.isPowerOfTwo)
+    (hroom : size.val + self.align.val.val - 1 ≤ Usize.max) :
+    ∃ r, layout.DstLayout.pad_to_align self = .ok r := by
+  have hpos := Nat.pos_of_isPowerOfTwo hpow
+  have hlt := Nat.mod_lt (self.align.val.val - size.val % self.align.val.val) hpos
+  have hp := Proofs.Raw.pad_to_align_spec self hpow (by
+    simp only [hs, LayoutMath.roundUp]
+    omega)
+  obtain ⟨r, hr, _⟩ := WP.spec_imp_exists hp
+  exact ⟨r, hr⟩
+
+theorem pad_to_align_size (self : layout.DstLayout)
+    (ha : self.align.val.val.isPowerOfTwo)
+    (hc : canonicalLayout self)
+    (hf : (layoutValue self).padFits Usize.max) :
+    layout.DstLayout.pad_to_align self
+      ⦃ r => ∀ n : Nat, (layoutValue r).size n =
+        LayoutMath.roundUp ((layoutValue self).size n) self.align.val.val ⦄ := by
+  step with Proofs.Raw.pad_value_spec self ha hc hf as ⟨r, hr, _⟩
+  rw [hr]
+  rename_i n
+  cases hs : self.size_info with
+  | Sized size => simp only [layoutValue, hs, LayoutMath.LayoutValue.pad, LayoutMath.LayoutValue.size]
+  | SliceDst tail =>
+    simp only [layoutValue, hs, LayoutMath.LayoutValue.pad, LayoutMath.LayoutValue.size]
+    apply LayoutMath.pad_size _ _ _ (trailing_align_pos tail) (Nat.pos_of_isPowerOfTwo ha)
+    have hinner : (trailingFormula tail).align.isPowerOfTwo := by
+      simp only [trailingFormula, byteFormula]
+      exact ⟨_, rfl⟩
+    split
+    · rename_i h
+      exact power_dvd_of_le _ _ hinner ha (by omega)
+    · rename_i h
+      exact power_dvd_of_le _ _ ha hinner (by omega)
+
 theorem size_matches_recursive (tail : layout.TrailingSliceLayout Usize)
     (description : LayoutMath.Description) (n : Usize)
     (hn : 0 < tail.size_rounding_align_and_phase._0.val.val)
