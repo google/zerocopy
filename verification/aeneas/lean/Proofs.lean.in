@@ -65,5 +65,23 @@ theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p
 
 @@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::align")@@
 
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::assume_shallow_unpadded")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::for_type")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::for_unpadded_type")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::for_slice")@@
+
+@@AENEAS_PROOF("zerocopy::layout::max_elems_for_bytes")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::requires_static_padding")@@
+
+@@AENEAS_PROOF("zerocopy::layout::SizeInfo::try_to_nonzero_elem_size")@@
+
+theorem min_align_eq : layout.DstLayout.MIN_ALIGN = .ok ⟨1#usize⟩ := by
+  simp [layout.DstLayout.MIN_ALIGN, core.num.nonzero.NonZero.new]
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::new_zst")@@
 
 end Zerocopy.Proofs
