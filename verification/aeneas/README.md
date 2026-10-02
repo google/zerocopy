@@ -162,6 +162,7 @@ added without extending the specification set.
 | `DstLayout::{extend,pad_to_align}` | Exact field placement, alignment, padding flags, and normalized size formulas; outer padding preserves each field's complete inner size. |
 | Trailing advancement and size-sequence comparison | Exact byte advancement; a positive comparison establishes equal sizes for every natural metadata value. |
 | `DstLayout::requires_dynamic_padding` | Exact flag result and a mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
+| Cast validation and exact-size metadata | Alignment/size error priority, greatest fitting metadata, exact prefix/suffix split, and rejection of unattainable sizes. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
@@ -198,6 +199,10 @@ padding inside packed fields.
 
 A positive size-sequence comparison establishes equal sizes for every natural
 metadata value; a negative result does not assert that the sequences differ.
+
+Cast validation and exact metadata inference establish error priority, exact
+splits and rejection of unattainable sizes. Intentional zero-stride panic is
+checked separately.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
@@ -485,6 +490,11 @@ audit checks those identities and their generated-module ownership in both
 directions, independently scans raw nominal types, and rejects missing or extra
 provider registrations. This reuses one verified table without another coverage roster.
 
+For cast validation and
+exact-size metadata, the required outcomes spell out error priority, split
+positions, exact size, and greatest-fitting metadata independently of the
+predicates used by the inline specs. `OutcomeTests.lean` pins distinguishing
+fixed-size, suffix-alignment, and padded-size plateau examples.
 `Check.lean` derives dependencies from elaborated theorem types and terms,
 following helpers across handwritten modules, including private helpers, and
 writes `proof-dependencies.json` in each proof workspace. It imports and audits all

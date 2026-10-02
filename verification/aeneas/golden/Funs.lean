@@ -1096,6 +1096,109 @@ def layout.DstLayout.requires_dynamic_padding
       then ok true
       else ok (¬ (i1 = 0#usize))
 
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::validate_cast_and_convert_metadata]:
+    Source: 'src/layout/mod.rs', lines 1839:4-1985:5 -/
+def layout.DstLayout.validate_cast_and_convert_metadata
+  (self : layout.DstLayout) (addr : Std.Usize) (bytes_len : Std.Usize)
+  (cast_type : layout.CastType) :
+  Result (core.result.Result (Std.Usize × Std.Usize) layout.MetadataCastError)
+  := do
+  let o ← layout.SizeInfoUsize.try_to_nonzero_elem_size self.size_info
+  match o with
+  | none => fail panic
+  | some size_info =>
+    let o1 ← lift (Usize.checked_add addr bytes_len)
+    let e := core.option.Option.is_some o1
+    massert e
+    let offset ←
+      match cast_type with
+      | layout.CastType.Prefix => ok 0#usize
+      | layout.CastType.Suffix => ok bytes_len
+    let i ← addr + offset
+    let i1 ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner 
+        self.align
+    let i2 ← i % i1
+    if i2 != 0#usize
+    then ok (core.result.Result.Err layout.MetadataCastError.Alignment)
+    else
+      match size_info with
+      | layout.SizeInfo.Sized size =>
+        massert ((size > bytes_len) || (size <= bytes_len))
+        if size > bytes_len
+        then ok (core.result.Result.Err layout.MetadataCastError.Size)
+        else
+          match cast_type with
+          | layout.CastType.Prefix =>
+            ok (core.result.Result.Ok (0#usize, size))
+          | layout.CastType.Suffix =>
+            let split_at ← bytes_len - size
+            ok (core.result.Result.Ok (0#usize, split_at))
+      | layout.SizeInfo.SliceDst trailing =>
+        let o2 ←
+          layout.TrailingSliceLayout.max_trailing_bytes trailing bytes_len
+        match o2 with
+        | none => ok (core.result.Result.Err layout.MetadataCastError.Size)
+        | some bytes =>
+          let (elems, trailing_bytes) ←
+            layout.max_elems_for_bytes bytes trailing.elem_size
+          let (size_align, size_phase) ←
+            layout.RoundingAlignAndPhase.components
+              trailing.size_rounding_align_and_phase
+          let i3 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              trailing.elem_size
+          let i4 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              size_align
+          let self_bytes ←
+            if i3 <= i4
+            then
+              do
+              let i5 ← bytes_len - trailing.size_base
+              let i6 ←
+                util.round_down_to_next_multiple_of_alignment i5 size_align
+              trailing.size_base + i6
+            else
+              do
+              let without_padding ← size_phase + trailing_bytes
+              let i5 ← trailing.size_base + without_padding
+              let i6 ← util.padding_needed_for without_padding size_align
+              i5 + i6
+          massert (self_bytes <= bytes_len)
+          match cast_type with
+          | layout.CastType.Prefix =>
+            ok (core.result.Result.Ok (elems, self_bytes))
+          | layout.CastType.Suffix =>
+            let split_at ← bytes_len - self_bytes
+            ok (core.result.Result.Ok (elems, split_at))
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::metadata_for_exact_size]:
+    Source: 'src/layout/mod.rs', lines 1701:4-1724:5 -/
+def layout.DstLayout.metadata_for_exact_size
+  (self : layout.DstLayout) (size : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  match self.size_info with
+  | layout.SizeInfo.Sized _ => ok none
+  | layout.SizeInfo.SliceDst tsl =>
+    match tsl.elem_size.val with
+    | 0 => ok none
+    | _ =>
+      let r ←
+        layout.DstLayout.validate_cast_and_convert_metadata self 0#usize size
+          layout.CastType.Prefix
+      match r with
+      | core.result.Result.Ok p =>
+        let (elems, object_size) := p
+        if object_size = size
+        then ok (some elems)
+        else ok none
+      | core.result.Result.Err _ => ok none
+
 /-- [zerocopy::layout::nested_reference::round_up]:
     Source: 'src/layout/nested_reference.rs', lines 46:0-56:1 -/
 def layout.nested_reference.round_up
@@ -1375,8 +1478,82 @@ def layout.tail_checks.reference_capacity
     let rounded_budget ← after_base - i1
     ok (Usize.checked_sub rounded_budget phase)
 
+/-- [zerocopy::layout::tail_checks::reference_metadata]:
+    Source: 'src/layout/tail_checks.rs', lines 78:0-104:1 -/
+def layout.tail_checks.reference_metadata
+  (runtime_layout : layout.DstLayout)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
+  (size : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  match runtime_layout.size_info with
+  | layout.SizeInfo.Sized _ => ok none
+  | layout.SizeInfo.SliceDst tail =>
+    if tail.elem_size = 0#usize
+    then ok none
+    else
+      let o ← layout.tail_checks.reference_capacity tail align phase size
+      match o with
+      | none => ok none
+      | some bytes =>
+        let elems ← bytes / tail.elem_size
+        let o1 ← layout.tail_checks.reference_size tail align phase elems
+        let b ← layout.tail_checks.same_optional_usize o1 (some size)
+        if b
+        then ok (some elems)
+        else ok none
+
+/-- [zerocopy::layout::tail_checks::reference_cast]:
+    Source: 'src/layout/tail_checks.rs', lines 107:0-154:1 -/
+def layout.tail_checks.reference_cast
+  (runtime_layout : layout.DstLayout)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
+  (addr : Std.Usize) (length : Std.Usize) (side : layout.CastType) :
+  Result (core.result.Result (Std.Usize × Std.Usize) layout.MetadataCastError)
+  := do
+  let anchor ←
+    match side with
+    | layout.CastType.Prefix => ok addr
+    | layout.CastType.Suffix => addr + length
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+      runtime_layout.align
+  let i1 ← anchor % i
+  if i1 != 0#usize
+  then ok (core.result.Result.Err layout.MetadataCastError.Alignment)
+  else
+    let candidate ←
+      match runtime_layout.size_info with
+      | layout.SizeInfo.Sized size =>
+        if size <= length
+        then ok (some (0#usize, size))
+        else ok none
+      | layout.SizeInfo.SliceDst tail =>
+        do
+        let o ← layout.tail_checks.reference_capacity tail align phase length
+        match o with
+        | none => ok none
+        | some bytes =>
+          let elems ← bytes / tail.elem_size
+          let o1 ← layout.tail_checks.reference_size tail align phase elems
+          match o1 with
+          | none => ok none
+          | some size => ok (some (elems, size))
+    match candidate with
+    | none => ok (core.result.Result.Err layout.MetadataCastError.Size)
+    | some p =>
+      let (elems, size) := p
+      match side with
+      | layout.CastType.Prefix => ok (core.result.Result.Ok p)
+      | layout.CastType.Suffix =>
+        let split ← length - size
+        ok (core.result.Result.Ok (elems, split))
+
 /-- [zerocopy::layout::tail_checks::trailing_arithmetic_check]:
-    Source: 'src/layout/tail_checks.rs', lines 88:0-111:1 -/
+    Source: 'src/layout/tail_checks.rs', lines 166:0-189:1 -/
 def layout.tail_checks.trailing_arithmetic_check
   (tail : layout.TrailingSliceLayout Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -1409,6 +1586,96 @@ def layout.tail_checks.trailing_arithmetic_check
           layout.tail_checks.reference_capacity tail align phase budget
         let b3 ← layout.tail_checks.same_optional_usize o3 o4
         massert b3
+      else ok ()
+    else ok ()
+  else ok ()
+
+/-- [zerocopy::layout::tail_checks::layout_observations_check]:
+    Source: 'src/layout/tail_checks.rs', lines 204:0-247:1 -/
+def layout.tail_checks.layout_observations_check
+  (runtime_layout : layout.DstLayout)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
+  (size : Std.Usize) (addr : Std.Usize) (length : Std.Usize)
+  (side : layout.CastType) :
+  Result Unit
+  := do
+  let (si, encoding_matches) ←
+    match runtime_layout.size_info with
+    | layout.SizeInfo.Sized _ => ok (runtime_layout.size_info, true)
+    | layout.SizeInfo.SliceDst tail =>
+      do
+      let i ←
+        core.num.nonzero.NonZero.get
+          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+      let b ← core.num.Usize.is_power_of_two i
+      let b1 ←
+        if b
+        then
+          if phase < i
+          then
+            do
+            let o ← lift (Usize.checked_add i phase)
+            let i1 ←
+              core.num.nonzero.NonZero.get
+                Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+                tail.size_rounding_align_and_phase._0
+            layout.tail_checks.same_optional_usize o (some i1)
+          else ok false
+        else ok false
+      ok (runtime_layout.size_info, b1)
+  if encoding_matches
+  then
+    let o ←
+      layout.DstLayout.metadata_for_exact_size
+        { runtime_layout with size_info := si } size
+    let o1 ←
+      layout.tail_checks.reference_metadata
+        { runtime_layout with size_info := si } align phase size
+    let b ← layout.tail_checks.same_optional_usize o o1
+    massert b
+    let nonzero_stride ←
+      match si with
+      | layout.SizeInfo.Sized _ => ok true
+      | layout.SizeInfo.SliceDst tail => ok (tail.elem_size != 0#usize)
+    let o2 ← lift (Usize.checked_add addr length)
+    let b1 := core.option.Option.is_some o2
+    if b1
+    then
+      if nonzero_stride
+      then
+        let actual ←
+          layout.DstLayout.validate_cast_and_convert_metadata
+            { runtime_layout with size_info := si } addr length side
+        let expected ←
+          layout.tail_checks.reference_cast
+            { runtime_layout with size_info := si } align phase addr length
+            side
+        let same ←
+          match actual with
+          | core.result.Result.Ok p =>
+            match expected with
+            | core.result.Result.Ok p1 =>
+              let (elems, split) := p
+              let (expected_elems, expected_split) := p1
+              if elems = expected_elems
+              then ok (split = expected_split)
+              else ok false
+            | core.result.Result.Err _ => ok false
+          | core.result.Result.Err mce =>
+            match expected with
+            | core.result.Result.Ok _ => ok false
+            | core.result.Result.Err mce1 =>
+              match mce with
+              | layout.MetadataCastError.Alignment =>
+                match mce1 with
+                | layout.MetadataCastError.Alignment => ok true
+                | layout.MetadataCastError.Size => ok false
+              | layout.MetadataCastError.Size =>
+                match mce1 with
+                | layout.MetadataCastError.Alignment => ok false
+                | layout.MetadataCastError.Size => ok true
+        massert same
       else ok ()
     else ok ()
   else ok ()
