@@ -11,6 +11,7 @@ public import Specs
 public import Proofs.Util
 public import Aeneas
 public import Loops
+public import LayoutModel
 public import RepresentationLaws
 public import LayoutMath
 import all Mathlib.Data.Nat.Log
@@ -203,6 +204,150 @@ theorem encoding_align_spec :
   step with encoding_components_spec self hn as ⟨a, p, _, _, _, ha, _⟩
   simpa only [WP.spec_ok] using ha
 
+theorem assume_shallow_unpadded_spec :
+  ∀ (self : layout.DstLayout),
+    @Zerocopy.layout.DstLayout.assume_shallow_unpadded self ⦃ r => r.align = self.align ∧ r.size_info = self.size_info ∧ r.statically_shallow_unpadded = true ⦄ := by
+  intro self
+  simp only [layout.DstLayout.assume_shallow_unpadded, WP.spec_ok, and_self]
+
+/- Construct a fixed layout from explicit modeled size and alignment reads.
+Those reads are data premises supplied by the external ABI bridge, not axioms
+asserting that an arbitrary modeled size is the layout of a Rust type.
+-/
+theorem for_type_spec :
+  ∀ (T : Type) (size align : Usize), ∀ (hs : (core.mem.size_of T = .ok size : Prop)), ∀ (ha : (core.mem.align_of T = .ok align : Prop)), ∀ (hn : (0 < align.val : Prop)),
+    @Zerocopy.layout.DstLayout.for_type T ⦃ r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = false ⦄ := by
+  intro T size align hs ha hn
+  have haz : align ≠ 0#usize := by
+    intro h
+    have hv := congrArg UScalar.val h
+    change align.val = 0 at hv
+    omega
+  unfold layout.DstLayout.for_type
+  rw [ha]
+  simp only [bind_ok, core.num.nonzero.NonZero.new, cast_eq, haz,
+    ↓reduceDIte, ↓reduceIte, hs, WP.spec_ok, and_self]
+
+/- Construct the same fixed layout with its asserted unpadded flag. The caller's
+separate padding justification is outside this numerical contract.
+-/
+theorem for_unpadded_type_spec :
+  ∀ (T : Type) (size align : Usize), ∀ (hs : (core.mem.size_of T = .ok size : Prop)), ∀ (ha : (core.mem.align_of T = .ok align : Prop)), ∀ (hn : (0 < align.val : Prop)),
+    @Zerocopy.layout.DstLayout.for_unpadded_type T ⦃ r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = true ⦄ := by
+  intro T size align hs ha hn
+  unfold layout.DstLayout.for_unpadded_type
+  step with for_type_spec T size align hs ha hn as ⟨dl, halign, hsize, _⟩
+  step with assume_shallow_unpadded_spec dl as ⟨r, hr, hsi, hp⟩
+  exact ⟨hr ▸ halign, hsi ▸ hsize, hp⟩
+
+/- Construct a trailing layout with element size as stride and the modeled ABI
+alignment as its rounding alignment. The primitive read premises stay
+explicit.
+-/
+theorem for_slice_spec :
+  ∀ (T : Type) (size align : Usize), ∀ (hs : (core.mem.size_of T = .ok size : Prop)), ∀ (ha : (core.mem.align_of T = .ok align : Prop)), ∀ (hp : (align.val.isPowerOfTwo : Prop)),
+    @Zerocopy.layout.DstLayout.for_slice T ⦃ r => r.align.val = align ∧ r.statically_shallow_unpadded = true ∧
+    ∃ tail, r.size_info = layout.SizeInfo.SliceDst tail ∧
+      tail.offset = 0#usize ∧ tail.elem_size = size ∧ tail.size_base = 0#usize ∧
+      tail.size_rounding_align_and_phase._0.val.val = align.val ⦄ := by
+  intro T size align hs ha hp
+  have hpos := Nat.pos_of_isPowerOfTwo hp
+  have haz : align ≠ 0#usize := by
+    intro h
+    have hv := congrArg UScalar.val h
+    change align.val = 0 at hv
+    omega
+  unfold layout.DstLayout.for_slice
+  rw [ha]
+  simp only [bind_ok, core.num.nonzero.NonZero.new, cast_eq, haz,
+    ↓reduceDIte, ↓reduceIte, hs]
+  step with encoding_new_spec ⟨align⟩ 0#usize hp (by simpa using hpos) as ⟨encoded, he⟩
+  refine ⟨_, rfl, rfl, rfl, rfl, ?_⟩
+  simpa using he
+
+theorem max_elems_for_bytes_spec :
+  ∀ (bytes : Usize) (elem_size : NonZeroUsize), ∀ (hn : (0 < elem_size.val.val : Prop)),
+    @Zerocopy.layout.max_elems_for_bytes bytes elem_size ⦃ (elems, used) =>
+    elems.val = bytes.val / elem_size.val.val ∧ used.val = elems.val * elem_size.val.val ∧
+    used ≤ bytes ∧ bytes.val < (elems.val + 1) * elem_size.val.val ∧
+    (∀ n : Nat, n * elem_size.val.val ≤ bytes.val ↔ n ≤ elems.val) ⦄ := by
+  intro bytes elem hn
+  unfold layout.max_elems_for_bytes
+  simp only [core.num.nonzero.NonZero.get, bind_ok]
+  step with Usize.div_spec bytes (y := elem.val) (by omega) as ⟨elems, he⟩
+  have hfit : elems.val * elem.val.val ≤ bytes.val := by
+    rw [he, Nat.mul_comm]
+    exact Nat.mul_div_le _ _
+  have hav : bytes.val ≤ Usize.max := by scalar_tac
+  step as ⟨product, hmul⟩
+  cases product with
+  | none =>
+    simp only [] at hmul
+    omega
+  | some used =>
+    simp only [] at hmul
+    simp only [WP.spec_ok]
+    refine ⟨he, hmul.2.1, (UScalar.le_equiv _ _).mpr (by omega), ?_, ?_⟩
+    · rw [he, Nat.mul_comm]
+      exact Nat.lt_mul_div_succ _ hn
+    · intro n
+      rw [he]
+      exact (Nat.le_div_iff_mul_le hn).symm
+
+theorem requires_static_padding_spec :
+  ∀ (self : layout.DstLayout),
+    @Zerocopy.layout.DstLayout.requires_static_padding self ⦃ r => r = !self.statically_shallow_unpadded ⦄ := by
+  intro self
+  simp only [layout.DstLayout.requires_static_padding, WP.spec_ok]
+  cases self.statically_shallow_unpadded <;> rfl
+
+/- Explain both zero-stride rejection and successful conversion. The raw lemma
+retains broad representation coverage; the canonical spec adds recursive
+admission rather than silently changing that useful raw theorem.
+-/
+theorem try_nonzero_spec :
+  ∀ (self : layout.SizeInfo Usize),
+    @Zerocopy.layout.SizeInfoUsize.try_to_nonzero_elem_size self ⦃ r => match self with
+    | .Sized size => r = some (.Sized size)
+    | .SliceDst tail =>
+      if tail.elem_size = 0#usize then r = none else
+        ∃ t, r = some (.SliceDst t) ∧ t.offset = tail.offset ∧
+          t.size_base = tail.size_base ∧
+          t.size_rounding_align_and_phase = tail.size_rounding_align_and_phase ∧
+          t.elem_size.val = tail.elem_size ⦄ := by
+  intro self
+  cases self with
+  | Sized size => simp [layout.SizeInfoUsize.try_to_nonzero_elem_size]
+  | SliceDst tail =>
+    unfold layout.SizeInfoUsize.try_to_nonzero_elem_size core.num.nonzero.NonZero.new
+    by_cases hz : tail.elem_size = 0#usize
+    · simp only [cast_eq, hz, ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+    · simp only [cast_eq, hz, ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+      exact ⟨_, rfl, rfl, rfl, rfl, rfl⟩
+
+theorem min_align_eq : layout.DstLayout.MIN_ALIGN = .ok ⟨1#usize⟩ := by
+  simp [layout.DstLayout.MIN_ALIGN, core.num.nonzero.NonZero.new]
+
+theorem new_zst_spec :
+  ∀ (repr_align : Option NonZeroUsize), ∀ (hp : (∀ a ∈ repr_align, a.val.val.isPowerOfTwo : Prop)),
+    @Zerocopy.layout.DstLayout.new_zst repr_align ⦃ r => r.align = repr_align.getD ⟨1#usize⟩ ∧
+    r.size_info = .Sized 0#usize ∧ r.statically_shallow_unpadded = true ⦄ := by
+  intro repr_align hp
+  unfold layout.DstLayout.new_zst
+  have ha : (repr_align.getD ⟨1#usize⟩).val.val.isPowerOfTwo := by
+    cases repr_align with
+    | none => exact ⟨0, by simp⟩
+    | some a => exact hp a rfl
+  cases repr_align
+  all_goals
+    simp only [min_align_eq, Option.getD_none, Option.getD_some,
+      core.num.nonzero.NonZero.get, bind_ok] at ha ⊢
+    step as ⟨b, hb⟩
+    have hbt : b = true := by
+      have hb' : (b = true) = True := by simpa only [ha, Nat.isPowerOfTwo_one] using hb
+      exact Eq.mpr hb' trivial
+    simp [massert, hbt, bind_ok, WP.spec_ok]
+
 end Zerocopy.Proofs.Raw
 
 namespace Zerocopy.Proofs
@@ -269,9 +414,136 @@ theorem encoding_align_spec : Zerocopy.Specs.encoding_align_spec := by
   exact ⟨av, (decodeNonZeroUScalar_iff align av).mpr rfl, he.trans hvalue.1.symm⟩
 register_spec_step encoding_align_spec
 
+theorem max_elems_for_bytes_spec : Zerocopy.Specs.max_elems_for_bytes_spec := by
+  unfold Zerocopy.Specs.max_elems_for_bytes_spec
+  representation_simps
+  intro bytes elem hn
+  apply WP.spec_mono (Raw.max_elems_for_bytes_spec bytes elem hn)
+  intro result facts
+  refine ⟨?_, facts⟩
+  change isValid result
+  simp
+register_spec_step max_elems_for_bytes_spec
+
+theorem assume_shallow_unpadded_spec : Zerocopy.Specs.assume_shallow_unpadded_spec := by
+  unfold Zerocopy.Specs.assume_shallow_unpadded_spec
+  representation_simps
+  intro self hv
+  apply WP.spec_mono (Raw.assume_shallow_unpadded_spec self)
+  intro r facts
+  refine ⟨?_, facts⟩
+  simpa only [facts.1, facts.2.1] using hv
+register_spec_step assume_shallow_unpadded_spec
+
+/- Construct a fixed layout from explicit modeled size and alignment reads.
+Those reads are data premises supplied by the external ABI bridge, not axioms
+asserting that an arbitrary modeled size is the layout of a Rust type.
+-/
+theorem for_type_spec : Zerocopy.Specs.for_type_spec := by
+  unfold Zerocopy.Specs.for_type_spec
+  representation_simps
+  intro T validity size align hs ha hn
+  apply WP.spec_mono (Raw.for_type_spec T size align hs ha hn)
+  intro r facts
+  refine ⟨?_, facts⟩
+  simp only [facts.1, facts.2.1, hn, and_self]
+register_spec_step for_type_spec
+
+/- Construct the same fixed layout with its asserted unpadded flag. The caller's
+separate padding justification is outside this numerical contract.
+-/
+theorem for_unpadded_type_spec : Zerocopy.Specs.for_unpadded_type_spec := by
+  unfold Zerocopy.Specs.for_unpadded_type_spec
+  representation_simps
+  intro T validity size align hs ha hn
+  apply WP.spec_mono (Raw.for_unpadded_type_spec T size align hs ha hn)
+  intro r facts
+  refine ⟨?_, facts⟩
+  simp only [facts.1, facts.2.1, hn, and_self]
+register_spec_step for_unpadded_type_spec
+
+/- Construct a trailing layout with element size as stride and the modeled ABI
+alignment as its rounding alignment. The primitive read premises stay
+explicit.
+-/
+theorem for_slice_spec : Zerocopy.Specs.for_slice_spec := by
+  unfold Zerocopy.Specs.for_slice_spec
+  representation_simps
+  intro T validity size align hs ha hp
+  apply WP.spec_mono (Raw.for_slice_spec T size align hs ha hp)
+  intro r facts
+  refine ⟨?_, facts⟩
+  rcases facts with ⟨halign, _, tail, hsi, _, _, _, hcode⟩
+  simp only [halign, hsi]
+  have := Nat.pos_of_isPowerOfTwo hp
+  simpa only [hcode, and_self] using this
+register_spec_step for_slice_spec
+
+theorem requires_static_padding_spec : Zerocopy.Specs.requires_static_padding_spec := by
+  unfold Zerocopy.Specs.requires_static_padding_spec
+  representation_simps
+  intro self _
+  exact Raw.requires_static_padding_spec self
+register_spec_step requires_static_padding_spec
+
 end Zerocopy.Proofs
 
 namespace Zerocopy.Proofs
 open AeneasSpecs
+
+/- Explain both zero-stride rejection and successful conversion. The raw lemma
+retains broad representation coverage; the canonical spec adds recursive
+admission rather than silently changing that useful raw theorem.
+-/
+theorem try_nonzero_spec : Zerocopy.Specs.try_nonzero_spec := by
+  unfold Zerocopy.Specs.try_nonzero_spec
+  representation_simps
+  intro self value decoded
+  have hv := (size_info_valid_iff self).mp ⟨value, decoded⟩
+  apply WP.spec_mono (Raw.try_nonzero_spec self)
+  intro r facts
+  constructor
+  swap
+  · cases self <;> simpa using facts
+  change isValid r
+  rw [option_valid_iff]
+  cases self with
+  | Sized size =>
+    simp only [] at facts
+    rw [facts]
+    simp [sizeInfoValid]
+  | SliceDst tail =>
+    simp only [sizeInfoValid, trailingValid, scalar_valid_iff, true_and] at hv
+    simp only [] at facts
+    by_cases hz : tail.elem_size = 0#usize
+    · simp only [hz, if_true] at facts
+      rw [facts]
+      simp
+    · simp only [hz, if_false] at facts
+      rcases facts with ⟨next, hr, _, _, hcode, helem⟩
+      rw [hr]
+      simp only [Option.mem_some_iff, forall_eq']
+      rw [size_info_valid_iff]
+      change trailingValid next
+      simp only [trailingValid, nonzero_valid_iff, encodingValid, hcode]
+      have hnz : tail.elem_size.val ≠ 0 := by
+        intro h
+        apply hz
+        exact UScalar.eq_of_val_eq (by simpa using h)
+      exact ⟨by simpa only [helem] using Nat.pos_of_ne_zero hnz, hv⟩
+register_spec_step try_nonzero_spec
+
+theorem new_zst_spec : Zerocopy.Specs.new_zst_spec := by
+  unfold Zerocopy.Specs.new_zst_spec
+  representation_simps
+  intro repr_align hv hp
+  apply WP.spec_mono (Raw.new_zst_spec repr_align hp)
+  intro r facts
+  refine ⟨?_, facts⟩
+  simp only [facts.1, facts.2.1]
+  cases repr_align with
+  | none => simp
+  | some a => simpa only [Option.getD_some, and_true] using Nat.pos_of_isPowerOfTwo (hp a rfl)
+register_spec_step new_zst_spec
 
 end Zerocopy.Proofs

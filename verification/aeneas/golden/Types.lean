@@ -45,4 +45,28 @@ structure layout.RoundingAlignAndPhase where
   _0 : core.num.nonzero.NonZero Std.Usize
     core.num.niche_types.NonZeroUsizeInner
 
+/-- [zerocopy::layout::TrailingSliceLayout]
+    Source: 'src/layout.rs', lines 182:0-236:1 -/
+structure layout.TrailingSliceLayout (E : Type) where
+  offset : Std.Usize
+  elem_size : E
+  size_base : Std.Usize
+  size_rounding_align_and_phase : layout.RoundingAlignAndPhase
+
+/-- [zerocopy::layout::SizeInfo]
+    Source: 'src/layout.rs', lines 47:0-50:1 -/
+@[discriminant isize]
+inductive layout.SizeInfo (E : Type) where
+| Sized : Std.Usize → layout.SizeInfo E
+| SliceDst : layout.TrailingSliceLayout E → layout.SizeInfo E
+
+/-- [zerocopy::layout::DstLayout]
+    Source: 'src/layout.rs', lines 34:0-42:1
+    Visibility: public -/
+structure layout.DstLayout where
+  align : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+  size_info : layout.SizeInfo Std.Usize
+  statically_shallow_unpadded : Bool
+
 end Zerocopy
