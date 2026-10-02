@@ -883,14 +883,16 @@ where
     #[inline(always)]
     fn via_runtime_check(self) -> Result<(Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>), Self> {
         let l_len = self.l_len();
+        // `l_len` witnesses an object size at most `isize::MAX`, and
+        // `KnownLayout::LAYOUT` guarantees that it contains the trailing
+        // slice. Thus `padding_for_elems` returns the exact trailing padding.
+        let trailing_padding = crate::trailing_slice_layout::<T>().padding_for_elems(l_len.get());
         // FIXME(#1290): Once we require `KnownLayout` on all fields, add an
         // `IS_IMMUTABLE` associated const, and add `T::IS_IMMUTABLE ||` to the
         // below check.
-        if l_len.padding_needed_for() == 0 {
-            // SAFETY: By `T: SplitAt`, `T` is either `[T]`, or a `repr(C)` or
-            // `repr(transparent)` slice DST, for which the trailing padding
-            // needed to accommodate `l_len` trailing elements is
-            // `l_len.padding_needed_for()`. If no trailing padding is required,
+        if trailing_padding == 0 {
+            // SAFETY: As established above, `trailing_padding` is the exact
+            // padding after the left part's trailing slice. If it is zero,
             // the left and right parts are strictly non-overlapping.
             Ok(unsafe { self.via_unchecked() })
         } else {
@@ -903,7 +905,7 @@ where
     /// # Safety
     ///
     /// The caller promises that if `I::Aliasing` is [`Exclusive`] or `T`
-    /// permits interior mutation, then `l_len.padding_needed_for() == 0`.
+    /// permits interior mutation, then the left part has no trailing padding.
     #[inline(always)]
     unsafe fn via_unchecked(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>) {
         let l_len = self.l_len();
@@ -915,8 +917,9 @@ where
 
         // Lemma 0: `left` and `right` conform to the aliasing invariant
         // `I::Aliasing`. Proof: If `I::Aliasing` is `Exclusive` or `T` permits
-        // interior mutation, the caller promises that `l_len.padding_needed_for()
-        // == 0`. Consequently, by post-condition on `PtrInner::split_at_unchecked`,
+        // interior mutation, the caller promises that the left part has no
+        // trailing padding. Consequently, by post-condition on
+        // `PtrInner::split_at_unchecked`,
         // there is no trailing padding after `left`'s final element that would
         // overlap into `right`. If `I::Aliasing` is shared and `T` forbids interior
         // mutation, then overlap between their referents is permissible.
@@ -942,8 +945,8 @@ where
         //    `ptr`, which, by contract on `T: SplitAt::Elem`, has type
         //    `[T::Elem]`. The `left` part cannot be used to invalidate `right`,
         //    because the caller promises that if `I::Aliasing` is `Exclusive`
-        //    or `T` permits interior mutation, then `l_len.padding_needed_for()
-        //    == 0` and thus the parts will be non-overlapping.
+        //    or `T` permits interior mutation, then the left part has no
+        //    trailing padding and thus the parts will be non-overlapping.
         let right = unsafe { Ptr::from_inner(right) };
 
         (left, right)
