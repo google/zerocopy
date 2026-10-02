@@ -335,6 +335,8 @@ fit requirements; arbitrary malformed internal layout records need not succeed.
 Generic size/alignment reads are explicit external data inputs, never axioms
 asserting layout correctness.
 
+`LayoutMath.lean` supplies independent unbounded size and capacity formulas.
+
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
 raw fields. Binding `let N : Nat := n` makes addition and remainder ordinary
