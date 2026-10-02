@@ -89,6 +89,50 @@ def encoding_align_spec : Prop :=
   ∀ (code : layout.RoundingAlignAndPhase),
     encoding_align_spec_contract code (layout.RoundingAlignAndPhase.align code)
 
+def size_offset_spec_contract (E : Type) (t : layout.TrailingSliceLayout E)
+    (run : Result Usize) : Prop :=
+  ∀ [RustModel E], trailingValid t →
+    ∃ offset, run = .ok offset ∧
+      offset.val = t.size_base.val - t.size_base.val % (byteFormula t).align + (byteFormula t).phase
+
+def size_offset_spec : Prop :=
+  ∀ (E : Type) (t : layout.TrailingSliceLayout E),
+    size_offset_spec_contract E t (layout.TrailingSliceLayout.size_offset t)
+
+def max_trailing_bytes_spec_contract
+    (E : Type) (t : layout.TrailingSliceLayout E) (budget : Usize)
+    (run : Result (Option Usize)) : Prop :=
+  ∀ [RustModel E],
+    trailingValid t →
+    ∃ cap, run = .ok cap ∧
+      cap.map UScalar.val = (byteFormula t).capacity budget.val
+
+def max_trailing_bytes_spec : Prop :=
+  ∀ (E : Type) (t : layout.TrailingSliceLayout E) (budget : Usize),
+    max_trailing_bytes_spec_contract E t budget
+      (layout.TrailingSliceLayout.max_trailing_bytes t budget)
+
+def padding_for_elems_spec_contract (t : layout.TrailingSliceLayout Usize) (n : Usize)
+    (run : Result Usize) : Prop :=
+  0 < t.size_rounding_align_and_phase._0.val.val →
+    ∃ p, run = .ok p ∧
+      (p.val + t.offset.val + n.val * t.elem_size.val) % UScalar.size .Usize =
+        (trailingFormula t).size n.val % UScalar.size .Usize
+
+def padding_for_elems_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (n : Usize),
+    padding_for_elems_spec_contract t n (layout.TrailingSliceLayoutUsize.padding_for_elems t n)
+
+def size_for_elems_spec_contract (t : layout.TrailingSliceLayout Usize) (n : Usize)
+    (run : Result (Option Usize)) : Prop :=
+  0 < t.size_rounding_align_and_phase._0.val.val →
+    ∃ size, run = .ok size ∧
+      size.map UScalar.val = (trailingFormula t).checkedSize Usize.max n.val
+
+def size_for_elems_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (n : Usize),
+    size_for_elems_spec_contract t n (layout.TrailingSliceLayoutUsize.size_for_elems t n)
+
 def try_nonzero_spec_contract (si : layout.SizeInfo Usize)
     (run : Result (Option (layout.SizeInfo NonZeroUsize))) : Prop :=
   sizeInfoValid si → run ⦃ r => (∀ next ∈ r, sizeInfoValid next) ∧
