@@ -70,14 +70,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is n
    |
    = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<()>`
    = help: the following other types implement trait `zerocopy_renamed::Immutable`:
-             &T
-             &mut T
-             ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: required for `ManuallyDrop<UnsafeCell<()>>` to implement `zerocopy_renamed::Immutable`
    = note: the full name for the type has been written to '/long-type-HASH.txt'

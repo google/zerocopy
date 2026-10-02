@@ -11,14 +11,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
-              ()
-              (A, B)
-              (A, B, C)
-              (A, B, C, D)
-              (A, B, C, D, E)
-              (A, B, C, D, E, F)
-              (A, B, C, D, E, F, G)
-              (A, B, C, D, E, F, G, H)
+              $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::TryFromBytes`
    --> $DIR/derive_transparent.rs:24:21
@@ -56,14 +49,7 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
     = help: the following other types implement trait `FromZeros`:
-              ()
-              (A, B)
-              (A, B, C)
-              (A, B, C, D)
-              (A, B, C, D, E)
-              (A, B, C, D, E, F)
-              (A, B, C, D, E, F, G)
-              (A, B, C, D, E, F, G, H)
+              $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
    --> $DIR/derive_transparent.rs:24:21
@@ -101,14 +87,7 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
-              ()
-              AU16
-              Atomic<i16>
-              Atomic<i32>
-              Atomic<i64>
-              Atomic<i8>
-              Atomic<isize>
-              Atomic<u16>
+              $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::FromBytes`
    --> $DIR/derive_transparent.rs:24:21
@@ -144,14 +123,7 @@ help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocop
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy_renamed::IntoBytes`:
-              ()
-              AU16
-              Atomic<bool>
-              Atomic<i16>
-              Atomic<i32>
-              Atomic<i64>
-              Atomic<i8>
-              Atomic<isize>
+              $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::IntoBytes`
    --> $DIR/derive_transparent.rs:24:10
@@ -187,14 +159,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `NotZerocop
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(Unaligned)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
-              ()
-              Atomic<bool>
-              Atomic<i8>
-              Atomic<u8>
-              Cell<T>
-              F32<O>
-              F64<O>
-              I128<O>
+              $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::Unaligned`
    --> $DIR/derive_transparent.rs:24:32
