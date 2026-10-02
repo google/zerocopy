@@ -223,5 +223,13 @@ def layout.DstLayout.CURRENT_MAX_ALIGN
     Visibility: public -/
 @@AENEAS_GOLDEN("layout.DstLayout.requires_dynamic_padding.lean.in")@@
 
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::validate_cast_and_convert_metadata]:
+    Source: 'src/layout.rs', lines 3220:4-3618:5 -/
+@@AENEAS_GOLDEN("layout.DstLayout.validate_cast_and_convert_metadata.lean.in")@@
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::metadata_for_exact_size]:
+    Source: 'src/layout.rs', lines 3006:4-3114:5 -/
+@@AENEAS_GOLDEN("layout.DstLayout.metadata_for_exact_size.lean.in")@@
+
 
 end Zerocopy
