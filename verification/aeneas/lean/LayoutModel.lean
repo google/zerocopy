@@ -124,6 +124,26 @@ is an explicit operation domain, not a consequence of NonZeroUsize alone.
 -/
 def alignmentDomain (a : Nat) : Prop := a.isPowerOfTwo ∧ a ≤ 2 ^ 29
 
+/- Compute the independent prefix state for a constructor loop iteration.
+-/
+def constructionPrefix (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) (i : Nat) : LayoutMath.LayoutValue :=
+  LayoutMath.LayoutValue.prefixValue (fields.val.map layoutValue) initial (packingValue packed) i
+
+/- Require every intermediate append to fit before promising that the entire
+record constructor terminates. Its final padding bound is stated separately.
+-/
+def constructionDomain (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) : Prop :=
+  ∀ i (hi : i < fields.val.length),
+    alignmentDomain (constructionPrefix fields initial packed i).align ∧
+    alignmentDomain fields.val[i].align.val.val ∧ canonicalLayout fields.val[i] ∧
+    (constructionPrefix fields initial packed i).extendFits
+      (layoutValue fields.val[i]) (packingValue packed) Usize.max
+
+def initialAlignment (repr_align : Option NonZeroUsize) : Nat :=
+  (repr_align.map (fun a => a.val.val)).getD 1
+
 attribute [contract_simps] castSide castSplit castSpec metadataSpec
 
 end Zerocopy.Proofs
@@ -173,6 +193,16 @@ def layoutValue (self : layout.DstLayout.Fields) : LayoutMath.LayoutValue :=
       | .Sized size => .fixed size.value
       | .SliceDst tail => .trailing (trailingFormula tail),
     unpadded := self.statically_shallow_unpadded }
+
+/- Compute a constructor prefix from decoded mathematical field records.
+-/
+def constructionPrefix (fields : List layout.DstLayout.Fields)
+    (initial : LayoutMath.LayoutValue) (packed : Option NonZeroUsizeValue)
+    (i : Nat) : LayoutMath.LayoutValue :=
+  LayoutMath.LayoutValue.prefixValue (fields.map layoutValue) initial (packingValue packed) i
+
+def initialAlignment (repr_align : Option NonZeroUsizeValue) : Nat :=
+  (repr_align.map (fun a => a.value)).getD 1
 
 end Zerocopy.ModelViews
 
