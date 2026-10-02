@@ -37,6 +37,9 @@ initialize_workspace() {
 check_proofs() (
     cd "$1"
     lake build
+    for source in Arithmetic.lean Proofs.lean ContractTests.lean Corollaries.lean; do
+        lake env lean -DwarningAsError=true "$source"
+    done
     # Always run the audit, even if Lake caches its imports.
     lake env lean -DwarningAsError=true Check.lean
 )

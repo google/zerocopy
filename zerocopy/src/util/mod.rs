@@ -169,17 +169,31 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
     //     let i2 ← lift (~~~ i1)
     //     ok (i2 &&& mask)
     // proof:
-    //   theorem padding_lt_alignment (len : Usize) (align : NonZeroUsize)
-    //       (h : 0 < align.val.val) :
-    //       util.padding_needed_for len align ⦃ p => p.val < align.val.val ⦄ := by
-    //     unfold util.padding_needed_for
-    //     simp only [core.num.nonzero.NonZero.get, bind_ok]
-    //     step
-    //     simp only [lift, bind_ok, WP.spec_ok, UScalar.val_and]
-    //     have hbound :
-    //         (~~~(core.num.Usize.wrapping_sub len 1#usize)).val &&& mask.val ≤ mask.val :=
-    //       Nat.and_le_right
-    //     omega
+    //   contract padding_lt_alignment (len : Usize) (align : NonZeroUsize)
+    //     for util.padding_needed_for len align
+    //     requires h : (align.val : Nat).isPowerOfTwo
+    //     ensures p => p < align.val ∧
+    //       let L : Nat := len
+    //       let A : Nat := align.val
+    //       let P : Nat := p
+    //       P = (A - L % A) % A ∧ (L + P) % A = 0 ∧
+    //         (∀ q : Nat, (L + q) % A = 0 → P ≤ q) ∧ (P = 0 ↔ L % A = 0)
+    //     proof:
+    //       have hpos := Nat.pos_of_isPowerOfTwo h
+    //       unfold util.padding_needed_for
+    //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+    //       step
+    //       simp only [lift, bind_ok, WP.spec_ok]
+    //       have hbound : (~~~(core.num.Usize.wrapping_sub len 1#usize) &&& mask).val
+    //           < align.val.val := by
+    //         have := Nat.and_le_right (n := (~~~(core.num.Usize.wrapping_sub len 1#usize)).val)
+    //           (m := mask.val)
+    //         rw [UScalar.val_and]
+    //         omega
+    //       have haligned := Arithmetic.padding_mask_aligned len align.val mask h (by omega)
+    //       obtain ⟨hexact, hminimal, hzero⟩ :=
+    //         Arithmetic.padding_properties _ _ _ hpos hbound haligned
+    //       exact ⟨(UScalar.lt_equiv _ _).mpr hbound, hexact, haligned, hminimal, hzero⟩
     // ```
     #[cfg(kani)]
     #[kani::proof_for_contract(padding_needed_for)]
@@ -282,27 +296,27 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     //     let mask ← lift (~~~ i)
     //     ok (n &&& mask)
     // proof:
-    //   theorem round_down_spec (n : Usize) (align : NonZeroUsize)
-    //       (hpos : 0 < align.val.val) (h : align.val.val.isPowerOfTwo) :
-    //       util.round_down_to_next_multiple_of_alignment n align
-    //         ⦃ m => m.val ≤ n.val ∧ m.val % align.val.val = 0 ⦄ := by
-    //     unfold util.round_down_to_next_multiple_of_alignment
-    //     simp only [core.num.nonzero.NonZero.get, bind_ok]
-    //     step
-    //     step
-    //     step with UScalar.sub_bv_spec as ⟨mask, hval, hle, hbv⟩
-    //     simp only [lift, bind_ok, WP.spec_ok]
-    //     constructor
-    //     · simp only [UScalar.val_and]
-    //       exact Nat.and_le_left
-    //     · have clear : (n &&& ~~~mask).val &&& mask.val = 0 := by
-    //         rw [← UScalar.val_and]
-    //         change ((n.bv &&& ~~~mask.bv) &&& mask.bv).toNat = 0
-    //         simp [BitVec.and_assoc]
-    //       unfold Nat.isPowerOfTwo at h
-    //       rcases h with ⟨k, hk⟩
-    //       rw [hval, hk, Nat.and_two_pow_sub_one_eq_mod] at clear
-    //       simpa only [hk] using clear
+    //   contract round_down_spec (n : Usize) (align : NonZeroUsize)
+    //     for util.round_down_to_next_multiple_of_alignment n align
+    //     requires h : (align.val : Nat).isPowerOfTwo
+    //     ensures m => m ≤ n ∧
+    //       let N : Nat := n
+    //       let A : Nat := align.val
+    //       let M : Nat := m
+    //       M = N - N % A ∧ M % A = 0 ∧ N < M + A ∧
+    //         (∀ q : Nat, q ≤ N → q % A = 0 → q ≤ M)
+    //     proof:
+    //       have hpos := Nat.pos_of_isPowerOfTwo h
+    //       unfold util.round_down_to_next_multiple_of_alignment
+    //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+    //       step
+    //       step
+    //       step with UScalar.sub_bv_spec as ⟨mask, hval, hle, hbv⟩
+    //       simp only [lift, bind_ok, WP.spec_ok]
+    //       have hexact := Arithmetic.round_down_exact n align.val mask h hval
+    //       obtain ⟨hbound, haligned, hnext, hgreatest⟩ :=
+    //         Arithmetic.round_down_properties _ _ _ hpos hexact
+    //       exact ⟨(UScalar.le_equiv _ _).mpr hbound, hexact, haligned, hnext, hgreatest⟩
     // ```
     #[cfg(kani)]
     #[kani::proof_for_contract(round_down_to_next_multiple_of_alignment)]
@@ -343,14 +357,19 @@ pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     //     then ok b
     //     else ok a
     // proof:
-    //   theorem max_spec (a b : NonZeroUsize) :
-    //       ∃ r, util.max a b = .ok r ∧ r.val.val = Nat.max a.val.val b.val.val := by
-    //     simp only [util.max, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
-    //     split
-    //     · rename_i h
-    //       exact ⟨b, rfl, (Nat.max_eq_right (by omega)).symm⟩
-    //     · rename_i h
-    //       exact ⟨a, rfl, (Nat.max_eq_left (by omega)).symm⟩
+    //   contract max_spec (a b : NonZeroUsize)
+    //     for util.max a b
+    //     ensures r => r.val = max a.val b.val ∧ (r = a ∨ r = b) ∧
+    //       a.val ≤ r.val ∧ b.val ≤ r.val
+    //     proof:
+    //       simp only [util.max, core.num.nonzero.NonZero.get, bind_ok]
+    //       split
+    //       · rename_i h
+    //         exact WP.spec.ret ⟨(max_eq_right (le_of_lt h)).symm, Or.inr rfl,
+    //           le_of_lt h, le_rfl⟩
+    //       · rename_i h
+    //         exact WP.spec.ret ⟨(max_eq_left (le_of_not_gt h)).symm, Or.inl rfl,
+    //           le_rfl, le_of_not_gt h⟩
     // ```
     if a.get() < b.get() {
         b
@@ -382,14 +401,19 @@ pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     //     then ok b
     //     else ok a
     // proof:
-    //   theorem min_spec (a b : NonZeroUsize) :
-    //       ∃ r, util.min a b = .ok r ∧ r.val.val = Nat.min a.val.val b.val.val := by
-    //     simp only [util.min, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
-    //     split
-    //     · rename_i h
-    //       exact ⟨b, rfl, (Nat.min_eq_right (by omega)).symm⟩
-    //     · rename_i h
-    //       exact ⟨a, rfl, (Nat.min_eq_left (by omega)).symm⟩
+    //   contract min_spec (a b : NonZeroUsize)
+    //     for util.min a b
+    //     ensures r => r.val = min a.val b.val ∧ (r = a ∨ r = b) ∧
+    //       r.val ≤ a.val ∧ r.val ≤ b.val
+    //     proof:
+    //       simp only [util.min, core.num.nonzero.NonZero.get, bind_ok]
+    //       split
+    //       · rename_i h
+    //         exact WP.spec.ret ⟨(min_eq_right (le_of_lt h)).symm, Or.inr rfl,
+    //           le_of_lt h, le_rfl⟩
+    //       · rename_i h
+    //         exact WP.spec.ret ⟨(min_eq_left (le_of_not_gt h)).symm, Or.inl rfl,
+    //           le_rfl, le_of_not_gt h⟩
     // ```
     if a.get() > b.get() {
         b

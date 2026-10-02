@@ -7,6 +7,8 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 import Required
+import ContractTests
+import Corollaries
 open Lean Elab Command
 run_elab do
   let required := requiredTheorems
@@ -15,10 +17,41 @@ run_elab do
     match env.find? declName with
     | some (.thmInfo _) => pure ()
     | _ => throwError "Missing required theorem {declName}"
-  let prefixes := #[`Zerocopy.Proofs, `Zerocopy.Obligations, `Zerocopy.util, `core.num]
+  let some proofModule := env.getModuleIdxFor? required[0]!
+    | throwError "Required proofs must be imported from the generated Proofs module"
+  for (declName, declared) in proofDependencies do
+    -- Inspect elaborated terms, including compiler-generated local helpers.
+    -- Stop at another registered theorem: its own edges are checked separately.
+    let mut pending := #[declName]
+    let mut visited : NameHashSet := {}
+    let mut actual : Array Name := #[]
+    while !pending.isEmpty do
+      let current := pending.back!
+      pending := pending.pop
+      if visited.contains current then continue
+      visited := visited.insert current
+      let some info := env.find? current
+        | throwError "Missing proof declaration {current}"
+      let references := info.type.getUsedConstants ++
+        ((info.value? (allowOpaque := true)).map (·.getUsedConstants)).getD #[]
+      for used in references do
+        if used == declName then continue
+        if required.contains used then
+          unless actual.contains used do actual := actual.push used
+        else if env.getModuleIdxFor? used == some proofModule then
+          pending := pending.push used
+    for used in actual do
+      unless declared.contains used do
+        throwError "{declName} has undeclared proof dependency {used}"
+    for used in declared do
+      unless actual.contains used do
+        throwError "{declName} has unused proof dependency {used}"
+  logInfo m!"Checked proof dependencies of {proofDependencies.size} theorems"
+  let prefixes := #[`Zerocopy, `core.num, `AeneasContracts, `ContractTests]
   let mut audited := 0
   for (declName, _) in env.constants.toList do
-    if prefixes.any (·.isPrefixOf declName) then
+    if prefixes.any (·.isPrefixOf (privateToUserName declName)) ||
+        env.getModuleIdxFor? declName == some proofModule then
       let used ← collectAxioms declName
       for ax in used do
         unless #[`propext, `Classical.choice, `Quot.sound].contains ax do
