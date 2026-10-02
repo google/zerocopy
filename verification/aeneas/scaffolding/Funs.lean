@@ -68,6 +68,11 @@ def Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner :
     Source: 'src/util/mod.rs', lines 155:0-243:1 -/
 @@AENEAS_GOLDEN("util.padding_needed_for.lean.in")@@
 
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
+    Source: 'src/layout.rs', lines 492:4-562:5
+    Visibility: public -/
+@@AENEAS_GOLDEN("layout.DstLayout.pad_to_align.lean.in")@@
+
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
     Source: 'src/util/mod.rs', lines 264:0-321:1 -/
 @@AENEAS_GOLDEN("util.round_down_to_next_multiple_of_alignment.lean.in")@@

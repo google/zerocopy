@@ -17,27 +17,44 @@ The existing required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from these actual functions in `zerocopy/src/util/mod.rs`,
-including their dependencies; there is no copied Rust implementation:
+Extraction starts from these actual helpers in `zerocopy/src/util/mod.rs` and
+the method in `zerocopy/src/layout.rs`, including their dependencies; there is
+no copied Rust implementation:
 
 | Rust function | Checked property |
 | --- | --- |
-| `max` | Terminates successfully and returns the mathematical maximum. |
-| `min` | Terminates successfully and returns the mathematical minimum. |
-| `padding_needed_for` | For any positive alignment, succeeds with padding strictly below that alignment. |
-| `round_down_to_next_multiple_of_alignment` | For any positive power-of-two alignment, succeeds with a result no larger than the input and divisible by the alignment. |
+| `max` | Returns the mathematical maximum, selects an input, and bounds both inputs from above. |
+| `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
+| `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
+| `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
+| `DstLayout::pad_to_align` | For sized layouts, power-of-two alignment and an exact padded size that fits guarantee the least aligned size at least the input; alignment is preserved and the shallow-unpadded flag becomes its old value AND the input being aligned. All DST layouts return unchanged, with no arithmetic preconditions. |
 
 The theorems quantify over all values of the extracted unsigned integer model;
-these are not finite collections of test inputs. Aeneas's Hoare specification
-notation includes successful termination, rather than only a postcondition
-conditional on success. The min/max proofs explicitly exhibit the result before
-converting it to the same total specification.
+these are not finite collections of test inputs. All five inline specifications
+use `contract`, whose Aeneas Hoare specification includes successful termination,
+rather than only a postcondition conditional on success.
+
+`lean/Corollaries.lean` composes the inline theorems: min/max preserve any
+predicate shared by both inputs; round-down is monotone, is the identity on
+aligned inputs, and is idempotent; layout padding is the identity on aligned
+sized layouts and DSTs, and is idempotent. The idempotence contracts prove both
+calls succeed, including that the first result meets the second call's needs.
+The original `size + align - 1 <= usize::MAX` precondition is also checked as a
+sufficient condition for the layout contract's exact fit requirement.
+
+Comparisons use the unsigned scalar's existing order directly (`m ≤ n`,
+`p < align.val`, `min a.val b.val`). Arithmetic postconditions explicitly bind
+`Nat` values (`let N : Nat := n`) so addition and remainder are unbounded
+mathematical operations. The corresponding Rust scalar arithmetic operators
+return checked `Result` values and are not interchangeable with these formulas.
+`NonZero` still needs one `.val` to unwrap its stored scalar. Power-of-two
+requirements already imply positivity, so padding, round-down, and sized-layout
+contracts do not repeat a positive-alignment requirement.
 
 CI uses the default features, debug assertions, and the runner's native
 `x86_64-unknown-linux-gnu` target. Local replay also supports macOS arm64. This
-initial scope does not prove minimum padding, maximality of rounded results,
-all `DstLayout` operations, other feature/target combinations, or zerocopy's
-memory safety. Aeneas currently targets a safe Rust subset; compiling the whole
+scope does not prove all `DstLayout` operations, other feature/target
+combinations, or zerocopy's memory safety. Aeneas currently targets a safe Rust subset; compiling the whole
 unsafe crate to a complete verified model is a separate task.
 
 ## Reproduce
@@ -116,15 +133,20 @@ doc comments, block comments, missing fences, extra sections, and extra
 top-level Lean declarations are rejected.
 
 The proof declaration may be an ordinary `theorem` or the experimental
-`contract` command from `lean/Contracts.lean`. For example, one of the macro tests
-uses this syntax:
+`contract` command from `lean/Contracts.lean`. For example, a predicate-preserving
+corollary uses this syntax:
 
 ```lean
-contract identity_spec (x : Nat)
-  for Result.ok x
-  ensures ret => ret = x
+contract max_preserves (a b : NonZeroUsize) (P : NonZeroUsize → Prop)
+  for util.max a b
+  requires ha : P a
+  requires hb : P b
+  ensures r => P r
   proof:
-    exact WP.spec.ret rfl
+    step with max_spec a b as ⟨r, _, hchoice, _, _⟩
+    rcases hchoice with h | h
+    · simpa only [h] using ha
+    · simpa only [h] using hb
 ```
 
 The command expands to an ordinary theorem whose named requirements are
@@ -141,7 +163,8 @@ signatures, inject type invariants, or introduce separate proof automation.
 An explicit `partial contract` instead expands to `WP.dspec`. It permits
 divergence, rejects panic and other failures, and requires the postcondition
 for successful returns. All registered contracts use the total form.
-`Obligations.lean` retains their independently written required propositions.
+`Obligations.lean` retains their independently written required propositions,
+and the layout caller still applies the same padding theorem through `step`.
 
 Both workspaces build `ContractTests.lean`, which checks independently written
 theorem types, named requirements, omitted requirements, tuple outputs, and
@@ -150,13 +173,6 @@ Failure controls also compile contracts that attempt to accept panic,
 divergence in the total form, or an incorrect return in the partial form, and
 require proof failures. This is a test-bed syntax experiment, not a commitment
 to Anneal's eventual annotation language.
-
-The four inline proofs use this syntax without changing their previous
-preconditions or postconditions. Padding still requires only a positive
-alignment; round-down retains both positivity and the power-of-two requirement.
-The old explicit min/max result proofs are reused through
-`WP.exists_imp_spec`; required-type checks use the converse equivalence to
-compare them with the independently written successful-result requirements.
 
 `inventory.json` independently registers each function's Rust identity, source
 file, parsed function identity, Lean definition, theorem, and golden filename.
@@ -169,13 +185,18 @@ string contents; `syn` resolves function braces and inline modules before
 conditional compilation. An unknown annotation is an error, not an opt-in
 that CI can overlook.
 
-Initial support covers free functions in conventional `zerocopy/src` module
-paths. Methods, nested functions, macros, and custom module-path layouts need
-explicit tooling support; an annotation in an unsupported position fails.
+Support covers free functions and nongeneric methods in simple nongeneric
+inherent impls, in conventional `zerocopy/src` module paths. An inherent impl's
+named Self type must be defined in the same module. Trait impls, qualified Self
+types, generic impls/methods, nested functions, macros, and custom module-path
+layouts need explicit tooling support; an unsupported annotation fails.
 Every registered root must be extracted in the current CI configuration.
 Charon's root identities, local source contents, file paths, and function-body
 end spans must match the annotations. This prevents a same-named `cfg`
 alternative or a stale extraction from standing in for the annotated body.
+For inherent methods, the binding check resolves Charon's named Self type,
+including its deduplicated representation, and checks the full type identity;
+a matching method name alone is insufficient.
 
 Each annotation has exactly one function template in `golden/`, and every file
 there must correspond to one registered annotation. That file contains one
@@ -187,14 +208,60 @@ unexpanded slots fail. `target/aeneas/rendered-golden` holds the assembled model
 used for comparison. These invalid-Lean slots are expanded before compilation
 and never interpreted as ordinary comments.
 
-Proof bodies live only in the Rust annotations. `lean/Proofs.lean.in` supplies
-their shared imports and abbreviation. `lean/Obligations.lean` independently
+The five registered proof bodies live in the Rust annotations; shared arithmetic
+lemmas and composition corollaries live in Lean modules. `lean/Proofs.lean.in`
+supplies the inline proofs' shared imports and abbreviation. `lean/Obligations.lean` independently
 records the required propositions; generated `Required.lean` checks each inline
-theorem against its required type. A theorem of `True` with the correct name
-cannot substitute for a required property. Removing coverage requires explicit
-changes to the inventory, golden slots, scaffolding, and required propositions.
+theorem against its required proposition, using Aeneas's proved
+`WP.spec_equiv_exists` equivalence to normalize total specifications and
+existential successful-result statements, and proved scalar order/minimum/maximum
+equivalences to normalize scalar comparisons to mathematical values. The min/max
+obligations retain their independent existential shape and now also require input
+selection and bounds. The layout obligation is checked separately in both
+branches because its independently generated matchers have different names. A theorem of `True` with the
+correct name cannot substitute for a required property. Removing coverage
+requires explicit changes to the inventory, golden slots, scaffolding, and
+required propositions.
 The claims remain the properties listed above, not complete verification of a
 function's documentation or all compilation configurations.
+
+## Composing proofs
+
+An inventory entry may declare `depends_on`, a list of registered Rust function
+identities whose exported theorems its proof uses. Omission means an empty list.
+These are proof dependencies, not the Rust call graph: a mathematical lemma may
+be useful even when its function is not called. Unknown or repeated identities,
+self dependencies, and cycles fail before extraction. Proof assembly uses a
+deterministic topological order, independent of source or inventory order.
+
+`DstLayout::pad_to_align` declares a dependency on `padding_needed_for`. Its
+inline proof unfolds only the caller, applies `padding_lt_alignment` to the
+padding call, then uses the checked-add specification and arithmetic to rule
+out overflow and establish the result. It does not unfold the callee.
+
+For sized layouts, the theorem requires power-of-two alignment and that the
+exact padded size `S + (A - S % A) % A` fits in `usize`, where `S` is the input
+size and `A` its alignment. It proves that the result remains sized, with that
+exact size: the least multiple of `A` at least `S`, and less than `S + A`. The
+alignment field is preserved, and `statically_shallow_unpadded` becomes its
+original value AND `S % A == 0`. For DST layouts, the entire layout is
+unchanged, including the trailing-slice offset, element size, alignment, and
+shallow-unpadded flag, with no arithmetic preconditions. The conservative
+`S + A - 1 <= usize::MAX` headroom condition remains available as a sufficient
+condition through `pad_to_align_sized_headroom` in `Corollaries.lean`.
+
+Generated `Required.lean` records the declared theorem edges. `Check.lean`
+inspects elaborated theorem types and proof terms, following local helper
+declarations and stopping at other registered theorems. Every referenced
+registered theorem must be declared, and every declared dependency must appear
+in the elaborated proof. This catches both accidental dependencies on an
+earlier declaration and stale dependency lists. Each callee's own edges and
+transitive axiom dependencies are checked separately.
+
+Both fresh workspaces assemble and compile the complete proof chain against
+their respective generated models. They share proof source, never compiled
+proofs or model definitions. Golden caller proofs use golden callee theorems;
+live caller proofs use live callee theorems.
 
 No parser can recognize every informal prose claim as a proof. The `aeneas`
 fence is the reserved, CI-checked convention; other explanatory comments do not
@@ -235,8 +302,9 @@ additional generated files, changes to external-template signatures, and code
 changes fail with a normalized diff and require regeneration.
 
 After comparison succeeds, CI compiles the checked-in model and the unmodified
-live model in separate fresh Lake workspaces. Both must prove the same four
-properties and pass the required-type checks and axiom audit; neither imports
+live model in separate fresh Lake workspaces. Both must prove the same five
+contracts and composition corollaries and pass the required-type checks and axiom
+audit; neither imports
 the other's compiled model. The live functions always come from Aeneas. Inline
 definitions are inserted only into the checked-in model, never into live output.
 The normalized text is only used for comparison, never for proof compilation.
@@ -273,32 +341,44 @@ records but does not formally prove:
 - Rust MIR generation and Charon's LLBC extraction preserve these selected
   functions' semantics for the pinned configuration.
 - Aeneas's translation and the pinned integer, comparison, wrapping-subtraction,
-  bitwise, and assertion models represent those Rust operations faithfully.
+  checked-addition, bitwise, and assertion models represent those Rust
+  operations faithfully. The translated layout records and variants represent
+  their stored fields, not physical Rust layout or niche encoding.
 - The handwritten `NonZero` wrapper represents its stored value;
   `NonZero::get` succeeds with that value and `NonZeroUsizeInner::clone`
   succeeds with a copy. These models abstract values, not niche encoding,
   layout, validity, or memory operations. The wrapper over-approximates valid
-  Rust values by admitting zero; the alignment proofs explicitly require
-  positivity rather than assuming it through an axiom.
+  Rust values by admitting zero; the alignment proofs establish positivity
+  from their explicit power-of-two requirement rather than assuming it through
+  an axiom.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
 
-`Check.lean` checks that required declarations are theorems and audits all
-declarations in `Zerocopy.Proofs`, `Zerocopy.Obligations`, the translated
-`Zerocopy.util` namespace, the external `core.num` models, and the contract macro
-and test namespaces. Only `propext`,
+`Check.lean` checks that required declarations are theorems, validates their
+declared proof edges, and audits all declarations in `Zerocopy` (including
+proofs, obligations, translated layout types/methods, and utility helpers) and
+the external `core.num` models, arithmetic lemmas, composition corollaries,
+contract module, and contract tests. Private
+helper names are included. Only `propext`,
 `Classical.choice`, and `Quot.sound` are allowed. New axioms, `sorryAx`, and
 native evaluator proof
 axioms fail this check. This does not establish the source-to-model
 correspondence premises.
-CI also runs failure controls in both workspaces: impossible total and partial
-contracts must fail their proofs, an admitted proof must fail
+CI also runs failure controls in both workspaces: an admitted proof must fail
 the axiom audit, an unrelated `True` theorem must fail its required type, and
 reversing the translated `min` comparison must fail its proof. In the live
 workspace, comment drift must pass fuzzy comparison and
 proof checking, while reversing `min` must also fail comparison. These controls
 edit scratch files and restore them before rechecking the original results.
+In both workspaces, removing the padding theorem must fail the caller's proof,
+undeclared and unused theorem dependencies must fail the dependency audit, and
+an incorrect translated padding callee must fail the proof chain. Exact
+contracts reject always-zero padding and round-down, a wrong shallow-padding
+flag, and a changed DST layout. Replacing round-down with its valid earlier
+weaker contract must fail the independent required-type check. Unit tests
+also reject missing dependencies and cycles and exercise method ownership and
+Charon Self-type binding.
 
 Extraction rejects warnings, translation errors, missing artifacts, and LLBC
 whose `has_errors` is not exactly `false`, even when Charon exits zero.

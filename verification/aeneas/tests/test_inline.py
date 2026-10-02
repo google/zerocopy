@@ -64,9 +64,58 @@ class InlineTests(unittest.TestCase):
                 self.parse('fn f() {\n' + before + BLOCK + extra_end + '}')
         for source in (BLOCK + 'fn f() {}',
                        'fn outer() { fn f() {\n' + BLOCK + '} }',
-                       'impl S { fn f() {\n' + BLOCK + '} }'):
+                       'impl Trait for S { fn f() {\n' + BLOCK + '} }'):
             with self.assertRaises(ValueError):
                 self.parse(source)
+
+    def test_inherent_method_ownership_and_unsupported_impls(self):
+        found = self.parse('mod m { impl S { fn f(self) {\n' + BLOCK + '} } }')
+        self.assertEqual(found[0]['syntax'], 'm::S::f')
+        for implementation, method in [('impl<T> S<T>', 'fn f()'),
+                                       ('impl Trait for S', 'fn f()'),
+                                       ('impl m::S', 'fn f()'),
+                                       ('impl S', 'fn f<T>()')]:
+            with self.subTest(implementation=implementation, method=method), self.assertRaises(ValueError):
+                self.parse(implementation + ' { ' + method + ' {\n' + BLOCK + '} }')
+
+    def test_proof_dependency_order_is_independent_of_source_order(self):
+        caller = {'rust': 'caller', 'depends_on': ['callee']}
+        callee = {'rust': 'callee'}
+        independent = {'rust': 'independent'}
+        expected = [callee, caller, independent]
+        self.assertEqual(inline.proof_order([caller, independent, callee]), expected)
+        self.assertEqual(inline.proof_order([independent, callee, caller]), expected)
+
+    def test_proof_dependency_validation(self):
+        for dependencies, message in [(['missing'], 'missing proof dependencies'),
+                                      (['callee', 'callee'], 'duplicate'),
+                                      ('callee', 'invalid'),
+                                      ([None], 'invalid'),
+                                      (['caller'], 'Cyclic')]:
+            with self.subTest(dependencies=dependencies), self.assertRaisesRegex(ValueError, message):
+                inline.proof_order([{'rust': 'caller', 'depends_on': dependencies},
+                                    {'rust': 'callee'}])
+        with self.assertRaisesRegex(ValueError, 'caller -> callee -> caller|callee -> caller -> callee'):
+            inline.proof_order([{'rust': 'caller', 'depends_on': ['callee']},
+                                {'rust': 'callee', 'depends_on': ['caller']}])
+
+    def test_assembly_orders_proofs_and_records_declared_edges(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            wrapper = root / 'verification/aeneas/lean/Proofs.lean.in'
+            wrapper.parent.mkdir(parents=True)
+            wrapper.write_text('@@AENEAS_PROOFS@@')
+            caller = {'rust': 'caller', 'theorem': 'caller_spec',
+                      'depends_on': ['callee'], 'proof_text': 'theorem caller_spec := callee_spec\n'}
+            callee = {'rust': 'callee', 'theorem': 'callee_spec',
+                      'proof_text': 'theorem callee_spec : True := by trivial\n'}
+            work = root / 'work'
+            work.mkdir()
+            inline.assemble(root, {'caller': caller, 'callee': callee}, work)
+            proof = (work / 'Proofs.lean').read_text()
+            self.assertLess(proof.index('theorem callee_spec'), proof.index('theorem caller_spec'))
+            required = (work / 'Required.lean').read_text()
+            self.assertIn('(`Zerocopy.Proofs.caller_spec, #[`Zerocopy.Proofs.callee_spec])', required)
 
     def test_rejects_near_miss_guards_missing_sections_and_broken_fences(self):
         variants = [BLOCK.replace('```aeneas', '```Aeneas'),
@@ -225,6 +274,64 @@ class InlineTests(unittest.TestCase):
                 llbc.write_text(json.dumps(bad))
                 with self.subTest(kind=kind), self.assertRaises(ValueError):
                     inline.check_bindings(root, annotations, llbc)
+
+    def test_inherent_method_llbc_identity_resolves_named_self(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            entry = {**ENTRY, 'rust': 'zerocopy::util::S::f', 'syntax': 'S::f', 'model': 'util.S.f'}
+            path = root / entry['file']
+            path.parent.mkdir(parents=True)
+            source = 'struct S; impl S { fn f(self) {\n' + BLOCK.replace('def util.f', 'def util.S.f') + '} }\n'
+            path.write_text(source)
+            annotations = inline.discover(root, TOOL, [entry])
+            annotation = annotations[entry['rust']]
+            type_name = [{'Ident': [part, 0]} for part in ['zerocopy', 'util', 'S']]
+            body = {'Adt': {'id': 1, 'builtin': None,
+                            'generics': {'regions': [], 'types': [], 'const_generics': [], 'trait_refs': []}}}
+            impl = {'Ty': {'kind': 'InherentImplBlock', 'params': {'types': [], 'regions': []},
+                           'skip_binder': {'Deduplicated': 3}}}
+            name = [*type_name[:2], {'Impl': impl}, {'Ident': ['f', 0]}]
+            data = {'translated': {
+                'files': [{'id': 1, 'name': {'Local': 'src/util/mod.rs'}, 'contents': source}],
+                'item_names': [{'value': {'Value': [3, body]}}],
+                'type_decls': [{'def_id': 1, 'item_meta': {'name': type_name}}],
+                'fun_decls': [{'item_meta': {
+                    'name': name, 'started_from': True, 'is_local': True,
+                    'span': {'Untagged': {'generated_from_span': None, 'data': {
+                        'file_id': 1, 'beg': {'line': 1, 'col': 0},
+                        'end': {'line': annotation['end_line'], 'col': annotation['end_col']}}}}
+                }}]}}
+            llbc = root / 'crate.llbc'
+            llbc.write_text(json.dumps(data))
+            inline.check_bindings(root, annotations, llbc)
+            for kind in ('wrong_self', 'missing_self', 'generic', 'trait', 'cross_module'):
+                bad = copy.deepcopy(data)
+                translated = bad['translated']
+                implementation = translated['fun_decls'][0]['item_meta']['name'][2]['Impl']
+                if kind == 'wrong_self':
+                    translated['type_decls'][0]['item_meta']['name'][-1]['Ident'][0] = 'T'
+                elif kind == 'missing_self':
+                    implementation['Ty']['skip_binder']['Deduplicated'] = 99
+                elif kind == 'generic':
+                    implementation['Ty']['params']['types'] = ['T']
+                elif kind == 'trait':
+                    implementation.clear()
+                    implementation['Trait'] = 0
+                else:
+                    translated['type_decls'][0]['item_meta']['name'][1]['Ident'][0] = 'other'
+                llbc.write_text(json.dumps(bad))
+                with self.subTest(kind=kind), self.assertRaises(ValueError):
+                    inline.check_bindings(root, annotations, llbc)
+
+    def test_generated_inherent_method_identity_and_module_agreement(self):
+        entry = {**ENTRY, 'rust': 'zerocopy::util::S::f', 'model': 'util.S.f'}
+        generated = ('module\nnamespace Zerocopy\n'
+                     '/-- [zerocopy::util::{zerocopy::util::S}::f]:\n    Source: location -/\n'
+                     'def util.S.f (x : Nat) :=\n  x\n\nend Zerocopy\n')
+        models, _ = inline.split_live(generated, [entry])
+        self.assertIn(entry['rust'], models)
+        with self.assertRaises(ValueError):
+            inline.split_live(generated.replace('{zerocopy::util::S}', '{zerocopy::other::S}'), [entry])
 
 
 if __name__ == '__main__':

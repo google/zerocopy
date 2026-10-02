@@ -43,7 +43,8 @@ def inventory(root):
         if len({e[key] for e in entries}) != len(entries):
             raise ValueError(f'Duplicate {key} in proof inventory')
     for entry in entries:
-        if set(entry) != {'rust', 'file', 'syntax', 'model', 'theorem', 'golden'}:
+        fields = {'rust', 'file', 'syntax', 'model', 'theorem', 'golden'}
+        if not fields <= set(entry) or set(entry) - fields - {'depends_on'}:
             raise ValueError('Unknown or missing inventory fields')
         identifier = r'[A-Za-z_][A-Za-z_0-9]*'
         patterns = {'rust': rf'{identifier}(?:::{identifier})*',
@@ -62,7 +63,40 @@ def inventory(root):
         expected_rust = '::'.join(['zerocopy', *modules, entry['syntax']])
         if entry['rust'] != expected_rust:
             raise ValueError('Rust identity must agree with the conventional source module path')
+    proof_order(entries)
     return entries
+
+
+def proof_order(entries):
+    """Validate explicit proof edges and order independently of source order."""
+    by_rust = {entry['rust']: entry for entry in entries}
+    for entry in entries:
+        dependencies = entry.get('depends_on', [])
+        if (not isinstance(dependencies, list)
+                or not all(isinstance(dep, str) for dep in dependencies)
+                or len(set(dependencies)) != len(dependencies)):
+            raise ValueError(f'{entry["rust"]}: invalid or duplicate proof dependencies')
+        missing = set(dependencies) - by_rust.keys()
+        if missing:
+            raise ValueError(f'{entry["rust"]}: missing proof dependencies: {sorted(missing)}')
+    ordered, visiting, visited = [], [], set()
+
+    def visit(rust):
+        if rust in visiting:
+            cycle = visiting[visiting.index(rust):] + [rust]
+            raise ValueError('Cyclic proof dependencies: ' + ' -> '.join(cycle))
+        if rust in visited:
+            return
+        visiting.append(rust)
+        for dependency in sorted(by_rust[rust].get('depends_on', [])):
+            visit(dependency)
+        visiting.pop()
+        visited.add(rust)
+        ordered.append(by_rust[rust])
+
+    for rust in sorted(by_rust):
+        visit(rust)
+    return ordered
 
 
 def source_files(root, entries):
@@ -226,18 +260,37 @@ def assemble(root, annotations, work):
     wrapper = (root / 'verification/aeneas/lean/Proofs.lean.in').read_text()
     if wrapper.count('@@AENEAS_PROOFS@@') != 1:
         raise ValueError('Proof wrapper must have exactly one proof slot')
-    proofs = '\n'.join(a['proof_text'] for a in annotations.values())
+    ordered = proof_order(list(annotations.values()))
+    proofs = '\n'.join(a['proof_text'] for a in ordered)
     (work / 'Proofs.lean').write_text(wrapper.replace('@@AENEAS_PROOFS@@', proofs))
     required = ['import Lean', 'import Proofs', 'import Obligations', 'open Lean', '']
     for a in annotations.values():
-        # Total contracts and explicit successful-result requirements are equivalent.
+        # Normalize total WP and scalar order to independently written arithmetic.
+        # Layout matchers have different declaration names in the two modules;
+        # check both branches explicitly instead of assuming definitional equality.
         name = a['theorem']
-        required.append(f'example : Zerocopy.Obligations.{name} := by\n'
-                        f'  simpa only [Zerocopy.Obligations.{name}, '
-                        'Aeneas.Std.WP.spec_equiv_exists] '
-                        f'using Zerocopy.Proofs.{name}')
+        if name == 'pad_to_align_spec':
+            body = (f'  unfold Zerocopy.Obligations.{name}\n'
+                    '  intro self\n'
+                    '  cases hs : self.size_info <;>\n'
+                    '    simpa only [hs, Aeneas.Std.WP.spec_equiv_exists] '
+                    f'using Zerocopy.Proofs.{name} self')
+        else:
+            body = (f'  simpa only [Zerocopy.Obligations.{name}, '
+                    'Aeneas.Std.WP.spec_equiv_exists, Aeneas.Std.UScalar.eq_equiv, '
+                    'Aeneas.Std.UScalar.coe_max, Zerocopy.Arithmetic.coe_min, '
+                    'Aeneas.Std.UScalar.lt_equiv, Aeneas.Std.UScalar.le_equiv] '
+                    f'using Zerocopy.Proofs.{name}')
+        required.append(f'example : Zerocopy.Obligations.{name} := by\n{body}')
     names = ', '.join(f'`Zerocopy.Proofs.{a["theorem"]}' for a in annotations.values())
     required.append(f'def requiredTheorems : Array Name := #[{names}]')
+    edges = []
+    for a in ordered:
+        dependencies = ', '.join(f'`Zerocopy.Proofs.{annotations[dep]["theorem"]}'
+                                 for dep in a.get('depends_on', []))
+        edges.append(f'(`Zerocopy.Proofs.{a["theorem"]}, #[{dependencies}])')
+    required.append('def proofDependencies : Array (Name × Array Name) := #[\n  '
+                    + ',\n  '.join(edges) + '\n]')
     (work / 'Required.lean').write_text('\n'.join(required) + '\n')
 
 
@@ -246,15 +299,74 @@ def check_bindings(root, annotations, llbc):
     # path. Require Charon to have extracted the exact annotated source body.
     translated = json.loads(llbc.read_text())['translated']
     files = {f['id']: f for f in translated['files']}
+    # At the pinned Charon version named Self types may be deduplicated. Only
+    # collect the Adt type domain, not unrelated Value/Deduplicated domains.
+    adts = {}
+
+    def collect_adts(value):
+        if isinstance(value, dict):
+            if (set(value) == {'Value'} and isinstance(value['Value'], list)
+                    and len(value['Value']) == 2 and isinstance(value['Value'][0], int)):
+                index, body = value['Value']
+                if (isinstance(body, dict) and set(body) == {'Adt'}
+                        and isinstance(body['Adt'], dict)
+                        and set(body['Adt']) == {'id', 'generics', 'builtin'}):
+                    if index in adts and adts[index] != body:
+                        raise ValueError('Ambiguous deduplicated Charon Self type')
+                    adts[index] = body
+            for child in value.values():
+                collect_adts(child)
+        elif isinstance(value, list):
+            for child in value:
+                collect_adts(child)
+
+    collect_adts(translated)
+    type_names = {t['def_id']: t['item_meta']['name']
+                  for t in translated.get('type_decls', []) if t}
+
+    def identifiers(name):
+        if not all(set(element) == {'Ident'} and element['Ident'][1] == 0 for element in name):
+            raise ValueError('Unsupported extracted root identity')
+        return [element['Ident'][0] for element in name]
+
+    def identity(name):
+        impls = [i for i, element in enumerate(name) if 'Impl' in element]
+        if not impls:
+            return '::'.join(identifiers(name))
+        if impls != [len(name) - 2]:
+            raise ValueError('Unsupported extracted inherent method identity')
+        index = impls[0]
+        implementation = name[index]['Impl']
+        if set(implementation) != {'Ty'}:
+            raise ValueError('Trait impl roots are unsupported')
+        implementation = implementation['Ty']
+        if (implementation['kind'] != 'InherentImplBlock'
+                or any(implementation['params'].values())):
+            raise ValueError('Generic impl roots are unsupported')
+        wrapped = implementation['skip_binder']
+        if set(wrapped) == {'Value'}:
+            body = wrapped['Value'][1]
+        elif set(wrapped) == {'Deduplicated'}:
+            body = adts.get(wrapped['Deduplicated'], {})
+        else:
+            body = {}
+        if set(body) != {'Adt'}:
+            raise ValueError('Inherent Self must resolve to a named type')
+        adt = body['Adt']
+        if adt['builtin'] is not None or any(adt['generics'].values()):
+            raise ValueError('Generic or builtin Self roots are unsupported')
+        self_name = identifiers(type_names.get(adt['id'], []))
+        prefix = identifiers(name[:index])
+        if not self_name or self_name[:-1] != prefix:
+            raise ValueError('Inherent Self must be defined in the annotated module')
+        return '::'.join([*self_name, *identifiers(name[index + 1:])])
+
     roots = {}
     for function in translated['fun_decls']:
         if not function or function['item_meta'].get('started_from') is not True:
             continue
         meta = function['item_meta']
-        if not all(set(element) == {'Ident'} and element['Ident'][1] == 0
-                   for element in meta['name']):
-            raise ValueError('Unsupported extracted root identity')
-        name = '::'.join(element['Ident'][0] for element in meta['name'])
+        name = identity(meta['name'])
         if name in roots:
             raise ValueError('Duplicate extracted root identity')
         roots[name] = meta
@@ -279,7 +391,18 @@ def split_live(source, entries):
     # layout only. Full-file comparison includes all remaining scaffolding;
     # unexpected layouts, missing/duplicate roots or new output fail closed.
     starts = list(re.finditer(r'^/-- \[(zerocopy::[^\]\n]+)\]:\n', source, re.M))
-    if {m[1] for m in starts} != {e['rust'] for e in entries} or len(starts) != len(entries):
+
+    def identity(display):
+        if '{' not in display:
+            return display
+        match = re.fullmatch(r'(.+::)\{([^{}]+)::([A-Za-z_][A-Za-z_0-9]*)\}::'
+                             r'([A-Za-z_][A-Za-z_0-9]*)', display)
+        if not match or match[1] != match[2] + '::':
+            raise ValueError('Unsupported generated inherent method identity')
+        return match[1] + match[3] + '::' + match[4]
+
+    identities = [identity(m[1]) for m in starts]
+    if set(identities) != {e['rust'] for e in entries} or len(starts) != len(entries):
         raise ValueError('Pinned Aeneas root declaration layout no longer matches inventory')
     by_rust = {e['rust']: e for e in entries}
     replacements = []
@@ -292,13 +415,14 @@ def split_live(source, entries):
             raise ValueError('Missing generated root documentation or namespace end')
         declaration_start = close + 3
         model = source[declaration_start:end].rstrip() + '\n'
-        entry = by_rust[match[1]]
+        rust = identities[index]
+        entry = by_rust[rust]
         lines = golden.normalize(model)
         if not lines or not re.match(rf'def {re.escape(entry["model"])}(?=\s|\(|$)', lines[0]):
             raise ValueError('Unexpected generated Lean root identity')
         if any(line and not line[0].isspace() for line in lines[1:]):
             raise ValueError('Unsupported generated root declaration layout')
-        models[match[1]] = model
+        models[rust] = model
         replacements.append((declaration_start, end, f'@@AENEAS_GOLDEN("{entry["golden"]}")@@\n\n'))
     for start, end, replacement in reversed(replacements):
         source = source[:start] + replacement + source[end:]
