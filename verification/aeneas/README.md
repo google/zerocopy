@@ -99,7 +99,7 @@ zerocopy's unsafe pointer operations are sound.
 
 ## Scope and proofs
 
-Extraction starts from 15 actual functions in `zerocopy/src/util/mod.rs` and
+Extraction starts from 19 actual functions in `zerocopy/src/util/mod.rs` and
 `zerocopy/src/layout.rs`,
 including their dependencies. The independent inventory selects the registered
 function scope. There is no copied Rust implementation.
@@ -111,6 +111,7 @@ function scope. There is no copied Rust implementation.
 | `DstLayout::{assume_shallow_unpadded,new_zst,for_type,for_unpadded_type,for_slice}` | Exact alignment, size-information fields, and recorded shallow-padding flags under explicit input premises. |
 | `SizeInfo::try_to_nonzero_elem_size`, `max_elems_for_bytes` | Exact zero handling, preserved representation fields, and greatest fitting element count. |
 | `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
+| Trailing size, padding, and capacity | Exact size-offset and capacity formulas, checked-size overflow, and wrapping padding; successful sizes and physical padding refine the independent recursive semantics. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
@@ -138,6 +139,9 @@ decoded records without function proofs. Layout models retain each field and
 the unpadded flag; realizability, alignment and fit conditions remain explicit.
 Generic size/alignment reads are external data inputs, not correctness axioms.
 See [SEMANTICS.md](SEMANTICS.md) for the Rust correspondence premise.
+
+The checked trailing-size and padding contracts connect machine arithmetic
+to the independent recursive semantics.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
