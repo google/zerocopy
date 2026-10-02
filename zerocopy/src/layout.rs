@@ -971,6 +971,135 @@ impl TrailingSliceLayout {
                 || (self_align == other_align && self_phase == other_phase)))
     }))]
     pub(crate) const fn has_same_size_sequence(self, other: Self) -> bool {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayoutUsize.has_same_size_sequence
+        //     (self : layout.TrailingSliceLayout Std.Usize)
+        //     (other : layout.TrailingSliceLayout Std.Usize) :
+        //     Result Bool
+        //     := do
+        //     if self.elem_size != other.elem_size
+        //     then ok false
+        //     else
+        //       let o ← layout.TrailingSliceLayoutUsize.size_for_elems self 0#usize
+        //       let o1 ← layout.TrailingSliceLayoutUsize.size_for_elems other 0#usize
+        //       match o with
+        //       | none => ok false
+        //       | some self_size =>
+        //         match o1 with
+        //         | none => ok false
+        //         | some other_size =>
+        //           if self_size = other_size
+        //           then
+        //             let (self_align, self_phase) ←
+        //               layout.RoundingAlignAndPhase.components
+        //                 self.size_rounding_align_and_phase
+        //             let (other_align, other_phase) ←
+        //               layout.RoundingAlignAndPhase.components
+        //                 other.size_rounding_align_and_phase
+        //             let self_align1 ←
+        //               core.num.nonzero.NonZero.get
+        //                 Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //                 self_align
+        //             let other_align1 ←
+        //               core.num.nonzero.NonZero.get
+        //                 Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //                 other_align
+        //             let max_align ←
+        //               if self_align1 > other_align1
+        //               then ok self_align1
+        //               else ok other_align1
+        //             let i ← self.elem_size % max_align
+        //             if i = 0#usize
+        //             then ok true
+        //             else
+        //               if self_align1 != other_align1
+        //               then ok false
+        //               else ok (self_phase = other_phase)
+        //           else ok false
+        // proof:
+        //   contract same_size_sequence_spec (self other : layout.TrailingSliceLayout Usize)
+        //     for layout.TrailingSliceLayoutUsize.has_same_size_sequence self other
+        //     requires hs : 0 < self.size_rounding_align_and_phase.val.val
+        //     requires ho : 0 < other.size_rounding_align_and_phase.val.val
+        //     ensures b => b = true → ∀ n : Nat, (trailingFormula self).size n = (trailingFormula other).size n
+        //     proof:
+        //       unfold layout.TrailingSliceLayoutUsize.has_same_size_sequence
+        //       simp only [bne_iff_ne]
+        //       split
+        //       · simp [WP.spec_ok]
+        //       · rename_i he
+        //         have helem : self.elem_size = other.elem_size := not_ne_iff.mp he
+        //         step with size_for_elems_spec self 0#usize hs as ⟨s, hsize⟩
+        //         step with size_for_elems_spec other 0#usize ho as ⟨o, hother⟩
+        //         cases s with
+        //         | none => simp [WP.spec_ok]
+        //         | some s =>
+        //           cases o with
+        //           | none => simp [WP.spec_ok]
+        //           | some o =>
+        //             dsimp only
+        //             split
+        //             · rename_i hsame
+        //               have hz : (trailingFormula self).size 0 = (trailingFormula other).size 0 := by
+        //                 have h1 := (checked_some_size _ _ s hsize).1
+        //                 have h2 := (checked_some_size _ _ o hother).1
+        //                 have hh := congrArg UScalar.val hsame
+        //                 omega
+        //               step with encoding_components_spec _ hs as ⟨a, p, ha, hp, _, hav, hpv⟩
+        //               step with encoding_components_spec _ ho as ⟨b, q, hb, hq, _, hbv, hqv⟩
+        //               simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //               have hmax : (if a.val > b.val then Result.ok a.val else Result.ok b.val) =
+        //                   Result.ok (max a.val b.val) := by
+        //                 by_cases h : a.val > b.val
+        //                 · simp only [h, if_true, max_eq_left (le_of_lt h)]
+        //                 · simp only [h, if_false, max_eq_right (le_of_not_gt h)]
+        //               rw [hmax]
+        //               simp only [bind_ok]
+        //               have hmaxp : 0 < (max a.val b.val).val := by
+        //                 rw [Arithmetic.coe_max]
+        //                 exact Nat.lt_of_lt_of_le (Nat.pos_of_isPowerOfTwo ha) (Nat.le_max_left _ _)
+        //               step with Usize.rem_spec self.elem_size (y := max a.val b.val) (by omega) as ⟨rem, hr⟩
+        //               split
+        //               · rename_i hrem
+        //                 apply WP.spec.ret
+        //                 intro _ n
+        //                 have hm : self.elem_size.val % (max a.val b.val).val = 0 := by
+        //                   have := congrArg UScalar.val hrem
+        //                   simpa only [show (0#usize).val = 0 by simp, hr] using this
+        //                 have hmaxpow : (max a.val b.val).val.isPowerOfTwo := by
+        //                   rw [Arithmetic.coe_max]
+        //                   by_cases h : a.val.val ≤ b.val.val
+        //                   · simpa only [Nat.max_eq_right h] using hb
+        //                   · simpa only [Nat.max_eq_left (by omega : b.val.val ≤ a.val.val)] using ha
+        //                 have hda := power_dvd_of_le _ _ ha hmaxpow (by rw [Arithmetic.coe_max]; exact Nat.le_max_left _ _)
+        //                 have hdb := power_dvd_of_le _ _ hb hmaxpow (by rw [Arithmetic.coe_max]; exact Nat.le_max_right _ _)
+        //                 have hma : self.elem_size.val % a.val.val = 0 := by
+        //                   rw [← Nat.mod_mod_of_dvd _ hda, hm, Nat.zero_mod]
+        //                 have hmb : other.elem_size.val % b.val.val = 0 := by
+        //                   rw [← helem, ← Nat.mod_mod_of_dvd _ hdb, hm, Nat.zero_mod]
+        //                 apply LayoutMath.same_sequence_sound _ _ _ n
+        //                 refine ⟨congrArg UScalar.val helem, hz, Or.inl ?_⟩
+        //                 simp only [trailingFormula, byteFormula]
+        //                 rw [← hav, ← hbv]
+        //                 exact ⟨hma, hmb⟩
+        //               · split
+        //                 · simp [WP.spec_ok]
+        //                 · rename_i heqa
+        //                   apply WP.spec.ret
+        //                   simp only [decide_eq_true_eq]
+        //                   intro heqp n
+        //                   apply LayoutMath.same_sequence_sound _ _ _ n
+        //                   refine ⟨congrArg UScalar.val helem, hz, Or.inr ?_⟩
+        //                   have haeq : a.val = b.val := not_ne_iff.mp heqa
+        //                   have haveq := congrArg UScalar.val haeq
+        //                   have hpveq := congrArg UScalar.val heqp
+        //                   simp only [trailingFormula, byteFormula]
+        //                   rw [← hpv, ← hqv, ← hav, ← hbv]
+        //                   exact ⟨haveq, hpveq⟩
+        //             · simp [WP.spec_ok]
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::has_same_size_sequence)]
         #[kani::solver(kissat)]
@@ -1084,6 +1213,106 @@ impl TrailingSliceLayout {
         }
     }))]
     const fn advance(self, bytes: usize, elem_size: usize) -> Option<Self> {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayoutUsize.advance
+        //     (self : layout.TrailingSliceLayout Std.Usize) (bytes : Std.Usize)
+        //     (elem_size : Std.Usize) :
+        //     Result (Option (layout.TrailingSliceLayout Std.Usize))
+        //     := do
+        //     let (size_align, size_phase) ←
+        //       layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+        //     let i ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+        //     let align_mask ← i - 1#usize
+        //     let i1 ← core.num.Usize.MAX - self.size_base
+        //     let phase_capacity ← lift (i1 ||| align_mask)
+        //     let max_advance ← phase_capacity - size_phase
+        //     if bytes > max_advance
+        //     then ok none
+        //     else
+        //       let advanced_phase ← size_phase + bytes
+        //       let normalized_phase ← lift (advanced_phase &&& align_mask)
+        //       let whole_bytes ←
+        //         util.round_down_to_next_multiple_of_alignment advanced_phase size_align
+        //       let size_base ← self.size_base + whole_bytes
+        //       let raap ← layout.RoundingAlignAndPhase.new size_align normalized_phase
+        //       ok (some
+        //         { self with elem_size, size_base, size_rounding_align_and_phase := raap })
+        // proof:
+        //   contract advance_spec (self : layout.TrailingSliceLayout Usize) (bytes elem : Usize)
+        //     for layout.TrailingSliceLayoutUsize.advance self bytes elem
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures result => match result with
+        //       | none => Usize.max < ((trailingFormula self).advance bytes.val elem.val).base
+        //       | some t => trailingFormula t = (trailingFormula self).advance bytes.val elem.val ∧
+        //         ((trailingFormula self).advance bytes.val elem.val).base ≤ Usize.max
+        //     proof:
+        //       unfold layout.TrailingSliceLayoutUsize.advance
+        //       step with encoding_components_spec _ hn as ⟨a, p, ha, hp, hsum, halign, hphase⟩
+        //       have hv := trailing_view self a.val.val p.val ha hp hsum.symm
+        //       have apos := Nat.pos_of_isPowerOfTwo ha
+        //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //       step with Usize.sub_spec (show (1#usize).val ≤ a.val.val by simpa using (show 1 ≤ a.val.val by omega)) as ⟨mask, hm, _⟩
+        //       step with Usize.sub_spec (show self.size_base.val ≤ core.num.Usize.MAX.val by scalar_tac) as ⟨available, hav, _⟩
+        //       let pc := available ||| mask
+        //       have hpc : pc.val = (Usize.max - self.size_base.val) -
+        //           (Usize.max - self.size_base.val) % a.val.val + (a.val.val - 1) := by
+        //         obtain ⟨k, hk⟩ := ha
+        //         rw [UScalar.val_or, hm, hav]
+        //         rw [hk, fill_low_bits]
+        //       have hpbound : p.val ≤ pc.val := by
+        //         have hor : mask.val ≤ pc.val := by
+        //           rw [UScalar.val_or]
+        //           exact Nat.right_le_or
+        //         omega
+        //       simp only [lift, bind_ok]
+        //       step with Usize.sub_spec hpbound as ⟨advance, hadv, _⟩
+        //       dsimp only [pc] at *
+        //       simp only [UScalar.lt_equiv]
+        //       split
+        //       · rename_i hlarge
+        //         simp only [WP.spec_ok, hv, LayoutMath.Formula.advance]
+        //         have hcap := LayoutMath.floor_capacity (p.val + bytes.val)
+        //           (Usize.max - self.size_base.val) a.val.val apos
+        //         have hbase : self.size_base.val ≤ Usize.max := by scalar_tac
+        //         have hrem := Nat.mod_le (p.val + bytes.val) a.val.val
+        //         omega
+        //       · rename_i hsmall
+        //         have hshift : p.val + bytes.val ≤ (available ||| mask).val := by omega
+        //         have hword : (available ||| mask).val ≤ Usize.max := by
+        //           have h := UScalar.hSize (available ||| mask)
+        //           simp only [UScalar.size, Usize.max, Usize.numBits, UScalarTy.Usize_numBits_eq] at h ⊢
+        //           have := Nat.two_pow_pos System.Platform.numBits
+        //           omega
+        //         step with Usize.add_spec (x := p) (y := bytes) (by omega) as ⟨shifted, hshifted⟩
+        //         have hlow : (shifted &&& mask).val = shifted.val % a.val.val := by
+        //           obtain ⟨k, hk⟩ := ha
+        //           rw [UScalar.val_and, hm, hk, Nat.and_two_pow_sub_one_eq_mod]
+        //         step with round_down_spec shifted a ha as ⟨whole, _, hwhole, _, _, _⟩
+        //         have hbase : self.size_base.val + whole.val ≤ Usize.max := by
+        //           have hcap := (LayoutMath.floor_capacity (p.val + bytes.val)
+        //             (Usize.max - self.size_base.val) a.val.val apos).mpr (by omega)
+        //           rw [hwhole, hshifted]
+        //           have hb : self.size_base.val ≤ Usize.max := by scalar_tac
+        //           omega
+        //         step with Usize.add_spec (x := self.size_base) (y := whole) hbase as ⟨base, hb⟩
+        //         step with encoding_new_spec a (shifted &&& mask) ha (by rw [hlow]; exact Nat.mod_lt _ apos) as ⟨encoded, he⟩
+        //         have hnew := trailing_view
+        //           ({ self with elem_size := elem, size_base := base, size_rounding_align_and_phase := encoded })
+        //           a.val.val (shifted.val % a.val.val) ha (Nat.mod_lt _ apos) (by rw [he, hlow])
+        //         simp only [hnew, hv, LayoutMath.Formula.advance]
+        //         constructor
+        //         · rw [hshifted, hb, hwhole, hshifted]
+        //           congr 1
+        //           have := Nat.mod_le (p.val + bytes.val) a.val.val
+        //           omega
+        //         · rw [hwhole, hshifted] at hbase
+        //           have := Nat.mod_le (p.val + bytes.val) a.val.val
+        //           omega
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::advance)]
         #[kani::solver(kissat)]
@@ -2655,6 +2884,82 @@ impl DstLayout {
         ),
     }))]
     pub const fn requires_dynamic_padding(self) -> bool {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.requires_dynamic_padding
+        //     (self : layout.DstLayout) : Result Bool := do
+        //     match self.size_info with
+        //     | layout.SizeInfo.Sized _ => ok false
+        //     | layout.SizeInfo.SliceDst trailing_slice_layout =>
+        //       let o ←
+        //         layout.TrailingSliceLayoutUsize.size_for_elems trailing_slice_layout
+        //           0#usize
+        //       match o with
+        //       | none => ok true
+        //       | some initial_size =>
+        //         let nz ←
+        //           layout.RoundingAlignAndPhase.align
+        //             trailing_slice_layout.size_rounding_align_and_phase
+        //         let i ←
+        //           core.num.nonzero.NonZero.get
+        //             Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner nz
+        //         let i1 ← trailing_slice_layout.elem_size % i
+        //         if initial_size != trailing_slice_layout.offset
+        //         then ok true
+        //         else ok (¬ (i1 = 0#usize))
+        // proof:
+        //   contract requires_dynamic_padding_spec (self : layout.DstLayout)
+        //     for layout.DstLayout.requires_dynamic_padding self
+        //     requires hn : match self.size_info with
+        //       | .Sized _ => True
+        //       | .SliceDst tail => 0 < tail.size_rounding_align_and_phase.val.val
+        //     ensures r => (r = false ↔ match self.size_info with
+        //       | .Sized _ => True
+        //       | .SliceDst tail => (trailingFormula tail).size 0 = tail.offset.val ∧
+        //         tail.elem_size.val % (trailingFormula tail).align = 0)
+        //     proof:
+        //       unfold layout.DstLayout.requires_dynamic_padding
+        //       cases hs : self.size_info with
+        //       | Sized size => simp [WP.spec_ok]
+        //       | SliceDst tail =>
+        //         simp only [hs] at hn
+        //         step with size_for_elems_spec tail 0#usize hn as ⟨initial, hi⟩
+        //         cases initial with
+        //         | none =>
+        //           dsimp only
+        //           have hmiss := checked_none_size _ _ hi
+        //           have hoff : tail.offset.val ≤ Usize.max := by scalar_tac
+        //           apply WP.spec.ret
+        //           simp only [Bool.true_eq_false, false_iff]
+        //           intro h
+        //           omega
+        //         | some initial =>
+        //           dsimp only
+        //           have hv := checked_some_size _ _ initial hi
+        //           step with encoding_align_spec _ hn as ⟨a, ha⟩
+        //           simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //           have hap : 0 < a.val.val := by rw [ha]; exact Nat.two_pow_pos _
+        //           step with Usize.rem_spec tail.elem_size (y := a.val) (by omega) as ⟨remainder, hr⟩
+        //           simp only [bne_iff_ne]
+        //           split
+        //           · rename_i hne
+        //             apply WP.spec.ret
+        //             simp only [Bool.true_eq_false, false_iff]
+        //             intro h
+        //             apply hne
+        //             apply UScalar.eq_of_val_eq
+        //             omega
+        //           · rename_i heq
+        //             have heq' : initial.val = tail.offset.val := by
+        //               have h : initial = tail.offset := not_ne_iff.mp heq
+        //               exact congrArg UScalar.val h
+        //             apply WP.spec.ret
+        //             simp only [decide_eq_false_iff_not, not_not, UScalar.eq_equiv,
+        //               show (0#usize).val = 0 by simp, hr, ← heq', ← hv.1, true_and]
+        //             rw [ha]
+        //             rfl
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::requires_dynamic_padding)]
         #[kani::solver(kissat)]

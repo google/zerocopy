@@ -78,6 +78,31 @@
       ]
     },
     {
+      "rust": "zerocopy::layout::TrailingSliceLayout::has_same_size_sequence",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::has_same_size_sequence",
+      "model": "layout.TrailingSliceLayoutUsize.has_same_size_sequence",
+      "theorem": "same_size_sequence_spec",
+      "golden": "layout.TrailingSliceLayoutUsize.has_same_size_sequence.lean.in",
+      "depends_on": [
+        "zerocopy::layout::TrailingSliceLayout::size_for_elems",
+        "zerocopy::layout::RoundingAlignAndPhase::components"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::advance",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::advance",
+      "model": "layout.TrailingSliceLayoutUsize.advance",
+      "theorem": "advance_spec",
+      "golden": "layout.TrailingSliceLayoutUsize.advance.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment",
+        "zerocopy::layout::RoundingAlignAndPhase::new"
+      ]
+    },
+    {
       "rust": "zerocopy::layout::SizeInfo::try_to_nonzero_elem_size",
       "file": "zerocopy/src/layout.rs",
       "syntax": "SizeInfo::try_to_nonzero_elem_size",
@@ -174,6 +199,18 @@
       "model": "layout.DstLayout.requires_static_padding",
       "theorem": "requires_static_padding_spec",
       "golden": "layout.DstLayout.requires_static_padding.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::requires_dynamic_padding",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::requires_dynamic_padding",
+      "model": "layout.DstLayout.requires_dynamic_padding",
+      "theorem": "requires_dynamic_padding_spec",
+      "golden": "layout.DstLayout.requires_dynamic_padding.lean.in",
+      "depends_on": [
+        "zerocopy::layout::TrailingSliceLayout::size_for_elems",
+        "zerocopy::layout::RoundingAlignAndPhase::align"
+      ]
     },
     {
       "rust": "zerocopy::util::max",

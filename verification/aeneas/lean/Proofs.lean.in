@@ -191,6 +191,37 @@ contract theoretical_max_align_spec
       ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
     exact hv
 
+theorem fill_low_bits (n k : Nat) : n ||| (2 ^ k - 1) = n - n % 2 ^ k + (2 ^ k - 1) := by
+  have h : (n - n % 2 ^ k) % 2 ^ k = 0 := by
+    rw [← Nat.div_mul_self_eq_mod_sub_self, Nat.mul_mod_left]
+  rw [← LayoutMath.aligned_or _ _ _ ⟨k, rfl⟩ h (by have := Nat.two_pow_pos k; omega)]
+  apply Nat.eq_of_testBit_eq
+  intro i
+  rw [Nat.testBit_or, Nat.testBit_or, Nat.testBit_two_pow_sub_one]
+  by_cases hi : i < k
+  · simp only [hi, decide_true, Bool.or_true]
+  · simp only [hi, decide_false, Bool.or_false]
+    rw [← Nat.div_mul_self_eq_mod_sub_self, ← Nat.shiftLeft_eq]
+    rw [Nat.testBit_shiftLeft]
+    rw [Nat.testBit_div_two_pow]
+    simp only [show k ≤ i by omega, decide_true, Bool.true_and,
+      show i - k + k = i by omega]
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::advance")@@
+
+theorem checked_some_size (f : LayoutMath.Formula) (n : Nat) (size : Usize)
+    (h : some size.val = f.checkedSize Usize.max n) :
+    size.val = f.size n ∧ f.size n ≤ Usize.max := by
+  unfold LayoutMath.Formula.checkedSize at h
+  split at h <;> simp_all
+
+theorem checked_none_size (f : LayoutMath.Formula) (n : Nat)
+    (h : none = f.checkedSize Usize.max n) : Usize.max < f.size n := by
+  unfold LayoutMath.Formula.checkedSize at h
+  split at h <;> simp_all
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::requires_dynamic_padding")@@
+
 contract packing_limit_spec (packed : Option NonZeroUsize)
   for (match packed with | none => layout.DstLayout.THEORETICAL_MAX_ALIGN | some a => Result.ok a)
   requires hp : ∀ a ∈ packed, a.val.val.isPowerOfTwo
@@ -215,6 +246,8 @@ theorem power_dvd_of_le (a b : Nat) (ha : a.isPowerOfTwo) (hb : b.isPowerOfTwo)
   obtain ⟨j, hj⟩ := hb
   rw [hi, hj] at hle ⊢
   exact Nat.pow_dvd_pow 2 ((Nat.pow_le_pow_iff_right (by decide : 1 < 2)).mp hle)
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::has_same_size_sequence")@@
 
 contract extend_value_spec (self field : layout.DstLayout) (packed : Option NonZeroUsize)
   for layout.DstLayout.extend self field packed
