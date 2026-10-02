@@ -72,7 +72,7 @@ def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
   i * 8#usize
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
-    Source: 'src/layout.rs', lines 78:4-104:5 -/
+    Source: 'src/layout.rs', lines 77:4-103:5 -/
 def layout.RoundingAlignAndPhase.new
   (align : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
@@ -93,7 +93,7 @@ def layout.RoundingAlignAndPhase.new
   | some encoded1 => ok encoded1
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
-    Source: 'src/layout.rs', lines 112:4-144:5 -/
+    Source: 'src/layout.rs', lines 111:4-143:5 -/
 def layout.RoundingAlignAndPhase.components
   (self : layout.RoundingAlignAndPhase) :
   Result ((core.num.nonzero.NonZero Std.Usize
@@ -121,7 +121,7 @@ def layout.RoundingAlignAndPhase.components
     ok (align1, phase)
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
-    Source: 'src/layout.rs', lines 152:4-167:5 -/
+    Source: 'src/layout.rs', lines 151:4-166:5 -/
 def layout.RoundingAlignAndPhase.align
   (self : layout.RoundingAlignAndPhase) :
   Result (core.num.nonzero.NonZero Std.Usize
@@ -131,7 +131,7 @@ def layout.RoundingAlignAndPhase.align
   ok nz
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 155:0-225:1 -/
+    Source: 'src/util/mod.rs', lines 156:0-226:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -146,33 +146,8 @@ def util.padding_needed_for
   let i2 ← lift (~~~ i1)
   ok (i2 &&& mask)
 
-/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
-    Source: 'src/layout.rs', lines 612:4-656:5
-    Visibility: public -/
-def layout.DstLayout.pad_to_align
-  (self : layout.DstLayout) : Result layout.DstLayout := do
-  let (static_padding, size_info) ←
-    match self.size_info with
-    | layout.SizeInfo.Sized unpadded_size =>
-      do
-      let padding ← util.padding_needed_for unpadded_size self.align
-      let o ← lift (Usize.checked_add unpadded_size padding)
-      match o with
-      | none => fail panic
-      | some size => ok (padding, layout.SizeInfo.Sized size)
-    | layout.SizeInfo.SliceDst _ => ok (0#usize, self.size_info)
-  if self.statically_shallow_unpadded
-  then
-    ok
-      {
-        self
-          with
-          size_info, statically_shallow_unpadded := (static_padding = 0#usize)
-      }
-  else ok { self with size_info }
-
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 246:0-274:1 -/
+    Source: 'src/util/mod.rs', lines 247:0-275:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -189,7 +164,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 278:0-289:1 -/
+    Source: 'src/util/mod.rs', lines 279:0-290:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -209,7 +184,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 293:0-304:1 -/
+    Source: 'src/util/mod.rs', lines 294:0-305:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)

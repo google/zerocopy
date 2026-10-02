@@ -15,9 +15,9 @@ The required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from these actual helpers in `zerocopy/src/util/mod.rs` and
-methods in `zerocopy/src/layout.rs`, including their dependencies; there is
-no copied Rust implementation:
+Extraction starts from the arithmetic helpers in `zerocopy/src/util/mod.rs`
+and alignment/phase encoding methods in `zerocopy/src/layout.rs`, including
+their dependencies:
 
 | Rust function | Checked property |
 | --- | --- |
@@ -25,30 +25,17 @@ no copied Rust implementation:
 | `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
 | `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
 | `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
-| `DstLayout::pad_to_align` | For sized layouts, power-of-two alignment and an exact padded size that fits guarantee the least aligned size at least the input; alignment is preserved and the shallow-unpadded flag becomes its old value AND the input being aligned. All DST layouts return unchanged, with no arithmetic preconditions. |
-| `RoundingAlignAndPhase::new` | For power-of-two alignment `A` and phase `P < A`, successfully encodes exactly `A + P`. |
-| `RoundingAlignAndPhase::components` | For any nonzero encoded word, returns its highest set bit as a power-of-two alignment and the remaining lower bits as a phase below that alignment; their sum is the original word. |
-| `RoundingAlignAndPhase::align` | For any nonzero encoded word, returns exactly its highest set bit. |
+| Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
 
 The theorems quantify over all values of the extracted unsigned integer model;
-these are not finite collections of test inputs. All eight inline specifications
+these are not finite collections of test inputs. All seven inline specifications
 use `contract`, whose Aeneas Hoare specification includes successful termination,
 rather than only a postcondition conditional on success.
 
 `lean/Corollaries.lean` composes the inline theorems: min/max preserve any
 predicate shared by both inputs; round-down is monotone, is the identity on
-aligned inputs, and is idempotent; layout padding is the identity on aligned
-sized layouts and DSTs, and is idempotent. The idempotence contracts prove both
+aligned inputs, and is idempotent. The idempotence contract proves both
 calls succeed, including that the first result meets the second call's needs.
-The original `size + align - 1 <= usize::MAX` precondition is also checked as a
-sufficient condition for the layout contract's exact fit requirement.
-
-The alignment/phase encoder is introduced independently of the current layout
-representation. It stores both components in one nonzero word without
-restricting the set of valid nonzero bit patterns. Its Rust tests cover const
-evaluation and boundary cases, and Kani harnesses state both round-trip
-properties. The Lean contracts require positivity explicitly because the
-handwritten `NonZero` model also admits zero.
 
 Comparisons use the unsigned scalar's existing order directly (`m ≤ n`,
 `p < align.val`, `min a.val b.val`). Arithmetic postconditions explicitly bind
@@ -56,8 +43,8 @@ Comparisons use the unsigned scalar's existing order directly (`m ≤ n`,
 mathematical operations. The corresponding Rust scalar arithmetic operators
 return checked `Result` values and are not interchangeable with these formulas.
 `NonZero` still needs one `.val` to unwrap its stored scalar. Power-of-two
-requirements already imply positivity, so padding, round-down, and sized-layout
-contracts do not repeat a positive-alignment requirement.
+requirements already imply positivity, so padding and round-down contracts do
+not repeat a positive-alignment requirement.
 
 CI uses the default features, debug assertions, and the runner's native
 `x86_64-unknown-linux-gnu` target. Local replay also supports macOS arm64. This
@@ -367,10 +354,11 @@ records but does not formally prove:
   Rust values by admitting zero; the alignment proofs establish positivity
   from their explicit power-of-two requirement rather than assuming it through
   an axiom.
-- Extraction uses `size_of` only at `usize`, modeled as the platform word width
-  divided by eight. The encoder also trusts the pinned leading-zero-count and
-  scalar-cast models to match Rust. The handwritten `NonZero::new` model
-  accepts exactly nonzero unsigned machine words; other types are unsupported.
+- The pointer width is computed from `core.mem.size_of Usize`, modeled as the
+  selected word width divided by eight. Other type instantiations remain
+  unsupported at this stack position. `NonZero::new` is modeled at `Usize`:
+  zero returns `None`, and nonzero inputs return the same bits. The encoder
+  also uses the pinned leading-zero-count and wrapping-shift models.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
