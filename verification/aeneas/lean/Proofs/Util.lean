@@ -13,95 +13,111 @@ import all Init.Data.Nat.Power2.Basic
 open Aeneas Aeneas.Std
 namespace Zerocopy.Proofs.Raw
 
+-- Raw contract requirements intentionally retain their descriptive proof names.
 set_option linter.unusedVariables false
 
 theorem padding_lt_alignment :
-  ∀ (len : Usize) (align : NonZeroUsize), ∀ (h : (0 < align.val.val : Prop)),
-    @Zerocopy.util.padding_needed_for len align ⦃ p => p.val < align.val.val ⦄ := by
+  ∀ (len : Usize) (align : NonZeroUsize), ∀ (h : ((align.val : Nat).isPowerOfTwo : Prop)),
+    @Zerocopy.util.padding_needed_for len align ⦃ p => p < align.val ∧
+    let L : Nat := len
+    let A : Nat := align.val
+    let P : Nat := p
+    P = (A - L % A) % A ∧ (L + P) % A = 0 ∧
+      (∀ q : Nat, (L + q) % A = 0 → P ≤ q) ∧ (P = 0 ↔ L % A = 0) ⦄ := by
   intro len align h
+  have hpos := Nat.pos_of_isPowerOfTwo h
   unfold util.padding_needed_for
   simp only [core.num.nonzero.NonZero.get, bind_ok]
   step
-  simp only [lift, bind_ok, WP.spec_ok, UScalar.val_and]
-  have hbound :
-      (~~~(core.num.Usize.wrapping_sub len 1#usize)).val &&& mask.val ≤ mask.val :=
-    Nat.and_le_right
-  omega
+  simp only [lift, bind_ok, WP.spec_ok]
+  have hbound : (~~~(core.num.Usize.wrapping_sub len 1#usize) &&& mask).val
+      < align.val.val := by
+    have := Nat.and_le_right (n := (~~~(core.num.Usize.wrapping_sub len 1#usize)).val)
+      (m := mask.val)
+    rw [UScalar.val_and]
+    omega
+  have haligned := Arithmetic.padding_mask_aligned len align.val mask h (by omega)
+  obtain ⟨hexact, hminimal, hzero⟩ :=
+    Arithmetic.padding_properties _ _ _ hpos hbound haligned
+  exact ⟨(UScalar.lt_equiv _ _).mpr hbound, hexact, haligned, hminimal, hzero⟩
 
 theorem round_down_spec :
-  ∀ (n : Usize) (align : NonZeroUsize), ∀ (hpos : (0 < align.val.val : Prop)), ∀ (h : (align.val.val.isPowerOfTwo : Prop)),
-    @Zerocopy.util.round_down_to_next_multiple_of_alignment n align ⦃ m => m.val ≤ n.val ∧ m.val % align.val.val = 0 ⦄ := by
-  intro n align hpos h
+  ∀ (n : Usize) (align : NonZeroUsize), ∀ (h : ((align.val : Nat).isPowerOfTwo : Prop)),
+    @Zerocopy.util.round_down_to_next_multiple_of_alignment n align ⦃ m => m ≤ n ∧
+    let N : Nat := n
+    let A : Nat := align.val
+    let M : Nat := m
+    M = N - N % A ∧ M % A = 0 ∧ N < M + A ∧
+      (∀ q : Nat, q ≤ N → q % A = 0 → q ≤ M) ⦄ := by
+  intro n align h
+  have hpos := Nat.pos_of_isPowerOfTwo h
   unfold util.round_down_to_next_multiple_of_alignment
   simp only [core.num.nonzero.NonZero.get, bind_ok]
   step
   step
   step with UScalar.sub_bv_spec as ⟨mask, hval, hle, hbv⟩
   simp only [lift, bind_ok, WP.spec_ok]
-  constructor
-  · simp only [UScalar.val_and]
-    exact Nat.and_le_left
-  · have clear : (n &&& ~~~mask).val &&& mask.val = 0 := by
-      rw [← UScalar.val_and]
-      change ((n.bv &&& ~~~mask.bv) &&& mask.bv).toNat = 0
-      simp [BitVec.and_assoc]
-    unfold Nat.isPowerOfTwo at h
-    rcases h with ⟨k, hk⟩
-    rw [hval, hk, Nat.and_two_pow_sub_one_eq_mod] at clear
-    simpa only [hk] using clear
+  have hexact := Arithmetic.round_down_exact n align.val mask h hval
+  obtain ⟨hbound, haligned, hnext, hgreatest⟩ :=
+    Arithmetic.round_down_properties _ _ _ hpos hexact
+  exact ⟨(UScalar.le_equiv _ _).mpr hbound, hexact, haligned, hnext, hgreatest⟩
 
 theorem max_spec :
   ∀ (a b : NonZeroUsize),
-    @Zerocopy.util.max a b ⦃ r => r.val.val = Nat.max a.val.val b.val.val ⦄ := by
+    @Zerocopy.util.max a b ⦃ r => r.val = max a.val b.val ∧ (r = a ∨ r = b) ∧
+    a.val ≤ r.val ∧ b.val ≤ r.val ⦄ := by
   intro a b
-  apply WP.exists_imp_spec
-  simp only [util.max, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+  simp only [util.max, core.num.nonzero.NonZero.get, bind_ok]
   split
   · rename_i h
-    exact ⟨b, rfl, (Nat.max_eq_right (by omega)).symm⟩
+    exact WP.spec.ret ⟨(max_eq_right (le_of_lt h)).symm, Or.inr rfl,
+      le_of_lt h, le_rfl⟩
   · rename_i h
-    exact ⟨a, rfl, (Nat.max_eq_left (by omega)).symm⟩
+    exact WP.spec.ret ⟨(max_eq_left (le_of_not_gt h)).symm, Or.inl rfl,
+      le_rfl, le_of_not_gt h⟩
 
 theorem min_spec :
   ∀ (a b : NonZeroUsize),
-    @Zerocopy.util.min a b ⦃ r => r.val.val = Nat.min a.val.val b.val.val ⦄ := by
+    @Zerocopy.util.min a b ⦃ r => r.val = min a.val b.val ∧ (r = a ∨ r = b) ∧
+    r.val ≤ a.val ∧ r.val ≤ b.val ⦄ := by
   intro a b
-  apply WP.exists_imp_spec
-  simp only [util.min, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+  simp only [util.min, core.num.nonzero.NonZero.get, bind_ok]
   split
   · rename_i h
-    exact ⟨b, rfl, (Nat.min_eq_right (by omega)).symm⟩
+    exact WP.spec.ret ⟨(min_eq_right (le_of_lt h)).symm, Or.inr rfl,
+      le_of_lt h, le_rfl⟩
   · rename_i h
-    exact ⟨a, rfl, (Nat.min_eq_left (by omega)).symm⟩
+    exact WP.spec.ret ⟨(min_eq_left (le_of_not_gt h)).symm, Or.inl rfl,
+      le_rfl, le_of_not_gt h⟩
 
 end Zerocopy.Proofs.Raw
+
 
 namespace Zerocopy.Proofs
 open AeneasSpecs
 
 theorem padding_lt_alignment : Zerocopy.Specs.padding_lt_alignment := by
-  intro len align _lenValue _hlen alignValue halign
+  intro len align lenValue hlen alignValue halign h
+  have hl := (decodeUScalar_iff len lenValue).mp hlen
   have ha := (decodeNonZeroUScalar_iff align alignValue).mp halign
-  have positive : 0 < align.val.val := by rw [ha]; exact alignValue.positive
-  apply WP.spec_mono (Raw.padding_lt_alignment len align positive)
-  intro output facts
-  refine ⟨unsignedWord output, rfl, ?_⟩
+  apply WP.spec_mono (Raw.padding_lt_alignment len align (by simpa only [ha] using h))
+  intro p facts
+  refine ⟨unsignedWord p, rfl, ?_⟩
   dsimp only
-  rw [← ha]
-  exact facts
+  rw [← hl, ← ha]
+  exact ⟨(UScalar.lt_equiv _ _).mp facts.1, facts.2⟩
 register_spec_step padding_lt_alignment
 
 theorem round_down_spec : Zerocopy.Specs.round_down_spec := by
-  intro n align nValue hn alignValue halign pow2
+  intro n align nValue hn alignValue halign h
   have hnv := (decodeUScalar_iff n nValue).mp hn
   have ha := (decodeNonZeroUScalar_iff align alignValue).mp halign
-  have positive : 0 < align.val.val := by rw [ha]; exact alignValue.positive
-  apply WP.spec_mono (Raw.round_down_spec n align positive (by simpa only [ha] using pow2))
-  intro output facts
-  refine ⟨unsignedWord output, rfl, ?_⟩
+  apply WP.spec_mono (Raw.round_down_spec n align (by simpa only [ha] using h))
+  intro m facts
+  refine ⟨unsignedWord m, rfl, ?_⟩
   dsimp only
   rw [← hnv, ← ha]
-  exact facts
+  exact ⟨(UScalar.le_equiv _ _).mp facts.1, facts.2⟩
 register_spec_step round_down_spec
 
 theorem max_spec : Zerocopy.Specs.max_spec := by
@@ -109,13 +125,22 @@ theorem max_spec : Zerocopy.Specs.max_spec := by
   have hav := (decodeNonZeroUScalar_iff a av).mp ha
   have hbv := (decodeNonZeroUScalar_iff b bv).mp hb
   apply WP.spec_mono (Raw.max_spec a b)
-  intro output facts
-  have positive : 0 < output.val.val := by
-    rw [facts, hav, hbv]
-    exact lt_of_lt_of_le av.positive (Nat.le_max_left _ _)
-  let value : NonZeroUsizeValue := ⟨unsignedWord output.val, positive⟩
-  refine ⟨value, (decodeNonZeroUScalar_iff output value).mpr rfl, ?_⟩
-  simpa only [value, unsignedWord, hav, hbv] using facts
+  intro r facts
+  rcases facts.2.1 with hr | hr
+  · subst r
+    refine ⟨av, ha, ?_⟩
+    dsimp only
+    rw [← hav, ← hbv]
+    exact ⟨by simpa only [UScalar.coe_max] using congrArg UScalar.val facts.1,
+      Or.inl rfl, (UScalar.le_equiv _ _).mp facts.2.2.1,
+      (UScalar.le_equiv _ _).mp facts.2.2.2⟩
+  · subst r
+    refine ⟨bv, hb, ?_⟩
+    dsimp only
+    rw [← hav, ← hbv]
+    exact ⟨by simpa only [UScalar.coe_max] using congrArg UScalar.val facts.1,
+      Or.inr rfl, (UScalar.le_equiv _ _).mp facts.2.2.1,
+      (UScalar.le_equiv _ _).mp facts.2.2.2⟩
 register_spec_step max_spec
 
 theorem min_spec : Zerocopy.Specs.min_spec := by
@@ -123,13 +148,22 @@ theorem min_spec : Zerocopy.Specs.min_spec := by
   have hav := (decodeNonZeroUScalar_iff a av).mp ha
   have hbv := (decodeNonZeroUScalar_iff b bv).mp hb
   apply WP.spec_mono (Raw.min_spec a b)
-  intro output facts
-  have positive : 0 < output.val.val := by
-    rw [facts, hav, hbv]
-    exact lt_min av.positive bv.positive
-  let value : NonZeroUsizeValue := ⟨unsignedWord output.val, positive⟩
-  refine ⟨value, (decodeNonZeroUScalar_iff output value).mpr rfl, ?_⟩
-  simpa only [value, unsignedWord, hav, hbv] using facts
+  intro r facts
+  rcases facts.2.1 with hr | hr
+  · subst r
+    refine ⟨av, ha, ?_⟩
+    dsimp only
+    rw [← hav, ← hbv]
+    exact ⟨(Nat.min_eq_left ((UScalar.le_equiv _ _).mp facts.2.2.2)).symm,
+      Or.inl rfl, (UScalar.le_equiv _ _).mp facts.2.2.1,
+      (UScalar.le_equiv _ _).mp facts.2.2.2⟩
+  · subst r
+    refine ⟨bv, hb, ?_⟩
+    dsimp only
+    rw [← hav, ← hbv]
+    exact ⟨(Nat.min_eq_right ((UScalar.le_equiv _ _).mp facts.2.2.1)).symm,
+      Or.inr rfl, (UScalar.le_equiv _ _).mp facts.2.2.1,
+      (UScalar.le_equiv _ _).mp facts.2.2.2⟩
 register_spec_step min_spec
 
 end Zerocopy.Proofs
