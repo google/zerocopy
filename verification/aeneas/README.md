@@ -262,7 +262,7 @@ whole-program unsafe-code certification.
 
 ## Scope and proofs
 
-Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs).
+Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs), [primitive assertions](../../zerocopy/src/layout/primitive_checks.rs).
 
 Extraction starts from the function and nominal-type owners of every present
 `aeneas` fence in `zerocopy/src`, including their dependencies. The current
@@ -345,6 +345,12 @@ The nominal rounding wrapper decodes to `RoundingValue`, a power-of-two
 alignment and bounded phase with machine-fit proofs. Ordinary representation
 laws establish acceptance of every positive stored word and exact reconstruction
 from that pair. Zero is rejected by the native NonZero child decoder.
+
+`LayoutModel.lean` supplies raw observations and projections of the recursively
+decoded records without function proofs. Layout models retain each field and
+the unpadded flag; realizability, alignment and fit conditions remain explicit.
+Generic size/alignment reads are external data inputs, not correctness axioms.
+See [SEMANTICS.md](SEMANTICS.md) for the Rust correspondence premise.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
