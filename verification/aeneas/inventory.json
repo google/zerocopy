@@ -193,6 +193,19 @@
       ]
     },
     {
+      "rust": "zerocopy::layout::DstLayout::for_repr_c_struct",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_repr_c_struct",
+      "model": "layout.DstLayout.for_repr_c_struct",
+      "theorem": "for_repr_c_struct_spec",
+      "golden": "layout.DstLayout.for_repr_c_struct.lean.in",
+      "depends_on": [
+        "zerocopy::layout::DstLayout::new_zst",
+        "zerocopy::layout::DstLayout::pad_to_align",
+        "zerocopy::layout::DstLayout::extend"
+      ]
+    },
+    {
       "rust": "zerocopy::layout::DstLayout::requires_static_padding",
       "file": "zerocopy/src/layout.rs",
       "syntax": "DstLayout::requires_static_padding",
@@ -269,6 +282,24 @@
       "model": "util.round_down_to_next_multiple_of_alignment",
       "theorem": "round_down_spec",
       "golden": "util.round_down_to_next_multiple_of_alignment.lean.in"
+    }
+  ],
+  "covered_impls": [
+    {
+      "file": "zerocopy/src/layout.rs",
+      "type": "DstLayout"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "type": "TrailingSliceLayout"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "type": "RoundingAlignAndPhase"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "type": "SizeInfo"
     }
   ]
 }

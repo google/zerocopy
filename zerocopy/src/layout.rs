@@ -2051,6 +2051,50 @@ impl DstLayout {
         repr_packed: Option<NonZeroUsize>,
         fields: &[DstLayout],
     ) -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.for_repr_c_struct
+        //     (repr_align : Option (core.num.nonzero.NonZero Std.Usize
+        //     core.num.niche_types.NonZeroUsizeInner))
+        //     (repr_packed : Option (core.num.nonzero.NonZero Std.Usize
+        //     core.num.niche_types.NonZeroUsizeInner)) (fields : Slice layout.DstLayout) :
+        //     Result layout.DstLayout
+        //     := do
+        //     let result ← layout.DstLayout.new_zst repr_align
+        //     let result1 ←
+        //       layout.DstLayout.for_repr_c_struct_loop repr_packed fields result 0#usize
+        //     layout.DstLayout.pad_to_align result1
+        // proof:
+        //   contract for_repr_c_struct_spec (repr_align packed : Option NonZeroUsize) (fields : Slice layout.DstLayout)
+        //     for layout.DstLayout.for_repr_c_struct repr_align packed fields
+        //     requires ha : ∀ a ∈ repr_align, alignmentDomain a.val.val
+        //     requires hp : ∀ a ∈ packed, alignmentDomain a.val.val
+        //     requires hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed
+        //     requires hlast : alignmentDomain
+        //       (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).align
+        //     requires hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+        //       packed fields.val.length).padFits Usize.max
+        //     ensures r => layoutValue r =
+        //       (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).pad
+        //     proof:
+        //       unfold layout.DstLayout.for_repr_c_struct
+        //       step with new_zst_spec repr_align (fun a h => (ha a h).1) as ⟨start, halign, hsize, hunpadded⟩
+        //       have hv : layoutValue start = constructionPrefix fields
+        //           (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed (0#usize).val := by
+        //         simp only [constructionPrefix, LayoutMath.LayoutValue.prefixValue, show (0#usize).val = 0 by simp,
+        //           List.take_zero, List.foldl_nil, layoutValue, hsize, hunpadded, halign,
+        //           initialAlignment, LayoutMath.LayoutValue.initial]
+        //         cases repr_align <;> rfl
+        //       have hc : canonicalLayout start := by simp only [canonicalLayout, hsize]
+        //       step with constructor_loop_spec packed fields _ start 0#usize hp hd (by simp) hv hc as ⟨complete, hv, hc⟩
+        //       step with pad_value_spec complete (by
+        //         have hh := congrArg LayoutMath.LayoutValue.align hv
+        //         change complete.align.val.val = _ at hh
+        //         rw [hh]
+        //         exact hlast.1) hc (by rw [hv]; exact hfit) as ⟨result, hr⟩
+        //       rw [hr, hv]
+        // ```
+
         // This harness covers up to three fields, including an optional final
         // DST. Arbitrary-length composition is not established by this bound.
         #[cfg(kani)]

@@ -79,4 +79,19 @@ def canonicalLayout (self : layout.DstLayout) : Prop :=
 
 def alignmentDomain (a : Nat) : Prop := a.isPowerOfTwo ∧ a ≤ 2 ^ 29
 
+def constructionPrefix (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) (i : Nat) : LayoutMath.LayoutValue :=
+  LayoutMath.LayoutValue.prefixValue (fields.val.map layoutValue) initial (packingValue packed) i
+
+def constructionDomain (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) : Prop :=
+  ∀ i (hi : i < fields.val.length),
+    alignmentDomain (constructionPrefix fields initial packed i).align ∧
+    alignmentDomain fields.val[i].align.val.val ∧ canonicalLayout fields.val[i] ∧
+    (constructionPrefix fields initial packed i).extendFits
+      (layoutValue fields.val[i]) (packingValue packed) Usize.max
+
+def initialAlignment (repr_align : Option NonZeroUsize) : Nat :=
+  (repr_align.map (fun a => a.val.val)).getD 1
+
 end Zerocopy.Proofs
