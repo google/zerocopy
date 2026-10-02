@@ -691,6 +691,160 @@ theorem theoretical_max_align_spec :
     ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
   exact hv
 
+theorem fill_low_bits (n k : Nat) : n ||| (2 ^ k - 1) = n - n % 2 ^ k + (2 ^ k - 1) := by
+  have h : (n - n % 2 ^ k) % 2 ^ k = 0 := by
+    rw [← Nat.div_mul_self_eq_mod_sub_self, Nat.mul_mod_left]
+  rw [← LayoutMath.aligned_or _ _ _ ⟨k, rfl⟩ h (by have := Nat.two_pow_pos k; omega)]
+  apply Nat.eq_of_testBit_eq
+  intro i
+  rw [Nat.testBit_or, Nat.testBit_or, Nat.testBit_two_pow_sub_one]
+  by_cases hi : i < k
+  · simp only [hi, decide_true, Bool.or_true]
+  · simp only [hi, decide_false, Bool.or_false]
+    rw [← Nat.div_mul_self_eq_mod_sub_self, ← Nat.shiftLeft_eq]
+    rw [Nat.testBit_shiftLeft]
+    rw [Nat.testBit_div_two_pow]
+    simp only [show k ≤ i by omega, decide_true, Bool.true_and,
+      show i - k + k = i by omega]
+
+theorem advance_spec :
+  ∀ (self : layout.TrailingSliceLayout Usize) (bytes elem_size : Usize), ∀ (hn : (0 < self.size_rounding_align_and_phase._0.val.val : Prop)),
+    @Zerocopy.layout.TrailingSliceLayoutUsize.advance self bytes elem_size ⦃ result => (∀ t ∈ result, encodingValid t.size_rounding_align_and_phase) ∧ match result with
+    | none => Usize.max < ((trailingFormula self).advance bytes.val elem_size.val).base
+    | some t => trailingFormula t = (trailingFormula self).advance bytes.val elem_size.val ∧
+      ((trailingFormula self).advance bytes.val elem_size.val).base ≤ Usize.max ⦄ := by
+  intro self bytes elem hn
+  unfold layout.TrailingSliceLayoutUsize.advance
+  step with encoding_components_spec _ hn as ⟨a, p, ha, hp, hsum, halign, hphase⟩
+  have hv := trailing_view self a.val.val p.val ha hp hsum.symm
+  have apos := Nat.pos_of_isPowerOfTwo ha
+  simp only [core.num.nonzero.NonZero.get, bind_ok]
+  step with Usize.sub_spec (show (1#usize).val ≤ a.val.val by simpa using (show 1 ≤ a.val.val by omega)) as ⟨mask, hm, _⟩
+  step with Usize.sub_spec (show self.size_base.val ≤ core.num.Usize.MAX.val by scalar_tac) as ⟨available, hav, _⟩
+  let pc := available ||| mask
+  have hpc : pc.val = (Usize.max - self.size_base.val) -
+      (Usize.max - self.size_base.val) % a.val.val + (a.val.val - 1) := by
+    obtain ⟨k, hk⟩ := ha
+    rw [UScalar.val_or, hm, hav]
+    rw [hk, fill_low_bits]
+  have hpbound : p.val ≤ pc.val := by
+    have hor : mask.val ≤ pc.val := by
+      rw [UScalar.val_or]
+      exact Nat.right_le_or
+    omega
+  simp only [lift, bind_ok]
+  step with Usize.sub_spec hpbound as ⟨advance, hadv, _⟩
+  dsimp only [pc] at *
+  simp only [UScalar.lt_equiv]
+  split
+  · rename_i hlarge
+    simp only [WP.spec_ok, hv, LayoutMath.Formula.advance]
+    constructor
+    · simp
+    · have hcap := LayoutMath.floor_capacity (p.val + bytes.val)
+        (Usize.max - self.size_base.val) a.val.val apos
+      have hbase : self.size_base.val ≤ Usize.max := by scalar_tac
+      have hrem := Nat.mod_le (p.val + bytes.val) a.val.val
+      omega
+  · rename_i hsmall
+    have hshift : p.val + bytes.val ≤ (available ||| mask).val := by omega
+    have hword : (available ||| mask).val ≤ Usize.max := by
+      have h := UScalar.hSize (available ||| mask)
+      simp only [UScalar.size, Usize.max, Usize.numBits, UScalarTy.Usize_numBits_eq] at h ⊢
+      have := Nat.two_pow_pos System.Platform.numBits
+      omega
+    step with Usize.add_spec (x := p) (y := bytes) (by omega) as ⟨shifted, hshifted⟩
+    have hlow : (shifted &&& mask).val = shifted.val % a.val.val := by
+      obtain ⟨k, hk⟩ := ha
+      rw [UScalar.val_and, hm, hk, Nat.and_two_pow_sub_one_eq_mod]
+    step with round_down_spec shifted a ha as ⟨whole, _, hwhole, _, _, _⟩
+    have hbase : self.size_base.val + whole.val ≤ Usize.max := by
+      have hcap := (LayoutMath.floor_capacity (p.val + bytes.val)
+        (Usize.max - self.size_base.val) a.val.val apos).mpr (by omega)
+      rw [hwhole, hshifted]
+      have hb : self.size_base.val ≤ Usize.max := by scalar_tac
+      omega
+    step with Usize.add_spec (x := self.size_base) (y := whole) hbase as ⟨base, hb⟩
+    step with encoding_new_spec a (shifted &&& mask) ha (by rw [hlow]; exact Nat.mod_lt _ apos) as ⟨encoded, he⟩
+    have hnew := trailing_view
+      ({ self with elem_size := elem, size_base := base, size_rounding_align_and_phase := encoded })
+      a.val.val (shifted.val % a.val.val) ha (Nat.mod_lt _ apos) (by rw [he, hlow])
+    have hencoded : encodingValid encoded := by
+      unfold encodingValid
+      rw [he]
+      omega
+    simp only [hnew, hv, LayoutMath.Formula.advance]
+    refine ⟨?_, ?_, ?_⟩
+    · simpa using hencoded
+    · rw [hshifted, hb, hwhole, hshifted]
+      congr 1
+      have := Nat.mod_le (p.val + bytes.val) a.val.val
+      omega
+    · rw [hwhole, hshifted] at hbase
+      have := Nat.mod_le (p.val + bytes.val) a.val.val
+      omega
+
+theorem checked_some_size (f : LayoutMath.Formula) (n : Nat) (size : Usize)
+    (h : some size.val = f.checkedSize Usize.max n) :
+    size.val = f.size n ∧ f.size n ≤ Usize.max := by
+  unfold LayoutMath.Formula.checkedSize at h
+  split at h <;> simp_all
+
+theorem checked_none_size (f : LayoutMath.Formula) (n : Nat)
+    (h : none = f.checkedSize Usize.max n) : Usize.max < f.size n := by
+  unfold LayoutMath.Formula.checkedSize at h
+  split at h <;> simp_all
+
+theorem requires_dynamic_padding_spec :
+  ∀ (self : layout.DstLayout), ∀ (hn : (match self.size_info with
+    | .Sized _ => True
+    | .SliceDst tail => 0 < tail.size_rounding_align_and_phase._0.val.val : Prop)),
+    @Zerocopy.layout.DstLayout.requires_dynamic_padding self ⦃ r => (r = false ↔ match self.size_info with
+    | .Sized _ => True
+    | .SliceDst tail => (trailingFormula tail).size 0 = tail.offset.val ∧
+      tail.elem_size.val % (trailingFormula tail).align = 0) ⦄ := by
+  intro self hn
+  unfold layout.DstLayout.requires_dynamic_padding
+  cases hs : self.size_info with
+  | Sized size => simp [WP.spec_ok]
+  | SliceDst tail =>
+    simp only [hs] at hn
+    step with size_for_elems_spec tail 0#usize hn as ⟨initial, hi⟩
+    cases initial with
+    | none =>
+      dsimp only
+      have hmiss := checked_none_size _ _ hi
+      have hoff : tail.offset.val ≤ Usize.max := by scalar_tac
+      apply WP.spec.ret
+      simp only [Bool.true_eq_false, false_iff]
+      intro h
+      omega
+    | some initial =>
+      dsimp only
+      have hv := checked_some_size _ _ initial hi
+      step with encoding_align_spec _ hn as ⟨a, ha⟩
+      simp only [core.num.nonzero.NonZero.get, bind_ok]
+      have hap : 0 < a.val.val := by rw [ha]; exact Nat.two_pow_pos _
+      step with Usize.rem_spec tail.elem_size (y := a.val) (by omega) as ⟨remainder, hr⟩
+      simp only [bne_iff_ne]
+      split
+      · rename_i hne
+        apply WP.spec.ret
+        simp only [Bool.true_eq_false, false_iff]
+        intro h
+        apply hne
+        apply UScalar.eq_of_val_eq
+        omega
+      · rename_i heq
+        have heq' : initial.val = tail.offset.val := by
+          have h : initial = tail.offset := not_ne_iff.mp heq
+          exact congrArg UScalar.val h
+        apply WP.spec.ret
+        simp only [decide_eq_false_iff_not, not_not, UScalar.eq_equiv,
+          show (0#usize).val = 0 by simp, hr, ← heq', ← hv.1, true_and]
+        rw [ha]
+        rfl
+
 theorem packing_limit_spec (packed : Option NonZeroUsize)
     (hp : ∀ a ∈ packed, a.val.val.isPowerOfTwo) :
     (match packed with | none => layout.DstLayout.THEORETICAL_MAX_ALIGN | some a => Result.ok a)
@@ -818,6 +972,85 @@ theorem power_dvd_of_le (a b : Nat) (ha : a.isPowerOfTwo) (hb : b.isPowerOfTwo)
   obtain ⟨j, hj⟩ := hb
   rw [hi, hj] at hle ⊢
   exact Nat.pow_dvd_pow 2 ((Nat.pow_le_pow_iff_right (by decide : 1 < 2)).mp hle)
+
+theorem same_size_sequence_spec :
+  ∀ (self other : layout.TrailingSliceLayout Usize), ∀ (hs : (0 < self.size_rounding_align_and_phase._0.val.val : Prop)), ∀ (ho : (0 < other.size_rounding_align_and_phase._0.val.val : Prop)),
+    @Zerocopy.layout.TrailingSliceLayoutUsize.has_same_size_sequence self other ⦃ b => b = true → ∀ n : Nat, (trailingFormula self).size n = (trailingFormula other).size n ⦄ := by
+  intro self other hs ho
+  unfold layout.TrailingSliceLayoutUsize.has_same_size_sequence
+  simp only [bne_iff_ne]
+  split
+  · simp [WP.spec_ok]
+  · rename_i he
+    have helem : self.elem_size = other.elem_size := not_ne_iff.mp he
+    step with size_for_elems_spec self 0#usize hs as ⟨s, hsize⟩
+    step with size_for_elems_spec other 0#usize ho as ⟨o, hother⟩
+    cases s with
+    | none => simp [WP.spec_ok]
+    | some s =>
+      cases o with
+      | none => simp [WP.spec_ok]
+      | some o =>
+        dsimp only
+        split
+        · rename_i hsame
+          have hz : (trailingFormula self).size 0 = (trailingFormula other).size 0 := by
+            have h1 := (checked_some_size _ _ s hsize).1
+            have h2 := (checked_some_size _ _ o hother).1
+            have hh := congrArg UScalar.val hsame
+            omega
+          step with encoding_components_spec _ hs as ⟨a, p, ha, hp, _, hav, hpv⟩
+          step with encoding_components_spec _ ho as ⟨b, q, hb, hq, _, hbv, hqv⟩
+          simp only [core.num.nonzero.NonZero.get, bind_ok]
+          have hmax : (if a.val > b.val then Result.ok a.val else Result.ok b.val) =
+              Result.ok (max a.val b.val) := by
+            by_cases h : a.val > b.val
+            · simp only [h, if_true, max_eq_left (le_of_lt h)]
+            · simp only [h, if_false, max_eq_right (le_of_not_gt h)]
+          rw [hmax]
+          simp only [bind_ok]
+          have hmaxp : 0 < (max a.val b.val).val := by
+            rw [Arithmetic.coe_max]
+            exact Nat.lt_of_lt_of_le (Nat.pos_of_isPowerOfTwo ha) (Nat.le_max_left _ _)
+          step with Usize.rem_spec self.elem_size (y := max a.val b.val) (by omega) as ⟨rem, hr⟩
+          split
+          · rename_i hrem
+            apply WP.spec.ret
+            intro _ n
+            have hm : self.elem_size.val % (max a.val b.val).val = 0 := by
+              have := congrArg UScalar.val hrem
+              simpa only [show (0#usize).val = 0 by simp, hr] using this
+            have hmaxpow : (max a.val b.val).val.isPowerOfTwo := by
+              rw [Arithmetic.coe_max]
+              by_cases h : a.val.val ≤ b.val.val
+              · simpa only [Nat.max_eq_right h] using hb
+              · simpa only [Nat.max_eq_left (by omega : b.val.val ≤ a.val.val)] using ha
+            have hda := power_dvd_of_le _ _ ha hmaxpow (by rw [Arithmetic.coe_max]; exact Nat.le_max_left _ _)
+            have hdb := power_dvd_of_le _ _ hb hmaxpow (by rw [Arithmetic.coe_max]; exact Nat.le_max_right _ _)
+            have hma : self.elem_size.val % a.val.val = 0 := by
+              rw [← Nat.mod_mod_of_dvd _ hda, hm, Nat.zero_mod]
+            have hmb : other.elem_size.val % b.val.val = 0 := by
+              rw [← helem, ← Nat.mod_mod_of_dvd _ hdb, hm, Nat.zero_mod]
+            apply LayoutMath.same_sequence_sound _ _ _ n
+            refine ⟨congrArg UScalar.val helem, hz, Or.inl ?_⟩
+            simp only [trailingFormula, byteFormula]
+            rw [← hav, ← hbv]
+            exact ⟨hma, hmb⟩
+          · split
+            · simp [WP.spec_ok]
+            · rename_i heqa
+              apply WP.spec.ret
+              simp only [decide_eq_true_eq]
+              intro heqp n
+              apply LayoutMath.same_sequence_sound _ _ _ n
+              refine ⟨congrArg UScalar.val helem, hz, Or.inr ?_⟩
+              have haeq : a.val = b.val := not_ne_iff.mp heqa
+              have haveq := congrArg UScalar.val haeq
+              have hpveq := congrArg UScalar.val heqp
+              simp only [trailingFormula, byteFormula]
+              rw [← hpv, ← hqv, ← hav, ← hbv]
+              exact ⟨haveq, hpveq⟩
+        · simp [WP.spec_ok]
 
 theorem extend_value_spec (self field : layout.DstLayout) (packed : Option NonZeroUsize)
     (hself : alignmentDomain self.align.val.val)
@@ -987,6 +1220,13 @@ theorem size_for_elems_spec : Zerocopy.Specs.size_for_elems_spec := by
   simp
 register_spec_step size_for_elems_spec
 
+theorem same_size_sequence_spec : Zerocopy.Specs.same_size_sequence_spec := by
+  unfold Zerocopy.Specs.same_size_sequence_spec
+  representation_simps
+  intro self other hs ho
+  exact Raw.same_size_sequence_spec self other hs ho
+register_spec_step same_size_sequence_spec
+
 theorem max_elems_for_bytes_spec : Zerocopy.Specs.max_elems_for_bytes_spec := by
   unfold Zerocopy.Specs.max_elems_for_bytes_spec
   representation_simps
@@ -1048,10 +1288,34 @@ theorem requires_static_padding_spec : Zerocopy.Specs.requires_static_padding_sp
   exact Raw.requires_static_padding_spec self
 register_spec_step requires_static_padding_spec
 
+theorem requires_dynamic_padding_spec : Zerocopy.Specs.requires_dynamic_padding_spec := by
+  unfold Zerocopy.Specs.requires_dynamic_padding_spec
+  representation_simps
+  intro self hv
+  apply Raw.requires_dynamic_padding_spec self
+  cases hs : self.size_info with
+  | Sized _ => trivial
+  | SliceDst _ => simpa only [hs] using hv.2
+register_spec_step requires_dynamic_padding_spec
+
 end Zerocopy.Proofs
 
 namespace Zerocopy.Proofs
 open AeneasSpecs
+
+theorem advance_spec : Zerocopy.Specs.advance_spec := by
+  unfold Zerocopy.Specs.advance_spec
+  representation_simps
+  intro self bytes elem hv
+  apply WP.spec_mono (Raw.advance_spec self bytes elem hv)
+  rintro result ⟨accepted, facts⟩
+  refine ⟨?_, facts⟩
+  change isValid result
+  rw [option_valid_iff]
+  intro next member
+  rw [trailing_valid_iff]
+  exact ⟨by simp, accepted next member⟩
+register_spec_step advance_spec
 
 theorem try_nonzero_spec : Zerocopy.Specs.try_nonzero_spec := by
   unfold Zerocopy.Specs.try_nonzero_spec
