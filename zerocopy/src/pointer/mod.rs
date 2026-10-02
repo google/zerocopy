@@ -68,8 +68,8 @@ pub mod cast {
         ///
         /// # Safety
         ///
-        /// The returned pointer refers to a non-strict subset of the bytes of
-        /// `src`'s referent, and has the same provenance as `src`.
+        /// The returned pointer is non-null, refers to a non-strict subset of
+        /// the bytes of `src`'s referent, and has the same provenance as `src`.
         fn project(src: PtrInner<'_, Src>) -> *mut Dst;
     }
 
@@ -95,8 +95,9 @@ pub mod cast {
     pub struct IdCast;
 
     // SAFETY: `project` returns its argument unchanged, and so it is a
-    // provenance-preserving projection which preserves the set of referent
-    // bytes.
+    // provenance-preserving projection which preserves the address and set of
+    // referent bytes. The input is non-null by invariant on `PtrInner`, so
+    // the result is non-null regardless of referent size.
     unsafe impl<T: ?Sized> Project<T, T> for IdCast {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut T {
@@ -123,8 +124,9 @@ pub mod cast {
     pub enum CastSized {}
 
     // SAFETY: By the `static_assert!`, `Dst` is no larger than `Src`,
-    // and so all casts preserve or shrink the set of referent bytes. All
-    // operations preserve provenance.
+    // and so all casts preserve or shrink the set of referent bytes. The
+    // pointer cast preserves the input's non-null address and provenance,
+    // including when the destination is zero-sized.
     unsafe impl<Src, Dst> Project<Src, Dst> for CastSized {
         #[inline(always)]
         fn project(src: PtrInner<'_, Src>) -> *mut Dst {
@@ -150,8 +152,9 @@ pub mod cast {
     pub enum CastSizedExact {}
 
     // SAFETY: By the `static_assert!`, `Dst` has the same size as `Src`,
-    // and so all casts preserve the set of referent bytes. All operations
-    // preserve provenance.
+    // and so all casts preserve the set of referent bytes. The pointer cast
+    // preserves the input's non-null address and provenance, including for
+    // zero-sized referents.
     unsafe impl<Src, Dst> Project<Src, Dst> for CastSizedExact {
         #[inline(always)]
         fn project(src: PtrInner<'_, Src>) -> *mut Dst {
@@ -187,6 +190,9 @@ pub mod cast {
     //   given pointer metadata encodes the same size for both `Src` and `Dst`
     //   (note that the alignment is required as it affects the amount of
     //   trailing padding). Thus, `project` preserves the set of referent bytes.
+    // The data-pointer cast and `KnownLayout::raw_from_ptr_len` preserve the
+    // input's address and provenance, so the result is non-null, including
+    // when the referent is zero-sized.
     unsafe impl<Src, Dst> Project<Src, Dst> for CastUnsized
     where
         Src: ?Sized + KnownLayout,
@@ -319,9 +325,11 @@ pub mod cast {
         _u: PhantomData<U>,
     }
 
-    // SAFETY: Since `TU::project` and `UV::project` are each
-    // provenance-preserving operations which preserve or shrink the set of
-    // referent bytes, so is their composition.
+    // SAFETY: `TU::project` and `UV::project` each promise a non-null result,
+    // the same provenance, and a subset of the input's referent bytes.
+    // `PtrInner::project` preserves those properties between the calls, so
+    // their composition satisfies all three postconditions, including for
+    // zero-sized intermediate and final referents.
     unsafe impl<T, U, V, TU, UV> Project<T, V> for TransitiveProject<U, TU, UV>
     where
         T: ?Sized,
@@ -367,8 +375,9 @@ pub mod cast {
     pub struct AsBytesCast;
 
     // SAFETY: `project` constructs a pointer with the same address as `src`
-    // and with a referent of the same size as `*src`. It does this using
-    // provenance-preserving operations.
+    // and with a referent of the same size as `*src`. This preserves the
+    // input's non-null address, even for an empty slice. All operations
+    // preserve provenance.
     //
     // FIXME(https://github.com/rust-lang/unsafe-code-guidelines/issues/594):
     // Technically, this proof assumes that `*src` is contiguous (the same is
@@ -401,7 +410,9 @@ pub mod cast {
     pub struct CastToUnit;
 
     // SAFETY: The `project` implementation projects to a subset of its
-    // argument's referent using provenance-preserving operations.
+    // argument's referent using an address- and provenance-preserving cast.
+    // The empty output referent is a subset of any input referent, and the
+    // input's non-null address is preserved.
     unsafe impl<T: ?Sized> Project<T, ()> for CastToUnit {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut () {

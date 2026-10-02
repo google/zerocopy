@@ -1306,7 +1306,11 @@ mod _project {
     {
         /// Iteratively projects the elements `Ptr<T>` from `Ptr<[T]>`.
         #[inline]
-        pub fn iter(self) -> impl Iterator<Item = Ptr<'a, T, I>> {
+        #[must_use = "iterators are lazy and do nothing unless consumed"]
+        #[allow(clippy::implied_bounds_in_impls)]
+        pub fn iter(
+            self,
+        ) -> impl Iterator<Item = Ptr<'a, T, I>> + ExactSizeIterator + DoubleEndedIterator {
             // SAFETY:
             // 0. `elem` conforms to the aliasing invariant of `I::Aliasing`:
             //    - `Exclusive`: `self` is consumed by value, and therefore
@@ -1444,10 +1448,9 @@ mod tests {
                             //   there's a bug and this doesn't hold, then
                             //   that's exactly what we're hoping Miri will
                             //   catch!
-                            // - Since `T: FromBytes`, `T` doesn't contain
-                            //   any `UnsafeCell`s, so it's okay for `t: T`
-                            //   and a `&[u8]` to the same memory to be
-                            //   alive concurrently.
+                            // - Since `T: Immutable`, the shared `&T` does not
+                            //   permit interior mutation. It can coexist with
+                            //   a shared byte slice covering the same memory.
                             unsafe { core::slice::from_raw_parts(t.cast::<u8>(), len) }
                         };
 

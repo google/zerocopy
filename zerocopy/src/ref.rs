@@ -972,8 +972,9 @@ where
 
     // SAFETY: `CastForSized` is only used below with the input `ptr`, which the
     // caller promises has size `size_of::<T>()`. Thus, the referent produced in
-    // this cast has the same size as `ptr`'s referent. All operations preserve
-    // provenance.
+    // this cast has the same size as `ptr`'s referent. The input data-pointer
+    // cast and `KnownLayout::raw_from_ptr_len` preserve the input's non-null
+    // address and provenance, including when that size is zero.
     unsafe impl<T: ?Sized + KnownLayout> Project<[u8], T> for CastForSized {
         #[inline(always)]
         fn project(src: PtrInner<'_, [u8]>) -> *mut T {

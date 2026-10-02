@@ -812,7 +812,8 @@ const _: () = {
         #[inline(always)]
         fn project(slf: PtrInner<'_, Self>) -> *mut T {
             // SAFETY: `ManuallyDrop<T>` has the same layout and bit validity as
-            // `T` [1].
+            // `T` [1]. The cast preserves the address of the non-null input and
+            // its provenance, including when the referent is zero-sized.
             //
             // [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
             //
@@ -1095,12 +1096,26 @@ mod tuples {
 
                 #[inline(always)]
                 fn project(slf: crate::PtrInner<'_, Self>) -> *mut Self::Type {
+                    if core::mem::size_of::<Self>() == 0 {
+                        // The tuple and this field have size zero. This cast preserves
+                        // the input's non-null address and provenance, and the empty
+                        // referent is a subset of the input. No field-offset assumption
+                        // or allocation is needed to meet the projection contract.
+                        return slf.as_ptr().cast::<$CurrT>();
+                    }
                     let slf = slf.as_non_null().as_ptr();
-                    // SAFETY: `PtrInner` promises it references either a zero-sized
-                    // byte range, or else will reference a byte range that is
-                    // entirely contained within an allocated object. In either
-                    // case, this guarantees that `(*slf).$CurrI` is in-bounds of
-                    // `slf`.
+                    // SAFETY: The non-zero-sized tuple lies within one allocation by
+                    // invariant on `PtrInner`. Its field address is in that allocation
+                    // or one-past its end, and computing it does not wrap. Allocations
+                    // have non-null bases and nonwrapping address ranges [1], so the
+                    // result is non-null even for a zero-sized field. Field projection
+                    // preserves provenance and selects a subset of the tuple's bytes.
+                    //
+                    // [1] Per https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation:
+                    //
+                    //   base is not equal to null()
+                    //   ...
+                    //   base + size <= usize::MAX
                     unsafe { core::ptr::addr_of_mut!((*slf).$CurrI) }
                 }
             }
@@ -1392,6 +1407,34 @@ mod simd {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn zst_field_projections_are_non_null() {
+        type Tuple = ((), ());
+        let value = ((), ());
+        let pointer = PtrInner::from_ref(&value);
+        let projected = <Tuple as HasField<(), (), { STRUCT_VARIANT_ID }, 1>>::project(pointer);
+        assert_eq!(projected, pointer.as_ptr().cast::<()>());
+
+        let pointer = core::ptr::NonNull::<Tuple>::dangling();
+        // SAFETY: `Tuple` is zero-sized. `PtrInner::new` requires no
+        // allocation or live provenance for a zero-sized referent.
+        let pointer = unsafe { PtrInner::new(pointer) };
+        let projected = <Tuple as HasField<(), (), { STRUCT_VARIANT_ID }, 1>>::project(pointer);
+        assert_eq!(projected, pointer.as_ptr().cast::<()>());
+
+        // A zero-sized field of a non-zero-sized tuple.
+        let value = (0u8, ());
+        let pointer = PtrInner::from_ref(&value);
+        let projected = <(u8, ()) as HasField<(), (), { STRUCT_VARIANT_ID }, 1>>::project(pointer);
+        assert!(!projected.is_null());
+
+        let value = ReadOnly::new(((), ()));
+        let pointer = PtrInner::from_ref(&value);
+        let projected =
+            <ReadOnly<Tuple> as HasField<(), (), { STRUCT_VARIANT_ID }, 1>>::project(pointer);
+        assert_eq!(projected, pointer.as_ptr().cast::<ReadOnly<()>>());
+    }
 
     #[test]
     fn test_impls() {

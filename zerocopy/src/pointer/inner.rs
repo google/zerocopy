@@ -187,29 +187,15 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
     pub fn project<U: ?Sized, C: cast::Project<T, U>>(self) -> PtrInner<'a, U> {
         let projected_raw = C::project(self);
 
-        // SAFETY: `self`'s referent lives at a `NonNull` address, and is either
-        // zero-sized or lives in an allocation. In either case, it does not
-        // wrap around the address space [1], and so none of the addresses
-        // contained in it or one-past-the-end of it are null.
-        //
-        // By invariant on `C: Project`, `C::project` is a provenance-preserving
-        // projection which preserves or shrinks the set of referent bytes, so
-        // `projected_raw` references a subset of `self`'s referent, and so it
-        // cannot be null.
-        //
-        // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+        // SAFETY: By postcondition on `C::project`, `projected_raw` is non-null.
         let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
 
-        // SAFETY: As described in the preceding safety comment, `projected_raw`,
-        // and thus `projected_non_null`, addresses a subset of `self`'s
-        // referent. Thus, `projected_non_null` either:
-        // - Addresses zero bytes or,
-        // - Addresses a subset of the referent of `self`. In this case, `self`
-        //   has provenance for its referent, which lives in an allocation.
-        //   Since `projected_non_null` was constructed using a sequence of
-        //   provenance-preserving operations, it also has provenance for its
-        //   referent and that referent lives in an allocation. By invariant on
-        //   `self`, that allocation lives for `'a`.
+        // SAFETY: `C::project` promises that the result addresses a subset of
+        // `self`'s referent and preserves its provenance. `NonNull::new_unchecked`
+        // preserves that address and provenance. If the projected referent is
+        // non-zero-sized, it therefore lies within the same allocation as
+        // `self`'s referent, with valid provenance. By invariant on `self`, that
+        // allocation lives for `'a`. A zero-sized result needs no allocation.
         unsafe { PtrInner::new(projected_non_null) }
     }
 }
@@ -234,9 +220,11 @@ where
     ///
     /// # Safety
     ///
-    /// The caller promises that if `self`'s referent is not zero sized, then
-    /// a pointer constructed from its address with the given `meta` metadata
-    /// will address a subset of the allocation pointed to by `self`.
+    /// The caller promises that if a pointer constructed from `self`'s address
+    /// with the given `meta` metadata has a non-zero-sized referent, then that
+    /// pointer addresses a subset of the allocation pointed to by `self`, has
+    /// valid provenance for that allocation, and that allocation lives for
+    /// `'a`.
     #[inline]
     #[must_use]
     pub unsafe fn with_meta(self, meta: T::PointerMetadata) -> Self
@@ -245,30 +233,12 @@ where
     {
         let raw = T::raw_from_ptr_len(self.as_non_null().cast(), meta);
 
-        // SAFETY:
-        //
-        // Lemma 0: `raw` either addresses zero bytes, or addresses a subset of
-        //          the allocation pointed to by `self` and has the same
-        //          provenance as `self`. Proof: `raw` is constructed using
-        //          provenance-preserving operations, and the caller has
-        //          promised that, if `self`'s referent is not zero-sized, the
-        //          resulting pointer addresses a subset of the allocation
-        //          pointed to by `self`.
-        //
-        // 0. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` is derived from some valid Rust allocation,
-        //    `A`.
-        // 1. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` has valid provenance for `A`.
-        // 2. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` addresses a byte range which is entirely
-        //    contained in `A`.
-        // 3. Per Lemma 0 and by invariant on `self`, `ptr` addresses a byte
-        //    range whose length fits in an `isize`.
-        // 4. Per Lemma 0 and by invariant on `self`, `ptr` addresses a byte
-        //    range which does not wrap around the address space.
-        // 5. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `A` is guaranteed to live for at least `'a`.
+        // SAFETY: `raw_from_ptr_len` preserves the input address and provenance
+        // and uses `meta` for the resulting pointer's metadata. Thus `raw` is
+        // the pointer described by this method's precondition. If its referent
+        // is non-zero-sized, the caller promises valid provenance for that
+        // referent within a Rust allocation which lives for `'a`, satisfying
+        // both invariants of `PtrInner::new`. Otherwise, no allocation is needed.
         unsafe { PtrInner::new(raw) }
     }
 }
@@ -305,7 +275,10 @@ where
         let l_len = l_len.get();
 
         // SAFETY: The caller promises that `l_len.get() <= self.meta()`.
-        // Trivially, `0 <= l_len`.
+        // Trivially, `0 <= l_len`, so the resulting referent is a prefix of
+        // `self`'s referent. Thus, if it is non-zero-sized, it is within the
+        // same allocation, has `self`'s provenance, and that allocation lives
+        // for `'a` by invariant on `self`.
         let left = unsafe { self.with_meta(l_len) };
 
         let right = self.trailing_slice();
@@ -436,7 +409,11 @@ impl<'a, T> PtrInner<'a, [T]> {
 
     /// Iteratively projects the elements `PtrInner<T>` from `PtrInner<[T]>`.
     #[inline]
-    pub fn iter(&self) -> impl Iterator<Item = PtrInner<'a, T>> {
+    #[must_use = "iterators are lazy and do nothing unless consumed"]
+    #[allow(clippy::implied_bounds_in_impls)]
+    pub fn iter(
+        &self,
+    ) -> impl Iterator<Item = PtrInner<'a, T>> + ExactSizeIterator + DoubleEndedIterator {
         // FIXME(#429): Once `NonNull::cast` documents that it preserves
         // provenance, cite those docs.
         let base = self.as_non_null().cast::<T>().as_ptr();
@@ -445,7 +422,7 @@ impl<'a, T> PtrInner<'a, [T]> {
             // `NonNull::get_unchecked_mut`.
 
             // SAFETY: If the following conditions are not satisfied
-            // `pointer::cast` may induce Undefined Behavior [1]:
+            // `pointer::add` may induce Undefined Behavior [1]:
             //
             // > - The computed offset, `count * size_of::<T>()` bytes, must not
             // >   overflow `isize``.
@@ -455,23 +432,24 @@ impl<'a, T> PtrInner<'a, [T]> {
             // >   bounds of that allocated object. In particular, this range
             // >   must not “wrap around” the edge of the address space.
             //
-            // [1] https://doc.rust-lang.org/std/primitive.pointer.html#method.add
+            // [1] https://doc.rust-lang.org/1.92.0/std/primitive.pointer.html#method.add
             //
             // We satisfy both of these conditions here:
-            // - By invariant on `Ptr`, `self` addresses a byte range whose
-            //   length fits in an `isize`. Since `elem` is contained in `self`,
-            //   the computed offset of `elem` must fit within `isize.`
+            // - By invariant on `PtrInner`, `self` addresses a byte range whose
+            //   length fits in an `isize`. Since `i < self.meta()`, the
+            //   computed offset of `elem` fits within `isize`.
             // - If the computed offset is non-zero, then this means that the
             //   referent is not zero-sized. In this case, `base` points to an
             //   allocated object (by invariant on `self`). Thus:
             //   - By contract, `self.meta()` accurately reflects the number of
-            //     elements in the slice. `i` is in bounds of `c.meta()` by
+            //     elements in the slice. `i` is in bounds of `self.meta()` by
             //     construction, and so the result of this addition cannot
-            //     overflow past the end of the allocation referred to by `c`.
-            //   - By invariant on `Ptr`, `self` addresses a byte range which
-            //     does not wrap around the address space. Since `elem` is
-            //     contained in `self`, the computed offset of `elem` must wrap
-            //     around the address space.
+            //     overflow past the end of the allocation referred to by
+            //     `self`.
+            //   - By invariant on `PtrInner`, `self` addresses a byte range
+            //     which does not wrap around the address space. Since `elem`
+            //     is contained in `self`, the computation of `elem` cannot
+            //     wrap around the address space either.
             //
             // FIXME(#429): Once `pointer::add` documents that it preserves
             // provenance, cite those docs.
@@ -639,7 +617,8 @@ mod tests {
         let ptr = PtrInner::from_ref(dst);
         assert_eq!(ptr.meta().get(), 16);
 
-        // SAFETY: 8 is less than 16
+        // SAFETY: The resulting eight-byte referent is a subset of `ptr`'s
+        // 16-byte referent, has its provenance, and lives for the same lifetime.
         let ptr = unsafe { ptr.with_meta(8) };
 
         assert_eq!(ptr.meta().get(), 8);
