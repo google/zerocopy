@@ -67,4 +67,26 @@ theorem composition_options_admitted (words : Option NonZeroUsize)
   intro _ _
   trivial
 
+@[contract_simps] theorem required_composition_constructor_checks (repr_align packed : Option NonZeroUsize)
+    (fields : Slice layout.DstLayout) (references : Slice layout.composition_checks.ReferenceLayout)
+    (run : Result Unit) (provided : Specs.composition_constructor_checks_spec_contract repr_align packed fields references run) :
+    Obligations.composition_constructor_checks_spec_contract repr_align packed fields references run := by
+  intro align_positive packed_positive fields_valid
+  obtain ⟨align_value, align_decode⟩ := composition_options_admitted repr_align align_positive
+  obtain ⟨packed_value, packed_decode⟩ := composition_options_admitted packed packed_positive
+  have fields_admitted : isValid fields := by
+    rw [slice_valid_iff]
+    intro field member
+    exact (layout_decoder_admitted_iff field).mpr (fields_valid field member)
+  have references_admitted : isValid references := by
+    rw [slice_valid_iff]
+    intro reference _
+    exact composition_reference_admitted reference
+  obtain ⟨fields_value, fields_decode⟩ := fields_admitted
+  obtain ⟨references_value, references_decode⟩ := references_admitted
+  apply WP.spec_mono (provided align_value align_decode packed_value packed_decode fields_value fields_decode
+    references_value references_decode)
+  intro _ _
+  trivial
+
 end Zerocopy.Proofs
