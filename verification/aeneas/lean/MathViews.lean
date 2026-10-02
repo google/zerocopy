@@ -120,6 +120,24 @@ def layoutValid (self : layout.DstLayout) : Prop :=
   change (isValid self.align ∧ isValid self.size_info ∧ isValid self.statically_shallow_unpadded) ↔ _
   simp only [nonzero_valid_iff, size_info_valid_iff, bool_valid_iff, and_true]
 
+@[simp, contract_simps] theorem cast_type_valid_iff (side : layout.CastType) : isValid side ↔ True := by
+  cases side <;>
+    simp [isValid, RustModel.decode, layout.CastType.aeneasModel,
+      layout.CastType.decode, layout.CastType.decodeFields]
+
+@[simp, contract_simps] theorem metadata_error_valid_iff (error : layout.MetadataCastError) :
+    isValid error ↔ True := by
+  cases error <;>
+    simp [isValid, RustModel.decode, layout.MetadataCastError.aeneasModel,
+      layout.MetadataCastError.decode, layout.MetadataCastError.decodeFields]
+
+@[simp, contract_simps] theorem cast_result_valid_iff
+    (r : core.result.Result (Usize × Usize) layout.MetadataCastError) : isValid r ↔ True := by
+  cases r <;> simp [result_valid_iff]
+
+attribute [contract_simps] option_valid_iff prod_valid_iff result_valid_iff
+  list_valid_iff slice_valid_iff
+
 @[contract_simps] theorem scalar_admitted_iff (x : UScalar ty) :
     (∃ value, RustModel.decode x = some value) ↔ True := scalar_valid_iff x
 
@@ -140,6 +158,12 @@ def layoutValid (self : layout.DstLayout) : Prop :=
 
 @[contract_simps] theorem bool_admitted_iff (x : Bool) :
     (∃ value, RustModel.decode x = some value) ↔ True := bool_valid_iff x
+
+@[contract_simps] theorem cast_type_admitted_iff (x : layout.CastType) :
+    (∃ value, RustModel.decode x = some value) ↔ True := cast_type_valid_iff x
+
+@[contract_simps] theorem cast_result_admitted_iff (x : core.result.Result (Usize × Usize) layout.MetadataCastError) :
+    (∃ value, RustModel.decode x = some value) ↔ True := cast_result_valid_iff x
 
 @[contract_simps] theorem option_admitted_iff {α : Type} [RustModel α] (x : Option α) :
     (∃ value : Option (ModelOf α), RustModel.decode x = some value) ↔
@@ -188,8 +212,6 @@ def layoutValid (self : layout.DstLayout) : Prop :=
 
 @[contract_simps] theorem normalized_nat_pos_iff (n : Nat) :
     Nat.le (Nat.succ 0) n ↔ 0 < n := Nat.succ_le_iff
-
-attribute [contract_simps] option_valid_iff prod_valid_iff result_valid_iff
 
 attribute [contract_simps] and_true true_and and_self true_implies forall_true_iff
 attribute [contract_simps] encodingValid trailingValid sizeInfoValid layoutValid
