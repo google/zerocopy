@@ -758,6 +758,18 @@ impl SizeInfo {
         _ => false,
     }))]
     const fn try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
+        // ```aeneas
+        // spec try_nonzero_spec (self : layout.SizeInfo Usize)
+        //   ensures r => match self with
+        //     | .Sized size => r = some (.Sized size)
+        //     | .SliceDst tail =>
+        //       if tail.elem_size = 0#usize then r = none else
+        //         ∃ t, r = some (.SliceDst t) ∧ t.offset = tail.offset ∧
+        //           t.size_base = tail.size_base ∧
+        //           t.size_rounding_align_and_phase = tail.size_rounding_align_and_phase ∧
+        //           t.elem_size.val = tail.elem_size
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(SizeInfo::try_to_nonzero_elem_size)]
         #[kani::solver(kissat)]
@@ -806,6 +818,15 @@ impl SizeInfo {
 )]
 #[inline(always)]
 const fn max_elems_for_bytes(bytes: usize, elem_size: NonZeroUsize) -> (usize, usize) {
+    // ```aeneas
+    // spec max_elems_for_bytes_spec (bytes : Usize) (elem_size : NonZeroUsize)
+    //   requires hn : 0 < elem_size.val.val
+    //   ensures (elems, used) =>
+    //     elems.val = bytes.val / elem_size.val.val ∧ used.val = elems.val * elem_size.val.val ∧
+    //     used ≤ bytes ∧ bytes.val < (elems.val + 1) * elem_size.val.val ∧
+    //     (∀ n : Nat, n * elem_size.val.val ≤ bytes.val ↔ n ≤ elems.val)
+    // ```
+
     #[cfg(kani)]
     #[kani::proof_for_contract(max_elems_for_bytes)]
     #[kani::solver(kissat)]
@@ -905,6 +926,11 @@ impl DstLayout {
             && result.statically_shallow_unpadded
     }))]
     const fn assume_shallow_unpadded(self) -> Self {
+        // ```aeneas
+        // spec assume_shallow_unpadded_spec (self : layout.DstLayout)
+        //   ensures r => r.align = self.align ∧ r.size_info = self.size_info ∧ r.statically_shallow_unpadded = true
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::assume_shallow_unpadded)]
         #[kani::solver(kissat)]
@@ -936,6 +962,13 @@ impl DstLayout {
             && result.statically_shallow_unpadded
     }))]
     pub const fn new_zst(repr_align: Option<NonZeroUsize>) -> DstLayout {
+        // ```aeneas
+        // spec new_zst_spec (repr_align : Option NonZeroUsize)
+        //   requires hp : ∀ a ∈ repr_align, a.val.val.isPowerOfTwo
+        //   ensures r => r.align = repr_align.getD ⟨1#usize⟩ ∧
+        //     r.size_info = .Sized 0#usize ∧ r.statically_shallow_unpadded = true
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::new_zst)]
         #[kani::solver(kissat)]
@@ -972,6 +1005,14 @@ impl DstLayout {
             && result.statically_shallow_unpadded == false
     }))]
     pub const fn for_type<T>() -> DstLayout {
+        // ```aeneas
+        // spec for_type_spec (T : Type) (size align : Usize)
+        //   requires hs : core.mem.size_of T = .ok size
+        //   requires ha : core.mem.align_of T = .ok align
+        //   requires hn : 0 < align.val
+        //   ensures r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = false
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::for_type::<()>)]
         fn proof_zst() {
@@ -1019,6 +1060,14 @@ impl DstLayout {
             && result.statically_shallow_unpadded == true
     }))]
     pub const fn for_unpadded_type<T>() -> DstLayout {
+        // ```aeneas
+        // spec for_unpadded_type_spec (T : Type) (size align : Usize)
+        //   requires hs : core.mem.size_of T = .ok size
+        //   requires ha : core.mem.align_of T = .ok align
+        //   requires hn : 0 < align.val
+        //   ensures r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = true
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::for_unpadded_type::<()>)]
         fn proof_zst() {
@@ -1047,6 +1096,17 @@ impl DstLayout {
                     && trailing.size_rounding_align_and_phase.components() == (result.align, 0))
     }))]
     pub(crate) const fn for_slice<T>() -> DstLayout {
+        // ```aeneas
+        // spec for_slice_spec (T : Type) (size align : Usize)
+        //   requires hs : core.mem.size_of T = .ok size
+        //   requires ha : core.mem.align_of T = .ok align
+        //   requires hp : align.val.isPowerOfTwo
+        //   ensures r => r.align.val = align ∧ r.statically_shallow_unpadded = true ∧
+        //     ∃ tail, r.size_info = layout.SizeInfo.SliceDst tail ∧
+        //       tail.offset = 0#usize ∧ tail.elem_size = size ∧ tail.size_base = 0#usize ∧
+        //       tail.size_rounding_align_and_phase.val.val = align.val
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::for_slice::<()>)]
         fn proof_zst() {
@@ -1469,6 +1529,11 @@ impl DstLayout {
     #[inline(always)]
     #[cfg_attr(kani, kani::ensures(|&padding| padding == !self.statically_shallow_unpadded))]
     pub const fn requires_static_padding(self) -> bool {
+        // ```aeneas
+        // spec requires_static_padding_spec (self : layout.DstLayout)
+        //   ensures r => r = !self.statically_shallow_unpadded
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::requires_static_padding)]
         #[kani::solver(kissat)]

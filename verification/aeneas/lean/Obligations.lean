@@ -58,5 +58,53 @@ def encoding_align_spec : Prop :=
   ∀ (code : layout.RoundingAlignAndPhase), 0 < code.val.val →
     ∃ a, layout.RoundingAlignAndPhase.align code = .ok a ∧ a.val.val = 2 ^ code.val.val.log2
 
+def try_nonzero_spec : Prop :=
+  ∀ (si : layout.SizeInfo Usize), layout.SizeInfoUsize.try_to_nonzero_elem_size si ⦃ r =>
+    match si with
+    | .Sized bytes => r = some (.Sized bytes)
+    | .SliceDst t => if t.elem_size = 0#usize then r = none else
+      ∃ next, r = some (.SliceDst next) ∧ next.offset = t.offset ∧ next.size_base = t.size_base ∧
+        next.size_rounding_align_and_phase = t.size_rounding_align_and_phase ∧
+        next.elem_size.val = t.elem_size ⦄
+
+def max_elems_for_bytes_spec : Prop :=
+  ∀ (budget : Usize) (stride : NonZeroUsize), 0 < stride.val.val →
+    layout.max_elems_for_bytes budget stride ⦃ (n, bytes) =>
+      n.val = budget.val / stride.val.val ∧ bytes.val = n.val * stride.val.val ∧
+      bytes.val ≤ budget.val ∧ budget.val < (n.val + 1) * stride.val.val ∧
+      (∀ k : Nat, k * stride.val.val ≤ budget.val ↔ k ≤ n.val) ⦄
+
+def assume_shallow_unpadded_spec : Prop :=
+  ∀ (self : layout.DstLayout), ∃ r, layout.DstLayout.assume_shallow_unpadded self = .ok r ∧
+    r.align = self.align ∧ r.size_info = self.size_info ∧ r.statically_shallow_unpadded = true
+
+def new_zst_spec : Prop :=
+  ∀ (a : Option NonZeroUsize), (∀ x ∈ a, x.val.val.isPowerOfTwo) →
+    ∃ r, layout.DstLayout.new_zst a = .ok r ∧ r.align = a.getD ⟨1#usize⟩ ∧
+      r.size_info = .Sized 0#usize ∧ r.statically_shallow_unpadded = true
+
+def for_type_spec : Prop :=
+  ∀ (T : Type) (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → 0 < align.val →
+    ∃ r, layout.DstLayout.for_type T = .ok r ∧ r.align.val = align ∧
+      r.size_info = .Sized size ∧ r.statically_shallow_unpadded = false
+
+def for_unpadded_type_spec : Prop :=
+  ∀ (T : Type) (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → 0 < align.val →
+    ∃ r, layout.DstLayout.for_unpadded_type T = .ok r ∧ r.align.val = align ∧
+      r.size_info = .Sized size ∧ r.statically_shallow_unpadded = true
+
+def for_slice_spec : Prop :=
+  ∀ (T : Type) (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → align.val.isPowerOfTwo →
+    ∃ r, layout.DstLayout.for_slice T = .ok r ∧ r.align.val = align ∧
+      r.statically_shallow_unpadded = true ∧ ∃ t, r.size_info = .SliceDst t ∧
+      t.offset = 0#usize ∧ t.elem_size = size ∧ t.size_base = 0#usize ∧
+      t.size_rounding_align_and_phase.val.val = align.val
+
+def requires_static_padding_spec : Prop :=
+  ∀ (self : layout.DstLayout), ∃ r, layout.DstLayout.requires_static_padding self = .ok r ∧
+    r = !self.statically_shallow_unpadded
 
 end Zerocopy.Obligations

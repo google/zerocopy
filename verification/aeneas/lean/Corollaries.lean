@@ -75,5 +75,4 @@ contract round_down_monotone (a b : Usize) (align : NonZeroUsize)
     apply (UScalar.le_equiv _ _).mpr
     exact hgreatest m.val ((UScalar.le_equiv _ _).mp (le_trans hbound hab)) haligned
 
-
 end Zerocopy.Corollaries

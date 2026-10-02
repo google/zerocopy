@@ -158,5 +158,103 @@ theorem encoding_align_spec : Zerocopy.Specs.encoding_align_spec := by
   step with encoding_components_spec self hn as ⟨a, p, _, _, _, ha, _⟩
   simpa only [WP.spec_ok] using ha
 
+theorem assume_shallow_unpadded_spec : Zerocopy.Specs.assume_shallow_unpadded_spec := by
+  intro self
+  simp only [layout.DstLayout.assume_shallow_unpadded, WP.spec_ok, and_self]
+
+theorem for_type_spec : Zerocopy.Specs.for_type_spec := by
+  intro T size align hs ha hn
+  have haz : align ≠ 0#usize := by
+    intro h
+    have hv := congrArg UScalar.val h
+    change align.val = 0 at hv
+    omega
+  unfold layout.DstLayout.for_type
+  rw [ha]
+  simp only [bind_ok, core.num.nonzero.NonZero.new, cast_eq, haz,
+    ↓reduceDIte, ↓reduceIte, hs, WP.spec_ok, and_self]
+
+theorem for_unpadded_type_spec : Zerocopy.Specs.for_unpadded_type_spec := by
+  intro T size align hs ha hn
+  unfold layout.DstLayout.for_unpadded_type
+  step with for_type_spec T size align hs ha hn as ⟨dl, halign, hsize, _⟩
+  step with assume_shallow_unpadded_spec dl as ⟨r, hr, hsi, hp⟩
+  exact ⟨hr ▸ halign, hsi ▸ hsize, hp⟩
+
+theorem for_slice_spec : Zerocopy.Specs.for_slice_spec := by
+  intro T size align hs ha hp
+  have hpos := Nat.pos_of_isPowerOfTwo hp
+  have haz : align ≠ 0#usize := by
+    intro h
+    have hv := congrArg UScalar.val h
+    change align.val = 0 at hv
+    omega
+  unfold layout.DstLayout.for_slice
+  rw [ha]
+  simp only [bind_ok, core.num.nonzero.NonZero.new, cast_eq, haz,
+    ↓reduceDIte, ↓reduceIte, hs]
+  step with encoding_new_spec ⟨align⟩ 0#usize hp (by simpa using hpos) as ⟨encoded, he⟩
+  refine ⟨_, rfl, rfl, rfl, rfl, ?_⟩
+  simpa using he
+
+theorem max_elems_for_bytes_spec : Zerocopy.Specs.max_elems_for_bytes_spec := by
+  intro bytes elem hn
+  unfold layout.max_elems_for_bytes
+  simp only [core.num.nonzero.NonZero.get, bind_ok]
+  step with Usize.div_spec bytes (y := elem.val) (by omega) as ⟨elems, he⟩
+  have hfit : elems.val * elem.val.val ≤ bytes.val := by
+    rw [he, Nat.mul_comm]
+    exact Nat.mul_div_le _ _
+  have hav : bytes.val ≤ Usize.max := by scalar_tac
+  step as ⟨product, hmul⟩
+  cases product with
+  | none =>
+    simp only [] at hmul
+    omega
+  | some used =>
+    simp only [] at hmul
+    simp only [WP.spec_ok]
+    refine ⟨he, hmul.2.1, (UScalar.le_equiv _ _).mpr (by omega), ?_, ?_⟩
+    · rw [he, Nat.mul_comm]
+      exact Nat.lt_mul_div_succ _ hn
+    · intro n
+      rw [he]
+      exact (Nat.le_div_iff_mul_le hn).symm
+
+theorem requires_static_padding_spec : Zerocopy.Specs.requires_static_padding_spec := by
+  intro self
+  simp only [layout.DstLayout.requires_static_padding, WP.spec_ok]
+  cases self.statically_shallow_unpadded <;> rfl
+
+theorem try_nonzero_spec : Zerocopy.Specs.try_nonzero_spec := by
+  intro self
+  cases self with
+  | Sized size => simp [layout.SizeInfoUsize.try_to_nonzero_elem_size]
+  | SliceDst tail =>
+    unfold layout.SizeInfoUsize.try_to_nonzero_elem_size core.num.nonzero.NonZero.new
+    by_cases hz : tail.elem_size = 0#usize
+    · simp only [cast_eq, hz, ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+    · simp only [cast_eq, hz, ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+      exact ⟨_, rfl, rfl, rfl, rfl, rfl⟩
+
+theorem min_align_eq : layout.DstLayout.MIN_ALIGN = .ok ⟨1#usize⟩ := by
+  simp [layout.DstLayout.MIN_ALIGN, core.num.nonzero.NonZero.new]
+
+theorem new_zst_spec : Zerocopy.Specs.new_zst_spec := by
+  intro repr_align hp
+  unfold layout.DstLayout.new_zst
+  have ha : (repr_align.getD ⟨1#usize⟩).val.val.isPowerOfTwo := by
+    cases repr_align with
+    | none => exact ⟨0, by simp⟩
+    | some a => exact hp a rfl
+  cases repr_align
+  all_goals
+    simp only [min_align_eq, Option.getD_none, Option.getD_some,
+      core.num.nonzero.NonZero.get, bind_ok] at ha ⊢
+    step as ⟨b, hb⟩
+    have hbt : b = true := by
+      have hb' : (b = true) = True := by simpa only [ha, Nat.isPowerOfTwo_one] using hb
+      exact Eq.mpr hb' trivial
+    simp [massert, hbt, bind_ok, WP.spec_ok]
 
 end Zerocopy.Proofs
