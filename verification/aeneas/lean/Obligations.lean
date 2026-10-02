@@ -7,10 +7,11 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 module
-public import Zerocopy.Funs
+public import LayoutModel
 @[expose] public section
 open Aeneas Aeneas.Std
 namespace Zerocopy.Obligations
+open Zerocopy.Proofs
 abbrev NonZeroUsize :=
   core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
 
@@ -41,25 +42,181 @@ def round_down_spec : Prop :=
       m.val % align.val.val = 0 ∧ n.val < m.val + align.val.val ∧
       (∀ q : Nat, q ≤ n.val → q % align.val.val = 0 → q ≤ m.val) ⦄
 
+-- These propositions are maintained separately from the contract macro and
+-- inline proof bodies. They fix successful termination and mathematical results.
+def encoding_new_spec : Prop :=
+  ∀ (a : NonZeroUsize) (p : Usize), a.val.val.isPowerOfTwo → p.val < a.val.val →
+    ∃ code, layout.RoundingAlignAndPhase.new a p = .ok code ∧ code.val.val = a.val.val + p.val
+
+def encoding_components_spec : Prop :=
+  ∀ (code : layout.RoundingAlignAndPhase), 0 < code.val.val →
+    layout.RoundingAlignAndPhase.components code ⦃ (a, p) =>
+      a.val.val.isPowerOfTwo ∧ p.val < a.val.val ∧ a.val.val + p.val = code.val.val ∧
+      a.val.val = 2 ^ code.val.val.log2 ∧ p.val = code.val.val - 2 ^ code.val.val.log2 ⦄
+
+def encoding_align_spec : Prop :=
+  ∀ (code : layout.RoundingAlignAndPhase), 0 < code.val.val →
+    ∃ a, layout.RoundingAlignAndPhase.align code = .ok a ∧ a.val.val = 2 ^ code.val.val.log2
+
+def size_offset_spec : Prop :=
+  ∀ {E : Type} (t : layout.TrailingSliceLayout E), 0 < t.size_rounding_align_and_phase.val.val →
+    ∃ offset, layout.TrailingSliceLayout.size_offset t = .ok offset ∧
+      offset.val = t.size_base.val - t.size_base.val % (byteFormula t).align + (byteFormula t).phase
+
+def max_trailing_bytes_spec : Prop :=
+  ∀ {E : Type} (t : layout.TrailingSliceLayout E) (budget : Usize),
+    0 < t.size_rounding_align_and_phase.val.val →
+    ∃ cap, layout.TrailingSliceLayout.max_trailing_bytes t budget = .ok cap ∧
+      cap.map UScalar.val = (byteFormula t).capacity budget.val
+
+def padding_for_elems_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (n : Usize), 0 < t.size_rounding_align_and_phase.val.val →
+    ∃ p, layout.TrailingSliceLayoutUsize.padding_for_elems t n = .ok p ∧
+      (p.val + t.offset.val + n.val * t.elem_size.val) % UScalar.size .Usize =
+        (trailingFormula t).size n.val % UScalar.size .Usize
+
+def size_for_elems_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (n : Usize), 0 < t.size_rounding_align_and_phase.val.val →
+    ∃ size, layout.TrailingSliceLayoutUsize.size_for_elems t n = .ok size ∧
+      size.map UScalar.val = (trailingFormula t).checkedSize Usize.max n.val
+
+def same_size_sequence_spec : Prop :=
+  ∀ (a b : layout.TrailingSliceLayout Usize),
+    0 < a.size_rounding_align_and_phase.val.val → 0 < b.size_rounding_align_and_phase.val.val →
+    ∃ same, layout.TrailingSliceLayoutUsize.has_same_size_sequence a b = .ok same ∧
+      (same = true → ∀ n : Nat, (trailingFormula a).size n = (trailingFormula b).size n)
+
+def advance_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (bytes stride : Usize),
+    0 < t.size_rounding_align_and_phase.val.val →
+    layout.TrailingSliceLayoutUsize.advance t bytes stride ⦃ r =>
+      match r with
+      | none => Usize.max < ((trailingFormula t).advance bytes.val stride.val).base
+      | some next => trailingFormula next = (trailingFormula t).advance bytes.val stride.val ∧
+        ((trailingFormula t).advance bytes.val stride.val).base ≤ Usize.max ⦄
+
+def try_nonzero_spec : Prop :=
+  ∀ (si : layout.SizeInfo Usize), layout.SizeInfoUsize.try_to_nonzero_elem_size si ⦃ r =>
+    match si with
+    | .Sized bytes => r = some (.Sized bytes)
+    | .SliceDst t => if t.elem_size = 0#usize then r = none else
+      ∃ next, r = some (.SliceDst next) ∧ next.offset = t.offset ∧ next.size_base = t.size_base ∧
+        next.size_rounding_align_and_phase = t.size_rounding_align_and_phase ∧
+        next.elem_size.val = t.elem_size ⦄
+
+def max_elems_for_bytes_spec : Prop :=
+  ∀ (budget : Usize) (stride : NonZeroUsize), 0 < stride.val.val →
+    layout.max_elems_for_bytes budget stride ⦃ (n, bytes) =>
+      n.val = budget.val / stride.val.val ∧ bytes.val = n.val * stride.val.val ∧
+      bytes.val ≤ budget.val ∧ budget.val < (n.val + 1) * stride.val.val ∧
+      (∀ k : Nat, k * stride.val.val ≤ budget.val ↔ k ≤ n.val) ⦄
+
+def assume_shallow_unpadded_spec : Prop :=
+  ∀ (self : layout.DstLayout), ∃ r, layout.DstLayout.assume_shallow_unpadded self = .ok r ∧
+    r.align = self.align ∧ r.size_info = self.size_info ∧ r.statically_shallow_unpadded = true
+
+def new_zst_spec : Prop :=
+  ∀ (a : Option NonZeroUsize), (∀ x ∈ a, x.val.val.isPowerOfTwo) →
+    ∃ r, layout.DstLayout.new_zst a = .ok r ∧ r.align = a.getD ⟨1#usize⟩ ∧
+      r.size_info = .Sized 0#usize ∧ r.statically_shallow_unpadded = true
+
+def for_type_spec : Prop :=
+  ∀ (T : Type) (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → 0 < align.val →
+    ∃ r, layout.DstLayout.for_type T = .ok r ∧ r.align.val = align ∧
+      r.size_info = .Sized size ∧ r.statically_shallow_unpadded = false
+
+def for_unpadded_type_spec : Prop :=
+  ∀ (T : Type) (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → 0 < align.val →
+    ∃ r, layout.DstLayout.for_unpadded_type T = .ok r ∧ r.align.val = align ∧
+      r.size_info = .Sized size ∧ r.statically_shallow_unpadded = true
+
+def for_slice_spec : Prop :=
+  ∀ (T : Type) (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → align.val.isPowerOfTwo →
+    ∃ r, layout.DstLayout.for_slice T = .ok r ∧ r.align.val = align ∧
+      r.statically_shallow_unpadded = true ∧ ∃ t, r.size_info = .SliceDst t ∧
+      t.offset = 0#usize ∧ t.elem_size = size ∧ t.size_base = 0#usize ∧
+      t.size_rounding_align_and_phase.val.val = align.val
+
+def extend_spec : Prop :=
+  ∀ (self field : layout.DstLayout) (packing : Option NonZeroUsize) (size : Usize),
+    self.size_info = .Sized size →
+    (self.align.val.val.isPowerOfTwo ∧ self.align.val.val ≤ 2 ^ 29) →
+    (field.align.val.val.isPowerOfTwo ∧ field.align.val.val ≤ 2 ^ 29) →
+    (∀ a ∈ packing, a.val.val.isPowerOfTwo ∧ a.val.val ≤ 2 ^ 29) →
+    (match field.size_info with
+      | .Sized s => placement size field packing + s.val ≤ Usize.max
+      | .SliceDst t => placement size field packing + t.offset.val ≤ Usize.max ∧
+        placement size field packing + t.size_base.val ≤ Usize.max) →
+    layout.DstLayout.extend self field packing ⦃ r =>
+      r.align.val.val = Nat.max self.align.val.val (fieldAlignment field packing) ∧
+      r.statically_shallow_unpadded = (self.statically_shallow_unpadded &&
+        field.statically_shallow_unpadded && decide (size.val % fieldAlignment field packing = 0)) ∧
+      match field.size_info with
+      | .Sized s => ∃ bytes, r.size_info = .Sized bytes ∧ bytes.val = placement size field packing + s.val
+      | .SliceDst t => ∃ next, r.size_info = .SliceDst next ∧
+        next.offset.val = placement size field packing + t.offset.val ∧
+        next.size_base.val = placement size field packing + t.size_base.val ∧
+        next.elem_size = t.elem_size ∧ next.size_rounding_align_and_phase = t.size_rounding_align_and_phase ⦄
+
 def pad_to_align_spec : Prop :=
-  ∀ (self : layout.DstLayout)
-    (_h : match self.size_info with
-      | layout.SizeInfo.Sized size =>
-        self.align.val.val.isPowerOfTwo ∧
-          size.val + (self.align.val.val - size.val % self.align.val.val)
-            % self.align.val.val ≤ Usize.max
-      | layout.SizeInfo.SliceDst _ => True),
+  ∀ (self : layout.DstLayout), self.align.val.val.isPowerOfTwo →
+    (match self.size_info with
+      | .Sized bytes => LayoutMath.roundUp bytes.val self.align.val.val ≤ Usize.max
+      | .SliceDst t => 0 < t.size_rounding_align_and_phase.val.val ∧
+        (if (trailingFormula t).align < self.align.val.val then
+          LayoutMath.roundUp t.size_base.val (trailingFormula t).align + (trailingFormula t).phase ≤ Usize.max
+         else LayoutMath.roundUp t.size_base.val self.align.val.val ≤ Usize.max)) →
     layout.DstLayout.pad_to_align self ⦃ r => r.align = self.align ∧
       match self.size_info with
-      | layout.SizeInfo.Sized size => ∃ padded,
-        r.size_info = layout.SizeInfo.Sized padded ∧
-        padded.val = size.val + (self.align.val.val - size.val % self.align.val.val)
-          % self.align.val.val ∧
-        size.val ≤ padded.val ∧ padded.val < size.val + self.align.val.val ∧
-        padded.val % self.align.val.val = 0 ∧
-        (∀ q : Nat, size.val ≤ q → q % self.align.val.val = 0 → padded.val ≤ q) ∧
+      | .Sized bytes => ∃ padded, r.size_info = .Sized padded ∧
+        padded.val = LayoutMath.roundUp bytes.val self.align.val.val ∧
         r.statically_shallow_unpadded =
-          (self.statically_shallow_unpadded && decide (size.val % self.align.val.val = 0))
-      | layout.SizeInfo.SliceDst _ => r = self ⦄
+          (self.statically_shallow_unpadded && decide (bytes.val % self.align.val.val = 0))
+      | .SliceDst t => ∃ next, r.size_info = .SliceDst next ∧
+        trailingFormula next = (trailingFormula t).pad self.align.val.val ∧
+        r.statically_shallow_unpadded = self.statically_shallow_unpadded ⦄
+
+def requires_static_padding_spec : Prop :=
+  ∀ (self : layout.DstLayout), ∃ r, layout.DstLayout.requires_static_padding self = .ok r ∧
+    r = !self.statically_shallow_unpadded
+
+def requires_dynamic_padding_spec : Prop :=
+  ∀ (self : layout.DstLayout),
+    (match self.size_info with | .Sized _ => True | .SliceDst t => 0 < t.size_rounding_align_and_phase.val.val) →
+    ∃ r, layout.DstLayout.requires_dynamic_padding self = .ok r ∧
+      (r = false ↔ match self.size_info with
+        | .Sized _ => True
+        | .SliceDst t => (trailingFormula t).size 0 = t.offset.val ∧
+          t.elem_size.val % (trailingFormula t).align = 0)
+
+def validate_cast_spec : Prop :=
+  ∀ (self : layout.DstLayout) (addr length : Usize) (side : layout.CastType),
+    0 < self.align.val.val → addr.val + length.val ≤ Usize.max →
+    (match self.size_info with
+      | .Sized _ => True
+      | .SliceDst t => 0 < t.size_rounding_align_and_phase.val.val ∧ 0 < t.elem_size.val) →
+    ∃ r, layout.DstLayout.validate_cast_and_convert_metadata self addr length side = .ok r ∧
+      castSpec self addr.val length.val side r
+
+def metadata_exact_spec : Prop :=
+  ∀ (self : layout.DstLayout) (size : Usize), 0 < self.align.val.val →
+    (match self.size_info with
+      | .Sized _ => True
+      | .SliceDst t => t.elem_size.val ≠ 0 → 0 < t.size_rounding_align_and_phase.val.val) →
+    ∃ r, layout.DstLayout.metadata_for_exact_size self size = .ok r ∧ metadataSpec self size.val r
+
+def for_repr_c_struct_spec : Prop :=
+  ∀ (a packed : Option NonZeroUsize) (fields : Slice layout.DstLayout),
+    (∀ x ∈ a, alignmentDomain x.val.val) → (∀ x ∈ packed, alignmentDomain x.val.val) →
+    constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment a)) packed →
+    alignmentDomain (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a))
+      packed fields.val.length).align →
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a))
+      packed fields.val.length).padFits Usize.max →
+    ∃ r, layout.DstLayout.for_repr_c_struct a packed fields = .ok r ∧ layoutValue r =
+      (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a)) packed fields.val.length).pad
 
 end Zerocopy.Obligations

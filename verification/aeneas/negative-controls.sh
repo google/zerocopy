@@ -175,11 +175,11 @@ end DependencyControl
 namespace Zerocopy.Proofs
 
 '''
-call = 'step with padding_lt_alignment size self.align hpow'
+call = 'step with padding_lt_alignment size self.align ha'
 if s.count('contract pad_to_align_spec ') != 1 or s.count(call) != 1:
     raise SystemExit("Private helper dependency control no longer matches")
 s = s.replace('contract pad_to_align_spec ', alias + 'contract pad_to_align_spec ')
-p.write_text(s.replace(call, 'step with DependencyControl.padding_alias size self.align hpow'))
+p.write_text(s.replace(call, 'step with DependencyControl.padding_alias size self.align ha'))
 PY
 lake build Required > "$backup/helper-build.log" 2>&1 || {
     cat "$backup/helper-build.log" >&2; exit 1;
@@ -194,10 +194,12 @@ python3 - <<'PY'
 from pathlib import Path
 p = Path("Required.lean")
 s = p.read_text()
-old = '(`Zerocopy.Proofs.pad_to_align_spec, #[`Zerocopy.Proofs.padding_lt_alignment])'
+old = ('(`Zerocopy.Proofs.pad_to_align_spec, #[`Zerocopy.Proofs.padding_lt_alignment, '
+       '`Zerocopy.Proofs.encoding_components_spec, `Zerocopy.Proofs.round_down_spec, '
+       '`Zerocopy.Proofs.encoding_new_spec])')
 if s.count(old) != 1:
     raise SystemExit("Undeclared dependency negative control no longer matches")
-p.write_text(s.replace(old, '(`Zerocopy.Proofs.pad_to_align_spec, #[])'))
+p.write_text(s.replace(old, old.replace('`Zerocopy.Proofs.padding_lt_alignment, ', '')))
 PY
 lake build Required > "$backup/undeclared-build.log" 2>&1 || {
     cat "$backup/undeclared-build.log" >&2; exit 1;
@@ -254,15 +256,22 @@ cp "$backup/Funs.lean" Zerocopy/Funs.lean
 # These mutations satisfy earlier weak bounds but violate the exact contracts.
 reject_model() {
     local description=$1
-    python3 - "$2" "$3" <<'PYCONTROL'
+    python3 - "$2" "$3" "${4:-}" <<'PYCONTROL'
 from pathlib import Path
 import sys
 p = Path("Zerocopy/Funs.lean")
 s = p.read_text()
-old, new = sys.argv[1:]
-if s.count(old) != 1:
+old, new, target = sys.argv[1:]
+start, end = 0, len(s)
+if target:
+    start = s.index('def ' + target)
+    end = s.find('/-- ', start)
+    if end < 0:
+        end = len(s)
+part = s[start:end]
+if part.count(old) != 1:
     raise SystemExit("Strong model negative control no longer matches")
-p.write_text(s.replace(old, new))
+p.write_text(s[:start] + part.replace(old, new) + s[end:])
 PYCONTROL
     if lake build Required > "$backup/strong-model-build.log" 2>&1; then
         echo "Proofs accepted $description" >&2; exit 1
@@ -276,11 +285,14 @@ PYCONTROL
 reject_model "always-zero padding" 'ok (i2 &&& mask)' 'ok 0#usize'
 reject_model "always-zero round-down" 'ok (n &&& mask)' 'ok 0#usize'
 reject_model "an incorrect shallow-padding flag" \
-    'statically_shallow_unpadded := (static_padding = 0#usize)' \
-    'statically_shallow_unpadded := true'
-reject_model "a changed DST layout" \
-    'layout.SizeInfo.SliceDst _ => ok (0#usize, self.size_info)' \
-    'layout.SizeInfo.SliceDst _ => ok (0#usize, layout.SizeInfo.Sized 0#usize)'
+    'statically_shallow_unpadded := (padding = 0#usize)' \
+    'statically_shallow_unpadded := true' 'layout.DstLayout.pad_to_align'
+reject_model "conflating physical offset with the size base" \
+    'Usize.checked_add offset tsl.offset' \
+    'Usize.checked_add offset tsl.size_base' 'layout.DstLayout.extend'
+reject_model "dropping inner rounding under outer packing" \
+    'util.padding_needed_for trailing.size_base size_align' \
+    'util.padding_needed_for trailing.size_base self.align' 'layout.DstLayout.pad_to_align'
 
 cat >> Proofs.lean <<'LEAN'
 namespace Zerocopy.Proofs
