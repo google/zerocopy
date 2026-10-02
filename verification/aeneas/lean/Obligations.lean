@@ -80,6 +80,21 @@ def size_for_elems_spec : Prop :=
     ∃ size, layout.TrailingSliceLayoutUsize.size_for_elems t n = .ok size ∧
       size.map UScalar.val = (trailingFormula t).checkedSize Usize.max n.val
 
+def same_size_sequence_spec : Prop :=
+  ∀ (a b : layout.TrailingSliceLayout Usize),
+    0 < a.size_rounding_align_and_phase.val.val → 0 < b.size_rounding_align_and_phase.val.val →
+    ∃ same, layout.TrailingSliceLayoutUsize.has_same_size_sequence a b = .ok same ∧
+      (same = true → ∀ n : Nat, (trailingFormula a).size n = (trailingFormula b).size n)
+
+def advance_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (bytes stride : Usize),
+    0 < t.size_rounding_align_and_phase.val.val →
+    layout.TrailingSliceLayoutUsize.advance t bytes stride ⦃ r =>
+      match r with
+      | none => Usize.max < ((trailingFormula t).advance bytes.val stride.val).base
+      | some next => trailingFormula next = (trailingFormula t).advance bytes.val stride.val ∧
+        ((trailingFormula t).advance bytes.val stride.val).base ≤ Usize.max ⦄
+
 def try_nonzero_spec : Prop :=
   ∀ (si : layout.SizeInfo Usize), layout.SizeInfoUsize.try_to_nonzero_elem_size si ⦃ r =>
     match si with
@@ -167,5 +182,14 @@ def pad_to_align_spec : Prop :=
 def requires_static_padding_spec : Prop :=
   ∀ (self : layout.DstLayout), ∃ r, layout.DstLayout.requires_static_padding self = .ok r ∧
     r = !self.statically_shallow_unpadded
+
+def requires_dynamic_padding_spec : Prop :=
+  ∀ (self : layout.DstLayout),
+    (match self.size_info with | .Sized _ => True | .SliceDst t => 0 < t.size_rounding_align_and_phase.val.val) →
+    ∃ r, layout.DstLayout.requires_dynamic_padding self = .ok r ∧
+      (r = false ↔ match self.size_info with
+        | .Sized _ => True
+        | .SliceDst t => (trailingFormula t).size 0 = t.offset.val ∧
+          t.elem_size.val % (trailingFormula t).align = 0)
 
 end Zerocopy.Obligations
