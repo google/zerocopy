@@ -276,4 +276,11 @@ theorem size_for_elems_spec :
           p.val + self.offset.val + elems.val * self.elem_size.val by omega,
           hp, word_mod_of_le _ hfit]
 
+theorem power_dvd_of_le (a b : Nat) (ha : a.isPowerOfTwo) (hb : b.isPowerOfTwo)
+    (hle : a ≤ b) : a ∣ b := by
+  obtain ⟨i, hi⟩ := ha
+  obtain ⟨j, hj⟩ := hb
+  rw [hi, hj] at hle ⊢
+  exact Nat.pow_dvd_pow 2 ((Nat.pow_le_pow_iff_right (by decide : 1 < 2)).mp hle)
+
 end Zerocopy.Proofs.Raw
