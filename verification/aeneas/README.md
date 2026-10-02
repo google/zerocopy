@@ -262,6 +262,8 @@ whole-program unsafe-code certification.
 
 ## Scope and proofs
 
+Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs).
+
 Extraction starts from the function and nominal-type owners of every present
 `aeneas` fence in `zerocopy/src`, including their dependencies. The current
 function specifications cover the layout and arithmetic methods and their Rust
