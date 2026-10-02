@@ -490,6 +490,85 @@ impl DstLayout {
     #[must_use]
     #[inline]
     pub const fn pad_to_align(self) -> Self {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.pad_to_align
+        //     (self : layout.DstLayout) : Result layout.DstLayout := do
+        //     let (static_padding, size_info) ←
+        //       match self.size_info with
+        //       | layout.SizeInfo.Sized unpadded_size =>
+        //         do
+        //         let padding ← util.padding_needed_for unpadded_size self.align
+        //         let o ← lift (Usize.checked_add unpadded_size padding)
+        //         match o with
+        //         | none => fail panic
+        //         | some size => ok (padding, layout.SizeInfo.Sized size)
+        //       | layout.SizeInfo.SliceDst _ => ok (0#usize, self.size_info)
+        //     if self.statically_shallow_unpadded
+        //     then
+        //       ok
+        //         {
+        //           self
+        //             with
+        //             size_info, statically_shallow_unpadded := (static_padding = 0#usize)
+        //         }
+        //     else ok { self with size_info }
+        // proof:
+        //   contract pad_to_align_spec (self : layout.DstLayout)
+        //     for layout.DstLayout.pad_to_align self
+        //     requires h : match self.size_info with
+        //       | layout.SizeInfo.Sized size =>
+        //         let S : Nat := size
+        //         let A : Nat := self.align.val
+        //         A.isPowerOfTwo ∧ S + (A - S % A) % A ≤ Usize.max
+        //       | layout.SizeInfo.SliceDst _ => True
+        //     ensures r => r.align = self.align ∧ match self.size_info with
+        //       | layout.SizeInfo.Sized size => ∃ padded,
+        //         r.size_info = layout.SizeInfo.Sized padded ∧
+        //         let S : Nat := size
+        //         let A : Nat := self.align.val
+        //         let R : Nat := padded
+        //         R = S + (A - S % A) % A ∧ S ≤ R ∧ R < S + A ∧ R % A = 0 ∧
+        //           (∀ q : Nat, S ≤ q → q % A = 0 → R ≤ q) ∧
+        //           r.statically_shallow_unpadded =
+        //             (self.statically_shallow_unpadded && decide (S % A = 0))
+        //       | layout.SizeInfo.SliceDst _ => r = self
+        //     proof:
+        //       unfold layout.DstLayout.pad_to_align
+        //       cases hs : self.size_info with
+        //       | SliceDst dst =>
+        //         simp only [hs] at h ⊢
+        //         cases hshallow : self.statically_shallow_unpadded <;>
+        //           cases self <;> simp_all [bind_ok]
+        //       | Sized size =>
+        //         simp only [hs] at h ⊢
+        //         obtain ⟨hpow, hroom⟩ := h
+        //         step with padding_lt_alignment size self.align hpow as
+        //           ⟨padding, hbound, hexact, haligned, hminimal, hzero⟩
+        //         have hbound := (UScalar.lt_equiv _ _).mp hbound
+        //         have hadd := Usize.checked_add_bv_spec size padding
+        //         cases hchecked : Usize.checked_add size padding with
+        //         | none =>
+        //           simp only [hchecked] at hadd
+        //           omega
+        //         | some padded =>
+        //           simp only [hchecked] at hadd
+        //           have hflag : (padding = 0#usize) = (size.val % self.align.val.val = 0) := by
+        //             apply propext
+        //             rw [← hzero]
+        //             exact ⟨fun hp => by simp [hp], fun hp => UScalar.eq_of_val_eq (by simpa using hp)⟩
+        //           cases hshallow : self.statically_shallow_unpadded <;>
+        //             simp only [lift, bind_ok, Bool.false_eq_true, if_false, if_true]
+        //           all_goals
+        //             refine ⟨rfl, padded, rfl, by omega, by omega, by omega, ?_, ?_, ?_⟩
+        //             · simpa only [hadd] using haligned
+        //             · intro q hq hqa
+        //               have := hminimal (q - size.val) (by
+        //                 rw [Nat.add_sub_of_le hq]
+        //                 exact hqa)
+        //               omega
+        //             · simp [hflag]
+        // ```
         use util::padding_needed_for;
 
         let (static_padding, size_info) = match self.size_info {

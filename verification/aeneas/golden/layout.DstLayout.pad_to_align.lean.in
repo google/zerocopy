@@ -6,16 +6,4 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -/
 
-module
-public import Zerocopy.Funs
-public import Contracts
-public import Arithmetic
-import all Init.Data.Nat.Power2.Basic
-@[expose] public section
-open Aeneas Aeneas.Std
-namespace Zerocopy.Proofs
-abbrev NonZeroUsize :=
-  core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
-
-@@AENEAS_PROOFS@@
-end Zerocopy.Proofs
+@@AENEAS_MODEL("zerocopy::layout::DstLayout::pad_to_align")@@

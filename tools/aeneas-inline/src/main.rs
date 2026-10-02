@@ -31,6 +31,18 @@ impl Functions<'_> {
                 .nth(pos.column)
                 .map_or(self.source[start..].len(), |(byte, _)| byte)
     }
+
+    fn function(&mut self, ident: &syn::Ident, block: &syn::Block) {
+        let open = self.offset(block.brace_token.span.open().start());
+        assert_eq!(&self.source[open..open + 1], "{", "Invalid function brace span");
+        let mut path = self.modules.clone();
+        path.push(ident.to_string());
+        self.functions.push(json!({
+            "path": path.join("::"), "open": open,
+            "close": self.offset(block.brace_token.span.close().end()),
+            "supported": self.unsupported == 0,
+        }));
+    }
 }
 
 impl<'ast> Visit<'ast> for Functions<'_> {
@@ -41,26 +53,41 @@ impl<'ast> Visit<'ast> for Functions<'_> {
     }
 
     fn visit_item_fn(&mut self, item: &'ast syn::ItemFn) {
-        let open = self.offset(item.block.brace_token.span.open().start());
-        assert_eq!(&self.source[open..open + 1], "{", "Invalid function brace span");
-        let mut path = self.modules.clone();
-        path.push(item.sig.ident.to_string());
-        self.functions.push(json!({
-            "path": path.join("::"), "open": open,
-            "close": self.offset(item.block.brace_token.span.close().end()),
-            "supported": self.unsupported == 0,
-        }));
-        // Nested functions, impls, traits and macros need an explicit extension
-        // to identity resolution; never silently attribute them to a free fn.
+        self.function(&item.sig.ident, &item.block);
+        // Never attribute nested functions to the enclosing function or method.
         self.unsupported += 1;
         visit::visit_item_fn(self, item);
         self.unsupported -= 1;
     }
 
     fn visit_item_impl(&mut self, item: &'ast syn::ItemImpl) {
+        // Support simple, nongeneric inherent impls in their type's module.
+        // Qualified Self types, trait impls and generics need explicit identity
+        // resolution; annotations there must continue to fail closed.
+        let ident = match item.self_ty.as_ref() {
+            syn::Type::Path(path) if path.qself.is_none() => path.path.get_ident(),
+            _ => None,
+        };
+        if let Some(ident) = ident.filter(|_| {
+            item.trait_.is_none() && item.generics.params.is_empty() && self.unsupported == 0
+        }) {
+            self.modules.push(ident.to_string());
+            visit::visit_item_impl(self, item);
+            self.modules.pop();
+        } else {
+            self.unsupported += 1;
+            visit::visit_item_impl(self, item);
+            self.unsupported -= 1;
+        }
+    }
+
+    fn visit_impl_item_fn(&mut self, item: &'ast syn::ImplItemFn) {
+        let generic = !item.sig.generics.params.is_empty();
+        self.unsupported += usize::from(generic);
+        self.function(&item.sig.ident, &item.block);
         self.unsupported += 1;
-        visit::visit_item_impl(self, item);
-        self.unsupported -= 1;
+        visit::visit_impl_item_fn(self, item);
+        self.unsupported -= 1 + usize::from(generic);
     }
 
     fn visit_item_trait(&mut self, item: &'ast syn::ItemTrait) {
@@ -124,5 +151,26 @@ mod tests {
         assert_eq!(functions[1]["supported"], false);
         let open = functions[0]["open"].as_u64().unwrap() as usize;
         assert!(source[open..].starts_with("{ fn inner()"));
+    }
+
+    #[test]
+    fn resolves_simple_inherent_methods_and_rejects_other_impl_forms() {
+        for (implementation, supported) in [
+            ("impl S", true),
+            ("impl<T> S<T>", false),
+            ("impl Trait for S", false),
+            ("impl m::S", false),
+        ] {
+            let source =
+                format!("mod m {{ {implementation} {{ fn f() {{ fn nested() {{}} }} }} }}");
+            let value = inspect(&source).unwrap();
+            assert_eq!(value["functions"][0]["supported"], supported);
+            assert_eq!(value["functions"][1]["supported"], false);
+            if supported {
+                assert_eq!(value["functions"][0]["path"], "m::S::f");
+            }
+        }
+        let value = inspect("impl S { fn f<T>() {} }").unwrap();
+        assert_eq!(value["functions"][0]["supported"], false);
     }
 }

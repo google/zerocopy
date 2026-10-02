@@ -75,6 +75,8 @@ def share_manifest(workspace, backend):
         'package zerocopyVerification\n'
         '@[default_target] lean_lib Zerocopy\n'
         'lean_lib Contracts\n'
+        'lean_lib Arithmetic\n'
+        '@[default_target] lean_lib Corollaries\n'
         '@[default_target] lean_lib ContractTests\n'
         '@[default_target] lean_lib Proofs\n'
         'lean_lib Obligations\n'
