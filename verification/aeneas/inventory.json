@@ -83,6 +83,14 @@
       "syntax": "DstLayout::requires_dynamic_padding"
     },
     {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::validate_cast_and_convert_metadata"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::metadata_for_exact_size"
+    },
+    {
       "file": "zerocopy/src/util/mod.rs",
       "syntax": "max"
     },

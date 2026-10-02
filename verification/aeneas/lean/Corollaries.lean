@@ -153,4 +153,15 @@ theorem padding_matches_recursive (tail : layout.TrailingSliceLayout Usize)
   dsimp only [remaining, physical] at hcancel
   omega
 
+theorem validate_zero_stride (self : layout.DstLayout) (tail : layout.TrailingSliceLayout Usize)
+    (hs : self.size_info = .SliceDst tail) (he : tail.elem_size = 0#usize)
+    (addr length : Usize) (side : layout.CastType) :
+    layout.DstLayout.validate_cast_and_convert_metadata self addr length side = .fail .panic := by
+  have hp := Proofs.Raw.try_nonzero_spec self.size_info
+  obtain ⟨converted, hconverted, hv⟩ := WP.spec_imp_exists hp
+  simp only [hs, he, if_true] at hv
+  unfold layout.DstLayout.validate_cast_and_convert_metadata
+  rw [hconverted, hv]
+  simp only [bind_ok]
+
 end Zerocopy.Corollaries

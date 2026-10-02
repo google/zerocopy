@@ -15,7 +15,7 @@ The required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from 24 actual functions in `zerocopy/src/util/mod.rs` and
+Extraction starts from 26 actual functions in `zerocopy/src/util/mod.rs` and
 `zerocopy/src/layout.rs`,
 including their dependencies. The independent inventory selects the registered
 function scope. There is no copied Rust implementation.
@@ -31,6 +31,7 @@ function scope. There is no copied Rust implementation.
 | `DstLayout::{extend,pad_to_align}` | Exact field placement, alignment, padding flags, and normalized size formulas; outer padding preserves each field's complete inner size. |
 | Trailing advancement and size-sequence comparison | Exact byte advancement; a positive comparison establishes equal sizes for every natural metadata value. |
 | `DstLayout::requires_dynamic_padding` | Exact flag result and a mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
+| Cast validation and exact-size metadata | Alignment/size error priority, greatest fitting metadata, exact prefix/suffix split, and rejection of unattainable sizes. |
 
 Every registered function uses total `spec`: valid Rust value arguments and
 its explicit requirements imply successful termination, a valid returned value,
@@ -64,6 +65,10 @@ padding inside packed fields.
 
 A positive size-sequence comparison establishes equal sizes for every natural
 metadata value; a negative result does not assert that the sequences differ.
+
+Cast validation and exact metadata inference establish error priority, exact
+splits and rejection of unattainable sizes. Intentional zero-stride panic is
+checked separately.
 
 CI uses the default features, debug assertions and the runner's native target.
 Local replay also supports macOS arm64. These conditional contracts do not
@@ -279,6 +284,11 @@ specification; missing, extra, or repeated functions fail. Each specification
 in turn requires its canonical theorem and independent required theorem.
 This reuses the verified mapping without adding another coverage roster.
 
+For cast validation and
+exact-size metadata, the required outcomes spell out error priority, split
+positions, exact size, and greatest-fitting metadata independently of the
+predicates used by the inline specs. `OutcomeTests.lean` pins distinguishing
+fixed-size, suffix-alignment, and padded-size plateau examples.
 `Check.lean` derives dependencies from elaborated theorem types and terms,
 following helpers across handwritten modules, including private helpers, and
 writes `proof-dependencies.json` in each proof workspace. It imports and audits all
