@@ -99,7 +99,7 @@ zerocopy's unsafe pointer operations are sound.
 
 ## Scope and proofs
 
-Extraction starts from 21 actual functions in `zerocopy/src/util/mod.rs` and
+Extraction starts from 24 actual functions in `zerocopy/src/util/mod.rs` and
 `zerocopy/src/layout.rs`,
 including their dependencies. The independent inventory selects the registered
 function scope. There is no copied Rust implementation.
@@ -113,6 +113,8 @@ function scope. There is no copied Rust implementation.
 | `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
 | Trailing size, padding, and capacity | Exact size-offset and capacity formulas, checked-size overflow, and wrapping padding; successful sizes and physical padding refine the independent recursive semantics. |
 | `DstLayout::{extend,pad_to_align}` | Exact field placement, alignment, padding flags, and normalized size formulas; outer padding preserves each field's complete inner size. |
+| Trailing advancement and size-sequence comparison | Exact byte advancement; a positive comparison establishes equal sizes for every natural metadata value. |
+| `DstLayout::requires_dynamic_padding` | Exact flag result and a mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
@@ -146,6 +148,9 @@ to the independent recursive semantics.
 
 Extension and normalized padding preserve complete inner sizes, including
 padding inside packed fields.
+
+A positive size-sequence comparison establishes equal sizes for every natural
+metadata value; a negative result does not assert that the sequences differ.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
