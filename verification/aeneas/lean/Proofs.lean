@@ -9,6 +9,7 @@ those terms. -/
 module
 public import Specs
 public import Proofs.Util
+public import Proofs.NestedReference
 public import Aeneas
 public import Loops
 public import RepresentationLaws
