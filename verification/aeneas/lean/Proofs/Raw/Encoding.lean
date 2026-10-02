@@ -13,6 +13,8 @@ public import Aeneas
 public import Loops
 public import LayoutModel
 public import RepresentationLaws
+public import ModelProjectionLaws
+public import Obligations
 public import LayoutMath
 import all Mathlib.Data.Nat.Log
 import all Init.Data.Nat.Power2.Basic
