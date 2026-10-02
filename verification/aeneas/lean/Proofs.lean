@@ -10,6 +10,7 @@ module
 public import Specs
 public import Proofs.Util
 public import Aeneas
+public import Loops
 import all Mathlib.Data.Nat.Log
 import all Init.Data.Nat.Power2.Basic
 @[expose] public section
