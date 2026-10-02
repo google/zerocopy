@@ -345,6 +345,26 @@ spec requires_dynamic_padding_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.requires_dynamic_padding_spec for Zerocopy.layout.DstLayout.requires_dynamic_padding with 1
 
+check_model_inputs Zerocopy.layout.DstLayout.metadata_for_exact_size with 0 type parameters
+aeneas_spec_begin
+spec metadata_exact_spec
+  for @Zerocopy.layout.DstLayout.metadata_for_exact_size with 0 type parameters
+  ensures(raw) r => metadataSpec self size.val r
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.metadata_exact_spec for Zerocopy.layout.DstLayout.metadata_for_exact_size with 2
+
+check_model_inputs Zerocopy.layout.DstLayout.validate_cast_and_convert_metadata with 0 type parameters
+aeneas_spec_begin
+spec validate_cast_spec
+  for @Zerocopy.layout.DstLayout.validate_cast_and_convert_metadata with 0 type parameters
+  requires(raw) hroom : addr.val + bytes_len.val ≤ Usize.max
+  requires(raw) ht : match self.size_info with
+    | .Sized _ => True
+    | .SliceDst tail => 0 < tail.elem_size.val
+  ensures(raw) r => castSpec self addr.val bytes_len.val cast_type r
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.validate_cast_spec for Zerocopy.layout.DstLayout.validate_cast_and_convert_metadata with 4
+
 check_model_inputs Zerocopy.layout.nested_reference.round_up with 0 type parameters
 aeneas_spec_begin
 spec nested_round_up_spec
@@ -381,6 +401,14 @@ spec empty_layout_checks_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.empty_layout_checks_spec for Zerocopy.layout.primitive_checks.check_empty_layout with 1
 
+check_model_inputs Zerocopy.layout.primitive_checks.check_u32_slice_known_layout with 0 type parameters
+aeneas_spec_begin
+spec u32_slice_known_layout_checks_spec
+  for @Zerocopy.layout.primitive_checks.check_u32_slice_known_layout with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.u32_slice_known_layout_checks_spec for Zerocopy.layout.primitive_checks.check_u32_slice_known_layout with 1
+
 check_model_inputs Zerocopy.layout.tail_checks.trailing_arithmetic_check with 0 type parameters
 aeneas_spec_begin
 spec trailing_arithmetic_check_spec
@@ -388,6 +416,14 @@ spec trailing_arithmetic_check_spec
   ensures(raw) _ => True
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.trailing_arithmetic_check_spec for Zerocopy.layout.tail_checks.trailing_arithmetic_check with 5
+
+check_model_inputs Zerocopy.layout.tail_checks.layout_observations_check with 0 type parameters
+aeneas_spec_begin
+spec layout_observations_check_spec
+  for @Zerocopy.layout.tail_checks.layout_observations_check with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.layout_observations_check_spec for Zerocopy.layout.tail_checks.layout_observations_check with 7
 
 check_model_inputs Zerocopy.layout.tail_transform_checks.tail_transformations_check with 0 type parameters
 aeneas_spec_begin
