@@ -44,4 +44,18 @@ def round_down_spec : Prop :=
       m.val % align.val.val = 0 ∧ n.val < m.val + align.val.val ∧
       (∀ q : Nat, q ≤ n.val → q % align.val.val = 0 → q ≤ m.val) ⦄
 
+def encoding_new_spec : Prop :=
+  ∀ (a : NonZeroUsize) (p : Usize), 0 < a.val.val → a.val.val.isPowerOfTwo → p.val < a.val.val →
+    ∃ code, layout.RoundingAlignAndPhase.new a p = .ok code ∧ encodingValid code ∧ code._0.val.val = a.val.val + p.val
+
+def encoding_components_spec : Prop :=
+  ∀ (code : layout.RoundingAlignAndPhase), 0 < code._0.val.val →
+    layout.RoundingAlignAndPhase.components code ⦃ (a, p) =>
+      0 < a.val.val ∧ a.val.val.isPowerOfTwo ∧ p.val < a.val.val ∧ a.val.val + p.val = code._0.val.val ∧
+      a.val.val = 2 ^ code._0.val.val.log2 ∧ p.val = code._0.val.val - 2 ^ code._0.val.val.log2 ⦄
+
+def encoding_align_spec : Prop :=
+  ∀ (code : layout.RoundingAlignAndPhase), 0 < code._0.val.val →
+    ∃ a, layout.RoundingAlignAndPhase.align code = .ok a ∧ 0 < a.val.val ∧ a.val.val = 2 ^ code._0.val.val.log2
+
 end Zerocopy.Obligations

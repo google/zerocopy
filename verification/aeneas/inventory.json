@@ -3,6 +3,18 @@
   "version": 2,
   "required_functions": [
     {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::new"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::components"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::align"
+    },
+    {
       "file": "zerocopy/src/util/mod.rs",
       "syntax": "max"
     },
