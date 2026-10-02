@@ -10,6 +10,7 @@ use std::{
     env,
     fmt::Debug,
     path::{Path, PathBuf},
+    process::Command,
 };
 
 use ui_test::{
@@ -18,6 +19,24 @@ use ui_test::{
     test_result::TestResult,
     Config,
 };
+
+fn normalize_implementation_samples(config: &mut Config) {
+    // rustc prints an arbitrary sample of eight implementations for long
+    // candidate lists. The sample can change with the target, feature profile,
+    // or unrelated source changes. Preserve the trait header and surrounding
+    // diagnostic; normalize only a full sample followed by "and N others".
+    // Complete lists and diagnostics about specific implementations remain
+    // unchanged.
+    config.stderr_filter(
+        concat!(
+            r"(?m)(^[ \t]*= help: the following other types implement trait `[^\r\n`]+`:\n)",
+            r"([ \t]+)[^ \t\r\n][^\r\n]*\n",
+            r"(?:[ \t]+[^ \t\r\n][^\r\n]*\n){7}",
+            r"([ \t]+and \d+ others$)",
+        ),
+        b"${1}${2}$$IMPLEMENTATION_SAMPLES\n${3}",
+    );
+}
 
 fn main() {
     let rmeta_path = PathBuf::from(
@@ -37,6 +56,13 @@ fn main() {
     );
     let toolchain = env::var("ZEROCOPY_UI_TEST_TOOLCHAIN")
         .expect("ZEROCOPY_UI_TEST_TOOLCHAIN must be set by tests/ui.rs");
+    let sysroot = Command::new("rustc")
+        .env("RUSTUP_TOOLCHAIN", &toolchain)
+        .args(["--print", "sysroot"])
+        .output()
+        .expect("failed to query the UI compiler's sysroot");
+    assert!(sysroot.status.success(), "failed to query the UI compiler's sysroot");
+    let sysroot = PathBuf::from(String::from_utf8(sysroot.stdout).unwrap().trim());
 
     let root = env::current_dir().unwrap();
     let mut config = Config::rustc(tests_dir.clone());
@@ -50,14 +76,19 @@ fn main() {
     let workspace_root =
         env::var("ZEROCOPY_WORKSPACE_ROOT").map(PathBuf::from).unwrap_or_else(|_| root.clone());
 
+    // Normalize the selected compiler's actual source path, including a custom
+    // RUSTUP_HOME. Exact path matching also preserves neighboring diagnostics;
+    // a regex with [^/] could consume newlines before the source path.
+    config
+        .comment_defaults
+        .base()
+        .normalize_stderr
+        .push((sysroot.as_path().into(), b"$RUSTUP_TOOLCHAIN".to_vec()));
+
     config.stderr_filter(&workspace_root.display().to_string(), "$$WORKSPACE");
     if let Ok(canonical) = std::fs::canonicalize(&workspace_root) {
         config.stderr_filter(&canonical.display().to_string(), "$$WORKSPACE");
     }
-
-    // Normalize paths to rustlib source code, which will differ between developer
-    // machines and CI runners.
-    config.stderr_filter(r"(/[^/]+)+/\.rustup/toolchains/[^/]+/", b"$$RUSTUP_TOOLCHAIN/");
 
     config.stderr_filter(&tests_dir.display().to_string(), "$$DIR");
     if let Ok(canonical) = std::fs::canonicalize(&tests_dir) {
@@ -112,12 +143,8 @@ fn main() {
 
     config.stderr_filter(r"[^']*\.long-type-\d+\.txt", b"$OUT_DIR/long-type-HASH.txt");
 
-    // rustc summarizes long implementation-candidate lists as "and N
-    // others". The exact count changes when a CI feature profile enables more
-    // implementations, even when the diagnostic under test is unchanged.
-    // Normalize only that summary so one toolchain snapshot can exercise every
-    // feature profile without hiding differences in the candidates rustc does
-    // print.
+    normalize_implementation_samples(&mut config);
+    // The number of additional candidates also changes with feature profiles.
     config.stderr_filter(r"and \d+ others", b"and $$OTHER_TYPES others");
 
     // NOTE: We intentionally don't respect `RUSTFLAGS` here, as it is too
@@ -292,5 +319,90 @@ impl TestStatus for RevisionOverrideStatus {
 
     fn revision(&self) -> &str {
         &self.override_rev
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use ui_test::{Config, Match};
+
+    use super::normalize_implementation_samples;
+
+    fn normalize(text: &str) -> String {
+        let mut config = Config::rustc(std::path::PathBuf::new());
+        normalize_implementation_samples(&mut config);
+        let (filter, replacement) = config.comment_defaults.base().normalize_stderr.last().unwrap();
+        match filter {
+            Match::Regex(regex) => {
+                String::from_utf8(regex.replace_all(text.as_bytes(), replacement).into_owned())
+                    .unwrap()
+            }
+            _ => panic!("implementation samples use a regex filter"),
+        }
+    }
+
+    #[test]
+    fn normalizes_arbitrary_samples_and_preserves_diagnostics() {
+        let prefix = concat!(
+            "error[E0277]: the trait bound `Dst: FromBytes` is not satisfied\n",
+            "  --> test.rs:1:1\n",
+            "   = note: Consider adding `#[derive(FromBytes)]` to `Dst`\n",
+            "   = help: the following other types implement trait `FromBytes`:\n",
+        );
+        let suffix = concat!(
+            "           and 100 others\n",
+            "note: required by a bound in `takes_from_bytes`\n",
+            "   = help: unrelated help remains unchanged\n",
+        );
+        let tuples = concat!(
+            "             ()\n",
+            "             (A, B)\n",
+            "             (A, B, C)\n",
+            "             (A, B, C, D)\n",
+            "             (A, B, C, D, E)\n",
+            "             (A, B, C, D, E, F)\n",
+            "             (A, B, C, D, E, F, G)\n",
+            "             (A, B, C, D, E, F, G, H)\n",
+        );
+        let atomics = concat!(
+            "             ()\n",
+            "             AU16\n",
+            "             Atomic<i16>\n",
+            "             Atomic<i32>\n",
+            "             Atomic<i64>\n",
+            "             Atomic<i8>\n",
+            "             Atomic<isize>\n",
+            "             Atomic<u16>\n",
+        );
+        let expected = format!("{}             $IMPLEMENTATION_SAMPLES\n{}", prefix, suffix);
+        assert_eq!(normalize(&format!("{}{}{}", prefix, tuples, suffix)), expected);
+        assert_eq!(normalize(&format!("{}{}{}", prefix, atomics, suffix)), expected);
+        let different_trait = format!("{}{}{}", prefix, atomics, suffix)
+            .replace("implement trait `FromBytes`", "implement trait `IntoBytes`");
+        assert_eq!(
+            normalize(&different_trait),
+            expected.replace("implement trait `FromBytes`", "implement trait `IntoBytes`")
+        );
+    }
+
+    #[test]
+    fn preserves_complete_lists_and_specific_implementation_help() {
+        let complete = concat!(
+            "   = help: the following other types implement trait `FromBytes`:\n",
+            "             ()\n",
+            "             AU16\n",
+            "             Atomic<i16>\n",
+            "             Atomic<i32>\n",
+            "             Atomic<i64>\n",
+            "             Atomic<i8>\n",
+            "             Atomic<isize>\n",
+            "             Atomic<u16>\n",
+            "note: required by a bound in `takes_from_bytes`\n",
+            "   = help: the trait `FromBytes` is implemented for `AU16`\n",
+        );
+        assert_eq!(normalize(complete), complete);
+        // An unrelated summary must not turn a complete list into a sample.
+        let unrelated_summary = format!("{}           and 100 others\n", complete);
+        assert_eq!(normalize(&unrelated_summary), unrelated_summary);
     }
 }

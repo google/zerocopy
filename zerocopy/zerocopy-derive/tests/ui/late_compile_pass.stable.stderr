@@ -19,14 +19,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
-             ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -45,14 +38,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
-             ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -71,14 +57,7 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
-             ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -97,14 +76,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
-             ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -123,14 +95,7 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
-             ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
@@ -149,14 +114,7 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
-             ()
-             AU16
-             Atomic<i16>
-             Atomic<i32>
-             Atomic<i64>
-             Atomic<i8>
-             Atomic<isize>
-             Atomic<u16>
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -173,14 +131,7 @@ help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocop
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::IntoBytes`:
-             ()
-             AU16
-             Atomic<bool>
-             Atomic<i16>
-             Atomic<i32>
-             Atomic<i64>
-             Atomic<i8>
-             Atomic<isize>
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -197,14 +148,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
    |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
-             ()
-             Atomic<bool>
-             Atomic<i8>
-             Atomic<u8>
-             Cell<T>
-             F32<O>
-             F64<O>
-             I128<O>
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -221,14 +165,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
    |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
-             ()
-             Atomic<bool>
-             Atomic<i8>
-             Atomic<u8>
-             Cell<T>
-             F32<O>
-             F64<O>
-             I128<O>
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -245,14 +182,7 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
     |     ^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(Unaligned)]` to `AU16`
     = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
-              ()
-              Atomic<bool>
-              Atomic<i8>
-              Atomic<u8>
-              Cell<T>
-              F32<O>
-              F64<O>
-              I128<O>
+              $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -269,14 +199,7 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
-             ()
-             AU16
-             Atomic<i16>
-             Atomic<i32>
-             Atomic<i64>
-             Atomic<i8>
-             Atomic<isize>
-             Atomic<u16>
+             $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required for `FromBytes1` to implement `zerocopy_renamed::FromBytes`
   --> $DIR/late_compile_pass.rs:54:10
