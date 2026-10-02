@@ -69,4 +69,19 @@ structure layout.DstLayout where
   size_info : layout.SizeInfo Std.Usize
   statically_shallow_unpadded : Bool
 
+/-- [zerocopy::layout::CastType]
+    Source: 'src/layout.rs', lines 1596:0-1599:1
+    Visibility: public -/
+@[discriminant isize]
+inductive layout.CastType where
+| Prefix : layout.CastType
+| Suffix : layout.CastType
+
+/-- [zerocopy::layout::MetadataCastError]
+    Source: 'src/layout.rs', lines 1603:0-1606:1 -/
+@[discriminant isize]
+inductive layout.MetadataCastError where
+| Alignment : layout.MetadataCastError
+| Size : layout.MetadataCastError
+
 end Zerocopy

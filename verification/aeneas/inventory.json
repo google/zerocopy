@@ -213,6 +213,32 @@
       ]
     },
     {
+      "rust": "zerocopy::layout::DstLayout::validate_cast_and_convert_metadata",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::validate_cast_and_convert_metadata",
+      "model": "layout.DstLayout.validate_cast_and_convert_metadata",
+      "theorem": "validate_cast_spec",
+      "golden": "layout.DstLayout.validate_cast_and_convert_metadata.lean.in",
+      "depends_on": [
+        "zerocopy::layout::SizeInfo::try_to_nonzero_elem_size",
+        "zerocopy::layout::TrailingSliceLayout::max_trailing_bytes",
+        "zerocopy::layout::max_elems_for_bytes",
+        "zerocopy::layout::RoundingAlignAndPhase::align",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::metadata_for_exact_size",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::metadata_for_exact_size",
+      "model": "layout.DstLayout.metadata_for_exact_size",
+      "theorem": "metadata_exact_spec",
+      "golden": "layout.DstLayout.metadata_for_exact_size.lean.in",
+      "depends_on": [
+        "zerocopy::layout::DstLayout::validate_cast_and_convert_metadata"
+      ]
+    },
+    {
       "rust": "zerocopy::util::max",
       "file": "zerocopy/src/util/mod.rs",
       "syntax": "max",

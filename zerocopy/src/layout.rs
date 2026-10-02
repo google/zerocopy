@@ -3004,6 +3004,91 @@ impl DstLayout {
         }
     }))]
     const fn metadata_for_exact_size(&self, size: usize) -> Option<usize> {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.metadata_for_exact_size
+        //     (self : layout.DstLayout) (size : Std.Usize) :
+        //     Result (Option Std.Usize)
+        //     := do
+        //     match self.size_info with
+        //     | layout.SizeInfo.Sized _ => ok none
+        //     | layout.SizeInfo.SliceDst tsl =>
+        //       match tsl.elem_size.val with
+        //       | 0 => ok none
+        //       | _ =>
+        //         let r ←
+        //           layout.DstLayout.validate_cast_and_convert_metadata self 0#usize size
+        //             layout.CastType.Prefix
+        //         match r with
+        //         | core.result.Result.Ok p =>
+        //           let (elems, object_size) := p
+        //           if object_size = size
+        //           then ok (some elems)
+        //           else ok none
+        //         | core.result.Result.Err _ => ok none
+        // proof:
+        //   contract metadata_exact_spec (self : layout.DstLayout) (size : Usize)
+        //     for layout.DstLayout.metadata_for_exact_size self size
+        //     requires ha : 0 < self.align.val.val
+        //     requires ht : match self.size_info with
+        //       | .Sized _ => True
+        //       | .SliceDst tail => tail.elem_size.val ≠ 0 →
+        //         0 < tail.size_rounding_align_and_phase.val.val
+        //     ensures r => metadataSpec self size.val r
+        //     proof:
+        //       unfold layout.DstLayout.metadata_for_exact_size
+        //       cases hs : self.size_info with
+        //       | Sized s => simp only [WP.spec_ok, metadataSpec, hs]
+        //       | SliceDst tail =>
+        //         simp only [hs] at ht ⊢
+        //         cases hz : tail.elem_size.val with
+        //         | zero =>
+        //           simp only [WP.spec_ok, metadataSpec, hs, hz, if_true]
+        //         | succ k =>
+        //           simp only []
+        //           have he : 0 < tail.elem_size.val := by omega
+        //           have hn : tail.elem_size.val ≠ 0 := by omega
+        //           step with validate_cast_spec self 0#usize size .Prefix ha (by scalar_tac)
+        //             (by simp only [hs]; exact ⟨ht hn, he⟩) as ⟨cast, hc⟩
+        //           cases cast with
+        //           | Err err =>
+        //             cases err with
+        //             | Alignment =>
+        //               simp only [castSpec, castSide, Nat.zero_add, Nat.zero_mod,
+        //                 ] at hc
+        //               exact False.elim (hc rfl)
+        //             | Size =>
+        //               simp only [castSpec, castSide, hs,
+        //                 Nat.zero_add, Nat.zero_mod, true_and] at hc
+        //               apply WP.spec.ret
+        //               simp only [metadataSpec, hs, hn, if_false]
+        //               intro n h
+        //               have := hc n
+        //               omega
+        //           | Ok pair =>
+        //             rcases pair with ⟨elems, bytes⟩
+        //             change (if bytes = size then Result.ok (some elems) else Result.ok none)
+        //               ⦃ r => metadataSpec self size.val r ⦄
+        //             simp only [castSpec, castSide, castSplit, hs,
+        //               Nat.zero_add, Nat.zero_mod, true_and] at hc
+        //             split
+        //             · rename_i hsame
+        //               apply WP.spec.ret
+        //               simp only [metadataSpec, hs, hn, if_false]
+        //               have hbytes := congrArg UScalar.val hsame
+        //               exact ⟨by omega, hc.2.1⟩
+        //             · rename_i hdiff
+        //               apply WP.spec.ret
+        //               simp only [metadataSpec, hs, hn, if_false]
+        //               intro n h
+        //               have hle : n ≤ elems.val := (hc.2.1 n).mp (by omega)
+        //               have hmono := LayoutMath.Formula.size_mono (trailingFormula tail)
+        //                 (trailing_align_pos tail) hle
+        //               apply hdiff
+        //               apply (UScalar.eq_equiv _ _).mpr
+        //               omega
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::metadata_for_exact_size)]
         #[kani::solver(kissat)]
@@ -3138,6 +3223,257 @@ impl DstLayout {
         bytes_len: usize,
         cast_type: CastType,
     ) -> Result<(usize, usize), MetadataCastError> {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.validate_cast_and_convert_metadata
+        //     (self : layout.DstLayout) (addr : Std.Usize) (bytes_len : Std.Usize)
+        //     (cast_type : layout.CastType) :
+        //     Result (core.result.Result (Std.Usize × Std.Usize) layout.MetadataCastError)
+        //     := do
+        //     let o ← layout.SizeInfoUsize.try_to_nonzero_elem_size self.size_info
+        //     match o with
+        //     | none => fail panic
+        //     | some size_info =>
+        //       let o1 ← lift (Usize.checked_add addr bytes_len)
+        //       let e := core.option.Option.is_some o1
+        //       massert e
+        //       let offset ←
+        //         match cast_type with
+        //         | layout.CastType.Prefix => ok 0#usize
+        //         | layout.CastType.Suffix => ok bytes_len
+        //       let i ← addr + offset
+        //       let i1 ←
+        //         core.num.nonzero.NonZero.get
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //           self.align
+        //       let i2 ← i % i1
+        //       if i2 != 0#usize
+        //       then ok (core.result.Result.Err layout.MetadataCastError.Alignment)
+        //       else
+        //         match size_info with
+        //         | layout.SizeInfo.Sized size =>
+        //           massert ((size > bytes_len) || (size <= bytes_len))
+        //           if size > bytes_len
+        //           then ok (core.result.Result.Err layout.MetadataCastError.Size)
+        //           else
+        //             match cast_type with
+        //             | layout.CastType.Prefix =>
+        //               ok (core.result.Result.Ok (0#usize, size))
+        //             | layout.CastType.Suffix =>
+        //               let split_at ← bytes_len - size
+        //               ok (core.result.Result.Ok (0#usize, split_at))
+        //         | layout.SizeInfo.SliceDst trailing =>
+        //           let o2 ←
+        //             layout.TrailingSliceLayout.max_trailing_bytes trailing bytes_len
+        //           match o2 with
+        //           | none => ok (core.result.Result.Err layout.MetadataCastError.Size)
+        //           | some bytes =>
+        //             let (elems, _) ←
+        //               layout.max_elems_for_bytes bytes trailing.elem_size
+        //             let size_align ←
+        //               layout.RoundingAlignAndPhase.align
+        //                 trailing.size_rounding_align_and_phase
+        //             let i3 ←
+        //               core.num.nonzero.NonZero.get
+        //                 Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //                 trailing.elem_size
+        //             let unused_bytes ← bytes % i3
+        //             let unused_aligned_bytes ←
+        //               util.round_down_to_next_multiple_of_alignment unused_bytes
+        //                 size_align
+        //             let i4 ← bytes_len - trailing.size_base
+        //             let max_rounded_bytes ←
+        //               util.round_down_to_next_multiple_of_alignment i4 size_align
+        //             let i5 ← max_rounded_bytes - unused_aligned_bytes
+        //             let self_bytes ← trailing.size_base + i5
+        //             massert (self_bytes <= bytes_len)
+        //             match cast_type with
+        //             | layout.CastType.Prefix =>
+        //               ok (core.result.Result.Ok (elems, self_bytes))
+        //             | layout.CastType.Suffix =>
+        //               let split_at ← bytes_len - self_bytes
+        //               ok (core.result.Result.Ok (elems, split_at))
+        // proof:
+        //   contract validate_cast_spec (self : layout.DstLayout) (addr length : Usize) (cast : layout.CastType)
+        //     for layout.DstLayout.validate_cast_and_convert_metadata self addr length cast
+        //     requires ha : 0 < self.align.val.val
+        //     requires hroom : addr.val + length.val ≤ Usize.max
+        //     requires ht : match self.size_info with
+        //       | .Sized _ => True
+        //       | .SliceDst tail => 0 < tail.size_rounding_align_and_phase.val.val ∧ 0 < tail.elem_size.val
+        //     ensures r => castSpec self addr.val length.val cast r
+        //     proof:
+        //       unfold layout.DstLayout.validate_cast_and_convert_metadata
+        //       cases hs : self.size_info with
+        //       | Sized size =>
+        //         step with try_nonzero_spec (.Sized size) as ⟨converted, hconverted⟩
+        //         rw [hconverted]
+        //         step as ⟨checked, haddr⟩
+        //         cases checked with
+        //         | none => simp only [] at haddr; omega
+        //         | some ending =>
+        //           simp only [] at haddr
+        //           simp only [Option.isSome_some, massert, if_true, bind_ok]
+        //           step with cast_offset_spec cast length as ⟨offset, ho, hle⟩
+        //           have hlen := (UScalar.le_equiv _ _).mp hle
+        //           step with Usize.add_spec (x := addr) (y := offset) (by omega) as ⟨aligned, haligned⟩
+        //           simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //           step with Usize.rem_spec aligned (y := self.align.val) (by omega) as ⟨rem, hr⟩
+        //           simp only [bne_iff_ne]
+        //           split
+        //           · rename_i hne
+        //             apply WP.spec.ret
+        //             unfold castSpec
+        //             have hv : rem.val ≠ 0 := by
+        //               intro h
+        //               apply hne
+        //               exact (UScalar.eq_equiv _ _).mpr h
+        //             rw [hr, haligned, ho] at hv
+        //             exact hv
+        //           · rename_i heq
+        //             have hzero : (addr.val + castSide cast length.val) % self.align.val.val = 0 := by
+        //               have h : rem = 0#usize := not_ne_iff.mp heq
+        //               have hv := congrArg UScalar.val h
+        //               rw [hr, haligned, ho] at hv
+        //               exact hv
+        //             have htotal : (decide (size > length) || decide (size ≤ length)) = true := by
+        //               simp only [Bool.or_eq_true, decide_eq_true_eq]
+        //               exact lt_or_ge length size
+        //             simp only [UScalar.lt_equiv, UScalar.le_equiv] at htotal ⊢
+        //             simp only [htotal, if_true, bind_ok]
+        //             split
+        //             · rename_i hbig
+        //               apply WP.spec.ret
+        //               simp only [castSpec, hs]
+        //               exact ⟨hzero, hbig⟩
+        //             · rename_i hsmall
+        //               step with cast_split_spec cast length size 0#usize (by omega) as ⟨r, split, hr, hv⟩
+        //               rw [hr]
+        //               simp only [castSpec, hs, show (0#usize).val = 0 by simp]
+        //               exact ⟨hzero, trivial, by omega, hv⟩
+        //       | SliceDst tail =>
+        //         simp only [hs] at ht
+        //         step with try_nonzero_spec (.SliceDst tail) as ⟨converted, hconverted⟩
+        //         have hne : tail.elem_size ≠ 0#usize := by
+        //           intro h
+        //           have hv := congrArg UScalar.val h
+        //           change tail.elem_size.val = 0 at hv
+        //           omega
+        //         simp only [hne, if_false] at hconverted
+        //         obtain ⟨t, hconverted, hoffset, hbase, hcode, helem⟩ := hconverted
+        //         rw [hconverted]
+        //         step as ⟨checked, haddr⟩
+        //         cases checked with
+        //         | none => simp only [] at haddr; omega
+        //         | some ending =>
+        //           simp only [] at haddr
+        //           simp only [Option.isSome_some, massert, if_true, bind_ok]
+        //           step with cast_offset_spec cast length as ⟨offset, ho, hle⟩
+        //           have hlen := (UScalar.le_equiv _ _).mp hle
+        //           step with Usize.add_spec (x := addr) (y := offset) (by omega) as ⟨aligned, haligned⟩
+        //           simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //           step with Usize.rem_spec aligned (y := self.align.val) (by omega) as ⟨rem, hr⟩
+        //           simp only [bne_iff_ne]
+        //           split
+        //           · rename_i hne
+        //             apply WP.spec.ret
+        //             unfold castSpec
+        //             have hv : rem.val ≠ 0 := by
+        //               intro h
+        //               apply hne
+        //               exact (UScalar.eq_equiv _ _).mpr h
+        //             rw [hr, haligned, ho] at hv
+        //             exact hv
+        //           · rename_i heq
+        //             have hzero : (addr.val + castSide cast length.val) % self.align.val.val = 0 := by
+        //               have h : rem = 0#usize := not_ne_iff.mp heq
+        //               have hv := congrArg UScalar.val h
+        //               rw [hr, haligned, ho] at hv
+        //               exact hv
+        //             have htn : 0 < t.size_rounding_align_and_phase.val.val := by rw [hcode]; exact ht.1
+        //             have hte : 0 < t.elem_size.val.val := by rw [helem]; exact ht.2
+        //             have hview : byteFormula t = byteFormula tail := by simp only [byteFormula, hbase, hcode, hoffset]
+        //             step with max_trailing_bytes_spec t length htn as ⟨capacity, hc⟩
+        //             rw [hview] at hc
+        //             cases capacity with
+        //             | none =>
+        //               have hmiss := LayoutMath.capacity_spec (byteFormula tail) length.val (Nat.two_pow_pos _)
+        //               rw [← hc] at hmiss
+        //               apply WP.spec.ret
+        //               refine ⟨hzero, ?_⟩
+        //               simp only [hs]
+        //               intro n
+        //               exact hmiss (n * tail.elem_size.val)
+        //             | some capacity =>
+        //               dsimp only
+        //               step with max_elems_for_bytes_spec capacity t.elem_size hte as ⟨elems, used, hen, _, _, _, _⟩
+        //               step with encoding_align_spec t.size_rounding_align_and_phase htn as ⟨a, ha⟩
+        //               have hav : a.val.val = (trailingFormula tail).align := by
+        //                 simpa only [trailingFormula, byteFormula, hcode] using ha
+        //               step with Usize.rem_spec capacity (y := t.elem_size.val) (by omega) as ⟨unused, hu⟩
+        //               have hap : a.val.val.isPowerOfTwo := ⟨_, by simpa only [hcode] using ha⟩
+        //               step with round_down_spec unused a hap as ⟨unused_aligned, _, huf, _, _, _⟩
+        //               have hcap : (trailingFormula tail).capacity length.val = some capacity.val := hc.symm
+        //               have hmax := LayoutMath.maximal_metadata _ _ _ ht.2 hcap (trailing_align_pos tail)
+        //               have hfit : (trailingFormula tail).size elems.val ≤ length.val := by
+        //                 apply (hmax elems.val).mpr
+        //                 rw [hen, helem]
+        //                 exact le_rfl
+        //               have hmin := (LayoutMath.capacity_spec (trailingFormula tail) length.val (trailing_align_pos tail))
+        //               rw [hcap] at hmin
+        //               have hminfit := (hmin 0).mpr (by omega)
+        //               have hbfit : t.size_base.val ≤ length.val := by
+        //                 rw [hbase]
+        //                 simp only [trailingFormula, byteFormula, LayoutMath.Formula.bytes] at hminfit
+        //                 omega
+        //               step with Usize.sub_spec hbfit as ⟨available, hb, _⟩
+        //               step with round_down_spec available a hap as ⟨budget, _, hbudget, _, _, _⟩
+        //               have hused := LayoutMath.capacity_object_size (trailingFormula tail) length.val capacity.val
+        //                 (trailing_align_pos tail) hcap
+        //               change (trailingFormula tail).size (capacity.val / tail.elem_size.val) =
+        //                 tail.size_base.val + (length.val - tail.size_base.val -
+        //                   (length.val - tail.size_base.val) % (trailingFormula tail).align) -
+        //                   (capacity.val % tail.elem_size.val -
+        //                     capacity.val % tail.elem_size.val % (trailingFormula tail).align) at hused
+        //               rw [← hav, ← hbase] at hused
+        //               have hunused : unused.val = capacity.val % tail.elem_size.val := by rw [hu, helem]
+        //               have hbval : budget.val = length.val - t.size_base.val -
+        //                   (length.val - t.size_base.val) % a.val.val := by rw [hbudget, hb]
+        //               have hus : unused_aligned.val ≤ budget.val := by
+        //                 have hmod := Nat.mod_le capacity.val tail.elem_size.val
+        //                 have hcapval : capacity.val = length.val - t.size_base.val -
+        //                     (length.val - t.size_base.val) % a.val.val - (trailingFormula tail).phase := by
+        //                   unfold LayoutMath.Formula.capacity at hcap
+        //                   simp only [hminfit, if_true, Option.some.injEq] at hcap
+        //                   have hav' : a.val.val = 2 ^ tail.size_rounding_align_and_phase.val.val.log2 := hav
+        //                   simpa only [trailingFormula, byteFormula, ← hav', ← hbase] using hcap.symm
+        //                 rw [huf, hbval, hunused]
+        //                 omega
+        //               step with Usize.sub_spec hus as ⟨remaining, hremaining, _⟩
+        //               have hsum : t.size_base.val + remaining.val ≤ Usize.max := by
+        //                 have hlenfit : length.val ≤ Usize.max := by scalar_tac
+        //                 rw [hremaining]
+        //                 have hbudget_bound : budget.val ≤ length.val - t.size_base.val := by rw [hbval]; omega
+        //                 omega
+        //               step with Usize.add_spec (x := t.size_base) (y := remaining) hsum as ⟨size, hsize⟩
+        //               have hexact : size.val = (trailingFormula tail).size elems.val := by
+        //                 rw [hen, helem]
+        //                 rw [hused]
+        //                 rw [hsize, hremaining, huf, hunused, hbval]
+        //                 rw [huf, hunused, hbval] at hus
+        //                 omega
+        //               have hsizefit : size ≤ length := (UScalar.le_equiv _ _).mpr (by rw [hexact]; exact hfit)
+        //               simp only [hsizefit, if_true, bind_ok]
+        //               step with cast_split_spec cast length size elems (by rw [hexact]; exact hfit) as ⟨r, split, hr, hv⟩
+        //               rw [hr]
+        //               simp only [castSpec, hs]
+        //               refine ⟨hzero, hfit, ?_, ?_⟩
+        //               · intro n
+        //                 rw [hmax n, hen, helem]
+        //                 rfl
+        //               · simpa only [hexact] using hv
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::validate_cast_and_convert_metadata)]
         #[kani::solver(kissat)]

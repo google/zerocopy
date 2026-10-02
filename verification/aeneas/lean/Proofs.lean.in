@@ -249,6 +249,33 @@ theorem power_dvd_of_le (a b : Nat) (ha : a.isPowerOfTwo) (hb : b.isPowerOfTwo)
 
 @@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::has_same_size_sequence")@@
 
+contract cast_offset_spec (cast : layout.CastType) (length : Usize)
+  for (match cast with | .Prefix => Result.ok 0#usize | .Suffix => Result.ok length)
+  ensures offset => offset.val = castSide cast length.val ∧ offset ≤ length
+  proof:
+    cases cast <;> simp [castSide, WP.spec_ok]
+
+contract cast_split_spec (cast : layout.CastType) (length size elems : Usize)
+  for (match cast with
+    | .Prefix => Result.ok (core.result.Result.Ok (elems, size))
+    | .Suffix => do
+      let split ← length - size
+      Result.ok (core.result.Result.Ok (elems, split)) :
+    Result (core.result.Result (Usize × Usize) layout.MetadataCastError))
+  requires h : size.val ≤ length.val
+  ensures r => ∃ split, r = .Ok (elems, split) ∧
+    split.val = castSplit cast length.val size.val
+  proof:
+    cases cast with
+    | Prefix => exact WP.spec.ret ⟨size, rfl, rfl⟩
+    | Suffix =>
+      step with Usize.sub_spec h as ⟨split, hs, _⟩
+      exact ⟨split, rfl, hs⟩
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::validate_cast_and_convert_metadata")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::metadata_for_exact_size")@@
+
 contract extend_value_spec (self field : layout.DstLayout) (packed : Option NonZeroUsize)
   for layout.DstLayout.extend self field packed
   requires hself : alignmentDomain self.align.val.val
