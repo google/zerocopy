@@ -367,7 +367,10 @@ mod proofs {
 
     fn any_vec() -> Vec<u8> {
         let len = kani::any();
-        kani::assume(len <= crate::DstLayout::MAX_SIZE);
+        // Kani models pointers with 16 object bits, leaving 48 bits for the
+        // object offset. This is the largest allocation size that does not
+        // wrap the model's object-offset field.
+        kani::assume(len <= 0xFFFF_FFFF_FFFF);
         vec![0u8; len]
     }
 

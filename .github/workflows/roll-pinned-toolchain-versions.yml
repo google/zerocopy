@@ -155,32 +155,22 @@ jobs:
           PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
         run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
           
-  roll_kani:
+  resolve_kani:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write # Required to create pull requests
-    strategy:
-      # A failure on one release branch must not cancel otherwise-independent
-      # rolls for the other branches.
-      fail-fast: false
-      matrix:
-        branch: ["main", "v0.7.x"]
-    name: Roll pinned Kani version on ${{ matrix.branch }}
+    permissions: {}
+    outputs:
+      latest: ${{ steps.version.outputs.latest }}
+    name: Resolve latest Kani version
     steps:
-      - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ matrix.branch }}
-          persist-credentials: false
-      - run: |
+      - id: version
+        run: |
           set -eo pipefail
 
           # `cargo add --dry-run` prints versions of transitive dependencies as
           # well as the selected Kani version. Parsing every SemVer from that
-          # output once produced a multi-line GITHUB_ENV value and broke this
-          # roller. `cargo search --limit 1` has one anchored record for the
-          # named package; fail if its format ever changes.
+          # output once produced a multi-line output and broke this roller.
+          # `cargo search --limit 1` has one anchored record for the named
+          # package; fail if its format ever changes.
           KANI_SEARCH="$(
             cargo search kani-verifier \
               --registry crates-io \
@@ -196,7 +186,70 @@ jobs:
             echo "Could not parse a Kani version from: $KANI_SEARCH" >&2
             exit 1
           fi
-          echo "ZC_KANI_LATEST=$KANI_LATEST" >> "$GITHUB_ENV"
+          echo "latest=$KANI_LATEST" >> "$GITHUB_OUTPUT"
+
+  test_kani:
+    needs: resolve_kani
+    runs-on: ubuntu-latest
+    permissions: {}
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: ["main", "v0.7.x"]
+    name: Test Kani ${{ needs.resolve_kani.outputs.latest }} on ${{ matrix.branch }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ matrix.branch }}
+          persist-credentials: false
+      - name: Read Kani arguments
+        run: |
+          set -eo pipefail
+
+          KANI_ARGS="$(
+            sed -nE \
+              '/^  kani:$/,/^  [a-zA-Z0-9_-]+:$/ {
+                s/^ +args: "(.*)"$/\1/p
+              }' \
+              .github/workflows/ci.yml
+          )"
+          if [ "$(wc -l <<< "$KANI_ARGS")" -ne 1 ] || [ -z "$KANI_ARGS" ]; then
+            echo "Expected exactly one Kani args value in ci.yml" >&2
+            exit 1
+          fi
+          echo "ZC_KANI_ARGS=$KANI_ARGS" >> "$GITHUB_ENV"
+      # Run untrusted verifier code in a job which has no bot credentials. The
+      # submitting job below starts on a fresh runner only after both branch
+      # checks succeed.
+      - name: Test Kani version
+        uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
+        with:
+          args: ${{ env.ZC_KANI_ARGS }}
+          kani-version: ${{ needs.resolve_kani.outputs.latest }}
+
+  roll_kani:
+    needs: [resolve_kani, test_kani]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # Required to create pull requests
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: ["main", "v0.7.x"]
+    name: Roll pinned Kani version on ${{ matrix.branch }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ matrix.branch }}
+          persist-credentials: false
+      - name: Update pinned version
+        env:
+          KANI_LATEST: ${{ needs.resolve_kani.outputs.latest }}
+        run: |
+          set -eo pipefail
 
           # Update the `kani-version:` argument in-place.
           MATCH_COUNT="$(
@@ -220,7 +273,7 @@ jobs:
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "[ci] Roll pinned Kani version"
-          branch: roll-pinned-kani-to-${{ env.ZC_KANI_LATEST }}-for-${{ matrix.branch }}
+          branch: roll-pinned-kani-to-${{ needs.resolve_kani.outputs.latest }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
 
