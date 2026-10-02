@@ -105,6 +105,12 @@ structure byteorder.U32 (O : Type) where
 structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
+/-- [zerocopy::layout::RoundingAlignAndPhase]
+    Source: 'src/layout/mod.rs', lines 78:0-78:54 -/
+structure layout.RoundingAlignAndPhase where
+  _0 : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+
 /-- Trait declaration: [zerocopy::trait_checks::ByteCodec]
     Source: 'src/trait_checks.rs', lines 26:0-29:1 -/
 structure trait_checks.ByteCodec (Self : Type) where

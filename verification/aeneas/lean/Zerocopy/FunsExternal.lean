@@ -80,6 +80,14 @@ noncomputable def util.transmute_unchecked {Src : Type} (Dst : Type)
     {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
     (x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val
 
+-- Extraction uses size_of only for usize to calculate its bit width. Other
+-- types remain unsupported rather than receiving arbitrary layout values.
+@[simp] noncomputable def core.mem.size_of (T : Type) : Result Usize := by
+  classical
+  exact if T = Usize then
+    .ok { bv := BitVec.ofNat _ (System.Platform.numBits / 8) }
+  else .fail .panic
+
 -- The extracted call sites instantiate this primitive only at Usize. Other
 -- types are unsupported, so the model cannot promise a recoverable panic.
 @[simp] noncomputable def core.num.nonzero.NonZero.new
