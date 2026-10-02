@@ -11,6 +11,7 @@ import SpecsSyntaxTests
 import ContractTests
 import SupportTests
 import Corollaries
+import LayoutMath
 open Lean Elab Command
 run_elab do
   let required := requiredTheorems
