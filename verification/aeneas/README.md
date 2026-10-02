@@ -35,6 +35,8 @@ Broader ordinary Raw lemmas preserve useful representation-level domains.
 predicate, and round-down is monotone, aligned and idempotent under its stated
 conditions.
 
+`LayoutMath.lean` supplies independent unbounded size and capacity formulas.
+
 CI uses the default features, debug assertions and the runner's native target.
 Local replay also supports macOS arm64. These conditional contracts do not
 certify other extraction configurations, rustc, zerocopy's pointer safety or
