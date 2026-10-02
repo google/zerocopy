@@ -24,7 +24,7 @@
 
 use core::num::NonZeroUsize;
 
-use super::TrailingSliceLayout;
+use super::{CastType, DstLayout, MetadataCastError, SizeInfo, TrailingSliceLayout};
 
 pub(super) fn same_optional_usize(left: Option<usize>, right: Option<usize>) -> bool {
     match (left, right) {
@@ -75,6 +75,84 @@ fn reference_capacity(
     }
 }
 
+fn reference_metadata(
+    runtime_layout: DstLayout,
+    align: NonZeroUsize,
+    phase: usize,
+    size: usize,
+) -> Option<usize> {
+    match runtime_layout.size_info {
+        SizeInfo::Sized { .. } => None,
+        SizeInfo::SliceDst(tail) => {
+            if tail.elem_size == 0 {
+                return None;
+            }
+            match reference_capacity(tail, align, phase, size) {
+                None => None,
+                Some(bytes) => {
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let elems = bytes / tail.elem_size;
+                    if same_optional_usize(reference_size(tail, align, phase, elems), Some(size)) {
+                        Some(elems)
+                    } else {
+                        None
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[allow(clippy::arithmetic_side_effects)]
+fn reference_cast(
+    runtime_layout: DstLayout,
+    align: NonZeroUsize,
+    phase: usize,
+    addr: usize,
+    length: usize,
+    side: CastType,
+) -> Result<(usize, usize), MetadataCastError> {
+    // The caller checks address addition and excludes the zero-stride panic
+    // before either the production or reference cast is evaluated.
+    let anchor = match side {
+        CastType::Prefix => addr,
+        CastType::Suffix => addr + length,
+    };
+    // Alignment failure has priority over insufficient size.
+    if anchor % runtime_layout.align.get() != 0 {
+        return Err(MetadataCastError::Alignment);
+    }
+    let candidate = match runtime_layout.size_info {
+        SizeInfo::Sized { size } => {
+            if size <= length {
+                Some((0, size))
+            } else {
+                None
+            }
+        }
+        SizeInfo::SliceDst(tail) => match reference_capacity(tail, align, phase, length) {
+            None => None,
+            Some(bytes) => {
+                let elems = bytes / tail.elem_size;
+                match reference_size(tail, align, phase, elems) {
+                    Some(size) => Some((elems, size)),
+                    None => None,
+                }
+            }
+        },
+    };
+    match candidate {
+        None => Err(MetadataCastError::Size),
+        Some((elems, size)) => {
+            let split = match side {
+                CastType::Prefix => size,
+                CastType::Suffix => length - size,
+            };
+            Ok((elems, split))
+        }
+    }
+}
+
 /// Check the entire optional size and capacity results, including overflow.
 ///
 /// Physical slice offset does not constrain this claim: a raw layout can have
@@ -107,5 +185,63 @@ fn trailing_arithmetic_check(
             tail.max_trailing_bytes(budget),
             reference_capacity(tail, align, phase, budget),
         ));
+    }
+}
+
+/// Check exact-size metadata and complete cast results against independent
+/// calculations. A successful cast must select the greatest fitting element
+/// count and its padded prefix/suffix split; errors must have the same kind.
+///
+/// The address guard is the production method's no-overflow premise. The
+/// explicit zero-stride guard excludes its documented panic, even when an
+/// alignment error would otherwise be returned. Exact-size inference itself
+/// is also checked for zero-stride tails, for which it must return `None`.
+///
+/// ```aeneas
+/// spec layout_observations_check_spec
+///   ensures(raw) _ => True
+/// ```
+fn layout_observations_check(
+    runtime_layout: DstLayout,
+    align: NonZeroUsize,
+    phase: usize,
+    size: usize,
+    addr: usize,
+    length: usize,
+    side: CastType,
+) {
+    let encoding_matches = match runtime_layout.size_info {
+        SizeInfo::Sized { .. } => true,
+        SizeInfo::SliceDst(tail) => {
+            align.get().is_power_of_two()
+                && phase < align.get()
+                && same_optional_usize(
+                    align.get().checked_add(phase),
+                    Some(tail.size_rounding_align_and_phase.0.get()),
+                )
+        }
+    };
+    if encoding_matches {
+        assert!(same_optional_usize(
+            runtime_layout.metadata_for_exact_size(size),
+            reference_metadata(runtime_layout, align, phase, size),
+        ));
+        let nonzero_stride = match runtime_layout.size_info {
+            SizeInfo::Sized { .. } => true,
+            SizeInfo::SliceDst(tail) => tail.elem_size != 0,
+        };
+        if addr.checked_add(length).is_some() && nonzero_stride {
+            let actual = runtime_layout.validate_cast_and_convert_metadata(addr, length, side);
+            let expected = reference_cast(runtime_layout, align, phase, addr, length, side);
+            let same = match (actual, expected) {
+                (Ok((elems, split)), Ok((expected_elems, expected_split))) => {
+                    elems == expected_elems && split == expected_split
+                }
+                (Err(MetadataCastError::Alignment), Err(MetadataCastError::Alignment))
+                | (Err(MetadataCastError::Size), Err(MetadataCastError::Size)) => true,
+                _ => false,
+            };
+            assert!(same);
+        }
     }
 }
