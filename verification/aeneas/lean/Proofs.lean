@@ -1272,4 +1272,78 @@ contract pad_value_spec (self : layout.DstLayout)
 
 attribute [step] pad_value_spec
 
+theorem construction_prefix_step (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) (i : Nat) (hi : i < fields.val.length) :
+    constructionPrefix fields initial packed (i + 1) =
+      (constructionPrefix fields initial packed i).extend (layoutValue fields.val[i]) (packingValue packed) := by
+  unfold constructionPrefix
+  rw [LayoutMath.LayoutValue.prefixValue_step _ _ _ _ (by simpa only [List.length_map] using hi)]
+  simp only [List.getElem_map]
+
+contract constructor_loop_spec (packed : Option NonZeroUsize) (fields : Slice layout.DstLayout)
+    (initial : LayoutMath.LayoutValue) (self : layout.DstLayout) (i : Usize)
+  for layout.DstLayout.for_repr_c_struct_loop packed fields self i
+  requires hp : ∀ a ∈ packed, alignmentDomain a.val.val
+  requires hd : constructionDomain fields initial packed
+  requires hi : i.val ≤ fields.val.length
+  requires hv : layoutValue self = constructionPrefix fields initial packed i.val
+  requires hc : canonicalLayout self
+  ensures r => layoutValue r = constructionPrefix fields initial packed fields.val.length ∧ canonicalLayout r
+  proof:
+    unfold layout.DstLayout.for_repr_c_struct_loop
+    apply AeneasContracts.indexed_loop_spec fields.val.length layoutValue
+      (constructionPrefix fields initial packed) canonicalLayout
+    · intro value idx hi hv hc
+      unfold layout.DstLayout.for_repr_c_struct_loop.body
+      simp only [UScalar.lt_equiv, Slice.len_val, Slice.length]
+      split
+      · rename_i hlt
+        have hlt' : idx.val < fields.val.length := hlt
+        step with Slice.index_usize_spec fields idx hlt' as ⟨field, hf⟩
+        obtain ⟨hself, hfield, hcanon, hfits⟩ := hd idx.val hlt'
+        have hsa : alignmentDomain value.align.val.val := by
+          have hh := congrArg LayoutMath.LayoutValue.align hv
+          change value.align.val.val = _ at hh
+          rw [hh]
+          exact hself
+        have hfa : alignmentDomain field.align.val.val := by rw [hf]; exact hfield
+        have hca : canonicalLayout field := by rw [hf]; exact hcanon
+        have hfit : (layoutValue value).extendFits (layoutValue field) (packingValue packed) Usize.max := by
+          rw [hv, hf]
+          exact hfits
+        step as ⟨next, hnext, hcn⟩
+        have hroom : idx.val + (1#usize).val ≤ Usize.max := by
+          have := fields.property
+          change idx.val + 1 ≤ Usize.max
+          omega
+        step with Usize.add_spec (x := idx) (y := 1#usize) hroom as ⟨j, hj⟩
+        change j.val = idx.val + 1 at hj
+        refine ⟨hlt', hj, ?_, hcn⟩
+        rw [hj, construction_prefix_step fields initial packed idx.val hlt', hnext, hv, hf]
+      · rename_i hdone
+        have heq : idx.val = fields.val.length := by omega
+        exact WP.spec.ret ⟨heq, hv, hc⟩
+    · exact hi
+    · exact hv
+    · exact hc
+
+theorem for_repr_c_struct_spec : Zerocopy.Specs.for_repr_c_struct_spec := by
+  intro repr_align packed fields ha hp hd hlast hfit
+  unfold layout.DstLayout.for_repr_c_struct
+  step with new_zst_spec repr_align (fun a h => (ha a h).1) as ⟨start, halign, hsize, hunpadded⟩
+  have hv : layoutValue start = constructionPrefix fields
+      (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed (0#usize).val := by
+    simp only [constructionPrefix, LayoutMath.LayoutValue.prefixValue, show (0#usize).val = 0 by simp,
+      List.take_zero, List.foldl_nil, layoutValue, hsize, hunpadded, halign,
+      initialAlignment, LayoutMath.LayoutValue.initial]
+    cases repr_align <;> rfl
+  have hc : canonicalLayout start := by simp only [canonicalLayout, hsize]
+  step with constructor_loop_spec packed fields _ start 0#usize hp hd (by simp) hv hc as ⟨complete, hv, hc⟩
+  step with pad_value_spec complete (by
+    have hh := congrArg LayoutMath.LayoutValue.align hv
+    change complete.align.val.val = _ at hh
+    rw [hh]
+    exact hlast.1) hc (by rw [hv]; exact hfit) as ⟨result, hr⟩
+  rw [hr, hv]
+
 end Zerocopy.Proofs

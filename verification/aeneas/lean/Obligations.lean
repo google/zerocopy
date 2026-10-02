@@ -208,4 +208,15 @@ def metadata_exact_spec : Prop :=
       | .SliceDst t => t.elem_size.val ≠ 0 → 0 < t.size_rounding_align_and_phase.val.val) →
     ∃ r, layout.DstLayout.metadata_for_exact_size self size = .ok r ∧ metadataSpec self size.val r
 
+def for_repr_c_struct_spec : Prop :=
+  ∀ (a packed : Option NonZeroUsize) (fields : Slice layout.DstLayout),
+    (∀ x ∈ a, alignmentDomain x.val.val) → (∀ x ∈ packed, alignmentDomain x.val.val) →
+    constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment a)) packed →
+    alignmentDomain (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a))
+      packed fields.val.length).align →
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a))
+      packed fields.val.length).padFits Usize.max →
+    ∃ r, layout.DstLayout.for_repr_c_struct a packed fields = .ok r ∧ layoutValue r =
+      (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a)) packed fields.val.length).pad
+
 end Zerocopy.Obligations
