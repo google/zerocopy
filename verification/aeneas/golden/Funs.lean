@@ -849,6 +849,63 @@ def util.bytewrite.be_word_prefix
   let s ← lift (Array.to_slice a)
   util.bytewrite.prefix s dst
 
+/-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
+    Source: 'src/util/mod.rs', lines 264:0-282:1 -/
+def util.round_down_to_next_multiple_of_alignment
+  (n : Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result Std.Usize
+  := do
+  let align1 ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two align1
+  massert b
+  let i ← align1 - 1#usize
+  let mask ← lift (~~~ i)
+  ok (n &&& mask)
+
+/-- [zerocopy::util::padding_needed_for]:
+    Source: 'src/util/mod.rs', lines 172:0-232:1 -/
+def util.padding_needed_for
+  (len : Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result Std.Usize
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let mask ← i - 1#usize
+  let i1 ← lift (core.num.Usize.wrapping_sub len 1#usize)
+  let i2 ← lift (~~~ i1)
+  ok (i2 &&& mask)
+
+/-- [zerocopy::util::checks::check_arithmetic]:
+    Source: 'src/util/checks.rs', lines 38:0-46:1 -/
+def util.checks.check_arithmetic
+  (len : Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result Unit
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two i
+  if b
+  then
+    let remainder ← len % i
+    let i1 ← i - remainder
+    let padding ← i1 % i
+    let i2 ← util.padding_needed_for len align
+    massert (i2 = padding)
+    let i3 ← util.round_down_to_next_multiple_of_alignment len align
+    let i4 ← len - remainder
+    massert (i3 = i4)
+  else ok ()
+
 /-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i8}::only_derive_is_allowed_to_implement_this_trait]:
     Source: 'src/util/macros.rs', lines 165:8-165:62
     Visibility: public -/
@@ -1807,41 +1864,8 @@ def core.cell.UnsafeCell.Insts.ZerocopyIntoBytes {T : Type} (IntoBytesInst :
     IntoBytesInst
 }
 
-/-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 168:0-228:1 -/
-def util.padding_needed_for
-  (len : Std.Usize)
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) :
-  Result Std.Usize
-  := do
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  let mask ← i - 1#usize
-  let i1 ← lift (core.num.Usize.wrapping_sub len 1#usize)
-  let i2 ← lift (~~~ i1)
-  ok (i2 &&& mask)
-
-/-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 255:0-273:1 -/
-def util.round_down_to_next_multiple_of_alignment
-  (n : Std.Usize)
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) :
-  Result Std.Usize
-  := do
-  let align1 ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  let b ← core.num.Usize.is_power_of_two align1
-  massert b
-  let i ← align1 - 1#usize
-  let mask ← lift (~~~ i)
-  ok (n &&& mask)
-
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 282:0-288:1 -/
+    Source: 'src/util/mod.rs', lines 295:0-301:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -1861,7 +1885,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 297:0-303:1 -/
+    Source: 'src/util/mod.rs', lines 311:0-317:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
