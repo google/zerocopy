@@ -31,6 +31,16 @@ syntax "partial " "contract " ident bracketedBinder* " for " term
   contractRequirement* " ensures " term+ " => " term
   " proof:" tacticSeq : command
 
+/-- Refinement through a pure mathematical view. Optional `ensures` facts
+remain facts about the concrete output, alongside the view equality. -/
+syntax "contract " ident bracketedBinder* " for " term
+  contractRequirement* " refines " term " to " term
+  (" ensures " ident " => " term)? " proof:" tacticSeq : command
+
+syntax "partial " "contract " ident bracketedBinder* " for " term
+  contractRequirement* " refines " term " to " term
+  (" ensures " ident " => " term)? " proof:" tacticSeq : command
+
 private meta def requirementBinders (requirements : Array Syntax) :
     MacroM (Array (TSyntax ``Lean.Parser.Term.bracketedBinder)) :=
   requirements.mapM fun requirement => do
@@ -40,6 +50,30 @@ private meta def requirementBinders (requirements : Array Syntax) :
     | _ => Macro.throwUnsupported
 
 macro_rules
+  | `(contract $id:ident $args:bracketedBinder* for $call:term
+      $requirements:contractRequirement* refines $view:term to $model:term
+      proof: $body:tacticSeq) => do
+    let premises ← requirementBinders requirements
+    `(theorem $id $args* $premises* :
+      $call ⦃ r => $view r = $model ⦄ := by $body)
+  | `(contract $id:ident $args:bracketedBinder* for $call:term
+      $requirements:contractRequirement* refines $view:term to $model:term
+      ensures $r:ident => $post:term proof: $body:tacticSeq) => do
+    let premises ← requirementBinders requirements
+    `(theorem $id $args* $premises* :
+      $call ⦃ $r => $view $r = $model ∧ $post ⦄ := by $body)
+  | `(partial contract $id:ident $args:bracketedBinder* for $call:term
+      $requirements:contractRequirement* refines $view:term to $model:term
+      proof: $body:tacticSeq) => do
+    let premises ← requirementBinders requirements
+    `(theorem $id $args* $premises* :
+      $call ⦃ r => $view r = $model ⦄div := by $body)
+  | `(partial contract $id:ident $args:bracketedBinder* for $call:term
+      $requirements:contractRequirement* refines $view:term to $model:term
+      ensures $r:ident => $post:term proof: $body:tacticSeq) => do
+    let premises ← requirementBinders requirements
+    `(theorem $id $args* $premises* :
+      $call ⦃ $r => $view $r = $model ∧ $post ⦄div := by $body)
   | `(contract $id:ident $args:bracketedBinder* for $call:term
       $requirements:contractRequirement* ensures $x => $post:term
       proof: $body:tacticSeq) => do

@@ -133,6 +133,9 @@ class InlineTests(unittest.TestCase):
             self.assertLess(proof.index('theorem callee_spec'), proof.index('theorem caller_spec'))
             required = (work / 'Required.lean').read_text()
             self.assertIn('(`Zerocopy.Proofs.caller_spec, #[`Zerocopy.Proofs.callee_spec])', required)
+            for name in ('caller_spec', 'callee_spec'):
+                self.assertIn(f'check_contract Zerocopy.Obligations.{name} '
+                              f'using @Zerocopy.Proofs.{name}', required)
 
     def test_named_proof_slots_have_complete_bijective_coverage(self):
         with tempfile.TemporaryDirectory() as tmp:

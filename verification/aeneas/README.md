@@ -208,24 +208,72 @@ unexpanded slots fail. `target/aeneas/rendered-golden` holds the assembled model
 used for comparison. These invalid-Lean slots are expanded before compilation
 and never interpreted as ordinary comments.
 
-The five registered proof bodies live in the Rust annotations; shared arithmetic
+All registered proof bodies live in the Rust annotations; shared arithmetic
 lemmas and composition corollaries live in Lean modules. `lean/Proofs.lean.in`
-supplies the inline proofs' shared imports and abbreviation. `lean/Obligations.lean` independently
-records the required propositions; generated `Required.lean` checks each inline
-theorem against its required proposition, using Aeneas's proved
-`WP.spec_equiv_exists` equivalence to normalize total specifications and
-existential successful-result statements, and proved scalar order/minimum/maximum
-equivalences to normalize scalar comparisons to mathematical values. The min/max
-obligations retain their independent existential shape and now also require input
-selection and bounds. The layout obligation is checked separately in both
-branches because its independently generated matchers have different names. A theorem of `True` with the
-correct name cannot substitute for a required property. Removing coverage
+supplies shared imports, support lemmas, and named
+`@@AENEAS_PROOF("rust::identity")@@` slots. Every registered proof has exactly
+one slot; unknown, missing, and duplicate slots fail. The legacy single
+`@@AENEAS_PROOFS@@` slot remains supported, but cannot be mixed with named slots.
+`lean/Obligations.lean` independently records the required propositions;
+generated `Required.lean` emits `check_contract` for every inline theorem.
+The command proves the independently authored proposition using Mathlib's
+`convert` and `congr!`, normalization by proved equivalences, and case splitting
+with `grind`. Its `contract_simps` set includes Aeneas's
+`WP.spec_equiv_exists` and scalar order/maximum equivalences; the checking module
+locally registers our scalar minimum lemma. Independently elaborated matches
+are compared by their branches rather than by generated matcher names. There
+are no function-specific checking cases in Python. An unsupported proposition
+shape fails elaboration and requires an explicit adaptation; it cannot silently
+skip a check. Each check stores a theorem named after the required proposition
+with a `_checked` suffix, so its proof term survives module import for the axiom
+audit. A theorem of `True` with the correct name cannot substitute for a
+required property. Removing coverage
 requires explicit changes to the inventory, golden slots, scaffolding, and
 required propositions.
 The claims remain the properties listed above, not complete verification of a
 function's documentation or all compilation configurations.
 
 ## Composing proofs
+
+### Arithmetic, mathematical views, and indexed loops
+
+Checked addition, subtraction, and multiplication already have upstream
+`step_pure` specifications. Use `step as ⟨result, facts⟩` and split the `Option`
+result to obtain both the exact successful value and the overflow condition.
+`SupportTests.lean` exercises all inputs, including overflow.
+
+A contract may express equality through a pure mathematical view:
+
+```lean
+contract operation_spec (input : Input)
+  for operation input
+  requires h : valid input
+  refines view to mathematicalOperation (view input)
+  ensures result => canonical result
+  proof:
+    ...
+```
+
+This expands to the existing total WP postcondition
+`view result = mathematicalOperation (view input) ∧ canonical result`.
+Omitting `ensures` leaves just the view equality. `partial contract` also
+supports this syntax and retains the explicit permission to diverge. View
+contracts introduce no new axioms or semantics. Use `WP.spec_mono` to adapt an
+existing result specification to a view contract, and register useful caller
+specifications with `attribute [step] operation_spec`. The existing Aeneas
+registry then lets callers use `step` without specifying the theorem manually.
+
+`AeneasContracts.indexed_loop_spec` specializes Aeneas's `loop.spec_decr_nat`
+to a state and `Usize` index. Supply a view, the mathematical value of each
+prefix, and a representation invariant. Each continuing body step must advance
+the index by exactly one and establish the next prefix; a completed step must
+be at the length. The adapter supplies bounds and the decreasing `length - index`
+termination measure. `SupportTests.lean` contains an independent example.
+
+The contract support, examples, and generated `check_contract` proof terms
+participate in the axiom audit. Failure controls challenge an incorrect view,
+divergence under a total view contract, a stationary loop index, an incorrect
+prefix step, and continuing past the loop bound.
 
 An inventory entry may declare `depends_on`, a list of registered Rust function
 identities whose exported theorems its proof uses. Omission means an empty list.

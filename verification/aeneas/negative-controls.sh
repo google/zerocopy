@@ -19,10 +19,12 @@ echo "Testing failure controls in $1"
 backup=$(mktemp -d)
 cp Proofs.lean "$backup/Proofs.lean"
 cp Required.lean "$backup/Required.lean"
+cp SupportTests.lean "$backup/SupportTests.lean"
 cp Zerocopy/Funs.lean "$backup/Funs.lean"
 restore() {
     cp "$backup/Proofs.lean" Proofs.lean
     cp "$backup/Required.lean" Required.lean
+    cp "$backup/SupportTests.lean" SupportTests.lean
     cp "$backup/Funs.lean" Zerocopy/Funs.lean
     rm -rf "$backup"
 }
@@ -91,6 +93,55 @@ partial contract partial_return_control
     simp
 end Zerocopy.Proofs
 LEAN
+
+reject_contract "divergence under a total view contract" <<'LEAN'
+namespace Zerocopy.Proofs
+contract view_divergence_control
+  for (Result.div : Result Nat)
+  refines id to 0
+  proof:
+    simp
+end Zerocopy.Proofs
+LEAN
+reject_contract "an incorrect mathematical view" <<'LEAN'
+namespace Zerocopy.Proofs
+contract view_return_control
+  for Result.ok (0 : Nat)
+  refines Nat.succ to 0
+  ensures r => r = 0
+  proof:
+    simp
+end Zerocopy.Proofs
+LEAN
+
+# Challenge the indexed-loop adapter through its actual counter example.
+reject_loop() {
+    local description=$1
+    python3 - "$2" "$3" <<'PYCONTROL'
+from pathlib import Path
+import sys
+p = Path("SupportTests.lean")
+s = p.read_text()
+old, new = sys.argv[1:]
+if s.count(old) != 1:
+    raise SystemExit("Indexed-loop negative control no longer matches")
+p.write_text(s.replace(old, new))
+PYCONTROL
+    if lake build SupportTests > "$backup/loop-build.log" 2>&1; then
+        echo "Indexed-loop rule accepted $description" >&2; exit 1
+    fi
+    if ! grep -Eq '(error: SupportTests[.]lean:|SupportTests[.]lean:.*error)' "$backup/loop-build.log"; then
+        cat "$backup/loop-build.log" >&2; exit 1
+    fi
+    echo "Confirmed: indexed-loop rule rejects $description"
+    cp "$backup/SupportTests.lean" SupportTests.lean
+}
+reject_loop "a stationary index" 's.2 + 1#usize' 's.2 + 0#usize'
+reject_loop "an incorrect prefix step" 's.1 + 1, j' 's.1 + 2, j'
+reject_loop "continuing past the end" 'if s.2 < n then' 'if s.2 ≤ n then'
+lake build SupportTests > "$backup/loop-restore-build.log" 2>&1 || {
+    cat "$backup/loop-restore-build.log" >&2; exit 1;
+}
 
 # The caller must actually have its callee theorem available during elaboration.
 python3 - <<'PY'
@@ -252,26 +303,46 @@ fi
 echo "Confirmed: the axiom audit rejects an admitted proof"
 cp "$backup/Proofs.lean" Proofs.lean
 
+# Audit the generated conversion witnesses as well as registered inline proofs.
 python3 - <<'PY'
 from pathlib import Path
-import re
-p = Path("Proofs.lean")
-s, count = re.subn(r'contract min_spec\b.*?(?=\n(?:theorem|contract|partial contract) |\nend Zerocopy.Proofs)',
-                  'theorem min_spec : True := by trivial\n', p.read_text(), flags=re.S)
-if count != 1:
-    raise SystemExit("Obligation negative control no longer matches")
-p.write_text(s)
+p = Path("Required.lean")
+s = p.read_text()
+old = 'using @Zerocopy.Proofs.min_spec'
+if s.count(old) != 1:
+    raise SystemExit("Required-contract admission control no longer matches")
+p.write_text(s.replace(old, 'using (by sorry : Zerocopy.Obligations.min_spec)'))
 PY
-if lake build Required > "$backup/obligation-build.log" 2>&1; then
+lake build Required > "$backup/required-sorry-build.log" 2>&1 || {
+    cat "$backup/required-sorry-build.log" >&2; exit 1;
+}
+if lake env lean Check.lean > "$backup/required-sorry-check.log" 2>&1; then
+    echo "Axiom audit accepted an admitted required-contract check" >&2; exit 1
+fi
+if ! grep -q 'unapproved axiom.*sorryAx' "$backup/required-sorry-check.log"; then
+    cat "$backup/required-sorry-check.log" >&2; exit 1
+fi
+echo "Confirmed: the axiom audit rejects an admitted required-contract check"
+cp "$backup/Required.lean" Required.lean
+
+cat > UnrelatedContract.lean <<'LEAN'
+import Proofs
+import Obligations
+import RequiredContracts
+namespace UnrelatedControl
+theorem min_spec : True := by trivial
+end UnrelatedControl
+check_contract Zerocopy.Obligations.min_spec using UnrelatedControl.min_spec
+LEAN
+if lake env lean UnrelatedContract.lean > "$backup/obligation-build.log" 2>&1; then
     echo "Required obligation accepted an unrelated True theorem" >&2
     exit 1
 fi
-if ! grep -Eq '(error: Required[.]lean:|Required[.]lean:.*error)' "$backup/obligation-build.log"; then
-    cat "$backup/obligation-build.log" >&2
-    exit 1
+if ! grep -q 'UnrelatedContract.lean:.*error' "$backup/obligation-build.log"; then
+    cat "$backup/obligation-build.log" >&2; exit 1
 fi
 echo "Confirmed: required obligations reject an unrelated True theorem"
-cp "$backup/Proofs.lean" Proofs.lean
+rm UnrelatedContract.lean
 
 # The earlier round-down contract is true, but too weak for current obligations.
 cat > "$backup/weaker-round.lean" <<'LEAN'
@@ -292,29 +363,30 @@ contract round_down_spec (n : Usize) (align : NonZeroUsize)
       Arithmetic.round_down_properties _ _ _ hpos hexact
     exact ⟨(UScalar.le_equiv _ _).mpr hbound, haligned⟩
 LEAN
-python3 - "$backup/weaker-round.lean" <<'PYCONTROL'
-from pathlib import Path
-import re
-import sys
-p = Path("Proofs.lean")
-s, count = re.subn(
-    r'contract round_down_spec\b.*?(?=\n(?:theorem|contract|partial contract) |\nend Zerocopy.Proofs)',
-    Path(sys.argv[1]).read_text(), p.read_text(), flags=re.S)
-if count != 1:
-    raise SystemExit("Weaker round-down control no longer matches")
-p.write_text(s)
-PYCONTROL
-lake build Proofs > "$backup/weaker-proof-build.log" 2>&1 || {
+{
+    echo 'import Proofs'
+    echo 'import Obligations'
+    echo 'import RequiredContracts'
+    echo 'open Aeneas Aeneas.Std'
+    echo 'namespace WeakerControl'
+    echo 'open Zerocopy Zerocopy.Proofs'
+    cat "$backup/weaker-round.lean"
+    echo 'end WeakerControl'
+} > WeakerRound.lean
+lake env lean WeakerRound.lean > "$backup/weaker-proof-build.log" 2>&1 || {
     cat "$backup/weaker-proof-build.log" >&2; exit 1;
 }
-if lake build Required > "$backup/weaker-required-build.log" 2>&1; then
+cat >> WeakerRound.lean <<'LEAN'
+check_contract Zerocopy.Obligations.round_down_spec using WeakerControl.round_down_spec
+LEAN
+if lake env lean WeakerRound.lean > "$backup/weaker-required-build.log" 2>&1; then
     echo "Required obligations accepted the earlier weak round-down contract" >&2; exit 1
 fi
-if ! grep -Eq '(error: Required[.]lean:|Required[.]lean:.*error)' "$backup/weaker-required-build.log"; then
+if ! grep -q 'WeakerRound.lean:.*error' "$backup/weaker-required-build.log"; then
     cat "$backup/weaker-required-build.log" >&2; exit 1
 fi
 echo "Confirmed: a valid weaker contract fails independent required-type checks"
-cp "$backup/Proofs.lean" Proofs.lean
+rm WeakerRound.lean
 
 python3 - <<'PY'
 from pathlib import Path
