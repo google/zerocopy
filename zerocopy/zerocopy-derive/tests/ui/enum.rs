@@ -19,7 +19,8 @@ fn main() {}
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr("foo")]
 //~[msrv, stable, nightly]^ ERROR: unrecognized representation hint
-//~[msrv, stable, nightly]^^ ERROR: meta item in `repr` must be an identifier
+//~[msrv]^^ ERROR: meta item in `repr` must be an identifier
+//~[stable, nightly]^^^ ERROR: malformed `repr` attribute input
 enum Generic1 {
     A,
 }
@@ -28,7 +29,8 @@ enum Generic1 {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(foo)]
 //~[msrv, stable, nightly]^ ERROR: unrecognized representation hint
-//~[msrv, stable, nightly]^^ ERROR: unrecognized representation hint
+//~[msrv]^^ ERROR: unrecognized representation hint
+//~[stable, nightly]^^^ ERROR: malformed `repr` attribute input
 enum Generic2 {
     A,
 }

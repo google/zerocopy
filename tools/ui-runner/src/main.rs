@@ -20,16 +20,16 @@ use ui_test::{
 };
 
 fn main() {
-    let rlib_path = PathBuf::from(
-        env::var("ZEROCOPY_RLIB_PATH").expect("ZEROCOPY_RLIB_PATH must be set by tests/ui.rs"),
+    let rmeta_path = PathBuf::from(
+        env::var("ZEROCOPY_RMETA_PATH").expect("ZEROCOPY_RMETA_PATH must be set by tests/ui.rs"),
     );
     let derive_path = PathBuf::from(
         env::var("ZEROCOPY_DERIVE_LIB_PATH")
             .expect("ZEROCOPY_DERIVE_LIB_PATH must be set by tests/ui.rs"),
     );
-    let static_assertions_path = PathBuf::from(
-        env::var("ZEROCOPY_STATIC_ASSERTIONS_PATH")
-            .expect("ZEROCOPY_STATIC_ASSERTIONS_PATH must be set by tests/ui.rs"),
+    let static_assertions_rmeta_path = PathBuf::from(
+        env::var("ZEROCOPY_STATIC_ASSERTIONS_RMETA_PATH")
+            .expect("ZEROCOPY_STATIC_ASSERTIONS_RMETA_PATH must be set by tests/ui.rs"),
     );
 
     let tests_dir = PathBuf::from(
@@ -151,22 +151,22 @@ fn main() {
     config.program.envs.push(("RUSTFLAGS".into(), Some("-Wwarnings".into())));
 
     config.program.args.push("--extern".into());
-    config.program.args.push(format!("zerocopy={}", rlib_path.display()).into());
+    config.program.args.push(format!("zerocopy={}", rmeta_path.display()).into());
     config.program.args.push("--extern".into());
-    config.program.args.push(format!("zerocopy_renamed={}", rlib_path.display()).into());
+    config.program.args.push(format!("zerocopy_renamed={}", rmeta_path.display()).into());
     config.program.args.push("--extern".into());
     config.program.args.push(format!("zerocopy_derive={}", derive_path.display()).into());
     config.program.args.push("--extern".into());
     config
         .program
         .args
-        .push(format!("static_assertions={}", static_assertions_path.display()).into());
+        .push(format!("static_assertions={}", static_assertions_rmeta_path.display()).into());
 
     config.program.args.push("-L".into());
     config
         .program
         .args
-        .push(format!("dependency={}", rlib_path.parent().unwrap().display()).into());
+        .push(format!("dependency={}", rmeta_path.parent().unwrap().display()).into());
 
     config.program.args.push("-L".into());
     config
@@ -175,10 +175,9 @@ fn main() {
         .push(format!("dependency={}", derive_path.parent().unwrap().display()).into());
 
     config.program.args.push("-L".into());
-    config
-        .program
-        .args
-        .push(format!("dependency={}", static_assertions_path.parent().unwrap().display()).into());
+    config.program.args.push(
+        format!("dependency={}", static_assertions_rmeta_path.parent().unwrap().display()).into(),
+    );
 
     let mut external_args = Vec::new();
     for arg in env::args().skip(1) {
@@ -219,7 +218,13 @@ fn main() {
             }
             Some(false)
         },
-        |_, _| {},
+        move |config, contents| {
+            if contents.windows(b"check-pass".len()).any(|window| window == b"check-pass") {
+                // Cargo 1.99 emits metadata-only rlibs. Check-pass tests only
+                // need type checking, so avoid asking rustc to link them.
+                config.program.args.push("--emit=metadata".into());
+            }
+        },
         OverrideEmitter(ui_test::status_emitter::Text::verbose(), toolchain_meta_name),
     )
     .unwrap();

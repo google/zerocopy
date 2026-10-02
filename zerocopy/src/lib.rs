@@ -253,7 +253,7 @@
 )]
 #![cfg_attr(
     __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
-    deny(fuzzy_provenance_casts, lossy_provenance_casts)
+    deny(implicit_provenance_casts)
 )]
 #![deny(
     clippy::all,
@@ -316,20 +316,12 @@
 ))]
 #![cfg_attr(not(any(test, kani, feature = "std")), no_std)]
 #![cfg_attr(
-    all(feature = "simd-nightly", target_arch = "arm"),
-    feature(stdarch_arm_neon_intrinsics)
-)]
-#![cfg_attr(
     all(feature = "simd-nightly", any(target_arch = "powerpc", target_arch = "powerpc64")),
     feature(stdarch_powerpc)
 )]
 #![cfg_attr(feature = "float-nightly", feature(f16, f128))]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, feature(coverage_attribute))]
-#![cfg_attr(
-    any(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, miri),
-    feature(layout_for_ptr)
-)]
 #![cfg_attr(all(test, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), feature(test))]
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They

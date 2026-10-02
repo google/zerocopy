@@ -128,7 +128,7 @@ union Unaligned6 {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed(2))]
 union Unaligned7 {
-    //~[stable, nightly]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
+    //~[stable]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: i16,
     bar: AU16,
 }

@@ -1700,9 +1700,9 @@ mod tests {
     #[test]
     fn test_include_value() {
         const AS_U32: u32 = include_value!("../testdata/include_value/data");
-        assert_eq!(AS_U32, u32::from_ne_bytes([b'a', b'b', b'c', b'd']));
+        assert_eq!(AS_U32, u32::from_ne_bytes(*b"abcd"));
         const AS_I32: i32 = include_value!("../testdata/include_value/data");
-        assert_eq!(AS_I32, i32::from_ne_bytes([b'a', b'b', b'c', b'd']));
+        assert_eq!(AS_I32, i32::from_ne_bytes(*b"abcd"));
     }
 
     #[test]

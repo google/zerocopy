@@ -40,16 +40,14 @@ help: the trait `FromBytes` is not implemented for `DstA`
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
             and $OTHER_TYPES others
-note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:848:14
+note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
+   --> src/util/macro_util.rs:848:14
     |
 845 |     pub fn transmute_mut(self) -> &'a mut Dst
     |            ------------- required by a bound in this associated function
 ...
 848 |         Dst: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
-    = note: the full name for the type has been written to '/long-type-HASH.txt'
-    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `DstB: IntoBytes` is not satisfied
@@ -67,15 +65,15 @@ help: the trait `IntoBytes` is not implemented for `DstB`
     = help: the following other types implement trait `IntoBytes`:
               ()
               AU16
-              AtomicBool
-              AtomicI16
-              AtomicI32
-              AtomicI64
-              AtomicI8
-              AtomicIsize
+              Atomic<bool>
+              Atomic<i16>
+              Atomic<i32>
+              Atomic<i64>
+              Atomic<i8>
+              Atomic<isize>
             and $OTHER_TYPES others
-note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:848:26
+note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
+   --> src/util/macro_util.rs:848:26
     |
 845 |     pub fn transmute_mut(self) -> &'a mut Dst
     |            ------------- required by a bound in this associated function
@@ -150,16 +148,14 @@ help: the trait `FromBytes` is not implemented for `SrcC`
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
             and $OTHER_TYPES others
-note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:847:14
+note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
+   --> src/util/macro_util.rs:847:14
     |
 845 |     pub fn transmute_mut(self) -> &'a mut Dst
     |            ------------- required by a bound in this associated function
 846 |     where
 847 |         Src: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
-    = note: the full name for the type has been written to '/long-type-HASH.txt'
-    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `SrcD: IntoBytes` is not satisfied
@@ -177,15 +173,15 @@ help: the trait `IntoBytes` is not implemented for `SrcD`
     = help: the following other types implement trait `IntoBytes`:
               ()
               AU16
-              AtomicBool
-              AtomicI16
-              AtomicI32
-              AtomicI64
-              AtomicI8
-              AtomicIsize
+              Atomic<bool>
+              Atomic<i16>
+              Atomic<i32>
+              Atomic<i64>
+              Atomic<i8>
+              Atomic<isize>
             and $OTHER_TYPES others
-note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
-   --> $WORKSPACE/src/util/macro_util.rs:847:26
+note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
+   --> src/util/macro_util.rs:847:26
     |
 845 |     pub fn transmute_mut(self) -> &'a mut Dst
     |            ------------- required by a bound in this associated function
@@ -194,21 +190,21 @@ note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
     |                          ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0599]: the method `transmute_mut` exists for struct `Wrap<&mut [u8], &mut [u8; 1]>`, but its trait bounds were not satisfied
+error[E0599]: the method `transmute_mut` exists for struct `zerocopy::util::macro_util::Wrap<&mut [u8], &mut [u8; 1]>`, but its trait bounds were not satisfied
    --> $DIR/transmute_mut.rs:87:35
     |
  87 | const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
-   ::: $WORKSPACE/src/util/macro_util.rs:728:1
+   ::: src/util/macro_util.rs:728:1
     |
 728 | pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
-    | ------------------------- doesn't satisfy `Wrap<&mut [u8], &mut [u8; 1]>: TransmuteMutDst<'_>`
+    | ------------------------- doesn't satisfy `_: TransmuteMutDst<'_>`
     |
     = note: the following trait bounds were not satisfied:
             `[u8]: Sized`
             `<[u8; 1] as KnownLayout>::PointerMetadata = usize`
-            which is required by `Wrap<&mut [u8], &mut [u8; 1]>: TransmuteMutDst<'_>`
+            which is required by `zerocopy::util::macro_util::Wrap<&mut [u8], &mut [u8; 1]>: zerocopy::util::macro_util::TransmuteMutDst<'_>`
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 10 previous errors

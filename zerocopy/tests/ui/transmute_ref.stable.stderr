@@ -95,21 +95,19 @@ help: the trait `FromBytes` is not implemented for `DstA`
    = note: Consider adding `#[derive(FromBytes)]` to `DstA`
    = help: the following other types implement trait `FromBytes`:
              ()
-             (A, B)
-             (A, B, C)
-             (A, B, C, D)
-             (A, B, C, D, E)
-             (A, B, C, D, E, F)
-             (A, B, C, D, E, F, G)
-             (A, B, C, D, E, F, G, H)
+             AU16
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
+             Atomic<u16>
            and $OTHER_TYPES others
 note: required by a bound in `DST_NOT_FROM_BYTES::AssertDstIsFromBytes`
   --> $DIR/transmute_ref.rs:40:35
    |
 40 | const DST_NOT_FROM_BYTES: &DstA = transmute_ref!(&AU16(0));
    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertDstIsFromBytes`
-   = note: the full name for the type has been written to '/long-type-HASH.txt'
-   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `DstB: Immutable` is not satisfied
@@ -236,12 +234,12 @@ help: the trait `IntoBytes` is not implemented for `SrcA`
    = help: the following other types implement trait `IntoBytes`:
              ()
              AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
+             Atomic<bool>
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
            and $OTHER_TYPES others
 note: required by a bound in `SRC_NOT_AS_BYTES::AssertSrcIsIntoBytes`
   --> $DIR/transmute_ref.rs:70:33
@@ -265,12 +263,12 @@ help: the trait `IntoBytes` is not implemented for `SrcA`
    = help: the following other types implement trait `IntoBytes`:
              ()
              AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
+             Atomic<bool>
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
            and $OTHER_TYPES others
 note: required by a bound in `SRC_NOT_AS_BYTES::AssertSrcIsIntoBytes`
   --> $DIR/transmute_ref.rs:70:33
@@ -344,21 +342,21 @@ note: required by a bound in `SRC_NOT_IMMUTABLE::AssertSrcIsImmutable`
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0599]: the method `transmute_ref` exists for struct `Wrap<&[u8], &[u8; 1]>`, but its trait bounds were not satisfied
+error[E0599]: the method `transmute_ref` exists for struct `zerocopy::util::macro_util::Wrap<&[u8], &[u8; 1]>`, but its trait bounds were not satisfied
    --> $DIR/transmute_ref.rs:84:31
     |
  84 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
     |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
-   ::: $WORKSPACE/src/util/macro_util.rs:728:1
+   ::: src/util/macro_util.rs:728:1
     |
 728 | pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
-    | ------------------------- doesn't satisfy `Wrap<&[u8], &[u8; 1]>: TransmuteRefDst<'_>`
+    | ------------------------- doesn't satisfy `_: TransmuteRefDst<'_>`
     |
     = note: the following trait bounds were not satisfied:
             `[u8]: Sized`
             `<[u8; 1] as KnownLayout>::PointerMetadata = usize`
-            which is required by `Wrap<&[u8], &[u8; 1]>: TransmuteRefDst<'_>`
+            which is required by `zerocopy::util::macro_util::Wrap<&[u8], &[u8; 1]>: zerocopy::util::macro_util::TransmuteRefDst<'_>`
     = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 21 previous errors

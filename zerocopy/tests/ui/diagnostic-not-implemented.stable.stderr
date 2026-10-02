@@ -25,8 +25,6 @@ note: required by a bound in `takes_from_bytes`
    |
 77 | fn takes_from_bytes<T: FromBytes>() {}
    |                        ^^^^^^^^^ required by this bound in `takes_from_bytes`
-   = note: the full name for the type has been written to '/long-type-HASH.txt'
-   = note: consider using `--verbose` to print the full type name to the console
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
   --> $DIR/diagnostic-not-implemented.rs:18:24
@@ -103,12 +101,12 @@ help: the trait `IntoBytes` is not implemented for `NotZerocopy`
    = help: the following other types implement trait `IntoBytes`:
              ()
              AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
+             Atomic<bool>
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
            and $OTHER_TYPES others
 note: required by a bound in `takes_into_bytes`
   --> $DIR/diagnostic-not-implemented.rs:80:24
@@ -135,8 +133,8 @@ help: the trait `KnownLayout` is not implemented for `NotZerocopy`
              *const T
              *mut T
              AU16
-             AtomicBool
-             AtomicI16
+             Atomic<*mut T>
+             Atomic<bool>
            and $OTHER_TYPES others
 note: required by a bound in `takes_known_layout`
   --> $DIR/diagnostic-not-implemented.rs:81:26
@@ -188,9 +186,9 @@ help: the trait `zerocopy::Unaligned` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(Unaligned)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::Unaligned`:
              ()
-             AtomicBool
-             AtomicI8
-             AtomicU8
+             Atomic<bool>
+             Atomic<i8>
+             Atomic<u8>
              Cell<T>
              F32<O>
              F64<O>
@@ -239,12 +237,12 @@ help: the trait `IntoBytes` is not implemented for `NotZerocopy`
    = help: the following other types implement trait `IntoBytes`:
              ()
              AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
+             Atomic<bool>
+             Atomic<i16>
+             Atomic<i32>
+             Atomic<i64>
+             Atomic<i8>
+             Atomic<isize>
            and $OTHER_TYPES others
 note: required by a bound in `Foo::write_obj`
   --> $DIR/diagnostic-not-implemented.rs:73:37
