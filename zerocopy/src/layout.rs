@@ -490,6 +490,26 @@ impl DstLayout {
     #[must_use]
     #[inline]
     pub const fn pad_to_align(self) -> Self {
+        // ```aeneas
+        // spec pad_to_align_spec (self : layout.DstLayout)
+        //   requires h : match self.size_info with
+        //     | layout.SizeInfo.Sized size =>
+        //       let S : Nat := size
+        //       let A : Nat := self.align.val
+        //       A.isPowerOfTwo ∧ S + (A - S % A) % A ≤ Usize.max
+        //     | layout.SizeInfo.SliceDst _ => True
+        //   ensures r => r.align = self.align ∧ match self.size_info with
+        //     | layout.SizeInfo.Sized size => ∃ padded,
+        //       r.size_info = layout.SizeInfo.Sized padded ∧
+        //       let S : Nat := size
+        //       let A : Nat := self.align.val
+        //       let R : Nat := padded
+        //       R = S + (A - S % A) % A ∧ S ≤ R ∧ R < S + A ∧ R % A = 0 ∧
+        //         (∀ q : Nat, S ≤ q → q % A = 0 → R ≤ q) ∧
+        //         r.statically_shallow_unpadded =
+        //           (self.statically_shallow_unpadded && decide (S % A = 0))
+        //     | layout.SizeInfo.SliceDst _ => r = self
+        // ```
         use util::padding_needed_for;
 
         let (static_padding, size_info) = match self.size_info {

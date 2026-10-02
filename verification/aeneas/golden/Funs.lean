@@ -65,7 +65,7 @@ def Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner :
 }
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 155:0-220:1 -/
+    Source: 'src/util/mod.rs', lines 155:0-225:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -80,8 +80,33 @@ def util.padding_needed_for
   let i2 ← lift (~~~ i1)
   ok (i2 &&& mask)
 
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
+    Source: 'src/layout.rs', lines 492:4-536:5
+    Visibility: public -/
+def layout.DstLayout.pad_to_align
+  (self : layout.DstLayout) : Result layout.DstLayout := do
+  let (static_padding, size_info) ←
+    match self.size_info with
+    | layout.SizeInfo.Sized unpadded_size =>
+      do
+      let padding ← util.padding_needed_for unpadded_size self.align
+      let o ← lift (Usize.checked_add unpadded_size padding)
+      match o with
+      | none => fail panic
+      | some size => ok (padding, layout.SizeInfo.Sized size)
+    | layout.SizeInfo.SliceDst _ => ok (0#usize, self.size_info)
+  if self.statically_shallow_unpadded
+  then
+    ok
+      {
+        self
+          with
+          size_info, statically_shallow_unpadded := (static_padding = 0#usize)
+      }
+  else ok { self with size_info }
+
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 241:0-265:1 -/
+    Source: 'src/util/mod.rs', lines 246:0-274:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -98,7 +123,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 269:0-279:1 -/
+    Source: 'src/util/mod.rs', lines 278:0-289:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -118,7 +143,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 283:0-293:1 -/
+    Source: 'src/util/mod.rs', lines 293:0-304:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)

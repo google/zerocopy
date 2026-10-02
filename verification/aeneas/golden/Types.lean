@@ -39,4 +39,26 @@ structure core.num.nonzero.ZeroablePrimitive (Self : Type) (Self_NonZeroInner :
   markerCopyInst : core.marker.Copy Self
   innerCopyInst : core.marker.Copy Self_NonZeroInner
 
+/-- [zerocopy::layout::TrailingSliceLayout]
+    Source: 'src/layout.rs', lines 52:0-68:1 -/
+structure layout.TrailingSliceLayout (E : Type) where
+  offset : Std.Usize
+  elem_size : E
+
+/-- [zerocopy::layout::SizeInfo]
+    Source: 'src/layout.rs', lines 45:0-48:1 -/
+@[discriminant isize]
+inductive layout.SizeInfo (E : Type) where
+| Sized : Std.Usize → layout.SizeInfo E
+| SliceDst : layout.TrailingSliceLayout E → layout.SizeInfo E
+
+/-- [zerocopy::layout::DstLayout]
+    Source: 'src/layout.rs', lines 33:0-41:1
+    Visibility: public -/
+structure layout.DstLayout where
+  align : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+  size_info : layout.SizeInfo Std.Usize
+  statically_shallow_unpadded : Bool
+
 end Zerocopy
