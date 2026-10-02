@@ -125,13 +125,13 @@ structure layout.composition_checks.ReferenceLayout where
   unpadded : Bool
 
 /-- [zerocopy::layout::RoundingAlignAndPhase]
-    Source: 'src/layout/mod.rs', lines 90:0-90:54 -/
+    Source: 'src/layout/mod.rs', lines 93:0-93:54 -/
 structure layout.RoundingAlignAndPhase where
   _0 : core.num.nonzero.NonZero Std.Usize
     core.num.niche_types.NonZeroUsizeInner
 
 /-- [zerocopy::layout::TrailingSliceLayout]
-    Source: 'src/layout/mod.rs', lines 197:0-251:1 -/
+    Source: 'src/layout/mod.rs', lines 200:0-254:1 -/
 structure layout.TrailingSliceLayout (E : Type) where
   offset : Std.Usize
   elem_size : E
@@ -139,14 +139,14 @@ structure layout.TrailingSliceLayout (E : Type) where
   size_rounding_align_and_phase : layout.RoundingAlignAndPhase
 
 /-- [zerocopy::layout::SizeInfo]
-    Source: 'src/layout/mod.rs', lines 59:0-62:1 -/
+    Source: 'src/layout/mod.rs', lines 62:0-65:1 -/
 @[discriminant isize]
 inductive layout.SizeInfo (E : Type) where
 | Sized : Std.Usize → layout.SizeInfo E
 | SliceDst : layout.TrailingSliceLayout E → layout.SizeInfo E
 
 /-- [zerocopy::layout::DstLayout]
-    Source: 'src/layout/mod.rs', lines 46:0-54:1
+    Source: 'src/layout/mod.rs', lines 49:0-57:1
     Visibility: public -/
 structure layout.DstLayout where
   align : core.num.nonzero.NonZero Std.Usize
