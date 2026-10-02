@@ -101,4 +101,19 @@ structure layout.nested_reference.NestedLayer where
   min_align : Std.Usize
   prefix_bytes : Std.Usize
 
+/-- [zerocopy::layout::MetadataCastError]
+    Source: 'src/layout.rs', lines 920:0-923:1 -/
+@[discriminant isize]
+inductive layout.MetadataCastError where
+| Alignment : layout.MetadataCastError
+| Size : layout.MetadataCastError
+
+/-- [zerocopy::layout::CastType]
+    Source: 'src/layout.rs', lines 913:0-916:1
+    Visibility: public -/
+@[discriminant isize]
+inductive layout.CastType where
+| Prefix : layout.CastType
+| Suffix : layout.CastType
+
 end Zerocopy
