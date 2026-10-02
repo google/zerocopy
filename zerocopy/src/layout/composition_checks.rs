@@ -193,6 +193,36 @@ fn reference_pad(reference: ReferenceLayout) -> Option<ReferenceLayout> {
     Some(ReferenceLayout { size, unpadded: reference.unpadded & no_static_padding, ..reference })
 }
 
+/// Compose an arbitrary field slice, then add the final record's padding.
+/// Each field contributes its entire size, so packing this record preserves
+/// padding that belongs to an inner record.
+fn reference_constructor(
+    repr_align: Option<NonZeroUsize>,
+    packed: Option<NonZeroUsize>,
+    fields: &[ReferenceLayout],
+) -> Option<ReferenceLayout> {
+    let align = match repr_align {
+        Some(align) => align.get(),
+        None => 1,
+    };
+    if !extension_alignment(align) {
+        return None;
+    }
+    let mut state = Some(ReferenceLayout { align, size: ReferenceSize::Fixed(0), unpadded: true });
+    let mut i = 0;
+    while i < fields.len() {
+        state = match state {
+            Some(preceding) => reference_extend(preceding, fields[i], packed),
+            None => None,
+        };
+        i += 1;
+    }
+    match state {
+        Some(reference) => reference_pad(reference),
+        None => None,
+    }
+}
+
 /// Check extension against every stored reference observation on the exact
 /// checked-arithmetic domain where the production operation can succeed.
 ///
@@ -227,6 +257,35 @@ fn check_pad(runtime_layout: DstLayout, reference: ReferenceLayout) {
     if matches_reference(runtime_layout, reference) {
         if let Some(expected) = reference_pad(reference) {
             let actual = runtime_layout.pad_to_align();
+            assert!(matches_reference(actual, expected));
+        }
+    }
+}
+
+/// Check arbitrary-length construction against independent field composition.
+///
+/// ```aeneas
+/// spec composition_constructor_checks_spec
+///   ensures _ => True
+/// ```
+fn check_constructor(
+    repr_align: Option<NonZeroUsize>,
+    packed: Option<NonZeroUsize>,
+    fields: &[DstLayout],
+    references: &[ReferenceLayout],
+) {
+    if fields.len() != references.len() {
+        return;
+    }
+    let mut matching = true;
+    let mut i = 0;
+    while i < fields.len() {
+        matching = matching && matches_reference(fields[i], references[i]);
+        i += 1;
+    }
+    if matching {
+        if let Some(expected) = reference_constructor(repr_align, packed, references) {
+            let actual = DstLayout::for_repr_c_struct(repr_align, packed, fields);
             assert!(matches_reference(actual, expected));
         }
     }

@@ -175,6 +175,14 @@ spec composition_pad_checks_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.composition_pad_checks_spec for Zerocopy.layout.composition_checks.check_pad with 2
 
+check_model_inputs Zerocopy.layout.composition_checks.check_constructor with 0 type parameters
+aeneas_spec_begin
+spec composition_constructor_checks_spec
+  for @Zerocopy.layout.composition_checks.check_constructor with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.composition_constructor_checks_spec for Zerocopy.layout.composition_checks.check_constructor with 4
+
 check_model_inputs Zerocopy.layout.RoundingAlignAndPhase.new with 0 type parameters
 aeneas_spec_begin
 spec encoding_new_spec
@@ -336,6 +344,22 @@ spec for_slice_spec (size align : Usize)
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.for_slice_spec for Zerocopy.layout.DstLayout.for_slice with 1
 
+check_model_inputs Zerocopy.layout.DstLayout.for_repr_c_struct with 0 type parameters
+aeneas_spec_begin
+spec for_repr_c_struct_spec
+  for @Zerocopy.layout.DstLayout.for_repr_c_struct with 0 type parameters
+  requires(raw) ha : ∀ a ∈ repr_align, alignmentDomain a.val.val
+  requires(raw) hp : ∀ a ∈ repr_packed, alignmentDomain a.val.val
+  requires(raw) hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed
+  requires(raw) hlast : alignmentDomain
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).align
+  requires(raw) hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+    repr_packed fields.val.length).padFits Usize.max
+  ensures(raw) r => layoutValue r =
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).pad
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.for_repr_c_struct_spec for Zerocopy.layout.DstLayout.for_repr_c_struct with 3
+
 check_model_inputs Zerocopy.layout.DstLayout.extend with 0 type parameters
 aeneas_spec_begin
 spec extend_spec
@@ -429,6 +453,14 @@ spec nested_reference_size_spec
     NestedReference.checkedSize leading.val elem_size.val leaf_align.val elems.val
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.nested_reference_size_spec for Zerocopy.layout.nested_reference.size_for_metadata with 4
+
+check_model_inputs Zerocopy.layout.nested_reference.assert_matches_dst_layout with 0 type parameters
+aeneas_spec_begin
+spec nested_reference_matches_spec
+  for @Zerocopy.layout.nested_reference.assert_matches_dst_layout with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.nested_reference_matches_spec for Zerocopy.layout.nested_reference.assert_matches_dst_layout with 4
 
 check_model_inputs Zerocopy.layout.primitive_checks.check_primitive_layouts with 1 type parameters
 aeneas_spec_begin
