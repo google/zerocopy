@@ -7,40 +7,27 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 module
-public import Specs
+public import Proofs.Contracts
 public import Proofs.Util
-public import Aeneas
-public import Loops
-public import LayoutMath
-import all Mathlib.Data.Nat.Log
-import all Init.Data.Nat.Power2.Basic
 @[expose] public section
 
 /-!
-This is the import root for contracts proved about actual Aeneas function
-definitions. Proofs.Util supplies the arithmetic theorems: its Raw namespace
-steps through the extracted computations, then canonical theorems prove the
-generated Specs propositions, including input and result decoding.
+This module proves contracts about the actual Aeneas function definitions.
+The Raw namespace steps through extracted control flow and machine
+arithmetic. Those lemmas deliberately retain useful representation domains,
+even when an inline specification admits a smaller domain through automatic
+decoding.
+
+The canonical theorems outside Raw prove the generated Specs propositions.
+They use the raw lemmas, decode accepted inputs, and establish that the
+actual returned representation decodes and has the requested mathematical
+properties. WP.spec_mono transfers a proved computation to a new
+postcondition; it cannot replace that computation. Registered specifications
+let later proofs reuse a callee's theorem instead of unfolding its
+implementation each time.
 
 Aeneas Result describes execution success, panic, or divergence. Rust Option
-and Rust Result values may themselves be successful payloads. These cases
-have different meanings and must remain distinct in function contracts.
+and Rust Result values may themselves be successful payloads. The proof must
+keep these cases distinct.
 -/
 open Aeneas Aeneas.Std
-namespace Zerocopy.Proofs.Raw
-
-set_option linter.unusedVariables false
-
-
-end Zerocopy.Proofs.Raw
-
-namespace Zerocopy.Proofs
-open AeneasSpecs
-
-
-end Zerocopy.Proofs
-
-namespace Zerocopy.Proofs
-open AeneasSpecs
-
-end Zerocopy.Proofs

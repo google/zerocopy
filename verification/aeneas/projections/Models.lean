@@ -9,6 +9,7 @@ those terms. -/
 module
 public import ModelShapes
 public import DeriveModels
+public import ModelSupport
 @[expose] public section
 
 open Aeneas Aeneas.Std AeneasSpecs
@@ -57,6 +58,12 @@ check_model_binding Zerocopy.byteorder.F32 with 1 type parameters
 
 derive_rust_model Zerocopy.byteorder.F64 with 1 type parameters with_physical 0
 check_model_binding Zerocopy.byteorder.F64 with 1 type parameters
+
+derive_rust_model Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters decode self =>
+  let word := self._0.value
+  let align := 2 ^ Nat.log2 word
+  { align := align, phase := word - align, .. }
+check_model_binding Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters
 
 derive_rust_model Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters with_physical 0
 check_model_binding Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
