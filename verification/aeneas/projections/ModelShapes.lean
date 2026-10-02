@@ -65,6 +65,10 @@ derive_model_shape Zerocopy.layout.SizeInfo with 1 type parameters
 
 derive_model_shape Zerocopy.layout.DstLayout with 0 type parameters
 
+derive_model_shape Zerocopy.layout.CastType with 0 type parameters
+
+derive_model_shape Zerocopy.layout.MetadataCastError with 0 type parameters
+
 derive_model_shape Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
 
 derive_model_shape Zerocopy.trait_checks.XorCodec with 0 type parameters

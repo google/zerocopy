@@ -304,6 +304,92 @@ the library already models every part of Rust's abstract machine.
 
 ## Deferred decisions and reopening evidence
 
+### Resource-free layout and storage work
+
+The shared library supplies two independent foundations for layout and owned
+byte-cast proofs:
+
+- `Rust.Pointer.Value` retains an address, opaque optional provenance, and
+  metadata. Its casts and metadata operations preserve the exact provenance
+  value. Pointer equality observes address and metadata; it does not compare
+  provenance. Non-nullness supplies no alignment, liveness, or access permission.
+- `Rust.Storage.StorageDecoder` takes metadata explicitly, checks the requested
+  byte width, and checks that a successful raw result carries that metadata.
+  Fixed-width decoders adapt through unit metadata. Slice counts are inputs,
+  including for zero-sized elements; byte length cannot recover those counts.
+
+These are mathematical definitions and checked laws, not newly admitted Rust
+operations. The storage carrier still contains only initialized numeric bytes
+and uninitialized bytes. It does not encode pointers or decide where provenance
+lives in a pointer's representation. Pointer-bearing byte operations remain
+unsupported. Typed copies still require the treatment described in
+[the lowering audit](LOWERING_AUDIT.md), including
+[Aeneas issue #1405](https://github.com/AeneasVerif/aeneas/issues/1405).
+
+Byte-cast reasoning uses the existing distinction between language validity and
+optional mathematical admission. The source's `IntoBytes` law ranges over all
+accepted language representations, regardless of mathematical admission. The
+destination's intended `FromBytes` law must accept every initialized storage of
+the correct width at both stages. The shared cast lemma composes these laws for
+arbitrary represented bytes. It supplies no encoder and does not claim that a
+particular Rust transmutation follows this interpretation.
+
+The concrete `check_u32_slice_known_layout` Rust harness checks the actual
+`<[u32] as KnownLayout>::LAYOUT` initializer, its descriptor fields, and sizing
+for every element count, including checked-multiplication overflow. Admission
+visits the local constant's initializer body; no axiom supplies the descriptor.
+The visible guards expose the power-of-two and size-divisibility premises of
+the ABI reads. This checks that concrete numerical behavior, not the complete
+generic trait invariant. The proof also rejects an initializer changed from
+`for_slice` to `for_type`.
+
+The native capability fixtures under `tests/capabilities/` preserve the next
+translation boundaries. With the current pins, the generic `KnownLayout`
+fixture retains an associated-type equality that Aeneas rejects. A second
+fixture without an explicit caller-side equality fails on the trait's own
+`MaybeUninit` metadata equality. The production
+`transmute!` fixture retains its compile-time trait-check helper and a loop that
+Aeneas rejects. The required `FromBytes` declaration dependencies additionally
+reach the unsupported recursive `Invariants`/`Alignment` group. These failures
+are not successful extraction or completed Rust proofs. Do not delete bounds,
+equalities, or required declarations to make those targets extract. Required
+recursive declaration support is deferred; dependent work must wait for tools
+that support it.
+
+Native raw-pointer emission has a separate limitation. The pinned backend's
+carrier stores only `v : T`, and its scalar pointer cast returns `undef`.
+Emitted slice construction and `NonNull` operations remain external templates.
+The mathematical pointer model does not repair that carrier or grant admission
+to those operations. The existing checker continues to reject them. A faithful
+carrier and checked primitive interpretations are prerequisites for proving
+their address, metadata, or provenance behavior.
+
+When those boundaries are supported, bind `KnownLayout::LAYOUT` to the original
+Rust type and its metadata-indexed geometry. Reuse the complete recursive
+layout semantics, which preserves an inner field's padding before outer
+rounding. Preserve physical tail offset, stride, alignment, and conservative
+padding flags. Keep mathematical extent, `usize` representability, and the
+`isize` object-size restriction separate. The `MaybeUninit` obligation also
+requires identical metadata and layout and acceptance of uninitialized storage
+in every position; a layout-only theorem must not be presented as the full
+trait invariant.
+
+Concrete owned conversions use the actual standard transmute primitive for
+`u32` and four-byte arrays, plus a guarded `u8`-to-`bool` conversion. These types
+have no pointers, resources, destruction, or external-state invariants. Original
+Rust endpoint checks and a compiled canonical-provider audit restrict that
+interpretation to those cases; it does not admit the production macro or an
+arbitrary generic transmute. Invalid Boolean encodings take the forbidden path,
+even with postcondition `True`. Reference creation remains a later target because
+numerical geometry and provenance presence alone do not supply permissions or
+lifetimes. Derive
+proof requests are also deferred. Existing annotation discovery, native binding
+records, independent golden/live proofs, and dependency audits remain the sole
+route to reporting a Rust specification as checked; these foundations add no
+parallel coverage registry or automatic Rust ABI assumptions.
+
+### Other deferred decisions
+
 - **Canonical layout abstraction.** Retain structural `DstLayout` and existing
   `ModelViews` initially. Padding and trailing-size pilots already use those
   views. Use `extend`, sequence queries, and capacity contracts to compare total
@@ -325,8 +411,8 @@ the library already models every part of Rust's abstract machine.
   tactics, and the existing loop adapter. Introduce a larger lifting DSL,
   per-model tactics, or new loop abstraction only after concrete repeated
   failures show a net benefit over ordinary lemmas and a thin tactic.
-- **Broader carriers and effects.** Recursive nominal groups, indexed carriers,
-  const generics, associated-type trait laws, higher-ranked bounds, bounded
+- **Broader carriers and effects.** Recursive nominal groups, general indexed
+  carriers, const generics, associated-type trait laws, higher-ranked bounds, bounded
   nominal models, and escaping borrow reconstruction remain unsupported with
   explicit errors. The first trait-law bridge supports `Self`-only traits and
   simple generic bounds, with `Unaligned` and a total byte codec as checked
@@ -338,11 +424,12 @@ the library already models every part of Rust's abstract machine.
   execution, independently of ordinary library-model admission. A storage model
   must account for the translation's omissions as well as its primitives. The
   [pinned lowering audit](LOWERING_AUDIT.md) records known omissions and the
-  additional admission checks needed before making memory-safety claims.
-  [ADMISSION_DESIGN.md](ADMISSION_DESIGN.md) specifies the proposed closed
+  admission checks needed before making memory-safety claims.
+  [ADMISSION_DESIGN.md](ADMISSION_DESIGN.md) specifies the closed
   dependency traversal, controlled build origins using Charon's existing MIR
-  preservation setup, primitive rules, and mandatory CI path. These additional
-  checks are not implemented yet.
+  preservation setup, primitive rules, and mandatory CI path. CI enforces
+  these checks for the admitted fragment; extending that fragment requires
+  corresponding operation semantics and coverage checks.
   <!-- FIXME: Typed transfers lose storage events; track support at
   https://github.com/AeneasVerif/aeneas/issues/1405. Until then, a typed storage
   abstraction must forget all padding contents and initialization facts. It

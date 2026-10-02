@@ -143,4 +143,48 @@ attribute [contract_simps] encoding_decoder_admitted_iff trailing_decoder_admitt
     simpa only [option_valid_iff, size_info_valid_iff] using valid
   · cases self <;> simpa only using facts
 
+@[contract_simps] theorem required_metadata_exact (self : layout.DstLayout) (size : Usize)
+    (run : Result (Option Usize)) (provided : Specs.metadata_exact_spec_contract self size run) :
+    Obligations.metadata_exact_spec_contract self size run := by
+  intro valid _align _rounding
+  obtain ⟨value, decoded⟩ := (layout_decoder_admitted_iff self).mpr valid
+  have result := provided value decoded (unsignedWord size) rfl
+  simp only [WP.spec_equiv_exists] at result
+  obtain ⟨output, call, math, admitted, facts⟩ := result
+  refine ⟨output, call, ?_⟩
+  cases info : self.size_info <;> cases output <;>
+    simp only [metadataSpec, info] at facts ⊢
+  all_goals exact facts
+
+@[contract_simps] theorem required_validate_cast (self : layout.DstLayout)
+    (addr length : Usize) (side : layout.CastType)
+    (run : Result (core.result.Result (Usize × Usize) layout.MetadataCastError))
+    (provided : Specs.validate_cast_spec_contract self addr length side run) :
+    Obligations.validate_cast_spec_contract self addr length side run := by
+  intro valid _align room trailing
+  obtain ⟨value, decoded⟩ := (layout_decoder_admitted_iff self).mpr valid
+  obtain ⟨sideValue, sideDecoded⟩ := (cast_type_valid_iff side).mpr trivial
+  have elems : match self.size_info with
+      | .Sized _ => True
+      | .SliceDst tail => 0 < tail.elem_size.val := by
+    cases info : self.size_info with
+    | Sized _ => trivial
+    | SliceDst _ =>
+      simp only [info] at trailing
+      exact trailing.2
+  have result := provided value decoded (unsignedWord addr) rfl
+    (unsignedWord length) rfl sideValue sideDecoded room elems
+  simp only [WP.spec_equiv_exists] at result
+  obtain ⟨output, call, math, admitted, facts⟩ := result
+  refine ⟨output, call, ?_⟩
+  cases output with
+  | Err error =>
+    cases error <;> cases side <;> cases info : self.size_info <;>
+      simpa only [castSpec, castSide, castSplit, info] using facts
+  | Ok pair =>
+    rcases pair with ⟨count, split⟩
+    cases side <;> cases info : self.size_info <;>
+      simpa only [castSpec, castSide, castSplit, info] using facts
+
+
 end Zerocopy.Proofs
