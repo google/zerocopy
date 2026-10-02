@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import Proofs.Raw.Trailing
+public import Proofs.Raw.Cast
 public import Proofs.Raw.Construction
 @[expose] public section
 
@@ -222,6 +223,50 @@ theorem requires_dynamic_padding_spec : Zerocopy.Specs.requires_dynamic_padding_
   | Sized _ => trivial
   | SliceDst _ => simpa only [hs] using hv.2
 register_spec_step requires_dynamic_padding_spec
+
+/- Prove exact metadata inference, including rejection of unattainable sizes and
+greatest-count selection when several counts share the same padded size.
+-/
+theorem metadata_exact_spec : Zerocopy.Specs.metadata_exact_spec := by
+  unfold Zerocopy.Specs.metadata_exact_spec
+  representation_simps
+  intro self size hv
+  have ht : match self.size_info with
+      | .Sized _ => True
+      | .SliceDst tail => tail.elem_size.val ≠ 0 →
+        0 < tail.size_rounding_align_and_phase._0.val.val := by
+    cases hs : self.size_info with
+    | Sized _ => trivial
+    | SliceDst tail =>
+      simp only [hs] at hv
+      intro _
+      exact hv.2
+  apply WP.spec_mono (Raw.metadata_exact_spec self size hv.1 ht)
+  intro result facts
+  refine ⟨?_, facts⟩
+  change isValid result
+  simp
+register_spec_step metadata_exact_spec
+
+/- Track alignment-error priority, complete-size capacity, and prefix/suffix
+splitting through the actual branches. A zero trailing stride intentionally
+panics and therefore lies outside this total contract's required domain.
+-/
+theorem validate_cast_spec : Zerocopy.Specs.validate_cast_spec := by
+  unfold Zerocopy.Specs.validate_cast_spec
+  representation_simps
+  intro self addr length side hv hroom helem
+  have ht : match self.size_info with
+      | .Sized _ => True
+      | .SliceDst tail => 0 < tail.size_rounding_align_and_phase._0.val.val ∧
+        0 < tail.elem_size.val := by
+    cases hs : self.size_info with
+    | Sized _ => trivial
+    | SliceDst tail =>
+      simp only [hs] at hv helem
+      exact ⟨hv.2, helem⟩
+  exact Raw.validate_cast_spec self addr length side hv.1 hroom ht
+register_spec_step validate_cast_spec
 
 end Zerocopy.Proofs
 
