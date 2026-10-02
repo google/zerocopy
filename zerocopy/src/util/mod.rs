@@ -15,6 +15,7 @@ pub(crate) mod macros;
 pub mod macro_util;
 
 pub(crate) mod bytewrite;
+mod checks;
 mod safety_checks;
 pub(crate) mod validity;
 
@@ -160,7 +161,13 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 ///
 /// ```aeneas
 /// spec padding_lt_alignment
-///   ensures p => (p : Nat) < (align : Nat)
+///   requires h : (align : Nat).isPowerOfTwo
+///   ensures p => (p : Nat) < (align : Nat) ∧
+///     let L : Nat := len
+///     let A : Nat := align
+///     let P : Nat := p
+///     P = (A - L % A) % A ∧ (L + P) % A = 0 ∧
+///       (∀ q : Nat, (L + q) % A = 0 → P ≤ q) ∧ (P = 0 ↔ L % A = 0)
 /// ```
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
     #[cfg(kani)]
@@ -247,7 +254,12 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
 /// ```aeneas
 /// spec round_down_spec
 ///   requires h : (align : Nat).isPowerOfTwo
-///   ensures m => (m : Nat) ≤ (n : Nat) ∧ (m : Nat) % (align : Nat) = 0
+///   ensures m => (m : Nat) ≤ (n : Nat) ∧
+///     let N : Nat := n
+///     let A : Nat := align
+///     let M : Nat := m
+///     M = N - N % A ∧ M % A = 0 ∧ N < M + A ∧
+///       (∀ q : Nat, q ≤ N → q % A = 0 → q ≤ M)
 /// ```
 pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
@@ -274,7 +286,8 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
 ///
 /// ```aeneas
 /// spec max_spec
-///   ensures r => (r : Nat) = Nat.max (a : Nat) (b : Nat)
+///   ensures r => (r : Nat) = max (a : Nat) (b : Nat) ∧ (r = a ∨ r = b) ∧
+///     (a : Nat) ≤ (r : Nat) ∧ (b : Nat) ≤ (r : Nat)
 /// ```
 pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     if a.get() < b.get() {
@@ -289,7 +302,8 @@ pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
 ///
 /// ```aeneas
 /// spec min_spec
-///   ensures r => (r : Nat) = Nat.min (a : Nat) (b : Nat)
+///   ensures r => (r : Nat) = min (a : Nat) (b : Nat) ∧ (r = a ∨ r = b) ∧
+///     (r : Nat) ≤ (a : Nat) ∧ (r : Nat) ≤ (b : Nat)
 /// ```
 pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     if a.get() > b.get() {
