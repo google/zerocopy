@@ -17,61 +17,63 @@ The existing required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from 26 actual functions in `zerocopy/src/layout.rs` and
-`zerocopy/src/util/mod.rs`, including their dependencies. There is no copied
-Rust implementation. This stack position registers only the functions listed
-below; it does not yet close coverage over every inherent layout method. Later
-proof layers add the remaining methods and the final record-constructor proof.
+Extraction starts from 27 actual functions in `zerocopy/src/layout.rs` and
+`zerocopy/src/util/mod.rs`, including their dependencies. The inventory closes
+coverage over every inherent method of `DstLayout`, `TrailingSliceLayout`,
+`SizeInfo`, and `RoundingAlignAndPhase`; adding an unregistered method fails
+before extraction, including under inactive `cfg` conditions.
 
 | Functions | Checked property |
 | --- | --- |
 | `max`, `min`, padding, round-down | Exact extrema, least padding, greatest aligned predecessor, and bounds. |
 | Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
-| `DstLayout::{assume_shallow_unpadded,new_zst,for_type,for_unpadded_type,for_slice}` | Exact alignment, size-information fields, and recorded shallow-padding flags under explicit input premises. |
-| `SizeInfo::try_to_nonzero_elem_size`, `max_elems_for_bytes` | Exact zero handling, preserved representation fields, and greatest fitting element count. |
-| `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
-| Trailing size, padding, and capacity | Exact size-offset and capacity formulas, checked-size overflow, and wrapping padding; successful sizes and physical padding refine the independent recursive semantics. |
-| `DstLayout::{extend,pad_to_align}` | Exact field placement, alignment, padding flags, and normalized size formulas; outer padding preserves each field's complete inner size. |
-| Trailing advancement and size-sequence comparison | Exact byte advancement; a positive comparison establishes equal sizes for every natural metadata value. |
-| `DstLayout::requires_dynamic_padding` | Exact flag result and a mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
+| Trailing size, padding, capacity, and advancement | Independent unbounded size formulas, exact checked-size overflow, wrapping padding, and byte advancement. |
+| Size-sequence comparison | A positive answer establishes equal sizes for every natural metadata value. |
+| Zero-stride conversion and element capacity | Exact zero handling, preserved representation fields, and greatest fitting element count. |
+| `DstLayout` constructors, extension, and padding | Exact fields, field placement, alignment, flags, and normalized size formulas. The record constructor terminates for arbitrary field lists satisfying the independent construction domain. |
+| Static and dynamic padding queries | Exact flag result and the mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
 | Cast validation and exact-size metadata | Alignment/size error priority, greatest fitting metadata, exact prefix/suffix split, and rejection of unattainable sizes. |
 
-All 26 registered specifications use total `contract`: their stated
-requirements imply successful termination and their postconditions. A negative
-size-sequence comparison does not claim that the sequences differ. Intentional
-panic for casting a zero-stride DST is checked separately.
+All registered specifications use total `contract`: their stated requirements
+imply successful termination and their postconditions. Intentional panic for
+casting a zero-stride DST is checked separately. The size-sequence comparison
+is conservative: a negative result does not claim that the sequences differ.
 
-`LayoutMath.lean` defines independent recursive layout semantics and proves
-normalization correct for every nesting depth and metadata value.
-`LayoutModel.lean` supplies interpretation predicates without using any
-function proof. The first layout contracts establish exact construction and
-conversion fields. Checked sizes and physical padding are connected to the
-recursive semantics in `Corollaries.lean`. The same module proves that outer
-padding rounds the complete inner size, including padding inside a packed
-field. The extracted record constructor is not yet connected to direct
-per-metadata field placement; that connection is completed in the final proof
-layer.
+`LayoutMath.lean` defines an independent recursive layout semantics and proves
+normalization correct for every nesting depth and metadata value. The extracted
+contracts connect machine arithmetic and control flow to that mathematics.
+`LayoutModel.lean` supplies shared interpretation predicates, without using
+any function proof. `Corollaries.lean` connects checked sizes and physical
+padding to the recursive semantics, proves that outer padding preserves
+complete inner sizes, and connects the record constructor to direct
+per-metadata field placement.
+See [SEMANTICS.md](SEMANTICS.md) for the exact Rust premise and trust boundary.
 
-Generic size/alignment reads are external data inputs, each of type `Type →
-Usize`, never axioms asserting layout correctness. Constructor contracts
-require explicit primitive-read and alignment premises. Numerical layout
-theorems apply to actual Rust layouts under the recursive-layout compatibility
-premise described in [SEMANTICS.md](SEMANTICS.md); compiler regression tests
-challenge that premise rather than prove a rustc implementation correct.
+The constructor's requirements check field alignment, the independent prefix
+layout's overflow bounds, canonical encodings, and final padding bounds. These
+are predicates over the mathematical construction, not assumptions that the
+Rust constructor returned a correct result. Fragment operations have explicit
+fit requirements; arbitrary malformed internal layout records need not succeed.
+Generic size/alignment reads are explicit external data inputs, never axioms
+asserting layout correctness.
 
-Comparisons use the unsigned scalar's existing order directly (`m ≤ n`, `p <
-align.val`, `min a.val b.val`). Arithmetic postconditions explicitly bind
-`Nat` values so addition and remainder are unbounded mathematical operations.
-The Rust scalar arithmetic operators return checked `Result` values and are
-not interchangeable with these formulas. `NonZero` still needs one `.val` to
-unwrap its stored scalar. Power-of-two requirements already imply positivity.
+Comparisons use the unsigned scalar's existing order directly (`m ≤ n`,
+`p < align.val`, `min a.val b.val`). Arithmetic postconditions explicitly bind
+`Nat` values (`let N : Nat := n`) so addition and remainder are unbounded
+mathematical operations. The corresponding Rust scalar arithmetic operators
+return checked `Result` values and are not interchangeable with these formulas.
+`NonZero` still needs one `.val` to unwrap its stored scalar. Power-of-two
+requirements already imply positivity, so padding, round-down, and sized-layout
+contracts do not repeat a positive-alignment requirement.
 
-CI uses default features, debug assertions, and the runner's native
+CI uses the default features, debug assertions, and the runner's native
 `x86_64-unknown-linux-gnu` target. Local replay also supports macOS arm64. The
-proofs cover the registered methods under their stated domains; they do not
-certify other extraction configurations, a rustc implementation, or zerocopy's
-pointer safety. Aeneas targets a safe Rust subset; whole-crate unsafe
-verification is a separate task.
+proofs cover all registered layout methods under their stated domains;
+they do not certify other extraction configurations, a rustc implementation,
+or zerocopy's pointer safety. The explicit Rust premise connects the recursive
+semantics to an actual type's layout. Compiler regression tests challenge that
+premise independently of the Lean algebra. Aeneas currently targets a safe Rust
+subset; whole-crate unsafe verification is a separate task.
 
 ## Reproduce
 
@@ -179,7 +181,8 @@ signatures, inject type invariants, or introduce separate proof automation.
 An explicit `partial contract` instead expands to `WP.dspec`. It permits
 divergence, rejects panic and other failures, and requires the postcondition
 for successful returns. All registered contracts use the total form.
-`Obligations.lean` retains their independently written required propositions.
+`Obligations.lean` retains their independently written required propositions,
+and the layout caller still applies the same padding theorem through `step`.
 
 Both workspaces build `ContractTests.lean`, which checks independently written
 theorem types, named requirements, omitted requirements, tuple outputs, and
@@ -192,7 +195,8 @@ to Anneal's eventual annotation language.
 `inventory.json` independently registers each function's Rust identity, source
 file, parsed function identity, Lean definition, theorem, and golden filename.
 Removing or mistyping an existing annotation fails because its inventory entry
-still requires it. Discovery searches repository Rust files regardless of
+still requires it. Closed `covered_impls` scopes also reject new methods without
+proof inventory entries. Discovery searches repository Rust files regardless of
 `cfg`, excluding only `.git`, `target`, `vendor`, and `.lake` directories. It
 recognizes suspicious fence guards, including case variants and close spelling
 errors, then requires exact syntax. A Rust lexer distinguishes comments from
@@ -225,7 +229,7 @@ unexpanded slots fail. `target/aeneas/rendered-golden` holds the assembled model
 used for comparison. These invalid-Lean slots are expanded before compilation
 and never interpreted as ordinary comments.
 
-All 26 registered proof bodies live in the Rust annotations; shared arithmetic
+All 27 registered proof bodies live in the Rust annotations; shared arithmetic
 lemmas and composition corollaries live in Lean modules. `lean/Proofs.lean.in`
 supplies shared imports, support lemmas, and named
 `@@AENEAS_PROOF("rust::identity")@@` slots. Every registered proof has exactly
@@ -257,7 +261,8 @@ function's documentation or all compilation configurations.
 Checked addition, subtraction, and multiplication already have upstream
 `step_pure` specifications. Use `step as ⟨result, facts⟩` and split the `Option`
 result to obtain both the exact successful value and the overflow condition.
-`SupportTests.lean` exercises all inputs, including overflow.
+`SupportTests.lean` exercises all inputs, including overflow. Layout proofs use
+these registrations directly, without naming bitvector specification lemmas.
 
 A contract may express equality through a pure mathematical view:
 
@@ -283,9 +288,12 @@ registry then lets callers use `step` without specifying the theorem manually.
 `AeneasContracts.indexed_loop_spec` specializes Aeneas's `loop.spec_decr_nat`
 to a state and `Usize` index. Supply a view, the mathematical value of each
 prefix, and a representation invariant. Each continuing body step must advance
-the index by exactly one and establish the next prefix; a completed step must
-be at the length. The adapter supplies bounds and the decreasing `length - index`
-termination measure. `SupportTests.lean` contains an independent example.
+the index by
+exactly one and establish the next prefix; a completed step must be at the
+length. The adapter supplies bounds and the decreasing `length - index`
+termination measure. The record constructor instantiates this rule; its body
+proof still establishes the arithmetic bounds needed to avoid Rust overflow.
+`SupportTests.lean` contains a smaller independent example.
 
 The contract support, examples, and generated `check_contract` proof terms
 participate in the axiom audit. Failure controls challenge an incorrect view,
@@ -297,20 +305,18 @@ identities whose exported theorems its proof uses. Omission means an empty list.
 These are proof dependencies, not the Rust call graph: a mathematical lemma may
 be useful even when its function is not called. Unknown or repeated identities,
 self dependencies, and cycles fail before extraction. The legacy single slot
-assembles proofs in deterministic topological order. Named slots fix declaration
-positions so shared helpers can appear between proofs; Lean checks availability.
+assembles proofs in deterministic topological order, independent of source or
+inventory order. Named slots fix declaration positions so support lemmas can
+appear between proofs; Lean checks that each required callee is available there.
 
-The layout proof layer grows incrementally with the registered roots above.
-The final layer adds the arbitrary-length record-constructor proof and closes
-method coverage. Shared support and required-contract checks are already active
-for every registered function at this stack position.
-
-`DstLayout::pad_to_align` declares dependencies on rounding, encoding, and
-padding helpers. Its proof applies their contracts to establish the normalized
-result and rule out overflow under its fit condition. `Corollaries.lean` proves
-for every metadata value that outer padding preserves the complete inner size,
-and that the original conservative sized-layout headroom bound implies the
-new exact fit requirement.
+`DstLayout::pad_to_align` declares dependencies on its rounding, encoding, and
+padding helpers. Its inline proof unfolds the caller and applies those helper
+theorems to establish the exact normalized result and rule out overflow under
+the stated fit condition. `Corollaries.lean` then proves, for every metadata
+value, that the result rounds the complete inner size to the outer alignment.
+This includes padding already present inside a packed field. The sized-layout
+corollary also shows that the original conservative headroom requirement
+implies the new exact fit requirement.
 
 Generated `Required.lean` records the declared theorem edges. `Check.lean`
 inspects elaborated theorem types and proof terms, following local helper
@@ -364,9 +370,9 @@ additional generated files, changes to external-template signatures, and code
 changes fail with a normalized diff and require regeneration.
 
 After comparison succeeds, CI compiles the checked-in model and the unmodified
-live model in separate fresh Lake workspaces. Both must prove the same 26
-contracts and composition corollaries and pass the required-type checks and axiom
-audit; neither imports
+live model in separate fresh Lake workspaces. Both must prove every registered
+contract and the composition corollaries and pass the required-type checks and
+axiom audit; neither imports
 the other's compiled model. The live functions always come from Aeneas. Inline
 definitions are inserted only into the checked-in model, never into live output.
 The normalized text is only used for comparison, never for proof compilation.
@@ -413,16 +419,6 @@ records but does not formally prove:
   Rust values by admitting zero; the alignment proofs establish positivity
   from their explicit power-of-two requirement rather than assuming it through
   an axiom.
-- The pointer width uses `core.mem.size_of Usize`, modeled as the selected
-  word width divided by eight. Other `size_of` reads use
-  `Zerocopy.RustLayout.size`; `align_of` reads use `Zerocopy.RustLayout.align`.
-  Both are data inputs of type `Type → Usize`, with no axiom asserting their
-  layout correctness. Each generic constructor theorem requires explicit
-  primitive-read premises for the selected Rust type instantiation. The erased
-  Lean type alone does not identify that Rust type's ABI layout.
-- `NonZero::new` is modeled for its extracted `Usize` instantiations: zero
-  returns `None`, and nonzero inputs return the same bits. The encoder also
-  uses the pinned leading-zero-count and wrapping-shift models.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
@@ -431,8 +427,8 @@ records but does not formally prove:
 declared proof edges, and audits all declarations in `Zerocopy` (including
 proofs, obligations, translated layout types/methods, and utility helpers) and
 the external `core.num` models, arithmetic lemmas, composition corollaries,
-contract module, and contract tests. Private
-helper names are included. The permitted logic axioms are `propext`,
+contract support, tests, and generated required-contract checks. Private helper
+names are included. The permitted logic axioms are `propext`,
 `Classical.choice`, and `Quot.sound`; the two data-only Rust layout inputs
 documented in `SEMANTICS.md` are also allowed with their signatures checked.
 Other axioms, `sorryAx`, and
@@ -445,11 +441,11 @@ reversing the translated `min` comparison must fail its proof. In the live
 workspace, comment drift must pass fuzzy comparison and
 proof checking, while reversing `min` must also fail comparison. These controls
 edit scratch files and restore them before rechecking the original results.
-In both workspaces, removing a padding callee fails its caller proof;
-undeclared and unused dependencies fail the audit, including through private
-helpers. Incorrect translated padding fails its proof. Exact contracts reject
-always-zero padding and round-down, an incorrect shallow-padding flag,
-conflating physical offset with size base, and dropping inner rounding. Replacing round-down with its valid earlier
+In both workspaces, removing the padding theorem must fail the caller's proof,
+undeclared and unused theorem dependencies must fail the dependency audit, and
+an incorrect translated padding callee must fail the proof chain. Exact
+contracts reject always-zero padding and round-down, a wrong shallow-padding
+flag, and a changed DST layout. Replacing round-down with its valid earlier
 weaker contract must fail the independent required-type check. Unit tests
 also reject missing dependencies and cycles and exercise method ownership and
 Charon Self-type binding.
@@ -483,3 +479,8 @@ provided useful prior evidence:
 Those older experiments are not assumed to describe the current release's
 runtime. This integration was validated with the pinned October 1 bundle and
 fresh translations of the current checkout.
+
+Named `@@AENEAS_PROOF("rust::identity")@@` slots in `Proofs.lean.in` allow support
+lemmas between registered proofs. Every annotation must appear exactly once;
+missing, duplicate, and unknown slots fail. These helpers and the registered
+proofs are covered by the same axiom and transitive dependency audits.
