@@ -313,22 +313,50 @@ def assemble(root, annotations, work):
     required = ['import Lean', 'import Proofs', 'import Obligations', 'open Lean', '']
     for a in annotations.values():
         # Normalize total WP and scalar order to independently written arithmetic.
-        # Layout matchers have different declaration names in the two modules;
-        # check both branches explicitly instead of assuming definitional equality.
         name = a['theorem']
-        if name == 'pad_to_align_spec':
+        normalizers = ('Aeneas.Std.WP.spec_equiv_exists, Aeneas.Std.UScalar.eq_equiv, '
+                       'Aeneas.Std.UScalar.coe_max, Zerocopy.Arithmetic.coe_min, '
+                       'Aeneas.Std.UScalar.lt_equiv, Aeneas.Std.UScalar.le_equiv')
+        # Independently elaborated matches can have different dependent
+        # discriminants. Split their domains, never equate matcher names.
+        checks = {
+            'pad_to_align_spec': ('self ha hf', 'self.size_info', 'hf',
+                                 'self ha (by simpa only [hs] using hf)'),
+            'extend_spec': ('self field packed size hsi hself hfield hp hf', 'field.size_info', 'hf',
+                            'self field packed size hsi hself hfield hp (by simpa only [hs] using hf)'),
+            'requires_dynamic_padding_spec': ('self hn', 'self.size_info', 'hn',
+                                              'self (by simpa only [hs] using hn)'),
+            'validate_cast_spec': ('self addr length side ha hr ht', 'self.size_info', 'ht',
+                                   'self addr length side ha hr (by simpa only [hs] using ht)'),
+            'metadata_exact_spec': ('self size ha ht', 'self.size_info', 'ht',
+                                    'self size ha (by simpa only [hs] using ht)'),
+        }
+        if name in checks:
+            args, discriminant, precondition, application = checks[name]
+            body = (f'  unfold Zerocopy.Obligations.{name}\n'
+                    f'  intro {args}\n'
+                    f'  cases hs : {discriminant} <;>\n'
+                    f'    simpa only [hs, {normalizers}] using '
+                    f'Zerocopy.Proofs.{name} {application}')
+        elif name == 'try_nonzero_spec':
             body = (f'  unfold Zerocopy.Obligations.{name}\n'
                     '  intro self\n'
-                    '  cases hs : self.size_info <;>\n'
-                    '    simpa only [hs, Aeneas.Std.WP.spec_equiv_exists] '
-                    f'using Zerocopy.Proofs.{name} self')
+                    f'  cases self <;> simpa only [{normalizers}] '
+                    f'using Zerocopy.Proofs.{name} _')
+        elif name == 'advance_spec':
+            body = (f'  unfold Zerocopy.Obligations.{name}\n'
+                    '  intro self bytes stride hn\n'
+                    '  obtain ⟨r, hr, hp⟩ := Aeneas.Std.WP.spec_imp_exists '
+                    f'(Zerocopy.Proofs.{name} self bytes stride hn)\n'
+                    '  rw [Aeneas.Std.WP.spec_equiv_exists]\n'
+                    '  refine ⟨r, hr, ?_⟩\n'
+                    '  cases r <;> simpa only using hp')
         else:
-            body = (f'  simpa only [Zerocopy.Obligations.{name}, '
-                    'Aeneas.Std.WP.spec_equiv_exists, Aeneas.Std.UScalar.eq_equiv, '
-                    'Aeneas.Std.UScalar.coe_max, Zerocopy.Arithmetic.coe_min, '
-                    'Aeneas.Std.UScalar.lt_equiv, Aeneas.Std.UScalar.le_equiv] '
-                    f'using Zerocopy.Proofs.{name}')
-        required.append(f'example : Zerocopy.Obligations.{name} := by\n{body}')
+            body = (f'  simpa only [Zerocopy.Obligations.{name}, {normalizers}] '
+                    f'using @Zerocopy.Proofs.{name}')
+        # A shared branch checker can reduce to True in one constructor case.
+        required.append('set_option linter.unnecessarySimpa false in\n'
+                        f'example : Zerocopy.Obligations.{name} := by\n{body}')
     names = ', '.join(f'`Zerocopy.Proofs.{a["theorem"]}' for a in annotations.values())
     required.append(f'def requiredTheorems : Array Name := #[{names}]')
     edges = []

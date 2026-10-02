@@ -3,6 +3,169 @@
   "version": 1,
   "functions": [
     {
+      "rust": "zerocopy::layout::RoundingAlignAndPhase::new",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::new",
+      "model": "layout.RoundingAlignAndPhase.new",
+      "theorem": "encoding_new_spec",
+      "golden": "layout.RoundingAlignAndPhase.new.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::RoundingAlignAndPhase::components",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::components",
+      "model": "layout.RoundingAlignAndPhase.components",
+      "theorem": "encoding_components_spec",
+      "golden": "layout.RoundingAlignAndPhase.components.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::RoundingAlignAndPhase::align",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::align",
+      "model": "layout.RoundingAlignAndPhase.align",
+      "theorem": "encoding_align_spec",
+      "golden": "layout.RoundingAlignAndPhase.align.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::size_offset",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::size_offset",
+      "model": "layout.TrailingSliceLayout.size_offset",
+      "theorem": "size_offset_spec",
+      "golden": "layout.TrailingSliceLayout.size_offset.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::max_trailing_bytes",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::max_trailing_bytes",
+      "model": "layout.TrailingSliceLayout.max_trailing_bytes",
+      "theorem": "max_trailing_bytes_spec",
+      "golden": "layout.TrailingSliceLayout.max_trailing_bytes.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::padding_for_elems",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::padding_for_elems",
+      "model": "layout.TrailingSliceLayoutUsize.padding_for_elems",
+      "theorem": "padding_for_elems_spec",
+      "golden": "layout.TrailingSliceLayoutUsize.padding_for_elems.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::padding_needed_for"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::size_for_elems",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::size_for_elems",
+      "model": "layout.TrailingSliceLayoutUsize.size_for_elems",
+      "theorem": "size_for_elems_spec",
+      "golden": "layout.TrailingSliceLayoutUsize.size_for_elems.lean.in",
+      "depends_on": [
+        "zerocopy::layout::TrailingSliceLayout::max_trailing_bytes",
+        "zerocopy::layout::TrailingSliceLayout::padding_for_elems"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::has_same_size_sequence",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::has_same_size_sequence",
+      "model": "layout.TrailingSliceLayoutUsize.has_same_size_sequence",
+      "theorem": "same_size_sequence_spec",
+      "golden": "layout.TrailingSliceLayoutUsize.has_same_size_sequence.lean.in",
+      "depends_on": [
+        "zerocopy::layout::TrailingSliceLayout::size_for_elems",
+        "zerocopy::layout::RoundingAlignAndPhase::components"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::TrailingSliceLayout::advance",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::advance",
+      "model": "layout.TrailingSliceLayoutUsize.advance",
+      "theorem": "advance_spec",
+      "golden": "layout.TrailingSliceLayoutUsize.advance.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment",
+        "zerocopy::layout::RoundingAlignAndPhase::new"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::SizeInfo::try_to_nonzero_elem_size",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "SizeInfo::try_to_nonzero_elem_size",
+      "model": "layout.SizeInfoUsize.try_to_nonzero_elem_size",
+      "theorem": "try_nonzero_spec",
+      "golden": "layout.SizeInfoUsize.try_to_nonzero_elem_size.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::max_elems_for_bytes",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "max_elems_for_bytes",
+      "model": "layout.max_elems_for_bytes",
+      "theorem": "max_elems_for_bytes_spec",
+      "golden": "layout.max_elems_for_bytes.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::assume_shallow_unpadded",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::assume_shallow_unpadded",
+      "model": "layout.DstLayout.assume_shallow_unpadded",
+      "theorem": "assume_shallow_unpadded_spec",
+      "golden": "layout.DstLayout.assume_shallow_unpadded.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::new_zst",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::new_zst",
+      "model": "layout.DstLayout.new_zst",
+      "theorem": "new_zst_spec",
+      "golden": "layout.DstLayout.new_zst.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::for_type",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_type",
+      "model": "layout.DstLayout.for_type",
+      "theorem": "for_type_spec",
+      "golden": "layout.DstLayout.for_type.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::for_unpadded_type",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_unpadded_type",
+      "model": "layout.DstLayout.for_unpadded_type",
+      "theorem": "for_unpadded_type_spec",
+      "golden": "layout.DstLayout.for_unpadded_type.lean.in",
+      "depends_on": [
+        "zerocopy::layout::DstLayout::for_type",
+        "zerocopy::layout::DstLayout::assume_shallow_unpadded"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::for_slice",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_slice",
+      "model": "layout.DstLayout.for_slice",
+      "theorem": "for_slice_spec",
+      "golden": "layout.DstLayout.for_slice.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::new"
+      ]
+    },
+    {
       "rust": "zerocopy::layout::DstLayout::pad_to_align",
       "file": "zerocopy/src/layout.rs",
       "syntax": "DstLayout::pad_to_align",
@@ -10,7 +173,82 @@
       "theorem": "pad_to_align_spec",
       "golden": "layout.DstLayout.pad_to_align.lean.in",
       "depends_on": [
+        "zerocopy::util::padding_needed_for",
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment",
+        "zerocopy::layout::RoundingAlignAndPhase::new"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::extend",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::extend",
+      "model": "layout.DstLayout.extend",
+      "theorem": "extend_spec",
+      "golden": "layout.DstLayout.extend.lean.in",
+      "depends_on": [
+        "zerocopy::util::min",
+        "zerocopy::util::max",
         "zerocopy::util::padding_needed_for"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::for_repr_c_struct",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_repr_c_struct",
+      "model": "layout.DstLayout.for_repr_c_struct",
+      "theorem": "for_repr_c_struct_spec",
+      "golden": "layout.DstLayout.for_repr_c_struct.lean.in",
+      "depends_on": [
+        "zerocopy::layout::DstLayout::new_zst",
+        "zerocopy::layout::DstLayout::pad_to_align",
+        "zerocopy::layout::DstLayout::extend"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::requires_static_padding",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::requires_static_padding",
+      "model": "layout.DstLayout.requires_static_padding",
+      "theorem": "requires_static_padding_spec",
+      "golden": "layout.DstLayout.requires_static_padding.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::requires_dynamic_padding",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::requires_dynamic_padding",
+      "model": "layout.DstLayout.requires_dynamic_padding",
+      "theorem": "requires_dynamic_padding_spec",
+      "golden": "layout.DstLayout.requires_dynamic_padding.lean.in",
+      "depends_on": [
+        "zerocopy::layout::TrailingSliceLayout::size_for_elems",
+        "zerocopy::layout::RoundingAlignAndPhase::align"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::validate_cast_and_convert_metadata",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::validate_cast_and_convert_metadata",
+      "model": "layout.DstLayout.validate_cast_and_convert_metadata",
+      "theorem": "validate_cast_spec",
+      "golden": "layout.DstLayout.validate_cast_and_convert_metadata.lean.in",
+      "depends_on": [
+        "zerocopy::layout::SizeInfo::try_to_nonzero_elem_size",
+        "zerocopy::layout::TrailingSliceLayout::max_trailing_bytes",
+        "zerocopy::layout::max_elems_for_bytes",
+        "zerocopy::layout::RoundingAlignAndPhase::align",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::metadata_for_exact_size",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::metadata_for_exact_size",
+      "model": "layout.DstLayout.metadata_for_exact_size",
+      "theorem": "metadata_exact_spec",
+      "golden": "layout.DstLayout.metadata_for_exact_size.lean.in",
+      "depends_on": [
+        "zerocopy::layout::DstLayout::validate_cast_and_convert_metadata"
       ]
     },
     {
@@ -44,6 +282,24 @@
       "model": "util.round_down_to_next_multiple_of_alignment",
       "theorem": "round_down_spec",
       "golden": "util.round_down_to_next_multiple_of_alignment.lean.in"
+    }
+  ],
+  "covered_impls": [
+    {
+      "file": "zerocopy/src/layout.rs",
+      "type": "DstLayout"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "type": "TrailingSliceLayout"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "type": "RoundingAlignAndPhase"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "type": "SizeInfo"
     }
   ]
 }

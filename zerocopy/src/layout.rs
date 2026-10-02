@@ -30,6 +30,7 @@ const POINTER_WIDTH_BITS: usize = mem::size_of::<usize>() * 8;
 #[allow(missing_debug_implementations, missing_copy_implementations)]
 #[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
 #[derive(Copy, Clone)]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
 pub struct DstLayout {
     pub(crate) align: NonZeroUsize,
     pub(crate) size_info: SizeInfo,
@@ -42,29 +43,1371 @@ pub struct DstLayout {
 
 #[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
 #[derive(Copy, Clone)]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
 pub(crate) enum SizeInfo<E = usize> {
     Sized { size: usize },
     SliceDst(TrailingSliceLayout<E>),
 }
 
+/// The alignment and phase of a rounded size calculation.
+///
+/// If `encoded` is the stored non-zero integer, then its highest set bit is a
+/// power-of-two alignment `align`, and its remaining lower bits are a `phase`
+/// in `0..align`. Thus every non-zero bit pattern is a valid encoding, and:
+///
+/// ```text
+/// encoded = align + phase
+/// ```
+#[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
+#[repr(transparent)]
+#[derive(Copy, Clone)]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
+pub(crate) struct RoundingAlignAndPhase(NonZeroUsize);
+
+impl RoundingAlignAndPhase {
+    /// Encodes `align` and `phase`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `align` is not a power of two and `phase` is not less than
+    /// `align`.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::requires(align.is_power_of_two() && phase < align.get()))]
+    #[cfg_attr(kani, kani::ensures(|result| result.0.get() == align.get() + phase))]
+    pub(crate) const fn new(align: NonZeroUsize, phase: usize) -> Self {
+        // ```aeneas
+        // model:
+        //   def layout.RoundingAlignAndPhase.new
+        //     (align : core.num.nonzero.NonZero Std.Usize
+        //     core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
+        //     Result layout.RoundingAlignAndPhase
+        //     := do
+        //     let i ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+        //     let b ← core.num.Usize.is_power_of_two i
+        //     massert b
+        //     massert (phase < i)
+        //     let encoded ← lift (i ||| phase)
+        //     let o ←
+        //       core.num.nonzero.NonZero.new
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner encoded
+        //     match o with
+        //     | none => fail panic
+        //     | some encoded1 => ok encoded1
+        // proof:
+        //   contract encoding_new_spec (align : NonZeroUsize) (phase : Usize)
+        //     for layout.RoundingAlignAndPhase.new align phase
+        //     requires ha : align.val.val.isPowerOfTwo
+        //     requires hp : phase.val < align.val.val
+        //     ensures encoded => encoded.val.val = align.val.val + phase.val
+        //     proof:
+        //       unfold layout.RoundingAlignAndPhase.new
+        //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //       step as ⟨b, hb⟩
+        //       have hbt : b = true := by
+        //         have hb' : (b = true) = True := by simpa only [ha] using hb
+        //         exact Eq.mpr hb' trivial
+        //       simp only [massert, hbt, if_true, bind_ok, UScalar.lt_equiv, hp, lift]
+        //       obtain ⟨k, hk⟩ := ha
+        //       have hor : (align.val ||| phase).val = align.val.val + phase.val := by
+        //         rw [UScalar.val_or, hk]
+        //         have h := Nat.two_pow_add_eq_or_of_lt (show phase.val < 2 ^ k by omega) 1
+        //         simpa only [Nat.mul_one] using h.symm
+        //       have hnz : align.val ||| phase ≠ 0#usize := by
+        //         intro hz
+        //         have hz' := congrArg UScalar.val hz
+        //         rw [hor] at hz'
+        //         have hpos := Nat.two_pow_pos k
+        //         change align.val.val + phase.val = 0 at hz'
+        //         omega
+        //       simp only [core.num.nonzero.NonZero.new, cast_eq, hnz, ↓reduceDIte, ↓reduceIte,
+        //         bind_ok, WP.spec_ok]
+        //       exact hor
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(RoundingAlignAndPhase::new)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            RoundingAlignAndPhase::new(kani::any(), kani::any());
+        }
+
+        const_assert!(align.get().is_power_of_two());
+        const_assert!(phase < align.get());
+
+        // Since `align` is a power of two and `phase < align`, their set bits
+        // are disjoint. The result is therefore non-zero and losslessly stores
+        // both components.
+        let encoded = align.get() | phase;
+        match NonZeroUsize::new(encoded) {
+            Some(encoded) => Self(encoded),
+            None => const_unreachable!(),
+        }
+    }
+
+    /// Decodes the alignment and phase.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&(align, phase)| {
+        align.is_power_of_two() && phase < align.get()
+            && align.get().checked_add(phase) == Some(self.0.get())
+    }))]
+    pub(crate) const fn components(self) -> (NonZeroUsize, usize) {
+        // ```aeneas
+        // model:
+        //   def layout.RoundingAlignAndPhase.components
+        //     (self : layout.RoundingAlignAndPhase) :
+        //     Result ((core.num.nonzero.NonZero Std.Usize
+        //       core.num.niche_types.NonZeroUsizeInner) × Std.Usize)
+        //     := do
+        //     let i ← layout.POINTER_WIDTH_BITS
+        //     let i1 ← i - 1#usize
+        //     let i2 ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner self
+        //     let i3 ← lift (core.num.Usize.leading_zeros i2)
+        //     let i4 ← lift (UScalar.cast .Usize i3)
+        //     let shift ← i1 - i4
+        //     let align ← 1#usize <<< shift
+        //     let o ←
+        //       core.num.nonzero.NonZero.new
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+        //     match o with
+        //     | none => fail panic
+        //     | some align1 =>
+        //       let i5 ←
+        //         core.num.nonzero.NonZero.get
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align1
+        //       let phase ← lift (i2 ^^^ i5)
+        //       ok (align1, phase)
+        // proof:
+        //   contract encoding_components_spec (self : layout.RoundingAlignAndPhase)
+        //     for layout.RoundingAlignAndPhase.components self
+        //     requires hn : 0 < self.val.val
+        //     ensures (align, phase) =>
+        //       align.val.val.isPowerOfTwo ∧ phase.val < align.val.val ∧
+        //       align.val.val + phase.val = self.val.val ∧
+        //       align.val.val = 2 ^ Nat.log2 self.val.val ∧
+        //       phase.val = self.val.val - 2 ^ Nat.log2 self.val.val
+        //     proof:
+        //       let k := Nat.log2 self.val.val
+        //       have hbound := (Nat.log2_eq_iff (show self.val.val ≠ 0 by omega)).mp (show Nat.log2 self.val.val = k from rfl)
+        //       have hsize := UScalar.hSize self.val
+        //       rw [UScalar.size, UScalarTy.Usize_numBits_eq] at hsize
+        //       have hk : k < System.Platform.numBits := by
+        //         dsimp [k]
+        //         rw [Nat.log2_eq_log_two]
+        //         apply Nat.log_lt_of_lt_pow (by omega)
+        //         exact hsize
+        //       have hbits : 32 ≤ System.Platform.numBits := by
+        //         rcases System.Platform.numBits_eq with h | h <;> omega
+        //       have hnzbv : self.val.bv ≠ 0 := by
+        //         intro h
+        //         have := congrArg BitVec.toNat h
+        //         change self.val.val = 0 at this
+        //         omega
+        //       have hlz : (core.num.Usize.leading_zeros self.val).val = System.Platform.numBits - k - 1 := by
+        //         change (BitVec.leadingZeros self.val.bv) % 2 ^ 32 = _
+        //         unfold BitVec.leadingZeros
+        //         rw [if_neg hnzbv]
+        //         change (System.Platform.numBits - Nat.log 2 self.val.val - 1) % 2 ^ 32 = _
+        //         rw [← Nat.log2_eq_log_two]
+        //         apply Nat.mod_eq_of_lt
+        //         rcases System.Platform.numBits_eq with h | h <;> rw [h] <;> omega
+        //       have hcast : (UScalar.cast .Usize (core.num.Usize.leading_zeros self.val)).val =
+        //           System.Platform.numBits - k - 1 := by
+        //         rw [UScalar.cast_val_eq, hlz, UScalarTy.Usize_numBits_eq]
+        //         apply Nat.mod_eq_of_lt
+        //         rcases System.Platform.numBits_eq with h | h <;> rw [h] <;> omega
+        //       unfold layout.RoundingAlignAndPhase.components
+        //       step with pointer_width_spec as ⟨w, hw⟩
+        //       have hone : (1#usize).val = 1 := by simp
+        //       have hwpos : (1#usize).val ≤ w.val := by rw [hone, hw]; omega
+        //       step with Usize.sub_spec hwpos as ⟨w1, hw1, _⟩
+        //       simp only [core.num.nonzero.NonZero.get, bind_ok, lift]
+        //       have hsub : (UScalar.cast .Usize (core.num.Usize.leading_zeros self.val)).val ≤ w1.val := by
+        //         rw [hcast, hw1, hw]
+        //         omega
+        //       step with Usize.sub_spec hsub as ⟨shift, hshift, _⟩
+        //       have hshift' : shift.val = k := by rw [hcast, hw1, hw] at hshift; omega
+        //       step with Usize.ShiftLeft_spec 1#usize shift (by rw [hshift']; exact hk) as ⟨a, ha, _⟩
+        //       have ha' : a.val = 2 ^ k := by
+        //         rw [hshift'] at ha
+        //         simp only [Nat.shiftLeft_eq, Nat.one_mul] at ha
+        //         have hp : 2 ^ k < Usize.size := by
+        //           rw [Usize.size, Usize.numBits, UScalarTy.Usize_numBits_eq]
+        //           omega
+        //         simpa only [Nat.mod_eq_of_lt hp] using ha
+        //       have haz : a ≠ 0#usize := by
+        //         intro hz
+        //         have hz' := congrArg UScalar.val hz
+        //         rw [ha'] at hz'
+        //         change 2 ^ k = 0 at hz'
+        //         have := Nat.two_pow_pos k
+        //         omega
+        //       simp only [core.num.nonzero.NonZero.new, cast_eq, haz, ↓reduceDIte,
+        //         ↓reduceIte, bind_ok, WP.spec_ok]
+        //       have hp : self.val.val - 2 ^ k < 2 ^ k := by
+        //         rw [Nat.pow_succ] at hbound
+        //         omega
+        //       have hx : (self.val ^^^ a).val = self.val.val - 2 ^ k := by
+        //         rw [UScalar.val_xor, ha']
+        //         have heq : self.val.val = 2 ^ k + (self.val.val - 2 ^ k) := by omega
+        //         rw [heq]
+        //         simpa only [Nat.add_sub_cancel_left] using highest_bit_xor k _ hp
+        //       refine ⟨?_, ?_, ?_, ha', ?_⟩
+        //       · exact ⟨k, ha'⟩
+        //       · rw [hx, ha']
+        //         exact hp
+        //       · rw [hx, ha']
+        //         omega
+        //       · exact hx
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(RoundingAlignAndPhase::components)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<RoundingAlignAndPhase>().components();
+        }
+        // `leading_zeros <= POINTER_WIDTH_BITS - 1` because the encoded value
+        // is non-zero. Converting `leading_zeros` to `usize` cannot truncate
+        // because it is at most the number of bits in a `usize`.
+        #[allow(clippy::arithmetic_side_effects, clippy::as_conversions)]
+        let shift = (POINTER_WIDTH_BITS - 1) - (self.0.get().leading_zeros() as usize);
+        #[allow(clippy::arithmetic_side_effects)]
+        let align = 1usize << shift;
+        let align = match NonZeroUsize::new(align) {
+            Some(align) => align,
+            None => const_unreachable!(),
+        };
+        // `align` is the highest set bit, so XOR removes exactly that bit and
+        // leaves a value in `0..align`.
+        let phase = self.0.get() ^ align.get();
+        (align, phase)
+    }
+
+    /// Decodes the alignment, which is the highest set bit of `self`.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|align| {
+        align.is_power_of_two() && align.get() <= self.0.get()
+            && self.0.get() - align.get() < align.get()
+    }))]
+    pub(crate) const fn align(self) -> NonZeroUsize {
+        // ```aeneas
+        // model:
+        //   def layout.RoundingAlignAndPhase.align
+        //     (self : layout.RoundingAlignAndPhase) :
+        //     Result (core.num.nonzero.NonZero Std.Usize
+        //       core.num.niche_types.NonZeroUsizeInner)
+        //     := do
+        //     let (nz, _) ← layout.RoundingAlignAndPhase.components self
+        //     ok nz
+        // proof:
+        //   contract encoding_align_spec (self : layout.RoundingAlignAndPhase)
+        //     for layout.RoundingAlignAndPhase.align self
+        //     requires hn : 0 < self.val.val
+        //     ensures align => align.val.val = 2 ^ Nat.log2 self.val.val
+        //     proof:
+        //       unfold layout.RoundingAlignAndPhase.align
+        //       step with encoding_components_spec self hn as ⟨a, p, _, _, _, ha, _⟩
+        //       simpa only [WP.spec_ok] using ha
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(RoundingAlignAndPhase::align)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<RoundingAlignAndPhase>().align();
+        }
+
+        self.components().0
+    }
+}
+
 #[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
 #[derive(Copy, Clone)]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
 pub(crate) struct TrailingSliceLayout<E = usize> {
-    // The offset of the first byte of the trailing slice field. Note that this
-    // is NOT the same as the minimum size of the type. For example, consider
-    // the following type:
-    //
-    //   struct Foo {
-    //       a: u16,
-    //       b: u8,
-    //       c: [u8],
-    //   }
-    //
-    // In `Foo`, `c` is at byte offset 3. When `c.len() == 0`, `c` is followed
-    // by a padding byte.
+    /// The offset of the first byte of the trailing slice field. Note that this
+    /// is NOT the same as the minimum size of the type. For example, consider
+    /// the following type:
+    ///
+    /// ```ignore
+    /// #[repr(C, align(2))]
+    /// struct Foo {
+    ///     header: u16,
+    ///     tag: u8,
+    ///     tail: [u8],
+    /// }
+    /// ```
+    ///
+    /// In `Foo`, `tail` is at byte offset 3. When `tail.len() == 0`, `tail` is
+    /// followed by a padding byte.
     pub(crate) offset: usize,
-    // The size of the element type of the trailing slice field.
+    /// The size of the element type of the trailing slice field.
     pub(crate) elem_size: E,
+    /// The trailing slice's byte offset plus fixed trailing padding, minus the
+    /// rounding phase.
+    ///
+    /// Fixed trailing padding excludes padding added by the final alignment
+    /// rounding. The rounding alignment and phase are stored in
+    /// `size_rounding_align_and_phase`. This value is independent of the slice
+    /// length and can be smaller than, equal to, or larger than `offset`.
+    ///
+    /// For a completed layout, this value is a multiple of `DstLayout::align`.
+    /// The minimum object size equals this value when the phase is zero;
+    /// otherwise, it exceeds this value by one rounding-alignment unit.
+    pub(crate) size_base: usize,
+    /// The alignment and byte phase of the rounding applied to the trailing
+    /// slice's contribution to object size.
+    ///
+    /// The alignment `size_align` is a nonzero power of two. The phase
+    /// `size_phase` is the fixed byte contribution inside that rounding, in
+    /// `0..size_align`. Both are independent of the trailing slice's length.
+    /// For `elems` trailing elements, the enclosing object's size is:
+    ///
+    /// ```text
+    /// size_base + round_up(size_phase + elems * elem_size, size_align)
+    /// ```
+    ///
+    /// For a completed layout, `size_align` is at least `DstLayout::align`.
+    /// Packing can reduce the enclosing type's alignment and the alignment
+    /// used to place its trailing field without removing padding required by
+    /// a nested DST's own layout. For example, a `repr(packed(2))` wrapper
+    /// around a DST with alignment 4 can have an object alignment of 2 and a
+    /// rounding alignment of 4.
+    ///
+    /// The rounding parameters account for padding preserved within nested
+    /// fields. Their rounding origin can differ from the physical start of
+    /// the trailing slice, so the phase need not equal `offset % size_align`.
+    pub(crate) size_rounding_align_and_phase: RoundingAlignAndPhase,
+}
+
+impl<E> TrailingSliceLayout<E> {
+    /// Produces `self.size_base` rounded down to a multiple of `size_align`,
+    /// plus `size_phase`, where both components come from
+    /// `self.size_rounding_align_and_phase`.
+    ///
+    /// This value need not equal `self.offset`, the trailing slice's byte
+    /// offset.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&offset| {
+        let (align, phase) = self.size_rounding_align_and_phase.components();
+        offset == util::round_down_to_next_multiple_of_alignment(self.size_base, align) + phase
+    }))]
+    const fn size_offset(&self) -> usize {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayout.size_offset
+        //     {E : Type} (self : layout.TrailingSliceLayout E) : Result Std.Usize := do
+        //     let (size_align, size_phase) ←
+        //       layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+        //     let aligned_base ←
+        //       util.round_down_to_next_multiple_of_alignment self.size_base size_align
+        //     ok (aligned_base ||| size_phase)
+        // proof:
+        //   contract size_offset_spec {E : Type} (self : layout.TrailingSliceLayout E)
+        //     for layout.TrailingSliceLayout.size_offset self
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures offset =>
+        //       offset.val = self.size_base.val - self.size_base.val % (byteFormula self).align + (byteFormula self).phase
+        //     proof:
+        //       unfold layout.TrailingSliceLayout.size_offset
+        //       step with encoding_components_spec _ hn as ⟨a, p, ha, hp, hsum, halign, hphase⟩
+        //       step with round_down_spec self.size_base a ha as ⟨base, _, hb, hmod, _, _⟩
+        //       simp only [UScalar.val_or]
+        //       rw [LayoutMath.aligned_or _ _ _ ha hmod hp, hb]
+        //       simp only [byteFormula]
+        //       rw [← halign]
+        //       omega
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(TrailingSliceLayout::<usize>::size_offset)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<TrailingSliceLayout>().size_offset();
+        }
+
+        let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
+        let aligned_base =
+            util::round_down_to_next_multiple_of_alignment(self.size_base, size_align);
+        // The aligned base and phase have disjoint set bits.
+        aligned_base | size_phase
+    }
+
+    /// Produces the largest trailing-slice byte capacity whose complete, padded
+    /// object fits in `available_bytes`, or `None` if the object does not fit
+    /// even with an empty trailing slice.
+    ///
+    /// This capacity is independent of `elem_size`: it need not represent a
+    /// whole number of elements, even for a valid Rust layout. For example, a
+    /// slice of `[u8; 3]` elements has three-byte elements and alignment 1.
+    /// With `available_bytes = 4`, this method produces `Some(4)`, although
+    /// only one whole element, occupying three bytes, fits.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&result| {
+        let (align, phase) = self.size_rounding_align_and_phase.components();
+        result == available_bytes.checked_sub(self.size_base)
+            .map(|bytes| util::round_down_to_next_multiple_of_alignment(bytes, align))
+            .and_then(|rounded| rounded.checked_sub(phase))
+    }))]
+    const fn max_trailing_bytes(&self, available_bytes: usize) -> Option<usize> {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayout.max_trailing_bytes
+        //     {E : Type} (self : layout.TrailingSliceLayout E)
+        //     (available_bytes : Std.Usize) :
+        //     Result (Option Std.Usize)
+        //     := do
+        //     let (size_align, size_phase) ←
+        //       layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+        //     let rounded_phase ←
+        //       if size_phase = 0#usize
+        //       then ok 0#usize
+        //       else
+        //         core.num.nonzero.NonZero.get
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+        //     let o ← lift (Usize.checked_add self.size_base rounded_phase)
+        //     match o with
+        //     | none => ok none
+        //     | some size =>
+        //       let o1 ← lift (Usize.checked_sub available_bytes size)
+        //       match o1 with
+        //       | none => ok none
+        //       | some bytes =>
+        //         let aligned_bytes ←
+        //           util.round_down_to_next_multiple_of_alignment bytes size_align
+        //         let initial_padding ← rounded_phase - size_phase
+        //         let trailing_bytes ← lift (aligned_bytes ||| initial_padding)
+        //         ok (some trailing_bytes)
+        // proof:
+        //   contract max_trailing_bytes_spec {E : Type} (self : layout.TrailingSliceLayout E) (available : Usize)
+        //     for layout.TrailingSliceLayout.max_trailing_bytes self available
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures r => r.map UScalar.val = (byteFormula self).capacity available.val
+        //     proof:
+        //       unfold layout.TrailingSliceLayout.max_trailing_bytes
+        //       step with encoding_components_spec _ hn as ⟨a, p, ha, hp, hsum, halign, hphase⟩
+        //       have apos := Nat.pos_of_isPowerOfTwo ha
+        //       have hview : byteFormula self = ⟨self.size_base.val, p.val, a.val.val, 0, self.offset.val⟩ := by
+        //         unfold byteFormula
+        //         dsimp only
+        //         rw [← hphase, ← halign]
+        //       let rp : Usize := if p = 0#usize then 0#usize else a.val
+        //       have hrp : rp.val = LayoutMath.roundUp p.val a.val.val := by
+        //         rw [LayoutMath.roundUp_phase _ _ apos hp]
+        //         by_cases hz : p = 0#usize
+        //         · simp only [rp, hz, if_true]
+        //           rfl
+        //         · have hzero : p.val ≠ 0 := by
+        //             intro h
+        //             exact hz (UScalar.eq_of_val_eq (by simpa using h))
+        //           simp only [rp, hz, hzero, if_false]
+        //       have hrmod : rp.val % a.val.val = 0 := by rw [hrp]; exact (LayoutMath.roundUp_properties _ _ apos).2.2
+        //       have hrge : p.val ≤ rp.val := by rw [hrp]; exact (LayoutMath.roundUp_properties _ _ apos).1
+        //       have hrlt : rp.val - p.val < a.val.val := by
+        //         have := (LayoutMath.roundUp_properties p.val a.val.val apos).2.1
+        //         omega
+        //       have hbranch : (if p = 0#usize then Result.ok 0#usize else
+        //         core.num.nonzero.NonZero.get Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner a) = Result.ok rp := by
+        //         simp only [core.num.nonzero.NonZero.get]
+        //         by_cases h : p = 0#usize <;> simp only [h, if_true, if_false, rp]
+        //       rw [hbranch]
+        //       simp only [bind_ok, lift]
+        //       have hadd := Usize.checked_add_bv_spec self.size_base rp
+        //       cases hs : Usize.checked_add self.size_base rp with
+        //       | none =>
+        //         simp only [hs] at hadd
+        //         have hav : available.val ≤ Usize.max := by scalar_tac
+        //         have hmiss : ¬(byteFormula self).bytes 0 ≤ available.val := by
+        //           rw [hview]
+        //           simp only [LayoutMath.Formula.bytes, Nat.add_zero, ← hrp]
+        //           omega
+        //         simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.capacity, hmiss, if_false]
+        //       | some minimum =>
+        //         simp only [hs] at hadd
+        //         have hsub := Usize.checked_sub_bv_spec available minimum
+        //         cases hd : Usize.checked_sub available minimum with
+        //         | none =>
+        //           simp only [hd] at hsub
+        //           simp only [hd]
+        //           have hmiss : ¬(byteFormula self).bytes 0 ≤ available.val := by
+        //             rw [hview]
+        //             simp only [LayoutMath.Formula.bytes, Nat.add_zero, ← hrp]
+        //             omega
+        //           simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.capacity, hmiss, if_false]
+        //         | some extra =>
+        //           simp only [hd] at hsub
+        //           simp only [hd]
+        //           step with round_down_spec extra a ha as ⟨aligned, hle, hal, hmod, _, _⟩
+        //           step with Usize.sub_spec hrge as ⟨padding, hpadding, _⟩
+        //           have hfit : (byteFormula self).bytes 0 ≤ available.val := by
+        //             rw [hview]
+        //             simp only [LayoutMath.Formula.bytes, Nat.add_zero, ← hrp]
+        //             omega
+        //           simp only [Option.map_some, LayoutMath.Formula.capacity, hfit, if_true]
+        //           have hpl : padding.val < a.val.val := by
+        //             dsimp only [rp] at hrlt
+        //             omega
+        //           rw [UScalar.val_or, LayoutMath.aligned_or _ _ _ ha hmod hpl]
+        //           rw [hview]
+        //           dsimp only
+        //           have hbudget : available.val - self.size_base.val = rp.val + extra.val := by omega
+        //           rw [hbudget, LayoutMath.floor_shift _ _ _ hrmod]
+        //           congr 1
+        //           have hrem := Nat.mod_le extra.val a.val.val
+        //           dsimp only [rp] at *
+        //           omega
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(TrailingSliceLayout::<usize>::max_trailing_bytes)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<TrailingSliceLayout>().max_trailing_bytes(kani::any());
+        }
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(TrailingSliceLayout::<NonZeroUsize>::max_trailing_bytes)]
+        #[kani::solver(kissat)]
+        fn proof_nonzero() {
+            kani::any::<TrailingSliceLayout<NonZeroUsize>>().max_trailing_bytes(kani::any());
+        }
+
+        let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
+
+        // Interpret the normalized size formula over the nonnegative integers:
+        //
+        //   object_size(trailing_bytes)
+        //       = self.size_base
+        //           + round_up(size_phase + trailing_bytes, size_align).
+        //
+        // We seek the largest byte count with
+        // `object_size(trailing_bytes) <= available_bytes`.
+        //
+        // At zero trailing bytes, the input to rounding is just `size_phase`.
+        // Since `0 <= size_phase < size_align`, the least alignment multiple at
+        // or above it is zero for a zero phase, and `size_align` otherwise.
+        // Thus `rounded_phase = round_up(size_phase, size_align)` is exactly
+        // the rounded contribution of an empty tail.
+        let rounded_phase = if size_phase == 0 { 0 } else { size_align.get() };
+
+        // Adding the fixed base gives `minimum_size = object_size(0)`. The size
+        // formula is nondecreasing in the trailing byte count, so this is the
+        // minimum object size. If this sum exceeds `usize::MAX`, it also
+        // exceeds `available_bytes`, and no tail can fit.
+        let minimum_size = match self.size_base.checked_add(rounded_phase) {
+            Some(size) => size,
+            None => return None,
+        };
+
+        // Subtracting the minimum size gives the budget for increasing the
+        // rounded contribution. Failure means even the minimum size exceeds the
+        // available space. Success establishes `minimum_size + extra_bytes =
+        // available_bytes`.
+        let extra_bytes = match available_bytes.checked_sub(minimum_size) {
+            Some(bytes) => bytes,
+            None => return None,
+        };
+
+        // The rounded contribution can increase only by multiples of
+        // `size_align`. Its largest permitted increase is therefore
+        // `aligned_bytes = round_down(extra_bytes, size_align)`, with:
+        //
+        //   aligned_bytes <= extra_bytes < aligned_bytes + size_align.
+        //
+        // Hence `rounded_phase + aligned_bytes` is the largest alignment
+        // multiple that fits after the base: adding the base gives at most
+        // `minimum_size + extra_bytes = available_bytes`, while the next
+        // alignment multiple would exceed that budget.
+        let aligned_bytes = util::round_down_to_next_multiple_of_alignment(extra_bytes, size_align);
+
+        // Rounding an empty tail adds `rounded_phase - size_phase` bytes. This
+        // is `initial_padding`: the tail can use these bytes without increasing
+        // the rounded contribution. The two cases for `rounded_phase` give `0
+        // <= initial_padding < size_align`, so the subtraction is
+        // representable.
+        #[allow(clippy::arithmetic_side_effects)]
+        let initial_padding = rounded_phase - size_phase;
+
+        // For any nonnegative candidate byte count, the aligned limit above
+        // gives the following equivalences:
+        //
+        //   object_size(candidate_bytes) <= available_bytes
+        //       iff round_up(size_phase + candidate_bytes, size_align)
+        //           <= rounded_phase + aligned_bytes
+        //       iff size_phase + candidate_bytes
+        //           <= rounded_phase + aligned_bytes
+        //       iff candidate_bytes <= aligned_bytes + initial_padding.
+        //
+        // Removing `round_up` is valid because its upper bound is an alignment
+        // multiple. Thus `aligned_bytes + initial_padding` is exactly the
+        // largest tail that fits. Since `aligned_bytes` is a multiple of the
+        // power-of-two `size_align` and `initial_padding < size_align`, their
+        // set bits are disjoint. Bitwise OR therefore equals their sum, with no
+        // carry or overflow.
+        let trailing_bytes = aligned_bytes | initial_padding;
+        Some(trailing_bytes)
+    }
+}
+
+impl TrailingSliceLayout {
+    /// Returns the difference between the complete object size and the
+    /// trailing-slice end for `elems` elements, modulo `usize::MAX + 1`.
+    ///
+    /// If the object size fits in `usize` and contains the trailing slice,
+    /// this is the exact trailing padding. Other inputs need not describe a
+    /// Rust type; their result is still the modular difference.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&padding| {
+        let (align, phase) = self.size_rounding_align_and_phase.components();
+        let trailing_bytes = elems.wrapping_mul(self.elem_size);
+        let mask = align.get() - 1;
+        let rounded = phase.wrapping_add(trailing_bytes).wrapping_add(mask) & !mask;
+        let object_size = self.size_base.wrapping_add(rounded);
+        padding == object_size.wrapping_sub(self.offset.wrapping_add(trailing_bytes))
+    }))]
+    pub(crate) const fn padding_for_elems(self, elems: usize) -> usize {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayoutUsize.padding_for_elems
+        //     (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
+        //     Result Std.Usize
+        //     := do
+        //     let (size_align, size_phase) ←
+        //       layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+        //     let i ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+        //     let size_mask ← i - 1#usize
+        //     let elem_remainder ← lift (self.elem_size &&& size_mask)
+        //     let i1 ← lift (core.num.Usize.wrapping_mul elems elem_remainder)
+        //     let trailing_remainder ← lift (i1 &&& size_mask)
+        //     let rounding_input ←
+        //       lift (core.num.Usize.wrapping_add size_phase trailing_remainder)
+        //     let rounding_padding ← util.padding_needed_for rounding_input size_align
+        //     let i2 ← lift (core.num.Usize.wrapping_add self.size_base size_phase)
+        //     let i3 ← lift (core.num.Usize.wrapping_sub i2 self.offset)
+        //     ok (core.num.Usize.wrapping_add i3 rounding_padding)
+        // proof:
+        //   contract padding_for_elems_spec (self : layout.TrailingSliceLayout Usize) (elems : Usize)
+        //     for layout.TrailingSliceLayoutUsize.padding_for_elems self elems
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures p => (p.val + self.offset.val + elems.val * self.elem_size.val) % UScalar.size .Usize =
+        //       (trailingFormula self).size elems.val % UScalar.size .Usize
+        //     proof:
+        //       unfold layout.TrailingSliceLayoutUsize.padding_for_elems
+        //       step with encoding_components_spec _ hn as ⟨a, r, ha, hr, hsum, halign, hphase⟩
+        //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //       have apos := Nat.pos_of_isPowerOfTwo ha
+        //       step with Usize.sub_spec (show (1#usize).val ≤ a.val.val by simpa using (show 1 ≤ a.val.val by omega)) as ⟨mask, hm, _⟩
+        //       simp only [lift, bind_ok]
+        //       have low (x : Usize) : (x &&& mask).val = x.val % a.val.val := by
+        //         obtain ⟨k, hk⟩ := ha
+        //         rw [UScalar.val_and, hm, hk, Nat.and_two_pow_sub_one_eq_mod]
+        //       let t := core.num.Usize.wrapping_mul elems (self.elem_size &&& mask) &&& mask
+        //       have ht : t.val = (elems.val * self.elem_size.val) % a.val.val := by
+        //         rw [low, core.num.Usize.wrapping_mul_val_eq, low,
+        //           Nat.mod_mod_of_dvd _ (Arithmetic.alignment_dvd_size a.val ha)]
+        //         rw [Nat.mul_mod, Nat.mod_mod, ← Nat.mul_mod]
+        //       let input := core.num.Usize.wrapping_add r t
+        //       have hi : input.val % a.val.val =
+        //           (r.val + elems.val * self.elem_size.val) % a.val.val := by
+        //         rw [core.num.Usize.wrapping_add_val_eq,
+        //           Nat.mod_mod_of_dvd _ (Arithmetic.alignment_dvd_size a.val ha), ht, Nat.add_mod_mod]
+        //       step with padding_lt_alignment input a ha as ⟨rp, _, hp, _, _, _⟩
+        //       have hp' : rp.val = (a.val.val - (r.val + elems.val * self.elem_size.val) % a.val.val) % a.val.val := by
+        //         rw [hi] at hp
+        //         exact hp
+        //       simp only [core.num.Usize.wrapping_add_val_eq, Nat.add_assoc, Nat.mod_add_mod]
+        //       rw [show
+        //         (core.num.Usize.wrapping_sub (core.num.Usize.wrapping_add self.size_base r) self.offset).val +
+        //           (rp.val + (self.offset.val + elems.val * self.elem_size.val)) =
+        //         ((core.num.Usize.wrapping_sub (core.num.Usize.wrapping_add self.size_base r) self.offset).val +
+        //           self.offset.val) + (elems.val * self.elem_size.val + rp.val) by omega,
+        //         ← Nat.mod_add_mod, wrapping_sub_cancel, core.num.Usize.wrapping_add_val_eq, Nat.mod_add_mod]
+        //       simp only [trailingFormula, byteFormula, LayoutMath.Formula.size, LayoutMath.Formula.bytes,
+        //         LayoutMath.roundUp]
+        //       rw [← hphase, ← halign, hp']
+        //       congr 1
+        //       omega
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(TrailingSliceLayout::padding_for_elems)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<TrailingSliceLayout>().padding_for_elems(kani::any());
+        }
+
+        let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
+
+        // Since `size_align` is a nonzero power of two, subtracting one gives
+        // a mask selecting precisely the remainder modulo `size_align`.
+        #[allow(clippy::arithmetic_side_effects)]
+        let size_mask = size_align.get() - 1;
+
+        // Removing whole alignment multiples from each element's size
+        // preserves the trailing-byte count modulo `size_align`. If elements
+        // occupy whole alignment units, this is zero, making the padding's
+        // independence from the element count explicit to the optimizer.
+        let elem_remainder = self.elem_size & size_mask;
+
+        // The product is congruent to `elems * self.elem_size` modulo
+        // `size_align`. Wrapping preserves that congruence because every
+        // power-of-two `size_align` divides `usize::MAX + 1`. Masking then
+        // gives the exact trailing-byte remainder in `0..size_align`.
+        let trailing_remainder = elems.wrapping_mul(elem_remainder) & size_mask;
+
+        // Adding `size_phase` gives the same remainder as the mathematical
+        // `size_phase + elems * self.elem_size`. Reducing before adding the
+        // phase also exposes this periodicity to the optimizer.
+        let rounding_input = size_phase.wrapping_add(trailing_remainder);
+
+        // `rounding_padding` is the unique value in `0..size_align` that
+        // rounds `rounding_input` up to an alignment multiple. Since only
+        // the remainder determines this value, it is also the padding added
+        // by `round_up(size_phase + elems * self.elem_size, size_align)`.
+        let rounding_padding = util::padding_needed_for(rounding_input, size_align);
+
+        // Write `trailing_bytes = elems * self.elem_size` over mathematical
+        // integers. Subtracting the trailing-slice end from the complete
+        // object size cancels `trailing_bytes`:
+        //
+        //   size_base + round_up(size_phase + trailing_bytes, size_align)
+        //       - (offset + trailing_bytes)
+        //       = size_base + size_phase - offset + rounding_padding.
+        //
+        // Wrapping computes this difference modulo `usize::MAX + 1`, even
+        // if an intermediate value or the difference is unrepresentable.
+        // If the object size fits in `usize` and contains the trailing slice,
+        // the difference is in `0..=usize::MAX`; its residue is then the
+        // exact number of padding bytes after the trailing slice.
+        self.size_base
+            .wrapping_add(size_phase)
+            .wrapping_sub(self.offset)
+            .wrapping_add(rounding_padding)
+    }
+
+    /// Computes the size described by this layout for `elems` trailing slice
+    /// elements.
+    ///
+    /// Returns `None` if the element-byte count or complete rounded size
+    /// cannot be represented as a `usize`.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&size| {
+        size == elems.checked_mul(self.elem_size)
+            .and_then(|bytes| proofs::slice_dst_size_for_trailing_bytes(self, bytes))
+    }))]
+    pub(crate) const fn size_for_elems(self, elems: usize) -> Option<usize> {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayoutUsize.size_for_elems
+        //     (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
+        //     Result (Option Std.Usize)
+        //     := do
+        //     let o ←
+        //       layout.TrailingSliceLayout.max_trailing_bytes self core.num.Usize.MAX
+        //     match o with
+        //     | none => ok none
+        //     | some bytes =>
+        //       let o1 ← lift (Usize.checked_mul self.elem_size elems)
+        //       match o1 with
+        //       | none => ok none
+        //       | some bytes1 =>
+        //         if bytes1 > bytes
+        //         then ok none
+        //         else
+        //           let trailing_end ←
+        //             lift (core.num.Usize.wrapping_add self.offset bytes1)
+        //           let i ← layout.TrailingSliceLayoutUsize.padding_for_elems self elems
+        //           let size ← lift (core.num.Usize.wrapping_add trailing_end i)
+        //           ok (some size)
+        // proof:
+        //   contract size_for_elems_spec (self : layout.TrailingSliceLayout Usize) (elems : Usize)
+        //     for layout.TrailingSliceLayoutUsize.size_for_elems self elems
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures r => r.map UScalar.val = (trailingFormula self).checkedSize Usize.max elems.val
+        //     proof:
+        //       unfold layout.TrailingSliceLayoutUsize.size_for_elems
+        //       step with max_trailing_bytes_spec self core.num.Usize.MAX hn as ⟨cap, hc⟩
+        //       have hc' := LayoutMath.capacity_spec (byteFormula self) core.num.Usize.MAX.val
+        //         (show 0 < (byteFormula self).align from Nat.two_pow_pos _)
+        //       simp only [core.num.Usize.MAX, UScalar.ofNatCore_val_eq] at hc'
+        //       have hprod := trailing_product_le_size self elems.val
+        //       cases cap with
+        //       | none =>
+        //         simp only [Option.map_none] at hc
+        //         rw [← hc] at hc'
+        //         have hmiss := hc' (elems.val * self.elem_size.val)
+        //         change Usize.max < (trailingFormula self).size elems.val at hmiss
+        //         simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.checkedSize,
+        //           show ¬(trailingFormula self).size elems.val ≤ Usize.max by omega, if_false]
+        //       | some cap =>
+        //         simp only [Option.map_some] at hc
+        //         rw [← hc] at hc'
+        //         have hiff := hc' (elems.val * self.elem_size.val)
+        //         change (trailingFormula self).size elems.val ≤ Usize.max ↔
+        //           elems.val * self.elem_size.val ≤ cap.val at hiff
+        //         simp only [lift, bind_ok]
+        //         have hm := Usize.checked_mul_bv_spec self.elem_size elems
+        //         cases hmul : Usize.checked_mul self.elem_size elems with
+        //         | none =>
+        //           simp only [hmul] at hm
+        //           have hmiss : ¬(trailingFormula self).size elems.val ≤ Usize.max := by
+        //             rw [Nat.mul_comm] at hm
+        //             omega
+        //           simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.checkedSize, hmiss, if_false]
+        //         | some bytes =>
+        //           simp only [hmul] at hm
+        //           simp only [UScalar.lt_equiv]
+        //           split
+        //           · rename_i hbig
+        //             have hmiss : ¬(trailingFormula self).size elems.val ≤ Usize.max := by
+        //               rw [Nat.mul_comm] at hm
+        //               omega
+        //             simp only [WP.spec_ok, Option.map_none, LayoutMath.Formula.checkedSize, hmiss, if_false]
+        //           · rename_i hsmall
+        //             have hfit : (trailingFormula self).size elems.val ≤ Usize.max := by
+        //               apply hiff.mpr
+        //               rw [hm.2.1, Nat.mul_comm] at hsmall
+        //               omega
+        //             step with padding_for_elems_spec self elems hn as ⟨p, hp⟩
+        //             have hsz : Usize.size = UScalar.size .Usize := by
+        //               simp only [Usize.size, Usize.numBits, UScalarTy.Usize_numBits_eq, UScalar.size]
+        //             rw [hsz] at hp
+        //             simp only [Option.map_some,
+        //               LayoutMath.Formula.checkedSize, hfit, if_true,
+        //               core.num.Usize.wrapping_add_val_eq, Nat.mod_add_mod]
+        //             rw [hm.2.1, Nat.mul_comm]
+        //             rw [show self.offset.val + elems.val * self.elem_size.val + p.val =
+        //               p.val + self.offset.val + elems.val * self.elem_size.val by omega,
+        //               hp, word_mod_of_le _ hfit]
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(TrailingSliceLayout::size_for_elems)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<TrailingSliceLayout>().size_for_elems(kani::any());
+        }
+
+        // Let `size_align` and `size_phase` denote the components stored in
+        // `size_rounding_align_and_phase`. The normalized layout formula,
+        // evaluated over the nonnegative integers, is:
+        //
+        //   object_size(trailing_bytes)
+        //       = self.size_base
+        //           + round_up(size_phase + trailing_bytes, size_align)
+        //
+        // Here, `round_up` gives the least multiple of `size_align` greater
+        // than or equal to its input. Thus `object_size` is nondecreasing.
+        // By the capacity helper's contract, `max_trailing_bytes` is the
+        // largest byte count for which `object_size` fits in a `usize`.
+        // Monotonicity then gives the equivalence:
+        //
+        //   object_size(trailing_bytes) <= usize::MAX
+        //       iff trailing_bytes <= max_trailing_bytes.
+        //
+        // If the helper returns `None`, even `object_size(0)` exceeds the
+        // limit, so no element count can produce a representable size.
+        let max_trailing_bytes = match self.max_trailing_bytes(usize::MAX) {
+            Some(bytes) => bytes,
+            None => return None,
+        };
+
+        // Each of the `elems` elements contributes `self.elem_size` bytes,
+        // so substitution into the formula requires their product. Checked
+        // multiplication yields that exact product, including zero for
+        // zero-sized elements. If it overflows, the complete size cannot fit
+        // either: `object_size(trailing_bytes) >= trailing_bytes` because
+        // the base, phase, and rounding increment are all nonnegative.
+        let trailing_size = match self.elem_size.checked_mul(elems) {
+            Some(bytes) => bytes,
+            None => return None,
+        };
+
+        // The equivalence above rejects exactly the remaining cases whose
+        // complete size exceeds `usize::MAX`. After this check we have
+        // `object_size(trailing_size) <= usize::MAX`.
+        if trailing_size > max_trailing_bytes {
+            return None;
+        }
+
+        // The trailing slice starts at `self.offset` and occupies
+        // `trailing_size` bytes. Thus `trailing_end` is its end offset modulo
+        // `usize::MAX + 1`. This sum need not fit: a raw layout need not
+        // describe a Rust type, so its trailing slice need not lie within
+        // the complete object size bounded above.
+        let trailing_end = self.offset.wrapping_add(trailing_size);
+
+        // `padding_for_elems` returns `object_size(trailing_size)` minus the
+        // trailing-slice end, modulo `usize::MAX + 1`. Adding the end back
+        // therefore gives `object_size(trailing_size)` modulo the same
+        // modulus. The bound above establishes that this size fits in
+        // `usize`, so its residue is the exact size specified by the layout.
+        let size = trailing_end.wrapping_add(self.padding_for_elems(elems));
+        Some(size)
+    }
+
+    /// Returns `true` only when `self` and `other` describe the same size for
+    /// every trailing slice length.
+    ///
+    /// This recognizes sufficient conditions for equality. A `false` result
+    /// also includes equivalent size sequences that this test cannot recognize.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&same| {
+        let (self_align, self_phase) = self.size_rounding_align_and_phase.components();
+        let (other_align, other_phase) = other.size_rounding_align_and_phase.components();
+        let initial_size = proofs::slice_dst_size_for_trailing_bytes(self, 0);
+        same == (self.elem_size == other.elem_size
+            && initial_size.is_some()
+            && initial_size == proofs::slice_dst_size_for_trailing_bytes(other, 0)
+            && ((self.elem_size % self_align.get() == 0
+                && self.elem_size % other_align.get() == 0)
+                || (self_align == other_align && self_phase == other_phase)))
+    }))]
+    pub(crate) const fn has_same_size_sequence(self, other: Self) -> bool {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayoutUsize.has_same_size_sequence
+        //     (self : layout.TrailingSliceLayout Std.Usize)
+        //     (other : layout.TrailingSliceLayout Std.Usize) :
+        //     Result Bool
+        //     := do
+        //     if self.elem_size != other.elem_size
+        //     then ok false
+        //     else
+        //       let o ← layout.TrailingSliceLayoutUsize.size_for_elems self 0#usize
+        //       let o1 ← layout.TrailingSliceLayoutUsize.size_for_elems other 0#usize
+        //       match o with
+        //       | none => ok false
+        //       | some self_size =>
+        //         match o1 with
+        //         | none => ok false
+        //         | some other_size =>
+        //           if self_size = other_size
+        //           then
+        //             let (self_align, self_phase) ←
+        //               layout.RoundingAlignAndPhase.components
+        //                 self.size_rounding_align_and_phase
+        //             let (other_align, other_phase) ←
+        //               layout.RoundingAlignAndPhase.components
+        //                 other.size_rounding_align_and_phase
+        //             let self_align1 ←
+        //               core.num.nonzero.NonZero.get
+        //                 Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //                 self_align
+        //             let other_align1 ←
+        //               core.num.nonzero.NonZero.get
+        //                 Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //                 other_align
+        //             let max_align ←
+        //               if self_align1 > other_align1
+        //               then ok self_align1
+        //               else ok other_align1
+        //             let i ← self.elem_size % max_align
+        //             if i = 0#usize
+        //             then ok true
+        //             else
+        //               if self_align1 != other_align1
+        //               then ok false
+        //               else ok (self_phase = other_phase)
+        //           else ok false
+        // proof:
+        //   contract same_size_sequence_spec (self other : layout.TrailingSliceLayout Usize)
+        //     for layout.TrailingSliceLayoutUsize.has_same_size_sequence self other
+        //     requires hs : 0 < self.size_rounding_align_and_phase.val.val
+        //     requires ho : 0 < other.size_rounding_align_and_phase.val.val
+        //     ensures b => b = true → ∀ n : Nat, (trailingFormula self).size n = (trailingFormula other).size n
+        //     proof:
+        //       unfold layout.TrailingSliceLayoutUsize.has_same_size_sequence
+        //       simp only [bne_iff_ne]
+        //       split
+        //       · simp [WP.spec_ok]
+        //       · rename_i he
+        //         have helem : self.elem_size = other.elem_size := not_ne_iff.mp he
+        //         step with size_for_elems_spec self 0#usize hs as ⟨s, hsize⟩
+        //         step with size_for_elems_spec other 0#usize ho as ⟨o, hother⟩
+        //         cases s with
+        //         | none => simp [WP.spec_ok]
+        //         | some s =>
+        //           cases o with
+        //           | none => simp [WP.spec_ok]
+        //           | some o =>
+        //             dsimp only
+        //             split
+        //             · rename_i hsame
+        //               have hz : (trailingFormula self).size 0 = (trailingFormula other).size 0 := by
+        //                 have h1 := (checked_some_size _ _ s hsize).1
+        //                 have h2 := (checked_some_size _ _ o hother).1
+        //                 have hh := congrArg UScalar.val hsame
+        //                 omega
+        //               step with encoding_components_spec _ hs as ⟨a, p, ha, hp, _, hav, hpv⟩
+        //               step with encoding_components_spec _ ho as ⟨b, q, hb, hq, _, hbv, hqv⟩
+        //               simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //               have hmax : (if a.val > b.val then Result.ok a.val else Result.ok b.val) =
+        //                   Result.ok (max a.val b.val) := by
+        //                 by_cases h : a.val > b.val
+        //                 · simp only [h, if_true, max_eq_left (le_of_lt h)]
+        //                 · simp only [h, if_false, max_eq_right (le_of_not_gt h)]
+        //               rw [hmax]
+        //               simp only [bind_ok]
+        //               have hmaxp : 0 < (max a.val b.val).val := by
+        //                 rw [Arithmetic.coe_max]
+        //                 exact Nat.lt_of_lt_of_le (Nat.pos_of_isPowerOfTwo ha) (Nat.le_max_left _ _)
+        //               step with Usize.rem_spec self.elem_size (y := max a.val b.val) (by omega) as ⟨rem, hr⟩
+        //               split
+        //               · rename_i hrem
+        //                 apply WP.spec.ret
+        //                 intro _ n
+        //                 have hm : self.elem_size.val % (max a.val b.val).val = 0 := by
+        //                   have := congrArg UScalar.val hrem
+        //                   simpa only [show (0#usize).val = 0 by simp, hr] using this
+        //                 have hmaxpow : (max a.val b.val).val.isPowerOfTwo := by
+        //                   rw [Arithmetic.coe_max]
+        //                   by_cases h : a.val.val ≤ b.val.val
+        //                   · simpa only [Nat.max_eq_right h] using hb
+        //                   · simpa only [Nat.max_eq_left (by omega : b.val.val ≤ a.val.val)] using ha
+        //                 have hda := power_dvd_of_le _ _ ha hmaxpow (by rw [Arithmetic.coe_max]; exact Nat.le_max_left _ _)
+        //                 have hdb := power_dvd_of_le _ _ hb hmaxpow (by rw [Arithmetic.coe_max]; exact Nat.le_max_right _ _)
+        //                 have hma : self.elem_size.val % a.val.val = 0 := by
+        //                   rw [← Nat.mod_mod_of_dvd _ hda, hm, Nat.zero_mod]
+        //                 have hmb : other.elem_size.val % b.val.val = 0 := by
+        //                   rw [← helem, ← Nat.mod_mod_of_dvd _ hdb, hm, Nat.zero_mod]
+        //                 apply LayoutMath.same_sequence_sound _ _ _ n
+        //                 refine ⟨congrArg UScalar.val helem, hz, Or.inl ?_⟩
+        //                 simp only [trailingFormula, byteFormula]
+        //                 rw [← hav, ← hbv]
+        //                 exact ⟨hma, hmb⟩
+        //               · split
+        //                 · simp [WP.spec_ok]
+        //                 · rename_i heqa
+        //                   apply WP.spec.ret
+        //                   simp only [decide_eq_true_eq]
+        //                   intro heqp n
+        //                   apply LayoutMath.same_sequence_sound _ _ _ n
+        //                   refine ⟨congrArg UScalar.val helem, hz, Or.inr ?_⟩
+        //                   have haeq : a.val = b.val := not_ne_iff.mp heqa
+        //                   have haveq := congrArg UScalar.val haeq
+        //                   have hpveq := congrArg UScalar.val heqp
+        //                   simp only [trailingFormula, byteFormula]
+        //                   rw [← hpv, ← hqv, ← hav, ← hbv]
+        //                   exact ⟨haveq, hpveq⟩
+        //             · simp [WP.spec_ok]
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(TrailingSliceLayout::has_same_size_sequence)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<TrailingSliceLayout>().has_same_size_sequence(kani::any());
+        }
+
+        // For either layout, interpret its normalized size formula over the
+        // nonnegative integers:
+        //
+        //   object_size(elems)
+        //       = size_base
+        //           + round_up(size_phase + elems * elem_size, size_align).
+        //
+        // In two cases below, we establish equality of these mathematical sizes
+        // for every `elems`. Equal sizes also have the same `usize`
+        // representability bound.
+        //
+        // Both cases require a common byte contribution at each element count.
+        // Equal element sizes give that shared term, `elems * elem_size`.
+        if self.elem_size != other.elem_size {
+            return false;
+        }
+
+        // At `elems == 0`, the element contribution vanishes. Require equal,
+        // representable initial sizes; each case below then shows that
+        // increasing `elems` adds the same amount to both initial sizes.
+        match (self.size_for_elems(0), other.size_for_elems(0)) {
+            (Some(self_size), Some(other_size)) if self_size == other_size => {}
+            _ => return false,
+        }
+
+        let (self_align, self_phase) = self.size_rounding_align_and_phase.components();
+        let (other_align, other_phase) = other.size_rounding_align_and_phase.components();
+        let self_align = self_align.get();
+        let other_align = other_align.get();
+
+        // Case 1: The element size is a multiple of both alignments.
+        //
+        // For two power-of-two alignments, the larger is divisible by the
+        // smaller. Thus `max_align` is their least common multiple, and a byte
+        // count is divisible by both alignments exactly when it is divisible by
+        // `max_align`.
+        let max_align = if self_align > other_align { self_align } else { other_align };
+
+        // If the element size is divisible by both alignments, so is `elems *
+        // elem_size`. Adding an alignment multiple commutes with rounding,
+        // giving the following identity for each layout:
+        //
+        //   round_up(size_phase + elems * elem_size, size_align)
+        //       = round_up(size_phase, size_align) + elems * elem_size.
+        //
+        // Consequently, `object_size(elems) = object_size(0) + elems *
+        // elem_size`. The initial sizes and element sizes already agree, so the
+        // complete size sequences agree. This also covers zero-sized elements,
+        // whose contribution is zero for every element count.
+        #[allow(clippy::arithmetic_side_effects)]
+        if self.elem_size % max_align == 0 {
+            return true;
+        }
+
+        // Case 2: The rounding alignments and phases match.
+        //
+        // Require a common rounding alignment before comparing phases. If the
+        // alignments differ, neither case establishes equality.
+        if self_align != other_align {
+            return false;
+        }
+
+        // If the phases also agree, both `round_up` operations have the same
+        // input and alignment at every element count. In particular, their
+        // rounded terms agree at zero. Subtracting that common term from the
+        // equal initial sizes proves `self.size_base == other.size_base`. Both
+        // the fixed and rounded contributions therefore agree for every
+        // `elems`, which establishes equality of the complete size formulas.
+        self_phase == other_phase
+    }
+
+    /// Advances the size formula by `bytes` while replacing its element size.
+    ///
+    /// Let `(size_align, size_phase)` be decoded from
+    /// `self.size_rounding_align_and_phase`. For a trailing slice length
+    /// `elems`, the returned layout describes:
+    ///
+    /// ```text
+    /// self.size_base
+    ///     + round_up(size_phase + bytes + elems * elem_size, size_align)
+    /// ```
+    ///
+    /// Here, `elem_size` is the replacement element size passed to this
+    /// method. The returned layout preserves the physical slice offset
+    /// `self.offset` and the rounding alignment; advancing changes the size
+    /// calculation.
+    ///
+    /// Returns `None` if advancing cannot produce representable normalized
+    /// components. Even when those components fit, evaluating the rounded
+    /// object size may overflow for some or all trailing slice lengths.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|result| {
+        let expected_offset = self.size_offset().checked_add(bytes);
+        match result {
+            Some(advanced) => {
+                let align = self.size_rounding_align_and_phase.align();
+                expected_offset == Some(advanced.size_offset())
+                    && advanced.offset == self.offset
+                    && advanced.elem_size == elem_size
+                    && advanced.size_rounding_align_and_phase.align() == align
+                    && (advanced.size_base & (align.get() - 1)) == (self.size_base & (align.get() - 1))
+            }
+            None => expected_offset.is_none(),
+        }
+    }))]
+    const fn advance(self, bytes: usize, elem_size: usize) -> Option<Self> {
+        // ```aeneas
+        // model:
+        //   def layout.TrailingSliceLayoutUsize.advance
+        //     (self : layout.TrailingSliceLayout Std.Usize) (bytes : Std.Usize)
+        //     (elem_size : Std.Usize) :
+        //     Result (Option (layout.TrailingSliceLayout Std.Usize))
+        //     := do
+        //     let (size_align, size_phase) ←
+        //       layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+        //     let i ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+        //     let align_mask ← i - 1#usize
+        //     let i1 ← core.num.Usize.MAX - self.size_base
+        //     let phase_capacity ← lift (i1 ||| align_mask)
+        //     let max_advance ← phase_capacity - size_phase
+        //     if bytes > max_advance
+        //     then ok none
+        //     else
+        //       let advanced_phase ← size_phase + bytes
+        //       let normalized_phase ← lift (advanced_phase &&& align_mask)
+        //       let whole_bytes ←
+        //         util.round_down_to_next_multiple_of_alignment advanced_phase size_align
+        //       let size_base ← self.size_base + whole_bytes
+        //       let raap ← layout.RoundingAlignAndPhase.new size_align normalized_phase
+        //       ok (some
+        //         { self with elem_size, size_base, size_rounding_align_and_phase := raap })
+        // proof:
+        //   contract advance_spec (self : layout.TrailingSliceLayout Usize) (bytes elem : Usize)
+        //     for layout.TrailingSliceLayoutUsize.advance self bytes elem
+        //     requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //     ensures result => match result with
+        //       | none => Usize.max < ((trailingFormula self).advance bytes.val elem.val).base
+        //       | some t => trailingFormula t = (trailingFormula self).advance bytes.val elem.val ∧
+        //         ((trailingFormula self).advance bytes.val elem.val).base ≤ Usize.max
+        //     proof:
+        //       unfold layout.TrailingSliceLayoutUsize.advance
+        //       step with encoding_components_spec _ hn as ⟨a, p, ha, hp, hsum, halign, hphase⟩
+        //       have hv := trailing_view self a.val.val p.val ha hp hsum.symm
+        //       have apos := Nat.pos_of_isPowerOfTwo ha
+        //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //       step with Usize.sub_spec (show (1#usize).val ≤ a.val.val by simpa using (show 1 ≤ a.val.val by omega)) as ⟨mask, hm, _⟩
+        //       step with Usize.sub_spec (show self.size_base.val ≤ core.num.Usize.MAX.val by scalar_tac) as ⟨available, hav, _⟩
+        //       let pc := available ||| mask
+        //       have hpc : pc.val = (Usize.max - self.size_base.val) -
+        //           (Usize.max - self.size_base.val) % a.val.val + (a.val.val - 1) := by
+        //         obtain ⟨k, hk⟩ := ha
+        //         rw [UScalar.val_or, hm, hav]
+        //         rw [hk, fill_low_bits]
+        //       have hpbound : p.val ≤ pc.val := by
+        //         have hor : mask.val ≤ pc.val := by
+        //           rw [UScalar.val_or]
+        //           exact Nat.right_le_or
+        //         omega
+        //       simp only [lift, bind_ok]
+        //       step with Usize.sub_spec hpbound as ⟨advance, hadv, _⟩
+        //       dsimp only [pc] at *
+        //       simp only [UScalar.lt_equiv]
+        //       split
+        //       · rename_i hlarge
+        //         simp only [WP.spec_ok, hv, LayoutMath.Formula.advance]
+        //         have hcap := LayoutMath.floor_capacity (p.val + bytes.val)
+        //           (Usize.max - self.size_base.val) a.val.val apos
+        //         have hbase : self.size_base.val ≤ Usize.max := by scalar_tac
+        //         have hrem := Nat.mod_le (p.val + bytes.val) a.val.val
+        //         omega
+        //       · rename_i hsmall
+        //         have hshift : p.val + bytes.val ≤ (available ||| mask).val := by omega
+        //         have hword : (available ||| mask).val ≤ Usize.max := by
+        //           have h := UScalar.hSize (available ||| mask)
+        //           simp only [UScalar.size, Usize.max, Usize.numBits, UScalarTy.Usize_numBits_eq] at h ⊢
+        //           have := Nat.two_pow_pos System.Platform.numBits
+        //           omega
+        //         step with Usize.add_spec (x := p) (y := bytes) (by omega) as ⟨shifted, hshifted⟩
+        //         have hlow : (shifted &&& mask).val = shifted.val % a.val.val := by
+        //           obtain ⟨k, hk⟩ := ha
+        //           rw [UScalar.val_and, hm, hk, Nat.and_two_pow_sub_one_eq_mod]
+        //         step with round_down_spec shifted a ha as ⟨whole, _, hwhole, _, _, _⟩
+        //         have hbase : self.size_base.val + whole.val ≤ Usize.max := by
+        //           have hcap := (LayoutMath.floor_capacity (p.val + bytes.val)
+        //             (Usize.max - self.size_base.val) a.val.val apos).mpr (by omega)
+        //           rw [hwhole, hshifted]
+        //           have hb : self.size_base.val ≤ Usize.max := by scalar_tac
+        //           omega
+        //         step with Usize.add_spec (x := self.size_base) (y := whole) hbase as ⟨base, hb⟩
+        //         step with encoding_new_spec a (shifted &&& mask) ha (by rw [hlow]; exact Nat.mod_lt _ apos) as ⟨encoded, he⟩
+        //         have hnew := trailing_view
+        //           ({ self with elem_size := elem, size_base := base, size_rounding_align_and_phase := encoded })
+        //           a.val.val (shifted.val % a.val.val) ha (Nat.mod_lt _ apos) (by rw [he, hlow])
+        //         simp only [hnew, hv, LayoutMath.Formula.advance]
+        //         constructor
+        //         · rw [hshifted, hb, hwhole, hshifted]
+        //           congr 1
+        //           have := Nat.mod_le (p.val + bytes.val) a.val.val
+        //           omega
+        //         · rw [hwhole, hshifted] at hbase
+        //           have := Nat.mod_le (p.val + bytes.val) a.val.val
+        //           omega
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(TrailingSliceLayout::advance)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<TrailingSliceLayout>().advance(kani::any(), kani::any());
+        }
+
+        let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
+
+        // Advancing replaces the phase inside `round_up` with `size_phase +
+        // bytes`. To normalize this sum, separate it into whole alignment units
+        // and a remainder. The whole units can move outside `round_up` into the
+        // base; the remainder becomes the new phase.
+        //
+        // Since `size_align` is a nonzero power of two, `align_mask` selects
+        // exactly the bits representing a remainder modulo `size_align`.
+        // Nonzero `size_align` also makes this subtraction representable.
+        #[allow(clippy::arithmetic_side_effects)]
+        let align_mask = size_align.get() - 1;
+
+        // The base can increase by at most `usize::MAX - self.size_base`. Since
+        // only whole alignment units move into the base, the largest
+        // transferable contribution is:
+        //
+        //   whole_capacity
+        //       = round_down(usize::MAX - self.size_base, size_align).
+        //
+        // A remainder up to `align_mask` stays in the phase and consumes no
+        // base capacity. Thus the largest advanced phase that can be split into
+        // representable normalized components is `phase_capacity =
+        // whole_capacity + align_mask`. Setting the low bits of the remaining
+        // base capacity computes exactly that sum. Its two terms have disjoint
+        // set bits, so it cannot overflow. Any larger sum would transfer more
+        // whole units than the base can hold.
+        #[allow(clippy::arithmetic_side_effects)]
+        let phase_capacity = (usize::MAX - self.size_base) | align_mask;
+
+        // The existing phase already occupies `size_phase` bytes of this
+        // capacity. Subtracting it gives the greatest permitted increment:
+        //
+        //   bytes <= max_advance
+        //       iff size_phase + bytes <= phase_capacity.
+        //
+        // Since `phase_capacity >= align_mask >= size_phase`, the subtraction
+        // cannot underflow.
+        #[allow(clippy::arithmetic_side_effects)]
+        let max_advance = phase_capacity - size_phase;
+        if bytes > max_advance {
+            return None;
+        }
+
+        // This is the fixed term inside rounding after the requested
+        // advancement, before normalization. The check above proves `size_phase
+        // + bytes <= phase_capacity <= usize::MAX`, so the addition is
+        // representable.
+        #[allow(clippy::arithmetic_side_effects)]
+        let advanced_phase = size_phase + bytes;
+
+        // Taking the remainder retains precisely the part that cannot move
+        // outside rounding as whole alignment units. In particular, `0 <=
+        // normalized_phase < size_align`, as required for the new rounding
+        // parameters.
+        let normalized_phase = advanced_phase & align_mask;
+
+        // Rounding down removes precisely the remainder retained in the
+        // phase, so `whole_bytes = advanced_phase - normalized_phase`.
+        let whole_bytes =
+            util::round_down_to_next_multiple_of_alignment(advanced_phase, size_align);
+
+        // Because `advanced_phase <= phase_capacity`, we have
+        // `whole_bytes <= whole_capacity <= usize::MAX - self.size_base`.
+        // Adding this transferred contribution to the base therefore fits.
+        #[allow(clippy::arithmetic_side_effects)]
+        let size_base = self.size_base + whole_bytes;
+
+        // To verify the returned formula, let `trailing_size = elems *
+        // elem_size` and evaluate the following over the nonnegative integers.
+        // Since `whole_bytes` is a multiple of `size_align`, it can move back
+        // inside `round_up` without changing the result:
+        //
+        //   size_base + round_up(normalized_phase + trailing_size, size_align)
+        //       = self.size_base
+        //           + round_up(whole_bytes + normalized_phase + trailing_size, size_align)
+        //       = self.size_base
+        //           + round_up(size_phase + bytes + trailing_size, size_align).
+        //
+        // This is the requested advanced formula. The replacement element size
+        // supplies its new coefficient of `elems`; `offset` retains the
+        // caller's field-placement description.
+        Some(Self {
+            offset: self.offset,
+            elem_size,
+            size_base,
+            size_rounding_align_and_phase: RoundingAlignAndPhase::new(size_align, normalized_phase),
+        })
+    }
 }
 
 impl SizeInfo {
@@ -73,18 +1416,176 @@ impl SizeInfo {
     #[allow(unused)]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
+    #[cfg_attr(kani, kani::ensures(|result| match (*self, *result) {
+        (SizeInfo::Sized { size }, Some(SizeInfo::Sized { size: converted })) => {
+            size == converted
+        }
+        (SizeInfo::SliceDst(original), Some(SizeInfo::SliceDst(converted))) => {
+            converted.elem_size.get() == original.elem_size
+                && converted.offset == original.offset
+                && converted.size_base == original.size_base
+                && converted.size_rounding_align_and_phase == original.size_rounding_align_and_phase
+        }
+        (SizeInfo::SliceDst(original), None) => original.elem_size == 0,
+        _ => false,
+    }))]
     const fn try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
+        // ```aeneas
+        // model:
+        //   def layout.SizeInfoUsize.try_to_nonzero_elem_size
+        //     (self : layout.SizeInfo Std.Usize) :
+        //     Result (Option (layout.SizeInfo (core.num.nonzero.NonZero Std.Usize
+        //       core.num.niche_types.NonZeroUsizeInner)))
+        //     := do
+        //     match self with
+        //     | layout.SizeInfo.Sized size => ok (some (layout.SizeInfo.Sized size))
+        //     | layout.SizeInfo.SliceDst tsl =>
+        //       let o ←
+        //         core.num.nonzero.NonZero.new
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //           tsl.elem_size
+        //       match o with
+        //       | none => ok none
+        //       | some elem_size =>
+        //         ok (some (layout.SizeInfo.SliceDst
+        //           {
+        //             offset := tsl.offset,
+        //             elem_size,
+        //             size_base := tsl.size_base,
+        //             size_rounding_align_and_phase := tsl.size_rounding_align_and_phase
+        //           }))
+        // proof:
+        //   contract try_nonzero_spec (self : layout.SizeInfo Usize)
+        //     for layout.SizeInfoUsize.try_to_nonzero_elem_size self
+        //     ensures r => match self with
+        //       | .Sized size => r = some (.Sized size)
+        //       | .SliceDst tail =>
+        //         if tail.elem_size = 0#usize then r = none else
+        //           ∃ t, r = some (.SliceDst t) ∧ t.offset = tail.offset ∧
+        //             t.size_base = tail.size_base ∧
+        //             t.size_rounding_align_and_phase = tail.size_rounding_align_and_phase ∧
+        //             t.elem_size.val = tail.elem_size
+        //     proof:
+        //       cases self with
+        //       | Sized size => simp [layout.SizeInfoUsize.try_to_nonzero_elem_size]
+        //       | SliceDst tail =>
+        //         unfold layout.SizeInfoUsize.try_to_nonzero_elem_size core.num.nonzero.NonZero.new
+        //         by_cases hz : tail.elem_size = 0#usize
+        //         · simp only [cast_eq, hz, ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+        //         · simp only [cast_eq, hz, ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+        //           exact ⟨_, rfl, rfl, rfl, rfl, rfl⟩
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(SizeInfo::try_to_nonzero_elem_size)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<SizeInfo>().try_to_nonzero_elem_size();
+        }
+
         Some(match *self {
             SizeInfo::Sized { size } => SizeInfo::Sized { size },
-            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+            SizeInfo::SliceDst(TrailingSliceLayout {
+                offset,
+                elem_size,
+                size_base,
+                size_rounding_align_and_phase,
+            }) => {
                 if let Some(elem_size) = NonZeroUsize::new(elem_size) {
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        offset,
+                        elem_size,
+                        size_base,
+                        size_rounding_align_and_phase,
+                    })
                 } else {
                     return None;
                 }
             }
         })
     }
+}
+
+/// Returns the largest number of `elem_size`-byte elements which fit in
+/// `bytes`, along with the number of bytes those elements occupy.
+#[cfg_attr(
+    kani,
+    kani::ensures(|&(elems, used)| {
+        (match elems.checked_mul(elem_size.get()) {
+            Some(product) => {
+                product == used && used <= bytes && bytes - used < elem_size.get()
+            }
+            None => false,
+        }) && used
+            .checked_add(elem_size.get())
+            .map(|next_used| next_used > bytes)
+            .unwrap_or(true)
+    })
+)]
+#[inline(always)]
+const fn max_elems_for_bytes(bytes: usize, elem_size: NonZeroUsize) -> (usize, usize) {
+    // ```aeneas
+    // model:
+    //   def layout.max_elems_for_bytes
+    //     (bytes : Std.Usize)
+    //     (elem_size : core.num.nonzero.NonZero Std.Usize
+    //     core.num.niche_types.NonZeroUsizeInner) :
+    //     Result (Std.Usize × Std.Usize)
+    //     := do
+    //     let i ←
+    //       core.num.nonzero.NonZero.get
+    //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner elem_size
+    //     let elems ← bytes / i
+    //     let o ← lift (Usize.checked_mul elems i)
+    //     match o with
+    //     | none => fail panic
+    //     | some used => ok (elems, used)
+    // proof:
+    //   contract max_elems_for_bytes_spec (bytes : Usize) (elem : NonZeroUsize)
+    //     for layout.max_elems_for_bytes bytes elem
+    //     requires hn : 0 < elem.val.val
+    //     ensures (elems, used) =>
+    //       elems.val = bytes.val / elem.val.val ∧ used.val = elems.val * elem.val.val ∧
+    //       used ≤ bytes ∧ bytes.val < (elems.val + 1) * elem.val.val ∧
+    //       (∀ n : Nat, n * elem.val.val ≤ bytes.val ↔ n ≤ elems.val)
+    //     proof:
+    //       unfold layout.max_elems_for_bytes
+    //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+    //       step with Usize.div_spec bytes (y := elem.val) (by omega) as ⟨elems, he⟩
+    //       have hfit : elems.val * elem.val.val ≤ bytes.val := by
+    //         rw [he, Nat.mul_comm]
+    //         exact Nat.mul_div_le _ _
+    //       have hav : bytes.val ≤ Usize.max := by scalar_tac
+    //       have hmul := Usize.checked_mul_bv_spec elems elem.val
+    //       cases hm : Usize.checked_mul elems elem.val with
+    //       | none =>
+    //         simp only [hm] at hmul
+    //         omega
+    //       | some used =>
+    //         simp only [hm] at hmul
+    //         simp only [lift, bind_ok, WP.spec_ok]
+    //         refine ⟨he, hmul.2.1, (UScalar.le_equiv _ _).mpr (by omega), ?_, ?_⟩
+    //         · rw [he, Nat.mul_comm]
+    //           exact Nat.lt_mul_div_succ _ hn
+    //         · intro n
+    //           rw [he]
+    //           exact (Nat.le_div_iff_mul_le hn).symm
+    // ```
+
+    #[cfg(kani)]
+    #[kani::proof_for_contract(max_elems_for_bytes)]
+    #[kani::solver(kissat)]
+    fn proof() {
+        max_elems_for_bytes(kani::any(), kani::any());
+    }
+
+    #[allow(clippy::arithmetic_side_effects)]
+    let elems = bytes / elem_size.get();
+    let used = match elems.checked_mul(elem_size.get()) {
+        Some(used) => used,
+        None => const_unreachable!(),
+    };
+    (elems, used)
 }
 
 #[doc(hidden)]
@@ -97,6 +1598,7 @@ pub enum CastType {
 }
 
 #[cfg_attr(test, derive(Debug))]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
 pub(crate) enum MetadataCastError {
     Alignment,
     Size,
@@ -128,7 +1630,7 @@ impl DstLayout {
     ///   2<sup>29</sup>.
     #[cfg(not(kani))]
     #[cfg(not(target_pointer_width = "16"))]
-    pub(crate) const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 28) {
+    pub(crate) const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 29) {
         Some(max_align) => max_align,
         None => const_unreachable!(),
     };
@@ -164,7 +1666,31 @@ impl DstLayout {
     /// shallow padding, unsafe code may assume that the result of this method
     /// accurately reflects the size, alignment, and lack of static shallow
     /// padding of that type.
+    #[cfg_attr(kani, kani::ensures(|result| {
+        result.align == self.align && result.size_info == self.size_info
+            && result.statically_shallow_unpadded
+    }))]
     const fn assume_shallow_unpadded(self) -> Self {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.assume_shallow_unpadded
+        //     (self : layout.DstLayout) : Result layout.DstLayout := do
+        //     ok { self with statically_shallow_unpadded := true }
+        // proof:
+        //   contract assume_shallow_unpadded_spec (self : layout.DstLayout)
+        //     for layout.DstLayout.assume_shallow_unpadded self
+        //     ensures r => r.align = self.align ∧ r.size_info = self.size_info ∧ r.statically_shallow_unpadded = true
+        //     proof:
+        //       simp only [layout.DstLayout.assume_shallow_unpadded, WP.spec_ok, and_self]
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::assume_shallow_unpadded)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<DstLayout>().assume_shallow_unpadded();
+        }
+
         Self { statically_shallow_unpadded: true, ..self }
     }
 
@@ -182,7 +1708,65 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
+    #[cfg_attr(kani, kani::requires(repr_align.map_or(true, |align| align.is_power_of_two())))]
+    #[cfg_attr(kani, kani::ensures(|result| {
+        result.align == repr_align.unwrap_or(Self::MIN_ALIGN)
+            && result.size_info == SizeInfo::Sized { size: 0 }
+            && result.statically_shallow_unpadded
+    }))]
     pub const fn new_zst(repr_align: Option<NonZeroUsize>) -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.new_zst
+        //     (repr_align : Option (core.num.nonzero.NonZero Std.Usize
+        //     core.num.niche_types.NonZeroUsizeInner)) :
+        //     Result layout.DstLayout
+        //     := do
+        //     let align ←
+        //       match repr_align with
+        //       | none => layout.DstLayout.MIN_ALIGN
+        //       | some align1 => ok align1
+        //     let i ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+        //     let b ← core.num.Usize.is_power_of_two i
+        //     massert b
+        //     ok
+        //       {
+        //         align,
+        //         size_info := (layout.SizeInfo.Sized 0#usize),
+        //         statically_shallow_unpadded := true
+        //       }
+        // proof:
+        //   contract new_zst_spec (repr_align : Option NonZeroUsize)
+        //     for layout.DstLayout.new_zst repr_align
+        //     requires hp : ∀ a ∈ repr_align, a.val.val.isPowerOfTwo
+        //     ensures r => r.align = repr_align.getD ⟨1#usize⟩ ∧
+        //       r.size_info = .Sized 0#usize ∧ r.statically_shallow_unpadded = true
+        //     proof:
+        //       unfold layout.DstLayout.new_zst
+        //       have ha : (repr_align.getD ⟨1#usize⟩).val.val.isPowerOfTwo := by
+        //         cases repr_align with
+        //         | none => exact ⟨0, by simp⟩
+        //         | some a => exact hp a rfl
+        //       cases repr_align
+        //       all_goals
+        //         simp only [min_align_eq, Option.getD_none, Option.getD_some,
+        //           core.num.nonzero.NonZero.get, bind_ok] at ha ⊢
+        //         step as ⟨b, hb⟩
+        //         have hbt : b = true := by
+        //           have hb' : (b = true) = True := by simpa only [ha, Nat.isPowerOfTwo_one] using hb
+        //           exact Eq.mpr hb' trivial
+        //         simp [massert, hbt, bind_ok, WP.spec_ok]
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::new_zst)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            let _ = DstLayout::new_zst(kani::any());
+        }
+
         let align = match repr_align {
             Some(align) => align,
             None => Self::MIN_ALIGN,
@@ -206,7 +1790,60 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
+    #[cfg_attr(kani, kani::ensures(|result| {
+        result.align.get() == mem::align_of::<T>()
+            && result.size_info == SizeInfo::Sized { size: mem::size_of::<T>() }
+            && result.statically_shallow_unpadded == false
+    }))]
     pub const fn for_type<T>() -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.for_type (T : Type) : Result layout.DstLayout := do
+        //     let i ← core.mem.align_of T
+        //     let o ←
+        //       core.num.nonzero.NonZero.new
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner i
+        //     match o with
+        //     | none => fail panic
+        //     | some align =>
+        //       let i1 ← core.mem.size_of T
+        //       ok
+        //         {
+        //           align,
+        //           size_info := (layout.SizeInfo.Sized i1),
+        //           statically_shallow_unpadded := false
+        //         }
+        // proof:
+        //   contract for_type_spec (T : Type) (size align : Usize)
+        //     for layout.DstLayout.for_type T
+        //     requires hs : core.mem.size_of T = .ok size
+        //     requires ha : core.mem.align_of T = .ok align
+        //     requires hn : 0 < align.val
+        //     ensures r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = false
+        //     proof:
+        //       have haz : align ≠ 0#usize := by
+        //         intro h
+        //         have hv := congrArg UScalar.val h
+        //         change align.val = 0 at hv
+        //         omega
+        //       unfold layout.DstLayout.for_type
+        //       rw [ha]
+        //       simp only [bind_ok, core.num.nonzero.NonZero.new, cast_eq, haz,
+        //         ↓reduceDIte, ↓reduceIte, hs, WP.spec_ok, and_self]
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::for_type::<()>)]
+        fn proof_zst() {
+            let _ = DstLayout::for_type::<()>();
+        }
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::for_type::<(u8, u64)>)]
+        fn proof_padded() {
+            let _ = DstLayout::for_type::<(u8, u64)>();
+        }
+
         // SAFETY: `align` is correct by construction. `T: Sized`, and so it is
         // sound to initialize `size_info` to `SizeInfo::Sized { size }`; the
         // `size` field is also correct by construction. `unpadded` can safely
@@ -221,16 +1858,59 @@ impl DstLayout {
         }
     }
 
-    /// Constructs a `DstLayout` which describes a `T` that does not contain
-    /// padding.
+    /// Produces `T`'s size and alignment with static shallow padding assumed
+    /// absent.
+    ///
+    /// This method records the assumption without checking `T` for padding.
+    /// It can be used to ignore padding within a field when computing padding
+    /// introduced by its enclosing struct.
     ///
     /// # Safety
     ///
-    /// Unsafe code may assume that `DstLayout` is the correct layout for `T`.
+    /// Unsafe code may rely on the result's size and alignment being correct
+    /// for `T`. Relying on its recorded absence of static shallow padding
+    /// requires an independent justification that `T` lacks such padding.
     #[doc(hidden)]
     #[must_use]
     #[inline]
+    #[cfg_attr(kani, kani::ensures(|result| {
+        result.align.get() == mem::align_of::<T>()
+            && result.size_info == SizeInfo::Sized { size: mem::size_of::<T>() }
+            && result.statically_shallow_unpadded == true
+    }))]
     pub const fn for_unpadded_type<T>() -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.for_unpadded_type
+        //     (T : Type) : Result layout.DstLayout := do
+        //     let dl ← layout.DstLayout.for_type T
+        //     layout.DstLayout.assume_shallow_unpadded dl
+        // proof:
+        //   contract for_unpadded_type_spec (T : Type) (size align : Usize)
+        //     for layout.DstLayout.for_unpadded_type T
+        //     requires hs : core.mem.size_of T = .ok size
+        //     requires ha : core.mem.align_of T = .ok align
+        //     requires hn : 0 < align.val
+        //     ensures r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = true
+        //     proof:
+        //       unfold layout.DstLayout.for_unpadded_type
+        //       step with for_type_spec T size align hs ha hn as ⟨dl, halign, hsize, _⟩
+        //       step with assume_shallow_unpadded_spec dl as ⟨r, hr, hsi, hp⟩
+        //       exact ⟨hr ▸ halign, hsi ▸ hsize, hp⟩
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::for_unpadded_type::<()>)]
+        fn proof_zst() {
+            let _ = DstLayout::for_unpadded_type::<()>();
+        }
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::for_unpadded_type::<(u8, u64)>)]
+        fn proof_padded() {
+            let _ = DstLayout::for_unpadded_type::<(u8, u64)>();
+        }
+
         Self::for_type::<T>().assume_shallow_unpadded()
     }
 
@@ -239,7 +1919,82 @@ impl DstLayout {
     /// # Safety
     ///
     /// Unsafe code may assume that `DstLayout` is the correct layout for `[T]`.
+    #[cfg_attr(kani, kani::ensures(|result| {
+        result.align.get() == mem::align_of::<T>() && result.statically_shallow_unpadded
+            && matches!(result.size_info, SizeInfo::SliceDst(trailing)
+                if trailing.offset == 0 && trailing.size_base == 0
+                    && trailing.elem_size == mem::size_of::<T>()
+                    && trailing.size_rounding_align_and_phase.components() == (result.align, 0))
+    }))]
     pub(crate) const fn for_slice<T>() -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.for_slice (T : Type) : Result layout.DstLayout := do
+        //     let i ← core.mem.align_of T
+        //     let o ←
+        //       core.num.nonzero.NonZero.new
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner i
+        //     match o with
+        //     | none => fail panic
+        //     | some align =>
+        //       let i1 ← core.mem.size_of T
+        //       let raap ← layout.RoundingAlignAndPhase.new align 0#usize
+        //       ok
+        //         {
+        //           align,
+        //           size_info :=
+        //             (layout.SizeInfo.SliceDst
+        //               {
+        //                 offset := 0#usize,
+        //                 elem_size := i1,
+        //                 size_base := 0#usize,
+        //                 size_rounding_align_and_phase := raap
+        //               }),
+        //           statically_shallow_unpadded := true
+        //         }
+        // proof:
+        //   contract for_slice_spec (T : Type) (size align : Usize)
+        //     for layout.DstLayout.for_slice T
+        //     requires hs : core.mem.size_of T = .ok size
+        //     requires ha : core.mem.align_of T = .ok align
+        //     requires hp : align.val.isPowerOfTwo
+        //     ensures r => r.align.val = align ∧ r.statically_shallow_unpadded = true ∧
+        //       ∃ tail, r.size_info = layout.SizeInfo.SliceDst tail ∧
+        //         tail.offset = 0#usize ∧ tail.elem_size = size ∧ tail.size_base = 0#usize ∧
+        //         tail.size_rounding_align_and_phase.val.val = align.val
+        //     proof:
+        //       have hpos := Nat.pos_of_isPowerOfTwo hp
+        //       have haz : align ≠ 0#usize := by
+        //         intro h
+        //         have hv := congrArg UScalar.val h
+        //         change align.val = 0 at hv
+        //         omega
+        //       unfold layout.DstLayout.for_slice
+        //       rw [ha]
+        //       simp only [bind_ok, core.num.nonzero.NonZero.new, cast_eq, haz,
+        //         ↓reduceDIte, ↓reduceIte, hs]
+        //       step with encoding_new_spec ⟨align⟩ 0#usize hp (by simpa using hpos) as ⟨encoded, he⟩
+        //       refine ⟨_, rfl, rfl, rfl, rfl, ?_⟩
+        //       simpa using he
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::for_slice::<()>)]
+        fn proof_zst() {
+            let _ = DstLayout::for_slice::<()>();
+        }
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::for_slice::<(u8, u64)>)]
+        fn proof_padded() {
+            let _ = DstLayout::for_slice::<(u8, u64)>();
+        }
+
+        let align = match NonZeroUsize::new(mem::align_of::<T>()) {
+            Some(align) => align,
+            None => const_unreachable!(),
+        };
+
         // SAFETY: The alignment of a slice is equal to the alignment of its
         // element type, and so `align` is initialized correctly.
         //
@@ -249,13 +2004,12 @@ impl DstLayout {
         // construction. Since `[T]` is a (degenerate case of a) slice DST, it
         // is correct to initialize `size_info` to `SizeInfo::SliceDst`.
         DstLayout {
-            align: match NonZeroUsize::new(mem::align_of::<T>()) {
-                Some(align) => align,
-                None => const_unreachable!(),
-            },
+            align,
             size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                 offset: 0,
                 elem_size: mem::size_of::<T>(),
+                size_base: 0,
+                size_rounding_align_and_phase: RoundingAlignAndPhase::new(align, 0),
             }),
             statically_shallow_unpadded: true,
         }
@@ -273,31 +2027,102 @@ impl DstLayout {
     /// alignment modifiers and fields corresponding to that definition, the
     /// resulting `DstLayout` will correctly encode the layout of that struct.
     ///
+    /// This guarantee uses one explicit compatibility premise for generic
+    /// indirection: while Rust accepts an instantiation which transitively
+    /// places a `repr(align)` type inside a `repr(packed)` type, that
+    /// instantiation follows the otherwise-applicable `repr(C)`,
+    /// `repr(packed)`, and inner-type layout rules. The Reference prohibits the
+    /// direct form, and Rust's continued acceptance and layout behavior are
+    /// outside the algebra proved by this implementation. Re-audit if the
+    /// compiler rejects such an instantiation or assigns it a different
+    /// layout.
+    ///
     /// We make no guarantees to the behavior of this method when it is invoked
     /// with arguments that cannot correspond to a valid `repr(C)` struct.
     #[must_use]
     #[inline]
+    #[cfg_attr(kani, kani::requires(proofs::repr_c_layout(repr_align, repr_packed, fields).is_some()))]
+    #[cfg_attr(kani, kani::ensures(|&result| {
+        Some(result) == proofs::repr_c_layout(repr_align, repr_packed, fields)
+    }))]
     pub const fn for_repr_c_struct(
         repr_align: Option<NonZeroUsize>,
         repr_packed: Option<NonZeroUsize>,
         fields: &[DstLayout],
     ) -> DstLayout {
-        let mut layout = DstLayout::new_zst(repr_align);
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.for_repr_c_struct
+        //     (repr_align : Option (core.num.nonzero.NonZero Std.Usize
+        //     core.num.niche_types.NonZeroUsizeInner))
+        //     (repr_packed : Option (core.num.nonzero.NonZero Std.Usize
+        //     core.num.niche_types.NonZeroUsizeInner)) (fields : Slice layout.DstLayout) :
+        //     Result layout.DstLayout
+        //     := do
+        //     let result ← layout.DstLayout.new_zst repr_align
+        //     let result1 ←
+        //       layout.DstLayout.for_repr_c_struct_loop repr_packed fields result 0#usize
+        //     layout.DstLayout.pad_to_align result1
+        // proof:
+        //   contract for_repr_c_struct_spec (repr_align packed : Option NonZeroUsize) (fields : Slice layout.DstLayout)
+        //     for layout.DstLayout.for_repr_c_struct repr_align packed fields
+        //     requires ha : ∀ a ∈ repr_align, alignmentDomain a.val.val
+        //     requires hp : ∀ a ∈ packed, alignmentDomain a.val.val
+        //     requires hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed
+        //     requires hlast : alignmentDomain
+        //       (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).align
+        //     requires hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+        //       packed fields.val.length).padFits Usize.max
+        //     ensures r => layoutValue r =
+        //       (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).pad
+        //     proof:
+        //       unfold layout.DstLayout.for_repr_c_struct
+        //       step with new_zst_spec repr_align (fun a h => (ha a h).1) as ⟨start, halign, hsize, hunpadded⟩
+        //       have hv : layoutValue start = constructionPrefix fields
+        //           (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed (0#usize).val := by
+        //         simp only [constructionPrefix, LayoutMath.LayoutValue.prefixValue, show (0#usize).val = 0 by simp,
+        //           List.take_zero, List.foldl_nil, layoutValue, hsize, hunpadded, halign,
+        //           initialAlignment, LayoutMath.LayoutValue.initial]
+        //         cases repr_align <;> rfl
+        //       have hc : canonicalLayout start := by simp only [canonicalLayout, hsize]
+        //       step with constructor_loop_spec packed fields _ start 0#usize hp hd (by simp) hv hc as ⟨complete, hv, hc⟩
+        //       step with pad_value_spec complete (by
+        //         have hh := congrArg LayoutMath.LayoutValue.align hv
+        //         change complete.align.val.val = _ at hh
+        //         rw [hh]
+        //         exact hlast.1) hc (by rw [hv]; exact hfit) as ⟨result, hr⟩
+        //       rw [hr, hv]
+        // ```
+
+        // This harness covers up to three fields, including an optional final
+        // DST. Arbitrary-length composition is not established by this bound.
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::for_repr_c_struct)]
+        #[kani::solver(kissat)]
+        #[kani::unwind(4)]
+        fn proof() {
+            let fields: [DstLayout; 3] = kani::any();
+            let len: usize = kani::any();
+            kani::assume(len <= fields.len());
+            let _ = DstLayout::for_repr_c_struct(kani::any(), kani::any(), &fields[..len]);
+        }
+
+        let mut result = DstLayout::new_zst(repr_align);
 
         let mut i = 0;
         #[allow(clippy::arithmetic_side_effects)]
         while i < fields.len() {
             #[allow(clippy::indexing_slicing)]
             let field = fields[i];
-            layout = layout.extend(field, repr_packed);
+            result = result.extend(field, repr_packed);
             i += 1;
         }
 
-        layout = layout.pad_to_align();
+        result = result.pad_to_align();
 
-        // SAFETY: `layout` accurately describes the layout of a `repr(C)`
+        // SAFETY: `result` accurately describes the result of a `repr(C)`
         // struct with `repr_align` or `repr_packed` alignment modifications and
-        // the given `fields`. The `layout` is constructed using a sequence of
+        // the given `fields`. The `result` is constructed using a sequence of
         // invocations of `DstLayout::{new_zst,extend,pad_to_align}`. The
         // documentation of these items vows that invocations in this manner
         // will accurately describe a type, so long as:
@@ -307,7 +2132,7 @@ impl DstLayout {
         //  - the presence of `repr_align` and `repr_packed` are correctly accounted for.
         //
         // We respect all three of these preconditions above.
-        layout
+        result
     }
 
     /// Like `Layout::extend`, this creates a layout that describes a record
@@ -338,7 +2163,256 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
+    #[cfg_attr(kani, kani::requires(proofs::extended_layout(self, field, repr_packed).is_some()))]
+    #[cfg_attr(kani, kani::ensures(|&result| {
+        Some(result) == proofs::extended_layout(self, field, repr_packed)
+    }))]
     pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.extend
+        //     (self : layout.DstLayout) (field : layout.DstLayout)
+        //     (repr_packed : Option (core.num.nonzero.NonZero Std.Usize
+        //     core.num.niche_types.NonZeroUsizeInner)) :
+        //     Result layout.DstLayout
+        //     := do
+        //     let max_align ←
+        //       match repr_packed with
+        //       | none => layout.DstLayout.THEORETICAL_MAX_ALIGN
+        //       | some max_align1 => ok max_align1
+        //     let i ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner max_align
+        //     let b ← core.num.Usize.is_power_of_two i
+        //     massert b
+        //     let i1 ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner self.align
+        //     let nz ← layout.DstLayout.CURRENT_MAX_ALIGN
+        //     let i2 ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner nz
+        //     massert (i1 <= i2)
+        //     let i3 ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner field.align
+        //     let i4 ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner nz
+        //     massert (i3 <= i4)
+        //     let _ ←
+        //       match repr_packed with
+        //       | none => ok none
+        //       | some repr_packed1 =>
+        //         do
+        //         let i5 ←
+        //           core.num.nonzero.NonZero.get
+        //             Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //             repr_packed1
+        //         let i6 ←
+        //           core.num.nonzero.NonZero.get
+        //             Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner nz
+        //         massert (i5 <= i6)
+        //         ok repr_packed
+        //     let field_align ← util.min field.align max_align
+        //     let align ← util.max self.align field_align
+        //     match self.size_info with
+        //     | layout.SizeInfo.Sized preceding_size =>
+        //       let padding ← util.padding_needed_for preceding_size field_align
+        //       let o ← lift (Usize.checked_add preceding_size padding)
+        //       match o with
+        //       | none => fail panic
+        //       | some offset =>
+        //         match field.size_info with
+        //         | layout.SizeInfo.Sized field_size =>
+        //           let o1 ← lift (Usize.checked_add offset field_size)
+        //           match o1 with
+        //           | none => fail panic
+        //           | some size =>
+        //             if self.statically_shallow_unpadded
+        //             then
+        //               if field.statically_shallow_unpadded
+        //               then
+        //                 ok
+        //                   {
+        //                     align,
+        //                     size_info := (layout.SizeInfo.Sized size),
+        //                     statically_shallow_unpadded := (padding = 0#usize)
+        //                   }
+        //               else
+        //                 ok
+        //                   {
+        //                     align,
+        //                     size_info := (layout.SizeInfo.Sized size),
+        //                     statically_shallow_unpadded := false
+        //                   }
+        //             else
+        //               ok
+        //                 {
+        //                   align,
+        //                   size_info := (layout.SizeInfo.Sized size),
+        //                   statically_shallow_unpadded := false
+        //                 }
+        //         | layout.SizeInfo.SliceDst tsl =>
+        //           let o1 ← lift (Usize.checked_add offset tsl.offset)
+        //           match o1 with
+        //           | none => fail panic
+        //           | some offset1 =>
+        //             let o2 ← lift (Usize.checked_add offset tsl.size_base)
+        //             match o2 with
+        //             | none => fail panic
+        //             | some base =>
+        //               if self.statically_shallow_unpadded
+        //               then
+        //                 if field.statically_shallow_unpadded
+        //                 then
+        //                   ok
+        //                     {
+        //                       align,
+        //                       size_info :=
+        //                         (layout.SizeInfo.SliceDst
+        //                           { tsl with offset := offset1, size_base := base }),
+        //                       statically_shallow_unpadded := (padding = 0#usize)
+        //                     }
+        //                 else
+        //                   ok
+        //                     {
+        //                       align,
+        //                       size_info :=
+        //                         (layout.SizeInfo.SliceDst
+        //                           { tsl with offset := offset1, size_base := base }),
+        //                       statically_shallow_unpadded := false
+        //                     }
+        //               else
+        //                 ok
+        //                   {
+        //                     align,
+        //                     size_info :=
+        //                       (layout.SizeInfo.SliceDst
+        //                         { tsl with offset := offset1, size_base := base }),
+        //                     statically_shallow_unpadded := false
+        //                   }
+        //     | layout.SizeInfo.SliceDst _ => fail panic
+        // proof:
+        //   contract extend_spec (self field : layout.DstLayout) (packed : Option NonZeroUsize) (size : Usize)
+        //     for layout.DstLayout.extend self field packed
+        //     requires hs : self.size_info = .Sized size
+        //     requires hself : self.align.val.val.isPowerOfTwo ∧ self.align.val.val ≤ 2 ^ 29
+        //     requires hfield : field.align.val.val.isPowerOfTwo ∧ field.align.val.val ≤ 2 ^ 29
+        //     requires hpacked : ∀ a ∈ packed, a.val.val.isPowerOfTwo ∧ a.val.val ≤ 2 ^ 29
+        //     requires hfit : match field.size_info with
+        //       | .Sized field_size => placement size field packed + field_size.val ≤ Usize.max
+        //       | .SliceDst t => placement size field packed + t.offset.val ≤ Usize.max ∧
+        //         placement size field packed + t.size_base.val ≤ Usize.max
+        //     ensures r => r.align.val.val = max self.align.val.val (fieldAlignment field packed) ∧
+        //       r.statically_shallow_unpadded = (self.statically_shallow_unpadded &&
+        //         field.statically_shallow_unpadded && decide (size.val % fieldAlignment field packed = 0)) ∧
+        //       match field.size_info with
+        //       | .Sized field_size => ∃ s, r.size_info = .Sized s ∧
+        //         s.val = placement size field packed + field_size.val
+        //       | .SliceDst t => ∃ u, r.size_info = .SliceDst u ∧
+        //         u.offset.val = placement size field packed + t.offset.val ∧
+        //         u.size_base.val = placement size field packed + t.size_base.val ∧
+        //         u.elem_size = t.elem_size ∧
+        //         u.size_rounding_align_and_phase = t.size_rounding_align_and_phase
+        //     proof:
+        //       unfold layout.DstLayout.extend
+        //       step with packing_limit_spec packed (fun a h => (hpacked a h).1) as ⟨limit, hl, hlpow⟩
+        //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //       step as ⟨b, hb⟩
+        //       have hbt : b = true := by
+        //         have hb' : (b = true) = True := by simpa only [hlpow] using hb
+        //         exact Eq.mpr hb' trivial
+        //       simp only [massert, hbt, if_true, bind_ok]
+        //       step with current_max_align_spec as ⟨maximum, hmaximum⟩
+        //       have hsa : self.align.val ≤ maximum.val := (UScalar.le_equiv _ _).mpr (by omega)
+        //       have hfa : field.align.val ≤ maximum.val := (UScalar.le_equiv _ _).mpr (by omega)
+        //       simp only [hsa, hfa, if_true, bind_ok]
+        //       have hpackcheck : layout.RoundingAlignAndPhase.new.match_1
+        //         (fun _ => Result (Option NonZeroUsize)) packed (fun _ => Result.ok none)
+        //         (fun a => do
+        //           if a.val ≤ maximum.val then Result.ok () else Result.fail .assertionFailure
+        //           Result.ok packed) = Result.ok packed := by
+        //         cases packed with
+        //         | none => rfl
+        //         | some a =>
+        //           have ha : a.val ≤ maximum.val := (UScalar.le_equiv _ _).mpr (by
+        //             have := (hpacked a rfl).2
+        //             omega)
+        //           simp only [ha, if_true, bind_ok]
+        //       rw [hpackcheck]
+        //       simp only [bind_ok]
+        //       step with min_spec field.align limit as ⟨fa, hmin, hchoice, _, _⟩
+        //       have hfp : fa.val.val.isPowerOfTwo := by
+        //         rcases hchoice with h | h
+        //         · simpa only [h] using hfield.1
+        //         · simpa only [h] using hlpow
+        //       have hfv : fa.val.val = fieldAlignment field packed := by
+        //         rw [hmin, Arithmetic.coe_min, hl]
+        //         rfl
+        //       step with max_spec self.align fa as ⟨align, hmax, _, _, _⟩
+        //       have halign : align.val.val = max self.align.val.val (fieldAlignment field packed) := by
+        //         rw [hmax, Arithmetic.coe_max, hfv]
+        //       rw [hs]
+        //       step with padding_lt_alignment size fa hfp as ⟨pad, _, hpad, _, _, hzero⟩
+        //       have ho : size.val + pad.val = placement size field packed := by
+        //         rw [hpad, hfv]
+        //         rfl
+        //       have hzero' : (pad = 0#usize) = (size.val % fieldAlignment field packed = 0) := by
+        //         apply propext
+        //         simpa only [UScalar.eq_equiv, show (0#usize).val = 0 by simp, hfv] using hzero
+        //       have hsum := Usize.checked_add_bv_spec size pad
+        //       cases hsum' : Usize.checked_add size pad with
+        //       | none =>
+        //         simp only [hsum'] at hsum
+        //         cases hf : field.size_info <;> simp only [hf] at hfit <;> omega
+        //       | some offset =>
+        //         simp only [hsum'] at hsum
+        //         simp only [lift, bind_ok]
+        //         have hoff : offset.val = placement size field packed := by omega
+        //         cases hf : field.size_info with
+        //         | Sized field_size =>
+        //           simp only [hf] at hfit
+        //           have hsized := Usize.checked_add_bv_spec offset field_size
+        //           cases ha : Usize.checked_add offset field_size with
+        //           | none => simp only [ha] at hsized; omega
+        //           | some total =>
+        //             simp only [ha] at hsized
+        //             simp only [ha, ]
+        //             cases self.statically_shallow_unpadded <;> cases field.statically_shallow_unpadded <;>
+        //               simp only [Bool.false_eq_true, Bool.false_and, Bool.true_and,
+        //                 if_false, if_true, WP.spec_ok, hzero']
+        //             all_goals
+        //               exact ⟨halign, by trivial, total, by trivial, by omega⟩
+        //         | SliceDst tail =>
+        //           simp only [hf] at hfit
+        //           have hoffset := Usize.checked_add_bv_spec offset tail.offset
+        //           cases hoffset' : Usize.checked_add offset tail.offset with
+        //           | none => simp only [hoffset'] at hoffset; omega
+        //           | some physical =>
+        //             simp only [hoffset'] at hoffset
+        //             simp only [hoffset', ]
+        //             have hbase := Usize.checked_add_bv_spec offset tail.size_base
+        //             cases hbase' : Usize.checked_add offset tail.size_base with
+        //             | none => simp only [hbase'] at hbase; omega
+        //             | some base =>
+        //               simp only [hbase'] at hbase
+        //               simp only []
+        //               cases self.statically_shallow_unpadded <;> cases field.statically_shallow_unpadded <;>
+        //                 simp only [Bool.false_eq_true, Bool.false_and, Bool.true_and,
+        //                   if_false, if_true, WP.spec_ok, hzero']
+        //               all_goals
+        //                 exact ⟨halign, by trivial, { tail with offset := physical, size_base := base },
+        //                   by trivial, by dsimp only; omega, by dsimp only; omega, rfl, rfl⟩
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::extend)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            let _ = kani::any::<DstLayout>().extend(kani::any(), kani::any());
+        }
+
         use util::{max, min, padding_needed_for};
 
         // If `repr_packed` is `None`, there are no alignment constraints, and
@@ -427,6 +2501,8 @@ impl DstLayout {
                         SizeInfo::SliceDst(TrailingSliceLayout {
                             offset: trailing_offset,
                             elem_size,
+                            size_base,
+                            size_rounding_align_and_phase,
                         }) => {
                             // If the trailing field is dynamically sized, so too
                             // will the resulting layout. The offset of the trailing
@@ -440,11 +2516,30 @@ impl DstLayout {
                             // panic otherwise (e.g., combining or aligning the
                             // components would create a size exceeding
                             // `usize::MAX`).
-                            let offset = match offset.checked_add(trailing_offset) {
+                            let trailing_offset = match offset.checked_add(trailing_offset) {
                                 Some(offset) => offset,
                                 None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
                             };
-                            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
+
+                            // Before normalization, the composite's size is:
+                            //
+                            //   offset + size_base
+                            //       + round_up(size_phase + elems * elem_size, size_align)
+                            //
+                            // `offset` does not participate in the rounding,
+                            // so it can be added directly to the normalized
+                            // base.
+                            let size_base = match offset.checked_add(size_base) {
+                                Some(base) => base,
+                                None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                            };
+
+                            SizeInfo::SliceDst(TrailingSliceLayout {
+                                offset: trailing_offset,
+                                elem_size,
+                                size_base,
+                                size_rounding_align_and_phase,
+                            })
                         }
                     },
                 )
@@ -459,18 +2554,11 @@ impl DstLayout {
     }
 
     /// Like `Layout::pad_to_align`, this routine rounds the size of this layout
-    /// up to the nearest multiple of this type's alignment or `repr_packed`
-    /// (whichever is less). This method leaves DST layouts unchanged, since the
-    /// trailing padding of DSTs is computed at runtime.
-    ///
-    /// The accompanying boolean is `true` if the resulting composition of
-    /// fields necessitated static (as opposed to dynamic) padding; otherwise
-    /// `false`.
+    /// up to the nearest multiple of this type's alignment. For DST layouts,
+    /// this updates the runtime size formula to account for trailing padding.
     ///
     /// In order to match the layout of a `#[repr(C)]` struct, this method
-    /// should be invoked after the invocations of [`DstLayout::extend`]. If
-    /// `self` corresponds to a type marked with `repr(packed(N))`, then
-    /// `repr_packed` should be set to `Some(N)`, otherwise `None`.
+    /// should be invoked after the invocations of [`DstLayout::extend`].
     ///
     /// This method cannot be used to match the layout of a record with the
     /// default representation, as that representation is mostly unspecified.
@@ -480,7 +2568,7 @@ impl DstLayout {
     /// If a (potentially hypothetical) valid `repr(C)` type begins with fields
     /// whose layout are `self` followed only by zero or more bytes of trailing
     /// padding (not included in `self`), then unsafe code may rely on
-    /// `self.pad_to_align(repr_packed)` producing a layout that correctly
+    /// `self.pad_to_align()` producing a layout that correctly
     /// encapsulates the layout of that type.
     ///
     /// We make no guarantees to the behavior of this method if `self` cannot
@@ -489,86 +2577,225 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
+    #[cfg_attr(kani, kani::requires(proofs::padded_layout(self).is_some()))]
+    #[cfg_attr(kani, kani::ensures(|&result| Some(result) == proofs::padded_layout(self)))]
     pub const fn pad_to_align(self) -> Self {
         // ```aeneas
         // model:
         //   def layout.DstLayout.pad_to_align
         //     (self : layout.DstLayout) : Result layout.DstLayout := do
-        //     let (static_padding, size_info) ←
-        //       match self.size_info with
-        //       | layout.SizeInfo.Sized unpadded_size =>
-        //         do
-        //         let padding ← util.padding_needed_for unpadded_size self.align
-        //         let o ← lift (Usize.checked_add unpadded_size padding)
+        //     match self.size_info with
+        //     | layout.SizeInfo.Sized unpadded_size =>
+        //       let padding ← util.padding_needed_for unpadded_size self.align
+        //       let o ← lift (Usize.checked_add unpadded_size padding)
+        //       match o with
+        //       | none => fail panic
+        //       | some size =>
+        //         if self.statically_shallow_unpadded
+        //         then
+        //           ok
+        //             {
+        //               self
+        //                 with
+        //                 size_info := (layout.SizeInfo.Sized size),
+        //                 statically_shallow_unpadded := (padding = 0#usize)
+        //             }
+        //         else ok { self with size_info := (layout.SizeInfo.Sized size) }
+        //     | layout.SizeInfo.SliceDst trailing =>
+        //       let (size_align, size_phase) ←
+        //         layout.RoundingAlignAndPhase.components
+        //           trailing.size_rounding_align_and_phase
+        //       let i ←
+        //         core.num.nonzero.NonZero.get
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+        //       let i1 ←
+        //         core.num.nonzero.NonZero.get
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //           self.align
+        //       if i < i1
+        //       then
+        //         let base_padding ←
+        //           util.padding_needed_for trailing.size_base size_align
+        //         let o ← lift (Usize.checked_add trailing.size_base base_padding)
         //         match o with
         //         | none => fail panic
-        //         | some size => ok (padding, layout.SizeInfo.Sized size)
-        //       | layout.SizeInfo.SliceDst _ => ok (0#usize, self.size_info)
-        //     if self.statically_shallow_unpadded
-        //     then
-        //       ok
-        //         {
-        //           self
-        //             with
-        //             size_info, statically_shallow_unpadded := (static_padding = 0#usize)
-        //         }
-        //     else ok { self with size_info }
+        //         | some base =>
+        //           let o1 ← lift (Usize.checked_add base size_phase)
+        //           match o1 with
+        //           | none => fail panic
+        //           | some bytes =>
+        //             let i2 ← i1 - 1#usize
+        //             let phase ← lift (bytes &&& i2)
+        //             let size_base ←
+        //               util.round_down_to_next_multiple_of_alignment bytes self.align
+        //             let raap ← layout.RoundingAlignAndPhase.new self.align phase
+        //             if self.statically_shallow_unpadded
+        //             then
+        //               ok
+        //                 {
+        //                   self
+        //                     with
+        //                     size_info :=
+        //                       (layout.SizeInfo.SliceDst
+        //                         {
+        //                           trailing
+        //                             with
+        //                             size_base, size_rounding_align_and_phase := raap
+        //                         }),
+        //                     statically_shallow_unpadded := (0#usize = 0#usize)
+        //                 }
+        //             else
+        //               ok
+        //                 {
+        //                   self
+        //                     with
+        //                     size_info :=
+        //                       (layout.SizeInfo.SliceDst
+        //                         {
+        //                           trailing
+        //                             with
+        //                             size_base, size_rounding_align_and_phase := raap
+        //                         })
+        //                 }
+        //       else
+        //         let padding ← util.padding_needed_for trailing.size_base self.align
+        //         let o ← lift (Usize.checked_add trailing.size_base padding)
+        //         match o with
+        //         | none => fail panic
+        //         | some base =>
+        //           if self.statically_shallow_unpadded
+        //           then
+        //             ok
+        //               {
+        //                 self
+        //                   with
+        //                   size_info :=
+        //                     (layout.SizeInfo.SliceDst
+        //                       { trailing with size_base := base }),
+        //                   statically_shallow_unpadded := (0#usize = 0#usize)
+        //               }
+        //           else
+        //             ok
+        //               {
+        //                 self
+        //                   with
+        //                   size_info :=
+        //                     (layout.SizeInfo.SliceDst
+        //                       { trailing with size_base := base })
+        //               }
         // proof:
         //   contract pad_to_align_spec (self : layout.DstLayout)
         //     for layout.DstLayout.pad_to_align self
-        //     requires h : match self.size_info with
-        //       | layout.SizeInfo.Sized size =>
-        //         let S : Nat := size
-        //         let A : Nat := self.align.val
-        //         A.isPowerOfTwo ∧ S + (A - S % A) % A ≤ Usize.max
-        //       | layout.SizeInfo.SliceDst _ => True
+        //     requires ha : self.align.val.val.isPowerOfTwo
+        //     requires hfit : match self.size_info with
+        //       | .Sized size => LayoutMath.roundUp size.val self.align.val.val ≤ Usize.max
+        //       | .SliceDst tail =>
+        //         0 < tail.size_rounding_align_and_phase.val.val ∧
+        //         (if (trailingFormula tail).align < self.align.val.val then
+        //           LayoutMath.roundUp tail.size_base.val (trailingFormula tail).align +
+        //             (trailingFormula tail).phase ≤ Usize.max
+        //          else LayoutMath.roundUp tail.size_base.val self.align.val.val ≤ Usize.max)
         //     ensures r => r.align = self.align ∧ match self.size_info with
-        //       | layout.SizeInfo.Sized size => ∃ padded,
-        //         r.size_info = layout.SizeInfo.Sized padded ∧
-        //         let S : Nat := size
-        //         let A : Nat := self.align.val
-        //         let R : Nat := padded
-        //         R = S + (A - S % A) % A ∧ S ≤ R ∧ R < S + A ∧ R % A = 0 ∧
-        //           (∀ q : Nat, S ≤ q → q % A = 0 → R ≤ q) ∧
-        //           r.statically_shallow_unpadded =
-        //             (self.statically_shallow_unpadded && decide (S % A = 0))
-        //       | layout.SizeInfo.SliceDst _ => r = self
+        //       | .Sized size => ∃ padded,
+        //         r.size_info = .Sized padded ∧ padded.val = LayoutMath.roundUp size.val self.align.val.val ∧
+        //         r.statically_shallow_unpadded = (self.statically_shallow_unpadded && decide (size.val % self.align.val.val = 0))
+        //       | .SliceDst tail => ∃ t,
+        //         r.size_info = .SliceDst t ∧ trailingFormula t = (trailingFormula tail).pad self.align.val.val ∧
+        //         r.statically_shallow_unpadded = self.statically_shallow_unpadded
         //     proof:
         //       unfold layout.DstLayout.pad_to_align
         //       cases hs : self.size_info with
-        //       | SliceDst dst =>
-        //         simp only [hs] at h ⊢
-        //         cases hshallow : self.statically_shallow_unpadded <;>
-        //           cases self <;> simp_all [bind_ok]
         //       | Sized size =>
-        //         simp only [hs] at h ⊢
-        //         obtain ⟨hpow, hroom⟩ := h
-        //         step with padding_lt_alignment size self.align hpow as
-        //           ⟨padding, hbound, hexact, haligned, hminimal, hzero⟩
-        //         have hbound := (UScalar.lt_equiv _ _).mp hbound
-        //         have hadd := Usize.checked_add_bv_spec size padding
-        //         cases hchecked : Usize.checked_add size padding with
-        //         | none =>
-        //           simp only [hchecked] at hadd
-        //           omega
+        //         simp only [hs] at hfit
+        //         step with padding_lt_alignment size self.align ha as ⟨p, _, hp, _, _, hz⟩
+        //         have hsum : size.val + p.val = LayoutMath.roundUp size.val self.align.val.val := by
+        //           rw [hp]
+        //           rfl
+        //         have hc := Usize.checked_add_bv_spec size p
+        //         cases hc' : Usize.checked_add size p with
+        //         | none => simp only [hc'] at hc; omega
         //         | some padded =>
-        //           simp only [hchecked] at hadd
-        //           have hflag : (padding = 0#usize) = (size.val % self.align.val.val = 0) := by
+        //           simp only [hc'] at hc
+        //           have hzero : (p = 0#usize) = (size.val % self.align.val.val = 0) := by
         //             apply propext
-        //             rw [← hzero]
-        //             exact ⟨fun hp => by simp [hp], fun hp => UScalar.eq_of_val_eq (by simpa using hp)⟩
-        //           cases hshallow : self.statically_shallow_unpadded <;>
-        //             simp only [lift, bind_ok, Bool.false_eq_true, if_false, if_true]
-        //           all_goals
-        //             refine ⟨rfl, padded, rfl, by omega, by omega, by omega, ?_, ?_, ?_⟩
-        //             · simpa only [hadd] using haligned
-        //             · intro q hq hqa
-        //               have := hminimal (q - size.val) (by
-        //                 rw [Nat.add_sub_of_le hq]
-        //                 exact hqa)
-        //               omega
-        //             · simp [hflag]
+        //             simpa only [UScalar.eq_equiv, show (0#usize).val = 0 by simp] using hz
+        //           simp only [lift, bind_ok]
+        //           cases hb : self.statically_shallow_unpadded <;>
+        //             simp only [Bool.false_and, Bool.true_and, Bool.false_eq_true,
+        //               if_false, if_true, WP.spec_ok]
+        //           all_goals exact ⟨by trivial, _, by trivial, by omega, by simp only [hzero]⟩
+        //       | SliceDst tail =>
+        //         simp only [hs] at hfit
+        //         step with encoding_components_spec _ hfit.1 as ⟨a, p, hap, hpa, henc, halign, hphase⟩
+        //         have hv := trailing_view tail a.val.val p.val hap hpa henc.symm
+        //         rw [hv] at hfit
+        //         dsimp only at hfit
+        //         simp only [core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+        //         split
+        //         · rename_i hab
+        //           have hbound := hfit.2
+        //           simp only [hab, if_true] at hbound
+        //           step with padding_lt_alignment tail.size_base a hap as ⟨bp, _, hbp, _, _, _⟩
+        //           have hb : tail.size_base.val + bp.val = LayoutMath.roundUp tail.size_base.val a.val.val := by rw [hbp]; rfl
+        //           have hc := Usize.checked_add_bv_spec tail.size_base bp
+        //           cases hc' : Usize.checked_add tail.size_base bp with
+        //           | none => simp only [hc'] at hc; omega
+        //           | some base =>
+        //             simp only [hc'] at hc
+        //             simp only [lift, bind_ok]
+        //             have hbytes := Usize.checked_add_bv_spec base p
+        //             cases hb' : Usize.checked_add base p with
+        //             | none => simp only [hb'] at hbytes; omega
+        //             | some bytes =>
+        //               simp only [hb'] at hbytes
+        //               simp only []
+        //               have apos := Nat.pos_of_isPowerOfTwo ha
+        //               step with Usize.sub_spec (show (1#usize).val ≤ self.align.val.val by simpa using (show 1 ≤ self.align.val.val by omega)) as ⟨mask, hm, _⟩
+        //               have hlow : (bytes &&& mask).val = bytes.val % self.align.val.val := by
+        //                 obtain ⟨k, hk⟩ := ha
+        //                 rw [UScalar.val_and, hm, hk, Nat.and_two_pow_sub_one_eq_mod]
+        //               step with round_down_spec bytes self.align ha as ⟨normalized, _, hnorm, _, _, _⟩
+        //               step with encoding_new_spec self.align (bytes &&& mask) ha (by rw [hlow]; exact Nat.mod_lt _ apos) as ⟨encoded, he⟩
+        //               have hnew := trailing_view
+        //                 ({ tail with size_base := normalized, size_rounding_align_and_phase := encoded })
+        //                 self.align.val.val (bytes.val % self.align.val.val) ha (Nat.mod_lt _ apos)
+        //                 (by rw [he, hlow])
+        //               cases hflag : self.statically_shallow_unpadded <;>
+        //                 simp only [Bool.false_eq_true, decide_true,
+        //                   if_true, if_false, WP.spec_ok]
+        //               all_goals
+        //                 refine ⟨by trivial, _, by trivial, ?_, by trivial⟩
+        //                 rw [hnew, hv]
+        //                 simp only [LayoutMath.Formula.pad, hab, if_true]
+        //                 rw [hnorm, hbytes.2.1, hc.2.1, hb]
+        //         · rename_i hab
+        //           have hbound := hfit.2
+        //           simp only [hab, if_false] at hbound
+        //           step with padding_lt_alignment tail.size_base self.align ha as ⟨bp, _, hbp, _, _, _⟩
+        //           have hb : tail.size_base.val + bp.val = LayoutMath.roundUp tail.size_base.val self.align.val.val := by rw [hbp]; rfl
+        //           have hc := Usize.checked_add_bv_spec tail.size_base bp
+        //           cases hc' : Usize.checked_add tail.size_base bp with
+        //           | none => simp only [hc'] at hc; omega
+        //           | some base =>
+        //             simp only [hc'] at hc
+        //             simp only [lift, bind_ok]
+        //             have hnew := trailing_view ({ tail with size_base := base }) a.val.val p.val hap hpa henc.symm
+        //             cases hflag : self.statically_shallow_unpadded <;>
+        //               simp only [Bool.false_eq_true, decide_true,
+        //                 if_true, if_false, WP.spec_ok]
+        //             all_goals
+        //               refine ⟨by trivial, _, by trivial, ?_, by trivial⟩
+        //               rw [hnew, hv]
+        //               simp only [LayoutMath.Formula.pad, hab, if_false]
+        //               rw [hc.2.1, hb]
         // ```
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::pad_to_align)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            let _ = kani::any::<DstLayout>().pad_to_align();
+        }
+
         use util::padding_needed_for;
 
         let (static_padding, size_info) = match self.size_info {
@@ -583,10 +2810,69 @@ impl DstLayout {
                 (padding, SizeInfo::Sized { size })
             }
             // For DST layouts, trailing padding depends on the length of the
-            // trailing DST and is computed at runtime. This does not alter the
-            // offset or element size of the layout, so we leave `size_info`
-            // unchanged.
-            size_info @ SizeInfo::SliceDst(_) => (0, size_info),
+            // trailing DST and is computed at runtime. Normalize the composed
+            // rounding operation back into the representation documented on
+            // `TrailingSliceLayout`.
+            SizeInfo::SliceDst(mut trailing) => {
+                let (size_align, size_phase) = trailing.size_rounding_align_and_phase.components();
+                if size_align.get() < self.align.get() {
+                    // For a trailing-slice byte count `trailing_size`, the
+                    // input layout describes:
+                    //
+                    //   trailing.size_base
+                    //       + round_up(size_phase + trailing_size, size_align)
+                    //
+                    // Here, `size_align < self.align`. Both alignments are
+                    // powers of two, so rounding the complete input size to
+                    // `self.align` is equivalent to:
+                    //
+                    //   rounded_base = round_up(trailing.size_base, size_align)
+                    //   fixed_contribution = rounded_base + size_phase
+                    //   new_phase = fixed_contribution % self.align
+                    //   new_base = fixed_contribution - new_phase
+                    //   new_base + round_up(new_phase + trailing_size, self.align)
+                    //
+                    // `prove_dst_layout_pad_to_align_dst_outer_alignment_transition`
+                    // checks the exact field transition and preserved
+                    // invariants. Its `_formula` companion proves this
+                    // identity for every representable trailing byte count.
+                    let base_padding = padding_needed_for(trailing.size_base, size_align);
+                    let rounded_base = match trailing.size_base.checked_add(base_padding) {
+                        Some(base) => base,
+                        None => const_panic!("Adding padding caused size to overflow `usize`."),
+                    };
+                    let fixed_contribution = match rounded_base.checked_add(size_phase) {
+                        Some(bytes) => bytes,
+                        None => const_panic!("Adding padding caused size to overflow `usize`."),
+                    };
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let phase = fixed_contribution & (self.align.get() - 1);
+                    // Rounding down removes `phase`, the fixed contribution
+                    // modulo `self.align`, leaving the new base.
+                    let size_base = util::round_down_to_next_multiple_of_alignment(
+                        fixed_contribution,
+                        self.align,
+                    );
+                    trailing.size_base = size_base;
+                    trailing.size_rounding_align_and_phase =
+                        RoundingAlignAndPhase::new(self.align, phase);
+                } else {
+                    // `size_align` is a multiple of `self.align`, so
+                    // the inner rounded size is already aligned to
+                    // `self.align`. Only `size_base` needs to be rounded.
+                    // `prove_dst_layout_pad_to_align_dst_inner_rounding_transition`
+                    // checks the exact field transition and preserved
+                    // invariants. Its `_formula` companion proves size
+                    // equivalence for every representable trailing byte count.
+                    let padding = padding_needed_for(trailing.size_base, self.align);
+                    trailing.size_base = match trailing.size_base.checked_add(padding) {
+                        Some(base) => base,
+                        None => const_panic!("Adding padding caused size to overflow `usize`."),
+                    };
+                }
+
+                (0, SizeInfo::SliceDst(trailing))
+            }
         };
 
         let statically_shallow_unpadded = self.statically_shallow_unpadded && static_padding == 0;
@@ -594,48 +2880,302 @@ impl DstLayout {
         DstLayout { align: self.align, size_info, statically_shallow_unpadded }
     }
 
-    /// Produces `true` if `self` requires static padding; otherwise `false`.
+    /// Produces `false` when this layout is marked as having no static shallow
+    /// padding, and `true` otherwise.
+    ///
+    /// A `true` result is conservative: it does not establish that the type
+    /// contains padding. For example, this method produces `true` for
+    /// `DstLayout::for_type::<u8>()`, since `for_type` does not record whether
+    /// static shallow padding is absent.
     #[must_use]
     #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&padding| padding == !self.statically_shallow_unpadded))]
     pub const fn requires_static_padding(self) -> bool {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.requires_static_padding
+        //     (self : layout.DstLayout) : Result Bool := do
+        //     ok (¬ self.statically_shallow_unpadded)
+        // proof:
+        //   contract requires_static_padding_spec (self : layout.DstLayout)
+        //     for layout.DstLayout.requires_static_padding self
+        //     ensures r => r = !self.statically_shallow_unpadded
+        //     proof:
+        //       simp only [layout.DstLayout.requires_static_padding, WP.spec_ok]
+        //       cases self.statically_shallow_unpadded <;> rfl
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::requires_static_padding)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            let _ = kani::any::<DstLayout>().requires_static_padding();
+        }
+
         !self.statically_shallow_unpadded
     }
 
-    /// Produces `true` if there exists any metadata for which a type of layout
-    /// `self` would require dynamic trailing padding; otherwise `false`.
+    /// Produces `false` only if every valid metadata describes an instance
+    /// which requires no dynamic trailing padding.
+    ///
+    /// A `true` result conservatively selects the dynamic-padding path; it does
+    /// not guarantee that any valid metadata actually requires padding.
     #[must_use]
     #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&padding| match self.size_info {
+        SizeInfo::Sized { .. } => !padding,
+        SizeInfo::SliceDst(trailing) => padding == (
+            proofs::slice_dst_size_for_trailing_bytes(trailing, 0) != Some(trailing.offset)
+                || trailing.elem_size % trailing.size_rounding_align_and_phase.align().get() != 0
+        ),
+    }))]
     pub const fn requires_dynamic_padding(self) -> bool {
-        // A `% self.align.get()` cannot panic, since `align` is non-zero.
-        #[allow(clippy::arithmetic_side_effects)]
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.requires_dynamic_padding
+        //     (self : layout.DstLayout) : Result Bool := do
+        //     match self.size_info with
+        //     | layout.SizeInfo.Sized _ => ok false
+        //     | layout.SizeInfo.SliceDst trailing_slice_layout =>
+        //       let o ←
+        //         layout.TrailingSliceLayoutUsize.size_for_elems trailing_slice_layout
+        //           0#usize
+        //       match o with
+        //       | none => ok true
+        //       | some initial_size =>
+        //         let nz ←
+        //           layout.RoundingAlignAndPhase.align
+        //             trailing_slice_layout.size_rounding_align_and_phase
+        //         let i ←
+        //           core.num.nonzero.NonZero.get
+        //             Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner nz
+        //         let i1 ← trailing_slice_layout.elem_size % i
+        //         if initial_size != trailing_slice_layout.offset
+        //         then ok true
+        //         else ok (¬ (i1 = 0#usize))
+        // proof:
+        //   contract requires_dynamic_padding_spec (self : layout.DstLayout)
+        //     for layout.DstLayout.requires_dynamic_padding self
+        //     requires hn : match self.size_info with
+        //       | .Sized _ => True
+        //       | .SliceDst tail => 0 < tail.size_rounding_align_and_phase.val.val
+        //     ensures r => (r = false ↔ match self.size_info with
+        //       | .Sized _ => True
+        //       | .SliceDst tail => (trailingFormula tail).size 0 = tail.offset.val ∧
+        //         tail.elem_size.val % (trailingFormula tail).align = 0)
+        //     proof:
+        //       unfold layout.DstLayout.requires_dynamic_padding
+        //       cases hs : self.size_info with
+        //       | Sized size => simp [WP.spec_ok]
+        //       | SliceDst tail =>
+        //         simp only [hs] at hn
+        //         step with size_for_elems_spec tail 0#usize hn as ⟨initial, hi⟩
+        //         cases initial with
+        //         | none =>
+        //           dsimp only
+        //           have hmiss := checked_none_size _ _ hi
+        //           have hoff : tail.offset.val ≤ Usize.max := by scalar_tac
+        //           apply WP.spec.ret
+        //           simp only [Bool.true_eq_false, false_iff]
+        //           intro h
+        //           omega
+        //         | some initial =>
+        //           dsimp only
+        //           have hv := checked_some_size _ _ initial hi
+        //           step with encoding_align_spec _ hn as ⟨a, ha⟩
+        //           simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //           have hap : 0 < a.val.val := by rw [ha]; exact Nat.two_pow_pos _
+        //           step with Usize.rem_spec tail.elem_size (y := a.val) (by omega) as ⟨remainder, hr⟩
+        //           simp only [bne_iff_ne]
+        //           split
+        //           · rename_i hne
+        //             apply WP.spec.ret
+        //             simp only [Bool.true_eq_false, false_iff]
+        //             intro h
+        //             apply hne
+        //             apply UScalar.eq_of_val_eq
+        //             omega
+        //           · rename_i heq
+        //             have heq' : initial.val = tail.offset.val := by
+        //               have h : initial = tail.offset := not_ne_iff.mp heq
+        //               exact congrArg UScalar.val h
+        //             apply WP.spec.ret
+        //             simp only [decide_eq_false_iff_not, not_not, UScalar.eq_equiv,
+        //               show (0#usize).val = 0 by simp, hr, ← heq', ← hv.1, true_and]
+        //             rw [ha]
+        //             rfl
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::requires_dynamic_padding)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            let _ = kani::any::<DstLayout>().requires_dynamic_padding();
+        }
+
         match self.size_info {
             SizeInfo::Sized { .. } => false,
             SizeInfo::SliceDst(trailing_slice_layout) => {
-                // SAFETY: This predicate is formally proved sound by
-                // `proofs::prove_requires_dynamic_padding`.
-                trailing_slice_layout.offset % self.align.get() != 0
-                    || trailing_slice_layout.elem_size % self.align.get() != 0
+                // SAFETY: `proofs::prove_requires_dynamic_padding` formally
+                // proves the safety-critical direction: when this predicate
+                // returns false, no valid metadata requires dynamic padding.
+                match trailing_slice_layout.size_for_elems(0) {
+                    Some(initial_size) => {
+                        #[allow(clippy::arithmetic_side_effects)]
+                        let has_static_stride = trailing_slice_layout.elem_size
+                            % trailing_slice_layout.size_rounding_align_and_phase.align().get()
+                            == 0;
+                        initial_size != trailing_slice_layout.offset || !has_static_stride
+                    }
+                    None => true,
+                }
             }
         }
     }
 
-    /// Validates that a cast is sound from a layout perspective.
+    /// Returns the largest trailing slice length whose object size is exactly
+    /// `size`.
     ///
-    /// Validates that the size and alignment requirements of a type with the
-    /// layout described in `self` would not be violated by performing a
-    /// `cast_type` cast from a pointer with address `addr` which refers to a
-    /// memory region of size `bytes_len`.
+    /// Returns `None` if there is no such length, if this describes a sized
+    /// type, or if the trailing slice element is zero-sized.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&result| {
+        result == match self.size_info {
+            SizeInfo::SliceDst(trailing) if trailing.elem_size != 0 => {
+                proofs::max_trailing_bytes(trailing, size)
+                    .map(|bytes| bytes / trailing.elem_size)
+                    .filter(|&elems| trailing.size_for_elems(elems) == Some(size))
+            }
+            _ => None,
+        }
+    }))]
+    const fn metadata_for_exact_size(&self, size: usize) -> Option<usize> {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.metadata_for_exact_size
+        //     (self : layout.DstLayout) (size : Std.Usize) :
+        //     Result (Option Std.Usize)
+        //     := do
+        //     match self.size_info with
+        //     | layout.SizeInfo.Sized _ => ok none
+        //     | layout.SizeInfo.SliceDst tsl =>
+        //       match tsl.elem_size.val with
+        //       | 0 => ok none
+        //       | _ =>
+        //         let r ←
+        //           layout.DstLayout.validate_cast_and_convert_metadata self 0#usize size
+        //             layout.CastType.Prefix
+        //         match r with
+        //         | core.result.Result.Ok p =>
+        //           let (elems, object_size) := p
+        //           if object_size = size
+        //           then ok (some elems)
+        //           else ok none
+        //         | core.result.Result.Err _ => ok none
+        // proof:
+        //   contract metadata_exact_spec (self : layout.DstLayout) (size : Usize)
+        //     for layout.DstLayout.metadata_for_exact_size self size
+        //     requires ha : 0 < self.align.val.val
+        //     requires ht : match self.size_info with
+        //       | .Sized _ => True
+        //       | .SliceDst tail => tail.elem_size.val ≠ 0 →
+        //         0 < tail.size_rounding_align_and_phase.val.val
+        //     ensures r => metadataSpec self size.val r
+        //     proof:
+        //       unfold layout.DstLayout.metadata_for_exact_size
+        //       cases hs : self.size_info with
+        //       | Sized s => simp only [WP.spec_ok, metadataSpec, hs]
+        //       | SliceDst tail =>
+        //         simp only [hs] at ht ⊢
+        //         cases hz : tail.elem_size.val with
+        //         | zero =>
+        //           simp only [WP.spec_ok, metadataSpec, hs, hz, if_true]
+        //         | succ k =>
+        //           simp only []
+        //           have he : 0 < tail.elem_size.val := by omega
+        //           have hn : tail.elem_size.val ≠ 0 := by omega
+        //           step with validate_cast_spec self 0#usize size .Prefix ha (by scalar_tac)
+        //             (by simp only [hs]; exact ⟨ht hn, he⟩) as ⟨cast, hc⟩
+        //           cases cast with
+        //           | Err err =>
+        //             cases err with
+        //             | Alignment =>
+        //               simp only [castSpec, castSide, Nat.zero_add, Nat.zero_mod,
+        //                 ] at hc
+        //               exact False.elim (hc rfl)
+        //             | Size =>
+        //               simp only [castSpec, castSide, hs,
+        //                 Nat.zero_add, Nat.zero_mod, true_and] at hc
+        //               apply WP.spec.ret
+        //               simp only [metadataSpec, hs, hn, if_false]
+        //               intro n h
+        //               have := hc n
+        //               omega
+        //           | Ok pair =>
+        //             rcases pair with ⟨elems, bytes⟩
+        //             change (if bytes = size then Result.ok (some elems) else Result.ok none)
+        //               ⦃ r => metadataSpec self size.val r ⦄
+        //             simp only [castSpec, castSide, castSplit, hs,
+        //               Nat.zero_add, Nat.zero_mod, true_and] at hc
+        //             split
+        //             · rename_i hsame
+        //               apply WP.spec.ret
+        //               simp only [metadataSpec, hs, hn, if_false]
+        //               have hbytes := congrArg UScalar.val hsame
+        //               exact ⟨by omega, hc.2.1⟩
+        //             · rename_i hdiff
+        //               apply WP.spec.ret
+        //               simp only [metadataSpec, hs, hn, if_false]
+        //               intro n h
+        //               have hle : n ≤ elems.val := (hc.2.1 n).mp (by omega)
+        //               have hmono := LayoutMath.Formula.size_mono (trailingFormula tail)
+        //                 (trailing_align_pos tail) hle
+        //               apply hdiff
+        //               apply (UScalar.eq_equiv _ _).mpr
+        //               omega
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::metadata_for_exact_size)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<DstLayout>().metadata_for_exact_size(kani::any());
+        }
+
+        match self.size_info {
+            SizeInfo::Sized { .. }
+            | SizeInfo::SliceDst(TrailingSliceLayout { elem_size: 0, .. }) => None,
+            SizeInfo::SliceDst(_) => {
+                // Address zero is aligned to every supported alignment, and
+                // `0 + size` cannot overflow. The validator returns the
+                // largest metadata whose object fits in `size`; accepting it
+                // only when the resulting object consumes all `size` bytes
+                // turns that bounded query into an exact-size query.
+                match self.validate_cast_and_convert_metadata(0, size, CastType::Prefix) {
+                    Ok((elems, object_size)) if object_size == size => Some(elems),
+                    _ => None,
+                }
+            }
+        }
+    }
+
+    /// Given a completed type layout, produces metadata and a split index for
+    /// a prefix or suffix cast that satisfies the type's size and alignment
+    /// requirements.
+    ///
+    /// `addr` and `bytes_len` describe the address and size of the source
+    /// memory region, and `cast_type` selects its prefix or suffix.
     ///
     /// If the cast is valid, `validate_cast_and_convert_metadata` returns
-    /// `(elems, split_at)`. If `self` describes a dynamically-sized type, then
-    /// `elems` is the maximum number of trailing slice elements for which a
-    /// cast would be valid (for sized types, `elem` is meaningless and should
-    /// be ignored). `split_at` is the index at which to split the memory region
-    /// in order for the prefix (suffix) to contain the result of the cast, and
-    /// in order for the remaining suffix (prefix) to contain the leftover
-    /// bytes.
+    /// `Ok((elems, split_at))`. For a dynamically-sized type, `elems` is the
+    /// maximum number of trailing slice elements for which the cast is valid.
+    /// For sized types, `elems` is meaningless and should be ignored.
+    /// `split_at` is the index at which to split the memory region so that the
+    /// prefix (suffix) contains the result of the cast and the remaining
+    /// suffix (prefix) contains the leftover bytes.
     ///
     /// There are three conditions under which a cast can fail:
+    ///
     /// - The smallest possible value for the type is larger than the provided
     ///   memory region
     /// - A prefix cast is requested, and `addr` does not satisfy `self`'s
@@ -647,10 +3187,10 @@ impl DstLayout {
     ///
     /// # Safety
     ///
-    /// The caller may assume that this implementation is correct, and may rely
-    /// on that assumption for the soundness of their code. In particular, the
-    /// caller may assume that, if `validate_cast_and_convert_metadata` returns
-    /// `Some((elems, split_at))`, then:
+    /// When `self` accurately describes a completed type layout, including
+    /// trailing padding, and `addr + bytes_len` fits in `usize`, callers may
+    /// rely on the following guarantees for `Ok((elems, split_at))`:
+    ///
     /// - A pointer to the type (for dynamically sized types, this includes
     ///   `elems` as its pointer metadata) describes an object of size `size <=
     ///   bytes_len`
@@ -660,6 +3200,11 @@ impl DstLayout {
     /// - If this is a suffix cast:
     ///   - `split_at == bytes_len - size`
     ///   - `addr + split_at` satisfies `self`'s alignment
+    ///
+    /// These guarantees require the completed-layout premise; `DstLayout`
+    /// also permits unfinished layout fragments and arbitrary field values.
+    /// In particular, suffix alignment relies on every object size being a
+    /// multiple of the type's alignment.
     ///
     /// Note that this method does *not* ensure that a pointer constructed from
     /// its return values will be a valid pointer. In particular, this method
@@ -685,12 +3230,310 @@ impl DstLayout {
     /// condition, even if `debug_assertions` are enabled.
     #[allow(unused)]
     #[inline(always)]
+    #[cfg_attr(kani, kani::requires(addr.checked_add(bytes_len).is_some()))]
+    #[cfg_attr(kani, kani::requires(!matches!(self.size_info,
+        SizeInfo::SliceDst(TrailingSliceLayout { elem_size: 0, .. }))))]
+    #[cfg_attr(kani, kani::ensures(|result| {
+        let endpoint = match cast_type {
+            CastType::Prefix => addr,
+            CastType::Suffix => addr + bytes_len,
+        };
+        if endpoint % self.align.get() != 0 {
+            return matches!(result, Err(MetadataCastError::Alignment));
+        }
+        let candidate = match self.size_info {
+            SizeInfo::Sized { size } => {
+                if size <= bytes_len { Some((0, size)) } else { None }
+            }
+            SizeInfo::SliceDst(trailing) => {
+                proofs::max_trailing_bytes(trailing, bytes_len).and_then(|bytes| {
+                    let elems = bytes / trailing.elem_size;
+                    trailing.size_for_elems(elems).map(|size| (elems, size))
+                })
+            }
+        };
+        match (result, candidate) {
+            (Ok((elems, split_at)), Some((expected_elems, size))) => {
+                *elems == expected_elems && *split_at == match cast_type {
+                    CastType::Prefix => size,
+                    CastType::Suffix => bytes_len - size,
+                }
+            }
+            (Err(MetadataCastError::Size), None) => true,
+            _ => false,
+        }
+    }))]
     pub(crate) const fn validate_cast_and_convert_metadata(
         &self,
         addr: usize,
         bytes_len: usize,
         cast_type: CastType,
     ) -> Result<(usize, usize), MetadataCastError> {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.validate_cast_and_convert_metadata
+        //     (self : layout.DstLayout) (addr : Std.Usize) (bytes_len : Std.Usize)
+        //     (cast_type : layout.CastType) :
+        //     Result (core.result.Result (Std.Usize × Std.Usize) layout.MetadataCastError)
+        //     := do
+        //     let o ← layout.SizeInfoUsize.try_to_nonzero_elem_size self.size_info
+        //     match o with
+        //     | none => fail panic
+        //     | some size_info =>
+        //       let o1 ← lift (Usize.checked_add addr bytes_len)
+        //       let e := core.option.Option.is_some o1
+        //       massert e
+        //       let offset ←
+        //         match cast_type with
+        //         | layout.CastType.Prefix => ok 0#usize
+        //         | layout.CastType.Suffix => ok bytes_len
+        //       let i ← addr + offset
+        //       let i1 ←
+        //         core.num.nonzero.NonZero.get
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //           self.align
+        //       let i2 ← i % i1
+        //       if i2 != 0#usize
+        //       then ok (core.result.Result.Err layout.MetadataCastError.Alignment)
+        //       else
+        //         match size_info with
+        //         | layout.SizeInfo.Sized size =>
+        //           massert ((size > bytes_len) || (size <= bytes_len))
+        //           if size > bytes_len
+        //           then ok (core.result.Result.Err layout.MetadataCastError.Size)
+        //           else
+        //             match cast_type with
+        //             | layout.CastType.Prefix =>
+        //               ok (core.result.Result.Ok (0#usize, size))
+        //             | layout.CastType.Suffix =>
+        //               let split_at ← bytes_len - size
+        //               ok (core.result.Result.Ok (0#usize, split_at))
+        //         | layout.SizeInfo.SliceDst trailing =>
+        //           let o2 ←
+        //             layout.TrailingSliceLayout.max_trailing_bytes trailing bytes_len
+        //           match o2 with
+        //           | none => ok (core.result.Result.Err layout.MetadataCastError.Size)
+        //           | some bytes =>
+        //             let (elems, _) ←
+        //               layout.max_elems_for_bytes bytes trailing.elem_size
+        //             let size_align ←
+        //               layout.RoundingAlignAndPhase.align
+        //                 trailing.size_rounding_align_and_phase
+        //             let i3 ←
+        //               core.num.nonzero.NonZero.get
+        //                 Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //                 trailing.elem_size
+        //             let unused_bytes ← bytes % i3
+        //             let unused_aligned_bytes ←
+        //               util.round_down_to_next_multiple_of_alignment unused_bytes
+        //                 size_align
+        //             let i4 ← bytes_len - trailing.size_base
+        //             let max_rounded_bytes ←
+        //               util.round_down_to_next_multiple_of_alignment i4 size_align
+        //             let i5 ← max_rounded_bytes - unused_aligned_bytes
+        //             let self_bytes ← trailing.size_base + i5
+        //             massert (self_bytes <= bytes_len)
+        //             match cast_type with
+        //             | layout.CastType.Prefix =>
+        //               ok (core.result.Result.Ok (elems, self_bytes))
+        //             | layout.CastType.Suffix =>
+        //               let split_at ← bytes_len - self_bytes
+        //               ok (core.result.Result.Ok (elems, split_at))
+        // proof:
+        //   contract validate_cast_spec (self : layout.DstLayout) (addr length : Usize) (cast : layout.CastType)
+        //     for layout.DstLayout.validate_cast_and_convert_metadata self addr length cast
+        //     requires ha : 0 < self.align.val.val
+        //     requires hroom : addr.val + length.val ≤ Usize.max
+        //     requires ht : match self.size_info with
+        //       | .Sized _ => True
+        //       | .SliceDst tail => 0 < tail.size_rounding_align_and_phase.val.val ∧ 0 < tail.elem_size.val
+        //     ensures r => castSpec self addr.val length.val cast r
+        //     proof:
+        //       unfold layout.DstLayout.validate_cast_and_convert_metadata
+        //       cases hs : self.size_info with
+        //       | Sized size =>
+        //         step with try_nonzero_spec (.Sized size) as ⟨converted, hconverted⟩
+        //         rw [hconverted]
+        //         simp only [lift, bind_ok]
+        //         have haddr := Usize.checked_add_bv_spec addr length
+        //         cases he : Usize.checked_add addr length with
+        //         | none => simp only [he] at haddr; omega
+        //         | some ending =>
+        //           simp only [he] at haddr
+        //           simp only [Option.isSome_some, massert, if_true, bind_ok]
+        //           step with cast_offset_spec cast length as ⟨offset, ho, hle⟩
+        //           have hlen := (UScalar.le_equiv _ _).mp hle
+        //           step with Usize.add_spec (x := addr) (y := offset) (by omega) as ⟨aligned, haligned⟩
+        //           simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //           step with Usize.rem_spec aligned (y := self.align.val) (by omega) as ⟨rem, hr⟩
+        //           simp only [bne_iff_ne]
+        //           split
+        //           · rename_i hne
+        //             apply WP.spec.ret
+        //             unfold castSpec
+        //             have hv : rem.val ≠ 0 := by
+        //               intro h
+        //               apply hne
+        //               exact (UScalar.eq_equiv _ _).mpr h
+        //             rw [hr, haligned, ho] at hv
+        //             exact hv
+        //           · rename_i heq
+        //             have hzero : (addr.val + castSide cast length.val) % self.align.val.val = 0 := by
+        //               have h : rem = 0#usize := not_ne_iff.mp heq
+        //               have hv := congrArg UScalar.val h
+        //               rw [hr, haligned, ho] at hv
+        //               exact hv
+        //             have htotal : (decide (size > length) || decide (size ≤ length)) = true := by
+        //               simp only [Bool.or_eq_true, decide_eq_true_eq]
+        //               exact lt_or_ge length size
+        //             simp only [UScalar.lt_equiv, UScalar.le_equiv] at htotal ⊢
+        //             simp only [htotal, if_true, bind_ok]
+        //             split
+        //             · rename_i hbig
+        //               apply WP.spec.ret
+        //               simp only [castSpec, hs]
+        //               exact ⟨hzero, hbig⟩
+        //             · rename_i hsmall
+        //               step with cast_split_spec cast length size 0#usize (by omega) as ⟨r, split, hr, hv⟩
+        //               rw [hr]
+        //               simp only [castSpec, hs, show (0#usize).val = 0 by simp]
+        //               exact ⟨hzero, trivial, by omega, hv⟩
+        //       | SliceDst tail =>
+        //         simp only [hs] at ht
+        //         step with try_nonzero_spec (.SliceDst tail) as ⟨converted, hconverted⟩
+        //         have hne : tail.elem_size ≠ 0#usize := by
+        //           intro h
+        //           have hv := congrArg UScalar.val h
+        //           change tail.elem_size.val = 0 at hv
+        //           omega
+        //         simp only [hne, if_false] at hconverted
+        //         obtain ⟨t, hconverted, hoffset, hbase, hcode, helem⟩ := hconverted
+        //         rw [hconverted]
+        //         simp only [lift, bind_ok]
+        //         have haddr := Usize.checked_add_bv_spec addr length
+        //         cases he : Usize.checked_add addr length with
+        //         | none => simp only [he] at haddr; omega
+        //         | some ending =>
+        //           simp only [he] at haddr
+        //           simp only [Option.isSome_some, massert, if_true, bind_ok]
+        //           step with cast_offset_spec cast length as ⟨offset, ho, hle⟩
+        //           have hlen := (UScalar.le_equiv _ _).mp hle
+        //           step with Usize.add_spec (x := addr) (y := offset) (by omega) as ⟨aligned, haligned⟩
+        //           simp only [core.num.nonzero.NonZero.get, bind_ok]
+        //           step with Usize.rem_spec aligned (y := self.align.val) (by omega) as ⟨rem, hr⟩
+        //           simp only [bne_iff_ne]
+        //           split
+        //           · rename_i hne
+        //             apply WP.spec.ret
+        //             unfold castSpec
+        //             have hv : rem.val ≠ 0 := by
+        //               intro h
+        //               apply hne
+        //               exact (UScalar.eq_equiv _ _).mpr h
+        //             rw [hr, haligned, ho] at hv
+        //             exact hv
+        //           · rename_i heq
+        //             have hzero : (addr.val + castSide cast length.val) % self.align.val.val = 0 := by
+        //               have h : rem = 0#usize := not_ne_iff.mp heq
+        //               have hv := congrArg UScalar.val h
+        //               rw [hr, haligned, ho] at hv
+        //               exact hv
+        //             have htn : 0 < t.size_rounding_align_and_phase.val.val := by rw [hcode]; exact ht.1
+        //             have hte : 0 < t.elem_size.val.val := by rw [helem]; exact ht.2
+        //             have hview : byteFormula t = byteFormula tail := by simp only [byteFormula, hbase, hcode, hoffset]
+        //             step with max_trailing_bytes_spec t length htn as ⟨capacity, hc⟩
+        //             rw [hview] at hc
+        //             cases capacity with
+        //             | none =>
+        //               have hmiss := LayoutMath.capacity_spec (byteFormula tail) length.val (Nat.two_pow_pos _)
+        //               rw [← hc] at hmiss
+        //               apply WP.spec.ret
+        //               refine ⟨hzero, ?_⟩
+        //               simp only [hs]
+        //               intro n
+        //               exact hmiss (n * tail.elem_size.val)
+        //             | some capacity =>
+        //               dsimp only
+        //               step with max_elems_for_bytes_spec capacity t.elem_size hte as ⟨elems, used, hen, _, _, _, _⟩
+        //               step with encoding_align_spec t.size_rounding_align_and_phase htn as ⟨a, ha⟩
+        //               have hav : a.val.val = (trailingFormula tail).align := by
+        //                 simpa only [trailingFormula, byteFormula, hcode] using ha
+        //               step with Usize.rem_spec capacity (y := t.elem_size.val) (by omega) as ⟨unused, hu⟩
+        //               have hap : a.val.val.isPowerOfTwo := ⟨_, by simpa only [hcode] using ha⟩
+        //               step with round_down_spec unused a hap as ⟨unused_aligned, _, huf, _, _, _⟩
+        //               have hcap : (trailingFormula tail).capacity length.val = some capacity.val := hc.symm
+        //               have hmax := LayoutMath.maximal_metadata _ _ _ ht.2 hcap (trailing_align_pos tail)
+        //               have hfit : (trailingFormula tail).size elems.val ≤ length.val := by
+        //                 apply (hmax elems.val).mpr
+        //                 rw [hen, helem]
+        //                 exact le_rfl
+        //               have hmin := (LayoutMath.capacity_spec (trailingFormula tail) length.val (trailing_align_pos tail))
+        //               rw [hcap] at hmin
+        //               have hminfit := (hmin 0).mpr (by omega)
+        //               have hbfit : t.size_base.val ≤ length.val := by
+        //                 rw [hbase]
+        //                 simp only [trailingFormula, byteFormula, LayoutMath.Formula.bytes] at hminfit
+        //                 omega
+        //               step with Usize.sub_spec hbfit as ⟨available, hb, _⟩
+        //               step with round_down_spec available a hap as ⟨budget, _, hbudget, _, _, _⟩
+        //               have hused := LayoutMath.capacity_object_size (trailingFormula tail) length.val capacity.val
+        //                 (trailing_align_pos tail) hcap
+        //               change (trailingFormula tail).size (capacity.val / tail.elem_size.val) =
+        //                 tail.size_base.val + (length.val - tail.size_base.val -
+        //                   (length.val - tail.size_base.val) % (trailingFormula tail).align) -
+        //                   (capacity.val % tail.elem_size.val -
+        //                     capacity.val % tail.elem_size.val % (trailingFormula tail).align) at hused
+        //               rw [← hav, ← hbase] at hused
+        //               have hunused : unused.val = capacity.val % tail.elem_size.val := by rw [hu, helem]
+        //               have hbval : budget.val = length.val - t.size_base.val -
+        //                   (length.val - t.size_base.val) % a.val.val := by rw [hbudget, hb]
+        //               have hus : unused_aligned.val ≤ budget.val := by
+        //                 have hmod := Nat.mod_le capacity.val tail.elem_size.val
+        //                 have hcapval : capacity.val = length.val - t.size_base.val -
+        //                     (length.val - t.size_base.val) % a.val.val - (trailingFormula tail).phase := by
+        //                   unfold LayoutMath.Formula.capacity at hcap
+        //                   simp only [hminfit, if_true, Option.some.injEq] at hcap
+        //                   have hav' : a.val.val = 2 ^ tail.size_rounding_align_and_phase.val.val.log2 := hav
+        //                   simpa only [trailingFormula, byteFormula, ← hav', ← hbase] using hcap.symm
+        //                 rw [huf, hbval, hunused]
+        //                 omega
+        //               step with Usize.sub_spec hus as ⟨remaining, hremaining, _⟩
+        //               have hsum : t.size_base.val + remaining.val ≤ Usize.max := by
+        //                 have hlenfit : length.val ≤ Usize.max := by scalar_tac
+        //                 rw [hremaining]
+        //                 have hbudget_bound : budget.val ≤ length.val - t.size_base.val := by rw [hbval]; omega
+        //                 omega
+        //               step with Usize.add_spec (x := t.size_base) (y := remaining) hsum as ⟨size, hsize⟩
+        //               have hexact : size.val = (trailingFormula tail).size elems.val := by
+        //                 rw [hen, helem]
+        //                 rw [hused]
+        //                 rw [hsize, hremaining, huf, hunused, hbval]
+        //                 rw [huf, hunused, hbval] at hus
+        //                 omega
+        //               have hsizefit : size ≤ length := (UScalar.le_equiv _ _).mpr (by rw [hexact]; exact hfit)
+        //               simp only [hsizefit, if_true, bind_ok]
+        //               step with cast_split_spec cast length size elems (by rw [hexact]; exact hfit) as ⟨r, split, hr, hv⟩
+        //               rw [hr]
+        //               simp only [castSpec, hs]
+        //               refine ⟨hzero, hfit, ?_, ?_⟩
+        //               · intro n
+        //                 rw [hmax n, hen, helem]
+        //                 rfl
+        //               · simpa only [hexact] using hv
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(DstLayout::validate_cast_and_convert_metadata)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            let cast_type = if kani::any() { CastType::Prefix } else { CastType::Suffix };
+            let _ = kani::any::<DstLayout>().validate_cast_and_convert_metadata(
+                kani::any(),
+                kani::any(),
+                cast_type,
+            );
+        }
+
         // `debug_assert!`, but with `#[allow(clippy::arithmetic_side_effects)]`.
         macro_rules! __const_debug_assert {
             ($e:expr $(, $msg:expr)?) => {
@@ -730,9 +3573,8 @@ impl DstLayout {
             // of this check is trivial - `addr` is the address the object will
             // live at.
             //
-            // For a suffix cast, we know that all valid sizes for the type are
-            // a multiple of the alignment (and by safety precondition, we know
-            // `DstLayout` may only describe valid Rust types). Thus, a
+            // Under the documented completed-layout premise, all valid sizes
+            // for the type are multiples of its alignment. Thus, a
             // validly-sized instance which lives at a validly-aligned address
             // must also end at a validly-aligned address. Thus, if the end
             // address for a suffix cast (`addr + bytes_len`) is not aligned,
@@ -745,7 +3587,7 @@ impl DstLayout {
             // Addition is guaranteed not to overflow because `offset <=
             // bytes_len`, and `addr + bytes_len <= usize::MAX` is a
             // precondition of this method. Modulus is guaranteed not to divide
-            // by 0 because `align` is non-zero.
+            // by zero because `self.align` is non-zero.
             #[allow(clippy::arithmetic_side_effects)]
             if (addr + offset) % self.align.get() != 0 {
                 return Err(MetadataCastError::Alignment);
@@ -759,59 +3601,50 @@ impl DstLayout {
                 }
                 (0, size)
             }
-            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
-                // Calculate the maximum number of bytes that could be consumed
-                // - any number of bytes larger than this will either not be a
-                // multiple of the alignment, or will be larger than
-                // `bytes_len`.
-                let max_total_bytes =
-                    util::round_down_to_next_multiple_of_alignment(bytes_len, self.align);
-                // Calculate the maximum number of bytes that could be consumed
-                // by the trailing slice.
-                //
-                // FIXME(#67): Once our MSRV is 1.65, use let-else:
-                // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-                let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
-                    Some(max) => max,
-                    // `bytes_len` too small even for 0 trailing slice elements.
+            SizeInfo::SliceDst(trailing) => {
+                let max_slice_bytes = match trailing.max_trailing_bytes(bytes_len) {
+                    Some(bytes) => bytes,
                     None => return Err(MetadataCastError::Size),
                 };
-
                 // Calculate the number of elements that fit in
-                // `max_slice_and_padding_bytes`; any remaining bytes will be
-                // considered padding.
+                // `max_slice_bytes`. Any remaining input bytes stay outside
+                // the selected object unless the object's own rounding
+                // operation consumes them as padding.
                 //
                 // Guaranteed not to divide by zero: `elem_size` is non-zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let elems = max_slice_and_padding_bytes / elem_size.get();
-                // Guaranteed not to overflow on multiplication: `usize::MAX >=
-                // max_slice_and_padding_bytes >= (max_slice_and_padding_bytes /
-                // elem_size) * elem_size`.
+                let (elems, _) = max_elems_for_bytes(max_slice_bytes, trailing.elem_size);
+                // The remainder is `max_slice_bytes - elems * elem_size`.
+                // Writing it as a remainder exposes its bound to the
+                // optimizer: when `elem_size <= size_align`, rounding the
+                // remainder down to `size_align` always gives zero.
+                let size_align = trailing.size_rounding_align_and_phase.align();
+                // `size_phase + max_slice_bytes == max_rounded_bytes`, an
+                // alignment multiple. The selected tail removes `unused_bytes`
+                // from this boundary; rounding back up removes only whole
+                // alignment units. Thus its normalized rounded size is:
                 //
-                // Guaranteed not to overflow on addition:
-                // - max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size <= max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size + offset <= max_total_bytes <= usize::MAX
-                #[allow(clippy::arithmetic_side_effects)]
-                let without_padding = offset + elems * elem_size.get();
-                // `self_bytes` is equal to the offset bytes plus the bytes
-                // consumed by the trailing slice plus any padding bytes
-                // required to satisfy the alignment. Note that we have computed
-                // the maximum number of trailing slice elements that could fit
-                // in `self_bytes`, so any padding is guaranteed to be less than
-                // the size of an extra element.
+                //   round_up(size_phase + elems * elem_size, size_align)
+                //       = max_rounded_bytes - round_down(unused_bytes, size_align)
                 //
-                // Guaranteed not to overflow:
-                // - By previous comment: without_padding == elems * elem_size +
-                //   offset <= max_total_bytes
-                // - By construction, `max_total_bytes` is a multiple of
-                //   `self.align`.
-                // - At most, adding padding needed to round `without_padding`
-                //   up to the next multiple of the alignment will bring
-                //   `self_bytes` up to `max_total_bytes`.
+                // `prove_slice_dst_validator_selected_size_fits` checks this
+                // identity and its intermediate bounds, using the relations
+                // in `prove_max_trailing_bytes_components`. The capacity is
+                // exact by `prove_max_trailing_bytes`; the element helper's
+                // contract establishes the largest whole-element count.
                 #[allow(clippy::arithmetic_side_effects)]
-                let self_bytes =
-                    without_padding + util::padding_needed_for(without_padding, self.align);
+                let unused_bytes = max_slice_bytes % trailing.elem_size.get();
+                let unused_aligned_bytes =
+                    util::round_down_to_next_multiple_of_alignment(unused_bytes, size_align);
+                #[allow(clippy::arithmetic_side_effects)]
+                let max_rounded_bytes = util::round_down_to_next_multiple_of_alignment(
+                    bytes_len - trailing.size_base,
+                    size_align,
+                );
+                // `unused_aligned_bytes <= unused_bytes <= max_slice_bytes
+                // <= max_rounded_bytes`, and `size_base + max_rounded_bytes
+                // <= bytes_len`, so neither operation can overflow.
+                #[allow(clippy::arithmetic_side_effects)]
+                let self_bytes = trailing.size_base + (max_rounded_bytes - unused_aligned_bytes);
                 (elems, self_bytes)
             }
         };
@@ -824,13 +3657,102 @@ impl DstLayout {
             // - In the `Sized` branch, only returns `size` if `size <=
             //   bytes_len`.
             // - In the `SliceDst` branch, calculates `self_bytes <=
-            //   max_toatl_bytes`, which is upper-bounded by `bytes_len`.
+            //   bytes_len`.
             #[allow(clippy::arithmetic_side_effects)]
             CastType::Suffix => bytes_len - self_bytes,
         };
 
         Ok((elems, split_at))
     }
+}
+
+/// Computes the affine destination-metadata map.
+///
+/// # Safety
+///
+/// `base + metadata * multiple`, evaluated over the mathematical nonnegative
+/// integers, must not exceed `usize::MAX`.
+#[inline(always)]
+#[allow(unstable_name_collisions)]
+#[cfg_attr(kani, kani::requires(metadata.checked_mul(multiple)
+    .and_then(|scaled| base.checked_add(scaled)).is_some()))]
+#[cfg_attr(kani, kani::ensures(|&result| {
+    metadata.checked_mul(multiple).and_then(|scaled| base.checked_add(scaled)) == Some(result)
+}))]
+unsafe fn add_scaled_metadata(base: usize, metadata: usize, multiple: usize) -> usize {
+    // The call-site safety argument establishes that both operations are
+    // representable for valid source metadata. This harness verifies the
+    // production implementation selected by Kani's modern rustc against
+    // checked arithmetic under precisely that precondition. The distributive
+    // natural-number argument which establishes the precondition is kept
+    // beside the unsafe pointer projection where it can be reviewed with the
+    // layout premises that it consumes.
+    #[cfg(kani)]
+    #[kani::proof_for_contract(add_scaled_metadata)]
+    #[kani::solver(kissat)]
+    fn proof() {
+        let base: usize = kani::any();
+        let metadata: usize = kani::any();
+        let multiple: usize = kani::any();
+        let Some(scaled) = metadata.checked_mul(multiple) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(expected) = base.checked_add(scaled) else {
+            kani::assume(false);
+            loop {}
+        };
+
+        // SAFETY: The checked operations above returned `Some`, so the
+        // operation is representable in `usize`. The standard-library
+        // contracts say that this rules out undefined behavior for both
+        // unchecked operations [1][2].
+        //
+        // [1] Per https://doc.rust-lang.org/1.93.1/std/primitive.usize.html#method.unchecked_mul:
+        //
+        //   This results in undefined behavior [..] when `checked_mul` would
+        //   return `None`.
+        //
+        // [2] Per https://doc.rust-lang.org/1.93.1/std/primitive.usize.html#method.unchecked_add:
+        //
+        //   This results in undefined behavior [..] when `checked_add` would
+        //   return `None`.
+        assert_eq!(unsafe { add_scaled_metadata(base, metadata, multiple) }, expected);
+    }
+
+    #[allow(unused_imports)]
+    use crate::util::polyfills::*;
+
+    // SAFETY: The caller promises that `base + metadata * multiple` is
+    // representable over the nonnegative integers. Thus `metadata * multiple`
+    // is representable too. On toolchains with inherent unchecked arithmetic,
+    // this is exactly the condition under which `usize::unchecked_mul` does
+    // not have undefined behavior [1]. On older supported toolchains, method
+    // resolution selects `polyfills::NumExt::unchecked_mul`, whose safety
+    // contract requires the same no-overflow condition. Kani checks the two
+    // implementations in separate harnesses.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.1/std/primitive.usize.html#method.unchecked_mul:
+    //
+    //   This results in undefined behavior when `self * rhs > usize::MAX` or
+    //   `self * rhs < usize::MIN`, i.e. when `checked_mul` would return `None`.
+    //
+    let scaled = unsafe { metadata.unchecked_mul(multiple) };
+
+    // SAFETY: The caller promises that `base + metadata * multiple` is
+    // representable in `usize`, and `scaled == metadata * multiple`. On
+    // toolchains with inherent unchecked arithmetic, that is exactly the
+    // condition under which `usize::unchecked_add` does not have undefined
+    // behavior [1]. On older supported toolchains, method resolution selects
+    // `polyfills::NumExt::unchecked_add`, whose safety contract requires the
+    // same no-overflow condition. Kani checks the two implementations in
+    // separate harnesses.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.1/std/primitive.usize.html#method.unchecked_add:
+    //
+    //   This results in undefined behavior when `self + rhs > usize::MAX` or
+    //   `self + rhs < usize::MIN`, i.e. when `checked_add` would return `None`.
+    unsafe { base.unchecked_add(scaled) }
 }
 
 pub(crate) use cast_from::CastFrom;
@@ -902,52 +3824,19 @@ mod cast_from {
                 // - If this is possible, any information necessary to perform
                 //   the `Src`->`Dst` metadata conversion at runtime.
                 //
-                // Assume that `Src` and `Dst` are slice DSTs, and define:
-                // - `S_OFF = Src::LAYOUT.size_info.offset`
-                // - `S_ELEM = Src::LAYOUT.size_info.elem_size`
-                // - `D_OFF = Dst::LAYOUT.size_info.offset`
-                // - `D_ELEM = Dst::LAYOUT.size_info.elem_size`
+                // For slice DSTs, destination metadata is an affine function
+                // of source metadata:
                 //
-                // We are trying to solve the following equation:
+                //   dst_meta = offset_delta_elems + src_meta * elem_multiple
                 //
-                //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-                //
-                // At runtime, we will be attempting to compute `d_meta`, given
-                // `s_meta` (a runtime value) and all other parameters (which
-                // are compile-time values). We can solve like so:
-                //
-                //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-                //
-                //   d_meta * D_ELEM = S_OFF - D_OFF + s_meta * S_ELEM
-                //
-                //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
-                //
-                // Since `d_meta` will be a `usize`, we need the right-hand side
-                // to be an integer, and this needs to hold for *any* value of
-                // `s_meta` (in order for our conversion to be infallible - ie,
-                // to not have to reject certain values of `s_meta` at runtime).
-                // This means that:
-                //
-                // - `s_meta * S_ELEM` must be a multiple of `D_ELEM`
-                // - Since this must hold for any value of `s_meta`, `S_ELEM`
-                //   must be a multiple of `D_ELEM`
-                // - `S_OFF - D_OFF` must be a multiple of `D_ELEM`
-                //
-                // Thus, let `OFFSET_DELTA_ELEMS = (S_OFF - D_OFF)/D_ELEM` and
-                // `ELEM_MULTIPLE = S_ELEM/D_ELEM`. We can rewrite the above
-                // expression as:
-                //
-                //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
-                //
-                //   d_meta = OFFSET_DELTA_ELEMS + s_meta * ELEM_MULTIPLE
-                //
-                // Thus, we just need to compute the following and confirm that
-                // they have integer solutions in order to both a) determine
-                // whether infallible `Src` -> `Dst` casts are possible and, b)
-                // pre-compute the parameters necessary to perform those casts
-                // at runtime. These parameters are encapsulated in
-                // `CastParams`, which acts as a witness that such infallible
-                // casts are possible.
+                // `elem_multiple` scales the destination's trailing element
+                // size to the source's. `offset_delta_elems` selects a
+                // destination size equal to the source's zero-element size.
+                // We then prove that the two complete rounded size formulas
+                // produce the same sequence for all metadata. This is
+                // necessary because a packed outer DST can retain a nested
+                // field's rounding operation; comparing only physical
+                // trailing-slice offsets is not sufficient.
                 /// The parameters required in order to perform an
                 /// unsized-to-unsized pointer cast from `Src` to `Dst` as
                 /// described above.
@@ -989,15 +3878,60 @@ mod cast_from {
             }
 
             impl<Src: ?Sized, Dst: ?Sized> CastParams<Src, Dst> {
+                /// Given a nonzero `dst.elem_size` that exactly divides
+                /// `src.elem_size`, produces `true` only when the following
+                /// metadata map preserves the complete object size for every
+                /// source element count `src_meta`:
+                ///
+                /// ```text
+                /// dst_meta = dst_base + src_meta * (src.elem_size / dst.elem_size)
+                /// ```
+                ///
+                /// This recognizes sufficient conditions for equality. A
+                /// `false` result also includes equivalent size sequences
+                /// that this test cannot recognize, or an adjustment whose
+                /// normalized components cannot be represented in `usize`.
+                const fn size_sequences_match(
+                    src: TrailingSliceLayout,
+                    dst: TrailingSliceLayout,
+                    dst_base: usize,
+                ) -> bool {
+                    let base_bytes = match dst_base.checked_mul(dst.elem_size) {
+                        Some(bytes) => bytes,
+                        None => return false,
+                    };
+                    let shifted_dst = match dst.advance(base_bytes, src.elem_size) {
+                        Some(layout) => layout,
+                        None => return false,
+                    };
+                    src.has_same_size_sequence(shifted_dst)
+                }
+
+                /// Given the complete layouts of `Src` and `Dst`, produces
+                /// parameters for a cast that preserves object size.
+                ///
+                /// A `Some` result establishes that `Src`'s alignment is at
+                /// least `Dst`'s and that the metadata map preserves size for
+                /// every valid source metadata value.
+                ///
+                /// Supports casts between sized types of equal size, from a
+                /// sized type to a slice DST, and between slice DSTs. A slice
+                /// DST destination must have nonzero-sized elements; between
+                /// slice DSTs, its element size must exactly divide the
+                /// source's nonzero element size.
+                ///
+                /// Produces `None` for unsupported casts or when this method
+                /// cannot establish a size-preserving metadata map. Rejection
+                /// does not establish that no such map exists.
                 const fn try_compute(
-                    src: &DstLayout,
-                    dst: &DstLayout,
+                    src_layout: &DstLayout,
+                    dst_layout: &DstLayout,
                 ) -> Option<CastParams<Src, Dst>> {
-                    if src.align.get() < dst.align.get() {
+                    if src_layout.align.get() < dst_layout.align.get() {
                         return None;
                     }
 
-                    let inner = match (src.size_info, dst.size_info) {
+                    let inner = match (src_layout.size_info, dst_layout.size_info) {
                         (
                             SizeInfo::Sized { size: src_size },
                             SizeInfo::Sized { size: dst_size },
@@ -1010,82 +3944,79 @@ mod cast_from {
                             // dst_size`.
                             CastParamsInner::SizedToSized
                         }
-                        (SizeInfo::Sized { size: src_size }, SizeInfo::SliceDst(dst)) => {
-                            let offset_delta = if let Some(od) = src_size.checked_sub(dst.offset) {
-                                od
-                            } else {
-                                return None;
+                        (SizeInfo::Sized { size: src_size }, SizeInfo::SliceDst(_)) => {
+                            let dst_meta = match dst_layout.metadata_for_exact_size(src_size) {
+                                Some(meta) => meta,
+                                None => return None,
                             };
-
-                            let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
-                                e
-                            } else {
-                                return None;
-                            };
-
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
-                            let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                            if delta_mod_other_elem != 0 {
-                                return None;
-                            }
-
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
-                            let dst_meta = offset_delta / dst_elem_size.get();
 
                             // SAFETY: The preceding math ensures that a `Dst`
                             // with `dst_meta` addresses `src_size` bytes.
                             CastParamsInner::SizedToUnsized { dst_meta }
                         }
                         (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) => {
-                            let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset)
-                            {
-                                od
-                            } else {
-                                return None;
-                            };
-
                             let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
                                 e
                             } else {
                                 return None;
                             };
 
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
-                            let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
-                            let elem_remainder = src.elem_size % dst_elem_size.get();
-
-                            if delta_mod_other_elem != 0
-                                || src.elem_size < dst.elem_size
-                                || elem_remainder != 0
-                            {
+                            if src.elem_size < dst.elem_size {
                                 return None;
                             }
 
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
-                            let offset_delta_elems = offset_delta / dst_elem_size.get();
+                            let (elem_multiple, described_src_elem_size) =
+                                super::max_elems_for_bytes(src.elem_size, dst_elem_size);
+                            if described_src_elem_size != src.elem_size {
+                                return None;
+                            }
 
-                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                            // divide by zero.
-                            #[allow(clippy::arithmetic_side_effects)]
-                            let elem_multiple = src.elem_size / dst_elem_size.get();
+                            // Prefer an exact destination-element adjustment
+                            // between `src.size_offset()` and
+                            // `dst.size_offset()`. This preserves offset-based
+                            // cast compatibility and metadata selection when
+                            // several lengths have the same rounded size. It
+                            // also avoids choosing a length whose subsequent
+                            // padding sequence differs from the source's.
+                            let exact_offset_delta_elems =
+                                match src.size_offset().checked_sub(dst.size_offset()) {
+                                    Some(delta) => {
+                                        let (elems, described_delta) =
+                                            super::max_elems_for_bytes(delta, dst_elem_size);
+                                        if described_delta == delta {
+                                            Some(elems)
+                                        } else {
+                                            None
+                                        }
+                                    }
+                                    None => None,
+                                };
+
+                            let offset_delta_elems = match exact_offset_delta_elems {
+                                Some(elems) if Self::size_sequences_match(src, dst, elems) => elems,
+                                _ => {
+                                    let src_zero_size = match src.size_for_elems(0) {
+                                        Some(size) => size,
+                                        None => return None,
+                                    };
+                                    let elems =
+                                        match dst_layout.metadata_for_exact_size(src_zero_size) {
+                                            Some(elems) => elems,
+                                            None => return None,
+                                        };
+                                    if !Self::size_sequences_match(src, dst, elems) {
+                                        return None;
+                                    }
+                                    elems
+                                }
+                            };
 
                             CastParamsInner::UnsizedToUnsized {
-                                // SAFETY: We checked above that this is an exact ratio.
+                                // SAFETY: `size_sequences_match` proves that
+                                // this affine metadata map preserves size.
                                 offset_delta_elems,
-                                // SAFETY: We checked above that this is an exact ratio.
+                                // SAFETY: We checked above that this is an exact
+                                // ratio of source to destination element size.
                                 elem_multiple,
                             }
                         }
@@ -1098,40 +4029,77 @@ mod cast_from {
             }
 
             impl<Src: KnownLayout + ?Sized, Dst: KnownLayout + ?Sized> CastParams<Src, Dst> {
+                /// Produces `Dst` metadata describing an object of the same
+                /// size as the `Src` described by `src_meta`.
+                ///
                 /// # Safety
                 ///
                 /// `src_meta` describes a `Src` whose size is no larger than
                 /// `isize::MAX`.
-                ///
-                /// The returned metadata describes a `Dst` of the same size as
-                /// the original `Src`.
                 #[inline(always)]
                 unsafe fn cast_metadata(
                     self,
                     src_meta: Src::PointerMetadata,
                 ) -> Dst::PointerMetadata {
-                    #[allow(unused)]
-                    use crate::util::polyfills::*;
-
                     let dst_meta = match self.inner {
                         CastParamsInner::UnsizedToUnsized { offset_delta_elems, elem_multiple } => {
                             let src_meta = src_meta.to_elem_count();
-                            #[allow(
-                                unstable_name_collisions,
-                                clippy::multiple_unsafe_ops_per_block
-                            )]
-                            // SAFETY: `self` is a witness that the following
-                            // equation holds:
+                            // SAFETY: `self` witnesses that this affine map
+                            // makes `Src` and `Dst`'s complete rounded size
+                            // formulas equal for every source metadata value.
+                            // Interpret the arithmetic in this proof over the
+                            // mathematical nonnegative integers. Since the
+                            // caller promises that `src_meta` is valid `Src`
+                            // metadata, the source object size `src_size` it
+                            // describes is at most `isize::MAX`. Let
+                            // `src_elem_size` and `dst_elem_size` be the
+                            // respective trailing-slice element sizes. Then:
                             //
-                            //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
+                            //   src_meta * src_elem_size
+                            //       <= src_size <= isize::MAX.
                             //
-                            // Since the caller promises that `src_meta` is
-                            // valid `Src` metadata, this math will not
-                            // overflow, and the returned value will describe a
-                            // `Dst` of the same size.
+                            // Since `elem_multiple` is the exact ratio
+                            // `src_elem_size / dst_elem_size` and
+                            // `dst_elem_size >= 1`,
+                            //
+                            //   src_meta * elem_multiple
+                            //       <= src_meta * src_elem_size
+                            //       <= isize::MAX <= usize::MAX.
+                            //
+                            // Thus `scaled_elems = src_meta * elem_multiple`
+                            // is representable, and its byte contribution is
+                            // `scaled_elems * dst_elem_size = src_meta *
+                            // src_elem_size`. Let `base_bytes =
+                            // offset_delta_elems * dst_elem_size`.
+                            // `size_sequences_match` compares the source
+                            // formula with the destination formula advanced by
+                            // `base_bytes`. The latter's unrounded term
+                            // contains `base_bytes + src_meta * src_elem_size`,
+                            // and its complete size is at least that large
+                            // (formally checked by Kani in
+                            // `prove_size_formula_bounds_size_offset`).
+                            // Sequence equality therefore gives, over the
+                            // mathematical nonnegative integers,
+                            //
+                            //   base_bytes + src_meta * src_elem_size
+                            //       = (offset_delta_elems + scaled_elems)
+                            //           * dst_elem_size
+                            //       <= src_size.
+                            //
+                            // Since `dst_elem_size >= 1`, the metadata sum
+                            // `offset_delta_elems + scaled_elems` is also at
+                            // most `src_size`, and thus at most `isize::MAX <=
+                            // usize::MAX`. The sum is therefore representable,
+                            // and the returned metadata describes a `Dst` of
+                            // the same size.
+                            // SAFETY: The bounds above establish the helper's
+                            // complete no-overflow precondition.
                             unsafe {
-                                offset_delta_elems
-                                    .unchecked_add(src_meta.unchecked_mul(elem_multiple))
+                                super::add_scaled_metadata(
+                                    offset_delta_elems,
+                                    src_meta,
+                                    elem_multiple,
+                                )
                             }
                         }
                         CastParamsInner::SizedToUnsized { dst_meta } => dst_meta,
@@ -1174,6 +4142,55 @@ mod cast_from {
     }
 }
 
+#[cfg(any(test, kani))]
+mod padding_testutil {
+    use crate::KnownLayout;
+
+    #[derive(KnownLayout)]
+    #[repr(C, align(4))]
+    pub(super) struct Aligned<Prefix, Tail: ?Sized> {
+        pub(super) prefix: Prefix,
+        pub(super) tail: Tail,
+    }
+
+    /// Compare direct padding with the complete size minus the slice end.
+    /// Counts whose complete object size exceeds `usize::MAX` are omitted.
+    pub(super) fn check_padding_for_elems<Target>(elems: usize) -> Option<usize>
+    where
+        Target: ?Sized + KnownLayout<PointerMetadata = usize>,
+    {
+        let layout = crate::trailing_slice_layout::<Target>();
+        let trailing_size = elems.checked_mul(layout.elem_size)?;
+
+        // Evaluate the complete rounded size independently of both helpers:
+        // `size_for_elems` delegates to the padding method being tested.
+        let (alignment, phase) = layout.size_rounding_align_and_phase.components();
+        #[allow(clippy::arithmetic_side_effects)]
+        let mask = alignment.get() - 1;
+        let unrounded = phase.checked_add(trailing_size)?;
+        let rounded = unrounded.checked_add(mask)? & !mask;
+        let object_size = layout.size_base.checked_add(rounded)?;
+        let trailing_end = layout.offset.checked_add(trailing_size).unwrap();
+        let expected = object_size.checked_sub(trailing_end).unwrap();
+
+        let padding = layout.padding_for_elems(elems);
+        assert_eq!(padding, expected);
+        Some(padding)
+    }
+
+    pub(super) fn check_layouts(elems: usize) {
+        // Slices have no trailing padding. The aligned fixtures cover
+        // zero and nonzero phases, a three-byte element whose padding
+        // cycles with the element count, and zero-sized elements.
+        let _ = check_padding_for_elems::<[u8]>(elems);
+        let _ = check_padding_for_elems::<[()]>(elems);
+        let _ = check_padding_for_elems::<Aligned<[u8; 8], [u8]>>(elems);
+        let _ = check_padding_for_elems::<Aligned<[u8; 9], [u8]>>(elems);
+        let _ = check_padding_for_elems::<Aligned<[u8; 9], [[u8; 3]]>>(elems);
+        let _ = check_padding_for_elems::<Aligned<[u8; 9], [()]>>(elems);
+    }
+}
+
 // FIXME(#67): For some reason, on our MSRV toolchain, this `allow` isn't
 // enforced despite having `#![allow(unknown_lints)]` at the crate root, but
 // putting it here works. Once our MSRV is high enough that this bug has been
@@ -1182,12 +4199,560 @@ mod cast_from {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::PointerMetadata as _;
+
+    /// Models the size of nested `repr(C)` structs ending in a slice.
+    ///
+    /// `leading` lists structs from outermost to innermost. Each tuple gives
+    /// the packing factor, minimum alignment, and prefix size before padding
+    /// for the final field. `trailing_elem_size` and `trailing_alignment` give
+    /// the slice element size and alignment. An empty `leading` describes the
+    /// slice itself.
+    ///
+    /// The returned closure maps a slice length to the complete size, including
+    /// padding at every nesting level. It returns `None` only on `usize`
+    /// overflow; sizes above `isize::MAX` are permitted by this arithmetic model.
+    /// Packing affects field placement, preserving each field's internal
+    /// padding, even for descriptors that Rust would reject as types.
+    ///
+    /// # Panics
+    ///
+    /// Panics if any alignment or packing factor is not a power of two, a
+    /// minimum alignment exceeds its packing factor, or the element size is
+    /// not a multiple of the slice alignment.
+    fn size_for_metadata_model(
+        leading: &[(NonZeroUsize, NonZeroUsize, usize)],
+        trailing_elem_size: usize,
+        trailing_alignment: NonZeroUsize,
+    ) -> impl Fn(usize) -> Option<usize> + '_ {
+        // Rust requires power-of-two alignments and sizes divisible by their
+        // alignment [1]; alignment modifiers also take powers of two [2].
+        //
+        // [1] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#size-and-alignment
+        // [2] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#the-alignment-modifiers
+        assert!(trailing_alignment.get().is_power_of_two());
+        assert_eq!(trailing_elem_size % trailing_alignment.get(), 0);
+        for &(packed, align, _) in leading {
+            assert!(packed.get().is_power_of_two());
+            assert!(align.get().is_power_of_two());
+            // The descriptor requires its minimum to fit under the packing
+            // cap. It also models combinations that Rust forbids, including
+            // simultaneous `align` and `packed` modifiers [2].
+            assert!(align <= packed);
+        }
+
+        move |elems| {
+            // A slice shares its array section's layout [3]. Array size is
+            // element size times length, with the element's alignment [4].
+            //
+            // [3] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#slice-layout
+            // [4] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#array-layout
+            let mut size = trailing_elem_size.checked_mul(elems)?;
+            let mut alignment = trailing_alignment;
+
+            // Work outward with each field's complete size, including its
+            // trailing padding: an enclosing representation "does not change
+            // the layout of the fields themselves" [5]. Thus packing a nested
+            // field preserves the padding already included in `size`.
+            //
+            // [5] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#representations
+            for &(packed, align, prefix) in leading.iter().rev() {
+                // Packing caps the field's alignment for placement [2].
+                let field_align = alignment.min(packed);
+
+                // `repr(C)` places the next field at an aligned offset [6];
+                // packing requires the least sufficient inter-field padding
+                // [2]. Here `prefix` is the end of the preceding fields.
+                //
+                // [6] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#reprc-structs
+                let offset = prefix.checked_add(util::padding_needed_for(prefix, field_align))?;
+
+                // `repr(C)` uses the greatest field alignment [6], and an
+                // explicit alignment can only raise it [2]. Here `align`
+                // summarizes the minimum from the prefix and any explicit
+                // alignment. Both operands are <= `packed`, so their maximum
+                // also respects the packing cap.
+                alignment = align.max(field_align);
+
+                // Advance past the complete field, then round to the struct's
+                // alignment, following `repr(C)`'s final sizing steps [6].
+                size = offset.checked_add(size)?;
+                size = size.checked_add(util::padding_needed_for(size, alignment))?;
+            }
+            // Each enclosing size is at least its field's size. Thus any
+            // checked multiplication or addition that overflowed above would
+            // also make the final size unrepresentable in `usize`.
+            Some(size)
+        }
+    }
+
+    /// Computes [`size_for_metadata_model`]'s size function using `DstLayout`.
+    ///
+    /// Layout construction uses [`DstLayout::for_repr_c_struct`], and the
+    /// returned closure uses [`crate::PointerMetadata::size_for_metadata`].
+    ///
+    /// # Panics
+    ///
+    /// Panics for invalid descriptors as in [`size_for_metadata_model`], or if
+    /// `DstLayout` cannot construct the layout. This includes static size
+    /// overflow and, in debug builds, alignments or packing factors above
+    /// [`DstLayout::CURRENT_MAX_ALIGN`].
+    fn size_for_metadata_via_dst_layout(
+        leading: &[(NonZeroUsize, NonZeroUsize, usize)],
+        trailing_elem_size: usize,
+        trailing_alignment: NonZeroUsize,
+    ) -> impl Fn(usize) -> Option<usize> + '_ {
+        assert_eq!(trailing_elem_size % trailing_alignment.get(), 0);
+        let mut layout = DstLayout {
+            align: trailing_alignment,
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                offset: 0,
+                elem_size: trailing_elem_size,
+                size_base: 0,
+                size_rounding_align_and_phase: RoundingAlignAndPhase::new(trailing_alignment, 0),
+            }),
+            statically_shallow_unpadded: true,
+        };
+        for &(packed, align, prefix) in leading.iter().rev() {
+            assert!(align <= packed);
+            let prefix = DstLayout {
+                align: DstLayout::MIN_ALIGN,
+                size_info: SizeInfo::Sized { size: prefix },
+                statically_shallow_unpadded: true,
+            };
+            layout = DstLayout::for_repr_c_struct(Some(align), Some(packed), &[prefix, layout]);
+        }
+        move |elems: usize| elems.size_for_metadata(layout)
+    }
+
+    #[test]
+    fn test_model_via_dst_layout() {
+        let nz = |n| NonZeroUsize::new(n).unwrap();
+        let cases: &[&[_]] = &[
+            &[],
+            &[(nz(8), nz(1), 3)],
+            &[(nz(8), nz(8), 3)],
+            &[(nz(2), nz(1), 1), (nz(8), nz(8), 3)],
+            &[(nz(8), nz(8), 1), (nz(2), nz(1), 3), (nz(8), nz(8), 5)],
+            &[(nz(1), nz(1), 1), (nz(2), nz(2), 3), (nz(8), nz(8), 5)],
+        ];
+        for &leading in cases {
+            for &(elem_size, alignment) in &[(0, 1), (0, 8), (1, 1), (2, 2), (3, 1), (8, 8)] {
+                let alignment = nz(alignment);
+                let expected = size_for_metadata_model(leading, elem_size, alignment);
+                let actual = size_for_metadata_via_dst_layout(leading, elem_size, alignment);
+                let max_elems = usize::MAX / elem_size.max(1);
+                for elems in (0..32).chain([
+                    max_elems - 1,
+                    max_elems,
+                    max_elems.saturating_add(1),
+                    usize::MAX,
+                ]) {
+                    assert_eq!(
+                        actual(elems),
+                        expected(elems),
+                        "leading: {:?}, trailing: {:?}, elems: {}",
+                        leading,
+                        (elem_size, alignment),
+                        elems,
+                    );
+                }
+            }
+        }
+
+        for prefix in [usize::MAX - 1, usize::MAX] {
+            let leading = [(nz(1), nz(1), prefix)];
+            let expected = size_for_metadata_model(&leading, 1, nz(1));
+            let actual = size_for_metadata_via_dst_layout(&leading, 1, nz(1));
+            for elems in [0, 1, 2] {
+                assert_eq!(actual(elems), expected(elems));
+            }
+        }
+    }
+
+    // This exercises arithmetic rather than unsafe operations; keep the
+    // smaller comparison test enabled under Miri instead of this large search.
+    #[test]
+    #[cfg_attr(miri, ignore)]
+    fn test_model_via_dst_layout_combinations() {
+        use rand::{rngs::SmallRng, Rng as _, SeedableRng as _};
+
+        fn check(
+            leading: &[(NonZeroUsize, NonZeroUsize, usize)],
+            trailing_elem_size: usize,
+            trailing_alignment: NonZeroUsize,
+        ) {
+            let expected = size_for_metadata_model(leading, trailing_elem_size, trailing_alignment);
+            assert!(
+                expected(0).is_some(),
+                "unrepresentable test layout: {:?}, {:?}",
+                leading,
+                (trailing_elem_size, trailing_alignment)
+            );
+            let actual = std::panic::catch_unwind(|| {
+                size_for_metadata_via_dst_layout(leading, trailing_elem_size, trailing_alignment)
+            })
+            .unwrap_or_else(|_| {
+                panic!(
+                    "DstLayout rejected leading: {:?}, trailing: {:?}",
+                    leading,
+                    (trailing_elem_size, trailing_alignment)
+                )
+            });
+            let compare = |elems| {
+                let expected = expected(elems);
+                assert_eq!(
+                    actual(elems),
+                    expected,
+                    "leading: {:?}, trailing: {:?}, elems: {}",
+                    leading,
+                    (trailing_elem_size, trailing_alignment),
+                    elems,
+                );
+                expected
+            };
+
+            let first_sixteen = 0..=16;
+            let pointer_width = (0..POINTER_WIDTH_BITS).step_by(4).flat_map(|shift| {
+                let elems = 1usize << shift;
+                [elems - 1, elems, elems + 1]
+            });
+            let last_two = (usize::MAX - 1)..=usize::MAX;
+            let elemses = first_sixteen.chain(pointer_width).chain(last_two);
+            for elems in elemses {
+                let _ = compare(elems);
+            }
+
+            // The modeled size is nondecreasing. Find the last fitting length,
+            // comparing every probe, then check both sides of that boundary.
+            // Zero-sized elements can remain representable at usize::MAX.
+            let (mut low, mut high) = (0, usize::MAX);
+            while low < high {
+                let distance = high - low;
+                let mid = low + distance / 2 + distance % 2;
+                if compare(mid).is_some() {
+                    low = mid;
+                } else {
+                    high = mid - 1;
+                }
+            }
+            assert!(compare(low).is_some());
+            if let Some(previous) = low.checked_sub(1) {
+                assert!(compare(previous).is_some());
+            }
+            if let Some(next) = low.checked_add(1) {
+                assert_eq!(compare(next), None);
+            }
+        }
+
+        let nz = |n| NonZeroUsize::new(n).unwrap();
+        let check_small_tails = |leading: &[_]| {
+            for alignment in [1, 2, 4, 8] {
+                for multiple in [0, 1, 2, 3, 7] {
+                    check(leading, multiple * alignment, nz(alignment));
+                }
+            }
+        };
+        let mut fragments = Vec::new();
+        for packed in [1, 2, 4] {
+            for align in [1, 2, 4].iter().copied().filter(|&align| align <= packed) {
+                for prefix in 0..=4 {
+                    fragments.push((nz(packed), nz(align), prefix));
+                }
+            }
+        }
+
+        // Exhaust every combination in this small domain at depths 0, 1, 2.
+        check_small_tails(&[]);
+        for &outer in &fragments {
+            check_small_tails(&[outer]);
+            for &inner in &fragments {
+                check_small_tails(&[outer, inner]);
+            }
+        }
+
+        let mut rng = SmallRng::seed_from_u64(0);
+        for depth in (0usize..=128).chain([256, 512, 1024]) {
+            // A small prefix adds at most 4 * max_align bytes per layer.
+            // Reserve half of usize::MAX for a large outermost prefix so
+            // construction remains representable even at the largest depth.
+            let align_limit =
+                DstLayout::CURRENT_MAX_ALIGN.get().min(usize::MAX / (8 * depth.max(1)));
+            let alignments: Vec<_> = (0..POINTER_WIDTH_BITS)
+                .map(|shift| 1usize << shift)
+                .take_while(|&align| align <= align_limit)
+                .collect();
+            let last = alignments.len() - 1;
+            let max_align = alignments[last];
+            for case in 0..40 {
+                let mut leading = Vec::with_capacity(depth);
+                for level in 0..depth {
+                    // Mix arbitrary modifiers, increasing and decreasing
+                    // alignments, alternating packing, and fully packed trees.
+                    let (packed, align) = match case / 8 {
+                        0 => {
+                            let packed = rng.gen_range(0..=last);
+                            (packed, rng.gen_range(0..=packed))
+                        }
+                        1 => (last, level % alignments.len()),
+                        2 => (last, last - level % alignments.len()),
+                        3 => {
+                            let index = if level % 2 == 0 { 0 } else { last };
+                            (index, index)
+                        }
+                        _ => (0, 0),
+                    };
+                    let (packed, align) = (alignments[packed], alignments[align]);
+                    let prefix = if level == 0 && case % 4 == 3 {
+                        usize::MAX / 2 + rng.gen_range(0..=2) - 1
+                    } else {
+                        match rng.gen_range(0..8) {
+                            0 => 0,
+                            1 => 1,
+                            2 => align - 1,
+                            3 => align,
+                            4 => align + 1,
+                            5 => packed - 1,
+                            6 => packed + 1,
+                            _ => rng.gen_range(0..=2 * max_align),
+                        }
+                    };
+                    leading.push((nz(packed), nz(align), prefix));
+                }
+                let alignment = alignments[rng.gen_range(0..=last)];
+                let elem_size = match case % 8 {
+                    0 => 0,
+                    1 => alignment,
+                    2 => 2 * alignment,
+                    3 => 3 * alignment,
+                    4 => 7 * alignment,
+                    5 => 15 * alignment,
+                    6 => (usize::MAX / 2 / alignment) * alignment,
+                    _ => (usize::MAX / alignment) * alignment,
+                };
+                check(&leading, elem_size, nz(alignment));
+            }
+        }
+    }
+
+    const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_ALIGN: NonZeroUsize = match NonZeroUsize::new(8) {
+        Some(align) => align,
+        None => const_unreachable!(),
+    };
+    const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE: RoundingAlignAndPhase =
+        RoundingAlignAndPhase::new(TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_ALIGN, 3);
+    const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_DECODED_ALIGN: usize =
+        TEST_SIZE_ROUNDING_ALIGN_AND_PHASE.align().get();
+    const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_DECODED_PHASE: usize =
+        TEST_SIZE_ROUNDING_ALIGN_AND_PHASE.components().1;
+
+    #[test]
+    #[allow(clippy::arithmetic_side_effects)]
+    fn test_size_rounding_align_and_phase_encoding() {
+        // These constants ensure that encoding and decoding remain evaluable
+        // on every supported compiler, including the MSRV.
+        assert_eq!(TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_DECODED_ALIGN, 8);
+        assert_eq!(TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_DECODED_PHASE, 3);
+
+        for shift in 0..POINTER_WIDTH_BITS {
+            #[allow(clippy::arithmetic_side_effects)]
+            let align = NonZeroUsize::new(1usize << shift).unwrap();
+            for phase in [0, align.get() / 2, align.get() - 1] {
+                let rounding = RoundingAlignAndPhase::new(align, phase);
+                assert_eq!(rounding.align(), align);
+                assert_eq!(rounding.components().1, phase);
+                assert_eq!(rounding.0.get(), align.get() | phase);
+            }
+        }
+
+        let max_align = DstLayout::THEORETICAL_MAX_ALIGN;
+        let max_phase = max_align.get() - 1;
+        let max = RoundingAlignAndPhase::new(max_align, max_phase);
+        assert_eq!(max.0.get(), usize::MAX);
+        assert_eq!(max.align(), max_align);
+        assert_eq!(max.components().1, max_phase);
+
+        assert_eq!(mem::size_of::<TrailingSliceLayout>(), 4 * mem::size_of::<usize>());
+    }
+
+    #[test]
+    #[allow(clippy::arithmetic_side_effects)]
+    fn test_trailing_slice_layout_normal_form() {
+        // Compare the stored base-and-phase formula with
+        // `prefix + round_up(offset + elems * elem_size, align)`, where
+        // `prefix < align`. Move whole alignment-sized chunks of `offset`
+        // into `size_base` and retain the remainder as the phase. Also verify
+        // that `size_offset()` recovers the exact `offset` used by casts to
+        // choose between metadata values with the same rounded object size.
+        for align in [1, 2, 4, 8, 16] {
+            let align = NonZeroUsize::new(align).unwrap();
+            for prefix in 0..align.get() {
+                for offset in 0..32 {
+                    let phase = offset % align.get();
+                    let size_base = (offset - phase) | prefix;
+                    let layout = TrailingSliceLayout {
+                        offset: 0,
+                        elem_size: 3,
+                        size_base,
+                        size_rounding_align_and_phase: RoundingAlignAndPhase::new(align, phase),
+                    };
+                    assert_eq!(layout.size_offset(), offset);
+
+                    for elems in 0..32 {
+                        let unrounded = offset + elems * layout.elem_size;
+                        let old_size =
+                            prefix + unrounded + util::padding_needed_for(unrounded, align);
+                        assert_eq!(layout.size_for_elems(elems), Some(old_size));
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    #[allow(clippy::arithmetic_side_effects)]
+    fn test_normalized_size_bounds() {
+        // Use checked evaluation as an independent oracle, including layouts
+        // whose empty object is already too large to represent.
+        let checked_size = |layout: TrailingSliceLayout, trailing_bytes: usize| {
+            let (alignment, phase) = layout.size_rounding_align_and_phase.components();
+            let unrounded = phase.checked_add(trailing_bytes)?;
+            let rounded = unrounded.checked_add(util::padding_needed_for(unrounded, alignment))?;
+            layout.size_base.checked_add(rounded)
+        };
+        for exponent in 0..POINTER_WIDTH_BITS {
+            let alignment = NonZeroUsize::new(1usize << exponent).unwrap();
+            for phase in [0, alignment.get() / 2, alignment.get() - 1] {
+                for base in [0, 1, alignment.get() - 1, alignment.get(), usize::MAX - 1, usize::MAX]
+                {
+                    let mut layout = TrailingSliceLayout {
+                        offset: 0,
+                        elem_size: 1,
+                        size_base: base,
+                        size_rounding_align_and_phase: RoundingAlignAndPhase::new(alignment, phase),
+                    };
+                    for available in [0, 1, alignment.get() - 1, alignment.get(), usize::MAX] {
+                        match layout.max_trailing_bytes(available) {
+                            Some(max_bytes) => {
+                                assert!(checked_size(layout, max_bytes).unwrap() <= available);
+                                if let Some(next_bytes) = max_bytes.checked_add(1) {
+                                    assert!(checked_size(layout, next_bytes)
+                                        .map(|size| size > available)
+                                        .unwrap_or(true));
+                                }
+                            }
+                            None => {
+                                assert!(checked_size(layout, 0)
+                                    .map(|size| size > available)
+                                    .unwrap_or(true));
+                            }
+                        }
+                    }
+
+                    for elem_size in [0, 1, 3, alignment.get(), usize::MAX] {
+                        layout.elem_size = elem_size;
+                        let max_elems = layout
+                            .max_trailing_bytes(usize::MAX)
+                            .and_then(|bytes| bytes.checked_div(elem_size))
+                            .unwrap_or(usize::MAX);
+                        for elems in [
+                            0,
+                            1,
+                            max_elems.saturating_sub(1),
+                            max_elems,
+                            max_elems.saturating_add(1),
+                            usize::MAX,
+                        ] {
+                            let expected = elems
+                                .checked_mul(elem_size)
+                                .and_then(|bytes| checked_size(layout, bytes));
+                            // The physical slice offset does not affect
+                            // the size formula. Raw layouts may place the
+                            // slice beyond the object, and adding its byte
+                            // count to the offset may overflow.
+                            for offset in [0, usize::MAX] {
+                                layout.offset = offset;
+                                assert_eq!(layout.size_for_elems(elems), expected);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_padding_for_elems_for_rust_layouts() {
+        use super::padding_testutil::{check_layouts, check_padding_for_elems, Aligned};
+
+        for elems in 0..256 {
+            check_layouts(elems);
+        }
+        let size_limit = usize::MAX;
+        for remaining in 0..16 {
+            check_layouts(size_limit - remaining);
+            check_layouts(size_limit / 3 - remaining);
+        }
+        check_layouts(usize::MAX);
+
+        for (elems, expected) in [(0, 3), (1, 0), (2, 1), (3, 2)] {
+            assert_eq!(
+                check_padding_for_elems::<Aligned<[u8; 9], [[u8; 3]]>>(elems),
+                Some(expected)
+            );
+        }
+        // Every count is valid for zero-sized trailing elements.
+        assert_eq!(check_padding_for_elems::<Aligned<[u8; 9], [()]>>(usize::MAX), Some(3));
+    }
+
+    #[test]
+    fn test_padding_for_elems() {
+        for exponent in 0..POINTER_WIDTH_BITS {
+            let alignment = NonZeroUsize::new(1usize << exponent).unwrap();
+            let mask = alignment.get() - 1;
+            for phase in [0, alignment.get() / 2, mask] {
+                // Include zero-sized elements, a negative fixed term, fixed
+                // padding larger than the alignment, and overflowing sums
+                // and products. Raw layouts need not describe Rust types.
+                for (offset, elem_size, size_base) in [
+                    (0, 0, 0),
+                    (0, 1, 1),
+                    (9, 3, 8),
+                    (3, 3, 0),
+                    (9, 3, 12),
+                    (usize::MAX, usize::MAX, usize::MAX),
+                    (usize::MAX, 0, usize::MAX),
+                ] {
+                    let layout = TrailingSliceLayout {
+                        offset,
+                        elem_size,
+                        size_base,
+                        size_rounding_align_and_phase: RoundingAlignAndPhase::new(alignment, phase),
+                    };
+                    for elems in [0, 1, 2, 3, alignment.get(), usize::MAX] {
+                        // Independently reconstruct the complete rounded
+                        // size and slice end, then subtract. Round up by
+                        // adding the mask and clearing the low bits.
+                        let trailing_bytes = elems.wrapping_mul(elem_size);
+                        let unrounded = phase.wrapping_add(trailing_bytes);
+                        let rounded = unrounded.wrapping_add(mask) & !mask;
+                        let object_size = size_base.wrapping_add(rounded);
+                        let trailing_end = offset.wrapping_add(trailing_bytes);
+                        assert_eq!(
+                            layout.padding_for_elems(elems),
+                            object_size.wrapping_sub(trailing_end),
+                        );
+                    }
+                }
+            }
+        }
+    }
 
     #[test]
     fn test_dst_layout_for_slice() {
         let layout = DstLayout::for_slice::<u32>();
         match layout.size_info {
-            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size, .. }) => {
                 assert_eq!(offset, 0);
                 assert_eq!(elem_size, 4);
             }
@@ -1200,17 +4765,18 @@ mod tests {
     #[allow(clippy::decimal_literal_representation)]
     #[test]
     fn test_dst_layout_extend_sized_with_sized() {
-        // This macro constructs a layout corresponding to a `u8` and extends it
-        // with a zero-sized trailing field of given alignment `n`. The macro
-        // tests that the resulting layout has both size and alignment `min(n,
-        // P)` for all valid values of `repr(packed(P))`.
+        // This macro constructs a layout corresponding to a `u8` and extends
+        // it with a zero-sized trailing field of the specified alignment. The
+        // resulting size and alignment must both be the field's alignment
+        // capped by the packing limit. Exercise every supported packing limit
+        // as well as the absence of a packing limit.
         macro_rules! test_align_is_size {
             ($n:expr) => {
                 let base = DstLayout::for_type::<u8>();
                 let trailing_field = DstLayout::for_type::<elain::Align<$n>>();
 
-                let packs =
-                    core::iter::once(None).chain((0..29).map(|p| NonZeroUsize::new(2usize.pow(p))));
+                let packs = core::iter::once(None)
+                    .chain((0..=29).map(|p| NonZeroUsize::new(2usize.pow(p))));
 
                 for pack in packs {
                     let composite = base.extend(trailing_field, pack);
@@ -1258,6 +4824,7 @@ mod tests {
         test_align_is_size!(33554432);
         test_align_is_size!(134217728);
         test_align_is_size!(268435456);
+        test_align_is_size!(536870912);
     }
 
     /// Tests of when a sized `DstLayout` is extended with a DST field.
@@ -1271,15 +4838,29 @@ mod tests {
         let aligns = (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap());
         let packs = core::iter::once(None).chain(aligns.clone().map(Some));
 
-        for align in aligns {
+        for field_type_align in aligns {
             for pack in packs.clone() {
                 let base = DstLayout::for_type::<u8>();
                 let elem_size = 42;
                 let trailing_field_offset = 11;
+                #[allow(clippy::arithmetic_side_effects)]
+                let trailing_phase = trailing_field_offset % field_type_align.get();
+                let trailing_base = util::round_down_to_next_multiple_of_alignment(
+                    trailing_field_offset,
+                    field_type_align,
+                );
 
                 let trailing_field = DstLayout {
-                    align,
-                    size_info: SizeInfo::SliceDst(TrailingSliceLayout { elem_size, offset: 11 }),
+                    align: field_type_align,
+                    size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                        elem_size,
+                        offset: trailing_field_offset,
+                        size_base: trailing_base,
+                        size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                            field_type_align,
+                            trailing_phase,
+                        ),
+                    }),
                     statically_shallow_unpadded: false,
                 };
 
@@ -1287,7 +4868,9 @@ mod tests {
 
                 let max_align = pack.unwrap_or(DstLayout::CURRENT_MAX_ALIGN).get();
 
-                let align = align.get().min(max_align);
+                let align = field_type_align.get().min(max_align);
+                let field_offset = align;
+                let size_base = field_offset + trailing_base;
 
                 assert_eq!(
                     composite,
@@ -1295,7 +4878,12 @@ mod tests {
                         align: NonZeroUsize::new(align).unwrap(),
                         size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                             elem_size,
-                            offset: align + trailing_field_offset,
+                            offset: field_offset + trailing_field_offset,
+                            size_base,
+                            size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                                field_type_align,
+                                trailing_phase,
+                            ),
                         }),
                         statically_shallow_unpadded: false,
                     }
@@ -1371,7 +4959,8 @@ mod tests {
                 => padded { size: current_max_align * 2, align: current_max_align });
     }
 
-    /// Tests that calling `pad_to_align` on a DST `DstLayout` is a no-op.
+    /// Tests that calling `pad_to_align` on a DST `DstLayout` incorporates the
+    /// type's trailing-padding operation into its runtime size formula.
     #[test]
     fn test_dst_layout_pad_to_align_with_dst() {
         for align in (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap()) {
@@ -1379,13 +4968,138 @@ mod tests {
                 for elem_size in 0..10 {
                     let layout = DstLayout {
                         align,
-                        size_info: SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
+                        size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                            offset,
+                            elem_size,
+                            size_base: offset,
+                            size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                                DstLayout::MIN_ALIGN,
+                                0,
+                            ),
+                        }),
                         statically_shallow_unpadded: false,
                     };
-                    assert_eq!(layout.pad_to_align(), layout);
+                    assert_eq!(
+                        layout.pad_to_align(),
+                        DstLayout {
+                            align,
+                            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                                offset,
+                                elem_size,
+                                size_base: offset - offset % align.get(),
+                                size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                                    align,
+                                    offset % align.get()
+                                ),
+                            }),
+                            statically_shallow_unpadded: false,
+                        }
+                    );
                 }
             }
         }
+
+        // Exercise the branch where the existing inner rounding alignment is
+        // at least the enclosing alignment. The inner rounded term is already
+        // aligned to two, so padding only advances `size_base` from three to
+        // four.
+        let inner_rounding_dominates = DstLayout {
+            align: NonZeroUsize::new(2).unwrap(),
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                offset: 3,
+                elem_size: 1,
+                size_base: 3,
+                size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                    NonZeroUsize::new(4).unwrap(),
+                    1,
+                ),
+            }),
+            statically_shallow_unpadded: false,
+        };
+        assert_eq!(
+            inner_rounding_dominates.pad_to_align(),
+            DstLayout {
+                align: NonZeroUsize::new(2).unwrap(),
+                size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                    offset: 3,
+                    elem_size: 1,
+                    size_base: 4,
+                    size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                        NonZeroUsize::new(4).unwrap(),
+                        1
+                    ),
+                }),
+                statically_shallow_unpadded: false,
+            }
+        );
+
+        // Exercise the branch where the enclosing alignment is larger. For
+        // a trailing-slice byte count `trailing_size`, rounding
+        // `6 + round_up(1 + trailing_size, 4)` to eight gives the equivalent
+        // formula `8 + round_up(1 + trailing_size, 8)`.
+        let outer_rounding_dominates = DstLayout {
+            align: NonZeroUsize::new(8).unwrap(),
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                offset: 7,
+                elem_size: 1,
+                size_base: 6,
+                size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                    NonZeroUsize::new(4).unwrap(),
+                    1,
+                ),
+            }),
+            statically_shallow_unpadded: false,
+        };
+        assert_eq!(
+            outer_rounding_dominates.pad_to_align(),
+            DstLayout {
+                align: NonZeroUsize::new(8).unwrap(),
+                size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                    offset: 7,
+                    elem_size: 1,
+                    size_base: 8,
+                    size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                        NonZeroUsize::new(8).unwrap(),
+                        1
+                    ),
+                }),
+                statically_shallow_unpadded: false,
+            }
+        );
+    }
+
+    #[test]
+    fn test_trailing_slice_layout_size_sequence_equivalence() {
+        // These are the two normalized descriptions produced by a
+        // `repr(C, packed(2))` wrapper around slice DSTs whose element types
+        // both have size four but alignments four and two respectively. Their
+        // formulas differ structurally, but both simplify to `2 + 4 * elems`.
+        let align4 = TrailingSliceLayout {
+            offset: 2,
+            elem_size: 4,
+            size_base: 2,
+            size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                NonZeroUsize::new(4).unwrap(),
+                0,
+            ),
+        };
+        let align2 = TrailingSliceLayout {
+            offset: 2,
+            elem_size: 4,
+            size_base: 2,
+            size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                NonZeroUsize::new(2).unwrap(),
+                0,
+            ),
+        };
+        assert!(align4.has_same_size_sequence(align2));
+        for elems in 0..8 {
+            assert_eq!(align4.size_for_elems(elems), Some(2 + 4 * elems));
+            assert_eq!(align4.size_for_elems(elems), align2.size_for_elems(elems));
+        }
+
+        let dynamically_padded = TrailingSliceLayout { elem_size: 1, ..align4 };
+        assert!(!dynamically_padded.has_same_size_sequence(align2));
     }
 
     // This test takes a long time when running under Miri, so we skip it in
@@ -1404,16 +5118,32 @@ mod tests {
         #[allow(non_local_definitions)]
         impl From<(usize, usize)> for SizeInfo {
             fn from((offset, elem_size): (usize, usize)) -> SizeInfo {
-                SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
+                SizeInfo::SliceDst(TrailingSliceLayout {
+                    offset,
+                    elem_size,
+                    size_base: offset,
+                    size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                        DstLayout::MIN_ALIGN,
+                        0,
+                    ),
+                })
             }
         }
 
         fn layout<S: Into<SizeInfo>>(s: S, align: usize) -> DstLayout {
-            DstLayout {
-                size_info: s.into(),
-                align: NonZeroUsize::new(align).unwrap(),
-                statically_shallow_unpadded: false,
-            }
+            let align = NonZeroUsize::new(align).unwrap();
+            let size_info = match s.into() {
+                SizeInfo::SliceDst(mut trailing) => {
+                    let phase = trailing.size_base % align.get();
+                    trailing.size_base =
+                        util::round_down_to_next_multiple_of_alignment(trailing.size_base, align);
+                    trailing.size_rounding_align_and_phase =
+                        RoundingAlignAndPhase::new(align, phase);
+                    SizeInfo::SliceDst(trailing)
+                }
+                size_info => size_info,
+            };
+            DstLayout { size_info, align, statically_shallow_unpadded: false }
         }
 
         /// This macro accepts arguments in the form of:
@@ -1610,10 +5340,18 @@ mod tests {
 
                 let resulting_size = match layout.size_info {
                     SizeInfo::Sized { size } => size,
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        elem_size,
+                        size_base,
+                        size_rounding_align_and_phase,
+                        ..
+                    }) => {
+                        let (size_align, size_phase) = size_rounding_align_and_phase.components();
                         let padded_size = |elems| {
-                            let without_padding = offset + elems * elem_size;
-                            without_padding + util::padding_needed_for(without_padding, align)
+                            let without_padding = size_phase + elems * elem_size;
+                            size_base
+                                + without_padding
+                                + util::padding_needed_for(without_padding, size_align)
                         };
 
                         let resulting_size = padded_size(elems);
@@ -1641,8 +5379,13 @@ mod tests {
             } else {
                 let min_size = match layout.size_info {
                     SizeInfo::Sized { size } => size,
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, .. }) => {
-                        offset + util::padding_needed_for(offset, layout.align)
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        size_base,
+                        size_rounding_align_and_phase,
+                        ..
+                    }) => {
+                        let (size_align, size_phase) = size_rounding_align_and_phase.components();
+                        size_base + size_phase + util::padding_needed_for(size_phase, size_align)
                     }
                 };
 
@@ -1671,6 +5414,35 @@ mod tests {
                 .map(|(size_info, align)| layout(size_info, align));
         itertools::iproduct!(layouts, 0..8, 0..8, [CastType::Prefix, CastType::Suffix])
             .for_each(validate_behavior);
+
+        // Exercise a normalized formula which cannot be represented as
+        // `round_up(offset + elems * elem_size, align)`: the physical trailing
+        // slice begins at offset 7, while an inner aligned DST contributes the
+        // size formula `2 + round_up(5 + elems, 4)` to a packed outer type.
+        let nested_packed = DstLayout {
+            align: NonZeroUsize::new(2).unwrap(),
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                offset: 7,
+                elem_size: 1,
+                size_base: 6,
+                size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                    NonZeroUsize::new(4).unwrap(),
+                    1,
+                ),
+            }),
+            statically_shallow_unpadded: false,
+        };
+        itertools::iproduct!([nested_packed], 0..8, 0..24, [CastType::Prefix, CastType::Suffix])
+            .for_each(validate_behavior);
+
+        assert!(matches!(
+            nested_packed.validate_cast_and_convert_metadata(0, 8, CastType::Prefix),
+            Err(MetadataCastError::Size)
+        ));
+        assert!(matches!(
+            nested_packed.validate_cast_and_convert_metadata(0, 10, CastType::Prefix),
+            Ok((3, 10))
+        ));
     }
 
     #[test]
@@ -1710,9 +5482,18 @@ mod tests {
             let dst = args.elem_size.is_some();
             let layout = {
                 let size_info = match args.elem_size {
-                    Some(elem_size) => {
-                        SizeInfo::SliceDst(TrailingSliceLayout { offset: args.offset, elem_size })
-                    }
+                    Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout {
+                        offset: args.offset,
+                        elem_size,
+                        size_base: util::round_down_to_next_multiple_of_alignment(
+                            args.offset,
+                            args.align,
+                        ),
+                        size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                            args.align,
+                            args.offset % args.align.get(),
+                        ),
+                    }),
                     None => SizeInfo::Sized {
                         // Rust only supports types whose sizes are a multiple
                         // of their alignment. If the macro created a type like
@@ -2030,70 +5811,750 @@ mod tests {
 
 #[cfg(kani)]
 mod proofs {
+    //! Arithmetic models and input generators for the layout proofs.
+    //!
+    //! The contract models specify expected results without calling the
+    //! operation being checked. The composition models (`extended_layout`,
+    //! `padded_layout`, and `repr_c_layout`) also define the contracts' input
+    //! domains: `Some` supplies an expected layout, while `None` excludes an
+    //! input from the corresponding non-panicking contract. These models check
+    //! representability in `usize`, without imposing Rust's `isize::MAX` bound.
+
     use core::alloc::Layout;
 
     use super::*;
 
-    impl kani::Arbitrary for DstLayout {
-        fn any() -> Self {
-            let align: NonZeroUsize = kani::any();
-            let size_info: SizeInfo = kani::any();
+    /// Evaluates the normalized object size for a trailing slice of
+    /// `trailing_size` bytes:
+    ///
+    /// ```text
+    /// size_base + round_up(size_phase + trailing_size, size_align)
+    /// ```
+    ///
+    /// Here, `size_align` and `size_phase` come from `layout.size_rounding_align_and_phase`.
+    /// `round_up` rounds its input up to a multiple of its alignment. Returns
+    /// `None` if the size is not representable in `usize`.
+    ///
+    /// Using byte counts separates rounding from element-count multiplication
+    /// and permits proofs over byte counts that are not whole elements.
+    pub(super) fn slice_dst_size_for_trailing_bytes<ElementSize>(
+        layout: TrailingSliceLayout<ElementSize>,
+        trailing_size: usize,
+    ) -> Option<usize> {
+        let without_padding =
+            layout.size_rounding_align_and_phase.components().1.checked_add(trailing_size)?;
+        let padding =
+            util::padding_needed_for(without_padding, layout.size_rounding_align_and_phase.align());
+        let rounded = without_padding.checked_add(padding)?;
+        layout.size_base.checked_add(rounded)
+    }
 
-            kani::assume(align.is_power_of_two());
-            kani::assume(align < DstLayout::THEORETICAL_MAX_ALIGN);
+    /// Returns the least multiple of `align` greater than or equal to `bytes`,
+    /// or `None` if that multiple exceeds `usize::MAX`.
+    ///
+    /// Requires a power-of-two `align`. Composition models use this checked
+    /// operation to identify inputs for which adding padding would overflow.
+    fn round_up(bytes: usize, align: NonZeroUsize) -> Option<usize> {
+        bytes.checked_add(util::padding_needed_for(bytes, align))
+    }
 
-            // For testing purposes, we most care about instantiations of
-            // `DstLayout` that can correspond to actual Rust types. We use
-            // `Layout` to verify that our `DstLayout` satisfies the validity
-            // conditions of Rust layouts.
-            kani::assume(
-                match size_info {
-                    SizeInfo::Sized { size } => Layout::from_size_align(size, align.get()),
-                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size: _ }) => {
-                        // `SliceDst` cannot encode an exact size, but we know
-                        // it is at least `offset` bytes.
-                        Layout::from_size_align(offset, align.get())
+    /// Models the largest trailing-slice byte count whose object size fits in
+    /// `available` bytes. Returns `None` if even an empty trailing slice cannot
+    /// fit. The result need not be a multiple of the element size.
+    ///
+    /// Subtracting `size_base` leaves the budget for the rounded contribution.
+    /// Rounding that budget down to `size_align` and subtracting `size_phase`
+    /// gives the largest byte count whose `slice_dst_size_for_trailing_bytes`
+    /// result is at most `available`. Metadata and casting contracts use
+    /// this bound without calling the production capacity calculation.
+    pub(super) fn max_trailing_bytes(
+        trailing: TrailingSliceLayout,
+        available: usize,
+    ) -> Option<usize> {
+        let (align, phase) = trailing.size_rounding_align_and_phase.components();
+        let capacity = available.checked_sub(trailing.size_base)?;
+        util::round_down_to_next_multiple_of_alignment(capacity, align).checked_sub(phase)
+    }
+
+    /// Models appending `field` to a sized `prefix` for `DstLayout::extend`.
+    ///
+    /// Places the field at the first offset after the prefix that satisfies the
+    /// field's alignment, capped by `packed` when present. The resulting
+    /// alignment is the maximum of the prefix's alignment and this effective
+    /// field alignment. A DST field retains its inner rounding operation, with
+    /// its slice offset and size base shifted by the field's placement.
+    /// Trailing padding for the enclosing layout is left to `padded_layout`.
+    ///
+    /// Returns `None` for a non-power-of-two alignment, an unsized prefix, or
+    /// arithmetic overflow. The `statically_shallow_unpadded` flag is true only
+    /// if both inputs have it set and field placement introduces no gap.
+    pub(super) fn extended_layout(
+        prefix: DstLayout,
+        field: DstLayout,
+        packed: Option<NonZeroUsize>,
+    ) -> Option<DstLayout> {
+        if !prefix.align.is_power_of_two()
+            || !field.align.is_power_of_two()
+            || packed.map_or(false, |align| !align.is_power_of_two())
+        {
+            return None;
+        }
+        let SizeInfo::Sized { size: prefix_size } = prefix.size_info else { return None };
+        let field_align = field.align.min(packed.unwrap_or(DstLayout::THEORETICAL_MAX_ALIGN));
+        let field_offset = round_up(prefix_size, field_align)?;
+        let size_info = match field.size_info {
+            SizeInfo::Sized { size } => SizeInfo::Sized { size: field_offset.checked_add(size)? },
+            SizeInfo::SliceDst(trailing) => SizeInfo::SliceDst(TrailingSliceLayout {
+                offset: field_offset.checked_add(trailing.offset)?,
+                size_base: field_offset.checked_add(trailing.size_base)?,
+                ..trailing
+            }),
+        };
+        Some(DstLayout {
+            align: prefix.align.max(field_align),
+            size_info,
+            statically_shallow_unpadded: prefix.statically_shallow_unpadded
+                && field.statically_shallow_unpadded
+                && field_offset == prefix_size,
+        })
+    }
+
+    /// Models adding trailing padding for `DstLayout::pad_to_align`.
+    ///
+    /// A sized layout rounds its size up to a multiple of `layout.align`. A DST
+    /// instead composes that rounding with its existing size expression:
+    ///
+    /// ```text
+    /// round_up(size_base + round_up(size_phase + trailing_size, size_align),
+    ///          layout.align)
+    /// ```
+    ///
+    /// Here, `size_align` and `size_phase` come from the DST's
+    /// `size_rounding_align_and_phase`. The result encodes this expression with
+    /// one base, phase, and rounding alignment, preserving the physical slice
+    /// offset and element size. The `statically_shallow_unpadded` flag is
+    /// cleared only when a sized layout gains padding; DST padding is accounted
+    /// for by the size expression.
+    ///
+    /// Returns `None` if `layout.align` is not a power of two or a checked
+    /// intermediate overflows. The contract compares this expected encoding
+    /// with the production result; the separate padding formula proofs check
+    /// that the encoding preserves the rounded size.
+    pub(super) fn padded_layout(layout: DstLayout) -> Option<DstLayout> {
+        if !layout.align.is_power_of_two() {
+            return None;
+        }
+        let (size_info, no_static_padding) = match layout.size_info {
+            SizeInfo::Sized { size } => {
+                let rounded = round_up(size, layout.align)?;
+                (SizeInfo::Sized { size: rounded }, rounded == size)
+            }
+            SizeInfo::SliceDst(trailing) => {
+                let (inner_align, phase) = trailing.size_rounding_align_and_phase.components();
+                let (size_base, size_rounding_align_and_phase) = if inner_align >= layout.align {
+                    (
+                        round_up(trailing.size_base, layout.align)?,
+                        trailing.size_rounding_align_and_phase,
+                    )
+                } else {
+                    let fixed = round_up(trailing.size_base, inner_align)?.checked_add(phase)?;
+                    let new_phase = fixed & (layout.align.get() - 1);
+                    (fixed - new_phase, RoundingAlignAndPhase::new(layout.align, new_phase))
+                };
+                (
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        size_base,
+                        size_rounding_align_and_phase,
+                        ..trailing
+                    }),
+                    true,
+                )
+            }
+        };
+        Some(DstLayout {
+            size_info,
+            statically_shallow_unpadded: layout.statically_shallow_unpadded && no_static_padding,
+            ..layout
+        })
+    }
+
+    /// Models a complete layout for `DstLayout::for_repr_c_struct` by composing
+    /// the field-placement and trailing-padding specifications.
+    ///
+    /// Starts with an empty prefix of alignment `align`, or one if absent.
+    /// Appends fields in order, with `packed` as an optional cap on field
+    /// alignment; the final layout is padded to its resulting alignment. Only
+    /// the last field may be unsized, since field extension requires a sized
+    /// prefix.
+    ///
+    /// Returns `None` if the initial alignment is not a power of two or any
+    /// field extension or final padding step returns `None`.
+    pub(super) fn repr_c_layout(
+        align: Option<NonZeroUsize>,
+        packed: Option<NonZeroUsize>,
+        fields: &[DstLayout],
+    ) -> Option<DstLayout> {
+        let align = align.unwrap_or(DstLayout::MIN_ALIGN);
+        if !align.is_power_of_two() {
+            return None;
+        }
+        let mut layout = DstLayout {
+            align,
+            size_info: SizeInfo::Sized { size: 0 },
+            statically_shallow_unpadded: true,
+        };
+        for &field in fields {
+            layout = extended_layout(layout, field, packed)?;
+        }
+        padded_layout(layout)
+    }
+
+    // The inline contract harnesses use unrestricted `Arbitrary` values.
+    // These generators retain the narrower domains of the Rust-layout proofs.
+
+    /// Generates any power-of-two alignment representable in `usize`, including
+    /// `DstLayout::THEORETICAL_MAX_ALIGN`. This restricts the alignment alone;
+    /// callers must impose any constraints relating it to a layout's size.
+    fn any_layout_align() -> NonZeroUsize {
+        let exponent: u8 = kani::any();
+        kani::assume(usize::from(exponent) < POINTER_WIDTH_BITS);
+
+        // `exponent < POINTER_WIDTH_BITS`, so the shift is in range and its
+        // result is non-zero. This construction is surjective over every
+        // power-of-two alignment up to and including
+        // `THEORETICAL_MAX_ALIGN`. `Layout` admits that maximum alignment for
+        // zero-sized layouts, so the validity assumptions below—not this
+        // generator—filter combinations that cannot describe Rust types.
+        NonZeroUsize::new(1usize << exponent).unwrap()
+    }
+
+    /// Generates layouts satisfying the arithmetic restrictions used by the
+    /// standalone Rust-layout proofs.
+    ///
+    /// The fixed size, or the zero-element DST size, must be accepted by
+    /// `Layout::from_size_align`. For a DST, `size_base + size_phase` must also
+    /// be representable and at least the physical slice offset. Component
+    /// bounds come from `any_bounded_size_info`; `statically_shallow_unpadded`
+    /// remains arbitrary. These conditions do not establish that a Rust type
+    /// with this layout exists.
+    fn any_valid_dst_layout() -> DstLayout {
+        let align = any_layout_align();
+        let size_info = any_bounded_size_info();
+
+        kani::assume(
+            match size_info {
+                SizeInfo::Sized { size } => Layout::from_size_align(size, align.get()),
+                SizeInfo::SliceDst(trailing) => {
+                    // `SliceDst` cannot encode one exact size. Validate its
+                    // minimum size and the invariants required of the size
+                    // formula for layouts of real Rust types.
+                    let min_size = trailing.size_for_elems(0);
+                    let unrounded_min_size = trailing
+                        .size_base
+                        .checked_add(trailing.size_rounding_align_and_phase.components().1);
+
+                    kani::assume(matches!(
+                        unrounded_min_size,
+                        Some(size) if size >= trailing.offset
+                    ));
+
+                    match min_size {
+                        Some(min_size) => Layout::from_size_align(min_size, align.get()),
+                        None => Layout::from_size_align(usize::MAX, align.get()),
                     }
                 }
-                .is_ok(),
-            );
-
-            Self { align: align, size_info: size_info, statically_shallow_unpadded: kani::any() }
-        }
-    }
-
-    impl kani::Arbitrary for SizeInfo {
-        fn any() -> Self {
-            let is_sized: bool = kani::any();
-
-            match is_sized {
-                true => {
-                    let size: usize = kani::any();
-
-                    kani::assume(size <= DstLayout::MAX_SIZE);
-
-                    SizeInfo::Sized { size }
-                }
-                false => SizeInfo::SliceDst(kani::any()),
             }
+            .is_ok(),
+        );
+
+        DstLayout { align: align, size_info: size_info, statically_shallow_unpadded: kani::any() }
+    }
+
+    /// Generates either a fixed size at most `DstLayout::MAX_SIZE`, or a DST
+    /// description from `any_bounded_trailing_layout`.
+    ///
+    /// Supplies bounded size components to `any_valid_dst_layout`, which adds
+    /// constraints involving the enclosing layout's alignment.
+    fn any_bounded_size_info() -> SizeInfo {
+        let is_sized: bool = kani::any();
+
+        match is_sized {
+            true => {
+                let size: usize = kani::any();
+
+                kani::assume(size <= DstLayout::MAX_SIZE);
+
+                SizeInfo::Sized { size }
+            }
+            false => SizeInfo::SliceDst(any_bounded_trailing_layout()),
         }
     }
 
-    impl kani::Arbitrary for TrailingSliceLayout {
-        fn any() -> Self {
-            let elem_size: usize = kani::any();
-            let offset: usize = kani::any();
+    /// Generates a trailing-slice description whose element size, slice offset,
+    /// and size base are each at most `DstLayout::MAX_SIZE` (`isize::MAX`).
+    ///
+    /// The rounding alignment spans all representable powers of two, and the
+    /// phase spans all values below that alignment. No further relationships
+    /// between these components are imposed: their combined size may overflow
+    /// or fail to contain the slice. Standalone proofs add the relationships
+    /// they require; contract harnesses use unrestricted `Arbitrary` values
+    /// instead.
+    fn any_bounded_trailing_layout() -> TrailingSliceLayout {
+        let elem_size: usize = kani::any();
+        let offset: usize = kani::any();
+        let size_base: usize = kani::any();
+        let size_align = any_layout_align();
+        let raw_size_phase: usize = kani::any();
+        // Since `size_align` is a power of two, masking is surjective over
+        // precisely the values in `0..size_align`.
+        #[allow(clippy::arithmetic_side_effects)]
+        let size_phase = raw_size_phase & (size_align.get() - 1);
 
-            kani::assume(elem_size < DstLayout::MAX_SIZE);
-            kani::assume(offset < DstLayout::MAX_SIZE);
+        kani::assume(elem_size <= DstLayout::MAX_SIZE);
+        kani::assume(offset <= DstLayout::MAX_SIZE);
+        kani::assume(size_base <= DstLayout::MAX_SIZE);
 
-            TrailingSliceLayout { elem_size, offset }
+        TrailingSliceLayout {
+            elem_size,
+            offset,
+            size_base,
+            size_rounding_align_and_phase: RoundingAlignAndPhase::new(size_align, size_phase),
         }
     }
 
     #[kani::proof]
+    fn prove_padding_for_elems_for_rust_layouts() {
+        // For each fixture, check every element count whose complete size
+        // fits in `usize`, including all counts for zero-sized elements.
+        padding_testutil::check_layouts(kani::any());
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_padding_for_elems() {
+        // Check the modular result for every field value and element count,
+        // including layouts that cannot describe a Rust type.
+        let layout = TrailingSliceLayout {
+            offset: kani::any(),
+            elem_size: kani::any(),
+            size_base: kani::any(),
+            size_rounding_align_and_phase: RoundingAlignAndPhase(kani::any()),
+        };
+        let elems: usize = kani::any();
+        let (size_align, size_phase) = layout.size_rounding_align_and_phase.components();
+        let mask = size_align.get() - 1;
+
+        // Evaluate the complete size and trailing-slice end separately in
+        // modular arithmetic, without reducing the trailing bytes first or
+        // canceling them from the difference.
+        let trailing_bytes = elems.wrapping_mul(layout.elem_size);
+        let unrounded = size_phase.wrapping_add(trailing_bytes);
+        let rounded = unrounded.wrapping_add(mask) & !mask;
+        let object_size = layout.size_base.wrapping_add(rounded);
+        let trailing_end = layout.offset.wrapping_add(trailing_bytes);
+        assert_eq!(layout.padding_for_elems(elems), object_size.wrapping_sub(trailing_end));
+    }
+
+    #[kani::proof]
+    fn prove_size_rounding_align_and_phase_encoding() {
+        let encoded: usize = kani::any();
+        kani::assume(encoded != 0);
+        let encoded = NonZeroUsize::new(encoded).unwrap();
+        let rounding = RoundingAlignAndPhase(encoded);
+
+        let align = rounding.align();
+        let phase = rounding.components().1;
+        assert!(align.is_power_of_two());
+        assert!(phase < align.get());
+        assert_eq!(RoundingAlignAndPhase::new(align, phase), rounding);
+    }
+
+    #[kani::proof]
+    fn prove_size_rounding_align_and_phase_decoding() {
+        let align: NonZeroUsize = kani::any();
+        let phase: usize = kani::any();
+        kani::assume(align.is_power_of_two());
+        kani::assume(phase < align.get());
+
+        let rounding = RoundingAlignAndPhase::new(align, phase);
+        assert_eq!(rounding.components(), (align, phase));
+    }
+
+    #[kani::proof]
+    fn prove_trailing_slice_layout_normal_form() {
+        let rounding_word: usize = kani::any();
+        kani::assume(rounding_word != 0);
+        let align = RoundingAlignAndPhase(NonZeroUsize::new(rounding_word).unwrap()).align();
+
+        let raw_prefix: usize = kani::any();
+        let offset: usize = kani::any();
+        let trailing_size: usize = kani::any();
+        #[allow(clippy::arithmetic_side_effects)]
+        let prefix = raw_prefix & (align.get() - 1);
+        #[allow(clippy::arithmetic_side_effects)]
+        let phase = offset & (align.get() - 1);
+        #[allow(clippy::arithmetic_side_effects)]
+        let aligned_offset = offset - phase;
+        let layout = TrailingSliceLayout {
+            offset: 0,
+            elem_size: 1,
+            size_base: aligned_offset | prefix,
+            size_rounding_align_and_phase: RoundingAlignAndPhase::new(align, phase),
+        };
+
+        assert_eq!(layout.size_offset(), offset);
+
+        let old_size = offset
+            .checked_add(trailing_size)
+            .and_then(|without_padding| {
+                without_padding.checked_add(util::padding_needed_for(without_padding, align))
+            })
+            .and_then(|rounded| prefix.checked_add(rounded));
+        assert_eq!(layout.size_for_elems(trailing_size), old_size);
+        assert_eq!(slice_dst_size_for_trailing_bytes(layout, trailing_size), old_size);
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_size_for_elems_uses_element_product() {
+        let layout: TrailingSliceLayout = any_bounded_trailing_layout();
+        let elems: usize = kani::any();
+        let expected = layout
+            .elem_size
+            .checked_mul(elems)
+            .and_then(|bytes| slice_dst_size_for_trailing_bytes(layout, bytes));
+        assert_eq!(layout.size_for_elems(elems), expected);
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_element_product_preserves_alignment() {
+        let elem_size: usize = kani::any();
+        let elems: usize = kani::any();
+        let align = any_layout_align();
+        #[allow(clippy::arithmetic_side_effects)]
+        let align_mask = align.get() - 1;
+
+        kani::assume(elem_size & align_mask == 0);
+        let Some(bytes) = elem_size.checked_mul(elems) else {
+            kani::assume(false);
+            loop {}
+        };
+        assert_eq!(bytes & align_mask, 0);
+    }
+
+    #[kani::proof]
+    fn prove_trailing_slice_layout_advance() {
+        let layout: TrailingSliceLayout = any_bounded_trailing_layout();
+        let bytes: usize = kani::any();
+        let elem_size: usize = kani::any();
+        let trailing_size: usize = kani::any();
+
+        let size_offset = layout.size_offset();
+        let advanced_offset = size_offset.checked_add(bytes);
+        let advanced = layout.advance(bytes, elem_size);
+        assert_eq!(advanced.is_some(), advanced_offset.is_some());
+        let Some(advanced_offset) = advanced_offset else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(advanced) = advanced else { unreachable!() };
+
+        assert_eq!(advanced.offset, layout.offset);
+        assert_eq!(advanced.size_offset(), advanced_offset);
+        assert_eq!(advanced.elem_size, elem_size);
+        assert_eq!(
+            advanced.size_rounding_align_and_phase.align(),
+            layout.size_rounding_align_and_phase.align()
+        );
+        #[allow(clippy::arithmetic_side_effects)]
+        let size_align_mask = advanced.size_rounding_align_and_phase.align().get() - 1;
+        assert_eq!(advanced.size_base & size_align_mask, layout.size_base & size_align_mask);
+
+        let size_align = layout.size_rounding_align_and_phase.align();
+        #[allow(clippy::arithmetic_side_effects)]
+        let size_prefix = layout.size_base & (size_align.get() - 1);
+        let expected_size = advanced_offset
+            .checked_add(trailing_size)
+            .and_then(|without_padding| {
+                without_padding.checked_add(util::padding_needed_for(without_padding, size_align))
+            })
+            .and_then(|rounded| size_prefix.checked_add(rounded));
+        assert_eq!(slice_dst_size_for_trailing_bytes(advanced, trailing_size), expected_size);
+    }
+
+    #[kani::proof]
+    fn prove_has_same_size_sequence() {
+        let left: TrailingSliceLayout = any_bounded_trailing_layout();
+        let right: TrailingSliceLayout = any_bounded_trailing_layout();
+        let trailing_size: usize = kani::any();
+
+        kani::assume(left.has_same_size_sequence(right));
+        let left_align = left.size_rounding_align_and_phase.align().get();
+        let right_align = right.size_rounding_align_and_phase.align().get();
+        let max_align = if left_align > right_align { left_align } else { right_align };
+        #[allow(clippy::arithmetic_side_effects)]
+        let max_align_mask = max_align - 1;
+        if left.elem_size & max_align_mask == 0 {
+            // In this branch `has_same_size_sequence` relies on every actual
+            // trailing byte count being a multiple of both alignments. Prove
+            // the formula for that entire byte class, which includes every
+            // representable `elems * elem_size`, without introducing a
+            // nonlinear symbolic multiplication into the harness.
+            kani::assume(trailing_size & max_align_mask == 0);
+        }
+        assert_eq!(
+            slice_dst_size_for_trailing_bytes(left, trailing_size),
+            slice_dst_size_for_trailing_bytes(right, trailing_size)
+        );
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_max_trailing_bytes() {
+        let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
+        let available_bytes: usize = kani::any();
+        let trailing_bytes: usize = kani::any();
+        let fits = slice_dst_size_for_trailing_bytes(trailing, trailing_bytes)
+            .map(|size| size <= available_bytes)
+            .unwrap_or(false);
+        match trailing.max_trailing_bytes(available_bytes) {
+            Some(max_bytes) => assert_eq!(trailing_bytes <= max_bytes, fits),
+            None => assert!(!fits),
+        }
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_max_trailing_bytes_components() {
+        let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
+        let bytes_len: usize = kani::any();
+        let Some(max_slice_bytes) = trailing.max_trailing_bytes(bytes_len) else {
+            kani::assume(false);
+            loop {}
+        };
+        let (size_align, size_phase) = trailing.size_rounding_align_and_phase.components();
+        let Some(bytes_after_base) = bytes_len.checked_sub(trailing.size_base) else {
+            unreachable!()
+        };
+        let max_rounded_bytes =
+            util::round_down_to_next_multiple_of_alignment(bytes_after_base, size_align);
+        assert_eq!(size_phase.checked_add(max_slice_bytes), Some(max_rounded_bytes));
+        assert!(trailing.size_base.checked_add(max_rounded_bytes).unwrap() <= bytes_len);
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_slice_dst_validator_selected_size_fits() {
+        let size_align = any_layout_align();
+        #[allow(clippy::arithmetic_side_effects)]
+        let align_mask = size_align.get() - 1;
+        let raw_phase: usize = kani::any();
+        let size_phase = raw_phase & align_mask;
+        let raw_capacity: usize = kani::any();
+        let max_rounded_bytes = raw_capacity & !align_mask;
+        let size_base: usize = kani::any();
+        let bytes_len: usize = kani::any();
+        let trailing_size: usize = kani::any();
+
+        // These are exactly the relations established for every successful
+        // capacity query by `prove_max_trailing_bytes_components`. Isolate
+        // them from the helper's implementation to keep this arithmetic
+        // identity independent of how that helper computes its bound.
+        let Some(max_slice_bytes) = max_rounded_bytes.checked_sub(size_phase) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(max_object_size) = size_base.checked_add(max_rounded_bytes) else {
+            kani::assume(false);
+            loop {}
+        };
+        kani::assume(max_object_size <= bytes_len);
+        kani::assume(trailing_size <= max_slice_bytes);
+
+        // For a whole-element count selected by the validator, this unused
+        // byte count is also `max_slice_bytes % elem_size`. The identity here
+        // holds for every byte count satisfying the capacity bound.
+        #[allow(clippy::arithmetic_side_effects)]
+        let unused_bytes = max_slice_bytes - trailing_size;
+        let unused_aligned_bytes =
+            util::round_down_to_next_multiple_of_alignment(unused_bytes, size_align);
+        #[allow(clippy::arithmetic_side_effects)]
+        let object_size = size_base + (max_rounded_bytes - unused_aligned_bytes);
+
+        let unrounded = size_phase.checked_add(trailing_size).unwrap();
+        let rounded =
+            unrounded.checked_add(util::padding_needed_for(unrounded, size_align)).unwrap();
+        assert_eq!(Some(object_size), size_base.checked_add(rounded));
+        assert!(object_size <= bytes_len);
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_slice_dst_validator_rejects_larger_trailing_size() {
+        let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
+        let bytes_len: usize = kani::any();
+        let larger_trailing_size: usize = kani::any();
+        let Some(max_slice_bytes) = trailing.max_trailing_bytes(bytes_len) else {
+            kani::assume(false);
+            loop {}
+        };
+        kani::assume(larger_trailing_size > max_slice_bytes);
+        if let Some(object_size) = slice_dst_size_for_trailing_bytes(trailing, larger_trailing_size)
+        {
+            assert!(object_size > bytes_len);
+        }
+    }
+
+    #[kani::proof]
+    fn prove_slice_formula_contains_trailing_slice() {
+        let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
+        let trailing_size: usize = kani::any();
+        let (_, size_phase) = trailing.size_rounding_align_and_phase.components();
+
+        let Some(unrounded_min) = trailing.size_base.checked_add(size_phase) else {
+            kani::assume(false);
+            loop {}
+        };
+        kani::assume(unrounded_min >= trailing.offset);
+        let Some(object_size) = slice_dst_size_for_trailing_bytes(trailing, trailing_size) else {
+            kani::assume(false);
+            loop {}
+        };
+
+        let Some(trailing_end) = trailing.offset.checked_add(trailing_size) else { unreachable!() };
+        assert!(trailing_end <= object_size);
+    }
+
+    #[kani::proof]
+    fn prove_finalized_slice_formula_is_aligned() {
+        let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
+        let outer_align = any_layout_align();
+        let trailing_size: usize = kani::any();
+        kani::assume(trailing.size_rounding_align_and_phase.align() >= outer_align);
+        #[allow(clippy::arithmetic_side_effects)]
+        let outer_align_mask = outer_align.get() - 1;
+        kani::assume(trailing.size_base & outer_align_mask == 0);
+        let Some(object_size) = slice_dst_size_for_trailing_bytes(trailing, trailing_size) else {
+            kani::assume(false);
+            loop {}
+        };
+
+        assert_eq!(object_size & outer_align_mask, 0);
+    }
+
+    #[kani::proof]
+    fn prove_validator_checks_selected_endpoint_alignment() {
+        let align = any_layout_align();
+        let addr: usize = kani::any();
+        let bytes_len: usize = kani::any();
+        let Some(end) = addr.checked_add(bytes_len) else {
+            kani::assume(false);
+            loop {}
+        };
+        let suffix: bool = kani::any();
+        let cast_type = if suffix { CastType::Suffix } else { CastType::Prefix };
+        let selected_endpoint = if suffix { end } else { addr };
+        #[allow(clippy::arithmetic_side_effects)]
+        let align_mask = align.get() - 1;
+
+        // The endpoint check precedes and is independent of the size-info
+        // branch. A zero-sized layout makes every aligned case succeed and
+        // isolates that control flow, including prefix/suffix split selection.
+        let layout = DstLayout {
+            align,
+            size_info: SizeInfo::Sized { size: 0 },
+            statically_shallow_unpadded: false,
+        };
+        match layout.validate_cast_and_convert_metadata(addr, bytes_len, cast_type) {
+            Ok((elems, split_at)) => {
+                assert_eq!(selected_endpoint & align_mask, 0);
+                assert_eq!(elems, 0);
+                if suffix {
+                    assert_eq!(split_at, bytes_len);
+                } else {
+                    assert_eq!(split_at, 0);
+                }
+            }
+            Err(MetadataCastError::Alignment) => {
+                assert_ne!(selected_endpoint & align_mask, 0);
+            }
+            Err(MetadataCastError::Size) => unreachable!(),
+        }
+    }
+
+    #[kani::proof]
+    fn prove_aligned_suffix_end_and_size_imply_aligned_start() {
+        let align = any_layout_align();
+        #[allow(clippy::arithmetic_side_effects)]
+        let align_mask = align.get() - 1;
+        let addr: usize = kani::any();
+        let bytes_len: usize = kani::any();
+        let object_size: usize = kani::any();
+        let Some(end) = addr.checked_add(bytes_len) else {
+            kani::assume(false);
+            loop {}
+        };
+        kani::assume(end & align_mask == 0);
+        kani::assume(object_size & align_mask == 0);
+        kani::assume(object_size <= bytes_len);
+
+        #[allow(clippy::arithmetic_side_effects)]
+        let split_at = bytes_len - object_size;
+        let Some(object_start) = addr.checked_add(split_at) else { unreachable!() };
+        assert_eq!(object_start & align_mask, 0);
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_size_formula_bounds_size_offset() {
+        let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
+        let elems: usize = kani::any();
+        let Some(object_size) = trailing.size_for_elems(elems) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(trailing_size) = trailing.elem_size.checked_mul(elems) else { unreachable!() };
+        let size_offset = trailing.size_offset();
+        let Some(without_padding) = size_offset.checked_add(trailing_size) else { unreachable!() };
+
+        assert!(without_padding <= object_size);
+    }
+
+    // Older supported compilers resolve the unchecked operation syntax in
+    // `add_scaled_metadata` to `polyfills::NumExt`; newer compilers prefer the
+    // inherent methods. Use UFCS to verify the fallback implementation which
+    // Kani's modern rustc cannot select in the production helper.
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_num_ext_affine_fallback_matches_checked_arithmetic() {
+        let base: usize = kani::any();
+        let metadata: usize = kani::any();
+        let multiple: usize = kani::any();
+        let Some(scaled) = metadata.checked_mul(multiple) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(expected) = base.checked_add(scaled) else {
+            kani::assume(false);
+            loop {}
+        };
+
+        // SAFETY: The checked multiplication returned `Some`, satisfying
+        // `NumExt::unchecked_mul`'s no-overflow contract.
+        let scaled =
+            unsafe { <usize as crate::util::polyfills::NumExt>::unchecked_mul(metadata, multiple) };
+        // SAFETY: The checked addition returned `Some`, and `scaled` is the
+        // checked product, satisfying `NumExt::unchecked_add`'s no-overflow
+        // contract.
+        let actual =
+            unsafe { <usize as crate::util::polyfills::NumExt>::unchecked_add(base, scaled) };
+        assert_eq!(actual, expected);
+    }
+
+    #[kani::proof]
     fn prove_requires_dynamic_padding() {
-        let layout: DstLayout = kani::any();
+        let layout: DstLayout = any_valid_dst_layout();
 
         let SizeInfo::SliceDst(size_info) = layout.size_info else {
             kani::assume(false);
@@ -2108,22 +6569,25 @@ mod proofs {
             loop {}
         };
 
-        let Some(unpadded_size) = size_info.offset.checked_add(trailing_slice_size) else {
-            // The `unpadded_size` exceeds `usize::MAX`; `meta`` is invalid.
+        let Some(trailing_slice_end) = size_info.offset.checked_add(trailing_slice_size) else {
+            // The trailing slice end exceeds `usize::MAX`; `meta` is invalid.
             kani::assume(false);
             loop {}
         };
 
-        if unpadded_size >= DstLayout::MAX_SIZE {
-            // The `unpadded_size` exceeds `isize::MAX`; `meta` is invalid.
+        let Some(size) = slice_dst_size_for_trailing_bytes(size_info, trailing_slice_size) else {
+            kani::assume(false);
+            loop {}
+        };
+
+        if size > DstLayout::MAX_SIZE || trailing_slice_end > size {
+            // This metadata cannot describe a valid instance.
             kani::assume(false);
             loop {}
         }
 
-        let trailing_padding = util::padding_needed_for(unpadded_size, layout.align);
-
         if !layout.requires_dynamic_padding() {
-            assert!(trailing_padding == 0);
+            assert_eq!(trailing_slice_end, size);
         }
     }
 
@@ -2131,8 +6595,8 @@ mod proofs {
     fn prove_dst_layout_extend() {
         use crate::util::{max, min, padding_needed_for};
 
-        let base: DstLayout = kani::any();
-        let field: DstLayout = kani::any();
+        let base: DstLayout = any_valid_dst_layout();
+        let field: DstLayout = any_valid_dst_layout();
         let packed: Option<NonZeroUsize> = kani::any();
 
         if let Some(max_align) = packed {
@@ -2148,9 +6612,6 @@ mod proofs {
             unreachable!();
         };
 
-        // Under the above conditions, `DstLayout::extend` will not panic.
-        let composite = base.extend(field, packed);
-
         // The field's alignment is clamped by `max_align` (i.e., the
         // `packed` attribute, if any) [1].
         //
@@ -2161,10 +6622,6 @@ mod proofs {
         //   alignment of the field's type.
         let field_align = min(field.align, packed.unwrap_or(DstLayout::THEORETICAL_MAX_ALIGN));
 
-        // The struct's alignment is the maximum of its previous alignment and
-        // `field_align`.
-        assert_eq!(composite.align, max(base.align, field_align));
-
         // Compute the minimum amount of inter-field padding needed to
         // satisfy the field's alignment, and offset of the trailing field.
         // [1]
@@ -2174,7 +6631,38 @@ mod proofs {
         //   Inter-field padding is guaranteed to be the minimum required in
         //   order to satisfy each field's (possibly altered) alignment.
         let padding = padding_needed_for(base_size, field_align);
-        let offset = base_size + padding;
+        let offset = match base_size.checked_add(padding) {
+            Some(offset) => offset,
+            None => {
+                kani::assume(false);
+                loop {}
+            }
+        };
+
+        // Restrict the proof to extensions whose zero-metadata composite size
+        // is representable. This semantic condition implies the
+        // representability of each implementation intermediate below; prove
+        // those implications rather than assuming the intermediates.
+        match field.size_info {
+            SizeInfo::Sized { size } => kani::assume(offset.checked_add(size).is_some()),
+            SizeInfo::SliceDst(trailing) => {
+                let Some(field_min) = trailing.size_for_elems(0) else {
+                    kani::assume(false);
+                    loop {}
+                };
+                kani::assume(offset.checked_add(field_min).is_some());
+
+                assert!(offset.checked_add(trailing.offset).is_some());
+                assert!(offset.checked_add(trailing.size_base).is_some());
+            }
+        }
+
+        // Under the above conditions, `DstLayout::extend` will not panic.
+        let composite = base.extend(field, packed);
+
+        // The struct's alignment is the maximum of its previous alignment and
+        // `field_align`.
+        assert_eq!(composite.align, max(base.align, field_align));
 
         // For testing purposes, we'll also construct `alloc::Layout`
         // stand-ins for `DstLayout`, and show that `extend` behaves
@@ -2211,29 +6699,64 @@ mod proofs {
                     panic!("The composite of two sized layouts must be sized.")
                 }
             }
-            SizeInfo::SliceDst(TrailingSliceLayout {
-                offset: field_offset,
-                elem_size: field_elem_size,
-            }) => {
-                if let SizeInfo::SliceDst(TrailingSliceLayout {
-                    offset: composite_offset,
-                    elem_size: composite_elem_size,
-                }) = composite.size_info
-                {
+            SizeInfo::SliceDst(field_trailing) => {
+                if let SizeInfo::SliceDst(composite_trailing) = composite.size_info {
                     // The offset of the trailing slice component is the sum
                     // of the offset of the trailing field and the trailing
                     // slice offset within that field.
-                    assert_eq!(composite_offset, offset + field_offset);
+                    assert_eq!(composite_trailing.offset, offset + field_trailing.offset);
                     // The elem size is unchanged.
-                    assert_eq!(composite_elem_size, field_elem_size);
+                    assert_eq!(composite_trailing.elem_size, field_trailing.elem_size);
+                    // Extension preserves the invariant that the physical
+                    // trailing-slice field fits within the unrounded minimum
+                    // size. This is one of the premises consumed by the
+                    // validator soundness proof.
+                    let composite_phase =
+                        composite_trailing.size_rounding_align_and_phase.components().1;
+                    let Some(composite_unrounded_min) =
+                        composite_trailing.size_base.checked_add(composite_phase)
+                    else {
+                        unreachable!()
+                    };
+                    assert!(composite_unrounded_min >= composite_trailing.offset);
 
+                    // The normalized formula must continue to describe the
+                    // size of the field at every trailing byte contribution
+                    // for which the checked size computation succeeds. This
+                    // is stronger than considering only products of a slice
+                    // length and `elem_size`, and avoids a nonlinear
+                    // multiplication in the verifier.
+                    let trailing_size: usize = kani::any();
+                    let field_size =
+                        match slice_dst_size_for_trailing_bytes(field_trailing, trailing_size) {
+                            Some(size) => size,
+                            None => {
+                                kani::assume(false);
+                                loop {}
+                            }
+                        };
+                    let expected_size = match offset.checked_add(field_size) {
+                        Some(size) => size,
+                        None => {
+                            kani::assume(false);
+                            loop {}
+                        }
+                    };
+                    assert_eq!(
+                        slice_dst_size_for_trailing_bytes(composite_trailing, trailing_size),
+                        Some(expected_size)
+                    );
+
+                    // `alloc::Layout` permits sizes which are not a multiple
+                    // of alignment, so this represents the unpadded prefix of
+                    // the DST through the start of its trailing slice.
                     let field_analog =
-                        Layout::from_size_align(field_offset, field_align.get()).unwrap();
+                        Layout::from_size_align(field_trailing.offset, field_align.get()).unwrap();
 
                     if let Ok((actual_composite, actual_offset)) = base_analog.extend(field_analog)
                     {
                         assert_eq!(actual_offset, offset);
-                        assert_eq!(actual_composite.size(), composite_offset);
+                        assert_eq!(actual_composite.size(), composite_trailing.offset);
                         assert_eq!(actual_composite.align(), composite.align.get());
                     } else {
                         // An error here reflects that composite of `base`
@@ -2254,8 +6777,8 @@ mod proofs {
     #[kani::proof]
     #[kani::should_panic]
     fn prove_dst_layout_extend_dst_panics() {
-        let base: DstLayout = kani::any();
-        let field: DstLayout = kani::any();
+        let base: DstLayout = any_valid_dst_layout();
+        let field: DstLayout = any_valid_dst_layout();
         let packed: Option<NonZeroUsize> = kani::any();
 
         if let Some(max_align) = packed {
@@ -2268,39 +6791,263 @@ mod proofs {
         let _ = base.extend(field, packed);
     }
 
-    #[kani::proof]
-    fn prove_dst_layout_pad_to_align() {
-        use crate::util::padding_needed_for;
-
-        let layout: DstLayout = kani::any();
-
-        let padded = layout.pad_to_align();
-
+    fn prove_dst_layout_pad_to_align_dst_invariants(
+        layout: DstLayout,
+        unpadded_trailing: TrailingSliceLayout,
+        padded: DstLayout,
+    ) {
         // Calling `pad_to_align` does not alter the `DstLayout`'s alignment.
         assert_eq!(padded.align, layout.align);
+        assert_eq!(padded.statically_shallow_unpadded, layout.statically_shallow_unpadded);
 
-        if let SizeInfo::Sized { size: unpadded_size } = layout.size_info {
-            if let SizeInfo::Sized { size: padded_size } = padded.size_info {
-                // If the layout is sized, it will remain sized after padding is
-                // added. Its sum will be its unpadded size and the size of the
-                // trailing padding needed to satisfy its alignment
-                // requirements.
-                let padding = padding_needed_for(unpadded_size, layout.align);
-                assert_eq!(padded_size, unpadded_size + padding);
+        let SizeInfo::SliceDst(padded_trailing) = padded.size_info else {
+            panic!("The padding of a DST layout must result in a DST layout.")
+        };
+        assert_eq!(padded_trailing.offset, unpadded_trailing.offset);
+        assert_eq!(padded_trailing.elem_size, unpadded_trailing.elem_size);
 
-                // Prove that calling `DstLayout::pad_to_align` behaves
-                // identically to `Layout::pad_to_align`.
-                let layout_analog =
-                    Layout::from_size_align(unpadded_size, layout.align.get()).unwrap();
-                let padded_analog = layout_analog.pad_to_align();
-                assert_eq!(padded_analog.align(), layout.align.get());
-                assert_eq!(padded_analog.size(), padded_size);
-            } else {
-                panic!("The padding of a sized layout must result in a sized layout.")
-            }
-        } else {
-            // If the layout is a DST, padding cannot be statically added.
-            assert_eq!(padded.size_info, layout.size_info);
-        }
+        // A finalized DST formula is visibly aligned: the rounding alignment
+        // is at least the outer alignment, and the fixed base is a multiple of
+        // the outer alignment. This is the invariant which lets suffix
+        // validation infer alignment of the object's start from alignment of
+        // its end.
+        assert!(padded_trailing.size_rounding_align_and_phase.align() >= padded.align);
+        #[allow(clippy::arithmetic_side_effects)]
+        let padded_align_mask = padded.align.get() - 1;
+        assert_eq!(padded_trailing.size_base & padded_align_mask, 0);
+        assert_eq!(padded.pad_to_align(), padded);
+        let padded_phase = padded_trailing.size_rounding_align_and_phase.components().1;
+        let Some(padded_unrounded_min) = padded_trailing.size_base.checked_add(padded_phase) else {
+            unreachable!()
+        };
+        assert!(padded_unrounded_min >= padded_trailing.offset);
+    }
+
+    #[kani::proof]
+    fn prove_dst_layout_pad_to_align_sized() {
+        use crate::util::padding_needed_for;
+
+        let layout: DstLayout = any_valid_dst_layout();
+        let SizeInfo::Sized { size: unpadded_size } = layout.size_info else {
+            kani::assume(false);
+            loop {}
+        };
+
+        let padded = layout.pad_to_align();
+        assert_eq!(padded.align, layout.align);
+        let SizeInfo::Sized { size: padded_size } = padded.size_info else {
+            panic!("The padding of a sized layout must result in a sized layout.")
+        };
+
+        // If the layout is sized, it will remain sized after padding is added.
+        // Its sum will be its unpadded size and the size of the trailing
+        // padding needed to satisfy its alignment requirements.
+        let padding = padding_needed_for(unpadded_size, layout.align);
+        assert_eq!(padded_size, unpadded_size + padding);
+        assert_eq!(
+            padded.statically_shallow_unpadded,
+            layout.statically_shallow_unpadded && padding == 0
+        );
+
+        // Prove that calling `DstLayout::pad_to_align` behaves identically to
+        // `Layout::pad_to_align`.
+        let layout_analog = Layout::from_size_align(unpadded_size, layout.align.get()).unwrap();
+        let padded_analog = layout_analog.pad_to_align();
+        assert_eq!(padded_analog.align(), layout.align.get());
+        assert_eq!(padded_analog.size(), padded_size);
+    }
+
+    #[kani::proof]
+    fn prove_dst_layout_pad_to_align_dst_inner_rounding_transition() {
+        use crate::util::padding_needed_for;
+
+        let layout: DstLayout = any_valid_dst_layout();
+        let SizeInfo::SliceDst(trailing) = layout.size_info else {
+            kani::assume(false);
+            loop {}
+        };
+        kani::assume(trailing.size_rounding_align_and_phase.align() >= layout.align);
+
+        // `any_valid_dst_layout` requires the zero-metadata layout to be valid.
+        // Prove that this semantic condition bounds both the padded minimum
+        // and the implementation intermediate; do not assume the intermediate
+        // merely because the implementation uses it.
+        let Some(min_size) = trailing.size_for_elems(0) else { unreachable!() };
+        let min_padding = padding_needed_for(min_size, layout.align);
+        let Some(padded_min_size) = min_size.checked_add(min_padding) else { unreachable!() };
+        assert!(padded_min_size <= DstLayout::MAX_SIZE);
+
+        let padding = padding_needed_for(trailing.size_base, layout.align);
+        let Some(expected_base) = trailing.size_base.checked_add(padding) else { unreachable!() };
+
+        let padded = layout.pad_to_align();
+        let SizeInfo::SliceDst(padded_trailing) = padded.size_info else { unreachable!() };
+        assert_eq!(padded_trailing.size_base, expected_base);
+        assert_eq!(
+            padded_trailing.size_rounding_align_and_phase,
+            trailing.size_rounding_align_and_phase
+        );
+        prove_dst_layout_pad_to_align_dst_invariants(layout, trailing, padded);
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_dst_layout_pad_to_align_dst_inner_rounding_formula() {
+        use crate::util::padding_needed_for;
+
+        let size_align = any_layout_align();
+        let outer_align = any_layout_align();
+        kani::assume(size_align >= outer_align);
+        let size_base: usize = kani::any();
+        let raw_size_phase: usize = kani::any();
+        #[allow(clippy::arithmetic_side_effects)]
+        let size_phase = raw_size_phase & (size_align.get() - 1);
+        let trailing_size: usize = kani::any();
+
+        // Evaluate `size_base + round_up(size_phase + trailing_size,
+        // size_align)`, then round that complete size to `outer_align`.
+        // Compare with the equivalent expression obtained by rounding only
+        // `size_base` to `outer_align`, since `size_align` is a multiple of
+        // `outer_align`. Valid Rust objects have representable sizes; discard
+        // only trailing byte counts whose input or padded object size is not
+        // representable.
+        let Some(unrounded_inner) = size_phase.checked_add(trailing_size) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(rounded_inner) =
+            unrounded_inner.checked_add(padding_needed_for(unrounded_inner, size_align))
+        else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(unpadded_size) = size_base.checked_add(rounded_inner) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(expected_size) =
+            unpadded_size.checked_add(padding_needed_for(unpadded_size, outer_align))
+        else {
+            kani::assume(false);
+            loop {}
+        };
+
+        let Some(padded_base) = size_base.checked_add(padding_needed_for(size_base, outer_align))
+        else {
+            unreachable!()
+        };
+        let Some(actual_size) = padded_base.checked_add(rounded_inner) else { unreachable!() };
+        assert_eq!(actual_size, expected_size);
+    }
+
+    #[kani::proof]
+    fn prove_dst_layout_pad_to_align_dst_outer_alignment_transition() {
+        use crate::util::padding_needed_for;
+
+        let layout: DstLayout = any_valid_dst_layout();
+        let SizeInfo::SliceDst(trailing) = layout.size_info else {
+            kani::assume(false);
+            loop {}
+        };
+        let size_align = trailing.size_rounding_align_and_phase.align();
+        kani::assume(size_align < layout.align);
+
+        // `any_valid_dst_layout` requires the zero-metadata layout to be valid.
+        // Prove that this semantic condition bounds both the padded minimum
+        // and every implementation intermediate; do not assume the
+        // intermediates merely because the implementation uses them.
+        let Some(min_size) = trailing.size_for_elems(0) else { unreachable!() };
+        let min_padding = padding_needed_for(min_size, layout.align);
+        let Some(padded_min_size) = min_size.checked_add(min_padding) else { unreachable!() };
+        assert!(padded_min_size <= DstLayout::MAX_SIZE);
+
+        let base_padding = padding_needed_for(trailing.size_base, size_align);
+        let Some(rounded_base) = trailing.size_base.checked_add(base_padding) else {
+            unreachable!()
+        };
+        let Some(t) =
+            rounded_base.checked_add(trailing.size_rounding_align_and_phase.components().1)
+        else {
+            unreachable!()
+        };
+        #[allow(clippy::arithmetic_side_effects)]
+        let expected_phase = t & (layout.align.get() - 1);
+        #[allow(clippy::arithmetic_side_effects)]
+        let expected_base = t - expected_phase;
+
+        let padded = layout.pad_to_align();
+        let SizeInfo::SliceDst(padded_trailing) = padded.size_info else { unreachable!() };
+        assert_eq!(padded_trailing.size_base, expected_base);
+        assert_eq!(
+            padded_trailing.size_rounding_align_and_phase,
+            RoundingAlignAndPhase::new(layout.align, expected_phase)
+        );
+        prove_dst_layout_pad_to_align_dst_invariants(layout, trailing, padded);
+    }
+
+    #[kani::proof]
+    #[kani::solver(kissat)]
+    fn prove_dst_layout_pad_to_align_dst_outer_alignment_formula() {
+        use crate::util::padding_needed_for;
+
+        let size_align = any_layout_align();
+        let outer_align = any_layout_align();
+        kani::assume(size_align < outer_align);
+        let size_base: usize = kani::any();
+        let raw_size_phase: usize = kani::any();
+        #[allow(clippy::arithmetic_side_effects)]
+        let size_phase = raw_size_phase & (size_align.get() - 1);
+        let trailing_size: usize = kani::any();
+
+        // Evaluate `size_base + round_up(size_phase + trailing_size,
+        // size_align)`, then round that complete size to `outer_align`.
+        let Some(unrounded_inner) = size_phase.checked_add(trailing_size) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(rounded_inner) =
+            unrounded_inner.checked_add(padding_needed_for(unrounded_inner, size_align))
+        else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(unpadded_size) = size_base.checked_add(rounded_inner) else {
+            kani::assume(false);
+            loop {}
+        };
+        let Some(expected_size) =
+            unpadded_size.checked_add(padding_needed_for(unpadded_size, outer_align))
+        else {
+            kani::assume(false);
+            loop {}
+        };
+
+        // Since `outer_align` is a larger multiple of `size_align`, absorb
+        // the inner rounding into the outer rounding and split the fixed
+        // contribution into a base and phase:
+        //
+        //   fixed_contribution = round_up(size_base, size_align) + size_phase
+        //   new_phase = fixed_contribution % outer_align
+        //   new_base = fixed_contribution - new_phase
+        //   new_base + round_up(new_phase + trailing_size, outer_align)
+        let Some(rounded_base) = size_base.checked_add(padding_needed_for(size_base, size_align))
+        else {
+            unreachable!()
+        };
+        let Some(t) = rounded_base.checked_add(size_phase) else { unreachable!() };
+        #[allow(clippy::arithmetic_side_effects)]
+        let new_phase = t & (outer_align.get() - 1);
+        #[allow(clippy::arithmetic_side_effects)]
+        let new_base = t - new_phase;
+        let Some(new_unrounded_inner) = new_phase.checked_add(trailing_size) else {
+            unreachable!()
+        };
+        let Some(new_rounded_inner) =
+            new_unrounded_inner.checked_add(padding_needed_for(new_unrounded_inner, outer_align))
+        else {
+            unreachable!()
+        };
+        let Some(actual_size) = new_base.checked_add(new_rounded_inner) else { unreachable!() };
+        assert_eq!(actual_size, expected_size);
     }
 }

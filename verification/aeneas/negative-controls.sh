@@ -124,11 +124,11 @@ end DependencyControl
 namespace Zerocopy.Proofs
 
 '''
-call = 'step with padding_lt_alignment size self.align hpow'
+call = 'step with padding_lt_alignment size self.align ha'
 if s.count('contract pad_to_align_spec ') != 1 or s.count(call) != 1:
     raise SystemExit("Private helper dependency control no longer matches")
 s = s.replace('contract pad_to_align_spec ', alias + 'contract pad_to_align_spec ')
-p.write_text(s.replace(call, 'step with DependencyControl.padding_alias size self.align hpow'))
+p.write_text(s.replace(call, 'step with DependencyControl.padding_alias size self.align ha'))
 PY
 lake build Required > "$backup/helper-build.log" 2>&1 || {
     cat "$backup/helper-build.log" >&2; exit 1;
@@ -143,10 +143,12 @@ python3 - <<'PY'
 from pathlib import Path
 p = Path("Required.lean")
 s = p.read_text()
-old = '(`Zerocopy.Proofs.pad_to_align_spec, #[`Zerocopy.Proofs.padding_lt_alignment])'
+old = ('(`Zerocopy.Proofs.pad_to_align_spec, #[`Zerocopy.Proofs.padding_lt_alignment, '
+       '`Zerocopy.Proofs.encoding_components_spec, `Zerocopy.Proofs.round_down_spec, '
+       '`Zerocopy.Proofs.encoding_new_spec])')
 if s.count(old) != 1:
     raise SystemExit("Undeclared dependency negative control no longer matches")
-p.write_text(s.replace(old, '(`Zerocopy.Proofs.pad_to_align_spec, #[])'))
+p.write_text(s.replace(old, old.replace('`Zerocopy.Proofs.padding_lt_alignment, ', '')))
 PY
 lake build Required > "$backup/undeclared-build.log" 2>&1 || {
     cat "$backup/undeclared-build.log" >&2; exit 1;
@@ -203,15 +205,22 @@ cp "$backup/Funs.lean" Zerocopy/Funs.lean
 # These mutations satisfy earlier weak bounds but violate the exact contracts.
 reject_model() {
     local description=$1
-    python3 - "$2" "$3" <<'PYCONTROL'
+    python3 - "$2" "$3" "${4:-}" <<'PYCONTROL'
 from pathlib import Path
 import sys
 p = Path("Zerocopy/Funs.lean")
 s = p.read_text()
-old, new = sys.argv[1:]
-if s.count(old) != 1:
+old, new, target = sys.argv[1:]
+start, end = 0, len(s)
+if target:
+    start = s.index('def ' + target)
+    end = s.find('/-- ', start)
+    if end < 0:
+        end = len(s)
+part = s[start:end]
+if part.count(old) != 1:
     raise SystemExit("Strong model negative control no longer matches")
-p.write_text(s.replace(old, new))
+p.write_text(s[:start] + part.replace(old, new) + s[end:])
 PYCONTROL
     if lake build Required > "$backup/strong-model-build.log" 2>&1; then
         echo "Proofs accepted $description" >&2; exit 1
@@ -225,11 +234,14 @@ PYCONTROL
 reject_model "always-zero padding" 'ok (i2 &&& mask)' 'ok 0#usize'
 reject_model "always-zero round-down" 'ok (n &&& mask)' 'ok 0#usize'
 reject_model "an incorrect shallow-padding flag" \
-    'statically_shallow_unpadded := (static_padding = 0#usize)' \
-    'statically_shallow_unpadded := true'
-reject_model "a changed DST layout" \
-    'layout.SizeInfo.SliceDst _ => ok (0#usize, self.size_info)' \
-    'layout.SizeInfo.SliceDst _ => ok (0#usize, layout.SizeInfo.Sized 0#usize)'
+    'statically_shallow_unpadded := (padding = 0#usize)' \
+    'statically_shallow_unpadded := true' 'layout.DstLayout.pad_to_align'
+reject_model "conflating physical offset with the size base" \
+    'Usize.checked_add offset tsl.offset' \
+    'Usize.checked_add offset tsl.size_base' 'layout.DstLayout.extend'
+reject_model "dropping inner rounding under outer packing" \
+    'util.padding_needed_for trailing.size_base size_align' \
+    'util.padding_needed_for trailing.size_base self.align' 'layout.DstLayout.pad_to_align'
 
 cat >> Proofs.lean <<'LEAN'
 namespace Zerocopy.Proofs
@@ -252,26 +264,24 @@ fi
 echo "Confirmed: the axiom audit rejects an admitted proof"
 cp "$backup/Proofs.lean" Proofs.lean
 
-python3 - <<'PY'
-from pathlib import Path
-import re
-p = Path("Proofs.lean")
-s, count = re.subn(r'contract min_spec\b.*?(?=\n(?:theorem|contract|partial contract) |\nend Zerocopy.Proofs)',
-                  'theorem min_spec : True := by trivial\n', p.read_text(), flags=re.S)
-if count != 1:
-    raise SystemExit("Obligation negative control no longer matches")
-p.write_text(s)
-PY
-if lake build Required > "$backup/obligation-build.log" 2>&1; then
+cat > UnrelatedContract.lean <<'LEAN'
+import Proofs
+import Obligations
+namespace UnrelatedControl
+theorem min_spec : True := by trivial
+end UnrelatedControl
+example : Zerocopy.Obligations.min_spec := by
+  exact UnrelatedControl.min_spec
+LEAN
+if lake env lean UnrelatedContract.lean > "$backup/obligation-build.log" 2>&1; then
     echo "Required obligation accepted an unrelated True theorem" >&2
     exit 1
 fi
-if ! grep -Eq '(error: Required[.]lean:|Required[.]lean:.*error)' "$backup/obligation-build.log"; then
-    cat "$backup/obligation-build.log" >&2
-    exit 1
+if ! grep -q 'UnrelatedContract.lean:.*error' "$backup/obligation-build.log"; then
+    cat "$backup/obligation-build.log" >&2; exit 1
 fi
 echo "Confirmed: required obligations reject an unrelated True theorem"
-cp "$backup/Proofs.lean" Proofs.lean
+rm UnrelatedContract.lean
 
 # The earlier round-down contract is true, but too weak for current obligations.
 cat > "$backup/weaker-round.lean" <<'LEAN'
@@ -292,29 +302,31 @@ contract round_down_spec (n : Usize) (align : NonZeroUsize)
       Arithmetic.round_down_properties _ _ _ hpos hexact
     exact ⟨(UScalar.le_equiv _ _).mpr hbound, haligned⟩
 LEAN
-python3 - "$backup/weaker-round.lean" <<'PYCONTROL'
-from pathlib import Path
-import re
-import sys
-p = Path("Proofs.lean")
-s, count = re.subn(
-    r'contract round_down_spec\b.*?(?=\n(?:theorem|contract|partial contract) |\nend Zerocopy.Proofs)',
-    Path(sys.argv[1]).read_text(), p.read_text(), flags=re.S)
-if count != 1:
-    raise SystemExit("Weaker round-down control no longer matches")
-p.write_text(s)
-PYCONTROL
-lake build Proofs > "$backup/weaker-proof-build.log" 2>&1 || {
+{
+    echo 'import Proofs'
+    echo 'import Obligations'
+    echo 'open Aeneas Aeneas.Std'
+    echo 'namespace WeakerControl'
+    echo 'open Zerocopy Zerocopy.Proofs'
+    cat "$backup/weaker-round.lean"
+    echo 'end WeakerControl'
+} > WeakerRound.lean
+lake env lean WeakerRound.lean > "$backup/weaker-proof-build.log" 2>&1 || {
     cat "$backup/weaker-proof-build.log" >&2; exit 1;
 }
-if lake build Required > "$backup/weaker-required-build.log" 2>&1; then
+cat >> WeakerRound.lean <<'LEAN'
+example : Zerocopy.Obligations.round_down_spec := by
+  simpa only [Zerocopy.Obligations.round_down_spec,
+    Aeneas.Std.UScalar.le_equiv] using WeakerControl.round_down_spec
+LEAN
+if lake env lean WeakerRound.lean > "$backup/weaker-required-build.log" 2>&1; then
     echo "Required obligations accepted the earlier weak round-down contract" >&2; exit 1
 fi
-if ! grep -Eq '(error: Required[.]lean:|Required[.]lean:.*error)' "$backup/weaker-required-build.log"; then
+if ! grep -q 'WeakerRound.lean:.*error' "$backup/weaker-required-build.log"; then
     cat "$backup/weaker-required-build.log" >&2; exit 1
 fi
 echo "Confirmed: a valid weaker contract fails independent required-type checks"
-cp "$backup/Proofs.lean" Proofs.lean
+rm WeakerRound.lean
 
 python3 - <<'PY'
 from pathlib import Path
