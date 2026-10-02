@@ -3,6 +3,33 @@
   "version": 1,
   "functions": [
     {
+      "rust": "zerocopy::layout::RoundingAlignAndPhase::new",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::new",
+      "model": "layout.RoundingAlignAndPhase.new",
+      "theorem": "encoding_new_spec",
+      "golden": "layout.RoundingAlignAndPhase.new.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::RoundingAlignAndPhase::components",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::components",
+      "model": "layout.RoundingAlignAndPhase.components",
+      "theorem": "encoding_components_spec",
+      "golden": "layout.RoundingAlignAndPhase.components.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::RoundingAlignAndPhase::align",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "RoundingAlignAndPhase::align",
+      "model": "layout.RoundingAlignAndPhase.align",
+      "theorem": "encoding_align_spec",
+      "golden": "layout.RoundingAlignAndPhase.align.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::components"
+      ]
+    },
+    {
       "rust": "zerocopy::layout::DstLayout::pad_to_align",
       "file": "zerocopy/src/layout.rs",
       "syntax": "DstLayout::pad_to_align",

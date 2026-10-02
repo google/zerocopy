@@ -10,6 +10,7 @@ module
 public import Zerocopy.Funs
 public import Contracts
 public import Arithmetic
+import all Mathlib.Data.Nat.Log
 import all Init.Data.Nat.Power2.Basic
 @[expose] public section
 open Aeneas Aeneas.Std
@@ -17,5 +18,53 @@ namespace Zerocopy.Proofs
 abbrev NonZeroUsize :=
   core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
 
-@@AENEAS_PROOFS@@
+@@AENEAS_PROOF("zerocopy::util::padding_needed_for")@@
+
+@@AENEAS_PROOF("zerocopy::util::round_down_to_next_multiple_of_alignment")@@
+
+@@AENEAS_PROOF("zerocopy::util::max")@@
+
+@@AENEAS_PROOF("zerocopy::util::min")@@
+
+contract pointer_width_spec
+  for layout.POINTER_WIDTH_BITS
+  ensures w => w.val = System.Platform.numBits
+  proof:
+    unfold layout.POINTER_WIDTH_BITS
+    simp only [core.mem.size_of, ite_true, bind_ok]
+    have hv : ({ bv := BitVec.ofNat _ (System.Platform.numBits / 8) } : Usize).val =
+        System.Platform.numBits / 8 := by
+      change (System.Platform.numBits / 8) % 2 ^ System.Platform.numBits = _
+      rcases System.Platform.numBits_eq with h | h <;> simp only [h] <;> decide
+    step as ⟨w, hw⟩
+    · rw [hv]
+      rcases System.Platform.numBits_eq with h | h <;>
+        simp only [Usize.max, Usize.numBits, UScalarTy.Usize_numBits_eq, h,
+          UScalar.val] <;> decide
+    · rw [hv] at hw
+      rcases System.Platform.numBits_eq with h | h <;>
+        simp only [h] at hw ⊢ <;> omega
+
+@@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::new")@@
+
+theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p := by
+  have hjoin : 2 ^ k + p = 2 ^ k ||| p := by
+    simpa only [Nat.mul_one] using Nat.two_pow_add_eq_or_of_lt hp 1
+  rw [hjoin]
+  apply Nat.eq_of_testBit_eq
+  intro i
+  rw [Nat.testBit_xor, Nat.testBit_or]
+  by_cases hi : i = k
+  · subst i
+    rw [Nat.testBit_two_pow_self, Nat.testBit_lt_two_pow hp]
+    rfl
+  · rw [Nat.testBit_two_pow_of_ne (Ne.symm hi)]
+    simp
+
+
+@@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::components")@@
+
+@@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::align")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::pad_to_align")@@
 end Zerocopy.Proofs
