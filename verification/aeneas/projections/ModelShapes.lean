@@ -53,6 +53,12 @@ model RoundingValue where
   fits : align + phase ≤ Usize.max
 end
 
+derive_model_shape Zerocopy.layout.TrailingSliceLayout with 1 type parameters
+
+derive_model_shape Zerocopy.layout.SizeInfo with 1 type parameters
+
+derive_model_shape Zerocopy.layout.DstLayout with 0 type parameters
+
 derive_model_shape Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
 
 derive_model_shape Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
