@@ -917,6 +917,52 @@ impl SizeInfo {
         _ => false,
     }))]
     const fn try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
+        // ```aeneas
+        // model:
+        //   def layout.SizeInfoUsize.try_to_nonzero_elem_size
+        //     (self : layout.SizeInfo Std.Usize) :
+        //     Result (Option (layout.SizeInfo (core.num.nonzero.NonZero Std.Usize
+        //       core.num.niche_types.NonZeroUsizeInner)))
+        //     := do
+        //     match self with
+        //     | layout.SizeInfo.Sized size => ok (some (layout.SizeInfo.Sized size))
+        //     | layout.SizeInfo.SliceDst tsl =>
+        //       let o ←
+        //         core.num.nonzero.NonZero.new
+        //           Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        //           tsl.elem_size
+        //       match o with
+        //       | none => ok none
+        //       | some elem_size =>
+        //         ok (some (layout.SizeInfo.SliceDst
+        //           {
+        //             offset := tsl.offset,
+        //             elem_size,
+        //             size_base := tsl.size_base,
+        //             size_rounding_align_and_phase := tsl.size_rounding_align_and_phase
+        //           }))
+        // proof:
+        //   contract try_nonzero_spec (self : layout.SizeInfo Usize)
+        //     for layout.SizeInfoUsize.try_to_nonzero_elem_size self
+        //     ensures r => match self with
+        //       | .Sized size => r = some (.Sized size)
+        //       | .SliceDst tail =>
+        //         if tail.elem_size = 0#usize then r = none else
+        //           ∃ t, r = some (.SliceDst t) ∧ t.offset = tail.offset ∧
+        //             t.size_base = tail.size_base ∧
+        //             t.size_rounding_align_and_phase = tail.size_rounding_align_and_phase ∧
+        //             t.elem_size.val = tail.elem_size
+        //     proof:
+        //       cases self with
+        //       | Sized size => simp [layout.SizeInfoUsize.try_to_nonzero_elem_size]
+        //       | SliceDst tail =>
+        //         unfold layout.SizeInfoUsize.try_to_nonzero_elem_size core.num.nonzero.NonZero.new
+        //         by_cases hz : tail.elem_size = 0#usize
+        //         · simp only [cast_eq, hz, ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+        //         · simp only [cast_eq, hz, ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+        //           exact ⟨_, rfl, rfl, rfl, rfl, rfl⟩
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(SizeInfo::try_to_nonzero_elem_size)]
         #[kani::solver(kissat)]
@@ -965,6 +1011,54 @@ impl SizeInfo {
 )]
 #[inline(always)]
 const fn max_elems_for_bytes(bytes: usize, elem_size: NonZeroUsize) -> (usize, usize) {
+    // ```aeneas
+    // model:
+    //   def layout.max_elems_for_bytes
+    //     (bytes : Std.Usize)
+    //     (elem_size : core.num.nonzero.NonZero Std.Usize
+    //     core.num.niche_types.NonZeroUsizeInner) :
+    //     Result (Std.Usize × Std.Usize)
+    //     := do
+    //     let i ←
+    //       core.num.nonzero.NonZero.get
+    //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner elem_size
+    //     let elems ← bytes / i
+    //     let o ← lift (Usize.checked_mul elems i)
+    //     match o with
+    //     | none => fail panic
+    //     | some used => ok (elems, used)
+    // proof:
+    //   contract max_elems_for_bytes_spec (bytes : Usize) (elem : NonZeroUsize)
+    //     for layout.max_elems_for_bytes bytes elem
+    //     requires hn : 0 < elem.val.val
+    //     ensures (elems, used) =>
+    //       elems.val = bytes.val / elem.val.val ∧ used.val = elems.val * elem.val.val ∧
+    //       used ≤ bytes ∧ bytes.val < (elems.val + 1) * elem.val.val ∧
+    //       (∀ n : Nat, n * elem.val.val ≤ bytes.val ↔ n ≤ elems.val)
+    //     proof:
+    //       unfold layout.max_elems_for_bytes
+    //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+    //       step with Usize.div_spec bytes (y := elem.val) (by omega) as ⟨elems, he⟩
+    //       have hfit : elems.val * elem.val.val ≤ bytes.val := by
+    //         rw [he, Nat.mul_comm]
+    //         exact Nat.mul_div_le _ _
+    //       have hav : bytes.val ≤ Usize.max := by scalar_tac
+    //       step as ⟨product, hmul⟩
+    //       cases product with
+    //       | none =>
+    //         simp only [] at hmul
+    //         omega
+    //       | some used =>
+    //         simp only [] at hmul
+    //         simp only [WP.spec_ok]
+    //         refine ⟨he, hmul.2.1, (UScalar.le_equiv _ _).mpr (by omega), ?_, ?_⟩
+    //         · rw [he, Nat.mul_comm]
+    //           exact Nat.lt_mul_div_succ _ hn
+    //         · intro n
+    //           rw [he]
+    //           exact (Nat.le_div_iff_mul_le hn).symm
+    // ```
+
     #[cfg(kani)]
     #[kani::proof_for_contract(max_elems_for_bytes)]
     #[kani::solver(kissat)]
@@ -1064,6 +1158,19 @@ impl DstLayout {
             && result.statically_shallow_unpadded
     }))]
     const fn assume_shallow_unpadded(self) -> Self {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.assume_shallow_unpadded
+        //     (self : layout.DstLayout) : Result layout.DstLayout := do
+        //     ok { self with statically_shallow_unpadded := true }
+        // proof:
+        //   contract assume_shallow_unpadded_spec (self : layout.DstLayout)
+        //     for layout.DstLayout.assume_shallow_unpadded self
+        //     ensures r => r.align = self.align ∧ r.size_info = self.size_info ∧ r.statically_shallow_unpadded = true
+        //     proof:
+        //       simp only [layout.DstLayout.assume_shallow_unpadded, WP.spec_ok, and_self]
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::assume_shallow_unpadded)]
         #[kani::solver(kissat)]
@@ -1095,6 +1202,51 @@ impl DstLayout {
             && result.statically_shallow_unpadded
     }))]
     pub const fn new_zst(repr_align: Option<NonZeroUsize>) -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.new_zst
+        //     (repr_align : Option (core.num.nonzero.NonZero Std.Usize
+        //     core.num.niche_types.NonZeroUsizeInner)) :
+        //     Result layout.DstLayout
+        //     := do
+        //     let align ←
+        //       match repr_align with
+        //       | none => layout.DstLayout.MIN_ALIGN
+        //       | some align1 => ok align1
+        //     let i ←
+        //       core.num.nonzero.NonZero.get
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+        //     let b ← core.num.Usize.is_power_of_two i
+        //     massert b
+        //     ok
+        //       {
+        //         align,
+        //         size_info := (layout.SizeInfo.Sized 0#usize),
+        //         statically_shallow_unpadded := true
+        //       }
+        // proof:
+        //   contract new_zst_spec (repr_align : Option NonZeroUsize)
+        //     for layout.DstLayout.new_zst repr_align
+        //     requires hp : ∀ a ∈ repr_align, a.val.val.isPowerOfTwo
+        //     ensures r => r.align = repr_align.getD ⟨1#usize⟩ ∧
+        //       r.size_info = .Sized 0#usize ∧ r.statically_shallow_unpadded = true
+        //     proof:
+        //       unfold layout.DstLayout.new_zst
+        //       have ha : (repr_align.getD ⟨1#usize⟩).val.val.isPowerOfTwo := by
+        //         cases repr_align with
+        //         | none => exact ⟨0, by simp⟩
+        //         | some a => exact hp a rfl
+        //       cases repr_align
+        //       all_goals
+        //         simp only [min_align_eq, Option.getD_none, Option.getD_some,
+        //           core.num.nonzero.NonZero.get, bind_ok] at ha ⊢
+        //         step as ⟨b, hb⟩
+        //         have hbt : b = true := by
+        //           have hb' : (b = true) = True := by simpa only [ha, Nat.isPowerOfTwo_one] using hb
+        //           exact Eq.mpr hb' trivial
+        //         simp [massert, hbt, bind_ok, WP.spec_ok]
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::new_zst)]
         #[kani::solver(kissat)]
@@ -1131,6 +1283,42 @@ impl DstLayout {
             && result.statically_shallow_unpadded == false
     }))]
     pub const fn for_type<T>() -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.for_type (T : Type) : Result layout.DstLayout := do
+        //     let i ← core.mem.align_of T
+        //     let o ←
+        //       core.num.nonzero.NonZero.new
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner i
+        //     match o with
+        //     | none => fail panic
+        //     | some align =>
+        //       let i1 ← core.mem.size_of T
+        //       ok
+        //         {
+        //           align,
+        //           size_info := (layout.SizeInfo.Sized i1),
+        //           statically_shallow_unpadded := false
+        //         }
+        // proof:
+        //   contract for_type_spec (T : Type) (size align : Usize)
+        //     for layout.DstLayout.for_type T
+        //     requires hs : core.mem.size_of T = .ok size
+        //     requires ha : core.mem.align_of T = .ok align
+        //     requires hn : 0 < align.val
+        //     ensures r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = false
+        //     proof:
+        //       have haz : align ≠ 0#usize := by
+        //         intro h
+        //         have hv := congrArg UScalar.val h
+        //         change align.val = 0 at hv
+        //         omega
+        //       unfold layout.DstLayout.for_type
+        //       rw [ha]
+        //       simp only [bind_ok, core.num.nonzero.NonZero.new, cast_eq, haz,
+        //         ↓reduceDIte, ↓reduceIte, hs, WP.spec_ok, and_self]
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::for_type::<()>)]
         fn proof_zst() {
@@ -1178,6 +1366,26 @@ impl DstLayout {
             && result.statically_shallow_unpadded == true
     }))]
     pub const fn for_unpadded_type<T>() -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.for_unpadded_type
+        //     (T : Type) : Result layout.DstLayout := do
+        //     let dl ← layout.DstLayout.for_type T
+        //     layout.DstLayout.assume_shallow_unpadded dl
+        // proof:
+        //   contract for_unpadded_type_spec (T : Type) (size align : Usize)
+        //     for layout.DstLayout.for_unpadded_type T
+        //     requires hs : core.mem.size_of T = .ok size
+        //     requires ha : core.mem.align_of T = .ok align
+        //     requires hn : 0 < align.val
+        //     ensures r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = true
+        //     proof:
+        //       unfold layout.DstLayout.for_unpadded_type
+        //       step with for_type_spec T size align hs ha hn as ⟨dl, halign, hsize, _⟩
+        //       step with assume_shallow_unpadded_spec dl as ⟨r, hr, hsi, hp⟩
+        //       exact ⟨hr ▸ halign, hsi ▸ hsize, hp⟩
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::for_unpadded_type::<()>)]
         fn proof_zst() {
@@ -1206,6 +1414,57 @@ impl DstLayout {
                     && trailing.size_rounding_align_and_phase.components() == (result.align, 0))
     }))]
     pub(crate) const fn for_slice<T>() -> DstLayout {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.for_slice (T : Type) : Result layout.DstLayout := do
+        //     let i ← core.mem.align_of T
+        //     let o ←
+        //       core.num.nonzero.NonZero.new
+        //         Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner i
+        //     match o with
+        //     | none => fail panic
+        //     | some align =>
+        //       let i1 ← core.mem.size_of T
+        //       let raap ← layout.RoundingAlignAndPhase.new align 0#usize
+        //       ok
+        //         {
+        //           align,
+        //           size_info :=
+        //             (layout.SizeInfo.SliceDst
+        //               {
+        //                 offset := 0#usize,
+        //                 elem_size := i1,
+        //                 size_base := 0#usize,
+        //                 size_rounding_align_and_phase := raap
+        //               }),
+        //           statically_shallow_unpadded := true
+        //         }
+        // proof:
+        //   contract for_slice_spec (T : Type) (size align : Usize)
+        //     for layout.DstLayout.for_slice T
+        //     requires hs : core.mem.size_of T = .ok size
+        //     requires ha : core.mem.align_of T = .ok align
+        //     requires hp : align.val.isPowerOfTwo
+        //     ensures r => r.align.val = align ∧ r.statically_shallow_unpadded = true ∧
+        //       ∃ tail, r.size_info = layout.SizeInfo.SliceDst tail ∧
+        //         tail.offset = 0#usize ∧ tail.elem_size = size ∧ tail.size_base = 0#usize ∧
+        //         tail.size_rounding_align_and_phase.val.val = align.val
+        //     proof:
+        //       have hpos := Nat.pos_of_isPowerOfTwo hp
+        //       have haz : align ≠ 0#usize := by
+        //         intro h
+        //         have hv := congrArg UScalar.val h
+        //         change align.val = 0 at hv
+        //         omega
+        //       unfold layout.DstLayout.for_slice
+        //       rw [ha]
+        //       simp only [bind_ok, core.num.nonzero.NonZero.new, cast_eq, haz,
+        //         ↓reduceDIte, ↓reduceIte, hs]
+        //       step with encoding_new_spec ⟨align⟩ 0#usize hp (by simpa using hpos) as ⟨encoded, he⟩
+        //       refine ⟨_, rfl, rfl, rfl, rfl, ?_⟩
+        //       simpa using he
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::for_slice::<()>)]
         fn proof_zst() {
@@ -1628,6 +1887,20 @@ impl DstLayout {
     #[inline(always)]
     #[cfg_attr(kani, kani::ensures(|&padding| padding == !self.statically_shallow_unpadded))]
     pub const fn requires_static_padding(self) -> bool {
+        // ```aeneas
+        // model:
+        //   def layout.DstLayout.requires_static_padding
+        //     (self : layout.DstLayout) : Result Bool := do
+        //     ok (¬ self.statically_shallow_unpadded)
+        // proof:
+        //   contract requires_static_padding_spec (self : layout.DstLayout)
+        //     for layout.DstLayout.requires_static_padding self
+        //     ensures r => r = !self.statically_shallow_unpadded
+        //     proof:
+        //       simp only [layout.DstLayout.requires_static_padding, WP.spec_ok]
+        //       cases self.statically_shallow_unpadded <;> rfl
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::requires_static_padding)]
         #[kani::solver(kissat)]

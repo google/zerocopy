@@ -15,6 +15,13 @@ open Lean Elab Command
 run_elab do
   let required := requiredTheorems
   let env ← getEnv
+  let modelInputs := #[`Zerocopy.RustLayout.size, `Zerocopy.RustLayout.align]
+  let expected ← Term.elabType (← `(Type → Aeneas.Std.Usize))
+  for input in modelInputs do
+    let some (.axiomInfo info) := env.find? input
+      | throwError "Missing external layout input {input}"
+    unless ← Meta.isDefEq info.type expected do
+      throwError "External layout input {input} changed its data-only signature"
   for declName in required do
     match env.find? declName with
     | some (.thmInfo _) => pure ()
@@ -60,7 +67,8 @@ run_elab do
         env.getModuleIdxFor? declName == some checksModule then
       let used ← collectAxioms declName
       for ax in used do
-        unless #[`propext, `Classical.choice, `Quot.sound].contains ax do
+        unless #[`propext, `Classical.choice, `Quot.sound].contains ax ||
+            modelInputs.contains ax do
           throwError "{declName} depends on unapproved axiom {ax}"
       audited := audited + 1
   logInfo m!"Checked axiom dependencies of {audited} declarations"

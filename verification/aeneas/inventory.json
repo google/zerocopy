@@ -30,6 +30,77 @@
       ]
     },
     {
+      "rust": "zerocopy::layout::SizeInfo::try_to_nonzero_elem_size",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "SizeInfo::try_to_nonzero_elem_size",
+      "model": "layout.SizeInfoUsize.try_to_nonzero_elem_size",
+      "theorem": "try_nonzero_spec",
+      "golden": "layout.SizeInfoUsize.try_to_nonzero_elem_size.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::max_elems_for_bytes",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "max_elems_for_bytes",
+      "model": "layout.max_elems_for_bytes",
+      "theorem": "max_elems_for_bytes_spec",
+      "golden": "layout.max_elems_for_bytes.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::assume_shallow_unpadded",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::assume_shallow_unpadded",
+      "model": "layout.DstLayout.assume_shallow_unpadded",
+      "theorem": "assume_shallow_unpadded_spec",
+      "golden": "layout.DstLayout.assume_shallow_unpadded.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::new_zst",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::new_zst",
+      "model": "layout.DstLayout.new_zst",
+      "theorem": "new_zst_spec",
+      "golden": "layout.DstLayout.new_zst.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::for_type",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_type",
+      "model": "layout.DstLayout.for_type",
+      "theorem": "for_type_spec",
+      "golden": "layout.DstLayout.for_type.lean.in"
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::for_unpadded_type",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_unpadded_type",
+      "model": "layout.DstLayout.for_unpadded_type",
+      "theorem": "for_unpadded_type_spec",
+      "golden": "layout.DstLayout.for_unpadded_type.lean.in",
+      "depends_on": [
+        "zerocopy::layout::DstLayout::for_type",
+        "zerocopy::layout::DstLayout::assume_shallow_unpadded"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::for_slice",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_slice",
+      "model": "layout.DstLayout.for_slice",
+      "theorem": "for_slice_spec",
+      "golden": "layout.DstLayout.for_slice.lean.in",
+      "depends_on": [
+        "zerocopy::layout::RoundingAlignAndPhase::new"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::requires_static_padding",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::requires_static_padding",
+      "model": "layout.DstLayout.requires_static_padding",
+      "theorem": "requires_static_padding_spec",
+      "golden": "layout.DstLayout.requires_static_padding.lean.in"
+    },
+    {
       "rust": "zerocopy::util::max",
       "file": "zerocopy/src/util/mod.rs",
       "syntax": "max",
