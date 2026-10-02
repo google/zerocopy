@@ -30,4 +30,15 @@ def trailing_arithmetic_check_spec : Prop :=
     trailing_arithmetic_check_spec_contract tail align phase elems budget
       (layout.tail_checks.trailing_arithmetic_check tail align phase elems budget)
 
+def layout_observations_check_spec_contract
+    (runtime_layout : layout.DstLayout) (align : NonZeroUsize)
+    (phase size addr length : Usize) (side : layout.CastType)
+    (run : Result Unit) : Prop :=
+  layoutValid runtime_layout → 0 < align.val.val → run ⦃ _ => True ⦄
+
+def layout_observations_check_spec : Prop :=
+  ∀ runtime_layout align phase size addr length side,
+    layout_observations_check_spec_contract runtime_layout align phase size addr length side
+      (layout.tail_checks.layout_observations_check runtime_layout align phase size addr length side)
+
 end Zerocopy.Obligations
