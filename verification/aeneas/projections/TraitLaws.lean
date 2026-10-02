@@ -9,6 +9,7 @@ those terms. -/
 module
 public import Zerocopy.Funs
 public import TraitLawsSupport
+public import Arithmetic
 @[expose] public section
 open Aeneas Aeneas.Std
 namespace Zerocopy.TraitLaws
