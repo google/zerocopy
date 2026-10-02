@@ -30,7 +30,8 @@ including their dependencies; there is no copied Rust implementation:
 The theorems quantify over all values of the extracted unsigned integer model;
 these are not finite collections of test inputs. Aeneas's Hoare specification
 notation includes successful termination, rather than only a postcondition
-conditional on success. The min/max proofs explicitly exhibit the result.
+conditional on success. The min/max proofs explicitly exhibit the result before
+converting it to the same total specification.
 
 CI uses the default features, debug assertions, and the runner's native
 `x86_64-unknown-linux-gnu` target. Local replay also supports macOS arm64. This
@@ -96,8 +97,12 @@ fn example() {
     // model:
     //   def util.example ... := ...
     // proof:
-    //   theorem example_spec ... := by
-    //     ...
+    //   contract example_spec ...
+    //     for example ...
+    //     requires h : ...
+    //     ensures r => ...
+    //     proof:
+    //       ...
     // ```
     ...
 }
@@ -109,6 +114,49 @@ Extraction removes exactly that prefix and section indentation, preserving
 Lean's remaining indentation. Consecutive ordinary line comments are required;
 doc comments, block comments, missing fences, extra sections, and extra
 top-level Lean declarations are rejected.
+
+The proof declaration may be an ordinary `theorem` or the experimental
+`contract` command from `lean/Contracts.lean`. For example, one of the macro tests
+uses this syntax:
+
+```lean
+contract identity_spec (x : Nat)
+  for Result.ok x
+  ensures ret => ret = x
+  proof:
+    exact WP.spec.ret rfl
+```
+
+The command expands to an ordinary theorem whose named requirements are
+proposition-valued parameters and whose conclusion is Aeneas's `WP.spec`.
+Under those requirements, the function must return successfully and satisfy
+the postcondition. Panic and divergence both fail the contract, even when the
+postcondition is `True`. Requirements are optional; omitting them adds no
+preconditions. Multiple requirements all apply, in their written order.
+Output binders reuse Aeneas's notation, including tuple patterns and multiple
+binders for return values and mutable post-states. Argument binders and the
+function application remain explicit; this prototype does not infer Rust
+signatures, inject type invariants, or introduce separate proof automation.
+
+An explicit `partial contract` instead expands to `WP.dspec`. It permits
+divergence, rejects panic and other failures, and requires the postcondition
+for successful returns. All registered contracts use the total form.
+`Obligations.lean` retains their independently written required propositions.
+
+Both workspaces build `ContractTests.lean`, which checks independently written
+theorem types, named requirements, omitted requirements, tuple outputs, and
+partial contracts. The axiom audit covers these tests and the contract module.
+Failure controls also compile contracts that attempt to accept panic,
+divergence in the total form, or an incorrect return in the partial form, and
+require proof failures. This is a test-bed syntax experiment, not a commitment
+to Anneal's eventual annotation language.
+
+The four inline proofs use this syntax without changing their previous
+preconditions or postconditions. Padding still requires only a positive
+alignment; round-down retains both positivity and the power-of-two requirement.
+The old explicit min/max result proofs are reused through
+`WP.exists_imp_spec`; required-type checks use the converse equivalence to
+compare them with the independently written successful-result requirements.
 
 `inventory.json` independently registers each function's Rust identity, source
 file, parsed function identity, Lean definition, theorem, and golden filename.
@@ -238,12 +286,14 @@ records but does not formally prove:
 
 `Check.lean` checks that required declarations are theorems and audits all
 declarations in `Zerocopy.Proofs`, `Zerocopy.Obligations`, the translated
-`Zerocopy.util` namespace, and the external `core.num` models. Only `propext`,
+`Zerocopy.util` namespace, the external `core.num` models, and the contract macro
+and test namespaces. Only `propext`,
 `Classical.choice`, and `Quot.sound` are allowed. New axioms, `sorryAx`, and
 native evaluator proof
 axioms fail this check. This does not establish the source-to-model
 correspondence premises.
-CI also runs failure controls in both workspaces: an admitted proof must fail
+CI also runs failure controls in both workspaces: impossible total and partial
+contracts must fail their proofs, an admitted proof must fail
 the axiom audit, an unrelated `True` theorem must fail its required type, and
 reversing the translated `min` comparison must fail its proof. In the live
 workspace, comment drift must pass fuzzy comparison and

@@ -7,6 +7,7 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 import Required
+import ContractTests
 open Lean Elab Command
 run_elab do
   let required := requiredTheorems
@@ -15,10 +16,11 @@ run_elab do
     match env.find? declName with
     | some (.thmInfo _) => pure ()
     | _ => throwError "Missing required theorem {declName}"
-  let prefixes := #[`Zerocopy.Proofs, `Zerocopy.Obligations, `Zerocopy.util, `core.num]
+  let prefixes := #[`Zerocopy.Proofs, `Zerocopy.Obligations, `Zerocopy.util, `core.num,
+                    `AeneasContracts, `ContractTests]
   let mut audited := 0
   for (declName, _) in env.constants.toList do
-    if prefixes.any (·.isPrefixOf declName) then
+    if prefixes.any (·.isPrefixOf (privateToUserName declName)) then
       let used ← collectAxioms declName
       for ax in used do
         unless #[`propext, `Classical.choice, `Quot.sound].contains ax do

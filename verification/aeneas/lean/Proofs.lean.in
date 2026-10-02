@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import Zerocopy.Funs
+public import Contracts
 import all Init.Data.Nat.Power2.Basic
 @[expose] public section
 open Aeneas Aeneas.Std

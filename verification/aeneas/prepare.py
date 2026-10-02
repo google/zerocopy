@@ -74,6 +74,8 @@ def share_manifest(workspace, backend):
         f'require aeneas from {json.dumps(str(backend))}\n'
         'package zerocopyVerification\n'
         '@[default_target] lean_lib Zerocopy\n'
+        'lean_lib Contracts\n'
+        '@[default_target] lean_lib ContractTests\n'
         '@[default_target] lean_lib Proofs\n'
         'lean_lib Obligations\n'
         '@[default_target] lean_lib Required\n'

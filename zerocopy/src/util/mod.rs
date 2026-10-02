@@ -169,17 +169,19 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
     //     let i2 ← lift (~~~ i1)
     //     ok (i2 &&& mask)
     // proof:
-    //   theorem padding_lt_alignment (len : Usize) (align : NonZeroUsize)
-    //       (h : 0 < align.val.val) :
-    //       util.padding_needed_for len align ⦃ p => p.val < align.val.val ⦄ := by
-    //     unfold util.padding_needed_for
-    //     simp only [core.num.nonzero.NonZero.get, bind_ok]
-    //     step
-    //     simp only [lift, bind_ok, WP.spec_ok, UScalar.val_and]
-    //     have hbound :
-    //         (~~~(core.num.Usize.wrapping_sub len 1#usize)).val &&& mask.val ≤ mask.val :=
-    //       Nat.and_le_right
-    //     omega
+    //   contract padding_lt_alignment (len : Usize) (align : NonZeroUsize)
+    //     for util.padding_needed_for len align
+    //     requires h : 0 < align.val.val
+    //     ensures p => p.val < align.val.val
+    //     proof:
+    //       unfold util.padding_needed_for
+    //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+    //       step
+    //       simp only [lift, bind_ok, WP.spec_ok, UScalar.val_and]
+    //       have hbound :
+    //           (~~~(core.num.Usize.wrapping_sub len 1#usize)).val &&& mask.val ≤ mask.val :=
+    //         Nat.and_le_right
+    //       omega
     // ```
     #[cfg(kani)]
     #[kani::proof_for_contract(padding_needed_for)]
@@ -282,27 +284,29 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     //     let mask ← lift (~~~ i)
     //     ok (n &&& mask)
     // proof:
-    //   theorem round_down_spec (n : Usize) (align : NonZeroUsize)
-    //       (hpos : 0 < align.val.val) (h : align.val.val.isPowerOfTwo) :
-    //       util.round_down_to_next_multiple_of_alignment n align
-    //         ⦃ m => m.val ≤ n.val ∧ m.val % align.val.val = 0 ⦄ := by
-    //     unfold util.round_down_to_next_multiple_of_alignment
-    //     simp only [core.num.nonzero.NonZero.get, bind_ok]
-    //     step
-    //     step
-    //     step with UScalar.sub_bv_spec as ⟨mask, hval, hle, hbv⟩
-    //     simp only [lift, bind_ok, WP.spec_ok]
-    //     constructor
-    //     · simp only [UScalar.val_and]
-    //       exact Nat.and_le_left
-    //     · have clear : (n &&& ~~~mask).val &&& mask.val = 0 := by
-    //         rw [← UScalar.val_and]
-    //         change ((n.bv &&& ~~~mask.bv) &&& mask.bv).toNat = 0
-    //         simp [BitVec.and_assoc]
-    //       unfold Nat.isPowerOfTwo at h
-    //       rcases h with ⟨k, hk⟩
-    //       rw [hval, hk, Nat.and_two_pow_sub_one_eq_mod] at clear
-    //       simpa only [hk] using clear
+    //   contract round_down_spec (n : Usize) (align : NonZeroUsize)
+    //     for util.round_down_to_next_multiple_of_alignment n align
+    //     requires hpos : 0 < align.val.val
+    //     requires h : align.val.val.isPowerOfTwo
+    //     ensures m => m.val ≤ n.val ∧ m.val % align.val.val = 0
+    //     proof:
+    //       unfold util.round_down_to_next_multiple_of_alignment
+    //       simp only [core.num.nonzero.NonZero.get, bind_ok]
+    //       step
+    //       step
+    //       step with UScalar.sub_bv_spec as ⟨mask, hval, hle, hbv⟩
+    //       simp only [lift, bind_ok, WP.spec_ok]
+    //       constructor
+    //       · simp only [UScalar.val_and]
+    //         exact Nat.and_le_left
+    //       · have clear : (n &&& ~~~mask).val &&& mask.val = 0 := by
+    //           rw [← UScalar.val_and]
+    //           change ((n.bv &&& ~~~mask.bv) &&& mask.bv).toNat = 0
+    //           simp [BitVec.and_assoc]
+    //         unfold Nat.isPowerOfTwo at h
+    //         rcases h with ⟨k, hk⟩
+    //         rw [hval, hk, Nat.and_two_pow_sub_one_eq_mod] at clear
+    //         simpa only [hk] using clear
     // ```
     #[cfg(kani)]
     #[kani::proof_for_contract(round_down_to_next_multiple_of_alignment)]
@@ -343,14 +347,17 @@ pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     //     then ok b
     //     else ok a
     // proof:
-    //   theorem max_spec (a b : NonZeroUsize) :
-    //       ∃ r, util.max a b = .ok r ∧ r.val.val = Nat.max a.val.val b.val.val := by
-    //     simp only [util.max, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
-    //     split
-    //     · rename_i h
-    //       exact ⟨b, rfl, (Nat.max_eq_right (by omega)).symm⟩
-    //     · rename_i h
-    //       exact ⟨a, rfl, (Nat.max_eq_left (by omega)).symm⟩
+    //   contract max_spec (a b : NonZeroUsize)
+    //     for util.max a b
+    //     ensures r => r.val.val = Nat.max a.val.val b.val.val
+    //     proof:
+    //       apply WP.exists_imp_spec
+    //       simp only [util.max, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+    //       split
+    //       · rename_i h
+    //         exact ⟨b, rfl, (Nat.max_eq_right (by omega)).symm⟩
+    //       · rename_i h
+    //         exact ⟨a, rfl, (Nat.max_eq_left (by omega)).symm⟩
     // ```
     if a.get() < b.get() {
         b
@@ -382,14 +389,17 @@ pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     //     then ok b
     //     else ok a
     // proof:
-    //   theorem min_spec (a b : NonZeroUsize) :
-    //       ∃ r, util.min a b = .ok r ∧ r.val.val = Nat.min a.val.val b.val.val := by
-    //     simp only [util.min, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
-    //     split
-    //     · rename_i h
-    //       exact ⟨b, rfl, (Nat.min_eq_right (by omega)).symm⟩
-    //     · rename_i h
-    //       exact ⟨a, rfl, (Nat.min_eq_left (by omega)).symm⟩
+    //   contract min_spec (a b : NonZeroUsize)
+    //     for util.min a b
+    //     ensures r => r.val.val = Nat.min a.val.val b.val.val
+    //     proof:
+    //       apply WP.exists_imp_spec
+    //       simp only [util.min, core.num.nonzero.NonZero.get, bind_ok, UScalar.lt_equiv]
+    //       split
+    //       · rename_i h
+    //         exact ⟨b, rfl, (Nat.min_eq_right (by omega)).symm⟩
+    //       · rename_i h
+    //         exact ⟨a, rfl, (Nat.min_eq_left (by omega)).symm⟩
     // ```
     if a.get() > b.get() {
         b

@@ -131,6 +131,26 @@ class InlineTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 inline.discover(root, TOOL, entries)
 
+    def test_contract_declarations_are_registered_and_preserved(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / ENTRY['file']
+            source.parent.mkdir(parents=True)
+            for keyword in ('contract', 'partial contract'):
+                block = BLOCK.replace('theorem f_spec : True := by\n'
+                                      '    //     trivial',
+                                      keyword + ' f_spec (x : Nat)\n'
+                                      '    //     for Result.ok x\n'
+                                      '    //     ensures ret => ret = x\n'
+                                      '    //     proof:\n'
+                                      '    //       rfl')
+                source.write_text('fn f() {\n' + block + '}')
+                annotation = inline.discover(root, TOOL, [ENTRY])[ENTRY['rust']]
+                self.assertTrue(annotation['proof_text'].startswith(keyword + ' f_spec '))
+                source.write_text('fn f() {\n' + block.replace('f_spec ', 'wrong_spec ') + '}')
+                with self.assertRaisesRegex(ValueError, 'unexpected theorem declaration'):
+                    inline.discover(root, TOOL, [ENTRY])
+
     def test_generated_split_and_model_updates_preserve_proof_and_rust(self):
         generated = ('module\nnamespace Zerocopy\n'
                      '/-- [zerocopy::util::f]:\n    Source: location -/\n'

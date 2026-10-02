@@ -37,6 +37,59 @@ if [[ $1 == verification ]]; then
     echo "Confirmed: comment drift passes comparison and live proofs"
 fi
 
+# Exercise the actual command expansion, not just its underlying WP predicates.
+reject_contract() {
+    local description=$1
+    cat >> Proofs.lean
+    if lake build Required > "$backup/contract-build.log" 2>&1; then
+        echo "Contract syntax accepted $description" >&2; exit 1
+    fi
+    if ! grep -Eq '(error: Proofs[.]lean:|Proofs[.]lean:.*error)' "$backup/contract-build.log" ||
+        ! grep -q 'unsolved goals' "$backup/contract-build.log" ||
+        ! grep -q '⊢ False' "$backup/contract-build.log"; then
+        cat "$backup/contract-build.log" >&2; exit 1
+    fi
+    echo "Confirmed: contract syntax rejects $description"
+    cp "$backup/Proofs.lean" Proofs.lean
+}
+reject_contract "panic under a total contract" <<'LEAN'
+namespace Zerocopy.Proofs
+contract panic_control
+  for (Result.fail Error.panic : Result Nat)
+  requires h : True
+  ensures _ => True
+  proof:
+    simp
+end Zerocopy.Proofs
+LEAN
+reject_contract "divergence under a total contract" <<'LEAN'
+namespace Zerocopy.Proofs
+contract divergence_control
+  for (Result.div : Result Nat)
+  ensures _ => True
+  proof:
+    simp
+end Zerocopy.Proofs
+LEAN
+reject_contract "panic under a partial contract" <<'LEAN'
+namespace Zerocopy.Proofs
+partial contract partial_panic_control
+  for (Result.fail Error.panic : Result Nat)
+  ensures _ => True
+  proof:
+    simp
+end Zerocopy.Proofs
+LEAN
+reject_contract "an incorrect successful return under a partial contract" <<'LEAN'
+namespace Zerocopy.Proofs
+partial contract partial_return_control
+  for Result.ok (0 : Nat)
+  ensures ret => ret = 1
+  proof:
+    simp
+end Zerocopy.Proofs
+LEAN
+
 cat >> Proofs.lean <<'LEAN'
 namespace Zerocopy.Proofs
 theorem negative_control : True := by sorry
@@ -62,7 +115,7 @@ python3 - <<'PY'
 from pathlib import Path
 import re
 p = Path("Proofs.lean")
-s, count = re.subn(r'theorem min_spec\b.*?(?=\ntheorem |\nend Zerocopy.Proofs)',
+s, count = re.subn(r'contract min_spec\b.*?(?=\n(?:theorem|contract|partial contract) |\nend Zerocopy.Proofs)',
                   'theorem min_spec : True := by trivial\n', p.read_text(), flags=re.S)
 if count != 1:
     raise SystemExit("Obligation negative control no longer matches")

@@ -172,7 +172,8 @@ def discover(root, tool, entries):
             for section, keyword, name in [('model_text', 'def', entry['model']),
                                            ('proof_text', 'theorem', entry['theorem'])]:
                 first = golden.normalize(annotation[section])[0]
-                if not re.match(rf'{keyword} {re.escape(name)}(?=\s|\(|$)', first):
+                declarations = 'def' if keyword == 'def' else '(?:theorem|contract|partial contract)'
+                if not re.match(rf'{declarations} {re.escape(name)}(?=\s|\(|$)', first):
                     raise ValueError(f'{entry["rust"]}: unexpected {keyword} declaration')
             annotations[entry['rust']] = {**entry, **annotation}
     missing = {e['rust'] for e in entries} - annotations.keys()
@@ -229,7 +230,12 @@ def assemble(root, annotations, work):
     (work / 'Proofs.lean').write_text(wrapper.replace('@@AENEAS_PROOFS@@', proofs))
     required = ['import Lean', 'import Proofs', 'import Obligations', 'open Lean', '']
     for a in annotations.values():
-        required.append(f'example : Zerocopy.Obligations.{a["theorem"]} := Zerocopy.Proofs.{a["theorem"]}')
+        # Total contracts and explicit successful-result requirements are equivalent.
+        name = a['theorem']
+        required.append(f'example : Zerocopy.Obligations.{name} := by\n'
+                        f'  simpa only [Zerocopy.Obligations.{name}, '
+                        'Aeneas.Std.WP.spec_equiv_exists] '
+                        f'using Zerocopy.Proofs.{name}')
     names = ', '.join(f'`Zerocopy.Proofs.{a["theorem"]}' for a in annotations.values())
     required.append(f'def requiredTheorems : Array Name := #[{names}]')
     (work / 'Required.lean').write_text('\n'.join(required) + '\n')
