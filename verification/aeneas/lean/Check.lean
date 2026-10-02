@@ -8,6 +8,7 @@ those terms. -/
 
 import Required
 import SpecsSyntaxTests
+import ContractTests
 open Lean Elab Command
 run_elab do
   let required := requiredTheorems
