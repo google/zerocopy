@@ -28,7 +28,7 @@ open Aeneas Aeneas.Std Aeneas.Std.Result
 namespace Zerocopy.Corollaries
 open Proofs Proofs.Raw
 
-
+/- Selecting either input preserves any predicate shared by both inputs. -/
 theorem max_preserves (a b : NonZeroUsize) (P : NonZeroUsize → Prop)
     (ha : P a)
     (hb : P b) :
@@ -49,6 +49,7 @@ theorem min_preserves (a b : NonZeroUsize) (P : NonZeroUsize → Prop)
   · simpa only [h] using ha
   · simpa only [h] using hb
 
+/-- Aligned inputs are fixed points of round-down. -/
 theorem round_down_aligned (n : Usize) (align : NonZeroUsize)
     (hpow : (align.val : Nat).isPowerOfTwo)
     (haligned : (n : Nat) % (align.val : Nat) = 0) :
@@ -83,6 +84,7 @@ theorem round_down_monotone (a b : Usize) (align : NonZeroUsize)
   apply (UScalar.le_equiv _ _).mpr
   exact hgreatest m.val ((UScalar.le_equiv _ _).mp (le_trans hbound hab)) haligned
 
+/-- The original conservative headroom bound implies the exact fit bound. -/
 theorem pad_to_align_sized_headroom (self : layout.DstLayout) (size : Usize)
     (hs : self.size_info = .Sized size)
     (hpow : self.align.val.val.isPowerOfTwo)
@@ -96,6 +98,7 @@ theorem pad_to_align_sized_headroom (self : layout.DstLayout) (size : Usize)
   obtain ⟨r, hr, _⟩ := WP.spec_imp_exists hp
   exact ⟨r, hr⟩
 
+-- Padding preserves the complete inner size, including its own padding.
 theorem pad_to_align_size (self : layout.DstLayout)
     (ha : self.align.val.val.isPowerOfTwo)
     (hc : canonicalLayout self)
@@ -120,6 +123,7 @@ theorem pad_to_align_size (self : layout.DstLayout)
     · rename_i h
       exact power_dvd_of_le _ _ ha hinner (by omega)
 
+-- The independent recursive rule determines checked sizes for every metadata.
 theorem size_matches_recursive (tail : layout.TrailingSliceLayout Usize)
     (description : LayoutMath.Description) (n : Usize)
     (hn : 0 < tail.size_rounding_align_and_phase._0.val.val)
@@ -132,6 +136,7 @@ theorem size_matches_recursive (tail : layout.TrailingSliceLayout Usize)
   rw [hr, LayoutMath.Formula.checkedSize, LayoutMath.compile_size description hd] at hsize
   exact hsize
 
+-- Within the machine size bound, wrapping padding is ordinary physical padding.
 theorem padding_matches_recursive (tail : layout.TrailingSliceLayout Usize)
     (description : LayoutMath.Description) (n : Usize)
     (hn : 0 < tail.size_rounding_align_and_phase._0.val.val)
@@ -166,6 +171,7 @@ theorem padding_matches_recursive (tail : layout.TrailingSliceLayout Usize)
   dsimp only [remaining, physical] at hcancel
   omega
 
+/-- A zero element stride intentionally panics before inspecting the address. -/
 theorem validate_zero_stride (self : layout.DstLayout) (tail : layout.TrailingSliceLayout Usize)
     (hs : self.size_info = .SliceDst tail) (he : tail.elem_size = 0#usize)
     (addr length : Usize) (side : layout.CastType) :
@@ -176,5 +182,56 @@ theorem validate_zero_stride (self : layout.DstLayout) (tail : layout.TrailingSl
   unfold layout.DstLayout.validate_cast_and_convert_metadata
   rw [hconverted, hv]
   simp only [bind_ok]
+
+-- The constructor agrees with direct per-metadata field placement for any
+-- number of fields. The direct rule retains each field's complete inner size.
+theorem constructor_matches_record (repr_align packed : Option NonZeroUsize)
+    (fields : Slice layout.DstLayout)
+    (ha : ∀ a ∈ repr_align, alignmentDomain a.val.val)
+    (hp : ∀ a ∈ packed, alignmentDomain a.val.val)
+    (hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed)
+    (hlast : alignmentDomain
+      (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).align)
+    (hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+      packed fields.val.length).padFits Usize.max) :
+    layout.DstLayout.for_repr_c_struct repr_align packed fields
+      ⦃ r => ∀ n : Nat,
+        let direct := LayoutMath.recordState (fields.val.map layoutValue)
+          (initialAlignment repr_align) (packingValue packed) n fields.val.length
+        (layoutValue r).size n = LayoutMath.roundUp direct.2 direct.1 ⦄ := by
+  obtain ⟨start, hstart, halign, hsize, hunpadded⟩ :=
+    WP.spec_imp_exists (Proofs.Raw.new_zst_spec repr_align (fun a h => (ha a h).1))
+  have hv : layoutValue start = constructionPrefix fields
+      (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed (0#usize).val := by
+    simp only [constructionPrefix, LayoutMath.LayoutValue.prefixValue, show (0#usize).val = 0 by simp,
+      List.take_zero, List.foldl_nil, layoutValue, hsize, hunpadded, halign,
+      initialAlignment, LayoutMath.LayoutValue.initial]
+    cases repr_align <;> rfl
+  have hc : canonicalLayout start := by simp only [canonicalLayout, hsize]
+  obtain ⟨complete, hloop, hv, hc⟩ := WP.spec_imp_exists
+    (Proofs.Raw.constructor_loop_spec packed fields _ start 0#usize hp hd (by simp) hv hc)
+  have hca : complete.align.val.val =
+      (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).align :=
+    congrArg LayoutMath.LayoutValue.align hv
+  obtain ⟨r, hpad, hnumeric⟩ := WP.spec_imp_exists (pad_to_align_size complete
+    (by rw [hca]; exact hlast.1) hc (by rw [hv]; exact hfit))
+  unfold layout.DstLayout.for_repr_c_struct
+  rw [hstart, bind_ok, hloop, bind_ok, hpad]
+  apply WP.spec.ret
+  intro n
+  dsimp only
+  rw [hnumeric n, hca, hv]
+  have hdomain : ∀ i (hi : i < (fields.val.map layoutValue).length),
+      (LayoutMath.LayoutValue.prefixValue (fields.val.map layoutValue)
+        (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) (packingValue packed) i).extendFits
+        (fields.val.map layoutValue)[i] (packingValue packed) Usize.max := by
+    intro i hi
+    have hil : i < fields.val.length := by simpa only [List.length_map] using hi
+    simpa only [constructionPrefix, List.getElem_map] using (hd i hil).2.2.2
+  have hstate := LayoutMath.recordState_refinement (fields.val.map layoutValue)
+    (initialAlignment repr_align) (packingValue packed) n Usize.max hdomain
+    fields.val.length (by simp only [List.length_map, le_refl])
+  rw [hstate]
+  rfl
 
 end Zerocopy.Corollaries
