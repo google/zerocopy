@@ -1287,6 +1287,18 @@ impl DstLayout {
     #[cfg_attr(kani, kani::ensures(|&result| {
         Some(result) == proofs::extended_layout(self, field, repr_packed)
     }))]
+    ///
+    /// ```aeneas
+    /// spec extend_spec
+    ///   requires hself : self.align.value.isPowerOfTwo ∧ self.align.value ≤ 2 ^ 29
+    ///   requires hfield : field.align.value.isPowerOfTwo ∧ field.align.value ≤ 2 ^ 29
+    ///   requires hpacked : ∀ a ∈ repr_packed, a.value.isPowerOfTwo ∧ a.value ≤ 2 ^ 29
+    ///   requires hfit : (ModelViews.layoutValue self).extendFits
+    ///     (ModelViews.layoutValue field) (ModelViews.packingValue repr_packed) Usize.max
+    ///   ensures r => ModelViews.layoutValue r =
+    ///     (ModelViews.layoutValue self).extend
+    ///       (ModelViews.layoutValue field) (ModelViews.packingValue repr_packed)
+    /// ```
     pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::extend)]
@@ -1461,6 +1473,14 @@ impl DstLayout {
     #[inline]
     #[cfg_attr(kani, kani::requires(proofs::padded_layout(self).is_some()))]
     #[cfg_attr(kani, kani::ensures(|&result| Some(result) == proofs::padded_layout(self)))]
+    ///
+    /// ```aeneas
+    /// spec pad_to_align_spec
+    ///   requires ha : (self.align : Nat).isPowerOfTwo
+    ///   requires hfit : (ModelViews.layoutValue self).padFits Usize.max
+    ///   ensures result =>
+    ///     ModelViews.layoutValue result = (ModelViews.layoutValue self).pad
+    /// ```
     pub const fn pad_to_align(self) -> Self {
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::pad_to_align)]

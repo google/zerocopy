@@ -9,6 +9,7 @@ those terms. -/
 module
 public import RequiredModelContracts.Util
 public import RepresentationLaws
+public import ModelProjectionLaws
 @[expose] public section
 open Aeneas Aeneas.Std AeneasSpecs
 namespace Zerocopy.Proofs
@@ -68,6 +69,53 @@ attribute [contract_simps] encoding_decoder_admitted_iff trailing_decoder_admitt
   rw [ha, hp]
   exact ⟨Nat.pos_of_isPowerOfTwo value.align_pow2, value.align_pow2, value.phase_lt,
     hraw.symm, hcanonical.1, hcanonical.2⟩
+
+@[contract_simps] theorem required_extend (self field : layout.DstLayout)
+    (packed : Option NonZeroUsize) (run : Result layout.DstLayout)
+    (provided : Specs.extend_spec_contract self field packed run) :
+    Obligations.extend_spec_contract self field packed run := by
+  intro size selfValid fieldValid packedValid hs ha hf hp fits
+  obtain ⟨selfModel, selfDecoded⟩ := (layout_decoder_admitted_iff self).mpr selfValid
+  obtain ⟨fieldModel, fieldDecoded⟩ := (layout_decoder_admitted_iff field).mpr fieldValid
+  have packedAccepted : isValid packed := by simpa using packedValid
+  obtain ⟨packedModel, packedDecoded⟩ := packedAccepted
+  have selfView := layoutValue_decode self selfModel selfDecoded
+  have fieldView := layoutValue_decode field fieldModel fieldDecoded
+  have packedView := packingValue_decode packed packedModel packedDecoded
+  have selfAlign : selfModel.align.value = self.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align selfView
+  have fieldAlign : fieldModel.align.value = field.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align fieldView
+  have modelPacked : ∀ a ∈ packedModel, alignmentDomain a.value :=
+    (packing_alignment_decode packed packedModel packedDecoded).mpr hp
+  have modelFits : (ModelViews.layoutValue selfModel).extendFits
+      (ModelViews.layoutValue fieldModel) (ModelViews.packingValue packedModel) Usize.max := by
+    rw [selfView, fieldView, packedView]
+    exact (layout_extendFits_iff self field packed size hs).mpr fits
+  have fieldCanonical : canonicalLayout field := by
+    cases info : field.size_info with
+    | Sized _ => simp only [canonicalLayout, info]
+    | SliceDst _ =>
+      simpa only [sizeInfoValid, trailingValid, encodingValid,
+        scalar_valid_iff, true_and, canonicalLayout, info] using fieldValid.2
+  apply WP.spec_mono (provided selfModel selfDecoded fieldModel fieldDecoded
+    packedModel packedDecoded (by simpa only [selfAlign] using ha)
+    (by simpa only [fieldAlign] using hf) modelPacked modelFits)
+  rintro result ⟨value, decoded, facts⟩
+  have valid := (layout_decoder_admitted_iff result).mp ⟨value, decoded⟩
+  have resultCanonical : canonicalLayout result := by
+    cases info : result.size_info with
+    | Sized _ => simp only [canonicalLayout, info]
+    | SliceDst _ =>
+      simpa only [sizeInfoValid, trailingValid, encodingValid,
+        scalar_valid_iff, true_and, canonicalLayout, info] using valid.2
+  refine ⟨valid, ?_⟩
+  change ModelViews.layoutValue value =
+    (ModelViews.layoutValue selfModel).extend
+      (ModelViews.layoutValue fieldModel) (ModelViews.packingValue packedModel) at facts
+  rw [layoutValue_decode result value decoded, selfView, fieldView, packedView] at facts
+  exact (layout_extend_iff self field result packed size hs
+    fieldCanonical resultCanonical).mp facts
 
 @[contract_simps] theorem required_try_nonzero (self : layout.SizeInfo Usize)
     (run : Result (Option (layout.SizeInfo NonZeroUsize)))
