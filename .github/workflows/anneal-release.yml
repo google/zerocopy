@@ -227,11 +227,11 @@ jobs:
             target: linux-aarch64
             cargo_os: linux
             cargo_arch: aarch64
-          - os: macos-15-intel
+          - os: macos-26-intel
             target: macos-x86_64
             cargo_os: macos
             cargo_arch: x86_64
-          - os: macos-latest
+          - os: macos-26
             target: macos-aarch64
             cargo_os: macos
             cargo_arch: aarch64
