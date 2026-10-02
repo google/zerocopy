@@ -113,7 +113,7 @@ zerocopy's unsafe pointer operations are sound.
 
 ## Scope and proofs
 
-Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs).
+Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs).
 
 Extraction starts from the function and nominal-type owners of every present
 `aeneas` fence in `zerocopy/src`, including their dependencies. Every present

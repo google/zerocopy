@@ -9,6 +9,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+#[allow(dead_code)]
+mod nested_reference;
+
 use core::{mem, num::NonZeroUsize};
 
 use crate::util;
@@ -2043,7 +2046,7 @@ mod tests {
                 // [2]. Here `prefix` is the end of the preceding fields.
                 //
                 // [6] https://doc.rust-lang.org/1.93.0/reference/type-layout.html#reprc-structs
-                let offset = prefix.checked_add(util::padding_needed_for(prefix, field_align))?;
+                let offset = nested_reference::round_up(prefix, field_align.get())?;
 
                 // `repr(C)` uses the greatest field alignment [6], and an
                 // explicit alignment can only raise it [2]. Here `align`
@@ -2055,7 +2058,7 @@ mod tests {
                 // Advance past the complete field, then round to the struct's
                 // alignment, following `repr(C)`'s final sizing steps [6].
                 size = offset.checked_add(size)?;
-                size = size.checked_add(util::padding_needed_for(size, alignment))?;
+                size = nested_reference::round_up(size, alignment.get())?;
             }
             // Each enclosing size is at least its field's size. Thus any
             // checked multiplication or addition that overflowed above would
