@@ -407,6 +407,17 @@ theorem nested_layers_decoder_total (raw : Slice layout.nested_reference.NestedL
   rintro result ⟨decoded, hdecoded, hr⟩
   exact hr
 
+@[contract_simps] theorem nested_reference_matches_spec_implies_required
+    (leading : Slice layout.nested_reference.NestedLayer) (elem_size leaf_align elems : Usize)
+    (run : Result Unit)
+    (provided : Zerocopy.Specs.nested_reference_matches_spec_contract leading elem_size leaf_align elems run) :
+    Zerocopy.Obligations.nested_reference_matches_spec_contract leading elem_size leaf_align elems run := by
+  obtain ⟨layers, hlayers⟩ := nested_layers_decoder_total leading
+  have execution := provided layers hlayers (unsignedWord elem_size) rfl
+    (unsignedWord leaf_align) rfl (unsignedWord elems) rfl
+  obtain ⟨output, hexec, _⟩ := WP.spec_imp_exists execution
+  exact ⟨output, hexec⟩
+
 @[contract_simps] theorem nested_round_up_spec_implies_required
     (size align : Usize) (run : Result (Option Usize))
     (provided : Zerocopy.Specs.nested_round_up_spec_contract size align run) :
