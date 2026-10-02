@@ -141,6 +141,33 @@
       ]
     },
     {
+      "rust": "zerocopy::layout::DstLayout::pad_to_align",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::pad_to_align",
+      "model": "layout.DstLayout.pad_to_align",
+      "theorem": "pad_to_align_spec",
+      "golden": "layout.DstLayout.pad_to_align.lean.in",
+      "depends_on": [
+        "zerocopy::util::padding_needed_for",
+        "zerocopy::layout::RoundingAlignAndPhase::components",
+        "zerocopy::util::round_down_to_next_multiple_of_alignment",
+        "zerocopy::layout::RoundingAlignAndPhase::new"
+      ]
+    },
+    {
+      "rust": "zerocopy::layout::DstLayout::extend",
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::extend",
+      "model": "layout.DstLayout.extend",
+      "theorem": "extend_spec",
+      "golden": "layout.DstLayout.extend.lean.in",
+      "depends_on": [
+        "zerocopy::util::min",
+        "zerocopy::util::max",
+        "zerocopy::util::padding_needed_for"
+      ]
+    },
+    {
       "rust": "zerocopy::layout::DstLayout::requires_static_padding",
       "file": "zerocopy/src/layout.rs",
       "syntax": "DstLayout::requires_static_padding",
