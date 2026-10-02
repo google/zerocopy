@@ -65,6 +65,9 @@ derive_rust_model Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters d
   { align := align, phase := word - align, .. }
 check_model_binding Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters
 
+derive_rust_model Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
+check_model_binding Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
+
 derive_rust_model Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters with_physical 0
 check_model_binding Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
 
