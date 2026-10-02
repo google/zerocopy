@@ -545,6 +545,44 @@ its generated proposition. Edit its proof directly in Lean. No proof copying
 back to Rust is required. This development cache is for iteration; CI always
 regenerates specifications and builds both models in fresh isolated projects.
 
+## Mathematical views and indexed loops
+
+### Arithmetic, mathematical views, and indexed loops
+
+Checked addition, subtraction, and multiplication already have upstream
+`step_pure` specifications. Use `step as ⟨result, facts⟩` and split the `Option`
+result to obtain both the exact successful value and the overflow condition.
+`SupportTests.lean` exercises all inputs, including overflow.
+
+A contract may express equality through a pure mathematical view:
+
+```lean
+theorem operation_spec (input : Input) (h : valid input) :
+    operation input ⦃ result =>
+      view result = mathematicalOperation (view input) ∧ canonical result ⦄ := by
+  ...
+```
+
+This ordinary theorem states the existing total WP postcondition directly.
+A view-only theorem states just the view equality. Partial correctness uses
+`⦄div` in place of `⦄`: it explicitly permits divergence and still excludes
+failure. These are Aeneas's existing specification operators. Use `WP.spec_mono`
+to adapt an existing result specification to a view, and register useful caller
+specifications with `attribute [step] operation_spec`. The existing Aeneas
+registry then lets callers use `step` without specifying the theorem manually.
+
+`AeneasContracts.indexed_loop_spec` specializes Aeneas's `loop.spec_decr_nat`
+to a state and `Usize` index. Supply a view, the mathematical value of each
+prefix, and a representation invariant. Each continuing body step must advance
+the index by exactly one and establish the next prefix; a completed step must
+be at the length. The adapter supplies bounds and the decreasing `length - index`
+termination measure. `SupportTests.lean` contains an independent example.
+
+The specification syntax, examples, and required-contract proof terms
+participate in the axiom audit. Failure controls challenge an incorrect view,
+divergence under a total view contract, a stationary loop index, an incorrect
+prefix step, and continuing past the loop bound.
+
 ## Updating models and fuzzy comparison
 
 `golden/` stores all four complete generated Aeneas modules, including types,
