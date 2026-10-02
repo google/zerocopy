@@ -8,7 +8,7 @@ those terms. -/
 
 module
 public import Proofs.Raw.Trailing
-public import Proofs.Raw.Layout
+public import Proofs.Raw.Construction
 @[expose] public section
 
 open Aeneas Aeneas.Std
@@ -263,6 +263,103 @@ theorem new_zst_spec : Zerocopy.Specs.new_zst_spec := by
   | some a => simpa only [Option.getD_some, and_true] using Nat.pos_of_isPowerOfTwo (hp a rfl)
 register_spec_step new_zst_spec
 
+/- Append a field at its effective packed alignment, retaining the field's
+complete inner layout. The canonical theorem then proves the concise
+mathematical extension equation and successful decoding of the returned
+record.
+-/
+theorem extend_spec : Zerocopy.Specs.extend_spec := by
+  intro self field packed value hvalue fieldValue hfieldValue packing hpacking
+    hself hfield hpacked hfit
+  have hvself := (layout_decoder_admitted_iff self).mp ⟨value, hvalue⟩
+  have hvfield := (layout_decoder_admitted_iff field).mp ⟨fieldValue, hfieldValue⟩
+  have hview := layoutValue_decode self value hvalue
+  have hfview := layoutValue_decode field fieldValue hfieldValue
+  have hpview := packingValue_decode packed packing hpacking
+  have halign : value.align.value = self.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align hview
+  have hfalign : fieldValue.align.value = field.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align hfview
+  have rawFits : (layoutValue self).extendFits (layoutValue field)
+      (packingValue packed) Usize.max := by
+    simpa only [hview, hfview, hpview] using hfit
+  have rawPacked : ∀ a ∈ packed, alignmentDomain a.val.val :=
+    (packing_alignment_decode packed packing hpacking).mp hpacked
+  have canonical : canonicalLayout field := by
+    cases hs : field.size_info with
+    | Sized _ => simp only [canonicalLayout, hs]
+    | SliceDst _ =>
+      simpa only [sizeInfoValid, trailingValid, encodingValid,
+        scalar_valid_iff, true_and, canonicalLayout, hs] using hvfield.2
+  apply WP.spec_mono (Raw.extend_value_spec self field packed
+    (by simpa only [alignmentDomain, halign] using hself)
+    (by simpa only [alignmentDomain, hfalign] using hfield) rawPacked canonical rawFits)
+  rintro result ⟨facts, hc⟩
+  have valid : layoutValid result := by
+    refine ⟨?_, ?_⟩
+    · cases hs : self.size_info with
+      | SliceDst _ => simp only [layoutValue, hs, LayoutMath.LayoutValue.extendFits] at rawFits
+      | Sized _ =>
+        have ha := congrArg LayoutMath.LayoutValue.align facts
+        simp only [layoutValue, hs, LayoutMath.LayoutValue.extend] at ha
+        have positive := hvself.1
+        rw [ha]
+        omega
+    · cases hs : result.size_info with
+      | Sized _ => trivial
+      | SliceDst _ =>
+        simpa only [sizeInfoValid, trailingValid, encodingValid, canonicalLayout,
+          scalar_valid_iff, true_and, hs] using hc
+  apply decoded_view_post layout.DstLayout.aeneasModel layoutValue
+    ModelViews.layoutValue layoutValue_decode
+    (fun r => r = (ModelViews.layoutValue value).extend
+      (ModelViews.layoutValue fieldValue) (ModelViews.packingValue packing)) result
+    ((layout_decoder_admitted_iff result).mpr valid)
+  simpa only [hview, hfview, hpview] using facts
+register_spec_step extend_spec
+
+/- Preserve the inner complete-size calculation while adding outer padding. The
+proof separately tracks physical offset, normalized base/phase, alignment,
+and the unpadded flag; equal total sizes alone would be insufficient.
+-/
+theorem pad_to_align_spec : Zerocopy.Specs.pad_to_align_spec := by
+  intro self value hvalue ha hfit
+  have hv := (layout_decoder_admitted_iff self).mp ⟨value, hvalue⟩
+  have hview := layoutValue_decode self value hvalue
+  have halign : value.align.value = self.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align hview
+  have fits : match self.size_info with
+      | .Sized bytes => LayoutMath.roundUp bytes.val self.align.val.val ≤ Usize.max
+      | .SliceDst tail => 0 < tail.size_rounding_align_and_phase._0.val.val ∧
+        (if (trailingFormula tail).align < self.align.val.val then
+          LayoutMath.roundUp tail.size_base.val (trailingFormula tail).align +
+            (trailingFormula tail).phase ≤ Usize.max
+         else LayoutMath.roundUp tail.size_base.val self.align.val.val ≤ Usize.max) := by
+    rw [hview] at hfit
+    cases hs : self.size_info with
+    | Sized _ => simpa only [LayoutMath.LayoutValue.padFits, layoutValue, hs] using hfit
+    | SliceDst tail =>
+      simp only [layoutValid, sizeInfoValid, trailingValid, encodingValid, scalar_valid_iff,
+        true_and, hs] at hv
+      exact ⟨hv.2, by simpa only [LayoutMath.LayoutValue.padFits, layoutValue, hs,
+        trailingFormula, byteFormula] using hfit⟩
+  apply WP.spec_mono (Raw.pad_to_align_spec self (by simpa only [halign] using ha) fits)
+  rintro result ⟨hc, facts⟩
+  have hrvalid : layoutValid result := by
+    refine ⟨?_, ?_⟩
+    · simpa only [facts.1] using hv.1
+    · cases hs : result.size_info with
+      | Sized _ => trivial
+      | SliceDst _ => simpa only [sizeInfoValid, trailingValid, encodingValid,
+          canonicalLayout, scalar_valid_iff, true_and, hs] using hc
+  apply decoded_view_post layout.DstLayout.aeneasModel layoutValue
+    ModelViews.layoutValue layoutValue_decode
+    (fun r => r = (ModelViews.layoutValue value).pad) result
+    ((layout_decoder_admitted_iff result).mpr hrvalid)
+  rw [hview]
+  exact (layout_pad_iff self result).mpr facts
+register_spec_step pad_to_align_spec
+
 /-- An arbitrary proof of the compact mathematical clause implies the separately
 maintained exact optional-size and overflow obligation. -/
 @[contract_simps] theorem size_for_elems_spec_implies_required
@@ -280,5 +377,32 @@ maintained exact optional-size and overflow obligation. -/
   change decoded.map (fun size => (size : Nat)) = _ at hsize
   rw [optionalSize_decode result decoded hd, hformula, unsignedWord_value] at hsize
   exact hsize
+
+/-- The compact padding clause implies the independently stated admission,
+alignment, size-variant, exact payload and unpadded-flag guarantees. -/
+@[contract_simps] theorem pad_to_align_spec_implies_required
+    (self : layout.DstLayout) (run : Result layout.DstLayout)
+    (provided : Zerocopy.Specs.pad_to_align_spec_contract self run) :
+    Zerocopy.Obligations.pad_to_align_spec_contract self run := by
+  intro valid power fits
+  obtain ⟨value, hvalue⟩ := (layout_decoder_admitted_iff self).mpr valid
+  have hview := layoutValue_decode self value hvalue
+  have halign : value.align.value = self.align.val.val :=
+    congrArg LayoutMath.LayoutValue.align hview
+  have hfit : (ModelViews.layoutValue value).padFits Usize.max := by
+    rw [hview]
+    cases hs : self.size_info with
+    | Sized _ => simpa only [LayoutMath.LayoutValue.padFits, layoutValue, hs] using fits
+    | SliceDst _ =>
+      simp only [hs] at fits
+      simpa only [LayoutMath.LayoutValue.padFits, layoutValue, hs,
+        trailingFormula, byteFormula] using fits.2
+  apply WP.spec_mono (provided value hvalue
+    (by simpa only [halign] using power) hfit)
+  rintro result ⟨decoded, hd, heq⟩
+  refine ⟨(layout_decoder_admitted_iff result).mp ⟨decoded, hd⟩, ?_⟩
+  change ModelViews.layoutValue decoded = (ModelViews.layoutValue value).pad at heq
+  rw [layoutValue_decode result decoded hd, hview] at heq
+  exact (layout_pad_iff self result).mp heq
 
 end Zerocopy.Proofs
