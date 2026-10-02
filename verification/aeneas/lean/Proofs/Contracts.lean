@@ -443,6 +443,27 @@ theorem pad_to_align_spec : Zerocopy.Specs.pad_to_align_spec := by
   exact (layout_pad_iff self result).mpr facts
 register_spec_step pad_to_align_spec
 
+/- Stitch together initialization, every field append, and final padding. The
+requirements cover arbitrary field lists in the independent construction
+domain, rather than assuming that the constructor already returned correctly.
+-/
+theorem for_repr_c_struct_spec : Zerocopy.Specs.for_repr_c_struct_spec := by
+  unfold Zerocopy.Specs.for_repr_c_struct_spec
+  representation_simps
+  intro repr_align packed fields _ _ _ ha hp hd hlast hfit
+  apply WP.spec_mono (Raw.for_repr_c_struct_spec repr_align packed fields ha hp hd hlast hfit)
+  rintro r ⟨hr, hc⟩
+  refine ⟨?_, hr⟩
+  refine ⟨?_, ?_⟩
+  · have halign := congrArg LayoutMath.LayoutValue.align hr
+    change r.align.val.val = _ at halign
+    rw [halign]
+    exact Nat.pos_of_isPowerOfTwo hlast.1
+  · cases hs : r.size_info with
+    | Sized _ => trivial
+    | SliceDst _ => simpa only [canonicalLayout, hs] using hc
+register_spec_step for_repr_c_struct_spec
+
 /-- An arbitrary proof of the compact mathematical clause implies the separately
 maintained exact optional-size and overflow obligation. -/
 @[contract_simps] theorem size_for_elems_spec_implies_required

@@ -49,9 +49,23 @@ def nested_reference_size_spec : Prop :=
     nested_reference_size_spec_contract leading elem_size leaf_align elems
       (layout.nested_reference.size_for_metadata leading elem_size leaf_align elems)
 
+-- An arbitrary successful unit outcome characterizes total assertion safety.
+-- Panic and divergence cannot satisfy this independent expectation.
+def nested_reference_matches_spec_contract
+    (_leading : Slice layout.nested_reference.NestedLayer) (_elem_size _leaf_align _elems : Usize)
+    (run : Result Unit) : Prop :=
+  ∃ output, run = .ok output
+
+def nested_reference_matches_spec : Prop :=
+  ∀ leading elem_size leaf_align elems,
+    nested_reference_matches_spec_contract leading elem_size leaf_align elems
+      (layout.nested_reference.assert_matches_dst_layout leading elem_size leaf_align elems)
 abbrev NonZeroUsize :=
   core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
 
+-- Written independently of the specification expansions, using mathematical
+-- values. Each family describes an arbitrary outcome; its transparent alias
+-- applies the family to the extracted operation.
 def max_spec_contract (a b : NonZeroUsize)
     (run : Result NonZeroUsize) : Prop :=
   0 < a.val.val → 0 < b.val.val → ∃ r, run = .ok r ∧ 0 < r.val.val ∧
@@ -97,6 +111,8 @@ def round_down_spec : Prop :=
   ∀ (n : Usize) (align : NonZeroUsize),
     round_down_spec_contract n align (util.round_down_to_next_multiple_of_alignment n align)
 
+-- These propositions are maintained separately from the specification macro and
+-- native proof modules. They fix successful termination and mathematical results.
 def encoding_new_spec_contract (a : NonZeroUsize) (p : Usize)
     (run : Result layout.RoundingAlignAndPhase) : Prop :=
   0 < a.val.val → a.val.val.isPowerOfTwo → p.val < a.val.val →
@@ -403,6 +419,24 @@ def metadata_exact_spec : Prop :=
   ∀ (self : layout.DstLayout) (size : Usize),
     metadata_exact_spec_contract self size (layout.DstLayout.metadata_for_exact_size self size)
 
+def for_repr_c_struct_spec_contract
+    (a packed : Option NonZeroUsize) (fields : Slice layout.DstLayout)
+    (run : Result layout.DstLayout) : Prop :=
+  (∀ x ∈ a, 0 < x.val.val) → (∀ x ∈ packed, 0 < x.val.val) →
+    (∀ field ∈ fields.val, layoutValid field) →
+    (∀ x ∈ a, alignmentDomain x.val.val) → (∀ x ∈ packed, alignmentDomain x.val.val) →
+    constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment a)) packed →
+    alignmentDomain (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a))
+      packed fields.val.length).align →
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a))
+      packed fields.val.length).padFits Usize.max →
+    ∃ r, run = .ok r ∧ layoutValid r ∧ layoutValue r =
+      (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment a)) packed fields.val.length).pad
+
+def for_repr_c_struct_spec : Prop :=
+  ∀ (a packed : Option NonZeroUsize) (fields : Slice layout.DstLayout),
+    for_repr_c_struct_spec_contract a packed fields
+      (layout.DstLayout.for_repr_c_struct a packed fields)
 
 end Zerocopy.Obligations
 
@@ -418,10 +452,6 @@ def arithmetic_checks_spec_contract (_len : Usize) (align : NonZeroUsize)
 def arithmetic_checks_spec : Prop :=
   ∀ (len : Usize) (align : NonZeroUsize),
     arithmetic_checks_spec_contract len align (util.checks.check_arithmetic len align)
-
-end Zerocopy.Obligations
-
-namespace Zerocopy.Obligations
 
 def primitive_layout_checks_spec_contract (T : Type) (run : Result Unit) : Prop :=
   ∀ [RustModel T], run ⦃ _ => True ⦄
