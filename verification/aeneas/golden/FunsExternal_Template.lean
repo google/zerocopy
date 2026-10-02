@@ -62,17 +62,17 @@ axiom core.num.nonzero.NonZero.get
   core.num.nonzero.NonZero T Clause0_NonZeroInner → Result T
 
 /-- [zerocopy::util::copy_unchecked]:
-    Source: 'src/util/mod.rs', lines 312:0-327:1 -/
+    Source: 'src/util/mod.rs', lines 326:0-341:1 -/
 axiom util.copy_unchecked
   : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)
 
 /-- [zerocopy::util::copy_unchecked_at]:
-    Source: 'src/util/mod.rs', lines 341:0-352:1 -/
+    Source: 'src/util/mod.rs', lines 355:0-366:1 -/
 axiom util.copy_unchecked_at
   : Slice Std.U8 → Slice Std.U8 → Std.Usize → Result (Slice Std.U8)
 
 /-- [zerocopy::util::transmute_unchecked]:
-    Source: 'src/util/mod.rs', lines 364:0-393:1 -/
+    Source: 'src/util/mod.rs', lines 378:0-407:1 -/
 axiom util.transmute_unchecked {Src : Type} (Dst : Type) : Src → Result Dst
 
 /-- [zerocopy::util::validity::read_byte]:
