@@ -170,6 +170,8 @@ whole-program unsafe-code certification.
 
 ## Scope and proofs
 
+Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs).
+
 Extraction starts from the function and nominal-type owners of every present
 `aeneas` fence in `zerocopy/src`, including their dependencies. Every present
 fence must have a supported Rust owner, exact extraction binding, and the
@@ -179,10 +181,10 @@ added without extending the specification set.
 | Rust function | Checked property |
 | --- | --- |
 | Byteorder U16/U32 read, write, and set (both endiannesses) | Exact integer value, every encoded byte, and setter/getter equality for every typed input. |
-| `max` | Terminates successfully and returns the mathematical maximum. |
-| `min` | Terminates successfully and returns the mathematical minimum. |
-| `padding_needed_for` | For any positive alignment, succeeds with padding strictly below that alignment. |
-| `round_down_to_next_multiple_of_alignment` | For any positive power-of-two alignment, succeeds with a result no larger than the input and divisible by the alignment. |
+| `max` | Returns the mathematical maximum, selects an input, and bounds both inputs from above. |
+| `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
+| `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
+| `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
@@ -190,9 +192,9 @@ termination, successful output decoding, and the postconditions. These are
 quantified conditional contracts, not finite test inputs. Broader ordinary Raw
 lemmas retain useful representation-level domains.
 
-This initial arithmetic scope establishes extrema, padding bounds and an
-aligned result no larger than the input. It does not claim least padding or
-the greatest aligned predecessor.
+`Corollaries.lean` composes the arithmetic proofs: extrema preserve a shared
+predicate, and round-down is monotone, aligned and idempotent under its stated
+conditions.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
