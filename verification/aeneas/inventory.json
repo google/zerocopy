@@ -60,6 +60,14 @@
     },
     {
       "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::pad_to_align"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::extend"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
       "syntax": "DstLayout::requires_static_padding"
     },
     {
