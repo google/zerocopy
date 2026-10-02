@@ -7,10 +7,6 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 module
-public import Zerocopy.Funs
-public import SpecPrelude
-public import MathViews
-public import Arithmetic
 public import LayoutModel
 @[expose] public section
 
@@ -130,6 +126,95 @@ def encoding_align_spec : Prop :=
   ∀ (code : layout.RoundingAlignAndPhase),
     encoding_align_spec_contract code (layout.RoundingAlignAndPhase.align code)
 
+def try_nonzero_spec_contract (si : layout.SizeInfo Usize)
+    (run : Result (Option (layout.SizeInfo NonZeroUsize))) : Prop :=
+  sizeInfoValid si → run ⦃ r => (∀ next ∈ r, sizeInfoValid next) ∧
+    match si with
+    | .Sized bytes => r = some (.Sized bytes)
+    | .SliceDst t => if t.elem_size = 0#usize then r = none else
+      ∃ next, r = some (.SliceDst next) ∧ next.offset = t.offset ∧ next.size_base = t.size_base ∧
+        next.size_rounding_align_and_phase = t.size_rounding_align_and_phase ∧
+        next.elem_size.val = t.elem_size ⦄
+
+def try_nonzero_spec : Prop :=
+  ∀ (si : layout.SizeInfo Usize),
+    try_nonzero_spec_contract si (layout.SizeInfoUsize.try_to_nonzero_elem_size si)
+
+def max_elems_for_bytes_spec_contract (budget : Usize) (stride : NonZeroUsize)
+    (run : Result (Usize × Usize)) : Prop :=
+  0 < stride.val.val →
+    run ⦃ (n, bytes) =>
+      n.val = budget.val / stride.val.val ∧ bytes.val = n.val * stride.val.val ∧
+      bytes.val ≤ budget.val ∧ budget.val < (n.val + 1) * stride.val.val ∧
+      (∀ k : Nat, k * stride.val.val ≤ budget.val ↔ k ≤ n.val) ⦄
+
+def max_elems_for_bytes_spec : Prop :=
+  ∀ (budget : Usize) (stride : NonZeroUsize),
+    max_elems_for_bytes_spec_contract budget stride (layout.max_elems_for_bytes budget stride)
+
+def assume_shallow_unpadded_spec_contract (self : layout.DstLayout)
+    (run : Result layout.DstLayout) : Prop :=
+  layoutValid self → ∃ r, run = .ok r ∧ layoutValid r ∧
+    r.align = self.align ∧ r.size_info = self.size_info ∧ r.statically_shallow_unpadded = true
+
+def assume_shallow_unpadded_spec : Prop :=
+  ∀ (self : layout.DstLayout),
+    assume_shallow_unpadded_spec_contract self (layout.DstLayout.assume_shallow_unpadded self)
+
+def new_zst_spec_contract (a : Option NonZeroUsize)
+    (run : Result layout.DstLayout) : Prop :=
+  (∀ x ∈ a, 0 < x.val.val) → (∀ x ∈ a, x.val.val.isPowerOfTwo) →
+    ∃ r, run = .ok r ∧ layoutValid r ∧ r.align = a.getD ⟨1#usize⟩ ∧
+      r.size_info = .Sized 0#usize ∧ r.statically_shallow_unpadded = true
+
+def new_zst_spec : Prop :=
+  ∀ (a : Option NonZeroUsize),
+    new_zst_spec_contract a (layout.DstLayout.new_zst a)
+
+def for_type_spec_contract (T : Type)
+    (run : Result layout.DstLayout) : Prop :=
+  ∀ [RustModel T] (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → 0 < align.val →
+    ∃ r, run = .ok r ∧ layoutValid r ∧ r.align.val = align ∧
+      r.size_info = .Sized size ∧ r.statically_shallow_unpadded = false
+
+def for_type_spec : Prop :=
+  ∀ (T : Type),
+    for_type_spec_contract T (layout.DstLayout.for_type T)
+
+def for_unpadded_type_spec_contract (T : Type)
+    (run : Result layout.DstLayout) : Prop :=
+  ∀ [RustModel T] (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → 0 < align.val →
+    ∃ r, run = .ok r ∧ layoutValid r ∧ r.align.val = align ∧
+      r.size_info = .Sized size ∧ r.statically_shallow_unpadded = true
+
+def for_unpadded_type_spec : Prop :=
+  ∀ (T : Type),
+    for_unpadded_type_spec_contract T (layout.DstLayout.for_unpadded_type T)
+
+def for_slice_spec_contract (T : Type)
+    (run : Result layout.DstLayout) : Prop :=
+  ∀ [RustModel T] (size align : Usize), core.mem.size_of T = .ok size →
+    core.mem.align_of T = .ok align → align.val.isPowerOfTwo →
+    ∃ r, run = .ok r ∧ layoutValid r ∧ r.align.val = align ∧
+      r.statically_shallow_unpadded = true ∧ ∃ t, r.size_info = .SliceDst t ∧
+      t.offset = 0#usize ∧ t.elem_size = size ∧ t.size_base = 0#usize ∧
+      t.size_rounding_align_and_phase._0.val.val = align.val
+
+def for_slice_spec : Prop :=
+  ∀ (T : Type),
+    for_slice_spec_contract T (layout.DstLayout.for_slice T)
+
+def requires_static_padding_spec_contract (self : layout.DstLayout)
+    (run : Result Bool) : Prop :=
+  layoutValid self → ∃ r, run = .ok r ∧
+    r = !self.statically_shallow_unpadded
+
+def requires_static_padding_spec : Prop :=
+  ∀ (self : layout.DstLayout),
+    requires_static_padding_spec_contract self (layout.DstLayout.requires_static_padding self)
+
 
 end Zerocopy.Obligations
 
@@ -145,5 +230,24 @@ def arithmetic_checks_spec_contract (_len : Usize) (align : NonZeroUsize)
 def arithmetic_checks_spec : Prop :=
   ∀ (len : Usize) (align : NonZeroUsize),
     arithmetic_checks_spec_contract len align (util.checks.check_arithmetic len align)
+
+end Zerocopy.Obligations
+
+namespace Zerocopy.Obligations
+
+def primitive_layout_checks_spec_contract (T : Type) (run : Result Unit) : Prop :=
+  ∀ [RustModel T], run ⦃ _ => True ⦄
+
+def primitive_layout_checks_spec : Prop :=
+  ∀ (T : Type), primitive_layout_checks_spec_contract T
+    (layout.primitive_checks.check_primitive_layouts T)
+
+def empty_layout_checks_spec_contract (repr_align : Option NonZeroUsize)
+    (run : Result Unit) : Prop :=
+  (∀ align ∈ repr_align, 0 < align.val.val) → run ⦃ _ => True ⦄
+
+def empty_layout_checks_spec : Prop :=
+  ∀ repr_align, empty_layout_checks_spec_contract repr_align
+    (layout.primitive_checks.check_empty_layout repr_align)
 
 end Zerocopy.Obligations
