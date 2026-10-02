@@ -24,3 +24,12 @@ derive_model_shape Zerocopy.byteorder.U16 with 1 type parameters
 
 derive_model_shape Zerocopy.byteorder.U32 with 1 type parameters
 
+aeneas_model_shape Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters begin
+model RoundingValue where
+  align : Nat
+  phase : Nat
+  align_pow2 : align.isPowerOfTwo
+  phase_lt : phase < align
+  fits : align + phase ≤ Usize.max
+end
+
