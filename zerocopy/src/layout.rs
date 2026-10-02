@@ -243,6 +243,13 @@ impl<E> TrailingSliceLayout<E> {
         offset == util::round_down_to_next_multiple_of_alignment(self.size_base, align) + phase
     }))]
     const fn size_offset(&self) -> usize {
+        // ```aeneas
+        // spec size_offset_spec {E : Type} (self : layout.TrailingSliceLayout E)
+        //   requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //   ensures offset =>
+        //     offset.val = self.size_base.val - self.size_base.val % (byteFormula self).align + (byteFormula self).phase
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::<usize>::size_offset)]
         #[kani::solver(kissat)]
@@ -274,6 +281,12 @@ impl<E> TrailingSliceLayout<E> {
             .and_then(|rounded| rounded.checked_sub(phase))
     }))]
     const fn max_trailing_bytes(&self, available_bytes: usize) -> Option<usize> {
+        // ```aeneas
+        // spec max_trailing_bytes_spec {E : Type} (self : layout.TrailingSliceLayout E) (available_bytes : Usize)
+        //   requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //   ensures r => r.map UScalar.val = (byteFormula self).capacity available_bytes.val
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::<usize>::max_trailing_bytes)]
         #[kani::solver(kissat)]
@@ -382,6 +395,13 @@ impl TrailingSliceLayout {
         padding == object_size.wrapping_sub(self.offset.wrapping_add(trailing_bytes))
     }))]
     pub(crate) const fn padding_for_elems(self, elems: usize) -> usize {
+        // ```aeneas
+        // spec padding_for_elems_spec (self : layout.TrailingSliceLayout Usize) (elems : Usize)
+        //   requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //   ensures p => (p.val + self.offset.val + elems.val * self.elem_size.val) % UScalar.size .Usize =
+        //     (trailingFormula self).size elems.val % UScalar.size .Usize
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::padding_for_elems)]
         #[kani::solver(kissat)]
@@ -449,6 +469,12 @@ impl TrailingSliceLayout {
             .and_then(|bytes| proofs::slice_dst_size_for_trailing_bytes(self, bytes))
     }))]
     pub(crate) const fn size_for_elems(self, elems: usize) -> Option<usize> {
+        // ```aeneas
+        // spec size_for_elems_spec (self : layout.TrailingSliceLayout Usize) (elems : Usize)
+        //   requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //   ensures r => r.map UScalar.val = (trailingFormula self).checkedSize Usize.max elems.val
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::size_for_elems)]
         #[kani::solver(kissat)]
