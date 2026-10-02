@@ -16,6 +16,22 @@
     },
     {
       "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::size_offset"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::max_trailing_bytes"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::padding_for_elems"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::size_for_elems"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
       "syntax": "SizeInfo::try_to_nonzero_elem_size"
     },
     {

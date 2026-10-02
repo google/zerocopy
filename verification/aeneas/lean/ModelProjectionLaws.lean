@@ -58,4 +58,13 @@ theorem layoutValue_decode (raw : layout.DstLayout) (value : layout.DstLayout.Fi
     simp only [ModelViews.layoutValue, layoutValue, hs, hva,
       trailingFormula_decode tail tailValue ht]
 
+/-- Optional machine sizes retain both absence and the exact numeric payload. -/
+theorem optionalSize_decode (raw : Option Usize) (value : Option (UnsignedWord .Usize))
+    (h : RustModel.decode raw = some value) :
+    value.map (fun size => (size : Nat)) = raw.map UScalar.val := by
+  cases raw <;>
+    simp only [RustModel.decode, Option.map_some,
+      Option.some.injEq] at h <;>
+    cases h <;> rfl
+
 end Zerocopy.Proofs
