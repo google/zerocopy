@@ -150,6 +150,94 @@ spec encoding_align_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.encoding_align_spec for Zerocopy.layout.RoundingAlignAndPhase.align with 1
 
+check_model_inputs Zerocopy.layout.SizeInfoUsize.try_to_nonzero_elem_size with 0 type parameters
+aeneas_spec_begin
+spec try_nonzero_spec
+  for @Zerocopy.layout.SizeInfoUsize.try_to_nonzero_elem_size with 0 type parameters
+  ensures(raw) r => match self with
+    | .Sized size => r = some (.Sized size)
+    | .SliceDst tail =>
+      if tail.elem_size = 0#usize then r = none else
+        ∃ t, r = some (.SliceDst t) ∧ t.offset = tail.offset ∧
+          t.size_base = tail.size_base ∧
+          t.size_rounding_align_and_phase = tail.size_rounding_align_and_phase ∧
+          t.elem_size.val = tail.elem_size
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.try_nonzero_spec for Zerocopy.layout.SizeInfoUsize.try_to_nonzero_elem_size with 1
+
+check_model_inputs Zerocopy.layout.max_elems_for_bytes with 0 type parameters
+aeneas_spec_begin
+spec max_elems_for_bytes_spec
+  for @Zerocopy.layout.max_elems_for_bytes with 0 type parameters
+  ensures(raw) (elems, used) =>
+    elems.val = bytes.val / elem_size.val.val ∧ used.val = elems.val * elem_size.val.val ∧
+    used ≤ bytes ∧ bytes.val < (elems.val + 1) * elem_size.val.val ∧
+    (∀ n : Nat, n * elem_size.val.val ≤ bytes.val ↔ n ≤ elems.val)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.max_elems_for_bytes_spec for Zerocopy.layout.max_elems_for_bytes with 2
+
+check_model_inputs Zerocopy.layout.DstLayout.assume_shallow_unpadded with 0 type parameters
+aeneas_spec_begin
+spec assume_shallow_unpadded_spec
+  for @Zerocopy.layout.DstLayout.assume_shallow_unpadded with 0 type parameters
+  ensures(raw) r => r.align = self.align ∧ r.size_info = self.size_info ∧ r.statically_shallow_unpadded = true
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.assume_shallow_unpadded_spec for Zerocopy.layout.DstLayout.assume_shallow_unpadded with 1
+
+check_model_inputs Zerocopy.layout.DstLayout.new_zst with 0 type parameters
+aeneas_spec_begin
+spec new_zst_spec
+  for @Zerocopy.layout.DstLayout.new_zst with 0 type parameters
+  requires(raw) hp : ∀ a ∈ repr_align, a.val.val.isPowerOfTwo
+  ensures(raw) r => r.align = repr_align.getD ⟨1#usize⟩ ∧
+    r.size_info = .Sized 0#usize ∧ r.statically_shallow_unpadded = true
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.new_zst_spec for Zerocopy.layout.DstLayout.new_zst with 1
+
+check_model_inputs Zerocopy.layout.DstLayout.for_type with 1 type parameters
+aeneas_spec_begin
+spec for_type_spec (size align : Usize)
+  for @Zerocopy.layout.DstLayout.for_type with 1 type parameters
+  requires(raw) hs : core.mem.size_of T = .ok size
+  requires(raw) ha : core.mem.align_of T = .ok align
+  requires(raw) hn : 0 < align.val
+  ensures(raw) r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = false
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.for_type_spec for Zerocopy.layout.DstLayout.for_type with 1
+
+check_model_inputs Zerocopy.layout.DstLayout.for_unpadded_type with 1 type parameters
+aeneas_spec_begin
+spec for_unpadded_type_spec (size align : Usize)
+  for @Zerocopy.layout.DstLayout.for_unpadded_type with 1 type parameters
+  requires(raw) hs : core.mem.size_of T = .ok size
+  requires(raw) ha : core.mem.align_of T = .ok align
+  requires(raw) hn : 0 < align.val
+  ensures(raw) r => r.align.val = align ∧ r.size_info = layout.SizeInfo.Sized size ∧ r.statically_shallow_unpadded = true
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.for_unpadded_type_spec for Zerocopy.layout.DstLayout.for_unpadded_type with 1
+
+check_model_inputs Zerocopy.layout.DstLayout.for_slice with 1 type parameters
+aeneas_spec_begin
+spec for_slice_spec (size align : Usize)
+  for @Zerocopy.layout.DstLayout.for_slice with 1 type parameters
+  requires(raw) hs : core.mem.size_of T = .ok size
+  requires(raw) ha : core.mem.align_of T = .ok align
+  requires(raw) hp : align.val.isPowerOfTwo
+  ensures(raw) r => r.align.val = align ∧ r.statically_shallow_unpadded = true ∧
+    ∃ tail, r.size_info = layout.SizeInfo.SliceDst tail ∧
+      tail.offset = 0#usize ∧ tail.elem_size = size ∧ tail.size_base = 0#usize ∧
+      tail.size_rounding_align_and_phase._0.val.val = align.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.for_slice_spec for Zerocopy.layout.DstLayout.for_slice with 1
+
+check_model_inputs Zerocopy.layout.DstLayout.requires_static_padding with 0 type parameters
+aeneas_spec_begin
+spec requires_static_padding_spec
+  for @Zerocopy.layout.DstLayout.requires_static_padding with 0 type parameters
+  ensures(raw) r => r = !self.statically_shallow_unpadded
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.requires_static_padding_spec for Zerocopy.layout.DstLayout.requires_static_padding with 1
+
 check_model_inputs Zerocopy.layout.nested_reference.round_up with 0 type parameters
 aeneas_spec_begin
 spec nested_round_up_spec
@@ -169,6 +257,22 @@ spec nested_reference_size_spec
     NestedReference.checkedSize leading.val elem_size.val leaf_align.val elems.val
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.nested_reference_size_spec for Zerocopy.layout.nested_reference.size_for_metadata with 4
+
+check_model_inputs Zerocopy.layout.primitive_checks.check_primitive_layouts with 1 type parameters
+aeneas_spec_begin
+spec primitive_layout_checks_spec
+  for @Zerocopy.layout.primitive_checks.check_primitive_layouts with 1 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.primitive_layout_checks_spec for Zerocopy.layout.primitive_checks.check_primitive_layouts with 1
+
+check_model_inputs Zerocopy.layout.primitive_checks.check_empty_layout with 0 type parameters
+aeneas_spec_begin
+spec empty_layout_checks_spec
+  for @Zerocopy.layout.primitive_checks.check_empty_layout with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.empty_layout_checks_spec for Zerocopy.layout.primitive_checks.check_empty_layout with 1
 
 check_model_inputs Zerocopy.trait_checks.byte_codec_roundtrip with 1 type parameters
 aeneas_spec_begin
