@@ -198,6 +198,10 @@ conditions.
 
 `LayoutMath.lean` supplies independent unbounded size and capacity formulas.
 
+The mathematical layout semantics proves normalization across arbitrary
+nesting and metadata values. These algebraic laws do not themselves verify
+a Rust layout method.
+
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
 clauses preserve the extracted representation vocabulary while retaining
