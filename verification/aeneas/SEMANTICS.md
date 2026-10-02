@@ -34,10 +34,8 @@ several different metadata values can have the same complete padded size.
 metadata value. It uses each field's complete size, without manipulating the
 normalization's base, phase, or size alignment. `recordState_refinement` proves
 that the normalized prefix fold agrees with this direct rule for arbitrary
-field lists in the construction domain. These are mathematical theorems
-already available at this stack position. The connection from the extracted,
-terminating record constructor to this rule and final rounding is deferred to
-the final proof layer, where `constructor_matches_record` is introduced.
+field lists in the construction domain. `constructor_matches_record` connects
+the extracted, terminating record constructor to this rule and final rounding.
 
 ## Explicit Rust premise
 

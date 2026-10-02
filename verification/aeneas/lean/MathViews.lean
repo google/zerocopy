@@ -6,7 +6,6 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -/
 
-
 module
 public import Invariants
 import all Invariants
@@ -16,6 +15,8 @@ open Aeneas Aeneas.Std AeneasSpecs
 namespace Zerocopy.Proofs
 set_option linter.unusedSimpArgs false
 
+-- Independently stated representation domains. A mathematical size view alone
+-- does not distinguish a zero raw encoding from a valid encoding of one.
 def encodingValid (code : layout.RoundingAlignAndPhase) : Prop :=
   0 < code._0.val.val
 
@@ -61,9 +62,17 @@ def layoutValid (self : layout.DstLayout) : Prop :=
       layoutValid, sizeInfoValid, trailingValid, encodingValid, and_comm]
 
 @[simp, contract_simps] theorem scalar_valid_iff (x : UScalar ty) : isValid x ↔ True := Iff.rfl
-
 @[simp, contract_simps] theorem cast_type_valid_iff (side : layout.CastType) : isValid side ↔ True := by
   cases side <;> rfl
+
+attribute [contract_simps] and_true true_and and_self true_implies forall_true_iff
+
+attribute [contract_simps] encodingValid trailingValid sizeInfoValid layoutValid
+
+end Zerocopy.Proofs
+
+namespace Zerocopy.Proofs
+set_option linter.unusedSimpArgs false
 
 @[simp, contract_simps] theorem cast_result_valid_iff
     (r : core.result.Result (Usize × Usize) layout.MetadataCastError) : isValid r ↔ True := by
@@ -73,11 +82,8 @@ def layoutValid (self : layout.DstLayout) : Prop :=
     cases error <;> simp [isValid, IsValid.isValid, validRustResult,
       layout.MetadataCastError.aeneasValid]
 
+-- WHNF uses Nat.le directly; retain a pointwise bridge to the authored <.
 @[contract_simps] theorem normalized_nat_pos_iff (n : Nat) :
     Nat.le (Nat.succ 0) n ↔ 0 < n := Nat.succ_le_iff
-
-attribute [contract_simps] and_true true_and and_self true_implies forall_true_iff
-
-attribute [contract_simps] encodingValid trailingValid sizeInfoValid layoutValid
 
 end Zerocopy.Proofs

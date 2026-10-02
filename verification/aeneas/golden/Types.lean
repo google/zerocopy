@@ -46,7 +46,7 @@ structure layout.RoundingAlignAndPhase where
     core.num.niche_types.NonZeroUsizeInner
 
 /-- [zerocopy::layout::TrailingSliceLayout]
-    Source: 'src/layout.rs', lines 182:0-236:1 -/
+    Source: 'src/layout.rs', lines 179:0-233:1 -/
 structure layout.TrailingSliceLayout (E : Type) where
   offset : Std.Usize
   elem_size : E
@@ -70,7 +70,7 @@ structure layout.DstLayout where
   statically_shallow_unpadded : Bool
 
 /-- [zerocopy::layout::CastType]
-    Source: 'src/layout.rs', lines 902:0-905:1
+    Source: 'src/layout.rs', lines 891:0-894:1
     Visibility: public -/
 @[discriminant isize]
 inductive layout.CastType where
@@ -78,7 +78,7 @@ inductive layout.CastType where
 | Suffix : layout.CastType
 
 /-- [zerocopy::layout::MetadataCastError]
-    Source: 'src/layout.rs', lines 909:0-912:1 -/
+    Source: 'src/layout.rs', lines 898:0-901:1 -/
 @[discriminant isize]
 inductive layout.MetadataCastError where
 | Alignment : layout.MetadataCastError

@@ -19,8 +19,8 @@ import all Init.Data.Nat.Power2.Basic
 open Aeneas Aeneas.Std
 namespace Zerocopy.Proofs.Raw
 
+-- Raw contract requirements intentionally retain their descriptive proof names.
 set_option linter.unusedVariables false
-
 theorem pointer_width_spec :
     layout.POINTER_WIDTH_BITS
       ⦃ w => w.val = System.Platform.numBits ⦄ := by
@@ -79,6 +79,7 @@ theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p
     rfl
   · rw [Nat.testBit_two_pow_of_ne (Ne.symm hi)]
     simp
+
 
 theorem encoding_components_spec :
   ∀ (self : layout.RoundingAlignAndPhase), ∀ (hn : (0 < self._0.val.val : Prop)),
@@ -859,7 +860,6 @@ theorem packing_limit_spec (packed : Option NonZeroUsize)
 -- Aeneas shares a generated matcher with the alignment encoder. The model
 -- comparison checks that matcher; this proof deliberately names it.
 set_option linter.auxLemma false in
-
 theorem extend_spec :
   ∀ (self field : layout.DstLayout) (repr_packed : Option NonZeroUsize) (size : Usize), ∀ (hs : (self.size_info = .Sized size : Prop)), ∀ (hself : (self.align.val.val.isPowerOfTwo ∧ self.align.val.val ≤ 2 ^ 29 : Prop)), ∀ (hfield : (field.align.val.val.isPowerOfTwo ∧ field.align.val.val ≤ 2 ^ 29 : Prop)), ∀ (hpacked : (∀ a ∈ repr_packed, a.val.val.isPowerOfTwo ∧ a.val.val ≤ 2 ^ 29 : Prop)), ∀ (hfit : (match field.size_info with
     | .Sized field_size => placement size field repr_packed + field_size.val ≤ Usize.max
@@ -1381,17 +1381,96 @@ theorem pad_value_spec (self : layout.DstLayout)
 
 attribute [step] pad_value_spec
 
+theorem construction_prefix_step (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) (i : Nat) (hi : i < fields.val.length) :
+    constructionPrefix fields initial packed (i + 1) =
+      (constructionPrefix fields initial packed i).extend (layoutValue fields.val[i]) (packingValue packed) := by
+  unfold constructionPrefix
+  rw [LayoutMath.LayoutValue.prefixValue_step _ _ _ _ (by simpa only [List.length_map] using hi)]
+  simp only [List.getElem_map]
+
+theorem constructor_loop_spec (packed : Option NonZeroUsize) (fields : Slice layout.DstLayout)
+    (initial : LayoutMath.LayoutValue) (self : layout.DstLayout) (i : Usize)
+    (hp : ∀ a ∈ packed, alignmentDomain a.val.val)
+    (hd : constructionDomain fields initial packed)
+    (hi : i.val ≤ fields.val.length)
+    (hv : layoutValue self = constructionPrefix fields initial packed i.val)
+    (hc : canonicalLayout self) :
+    layout.DstLayout.for_repr_c_struct_loop packed fields self i
+      ⦃ r => layoutValue r = constructionPrefix fields initial packed fields.val.length ∧ canonicalLayout r ⦄ := by
+  unfold layout.DstLayout.for_repr_c_struct_loop
+  apply AeneasContracts.indexed_loop_spec fields.val.length layoutValue
+    (constructionPrefix fields initial packed) canonicalLayout
+  · intro value idx hi hv hc
+    unfold layout.DstLayout.for_repr_c_struct_loop.body
+    simp only [UScalar.lt_equiv, Slice.len_val, Slice.length]
+    split
+    · rename_i hlt
+      have hlt' : idx.val < fields.val.length := hlt
+      step with Slice.index_usize_spec fields idx hlt' as ⟨field, hf⟩
+      obtain ⟨hself, hfield, hcanon, hfits⟩ := hd idx.val hlt'
+      have hsa : alignmentDomain value.align.val.val := by
+        have hh := congrArg LayoutMath.LayoutValue.align hv
+        change value.align.val.val = _ at hh
+        rw [hh]
+        exact hself
+      have hfa : alignmentDomain field.align.val.val := by rw [hf]; exact hfield
+      have hca : canonicalLayout field := by rw [hf]; exact hcanon
+      have hfit : (layoutValue value).extendFits (layoutValue field) (packingValue packed) Usize.max := by
+        rw [hv, hf]
+        exact hfits
+      step as ⟨next, hnext, hcn⟩
+      have hroom : idx.val + (1#usize).val ≤ Usize.max := by
+        have := fields.property
+        change idx.val + 1 ≤ Usize.max
+        omega
+      step with Usize.add_spec (x := idx) (y := 1#usize) hroom as ⟨j, hj⟩
+      change j.val = idx.val + 1 at hj
+      refine ⟨hlt', hj, ?_, hcn⟩
+      rw [hj, construction_prefix_step fields initial packed idx.val hlt', hnext, hv, hf]
+    · rename_i hdone
+      have heq : idx.val = fields.val.length := by omega
+      exact WP.spec.ret ⟨heq, hv, hc⟩
+  · exact hi
+  · exact hv
+  · exact hc
+
+theorem for_repr_c_struct_spec :
+  ∀ (repr_align repr_packed : Option NonZeroUsize) (fields : Slice layout.DstLayout), ∀ (ha : (∀ a ∈ repr_align, alignmentDomain a.val.val : Prop)), ∀ (hp : (∀ a ∈ repr_packed, alignmentDomain a.val.val : Prop)), ∀ (hd : (constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed : Prop)), ∀ (hlast : (alignmentDomain
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).align : Prop)), ∀ (hfit : ((constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+    repr_packed fields.val.length).padFits Usize.max : Prop)),
+    @Zerocopy.layout.DstLayout.for_repr_c_struct repr_align repr_packed fields ⦃ r => layoutValue r =
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).pad ∧ canonicalLayout r ⦄ := by
+  intro repr_align packed fields ha hp hd hlast hfit
+  unfold layout.DstLayout.for_repr_c_struct
+  step with new_zst_spec repr_align (fun a h => (ha a h).1) as ⟨start, halign, hsize, hunpadded⟩
+  have hv : layoutValue start = constructionPrefix fields
+      (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed (0#usize).val := by
+    simp only [constructionPrefix, LayoutMath.LayoutValue.prefixValue, show (0#usize).val = 0 by simp,
+      List.take_zero, List.foldl_nil, layoutValue, hsize, hunpadded, halign,
+      initialAlignment, LayoutMath.LayoutValue.initial]
+    cases repr_align <;> rfl
+  have hc : canonicalLayout start := by simp only [canonicalLayout, hsize]
+  step with constructor_loop_spec packed fields _ start 0#usize hp hd (by simp) hv hc as ⟨complete, hv, hc⟩
+  step with pad_value_spec complete (by
+    have hh := congrArg LayoutMath.LayoutValue.align hv
+    change complete.align.val.val = _ at hh
+    rw [hh]
+    exact hlast.1) hc (by rw [hv]; exact hfit) as ⟨result, hr, hcanonical⟩
+  exact ⟨by rw [hr, hv], hcanonical⟩
+
 end Zerocopy.Proofs.Raw
 
 namespace Zerocopy.Proofs
 open AeneasSpecs
 
+-- Unfold only representation domains. The model calls and authored outcome
+-- predicates remain the independently verified raw contracts below.
 macro "representation_simps" : tactic =>
   `(tactic| try simp only [encoding_valid_iff, trailing_valid_iff, size_info_valid_iff,
     layout_valid_iff, nonzero_valid_iff, cast_result_valid_iff, cast_type_valid_iff, scalar_valid_iff,
     encodingValid, trailingValid, sizeInfoValid, layoutValid, and_true, true_and,
     and_self, true_implies])
-
 
 theorem encoding_new_spec : Zerocopy.Specs.encoding_new_spec := by
   unfold Zerocopy.Specs.encoding_new_spec
@@ -1439,6 +1518,33 @@ theorem max_trailing_bytes_spec : Zerocopy.Specs.max_trailing_bytes_spec := by
   exact Raw.max_trailing_bytes_spec self available hv.2
 register_spec_step max_trailing_bytes_spec
 
+theorem padding_for_elems_spec : Zerocopy.Specs.padding_for_elems_spec := by
+  unfold Zerocopy.Specs.padding_for_elems_spec
+  representation_simps
+  intro self elems hv
+  exact Raw.padding_for_elems_spec self elems hv
+register_spec_step padding_for_elems_spec
+
+theorem size_for_elems_spec : Zerocopy.Specs.size_for_elems_spec := by
+  unfold Zerocopy.Specs.size_for_elems_spec
+  representation_simps
+  intro self elems hv
+  exact Raw.size_for_elems_spec self elems hv
+register_spec_step size_for_elems_spec
+
+theorem same_size_sequence_spec : Zerocopy.Specs.same_size_sequence_spec := by
+  unfold Zerocopy.Specs.same_size_sequence_spec
+  representation_simps
+  intro self other hs ho
+  exact Raw.same_size_sequence_spec self other hs ho
+register_spec_step same_size_sequence_spec
+
+theorem max_elems_for_bytes_spec : Zerocopy.Specs.max_elems_for_bytes_spec := by
+  unfold Zerocopy.Specs.max_elems_for_bytes_spec
+  intro bytes elem hn
+  exact Raw.max_elems_for_bytes_spec bytes elem hn
+register_spec_step max_elems_for_bytes_spec
+
 theorem assume_shallow_unpadded_spec : Zerocopy.Specs.assume_shallow_unpadded_spec := by
   unfold Zerocopy.Specs.assume_shallow_unpadded_spec
   representation_simps
@@ -1482,12 +1588,6 @@ theorem for_slice_spec : Zerocopy.Specs.for_slice_spec := by
   simpa only [hcode, and_self] using this
 register_spec_step for_slice_spec
 
-theorem max_elems_for_bytes_spec : Zerocopy.Specs.max_elems_for_bytes_spec := by
-  unfold Zerocopy.Specs.max_elems_for_bytes_spec
-  intro bytes elem hn
-  exact Raw.max_elems_for_bytes_spec bytes elem hn
-register_spec_step max_elems_for_bytes_spec
-
 theorem requires_static_padding_spec : Zerocopy.Specs.requires_static_padding_spec := by
   unfold Zerocopy.Specs.requires_static_padding_spec
   representation_simps
@@ -1495,19 +1595,41 @@ theorem requires_static_padding_spec : Zerocopy.Specs.requires_static_padding_sp
   exact Raw.requires_static_padding_spec self
 register_spec_step requires_static_padding_spec
 
-theorem padding_for_elems_spec : Zerocopy.Specs.padding_for_elems_spec := by
-  unfold Zerocopy.Specs.padding_for_elems_spec
+theorem requires_dynamic_padding_spec : Zerocopy.Specs.requires_dynamic_padding_spec := by
+  unfold Zerocopy.Specs.requires_dynamic_padding_spec
   representation_simps
-  intro self elems hv
-  exact Raw.padding_for_elems_spec self elems hv
-register_spec_step padding_for_elems_spec
+  intro self hv
+  apply Raw.requires_dynamic_padding_spec self
+  cases hs : self.size_info with
+  | Sized _ => trivial
+  | SliceDst _ => simpa only [hs] using hv.2
+register_spec_step requires_dynamic_padding_spec
 
-theorem size_for_elems_spec : Zerocopy.Specs.size_for_elems_spec := by
-  unfold Zerocopy.Specs.size_for_elems_spec
+theorem metadata_exact_spec : Zerocopy.Specs.metadata_exact_spec := by
+  unfold Zerocopy.Specs.metadata_exact_spec
   representation_simps
-  intro self elems hv
-  exact Raw.size_for_elems_spec self elems hv
-register_spec_step size_for_elems_spec
+  intro self size _ ha ht
+  exact Raw.metadata_exact_spec self size ha ht
+register_spec_step metadata_exact_spec
+
+theorem validate_cast_spec : Zerocopy.Specs.validate_cast_spec := by
+  unfold Zerocopy.Specs.validate_cast_spec
+  representation_simps
+  intro self addr length side _ ha hroom ht
+  exact Raw.validate_cast_spec self addr length side ha hroom ht
+register_spec_step validate_cast_spec
+
+end Zerocopy.Proofs
+
+namespace Zerocopy.Proofs
+open AeneasSpecs
+
+theorem advance_spec : Zerocopy.Specs.advance_spec := by
+  unfold Zerocopy.Specs.advance_spec
+  representation_simps
+  intro self bytes elem hv
+  exact Raw.advance_spec self bytes elem hv
+register_spec_step advance_spec
 
 theorem try_nonzero_spec : Zerocopy.Specs.try_nonzero_spec := by
   unfold Zerocopy.Specs.try_nonzero_spec
@@ -1553,37 +1675,6 @@ theorem new_zst_spec : Zerocopy.Specs.new_zst_spec := by
   | some a => simpa only [Option.getD_some, and_true] using Nat.pos_of_isPowerOfTwo (hp a rfl)
 register_spec_step new_zst_spec
 
-theorem pad_to_align_spec : Zerocopy.Specs.pad_to_align_spec := by
-  unfold Zerocopy.Specs.pad_to_align_spec
-  representation_simps
-  intro self hv ha hfit
-  apply WP.spec_mono (Raw.pad_to_align_spec self ha hfit)
-  rintro r ⟨hc, facts⟩
-  refine ⟨?_, facts⟩
-  refine ⟨?_, ?_⟩
-  · simpa only [facts.1] using hv.1
-  · cases hs : r.size_info with
-    | Sized _ => trivial
-    | SliceDst _ => simpa only [canonicalLayout, hs] using hc
-register_spec_step pad_to_align_spec
-
-theorem advance_spec : Zerocopy.Specs.advance_spec := by
-  unfold Zerocopy.Specs.advance_spec
-  representation_simps
-  intro self bytes elem hv
-  exact Raw.advance_spec self bytes elem hv
-register_spec_step advance_spec
-
-theorem requires_dynamic_padding_spec : Zerocopy.Specs.requires_dynamic_padding_spec := by
-  unfold Zerocopy.Specs.requires_dynamic_padding_spec
-  representation_simps
-  intro self hv
-  apply Raw.requires_dynamic_padding_spec self
-  cases hs : self.size_info with
-  | Sized _ => trivial
-  | SliceDst _ => simpa only [hs] using hv.2
-register_spec_step requires_dynamic_padding_spec
-
 theorem extend_spec : Zerocopy.Specs.extend_spec := by
   unfold Zerocopy.Specs.extend_spec
   representation_simps
@@ -1607,25 +1698,35 @@ theorem extend_spec : Zerocopy.Specs.extend_spec := by
       exact hvfield.2
 register_spec_step extend_spec
 
-theorem same_size_sequence_spec : Zerocopy.Specs.same_size_sequence_spec := by
-  unfold Zerocopy.Specs.same_size_sequence_spec
+theorem pad_to_align_spec : Zerocopy.Specs.pad_to_align_spec := by
+  unfold Zerocopy.Specs.pad_to_align_spec
   representation_simps
-  intro self other hs ho
-  exact Raw.same_size_sequence_spec self other hs ho
-register_spec_step same_size_sequence_spec
+  intro self hv ha hfit
+  apply WP.spec_mono (Raw.pad_to_align_spec self ha hfit)
+  rintro r ⟨hc, facts⟩
+  refine ⟨?_, facts⟩
+  refine ⟨?_, ?_⟩
+  · simpa only [facts.1] using hv.1
+  · cases hs : r.size_info with
+    | Sized _ => trivial
+    | SliceDst _ => simpa only [canonicalLayout, hs] using hc
+register_spec_step pad_to_align_spec
 
-theorem validate_cast_spec : Zerocopy.Specs.validate_cast_spec := by
-  unfold Zerocopy.Specs.validate_cast_spec
+theorem for_repr_c_struct_spec : Zerocopy.Specs.for_repr_c_struct_spec := by
+  unfold Zerocopy.Specs.for_repr_c_struct_spec
   representation_simps
-  intro self addr length side _ ha hroom ht
-  exact Raw.validate_cast_spec self addr length side ha hroom ht
-register_spec_step validate_cast_spec
-
-theorem metadata_exact_spec : Zerocopy.Specs.metadata_exact_spec := by
-  unfold Zerocopy.Specs.metadata_exact_spec
-  representation_simps
-  intro self size _ ha ht
-  exact Raw.metadata_exact_spec self size ha ht
-register_spec_step metadata_exact_spec
+  intro repr_align packed fields _ _ _ ha hp hd hlast hfit
+  apply WP.spec_mono (Raw.for_repr_c_struct_spec repr_align packed fields ha hp hd hlast hfit)
+  rintro r ⟨hr, hc⟩
+  refine ⟨?_, hr⟩
+  refine ⟨?_, ?_⟩
+  · have halign := congrArg LayoutMath.LayoutValue.align hr
+    change r.align.val.val = _ at halign
+    rw [halign]
+    exact Nat.pos_of_isPowerOfTwo hlast.1
+  · cases hs : r.size_info with
+    | Sized _ => trivial
+    | SliceDst _ => simpa only [canonicalLayout, hs] using hc
+register_spec_step for_repr_c_struct_spec
 
 end Zerocopy.Proofs
