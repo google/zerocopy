@@ -6,7 +6,10 @@
     non_upper_case_globals,
     non_snake_case,
     non_ascii_idents,
-    clippy::missing_inline_in_public_items,
+    clippy::all,
+    clippy::pedantic,
+    clippy::nursery,
+    clippy::restriction,
 )]
 #[deny(ambiguous_associated_items)]
 #[automatically_derived]
