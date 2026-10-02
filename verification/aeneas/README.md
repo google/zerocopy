@@ -178,7 +178,7 @@ whole-program unsafe-code certification.
 
 ## Scope and proofs
 
-Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs), [primitive assertions](../../zerocopy/src/layout/primitive_checks.rs), [tail assertions](../../zerocopy/src/layout/tail_checks.rs), [composition assertions](../../zerocopy/src/layout/composition_checks.rs).
+Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs), [primitive assertions](../../zerocopy/src/layout/primitive_checks.rs), [tail assertions](../../zerocopy/src/layout/tail_checks.rs), [composition assertions](../../zerocopy/src/layout/composition_checks.rs), [tail transformations](../../zerocopy/src/layout/tail_transform_checks.rs).
 
 Extraction starts from the function and nominal-type owners of every present
 `aeneas` fence in `zerocopy/src`, including their dependencies. Every present
@@ -196,6 +196,8 @@ added without extending the specification set.
 | `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
 | Trailing size, padding, and capacity | Exact size-offset and capacity formulas, checked-size overflow, and wrapping padding; successful sizes and physical padding refine the independent recursive semantics. |
 | `DstLayout::{extend,pad_to_align}` | Exact field placement, alignment, padding flags, and normalized size formulas; outer padding preserves each field's complete inner size. |
+| Trailing advancement and size-sequence comparison | Exact byte advancement; a positive comparison establishes equal sizes for every natural metadata value. |
+| `DstLayout::requires_dynamic_padding` | Exact flag result and a mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
@@ -229,6 +231,9 @@ to the independent recursive semantics.
 
 Extension and normalized padding preserve complete inner sizes, including
 padding inside packed fields.
+
+A positive size-sequence comparison establishes equal sizes for every natural
+metadata value; a negative result does not assert that the sequences differ.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
