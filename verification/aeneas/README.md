@@ -15,7 +15,7 @@ The required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from 19 actual functions in `zerocopy/src/util/mod.rs` and
+Extraction starts from 21 actual functions in `zerocopy/src/util/mod.rs` and
 `zerocopy/src/layout.rs`,
 including their dependencies. The independent inventory selects the registered
 function scope. There is no copied Rust implementation.
@@ -28,6 +28,7 @@ function scope. There is no copied Rust implementation.
 | `SizeInfo::try_to_nonzero_elem_size`, `max_elems_for_bytes` | Exact zero handling, preserved representation fields, and greatest fitting element count. |
 | `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
 | Trailing size, padding, and capacity | Exact size-offset and capacity formulas, checked-size overflow, and wrapping padding; successful sizes and physical padding refine the independent recursive semantics. |
+| `DstLayout::{extend,pad_to_align}` | Exact field placement, alignment, padding flags, and normalized size formulas; outer padding preserves each field's complete inner size. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
@@ -58,6 +59,9 @@ See [SEMANTICS.md](SEMANTICS.md) for the Rust correspondence premise.
 
 The checked trailing-size and padding contracts connect machine arithmetic
 to the independent recursive semantics.
+
+Extension and normalized padding preserve complete inner sizes, including
+padding inside packed fields.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
