@@ -64,24 +64,8 @@ def Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner :
   innerCopyInst := core.num.niche_types.NonZeroUsizeInner.Insts.CoreMarkerCopy
 }
 
-/-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 160:0-220:1 -/
-def util.padding_needed_for
-  (len : Std.Usize)
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) :
-  Result Std.Usize
-  := do
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  let mask ← i - 1#usize
-  let i1 ← lift (core.num.Usize.wrapping_sub len 1#usize)
-  let i2 ← lift (~~~ i1)
-  ok (i2 &&& mask)
-
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 247:0-265:1 -/
+    Source: 'src/util/mod.rs', lines 260:0-278:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -97,8 +81,48 @@ def util.round_down_to_next_multiple_of_alignment
   let mask ← lift (~~~ i)
   ok (n &&& mask)
 
+/-- [zerocopy::util::padding_needed_for]:
+    Source: 'src/util/mod.rs', lines 168:0-228:1 -/
+def util.padding_needed_for
+  (len : Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result Std.Usize
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let mask ← i - 1#usize
+  let i1 ← lift (core.num.Usize.wrapping_sub len 1#usize)
+  let i2 ← lift (~~~ i1)
+  ok (i2 &&& mask)
+
+/-- [zerocopy::util::checks::check_arithmetic]:
+    Source: 'src/util/checks.rs', lines 38:0-46:1 -/
+def util.checks.check_arithmetic
+  (len : Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result Unit
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two i
+  if b
+  then
+    let remainder ← len % i
+    let i1 ← i - remainder
+    let padding ← i1 % i
+    let i2 ← util.padding_needed_for len align
+    massert (i2 = padding)
+    let i3 ← util.round_down_to_next_multiple_of_alignment len align
+    let i4 ← len - remainder
+    massert (i3 = i4)
+  else ok ()
+
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 274:0-280:1 -/
+    Source: 'src/util/mod.rs', lines 288:0-294:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -118,7 +142,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 289:0-295:1 -/
+    Source: 'src/util/mod.rs', lines 304:0-310:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
