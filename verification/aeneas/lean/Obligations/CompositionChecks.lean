@@ -39,4 +39,15 @@ def composition_pad_checks_spec : Prop :=
   ∀ runtime_layout reference, composition_pad_checks_spec_contract runtime_layout reference
     (layout.composition_checks.check_pad runtime_layout reference)
 
+def composition_constructor_checks_spec_contract (repr_align packed : Option NonZeroUsize)
+    (fields : Slice layout.DstLayout) (_references : Slice CompositionReferenceLayout)
+    (run : Result Unit) : Prop :=
+  (∀ a ∈ repr_align, 0 < a.val.val) → (∀ a ∈ packed, 0 < a.val.val) →
+    (∀ field ∈ fields.val, layoutValid field) → run ⦃ _ => True ⦄
+
+def composition_constructor_checks_spec : Prop :=
+  ∀ repr_align packed fields references,
+    composition_constructor_checks_spec_contract repr_align packed fields references
+      (layout.composition_checks.check_constructor repr_align packed fields references)
+
 end Zerocopy.Obligations
