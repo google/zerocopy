@@ -65,14 +65,14 @@ def Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner :
 }
 
 /-- [zerocopy::layout::POINTER_WIDTH_BITS]
-    Source: 'src/layout/mod.rs', lines 17:0-17:62 -/
+    Source: 'src/layout/mod.rs', lines 20:0-20:62 -/
 @[global_simps, irreducible]
 def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
   let i ← core.mem.size_of Std.Usize
   i * 8#usize
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
-    Source: 'src/layout/mod.rs', lines 97:4-116:5 -/
+    Source: 'src/layout/mod.rs', lines 100:4-119:5 -/
 def layout.RoundingAlignAndPhase.new
   (align : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
@@ -93,7 +93,7 @@ def layout.RoundingAlignAndPhase.new
   | some encoded1 => ok { _0 := encoded1 }
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
-    Source: 'src/layout/mod.rs', lines 130:4-157:5 -/
+    Source: 'src/layout/mod.rs', lines 133:4-160:5 -/
 def layout.RoundingAlignAndPhase.components
   (self : layout.RoundingAlignAndPhase) :
   Result ((core.num.nonzero.NonZero Std.Usize
@@ -121,7 +121,7 @@ def layout.RoundingAlignAndPhase.components
     ok (align1, phase)
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
-    Source: 'src/layout/mod.rs', lines 170:4-179:5 -/
+    Source: 'src/layout/mod.rs', lines 173:4-182:5 -/
 def layout.RoundingAlignAndPhase.align
   (self : layout.RoundingAlignAndPhase) :
   Result (core.num.nonzero.NonZero Std.Usize
@@ -129,6 +129,121 @@ def layout.RoundingAlignAndPhase.align
   := do
   let (nz, _) ← layout.RoundingAlignAndPhase.components self
   ok nz
+
+/-- [zerocopy::layout::nested_reference::round_up]:
+    Source: 'src/layout/nested_reference.rs', lines 50:0-60:1 -/
+def layout.nested_reference.round_up
+  (size : Std.Usize) (align : Std.Usize) : Result (Option Std.Usize) := do
+  if align = 0#usize
+  then ok none
+  else
+    let remainder ← size % align
+    if remainder = 0#usize
+    then ok (some size)
+    else let i ← align - remainder
+         ok (Usize.checked_add size i)
+
+/-- [zerocopy::layout::nested_reference::apply_layer]:
+    Source: 'src/layout/nested_reference.rs', lines 62:0-84:1 -/
+def layout.nested_reference.apply_layer
+  (layer : layout.nested_reference.NestedLayer) (size : Std.Usize)
+  (alignment : Std.Usize) :
+  Result (Option (Std.Usize × Std.Usize))
+  := do
+  let b ← core.num.Usize.is_power_of_two layer.packed
+  if b
+  then
+    let b1 ← core.num.Usize.is_power_of_two layer.min_align
+    if b1
+    then
+      if layer.min_align > layer.packed
+      then ok none
+      else
+        let field_align ←
+          if alignment < layer.packed
+          then ok alignment
+          else ok layer.packed
+        let o ←
+          layout.nested_reference.round_up layer.prefix_bytes field_align
+        match o with
+        | none => ok none
+        | some offset =>
+          let alignment1 ←
+            if layer.min_align < field_align
+            then ok field_align
+            else ok layer.min_align
+          let o1 ← lift (Usize.checked_add offset size)
+          match o1 with
+          | none => ok none
+          | some size1 =>
+            let o2 ← layout.nested_reference.round_up size1 alignment1
+            match o2 with
+            | none => ok none
+            | some size2 => ok (some (size2, alignment1))
+    else ok none
+  else ok none
+
+/-- [zerocopy::layout::nested_reference::size_for_metadata]: loop body 0:
+    Source: 'src/layout/nested_reference.rs', lines 112:4-119:5 -/
+@[rust_loop_body]
+def layout.nested_reference.size_for_metadata_loop.body
+  (leading : Slice layout.nested_reference.NestedLayer)
+  (state : Option (Std.Usize × Std.Usize)) (i : Std.Usize) :
+  Result (ControlFlow ((Option (Std.Usize × Std.Usize)) × Std.Usize) (Option
+    (Std.Usize × Std.Usize)))
+  := do
+  if i != 0#usize
+  then
+    let i1 ← i - 1#usize
+    let layer ← Slice.index_usize leading i1
+    match state with
+    | none => ok (cont (none, i1))
+    | some p =>
+      let (size, alignment) := p
+      let state1 ← layout.nested_reference.apply_layer layer size alignment
+      ok (cont (state1, i1))
+  else ok (done state)
+
+/-- [zerocopy::layout::nested_reference::size_for_metadata]: loop 0:
+    Source: 'src/layout/nested_reference.rs', lines 112:4-119:5 -/
+@[rust_loop]
+def layout.nested_reference.size_for_metadata_loop
+  (leading : Slice layout.nested_reference.NestedLayer)
+  (state : Option (Std.Usize × Std.Usize)) (i : Std.Usize) :
+  Result (Option (Std.Usize × Std.Usize))
+  := do
+  loop
+    (fun (state1, i1) => layout.nested_reference.size_for_metadata_loop.body
+      leading state1 i1)
+    (state, i)
+
+/-- [zerocopy::layout::nested_reference::size_for_metadata]:
+    Source: 'src/layout/nested_reference.rs', lines 98:0-124:1 -/
+def layout.nested_reference.size_for_metadata
+  (leading : Slice layout.nested_reference.NestedLayer) (elem_size : Std.Usize)
+  (leaf_align : Std.Usize) (elems : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  let b ← core.num.Usize.is_power_of_two leaf_align
+  if b
+  then
+    let i ← elem_size % leaf_align
+    if i != 0#usize
+    then ok none
+    else
+      let o ← lift (Usize.checked_mul elem_size elems)
+      let state ←
+        match o with
+        | none => ok none
+        | some size => ok (some (size, leaf_align))
+      let i1 := Slice.len leading
+      let state1 ←
+        layout.nested_reference.size_for_metadata_loop leading state i1
+      match state1 with
+      | none => ok none
+      | some p => let (size, _) := p
+                  ok (some size)
+  else ok none
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
     Source: 'src/util/mod.rs', lines 261:0-279:1 -/
