@@ -7,7 +7,7 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 module
-public import CompositionReference
+public import CompositionConstructor
 @[expose] public section
 
 /-!
@@ -83,6 +83,70 @@ theorem composition_extend_checks (preceding field : layout.DstLayout)
     · simp
   · simp
 
+theorem composition_constructor_checks (repr_align packed : Option NonZeroUsize)
+    (fields : Slice layout.DstLayout) (references : Slice ReferenceLayout) :
+    layout.composition_checks.check_constructor repr_align packed fields references ⦃ _ => True ⦄ := by
+  unfold layout.composition_checks.check_constructor
+  simp only [bne_iff_ne, ne_eq, UScalar.eq_equiv, Slice.len_val, Slice.length]
+  split
+  · simp
+  · rename_i equal_length
+    have lengths : fields.val.length = references.val.length := by omega
+    have initial_matching : (true = true) = fieldsMatchThrough fields references (0#usize).val := by
+      apply propext
+      simp [fieldsMatchThrough]
+    step with composition_matching_loop_spec fields references lengths true 0#usize
+      (by simp) initial_matching as ⟨matching, hm⟩
+    split
+    · rename_i yes
+      have all_matching := Eq.mp hm yes
+      have matched (j : Nat) (hj : j < fields.val.length) (hr : j < references.val.length) :
+          Matches fields.val[j] references.val[j] := all_matching j hj hr hj
+      have fields_valid : ∀ j (hr : j < references.val.length), valid references.val[j] := by
+        intro j hr
+        have hj : j < fields.val.length := by omega
+        exact (matches_value _ _ (matched j hj hr)).1
+      have field_views : fields.val.map layoutValue = references.val.map value := by
+        apply List.ext_getElem
+        · simpa only [List.length_map] using lengths
+        · intro j hj hr
+          have hj' : j < fields.val.length := by simpa only [List.length_map] using hj
+          have hr' : j < references.val.length := by simpa only [List.length_map] using hr
+          simpa only [List.getElem_map] using (matches_value _ _ (matched j hj' hr')).2.2
+      have prefixes (j : Nat) : constructionPrefix fields
+          (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed j =
+          referencePrefix references (initialAlignment repr_align) packed j := by
+        simp only [constructionPrefix, referencePrefix, field_views]
+      step with composition_reference_constructor_spec repr_align packed references fields_valid as ⟨expected, he⟩
+      cases expected with
+      | none => simp
+      | some expected =>
+        obtain ⟨initial_domain, packed_domain, history, final_domain, fits, expected_view, expected_validity⟩ := he expected rfl
+        have construction : constructionDomain fields
+            (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed := by
+          intro j hj
+          have hr : j < references.val.length := by omega
+          obtain ⟨previous_domain, field_domain, _, field_fit⟩ := history j hr hr
+          obtain ⟨_, field_canonical, view⟩ := matches_value _ _ (matched j hj hr)
+          have alignment := congrArg LayoutMath.LayoutValue.align view
+          change fields.val[j].align.val.val = references.val[j].align.val at alignment
+          refine ⟨?_, ?_, field_canonical, ?_⟩
+          · simpa only [prefixes] using previous_domain
+          · simpa only [alignment] using field_domain
+          · simpa only [prefixes, view] using field_fit
+        step with composition_production_constructor_spec repr_align packed fields initial_domain
+          (by simpa only [lengths] using packed_domain) construction
+          (by simpa only [prefixes, lengths] using final_domain)
+          (by simpa only [prefixes, lengths] using fits)
+          as ⟨actual, actual_view, actual_canonical⟩
+        have same : layoutValue actual = value expected := by
+          rw [actual_view, prefixes, lengths, expected_view]
+        have matched_result := matches_of_value actual expected actual_canonical expected_validity same
+        step with composition_matches_spec actual expected as ⟨checked, hc⟩
+        have yes : checked = true := hc.mpr matched_result
+        simp [yes, massert]
+    · simp
+
 end Zerocopy.Proofs.Raw
 
 namespace Zerocopy.Proofs
@@ -98,6 +162,13 @@ theorem composition_extend_checks_spec : Specs.composition_extend_checks_spec :=
   intro preceding field packed preceding_reference field_reference
   repeat intro
   apply WP.spec_mono (Raw.composition_extend_checks preceding field packed preceding_reference field_reference)
+  intro _ _
+  exact ⟨(), rfl, trivial⟩
+
+theorem composition_constructor_checks_spec : Specs.composition_constructor_checks_spec := by
+  intro repr_align packed fields references
+  repeat intro
+  apply WP.spec_mono (Raw.composition_constructor_checks repr_align packed fields references)
   intro _ _
   exact ⟨(), rfl, trivial⟩
 
