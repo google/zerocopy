@@ -337,6 +337,10 @@ asserting layout correctness.
 
 `LayoutMath.lean` supplies independent unbounded size and capacity formulas.
 
+The mathematical layout semantics proves normalization across arbitrary
+nesting and metadata values. These algebraic laws do not themselves verify
+a Rust layout method.
+
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
 raw fields. Binding `let N : Nat := n` makes addition and remainder ordinary
