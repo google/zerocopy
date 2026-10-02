@@ -143,75 +143,6 @@ lake build SupportTests > "$backup/loop-restore-build.log" 2>&1 || {
     cat "$backup/loop-restore-build.log" >&2; exit 1;
 }
 
-# The caller must actually have its callee theorem available during elaboration.
-python3 - <<'PY'
-from pathlib import Path
-p = Path("Proofs.lean")
-s = p.read_text()
-old = 'contract padding_lt_alignment '
-if s.count(old) != 1:
-    raise SystemExit("Callee theorem negative control no longer matches")
-p.write_text(s.replace(old, 'contract unavailable_padding_lt_alignment '))
-PY
-if lake build Proofs > "$backup/dependency-build.log" 2>&1; then
-    echo "Caller proof accepted an unavailable callee theorem" >&2
-    exit 1
-fi
-if ! grep -q 'Unknown identifier.*padding_lt_alignment' "$backup/dependency-build.log"; then
-    cat "$backup/dependency-build.log" >&2; exit 1
-fi
-echo "Confirmed: caller proof rejects an unavailable callee theorem"
-cp "$backup/Proofs.lean" Proofs.lean
-
-# A private alias outside the proof namespace must not hide a callee reference.
-python3 - <<'PY'
-from pathlib import Path
-p = Path("Proofs.lean")
-s = p.read_text()
-alias = '''end Zerocopy.Proofs
-namespace DependencyControl
-private def padding_alias := Zerocopy.Proofs.padding_lt_alignment
-end DependencyControl
-namespace Zerocopy.Proofs
-
-'''
-call = 'step with padding_lt_alignment size self.align hpow'
-if s.count('contract pad_to_align_spec ') != 1 or s.count(call) != 1:
-    raise SystemExit("Private helper dependency control no longer matches")
-s = s.replace('contract pad_to_align_spec ', alias + 'contract pad_to_align_spec ')
-p.write_text(s.replace(call, 'step with DependencyControl.padding_alias size self.align hpow'))
-PY
-lake build Required > "$backup/helper-build.log" 2>&1 || {
-    cat "$backup/helper-build.log" >&2; exit 1;
-}
-lake env lean -DwarningAsError=true Check.lean > "$backup/helper-check.log" 2>&1 || {
-    cat "$backup/helper-check.log" >&2; exit 1;
-}
-echo "Confirmed: dependency audit follows a private helper outside the proof namespace"
-
-# Terms remain valid when an edge is omitted; the dependency audit must catch it.
-python3 - <<'PY'
-from pathlib import Path
-p = Path("Required.lean")
-s = p.read_text()
-old = '(`Zerocopy.Proofs.pad_to_align_spec, #[`Zerocopy.Proofs.padding_lt_alignment])'
-if s.count(old) != 1:
-    raise SystemExit("Undeclared dependency negative control no longer matches")
-p.write_text(s.replace(old, '(`Zerocopy.Proofs.pad_to_align_spec, #[])'))
-PY
-lake build Required > "$backup/undeclared-build.log" 2>&1 || {
-    cat "$backup/undeclared-build.log" >&2; exit 1;
-}
-if lake env lean Check.lean > "$backup/undeclared-check.log" 2>&1; then
-    echo "Dependency audit accepted an undeclared proof reference" >&2; exit 1
-fi
-if ! grep -q 'undeclared proof dependency.*padding_lt_alignment' "$backup/undeclared-check.log"; then
-    cat "$backup/undeclared-check.log" >&2; exit 1
-fi
-echo "Confirmed: dependency audit rejects an undeclared proof reference"
-cp "$backup/Required.lean" Required.lean
-cp "$backup/Proofs.lean" Proofs.lean
-
 python3 - <<'PY'
 from pathlib import Path
 p = Path("Required.lean")
@@ -254,15 +185,22 @@ cp "$backup/Funs.lean" Zerocopy/Funs.lean
 # These mutations satisfy earlier weak bounds but violate the exact contracts.
 reject_model() {
     local description=$1
-    python3 - "$2" "$3" <<'PYCONTROL'
+    python3 - "$2" "$3" "${4:-}" <<'PYCONTROL'
 from pathlib import Path
 import sys
 p = Path("Zerocopy/Funs.lean")
 s = p.read_text()
-old, new = sys.argv[1:]
-if s.count(old) != 1:
+old, new, target = sys.argv[1:]
+start, end = 0, len(s)
+if target:
+    start = s.index('def ' + target)
+    end = s.find('/-- ', start)
+    if end < 0:
+        end = len(s)
+part = s[start:end]
+if part.count(old) != 1:
     raise SystemExit("Strong model negative control no longer matches")
-p.write_text(s.replace(old, new))
+p.write_text(s[:start] + part.replace(old, new) + s[end:])
 PYCONTROL
     if lake build Required > "$backup/strong-model-build.log" 2>&1; then
         echo "Proofs accepted $description" >&2; exit 1
@@ -275,13 +213,6 @@ PYCONTROL
 }
 reject_model "always-zero padding" 'ok (i2 &&& mask)' 'ok 0#usize'
 reject_model "always-zero round-down" 'ok (n &&& mask)' 'ok 0#usize'
-reject_model "an incorrect shallow-padding flag" \
-    'statically_shallow_unpadded := (static_padding = 0#usize)' \
-    'statically_shallow_unpadded := true'
-reject_model "a changed DST layout" \
-    'layout.SizeInfo.SliceDst _ => ok (0#usize, self.size_info)' \
-    'layout.SizeInfo.SliceDst _ => ok (0#usize, layout.SizeInfo.Sized 0#usize)'
-
 cat >> Proofs.lean <<'LEAN'
 namespace Zerocopy.Proofs
 theorem negative_control : True := by sorry

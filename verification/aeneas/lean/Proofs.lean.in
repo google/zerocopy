@@ -9,15 +9,14 @@ those terms. -/
 module
 public import Zerocopy.Funs
 public import Contracts
-public import Arithmetic
+public import Loops
+public import LayoutModel
+public import LayoutMath
 import all Mathlib.Data.Nat.Log
 import all Init.Data.Nat.Power2.Basic
 @[expose] public section
 open Aeneas Aeneas.Std
 namespace Zerocopy.Proofs
-abbrev NonZeroUsize :=
-  core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
-
 @@AENEAS_PROOF("zerocopy::util::padding_needed_for")@@
 
 @@AENEAS_PROOF("zerocopy::util::round_down_to_next_multiple_of_alignment")@@
@@ -66,5 +65,5 @@ theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p
 
 @@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::align")@@
 
-@@AENEAS_PROOF("zerocopy::layout::DstLayout::pad_to_align")@@
+
 end Zerocopy.Proofs

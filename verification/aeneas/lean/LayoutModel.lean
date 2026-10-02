@@ -6,4 +6,14 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -/
 
-@@AENEAS_MODEL("zerocopy::layout::DstLayout::pad_to_align")@@
+module
+public import Zerocopy.Funs
+public import LayoutMath
+@[expose] public section
+open Aeneas Aeneas.Std
+namespace Zerocopy.Proofs
+
+abbrev NonZeroUsize := core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
+
+
+end Zerocopy.Proofs

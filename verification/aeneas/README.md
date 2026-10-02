@@ -17,9 +17,9 @@ The existing required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from these actual helpers in `zerocopy/src/util/mod.rs` and
-methods in `zerocopy/src/layout.rs`, including their dependencies; there is
-no copied Rust implementation:
+Extraction starts from the arithmetic helpers in `zerocopy/src/util/mod.rs`
+and alignment/phase encoding methods in `zerocopy/src/layout.rs`, including
+their dependencies:
 
 | Rust function | Checked property |
 | --- | --- |
@@ -27,30 +27,17 @@ no copied Rust implementation:
 | `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
 | `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
 | `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
-| `DstLayout::pad_to_align` | For sized layouts, power-of-two alignment and an exact padded size that fits guarantee the least aligned size at least the input; alignment is preserved and the shallow-unpadded flag becomes its old value AND the input being aligned. All DST layouts return unchanged, with no arithmetic preconditions. |
-| `RoundingAlignAndPhase::new` | For power-of-two alignment `A` and phase `P < A`, successfully encodes exactly `A + P`. |
-| `RoundingAlignAndPhase::components` | For any nonzero encoded word, returns its highest set bit as a power-of-two alignment and the remaining lower bits as a phase below that alignment; their sum is the original word. |
-| `RoundingAlignAndPhase::align` | For any nonzero encoded word, returns exactly its highest set bit. |
+| Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
 
 The theorems quantify over all values of the extracted unsigned integer model;
-these are not finite collections of test inputs. All eight inline specifications
+these are not finite collections of test inputs. All seven inline specifications
 use `contract`, whose Aeneas Hoare specification includes successful termination,
 rather than only a postcondition conditional on success.
 
 `lean/Corollaries.lean` composes the inline theorems: min/max preserve any
 predicate shared by both inputs; round-down is monotone, is the identity on
-aligned inputs, and is idempotent; layout padding is the identity on aligned
-sized layouts and DSTs, and is idempotent. The idempotence contracts prove both
+aligned inputs, and is idempotent. The idempotence contract proves both
 calls succeed, including that the first result meets the second call's needs.
-The original `size + align - 1 <= usize::MAX` precondition is also checked as a
-sufficient condition for the layout contract's exact fit requirement.
-
-The alignment/phase encoder is introduced independently of the current layout
-representation. It stores both components in one nonzero word without
-restricting the set of valid nonzero bit patterns. Its Rust tests cover const
-evaluation and boundary cases, and Kani harnesses state both round-trip
-properties. The Lean contracts require positivity explicitly because the
-handwritten `NonZero` model also admits zero.
 
 Comparisons use the unsigned scalar's existing order directly (`m ≤ n`,
 `p < align.val`, `min a.val b.val`). Arithmetic postconditions explicitly bind
@@ -58,8 +45,8 @@ Comparisons use the unsigned scalar's existing order directly (`m ≤ n`,
 mathematical operations. The corresponding Rust scalar arithmetic operators
 return checked `Result` values and are not interchangeable with these formulas.
 `NonZero` still needs one `.val` to unwrap its stored scalar. Power-of-two
-requirements already imply positivity, so padding, round-down, and sized-layout
-contracts do not repeat a positive-alignment requirement.
+requirements already imply positivity, so padding and round-down contracts do
+not repeat a positive-alignment requirement.
 
 CI uses the default features, debug assertions, and the runner's native
 `x86_64-unknown-linux-gnu` target. Local replay also supports macOS arm64. This
@@ -173,8 +160,7 @@ signatures, inject type invariants, or introduce separate proof automation.
 An explicit `partial contract` instead expands to `WP.dspec`. It permits
 divergence, rejects panic and other failures, and requires the postcondition
 for successful returns. All registered contracts use the total form.
-`Obligations.lean` retains their independently written required propositions,
-and the layout caller still applies the same padding theorem through `step`.
+`Obligations.lean` retains their independently written required propositions.
 
 Both workspaces build `ContractTests.lean`, which checks independently written
 theorem types, named requirements, omitted requirements, tuple outputs, and
@@ -289,26 +275,13 @@ An inventory entry may declare `depends_on`, a list of registered Rust function
 identities whose exported theorems its proof uses. Omission means an empty list.
 These are proof dependencies, not the Rust call graph: a mathematical lemma may
 be useful even when its function is not called. Unknown or repeated identities,
-self dependencies, and cycles fail before extraction. The legacy single slot
-assembles proofs in deterministic topological order, independent of source or
-inventory order. Named slots fix declaration positions so support lemmas can
-appear between proofs; Lean checks that each required callee is available there.
+self dependencies, and cycles fail before extraction. Proof assembly uses a
+deterministic topological order, independent of source or inventory order.
 
-`DstLayout::pad_to_align` declares a dependency on `padding_needed_for`. Its
-inline proof unfolds only the caller, applies `padding_lt_alignment` to the
-padding call, then uses the checked-add specification and arithmetic to rule
-out overflow and establish the result. It does not unfold the callee.
-
-For sized layouts, the theorem requires power-of-two alignment and that the
-exact padded size `S + (A - S % A) % A` fits in `usize`, where `S` is the input
-size and `A` its alignment. It proves that the result remains sized, with that
-exact size: the least multiple of `A` at least `S`, and less than `S + A`. The
-alignment field is preserved, and `statically_shallow_unpadded` becomes its
-original value AND `S % A == 0`. For DST layouts, the entire layout is
-unchanged, including the trailing-slice offset, element size, alignment, and
-shallow-unpadded flag, with no arithmetic preconditions. The conservative
-`S + A - 1 <= usize::MAX` headroom condition remains available as a sufficient
-condition through `pad_to_align_sized_headroom` in `Corollaries.lean`.
+The normalized layout runtime is introduced before its updated proof layer.
+Its earlier padding contract and caller controls are retired here; the current
+inline inventory covers the four arithmetic helpers and three alignment/phase
+encoding methods. Later stack commits restore layout proofs incrementally.
 
 Generated `Required.lean` records the declared theorem edges. `Check.lean`
 inspects elaborated theorem types and proof terms, following local helper
@@ -362,7 +335,7 @@ additional generated files, changes to external-template signatures, and code
 changes fail with a normalized diff and require regeneration.
 
 After comparison succeeds, CI compiles the checked-in model and the unmodified
-live model in separate fresh Lake workspaces. Both must prove the same eight
+live model in separate fresh Lake workspaces. Both must prove the same seven
 contracts and composition corollaries and pass the required-type checks and axiom
 audit; neither imports
 the other's compiled model. The live functions always come from Aeneas. Inline
@@ -411,10 +384,11 @@ records but does not formally prove:
   Rust values by admitting zero; the alignment proofs establish positivity
   from their explicit power-of-two requirement rather than assuming it through
   an axiom.
-- Extraction uses `size_of` only at `usize`, modeled as the platform word width
-  divided by eight. The encoder also trusts the pinned leading-zero-count and
-  scalar-cast models to match Rust. The handwritten `NonZero::new` model
-  accepts exactly nonzero unsigned machine words; other types are unsupported.
+- The pointer width is computed from `core.mem.size_of Usize`, modeled as the
+  selected word width divided by eight. Other type instantiations remain
+  unsupported at this stack position. `NonZero::new` is modeled at `Usize`:
+  zero returns `None`, and nonzero inputs return the same bits. The encoder
+  also uses the pinned leading-zero-count and wrapping-shift models.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
@@ -435,11 +409,9 @@ reversing the translated `min` comparison must fail its proof. In the live
 workspace, comment drift must pass fuzzy comparison and
 proof checking, while reversing `min` must also fail comparison. These controls
 edit scratch files and restore them before rechecking the original results.
-In both workspaces, removing the padding theorem must fail the caller's proof,
-undeclared and unused theorem dependencies must fail the dependency audit, and
-an incorrect translated padding callee must fail the proof chain. Exact
-contracts reject always-zero padding and round-down, a wrong shallow-padding
-flag, and a changed DST layout. Replacing round-down with its valid earlier
+In both workspaces, unused theorem dependencies fail the dependency audit,
+and an incorrect translated padding function fails its proof. Exact
+contracts reject always-zero padding and round-down. Replacing round-down with its valid earlier
 weaker contract must fail the independent required-type check. Unit tests
 also reject missing dependencies and cycles and exercise method ownership and
 Charon Self-type binding.

@@ -5,15 +5,14 @@ bench_try_ref_from_prefix_dynamic_padding:
 	je .LBB5_1
 	ret
 .LBB5_1:
-	movabs rax, 9223372036854775804
-	and rsi, rax
-	cmp rsi, 9
+	cmp rsi, 12
 	jae .LBB5_3
 	mov edx, 1
 	xor eax, eax
 	ret
 .LBB5_3:
-	add rsi, -9
+	or rsi, 3
+	add rsi, -12
 	movabs rcx, -6148914691236517205
 	mov rax, rsi
 	mul rcx

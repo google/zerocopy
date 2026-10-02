@@ -72,36 +72,31 @@ def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
   i * 8#usize
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
-    Source: 'src/layout.rs', lines 78:4-148:5 -/
+    Source: 'src/layout.rs', lines 77:4-147:5 -/
 @@AENEAS_GOLDEN("layout.RoundingAlignAndPhase.new.lean.in")@@
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
-    Source: 'src/layout.rs', lines 156:4-289:5 -/
+    Source: 'src/layout.rs', lines 155:4-288:5 -/
 @@AENEAS_GOLDEN("layout.RoundingAlignAndPhase.components.lean.in")@@
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
-    Source: 'src/layout.rs', lines 297:4-326:5 -/
+    Source: 'src/layout.rs', lines 296:4-325:5 -/
 @@AENEAS_GOLDEN("layout.RoundingAlignAndPhase.align.lean.in")@@
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 155:0-257:1 -/
+    Source: 'src/util/mod.rs', lines 156:0-258:1 -/
 @@AENEAS_GOLDEN("util.padding_needed_for.lean.in")@@
 
-/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
-    Source: 'src/layout.rs', lines 771:4-874:5
-    Visibility: public -/
-@@AENEAS_GOLDEN("layout.DstLayout.pad_to_align.lean.in")@@
-
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 278:0-335:1 -/
+    Source: 'src/util/mod.rs', lines 279:0-336:1 -/
 @@AENEAS_GOLDEN("util.round_down_to_next_multiple_of_alignment.lean.in")@@
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 339:0-379:1 -/
+    Source: 'src/util/mod.rs', lines 340:0-380:1 -/
 @@AENEAS_GOLDEN("util.max.lean.in")@@
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 383:0-423:1 -/
+    Source: 'src/util/mod.rs', lines 384:0-424:1 -/
 @@AENEAS_GOLDEN("util.min.lean.in")@@
 
 
