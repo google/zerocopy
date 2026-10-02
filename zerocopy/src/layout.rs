@@ -553,6 +553,13 @@ impl TrailingSliceLayout {
                 || (self_align == other_align && self_phase == other_phase)))
     }))]
     pub(crate) const fn has_same_size_sequence(self, other: Self) -> bool {
+        // ```aeneas
+        // spec same_size_sequence_spec (self other : layout.TrailingSliceLayout Usize)
+        //   requires hs : 0 < self.size_rounding_align_and_phase.val.val
+        //   requires ho : 0 < other.size_rounding_align_and_phase.val.val
+        //   ensures b => b = true → ∀ n : Nat, (trailingFormula self).size n = (trailingFormula other).size n
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::has_same_size_sequence)]
         #[kani::solver(kissat)]
@@ -666,6 +673,15 @@ impl TrailingSliceLayout {
         }
     }))]
     const fn advance(self, bytes: usize, elem_size: usize) -> Option<Self> {
+        // ```aeneas
+        // spec advance_spec (self : layout.TrailingSliceLayout Usize) (bytes elem_size : Usize)
+        //   requires hn : 0 < self.size_rounding_align_and_phase.val.val
+        //   ensures result => match result with
+        //     | none => Usize.max < ((trailingFormula self).advance bytes.val elem_size.val).base
+        //     | some t => trailingFormula t = (trailingFormula self).advance bytes.val elem_size.val ∧
+        //       ((trailingFormula self).advance bytes.val elem_size.val).base ≤ Usize.max
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::advance)]
         #[kani::solver(kissat)]
@@ -1627,6 +1643,17 @@ impl DstLayout {
         ),
     }))]
     pub const fn requires_dynamic_padding(self) -> bool {
+        // ```aeneas
+        // spec requires_dynamic_padding_spec (self : layout.DstLayout)
+        //   requires hn : match self.size_info with
+        //     | .Sized _ => True
+        //     | .SliceDst tail => 0 < tail.size_rounding_align_and_phase.val.val
+        //   ensures r => (r = false ↔ match self.size_info with
+        //     | .Sized _ => True
+        //     | .SliceDst tail => (trailingFormula tail).size 0 = tail.offset.val ∧
+        //       tail.elem_size.val % (trailingFormula tail).align = 0)
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::requires_dynamic_padding)]
         #[kani::solver(kissat)]
