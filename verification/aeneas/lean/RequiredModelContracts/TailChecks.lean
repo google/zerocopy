@@ -33,4 +33,22 @@ supplied arbitrary-outcome contract. These adapters do not run either check.
   rintro result ⟨value, decoded, facts⟩
   trivial
 
+@[contract_simps] theorem required_layout_observations_check
+    (runtime_layout : layout.DstLayout) (align : NonZeroUsize)
+    (phase size addr length : Usize) (side : layout.CastType) (run : Result Unit)
+    (provided : Specs.layout_observations_check_spec_contract
+      runtime_layout align phase size addr length side run) :
+    Obligations.layout_observations_check_spec_contract
+      runtime_layout align phase size addr length side run := by
+  intro valid_runtime align_positive
+  obtain ⟨layout_value, decoded_layout⟩ := (layout_valid_iff runtime_layout).mpr valid_runtime
+  let av : NonZeroUsizeValue := ⟨unsignedWord align.val, align_positive⟩
+  have decoded_align := (decodeNonZeroUScalar_iff align av).mpr rfl
+  obtain ⟨side_value, decoded_side⟩ := (cast_type_valid_iff side).mpr trivial
+  apply WP.spec_mono (provided layout_value decoded_layout av decoded_align
+    (unsignedWord phase) rfl (unsignedWord size) rfl (unsignedWord addr) rfl
+    (unsignedWord length) rfl side_value decoded_side)
+  rintro result ⟨value, decoded, facts⟩
+  trivial
+
 end Zerocopy.Proofs
