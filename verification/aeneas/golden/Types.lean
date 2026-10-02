@@ -178,7 +178,7 @@ structure layout.composition_checks.ReferenceLayout where
   unpadded : Bool
 
 /-- [zerocopy::layout::nested_reference::NestedLayer]
-    Source: 'src/layout/nested_reference.rs', lines 27:0-31:1 -/
+    Source: 'src/layout/nested_reference.rs', lines 33:0-37:1 -/
 structure layout.nested_reference.NestedLayer where
   packed : Std.Usize
   min_align : Std.Usize
