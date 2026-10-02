@@ -81,6 +81,7 @@ def share_manifest(workspace, backend):
         'lean_lib RequiredContracts\n'
         '@[default_target] lean_lib SupportTests\n'
         '@[default_target] lean_lib LayoutMath\n'
+        'lean_lib LayoutModel\n'
         '@[default_target] lean_lib Corollaries\n'
         '@[default_target] lean_lib ContractTests\n'
         '@[default_target] lean_lib Proofs\n'
