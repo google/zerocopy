@@ -20,8 +20,8 @@ import all Init.Data.Nat.Power2.Basic
 open Aeneas Aeneas.Std
 namespace Zerocopy.Proofs.Raw
 
+-- Raw contract requirements intentionally retain their descriptive proof names.
 set_option linter.unusedVariables false
-
 theorem pointer_width_spec :
     layout.POINTER_WIDTH_BITS
       ⦃ w => w.val = System.Platform.numBits ⦄ := by
@@ -80,6 +80,7 @@ theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p
     rfl
   · rw [Nat.testBit_two_pow_of_ne (Ne.symm hi)]
     simp
+
 
 theorem encoding_components_spec :
   ∀ (self : layout.RoundingAlignAndPhase), ∀ (hn : (0 < self._0.val.val : Prop)),
@@ -860,7 +861,6 @@ theorem packing_limit_spec (packed : Option NonZeroUsize)
 -- Aeneas shares a generated matcher with the alignment encoder. The model
 -- comparison checks that matcher; this proof deliberately names it.
 set_option linter.auxLemma false in
-
 theorem extend_spec :
   ∀ (self field : layout.DstLayout) (repr_packed : Option NonZeroUsize) (size : Usize), ∀ (hs : (self.size_info = .Sized size : Prop)), ∀ (hself : (self.align.val.val.isPowerOfTwo ∧ self.align.val.val ≤ 2 ^ 29 : Prop)), ∀ (hfield : (field.align.val.val.isPowerOfTwo ∧ field.align.val.val ≤ 2 ^ 29 : Prop)), ∀ (hpacked : (∀ a ∈ repr_packed, a.val.val.isPowerOfTwo ∧ a.val.val ≤ 2 ^ 29 : Prop)), ∀ (hfit : (match field.size_info with
     | .Sized field_size => placement size field repr_packed + field_size.val ≤ Usize.max
@@ -1382,6 +1382,84 @@ theorem pad_value_spec (self : layout.DstLayout)
 
 attribute [step] pad_value_spec
 
+theorem construction_prefix_step (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) (i : Nat) (hi : i < fields.val.length) :
+    constructionPrefix fields initial packed (i + 1) =
+      (constructionPrefix fields initial packed i).extend (layoutValue fields.val[i]) (packingValue packed) := by
+  unfold constructionPrefix
+  rw [LayoutMath.LayoutValue.prefixValue_step _ _ _ _ (by simpa only [List.length_map] using hi)]
+  simp only [List.getElem_map]
+
+theorem constructor_loop_spec (packed : Option NonZeroUsize) (fields : Slice layout.DstLayout)
+    (initial : LayoutMath.LayoutValue) (self : layout.DstLayout) (i : Usize)
+    (hp : ∀ a ∈ packed, alignmentDomain a.val.val)
+    (hd : constructionDomain fields initial packed)
+    (hi : i.val ≤ fields.val.length)
+    (hv : layoutValue self = constructionPrefix fields initial packed i.val)
+    (hc : canonicalLayout self) :
+    layout.DstLayout.for_repr_c_struct_loop packed fields self i
+      ⦃ r => layoutValue r = constructionPrefix fields initial packed fields.val.length ∧ canonicalLayout r ⦄ := by
+  unfold layout.DstLayout.for_repr_c_struct_loop
+  apply AeneasContracts.indexed_loop_spec fields.val.length layoutValue
+    (constructionPrefix fields initial packed) canonicalLayout
+  · intro value idx hi hv hc
+    unfold layout.DstLayout.for_repr_c_struct_loop.body
+    simp only [UScalar.lt_equiv, Slice.len_val, Slice.length]
+    split
+    · rename_i hlt
+      have hlt' : idx.val < fields.val.length := hlt
+      step with Slice.index_usize_spec fields idx hlt' as ⟨field, hf⟩
+      obtain ⟨hself, hfield, hcanon, hfits⟩ := hd idx.val hlt'
+      have hsa : alignmentDomain value.align.val.val := by
+        have hh := congrArg LayoutMath.LayoutValue.align hv
+        change value.align.val.val = _ at hh
+        rw [hh]
+        exact hself
+      have hfa : alignmentDomain field.align.val.val := by rw [hf]; exact hfield
+      have hca : canonicalLayout field := by rw [hf]; exact hcanon
+      have hfit : (layoutValue value).extendFits (layoutValue field) (packingValue packed) Usize.max := by
+        rw [hv, hf]
+        exact hfits
+      step as ⟨next, hnext, hcn⟩
+      have hroom : idx.val + (1#usize).val ≤ Usize.max := by
+        have := fields.property
+        change idx.val + 1 ≤ Usize.max
+        omega
+      step with Usize.add_spec (x := idx) (y := 1#usize) hroom as ⟨j, hj⟩
+      change j.val = idx.val + 1 at hj
+      refine ⟨hlt', hj, ?_, hcn⟩
+      rw [hj, construction_prefix_step fields initial packed idx.val hlt', hnext, hv, hf]
+    · rename_i hdone
+      have heq : idx.val = fields.val.length := by omega
+      exact WP.spec.ret ⟨heq, hv, hc⟩
+  · exact hi
+  · exact hv
+  · exact hc
+
+theorem for_repr_c_struct_spec :
+  ∀ (repr_align repr_packed : Option NonZeroUsize) (fields : Slice layout.DstLayout), ∀ (ha : (∀ a ∈ repr_align, alignmentDomain a.val.val : Prop)), ∀ (hp : (∀ a ∈ repr_packed, alignmentDomain a.val.val : Prop)), ∀ (hd : (constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed : Prop)), ∀ (hlast : (alignmentDomain
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).align : Prop)), ∀ (hfit : ((constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+    repr_packed fields.val.length).padFits Usize.max : Prop)),
+    @Zerocopy.layout.DstLayout.for_repr_c_struct repr_align repr_packed fields ⦃ r => layoutValue r =
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).pad ∧ canonicalLayout r ⦄ := by
+  intro repr_align packed fields ha hp hd hlast hfit
+  unfold layout.DstLayout.for_repr_c_struct
+  step with new_zst_spec repr_align (fun a h => (ha a h).1) as ⟨start, halign, hsize, hunpadded⟩
+  have hv : layoutValue start = constructionPrefix fields
+      (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed (0#usize).val := by
+    simp only [constructionPrefix, LayoutMath.LayoutValue.prefixValue, show (0#usize).val = 0 by simp,
+      List.take_zero, List.foldl_nil, layoutValue, hsize, hunpadded, halign,
+      initialAlignment, LayoutMath.LayoutValue.initial]
+    cases repr_align <;> rfl
+  have hc : canonicalLayout start := by simp only [canonicalLayout, hsize]
+  step with constructor_loop_spec packed fields _ start 0#usize hp hd (by simp) hv hc as ⟨complete, hv, hc⟩
+  step with pad_value_spec complete (by
+    have hh := congrArg LayoutMath.LayoutValue.align hv
+    change complete.align.val.val = _ at hh
+    rw [hh]
+    exact hlast.1) hc (by rw [hv]; exact hfit) as ⟨result, hr, hcanonical⟩
+  exact ⟨by rw [hr, hv], hcanonical⟩
+
 end Zerocopy.Proofs.Raw
 
 namespace Zerocopy.Proofs
@@ -1709,5 +1787,22 @@ theorem pad_to_align_spec : Zerocopy.Specs.pad_to_align_spec := by
     | Sized _ => trivial
     | SliceDst _ => simpa only [canonicalLayout, hs] using hc
 register_spec_step pad_to_align_spec
+
+theorem for_repr_c_struct_spec : Zerocopy.Specs.for_repr_c_struct_spec := by
+  unfold Zerocopy.Specs.for_repr_c_struct_spec
+  representation_simps
+  intro repr_align packed fields _ _ _ ha hp hd hlast hfit
+  apply WP.spec_mono (Raw.for_repr_c_struct_spec repr_align packed fields ha hp hd hlast hfit)
+  rintro r ⟨hr, hc⟩
+  refine ⟨?_, hr⟩
+  refine ⟨?_, ?_⟩
+  · have halign := congrArg LayoutMath.LayoutValue.align hr
+    change r.align.val.val = _ at halign
+    rw [halign]
+    exact Nat.pos_of_isPowerOfTwo hlast.1
+  · cases hs : r.size_info with
+    | Sized _ => trivial
+    | SliceDst _ => simpa only [canonicalLayout, hs] using hc
+register_spec_step for_repr_c_struct_spec
 
 end Zerocopy.Proofs
