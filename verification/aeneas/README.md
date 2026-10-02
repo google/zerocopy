@@ -114,13 +114,14 @@ postconditions could promise less. Passing proofs establish the written claims;
 they do not establish that those claims capture the intended behavior.
 
 The comments in these modules explain their inputs, outputs, and non-obvious
-checks. This integration proves conditional functional
+checks. [SEMANTICS.md](SEMANTICS.md) states the premise connecting the independent
+layout mathematics to Rust. This integration proves conditional functional
 behavior; it does not prove that every caller meets the requirements or that
 zerocopy's unsafe pointer operations are sound.
 
 ## Scope and proofs
 
-Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs).
+Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs), [primitive assertions](../../zerocopy/src/layout/primitive_checks.rs).
 
 Extraction starts from the function and nominal-type owners of every present
 `aeneas` fence in `zerocopy/src`, including their dependencies. Every present
@@ -128,14 +129,14 @@ fence must have a supported Rust owner, exact extraction binding, and the
 corresponding checked Lean declarations. Unannotated functions and impls can be
 added without extending the specification set.
 
-| Rust function | Checked property |
+| Functions | Checked property |
 | --- | --- |
 | Byteorder U16/U32 read, write, and set (both endiannesses) | Exact integer value, every encoded byte, and setter/getter equality for every typed input. |
-| `max` | Returns the mathematical maximum, selects an input, and bounds both inputs from above. |
-| `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
-| `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
-| `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
+| `max`, `min`, padding, round-down | Exact extrema, least padding, greatest aligned predecessor, and bounds. |
 | Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
+| `DstLayout::{assume_shallow_unpadded,new_zst,for_type,for_unpadded_type,for_slice}` | Exact alignment, size-information fields, and recorded shallow-padding flags under explicit input premises. |
+| `SizeInfo::try_to_nonzero_elem_size`, `max_elems_for_bytes` | Exact zero handling, preserved representation fields, and greatest fitting element count. |
+| `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
@@ -157,6 +158,12 @@ The nominal rounding wrapper decodes to `RoundingValue`, a power-of-two
 alignment and bounded phase with machine-fit proofs. Ordinary representation
 laws establish acceptance of every positive stored word and exact reconstruction
 from that pair. Zero is rejected by the native NonZero child decoder.
+
+`LayoutModel.lean` supplies raw observations and projections of the recursively
+decoded records without function proofs. Layout models retain each field and
+the unpadded flag; realizability, alignment and fit conditions remain explicit.
+Generic size/alignment reads are external data inputs, not correctness axioms.
+See [SEMANTICS.md](SEMANTICS.md) for the Rust correspondence premise.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
@@ -362,8 +369,10 @@ These are conditional contracts over accepted representations, supplied ghosts,
 and satisfied requirements. A decoder may intentionally forget observations or
 reject raw values. A ghost with type `False`, or a dependent ghost with an empty
 domain, makes the relevant contract vacuous. Neither the pipeline nor a decoder
-proves that every Rust caller meets the domain. Operation-specific
-alignment and fit conditions remain explicit. The independently written operation expectations check both intended input
+proves that every Rust caller meets the domain. `DstLayout` initially keeps a
+structural mathematical model, including its unpadded flag and decoded rounding
+pair, without imposing a global realizable-layout requirement. Operation-specific
+alignment, fit, and construction conditions remain explicit. The independently written operation expectations check both intended input
 admission and promised behavior. Representation laws can be useful proof helpers;
 they are not an additional universal model-certification requirement.
 
@@ -462,6 +471,12 @@ declarations from every handwritten Lean module, including unused auxiliary
 modules, together with the model, vocabulary, obligations, and generated
 specifications. Only `propext`, `Classical.choice`, and `Quot.sound` are
 permitted.
+The explicit data-only Rust layout inputs documented in `SEMANTICS.md`
+are also permitted. Models with generic alignment reads must provide both
+data inputs with their exact signatures; the audit also checks that generic
+size/alignment reads use those inputs and that `Usize` size uses the pointer
+width. These checks pin the declared external interpretation; correspondence
+to the actual Rust ABI remains an explicit premise.
 New axioms, `sorryAx`, and native evaluator proof axioms fail.
 
 Callers reuse ordinary exported theorems, either explicitly with `step with` or
