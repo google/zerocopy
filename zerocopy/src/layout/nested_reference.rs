@@ -18,6 +18,12 @@
 // also leave the overflow paths visible in this independent reference.
 #![allow(clippy::question_mark, clippy::manual_map)]
 
+#[cfg(not(kani))]
+use core::num::NonZeroUsize;
+
+#[cfg(not(kani))]
+use super::{DstLayout, RoundingAlignAndPhase, SizeInfo, TrailingSliceLayout};
+
 /// One containing record, before placing its final field.
 ///
 /// Plain words make the descriptor's mathematical decoding total. The Rust
@@ -116,5 +122,100 @@ pub(super) fn size_for_metadata(
     match state {
         Some((size, _)) => Some(size),
         None => None,
+    }
+}
+
+/// Checks the production layout against the independent size calculation.
+///
+/// The guards expose the construction domain as ordinary Rust. Invalid
+/// descriptors, alignments above the production constructor's documented
+/// bound, and unrepresentable static layouts return immediately. Every
+/// element count is compared, including dynamic overflow and zero-size tails.
+///
+/// A total `_ => True` specification proves that these ordinary assertions
+/// cannot fail; the comparison itself is part of the extracted computation.
+///
+/// ```aeneas
+/// spec nested_reference_matches_spec
+///   ensures(raw) _ => True
+/// ```
+#[cfg(not(kani))]
+#[allow(clippy::arithmetic_side_effects, clippy::indexing_slicing)]
+pub(super) fn assert_matches_dst_layout(
+    leading: &[NestedLayer],
+    elem_size: usize,
+    leaf_align: usize,
+    elems: usize,
+) {
+    if !leaf_align.is_power_of_two()
+        || leaf_align > DstLayout::CURRENT_MAX_ALIGN.get()
+        || elem_size % leaf_align != 0
+    {
+        return;
+    }
+    let mut i = 0;
+    let mut valid = true;
+    while i < leading.len() {
+        let layer = leading[i];
+        if !layer.packed.is_power_of_two()
+            || !layer.min_align.is_power_of_two()
+            || layer.min_align > layer.packed
+            || layer.packed > DstLayout::CURRENT_MAX_ALIGN.get()
+        {
+            valid = false;
+        }
+        i += 1;
+    }
+    if !valid {
+        return;
+    }
+    if size_for_metadata(leading, elem_size, leaf_align, 0).is_none() {
+        return;
+    }
+    let leaf_align = match NonZeroUsize::new(leaf_align) {
+        Some(a) => a,
+        None => return,
+    };
+    let mut runtime_layout = DstLayout {
+        align: leaf_align,
+        size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+            offset: 0,
+            elem_size,
+            size_base: 0,
+            size_rounding_align_and_phase: RoundingAlignAndPhase::new(leaf_align, 0),
+        }),
+        statically_shallow_unpadded: true,
+    };
+    let mut i = leading.len();
+    while i != 0 {
+        i -= 1;
+        let layer = leading[i];
+        let packed = match NonZeroUsize::new(layer.packed) {
+            Some(a) => a,
+            None => DstLayout::MIN_ALIGN,
+        };
+        let min_align = match NonZeroUsize::new(layer.min_align) {
+            Some(a) => a,
+            None => DstLayout::MIN_ALIGN,
+        };
+        let prefix = DstLayout {
+            align: DstLayout::MIN_ALIGN,
+            size_info: SizeInfo::Sized { size: layer.prefix_bytes },
+            statically_shallow_unpadded: true,
+        };
+        runtime_layout =
+            DstLayout::for_repr_c_struct(Some(min_align), Some(packed), &[prefix, runtime_layout]);
+    }
+    let actual = match runtime_layout.size_info {
+        SizeInfo::Sized { size } => Some(size),
+        SizeInfo::SliceDst(tail) => tail.size_for_elems(elems),
+    };
+    let expected = size_for_metadata(leading, elem_size, leaf_align.get(), elems);
+    // Primitive comparisons keep the assertion visible without bringing
+    // formatting or Option's trait dictionary into the extraction.
+    match (actual, expected) {
+        (Some(actual), Some(expected)) => assert!(actual == expected),
+        (None, None) => (),
+        _ => panic!("nested layout size differs from the independent reference"),
     }
 }
