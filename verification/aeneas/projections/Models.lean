@@ -35,6 +35,15 @@ derive_rust_model Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters d
   { align := align, phase := word - align, .. }
 check_model_binding Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters
 
+derive_rust_model Zerocopy.layout.TrailingSliceLayout with 1 type parameters
+check_model_binding Zerocopy.layout.TrailingSliceLayout with 1 type parameters
+
+derive_rust_model Zerocopy.layout.SizeInfo with 1 type parameters
+check_model_binding Zerocopy.layout.SizeInfo with 1 type parameters
+
+derive_rust_model Zerocopy.layout.DstLayout with 0 type parameters
+check_model_binding Zerocopy.layout.DstLayout with 0 type parameters
+
 derive_rust_model Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
 check_model_binding Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
 
