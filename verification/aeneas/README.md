@@ -341,6 +341,11 @@ The mathematical layout semantics proves normalization across arbitrary
 nesting and metadata values. These algebraic laws do not themselves verify
 a Rust layout method.
 
+The nominal rounding wrapper decodes to `RoundingValue`, a power-of-two
+alignment and bounded phase with machine-fit proofs. Ordinary representation
+laws establish acceptance of every positive stored word and exact reconstruction
+from that pair. Zero is rejected by the native NonZero child decoder.
+
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
 raw fields. Binding `let N : Nat := n` makes addition and remainder ordinary
