@@ -57,6 +57,19 @@ class PrepareTests(unittest.TestCase):
             self.assertEqual(prepare.mathlib_imports(backend),
                              ['Mathlib.Data.BitVec', 'Mathlib.Tactic'])
 
+    def test_imports_include_proof_modules_and_templates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            backend, proofs = Path(tmp) / 'backend', Path(tmp) / 'proofs'
+            backend.mkdir()
+            proofs.mkdir()
+            (backend / 'Aeneas.lean').write_text('import Mathlib.Tactic.Basic\n')
+            (proofs / 'RequiredContracts.lean').write_text(
+                'public import Mathlib.Tactic.Convert\n')
+            (proofs / 'Proofs.lean.in').write_text('import all Mathlib.Data.Nat.Log\n')
+            self.assertEqual(prepare.mathlib_imports(backend, proofs),
+                             ['Mathlib.Data.Nat.Log', 'Mathlib.Tactic.Basic',
+                              'Mathlib.Tactic.Convert'])
+
 
 if __name__ == '__main__':
     unittest.main()
