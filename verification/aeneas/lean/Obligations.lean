@@ -77,5 +77,34 @@ def round_down_spec : Prop :=
   ∀ (n : Usize) (align : NonZeroUsize),
     round_down_spec_contract n align (util.round_down_to_next_multiple_of_alignment n align)
 
+def encoding_new_spec_contract (a : NonZeroUsize) (p : Usize)
+    (run : Result layout.RoundingAlignAndPhase) : Prop :=
+  0 < a.val.val → a.val.val.isPowerOfTwo → p.val < a.val.val →
+    ∃ code, run = .ok code ∧ encodingValid code ∧ code._0.val.val = a.val.val + p.val
+
+def encoding_new_spec : Prop :=
+  ∀ (a : NonZeroUsize) (p : Usize),
+    encoding_new_spec_contract a p (layout.RoundingAlignAndPhase.new a p)
+
+def encoding_components_spec_contract (code : layout.RoundingAlignAndPhase)
+    (run : Result (NonZeroUsize × Usize)) : Prop :=
+  0 < code._0.val.val →
+    run ⦃ (a, p) =>
+      0 < a.val.val ∧ a.val.val.isPowerOfTwo ∧ p.val < a.val.val ∧ a.val.val + p.val = code._0.val.val ∧
+      a.val.val = 2 ^ code._0.val.val.log2 ∧ p.val = code._0.val.val - 2 ^ code._0.val.val.log2 ⦄
+
+def encoding_components_spec : Prop :=
+  ∀ (code : layout.RoundingAlignAndPhase),
+    encoding_components_spec_contract code (layout.RoundingAlignAndPhase.components code)
+
+def encoding_align_spec_contract (code : layout.RoundingAlignAndPhase)
+    (run : Result NonZeroUsize) : Prop :=
+  0 < code._0.val.val →
+    ∃ a, run = .ok a ∧ 0 < a.val.val ∧ a.val.val = 2 ^ code._0.val.val.log2
+
+def encoding_align_spec : Prop :=
+  ∀ (code : layout.RoundingAlignAndPhase),
+    encoding_align_spec_contract code (layout.RoundingAlignAndPhase.align code)
+
 
 end Zerocopy.Obligations
