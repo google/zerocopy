@@ -16,8 +16,9 @@ public import LayoutMath
 /-!
 Extracted records contain machine words and compressed rounding encodings.
 This module gives those records ordinary mathematical observations: a size
-formula, a physical slice offset, and field placement. The definitions do not
-call an extracted operation or assume that it is correct.
+formula, a physical slice offset, field placement, and cast or metadata
+outcomes. The definitions do not call an extracted operation or assume that
+it is correct.
 
 Proofs uses the raw observations to state implementation lemmas and
 independent expectations. ModelViews exposes corresponding observations of
@@ -65,6 +66,48 @@ def fieldAlignment (field : layout.DstLayout) (packed : Option NonZeroUsize) : N
 def placement (size : Usize) (field : layout.DstLayout) (packed : Option NonZeroUsize) :=
   LayoutMath.roundUp size.val (fieldAlignment field packed)
 
+def castSide (cast : layout.CastType) (length : Nat) : Nat :=
+  match cast with | .Prefix => 0 | .Suffix => length
+
+def castSplit (cast : layout.CastType) (length size : Nat) : Nat :=
+  match cast with | .Prefix => size | .Suffix => length - size
+
+/- Describe exact cast outcomes independently of the implementation. Alignment
+errors have priority; a suffix checks the end address; successful trailing
+casts return the greatest fitting metadata and the corresponding physical
+split.
+-/
+def castSpec (self : layout.DstLayout) (addr length : Nat) (cast : layout.CastType)
+    (result : core.result.Result (Usize × Usize) layout.MetadataCastError) : Prop :=
+  let anchor := addr + castSide cast length
+  match result with
+  | .Err .Alignment => anchor % self.align.val.val ≠ 0
+  | .Err .Size => anchor % self.align.val.val = 0 ∧
+    match self.size_info with
+    | .Sized size => length < size.val
+    | .SliceDst tail => ∀ n : Nat, length < (trailingFormula tail).size n
+  | .Ok (elems, split) => anchor % self.align.val.val = 0 ∧
+    match self.size_info with
+    | .Sized size => elems.val = 0 ∧ size.val ≤ length ∧
+      split.val = castSplit cast length size.val
+    | .SliceDst tail => (trailingFormula tail).size elems.val ≤ length ∧
+      (∀ n : Nat, (trailingFormula tail).size n ≤ length ↔ n ≤ elems.val) ∧
+      split.val = castSplit cast length ((trailingFormula tail).size elems.val)
+
+/- Describe exact-size metadata, including failure when no count has that
+complete size. On a rounding plateau, success must select the greatest count;
+fixed layouts and zero element strides have no inferred trailing metadata.
+-/
+def metadataSpec (self : layout.DstLayout) (size : Nat) (r : Option Usize) : Prop :=
+  match self.size_info with
+  | .Sized _ => r = none
+  | .SliceDst tail =>
+    if tail.elem_size.val = 0 then r = none else
+    match r with
+    | none => ∀ n : Nat, (trailingFormula tail).size n ≠ size
+    | some elems => (trailingFormula tail).size elems.val = size ∧
+      (∀ n : Nat, (trailingFormula tail).size n ≤ size ↔ n ≤ elems.val)
+
 /- Project the raw record to the fragment vocabulary used by layout operations.
 This preserves alignment, payload, physical offset, stride, and unpadded
 flag.
@@ -88,6 +131,8 @@ def canonicalLayout (self : layout.DstLayout) : Prop :=
 is an explicit operation domain, not a consequence of NonZeroUsize alone.
 -/
 def alignmentDomain (a : Nat) : Prop := a.isPowerOfTwo ∧ a ≤ 2 ^ 29
+
+attribute [contract_simps] castSide castSplit castSpec metadataSpec
 
 end Zerocopy.Proofs
 
