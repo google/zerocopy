@@ -1703,6 +1703,16 @@ impl DstLayout {
         }
     }))]
     const fn metadata_for_exact_size(&self, size: usize) -> Option<usize> {
+        // ```aeneas
+        // spec metadata_exact_spec (self : layout.DstLayout) (size : Usize)
+        //   requires ha : 0 < self.align.val.val
+        //   requires ht : match self.size_info with
+        //     | .Sized _ => True
+        //     | .SliceDst tail => tail.elem_size.val ≠ 0 →
+        //       0 < tail.size_rounding_align_and_phase.val.val
+        //   ensures r => metadataSpec self size.val r
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::metadata_for_exact_size)]
         #[kani::solver(kissat)]
@@ -1837,6 +1847,16 @@ impl DstLayout {
         bytes_len: usize,
         cast_type: CastType,
     ) -> Result<(usize, usize), MetadataCastError> {
+        // ```aeneas
+        // spec validate_cast_spec (self : layout.DstLayout) (addr bytes_len : Usize) (cast_type : layout.CastType)
+        //   requires ha : 0 < self.align.val.val
+        //   requires hroom : addr.val + bytes_len.val ≤ Usize.max
+        //   requires ht : match self.size_info with
+        //     | .Sized _ => True
+        //     | .SliceDst tail => 0 < tail.size_rounding_align_and_phase.val.val ∧ 0 < tail.elem_size.val
+        //   ensures r => castSpec self addr.val bytes_len.val cast_type r
+        // ```
+
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::validate_cast_and_convert_metadata)]
         #[kani::solver(kissat)]

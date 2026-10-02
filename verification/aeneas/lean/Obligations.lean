@@ -192,4 +192,20 @@ def requires_dynamic_padding_spec : Prop :=
         | .SliceDst t => (trailingFormula t).size 0 = t.offset.val ∧
           t.elem_size.val % (trailingFormula t).align = 0)
 
+def validate_cast_spec : Prop :=
+  ∀ (self : layout.DstLayout) (addr length : Usize) (side : layout.CastType),
+    0 < self.align.val.val → addr.val + length.val ≤ Usize.max →
+    (match self.size_info with
+      | .Sized _ => True
+      | .SliceDst t => 0 < t.size_rounding_align_and_phase.val.val ∧ 0 < t.elem_size.val) →
+    ∃ r, layout.DstLayout.validate_cast_and_convert_metadata self addr length side = .ok r ∧
+      castSpec self addr.val length.val side r
+
+def metadata_exact_spec : Prop :=
+  ∀ (self : layout.DstLayout) (size : Usize), 0 < self.align.val.val →
+    (match self.size_info with
+      | .Sized _ => True
+      | .SliceDst t => t.elem_size.val ≠ 0 → 0 < t.size_rounding_align_and_phase.val.val) →
+    ∃ r, layout.DstLayout.metadata_for_exact_size self size = .ok r ∧ metadataSpec self size.val r
+
 end Zerocopy.Obligations
